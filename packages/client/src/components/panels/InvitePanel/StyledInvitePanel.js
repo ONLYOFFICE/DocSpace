@@ -102,9 +102,9 @@ const StyledComboBox = styled(ComboBox)`
   }
 
   .combo-buttons_arrow-icon {
-    margin-top: 12px;
+    margin-top: 6px;
     margin-right: 8px;
-    margin-left: 0px;
+    margin-left: 2px;
   }
 
   padding: 0px;
@@ -120,6 +120,10 @@ const StyledInviteInputContainer = styled.div`
   align-items: center;
   ${fillAvailableWidth}
   margin-bottom: 20px;
+
+  .header_aside-panel {
+    max-width: 100% !important;
+  }
 `;
 
 const StyledDropDown = styled(DropDown)`

@@ -42,6 +42,7 @@ class AccountsContextOptionsStore {
 
         case "profile":
           return {
+            id: "option_profile",
             key: option,
             icon: "/static/images/profile.react.svg",
             label: t("Common:Profile"),
@@ -50,6 +51,7 @@ class AccountsContextOptionsStore {
 
         case "change-name":
           return {
+            id: "option_change-name",
             key: option,
             icon: "images/pencil.react.svg",
             label: t("PeopleTranslations:NameChangeButton"),
@@ -57,6 +59,7 @@ class AccountsContextOptionsStore {
           };
         case "change-email":
           return {
+            id: "option_change-email",
             key: option,
             icon: "images/change.mail.react.svg",
             label: t("PeopleTranslations:EmailChangeButton"),
@@ -64,6 +67,7 @@ class AccountsContextOptionsStore {
           };
         case "change-password":
           return {
+            id: "option_change-password",
             key: option,
             icon: "images/change.security.react.svg",
             label: t("PeopleTranslations:PasswordChangeButton"),
@@ -71,6 +75,7 @@ class AccountsContextOptionsStore {
           };
         case "change-owner":
           return {
+            id: "option_change-owner",
             key: option,
             icon: "/static/images/refresh.react.svg",
             label: t("Translations:OwnerChange"),
@@ -85,6 +90,7 @@ class AccountsContextOptionsStore {
           };
         case "enable":
           return {
+            id: "option_enable",
             key: option,
             icon: "images/enable.react.svg",
             label: t("PeopleTranslations:EnableUserButton"),
@@ -92,6 +98,7 @@ class AccountsContextOptionsStore {
           };
         case "disable":
           return {
+            id: "option_disable",
             key: option,
             icon: "images/remove.react.svg",
             label: t("PeopleTranslations:DisableUserButton"),
@@ -100,6 +107,7 @@ class AccountsContextOptionsStore {
 
         case "reassign-data":
           return {
+            id: "option_reassign-data",
             key: option,
             icon: "images/ressing_data.react.svg",
             label: t("PeopleTranslations:ReassignData"),
@@ -107,6 +115,7 @@ class AccountsContextOptionsStore {
           };
         case "delete-personal-data":
           return {
+            id: "option_delete-personal-data",
             key: option,
             icon: "images/del_data.react.svg",
             label: t("PeopleTranslations:RemoveData"),
@@ -114,6 +123,7 @@ class AccountsContextOptionsStore {
           };
         case "delete-user":
           return {
+            id: "option_delete-user",
             key: option,
             icon: "images/trash.react.svg",
             label: t("DeleteProfileEverDialog:DeleteUser"),
@@ -122,6 +132,7 @@ class AccountsContextOptionsStore {
 
         case "details":
           return {
+            id: "option_details",
             key: option,
             icon: "images/info.react.svg",
             label: t("Common:Info"),
@@ -130,6 +141,7 @@ class AccountsContextOptionsStore {
 
         case "invite-again":
           return {
+            id: "option_invite-again",
             key: option,
             icon: "/static/images/invite.again.react.svg",
             label: t("LblInviteAgain"),
@@ -137,6 +149,7 @@ class AccountsContextOptionsStore {
           };
         case "reset-auth":
           return {
+            id: "option_reset-auth",
             key: option,
             icon: "images/restore.auth.react.svg",
             label: t("PeopleTranslations:ResetAuth"),

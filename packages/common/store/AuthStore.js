@@ -50,9 +50,11 @@ class AuthStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
+  init = async (skipRequest = false) => {
     if (this.isInit) return;
     this.isInit = true;
+
+    this.skipRequest = skipRequest;
 
     try {
       await this.userStore.init();
@@ -63,7 +65,7 @@ class AuthStore {
     const requests = [];
     requests.push(this.settingsStore.init());
 
-    if (this.isAuthenticated) {
+    if (this.isAuthenticated && !skipRequest) {
       requests.push(
         this.currentQuotaStore.init(),
         this.currentTariffStatusStore.init()

@@ -24,10 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System;
-global using System.Collections.Generic;
 global using System.Reflection;
-global using System.Threading.Tasks;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
@@ -40,9 +37,4 @@ global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Log;
 global using ASC.Notify.IntegrationEvents.EventHandling;
 
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Logging;

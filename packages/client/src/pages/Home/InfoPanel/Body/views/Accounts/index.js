@@ -58,18 +58,21 @@ const Accounts = ({
     const options = [];
 
     const adminOption = {
+      id: "info-account-type_docspace-admin",
       key: "admin",
       title: t("Common:DocSpaceAdmin"),
       label: t("Common:DocSpaceAdmin"),
       action: "admin",
     };
     const managerOption = {
+      id: "info-account-type_room-admin",
       key: "manager",
       title: t("Common:RoomAdmin"),
       label: t("Common:RoomAdmin"),
       action: "manager",
     };
     const userOption = {
+      id: "info-account-type_user",
       key: "user",
       title: t("Common:User"),
       label: t("Common:User"),
@@ -99,6 +102,7 @@ const Accounts = ({
 
     const combobox = (
       <ComboBox
+        id="info-account-type-select"
         className="type-combobox"
         selectedOption={
           typesOptions.find((option) => option.key === role) || {}

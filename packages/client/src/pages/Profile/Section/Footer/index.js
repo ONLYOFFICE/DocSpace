@@ -54,13 +54,13 @@ const ActiveSessions = ({
       setCurrentSession(res.loginEvent);
     });
   }, []);
-
+  
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions().then((res) => console.log(res));
+      await removeAllSessions().then((res) => window.location.replace(res));
     } catch (error) {
-      console.log(error);
+      toastr.error(error);
     } finally {
       setLoading(false);
       setLogoutAllVisible(false);

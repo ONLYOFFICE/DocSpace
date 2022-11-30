@@ -11,16 +11,16 @@ const Button = React.forwardRef((props, ref) => {
   const { isLoading, icon, label, primary } = props;
   return (
     <ColorTheme {...props} innerRef={ref} themeId={ThemeType.Button}>
+      {isLoading && (
+        <Loader
+          className="loader"
+          size="20px"
+          type="track"
+          label={label}
+          primary={primary}
+        />
+      )}
       <div className="button-content">
-        {isLoading && (
-          <Loader
-            className="loader"
-            size="20px"
-            type="track"
-            label={label}
-            primary={primary}
-          />
-        )}
         {icon && <div className="icon">{icon}</div>}
         {label}
       </div>

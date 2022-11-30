@@ -265,6 +265,10 @@ const StyledContent = styled.div`
     word-break: break-word;
   }
 
+  .new-items {
+    margin-left: 12px;
+  }
+
   @media (max-width: 1024px) {
     white-space: nowrap;
     overflow: hidden;

@@ -136,35 +136,41 @@ class SectionHeaderContent extends React.Component {
         ]
       : [
           {
+            id: "personal_new-documnet",
             key: "new-document",
             label: t("NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
+            id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
             label: t("NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
+            id: "personal_new-presentation",
             key: "new-presentation",
             label: t("NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
           {
+            id: "personal_form-template",
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             key: "new-form-base",
             items: [
               {
+                id: "personal_template_black",
                 key: "new-form",
                 label: t("Translations:SubNewForm"),
                 icon: "images/form.blank.react.svg",
                 onClick: this.createForm,
               },
               {
+                id: "personal_template_new-form-file",
                 key: "new-form-file",
                 label: t("Translations:SubNewFormFile"),
                 icon: "images/form.file.react.svg",
@@ -172,6 +178,7 @@ class SectionHeaderContent extends React.Component {
                 disabled: isPrivacyFolder,
               },
               {
+                id: "personal_template_oforms-gallery",
                 key: "oforms-gallery",
                 label: t("Common:OFORMsGallery"),
                 icon: "images/form.gallery.react.svg",
@@ -181,6 +188,7 @@ class SectionHeaderContent extends React.Component {
             ],
           },
           {
+            id: "personal_new-folder",
             key: "new-folder",
             label: t("NewFolder"),
             onClick: this.createFolder,
@@ -317,7 +325,9 @@ class SectionHeaderContent extends React.Component {
 
     if (isExistActiveItems) return;
 
-    this.props.setRestoreAllArchiveDialogVisible(true);
+    this.props.setArchiveAction("unarchive");
+    this.props.setRestoreAllArchive(true);
+    this.props.setArchiveDialogVisible(true);
   };
 
   onShowInfo = () => {
@@ -343,6 +353,9 @@ class SectionHeaderContent extends React.Component {
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+
+      canRestoreAll,
+      canDeleteAll,
     } = this.props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -350,17 +363,19 @@ class SectionHeaderContent extends React.Component {
     if (isArchiveFolder) {
       return [
         {
+          id: "header_option_empty-archive",
           key: "empty-archive",
           label: t("ArchiveAction"),
           onClick: this.onEmptyTrashAction,
-          disabled: !isArchiveFolder,
+          disabled: !canDeleteAll,
           icon: "images/clear.trash.react.svg",
         },
         {
+          id: "header_option_restore-all",
           key: "restore-all",
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
-          disabled: !isArchiveFolder,
+          disabled: !canRestoreAll,
           icon: "images/subtract.react.svg",
         },
       ];
@@ -368,6 +383,7 @@ class SectionHeaderContent extends React.Component {
 
     return [
       {
+        id: "header_option_sharing-settings",
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
@@ -375,6 +391,7 @@ class SectionHeaderContent extends React.Component {
         icon: "/static/images/share.react.svg",
       },
       {
+        id: "header_option_link-portal-users",
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
@@ -382,6 +399,7 @@ class SectionHeaderContent extends React.Component {
         icon: "/static/images/invitation.link.react.svg",
       },
       {
+        id: "header_option_empty-trash",
         key: "empty-trash",
         label: t("RecycleBinAction"),
         onClick: this.onEmptyTrashAction,
@@ -389,6 +407,7 @@ class SectionHeaderContent extends React.Component {
         icon: "images/clear.trash.react.svg",
       },
       {
+        id: "header_option_restore-all",
         key: "restore-all",
         label: t("RestoreAll"),
         onClick: this.onRestoreAllAction,
@@ -396,6 +415,7 @@ class SectionHeaderContent extends React.Component {
         icon: "images/subtract.react.svg",
       },
       {
+        id: "header_option_show-info",
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
@@ -403,6 +423,7 @@ class SectionHeaderContent extends React.Component {
         icon: "/static/images/info.outline.react.svg",
       },
       {
+        id: "header_option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
         icon: "images/reconnect.svg",
@@ -410,6 +431,7 @@ class SectionHeaderContent extends React.Component {
         disabled: !selectedFolder.providerKey || !isRoom,
       },
       {
+        id: "header_option_edit-room",
         key: "edit-room",
         label: t("EditRoom"),
         icon: "images/settings.react.svg",
@@ -417,6 +439,7 @@ class SectionHeaderContent extends React.Component {
         disabled: !isRoom,
       },
       {
+        id: "header_option_invite-users-to-room",
         key: "invite-users-to-room",
         label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
@@ -424,14 +447,21 @@ class SectionHeaderContent extends React.Component {
         disabled: !isRoom,
       },
       {
+        id: "header_option_room-info",
         key: "room-info",
         label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: this.onToggleInfoPanel,
         disabled: !isRoom,
       },
-      { key: "separator-2", isSeparator: true, disabled: isRecycleBinFolder },
       {
+        id: "header_option_separator-2",
+        key: "separator-2",
+        isSeparator: true,
+        disabled: isRecycleBinFolder,
+      },
+      {
+        id: "header_option_archive-room",
         key: "archive-room",
         label: t("Archived"),
         icon: "/static/images/room.archive.svg",
@@ -441,6 +471,7 @@ class SectionHeaderContent extends React.Component {
         action: "archive",
       },
       {
+        id: "header_option_download",
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
@@ -448,6 +479,7 @@ class SectionHeaderContent extends React.Component {
         icon: "images/download.react.svg",
       },
       {
+        id: "header_option_move-to",
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
@@ -455,6 +487,7 @@ class SectionHeaderContent extends React.Component {
         icon: "images/move.react.svg",
       },
       {
+        id: "header_option_copy",
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
@@ -462,6 +495,7 @@ class SectionHeaderContent extends React.Component {
         icon: "/static/images/copy.react.svg",
       },
       {
+        id: "header_option_rename",
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
@@ -469,11 +503,13 @@ class SectionHeaderContent extends React.Component {
         icon: "images/rename.react.svg",
       },
       {
+        id: "header_option_separator-3",
         key: "separator-3",
         isSeparator: true,
         disabled: isDisabled,
       },
       {
+        id: "header_option_delete",
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
@@ -501,14 +537,20 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
-
+    const {
+      t,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      getCheckboxItemId,
+    } = this.props;
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
+          const id = getCheckboxItemId(key);
           return (
             <DropDownItem
+              id={id}
               key={key}
               label={label}
               data-key={key}
@@ -606,7 +648,9 @@ class SectionHeaderContent extends React.Component {
       isRoomsFolder,
       isEmptyPage,
       canCreateFiles,
+      isEmptyArchive,
     } = this.props;
+
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -615,7 +659,7 @@ class SectionHeaderContent extends React.Component {
       <Consumer>
         {(context) => (
           <StyledContainer>
-            {isHeaderVisible ? (
+            {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
                 onChange={this.onChange}
@@ -634,7 +678,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && canCreateFiles}
+                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -647,7 +691,9 @@ class SectionHeaderContent extends React.Component {
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
                     isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
-                    isEmptyFilesList={isEmptyFilesList}
+                    isEmptyFilesList={
+                      isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                    }
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={this.onToggleInfoPanel}
@@ -691,6 +737,7 @@ export default inject(
       isThirdPartySelection,
       cbMenuItems,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
@@ -702,7 +749,8 @@ export default inject(
 
       setAlreadyFetchingRooms,
 
-      filesList,
+      roomsForRestore,
+      roomsForDelete,
 
       categoryType,
       isEmptyPage,
@@ -717,7 +765,9 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setRestoreAllArchiveDialogVisible,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
     } = dialogsStore;
 
     const {
@@ -761,6 +811,12 @@ export default inject(
 
     const { canCreateFiles } = accessRightsStore;
 
+    const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
+
+    const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
+
+    const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -799,11 +855,13 @@ export default inject(
       getHeaderMenu,
       backToParentFolder,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       setSelectFileDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
+      isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
 
@@ -824,7 +882,9 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
-      setRestoreAllArchiveDialogVisible,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
 
       selectedFolder,
 
@@ -834,6 +894,10 @@ export default inject(
       onClickArchive,
 
       rootFolderType,
+
+      isEmptyArchive,
+      canRestoreAll,
+      canDeleteAll,
     };
   }
 )(

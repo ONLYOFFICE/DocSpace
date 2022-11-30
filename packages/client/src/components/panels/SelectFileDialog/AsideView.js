@@ -97,7 +97,7 @@ const SelectFileDialogAsideView = ({
           theme={theme}
           primary
           scale
-          size="normalTouchscreen"
+          size="normal"
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={!fileId}
@@ -105,7 +105,7 @@ const SelectFileDialogAsideView = ({
         <Button
           theme={theme}
           scale
-          size="normalTouchscreen"
+          size="normal"
           label={t("Common:CancelButton")}
           onClick={onClose}
         />

@@ -18,6 +18,7 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
+import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -32,6 +33,7 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     isRootFolder,
     rootFolderType,
+    canViewUsers,
   } = props;
 
   const isRooms = getIsRooms();
@@ -45,27 +47,27 @@ const InfoPanelHeaderContent = (props) => {
 
   const closeInfoPanel = () => setIsVisible(false);
 
-  const setMembers = () => setView("members");
-  const setHistory = () => setView("history");
-  const setDetails = () => setView("details");
+  const setMembers = () => setView("info_members");
+  const setHistory = () => setView("info_history");
+  const setDetails = () => setView("info_details");
 
   const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
-      id: "members",
+      id: "info_members",
       name: t("InfoPanel:SubmenuMembers"),
       onClick: setMembers,
       content: null,
     },
     {
-      id: "history",
+      id: "info_history",
       name: t("InfoPanel:SubmenuHistory"),
       onClick: setHistory,
       content: null,
     },
     {
-      id: "details",
+      id: "info_details",
       name: t("InfoPanel:SubmenuDetails"),
       onClick: setDetails,
       content: null,
@@ -73,7 +75,9 @@ const InfoPanelHeaderContent = (props) => {
   ];
 
   const roomsSubmenu = isArchiveRoot
-    ? [{ ...submenuData[0] }, { ...submenuData[2] }]
+    ? canViewUsers(selection)
+      ? [{ ...submenuData[0] }, { ...submenuData[2] }]
+      : [{ ...submenuData[2] }]
     : [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
@@ -96,6 +100,7 @@ const InfoPanelHeaderContent = (props) => {
           {!isTablet && (
             <div className="info-panel-toggle-bg">
               <IconButton
+                id="info-panel-toggle--close"
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
                 size="16"
@@ -128,7 +133,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore }) => {
+export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
   const {
     selection,
     setIsVisible,
@@ -141,6 +146,7 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsAccounts,
   } = auth.infoPanelStore;
   const { isRootFolder, rootFolderType } = selectedFolderStore;
+  const { canViewUsers } = accessRightsStore;
 
   return {
     selection,
@@ -155,6 +161,7 @@ export default inject(({ auth, selectedFolderStore }) => {
 
     isRootFolder,
     rootFolderType,
+    canViewUsers,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

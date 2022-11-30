@@ -39,7 +39,7 @@ class TelegramSenderSink : Sink
     }
 
 
-    public override SendResponse ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
     {
         try
         {
@@ -47,7 +47,7 @@ class TelegramSenderSink : Sink
 
             using var scope = _serviceProvider.CreateScope();
             var m = scope.ServiceProvider.GetRequiredService<TelegramSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
-            _sender.Send(m);
+            await _sender.Send(m);
 
             return new SendResponse(message, _senderName, result);
         }

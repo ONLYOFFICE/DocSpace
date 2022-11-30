@@ -99,7 +99,7 @@ public class EditorControllerThirdparty : EditorController<string>
 
         if (!file.Encrypted && !file.ProviderEntry)
         {
-            _entryManager.MarkAsRecent(file);
+            await _entryManager.MarkAsRecent(file);
         }
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);
@@ -233,7 +233,7 @@ public abstract class EditorController<T> : ApiControllerBase
 
         if (!file.Encrypted && !file.ProviderEntry)
         {
-            _entryManager.MarkAsRecent(file);
+            await _entryManager.MarkAsRecent(file);
         }
 
         configuration.Token = _documentServiceHelper.GetSignature(configuration);

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,
@@ -15,6 +14,9 @@ const User = ({
   currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
+  canChangeUserRoleInRoom,
+  rootFolderType,
+  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -65,6 +67,14 @@ const User = ({
     }
   };
 
+  const isCanChangeUserRole =
+    user &&
+    canChangeUserRoleInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -84,7 +94,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers && currentMember?.id !== user.id ? (
+          {isCanChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}

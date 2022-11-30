@@ -198,6 +198,15 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 const StyledBadgesContainer = styled.div`
   margin-left: 8px;
 
+  display: flex;
+  align-items: center;
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      margin-top: 1px;
+    `}
+
   .badges {
     display: flex;
     align-items: center;
@@ -216,7 +225,7 @@ const StyledBadgesContainer = styled.div`
   .new-items {
     min-width: 12px;
     width: max-content;
-    margin: 1px -2px -2px -2px;
+    margin: 0 -2px -2px -2px;
   }
 
   .badge-version {
@@ -306,7 +315,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     tableColumns,
     id,
-
+    hideColumns,
     isRooms,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
@@ -372,21 +381,22 @@ const FilesTableRow = (props) => {
   let ownerAvailableDrag = true;
   let tagsAvailableDrag = true;
   let activityAvailableDrag = true;
-
   let buttonsAvailableDrag = true;
 
   if (dragging && isDragging) {
     availableColumns = localStorage.getItem(tableColumns).split(",");
 
-    authorAvailableDrag = availableColumns.includes("Author");
-    createdAvailableDrag = availableColumns.includes("Created");
-    modifiedAvailableDrag = availableColumns.includes("Modified");
-    sizeAvailableDrag = availableColumns.includes("Size");
-    typeAvailableDrag = availableColumns.includes("Type");
+    authorAvailableDrag = availableColumns.includes("Author") && !hideColumns;
+    createdAvailableDrag = availableColumns.includes("Created") && !hideColumns;
+    modifiedAvailableDrag =
+      availableColumns.includes("Modified") && !hideColumns;
+    sizeAvailableDrag = availableColumns.includes("Size") && !hideColumns;
+    typeAvailableDrag = availableColumns.includes("Type") && !hideColumns;
     buttonsAvailableDrag = availableColumns.includes("QuickButtons");
-    ownerAvailableDrag = availableColumns.includes("Owner");
-    tagsAvailableDrag = availableColumns.includes("Tags");
-    activityAvailableDrag = availableColumns.includes("Activity");
+    ownerAvailableDrag = availableColumns.includes("Owner") && !hideColumns;
+    tagsAvailableDrag = availableColumns.includes("Tags") && !hideColumns;
+    activityAvailableDrag =
+      availableColumns.includes("Activity") && !hideColumns;
   }
 
   return (
@@ -446,7 +456,9 @@ const FilesTableRow = (props) => {
             inProgress={inProgress}
             {...props}
           />
-          <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
+          <StyledBadgesContainer showHotkeyBorder={showHotkeyBorder}>
+            {badgesComponent}
+          </StyledBadgesContainer>
         </TableCell>
 
         {(item.isRoom || isRooms) && (

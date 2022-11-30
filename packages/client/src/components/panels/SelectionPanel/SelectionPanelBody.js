@@ -61,6 +61,7 @@ const SelectionPanelBody = ({
       displayType="modal"
       isLoading={isLoading}
       withFooterBorder
+      isDoubleFooterLine
       autoMaxWidth
     >
       <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>
@@ -121,7 +122,7 @@ const SelectionPanelBody = ({
                   folderSelection={folderSelection}
                   newFilter={newFilter}
                   fileId={fileId}
-                  maxHeight={!header ? 384 : 310}
+                  maxHeight={!header ? 384 : 269}
                 />
               </>
             </div>
@@ -129,33 +130,39 @@ const SelectionPanelBody = ({
         </StyledBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-file-modal-dialog-buttons-save"
-          primary
-          size="normalTouchscreen"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            (!fileId && !folderSelection) ||
-            !canCreate ||
-            !(folderId && resultingFolderTree) ||
-            isCurrentFolder
-          }
-          isLoading={isDisableTree}
-        />
-        <Button
-          theme={theme}
-          className="modal-dialog-button"
-          size="normalTouchscreen"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+
+        <div>
+          <Button
+            id="select-file-modal-submit"
+            theme={theme}
+            className="select-file-modal-dialog-buttons-save"
+            primary
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={
+              folderSelectionDisabled ||
+              isDisableButton ||
+              isDisableTree ||
+              isLoadingData ||
+              (!fileId && !folderSelection) ||
+              !canCreate ||
+              !(folderId && resultingFolderTree) ||
+              isCurrentFolder
+            }
+            isLoading={isDisableTree}
+          />
+          <Button
+            id="select-file-modal-cancel"
+            theme={theme}
+            className="modal-dialog-button"
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

@@ -12,6 +12,12 @@ import config from "PACKAGE_FILE";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = { disableBadgeClick: false, disableUnpinClick: false };
+    }
+
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -23,27 +29,47 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-      fetchFileVersions(item.id + "");
+      fetchFileVersions(item.id + "", item.access);
       setIsVerHistoryPanel(true);
     };
 
     onBadgeClick = () => {
+      if (this.state.disableBadgeClick) return;
+
       const { item, markAsRead, setNewFilesPanelVisible } = this.props;
+      this.setState(() => ({
+        disableBadgeClick: true,
+      }));
+
+      const enableBadgeClick = () => {
+        this.setState({ disableBadgeClick: false });
+      };
+
       if (item.fileExst) {
-        markAsRead([], [item.id], item);
+        markAsRead([], [item.id], item).then(() => {
+          enableBadgeClick();
+        });
       } else {
-        setNewFilesPanelVisible(true, null, item);
+        setNewFilesPanelVisible(true, null, item).then(() => {
+          enableBadgeClick();
+        });
       }
     };
 
     onUnpinClick = (e) => {
+      if (this.state.disableUnpinClick) return;
+
+      this.setState({ disableUnpinClick: true });
+
       const { t, setPinAction } = this.props;
 
       const { action, id } = e.target.closest(".is-pinned").dataset;
 
       if (!action && !id) return;
 
-      setPinAction(action, id, t);
+      setPinAction(action, id, t).then(() => {
+        this.setState({ disableUnpinClick: false });
+      });
     };
 
     setConvertDialogVisible = () => {
@@ -65,6 +91,7 @@ export default function withBadges(WrappedComponent) {
         isDesktopClient,
         sectionWidth,
         viewAs,
+        canViewVersionFileHistory,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -97,6 +124,7 @@ export default function withBadges(WrappedComponent) {
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
+          canViewVersionFileHistory={canViewVersionFileHistory}
         />
       );
 
@@ -116,6 +144,7 @@ export default function withBadges(WrappedComponent) {
         dialogsStore,
         filesStore,
         settingsStore,
+        accessRightsStore,
       },
       { item }
     ) => {
@@ -132,6 +161,9 @@ export default function withBadges(WrappedComponent) {
 
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
       const canConvert = settingsStore.canConvert(item.fileExst);
+      const canViewVersionFileHistory = accessRightsStore.canViewVersionFileHistory(
+        item
+      );
 
       return {
         theme,
@@ -151,6 +183,7 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
         setPinAction,
+        canViewVersionFileHistory,
       };
     }
   )(observer(WithBadges));

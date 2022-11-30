@@ -39,7 +39,7 @@ public class LockerManager
         _thirdPartySelector = thirdPartySelector;
     }
 
-    public bool FileLockedForMe<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMe<T>(T fileId, Guid userId = default)
     {
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
@@ -49,7 +49,7 @@ public class LockerManager
 
         userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
-        var lockedBy = FileLockedBy(fileId, tagDao);
+        var lockedBy = await FileLockedBy(fileId, tagDao);
 
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
@@ -69,9 +69,9 @@ public class LockerManager
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
 
-    public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
+    public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
     {
-        var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+        var tagLock = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).FirstOrDefaultAsync();
 
         return tagLock != null ? tagLock.Owner : Guid.Empty;
     }
@@ -388,7 +388,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var total = 0;
 
@@ -471,7 +471,7 @@ public class EntryManager
         }
         else if ((parent.FolderType == FolderType.VirtualRooms || parent.FolderType == FolderType.Archive) && !parent.ProviderEntry)
         {
-            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider);
+            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider, subjectFilter);
 
             CalculateTotal();
         }
@@ -1639,7 +1639,8 @@ public class EntryManager
             {
                 var tagTemplate = Tag.Template(_authContext.CurrentAccount.ID, newFile);
                 var tagDao = _daoFactory.GetTagDao<T>();
-                tagDao.RemoveTags(tagTemplate);
+
+                await tagDao.RemoveTags(tagTemplate);
 
                 newFile.IsTemplate = false;
             }
@@ -1784,7 +1785,7 @@ public class EntryManager
         };
     }
 
-    public void MarkAsRecent<T>(File<T> file)
+    public async Task MarkAsRecent<T>(File<T> file)
     {
         if (file.Encrypted || file.ProviderEntry)
         {
@@ -1795,7 +1796,8 @@ public class EntryManager
         var userID = _authContext.CurrentAccount.ID;
 
         var tag = Tag.Recent(userID, file);
-        tagDao.SaveTags(tag);
+
+        await tagDao.SaveTags(tag);
     }
 
 
