@@ -4,7 +4,6 @@
   "EditPhoto": "写真を編集する",
   "InterfaceTheme": "インターフェイスのテーマ",
   "LightTheme": "ライトのテーマ",
-  "LoginSettings": "ログイン設定",
   "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<strong>{{email}}</strong>のメールアドレスに送信されています。",
   "PhoneLbl": "電話",
   "ProviderSuccessfullyConnected": "プロバイダが正常に接続されました",

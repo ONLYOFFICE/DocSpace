@@ -4,7 +4,6 @@
   "EditPhoto": "Изменить фотографию",
   "InterfaceTheme": "Тема интерфейса",
   "LightTheme": "Светлая тема",
-  "LoginSettings": "Вход через социальные сети",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "PhoneLbl": "Основной телефон",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",

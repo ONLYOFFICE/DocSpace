@@ -4,7 +4,6 @@
   "EditPhoto": "Редактирай снимка",
   "InterfaceTheme": "Тема на интерфейса",
   "LightTheme": "Светла тема",
-  "LoginSettings": "Настройки за вписване",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <strong>{{ email }}</strong>",
   "PhoneLbl": "Телефон",
   "ProviderSuccessfullyConnected": "Доставчикът е свързан успешно",

@@ -4,7 +4,6 @@
   "EditPhoto": "Muokkaa kuvaa",
   "InterfaceTheme": "Käyttöliittymän teema",
   "LightTheme": "Kevyt teema",
-  "LoginSettings": "Kirjautumisasetukset",
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
   "PhoneLbl": "Puhelin",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",

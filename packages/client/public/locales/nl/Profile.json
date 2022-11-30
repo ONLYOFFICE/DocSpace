@@ -4,7 +4,6 @@
   "EditPhoto": "Bewerk foto",
   "InterfaceTheme": "Interface thema",
   "LightTheme": "Licht thema",
-  "LoginSettings": "Inloginstellingen",
   "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail met activatie instructies zijn verzonden naar het <strong>{{ email }}</strong> e-mailadres",
   "PhoneLbl": "Telefoon",
   "ProviderSuccessfullyConnected": "Provider met succes verbonden",

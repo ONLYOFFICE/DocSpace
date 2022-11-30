@@ -4,7 +4,6 @@
   "EditPhoto": "Uredi fotografije",
   "InterfaceTheme": "Tema vmesnika",
   "LightTheme": "Svetla tema",
-  "LoginSettings": "Nastavitve za prijavo",
   "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <strong>{{ email }}</strong> email naslov",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Ponudnik je uspešno povezan",

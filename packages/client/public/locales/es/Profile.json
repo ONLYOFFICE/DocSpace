@@ -4,7 +4,6 @@
   "EditPhoto": "Editar foto",
   "InterfaceTheme": "Tema de interfaz",
   "LightTheme": "Tema claro",
-  "LoginSettings": "Ajustes de acceso",
   "MessageEmailActivationInstuctionsSentOnEmail": "Las instrucciones de activación se han enviado a la dirección de email <strong>{{ email }}</strong>",
   "PhoneLbl": "Teléfono",
   "ProviderSuccessfullyConnected": "El proveedor se ha conectado correctamente",
