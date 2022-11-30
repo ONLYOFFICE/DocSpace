@@ -65,7 +65,7 @@ const AvatarEditorDialog = (props) => {
       updateCreatedAvatar(avatars);
       updateProfile(profile);
 
-      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      toastr.success(t("Common:ChangesSavedSuccessfully"));
       onClose();
     } catch (error) {
       console.error(error);

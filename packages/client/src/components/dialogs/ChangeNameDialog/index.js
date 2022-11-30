@@ -43,7 +43,7 @@ const ChangeNameDialog = (props) => {
       setIsSaving(true);
       const currentProfile = await updateProfile(newProfile);
       fromList && (await updateProfileInUsers(currentProfile));
-      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      toastr.success(t("Common:ChangesSavedSuccessfully"));
     } catch (error) {
       console.error(error);
       toastr.error(error);
