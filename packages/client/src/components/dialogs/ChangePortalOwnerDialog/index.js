@@ -239,7 +239,7 @@ const ChangePortalOwnerDialog = ({
           <div className="button-wrapper">
             <Button
               tabIndex={5}
-              label={t("ProfileAction:ChangeButton")}
+              label={t("Common:ChangeButton")}
               size="normal"
               primary
               scale
