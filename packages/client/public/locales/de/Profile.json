@@ -3,7 +3,6 @@
   "DarkTheme": "Dunkelmodus",
   "EditPhoto": "Bild bearbeiten",
   "InterfaceTheme": "Thema der Benutzeroberfläche",
-  "InviteAgainLbl": "Erneut einladen",
   "LightTheme": "Heller Modus",
   "LoginSettings": "Login-Einstellungen",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",

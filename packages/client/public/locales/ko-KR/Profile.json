@@ -3,7 +3,6 @@
   "DarkTheme": "다크 테마",
   "EditPhoto": "사진 편집",
   "InterfaceTheme": "인터페이스 테마",
-  "InviteAgainLbl": "다시 초대",
   "LightTheme": "라이트 테마",
   "LoginSettings": "로그인 설정",
   "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <strong>{{ email }}</strong> 이메일 주소로 전송되었습니다",
