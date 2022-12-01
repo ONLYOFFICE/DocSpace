@@ -170,6 +170,11 @@ const StyledDropDownItem = styled(DropDownItem)`
     }
   }
 
+  /* .is-separator {
+    height: 1px;
+    background: #474747;
+  } */
+
   &:hover {
     background: #444;
   }
@@ -220,8 +225,8 @@ class ImageViewer extends React.Component {
           directionX="right"
           fixedDirection={true}
           withBackdrop={false}
-          manualY="55px"
-          manualX="10px"
+          manualY="63px"
+          manualX="-31px"
         >
           {model.map((item) => {
             const onClick = (e) => {
@@ -230,6 +235,7 @@ class ImageViewer extends React.Component {
             };
             return (
               <StyledDropDownItem
+                className={`${item.isSeparator ? "is-separator" : ""}`}
                 key={item.key}
                 label={item.label}
                 icon={item.icon ? item.icon : ""}
@@ -244,11 +250,12 @@ class ImageViewer extends React.Component {
 
     var customToolbar = [
       {
-        key: "zoomIn",
-        actionType: 1,
+        key: "zoomOut",
+        percent: true,
+        actionType: 2,
         render: (
-          <div className="iconContainer zoomIn">
-            <StyledMediaZoomInIcon size="scale" />
+          <div className="iconContainer zoomOut">
+            <StyledMediaZoomOutIcon size="scale" />
           </div>
         ),
       },
@@ -257,12 +264,11 @@ class ImageViewer extends React.Component {
         actionType: 999,
       },
       {
-        key: "zoomOut",
-        percent: true,
-        actionType: 2,
+        key: "zoomIn",
+        actionType: 1,
         render: (
-          <div className="iconContainer zoomOut">
-            <StyledMediaZoomOutIcon size="scale" />
+          <div className="iconContainer zoomIn">
+            <StyledMediaZoomInIcon size="scale" />
           </div>
         ),
       },
@@ -285,7 +291,7 @@ class ImageViewer extends React.Component {
         ),
       },
       {
-        key: "share-separator",
+        key: "separator download-separator",
         actionType: -1,
         noHover: true,
         render: (
@@ -357,7 +363,7 @@ class ImageViewer extends React.Component {
         case "delete":
           button.onClick = this.props.onDeleteClick;
           break;
-        case "customDownload":
+        case "download":
           button.onClick = this.props.onDownloadClick;
           break;
         default:
