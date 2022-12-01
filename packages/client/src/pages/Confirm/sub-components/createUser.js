@@ -150,6 +150,7 @@ const RegisterContainer = styled.div`
   width: 100%;
 
   .or-label {
+    text-transform: uppercase;
     margin: 0 8px;
   }
 
