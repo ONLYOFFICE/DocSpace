@@ -73,7 +73,7 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType);
 
         return await _folderDtoHelper.GetAsync(room);
     }
@@ -128,7 +128,7 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateThirdPartyRoomAsync(inDto.Title, inDto.RoomType, id, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        var room = await _fileStorageService.CreateThirdPartyRoomAsync(inDto.Title, inDto.RoomType, id);
 
         return await _folderDtoHelper.GetAsync(room);
     }
