@@ -337,6 +337,10 @@ export function changeTheme(key) {
   });
 }
 
+export function getUserTheme() {
+  return request({ method: "get", url: "/people/theme.json" });
+}
+
 export function getUsersByQuery(query) {
   return request({
     method: "get",
