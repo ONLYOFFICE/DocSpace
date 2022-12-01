@@ -2193,6 +2193,42 @@ class FilesStore {
     }
   };
 
+  getCheckboxItemId = (key) => {
+    switch (key) {
+      case "all":
+        return "selected-all";
+      case FilterType.FoldersOnly:
+        return "selected-only-folders";
+      case FilterType.DocumentsOnly:
+        return "selected-only-documents";
+      case FilterType.PresentationsOnly:
+        return "selected-only-presentations";
+      case FilterType.SpreadsheetsOnly:
+        return "selected-only-spreadsheets";
+      case FilterType.ImagesOnly:
+        return "selected-only-images";
+      case FilterType.MediaOnly:
+        return "selected-only-media";
+      case FilterType.ArchiveOnly:
+        return "selected-only-archives";
+      case FilterType.FilesOnly:
+        return "selected-only-files";
+      case `room-${RoomsType.FillingFormsRoom}`:
+        return "selected-only-filling-form-rooms";
+      case `room-${RoomsType.CustomRoom}`:
+        return "selected-only-custom-room";
+      case `room-${RoomsType.EditingRoom}`:
+        return "selected-only-collaboration-rooms";
+      case `room-${RoomsType.ReviewRoom}`:
+        return "selected-only-review-rooms";
+      case `room-${RoomsType.ReadOnlyRoom}`:
+        return "selected-only-view-rooms";
+
+      default:
+        return "";
+    }
+  };
+
   get sortedFiles() {
     const {
       extsConvertible,

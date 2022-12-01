@@ -175,6 +175,7 @@
   "NoTags": "Нет тэгов",
   "Title": "Заголовок",
   "TitleSelectFile": "Выделить",
+  "Today": "Сегодня",
   "Type": "Тип",
   "Terabyte": "Тб",
   "Unknown": "Неизвестный",
@@ -191,6 +192,7 @@
   "AboutCompanyTitle": "О программе",
   "LogoutButton": "Выйти",
   "HelpCenter": "Справочный центр",
+  "Yesterday": "Вчера",
   "SelectFile": "Выбрать файл",
   "HideArticleMenu": "Скрыть меню"
 }

@@ -149,6 +149,7 @@ const CreateRoomDialog = ({
       {!!roomParams.type && (
         <ModalDialog.Footer>
           <Button
+            id="shared_create-room-modal_submit"
             tabIndex={5}
             label={t("Common:Create")}
             size="normal"
@@ -158,6 +159,7 @@ const CreateRoomDialog = ({
             isLoading={isLoading}
           />
           <Button
+            id="shared_create-room-modal_cancel"
             tabIndex={5}
             label={t("Common:CancelButton")}
             size="normal"

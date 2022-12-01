@@ -80,7 +80,11 @@ const Details = ({
       <StyledProperties>
         {itemProperties.map((property) => {
           return (
-            <div key={property.title} className="property">
+            <div
+              id={property.id}
+              key={property.title}
+              className={`property ${property.className}`}
+            >
               <Text className="property-title">{property.title}</Text>
               {property.content}
             </div>

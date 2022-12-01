@@ -90,6 +90,7 @@ const ThirdPartyStorage = ({
   return (
     <StyledThirdPartyStorage>
       <ToggleParam
+        id="shared_third-party-storage-toggle"
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}
         isChecked={storageLocation.isThirdparty}
@@ -188,6 +189,7 @@ export default inject(
         (item) =>
           item && {
             id: item[0],
+            className: `storage_${item[0].toLowerCase()}`,
             providerKey: item[0],
             isOauth: item.length > 1 && item[0] !== "WebDav",
             oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",

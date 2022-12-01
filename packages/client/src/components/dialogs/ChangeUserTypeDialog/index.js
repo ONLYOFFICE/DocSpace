@@ -109,6 +109,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            id="change-user-type-modal_submit"
             label={t("ChangeUserTypeButton")}
             size="normal"
             scale
@@ -118,6 +119,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
             isDisabled={!userIDs.length}
           />
           <Button
+            id="change-user-type-modal_cancel"
             label={t("Common:CancelButton")}
             size="normal"
             scale
