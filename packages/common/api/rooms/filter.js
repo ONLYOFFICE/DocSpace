@@ -43,6 +43,9 @@ const DEFAULT_EXCLUDE_SUBJECT = false;
 const WITHOUT_TAGS = "withoutTags";
 const DEFAULT_WITHOUT_TAGS = false;
 
+const SUBJECT_FILTER = "subjectFilter";
+const DEFAULT_SUBJECT_FILTER = null;
+
 class RoomsFilter {
   static getDefault(total = DEFAULT_TOTAL) {
     return new RoomsFilter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
@@ -76,6 +79,11 @@ class RoomsFilter {
     const subjectId =
       (urlFilter[SUBJECT_ID] && urlFilter[SUBJECT_ID]) ||
       defaultFilter.subjectId;
+
+    const subjectFilter =
+      (urlFilter[SUBJECT_FILTER]?.toString() &&
+        urlFilter[SUBJECT_FILTER]?.toString()) ||
+      defaultFilter.subjectFilter?.toString();
 
     //TODO: remove it if search with subfolders and in content will be available
     // const searchInContent = urlFilter[SEARCH_IN_CONTENT]
@@ -120,7 +128,8 @@ class RoomsFilter {
       sortBy,
       sortOrder,
       excludeSubject,
-      withoutTags
+      withoutTags,
+      subjectFilter
     );
 
     return newFilter;
@@ -141,7 +150,8 @@ class RoomsFilter {
     sortBy = DEFAULT_SORT_BY,
     sortOrder = DEFAULT_SORT_ORDER,
     excludeSubject = DEFAULT_EXCLUDE_SUBJECT,
-    withoutTags = DEFAULT_WITHOUT_TAGS
+    withoutTags = DEFAULT_WITHOUT_TAGS,
+    subjectFilter = DEFAULT_SUBJECT_FILTER
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -158,6 +168,7 @@ class RoomsFilter {
     this.sortOrder = sortOrder;
     this.excludeSubject = excludeSubject;
     this.withoutTags = withoutTags;
+    this.subjectFilter = subjectFilter;
   }
 
   getStartIndex = () => {
@@ -188,6 +199,7 @@ class RoomsFilter {
       sortOrder,
       excludeSubject,
       withoutTags,
+      subjectFilter,
     } = this;
 
     const dtoFilter = {
@@ -206,6 +218,7 @@ class RoomsFilter {
       sortOrder: sortOrder,
       excludeSubject: excludeSubject,
       withoutTags: withoutTags,
+      subjectFilter: subjectFilter,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -228,6 +241,7 @@ class RoomsFilter {
       sortOrder,
       excludeSubject,
       withoutTags,
+      subjectFilter,
     } = this;
 
     const dtoFilter = {};
@@ -272,6 +286,10 @@ class RoomsFilter {
       dtoFilter[WITHOUT_TAGS] = withoutTags;
     }
 
+    if (subjectFilter?.toString()) {
+      dtoFilter[SUBJECT_FILTER] = subjectFilter.toString();
+    }
+
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
@@ -301,7 +319,8 @@ class RoomsFilter {
       this.sortBy,
       this.sortOrder,
       this.excludeSubject,
-      this.withoutTags
+      this.withoutTags,
+      this.subjectFilter
     );
   }
 
@@ -328,7 +347,8 @@ class RoomsFilter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.excludeSubject === filter.excludeSubject &&
-      this.withoutTags === filter.withoutTags;
+      this.withoutTags === filter.withoutTags &&
+      this.subjectFilter === filter.subjectFilter;
 
     return equals;
   }

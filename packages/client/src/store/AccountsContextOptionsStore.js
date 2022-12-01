@@ -8,8 +8,15 @@ import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, EmployeeStatus } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  EmployeeStatus,
+  FilterSubject,
+} from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 const { proxyURL } = AppServerConfig;
 
@@ -78,7 +85,13 @@ class AccountsContextOptionsStore {
             label: t("Translations:OwnerChange"),
             onClick: () => this.toggleChangeOwnerDialog(item),
           };
-
+        case "room-list":
+          return {
+            key: option,
+            icon: "images/folder.react.svg",
+            label: "Room list",
+            onClick: () => this.openUserRoomList(item),
+          };
         case "enable":
           return {
             id: "option_enable",
@@ -273,6 +286,21 @@ class AccountsContextOptionsStore {
         : [];
 
     return contextOptionsProps;
+  };
+
+  openUserRoomList = (user) => {
+    const filter = RoomsFilter.getDefault();
+
+    filter.subjectId = user.id;
+    filter.subjectFilter = FilterSubject.Member;
+
+    const filterParamsStr = filter.toUrlParams();
+    const url = getCategoryUrl(CategoryType.Shared);
+
+    window.open(
+      combineUrl(PROXY_HOMEPAGE_URL, `${url}?${filterParamsStr}`),
+      "_blank"
+    );
   };
 
   onProfileClick = () => {
