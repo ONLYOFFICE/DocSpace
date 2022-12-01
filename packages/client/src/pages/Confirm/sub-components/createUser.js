@@ -14,10 +14,6 @@ import PasswordInput from "@docspace/components/password-input";
 import FieldContainer from "@docspace/components/field-container";
 import toastr from "@docspace/components/toast/toastr";
 import SocialButton from "@docspace/components/social-button";
-import {
-  getAuthProviders,
-  getCapabilities,
-} from "@docspace/common/api/settings";
 import { getUserFromConfirm } from "@docspace/common/api/people";
 import Section from "@docspace/common/components/Section";
 import {
