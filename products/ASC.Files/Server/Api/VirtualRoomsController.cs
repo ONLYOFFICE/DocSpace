@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.ApiModels.RequestDto;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -667,6 +669,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomFilterType.EditingRoomOnly => FilterType.EditingRooms,
             RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
             RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
+            RoomFilterType.PrivateRoomOnly => FilterType.PrivateRooms,
             RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
             _ => FilterType.None
         };
