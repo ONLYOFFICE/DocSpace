@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { initSSR } from "@docspace/common/api/client";
-import { getUser } from "@docspace/common/api/people";
+import { getUser, getUserTheme } from "@docspace/common/api/people";
 import {
   getSettings,
   getBuildVersion,
@@ -9,13 +9,14 @@ import {
   getAppearanceTheme,
 } from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, ThemeKeys } from "@docspace/common/constants";
 import {
   openEdit,
   getSettingsFiles,
   // getShareFiles,
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
+import { Base, Dark } from "@docspace/components/themes";
 
 export const getFavicon = (documentType) => {
   const { homepage } = pkg;
@@ -71,6 +72,7 @@ export const initDocEditor = async (req) => {
       versionInfo,
       customNames,
       appearanceTheme,
+      themeName,
     ] = await Promise.all([
       getUser(),
       getSettings(),
@@ -78,10 +80,17 @@ export const initDocEditor = async (req) => {
       getBuildVersion(),
       getCurrentCustomSchema("Common"),
       getAppearanceTheme(),
+      getUserTheme(),
     ]);
 
     const successAuth = !!user;
     personal = settings?.personal;
+
+    const currentColorScheme = appearanceTheme.themes.find((theme) => {
+      return appearanceTheme.selected === theme.id;
+    });
+
+    const theme = themeName.theme === ThemeKeys.BaseStr ? Base : Dark;
 
     if (!successAuth && !doc) {
       error = {
@@ -128,6 +137,8 @@ export const initDocEditor = async (req) => {
       versionInfo,
       customNames,
       appearanceTheme,
+      currentColorScheme,
+      theme,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
