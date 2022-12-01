@@ -13,8 +13,6 @@ const ToolbarItem = styled.li`
 
   &:hover {
     cursor: pointer;
-    ${(props) =>
-      props.noHover ? "background-color: none;" : "background-color: #4d4d4d;"}
   }
 
   svg {
@@ -166,9 +164,9 @@ export default function ViewerToolbar(props) {
   if (!props.scalable) {
     toolbars = deleteToolbarFromKey(toolbars, ["scaleX", "scaleY"]);
   }
-  if (!props.downloadable) {
-    toolbars = deleteToolbarFromKey(toolbars, ["download"]);
-  }
+  // if (!props.downloadable) {
+  //   toolbars = deleteToolbarFromKey(toolbars, ["download"]);
+  // }
 
   return (
     <div>
