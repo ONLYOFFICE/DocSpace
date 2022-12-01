@@ -22,6 +22,8 @@ const StyledTagInput = styled.div`
     max-width: 100%;
     position: relative;
   }
+
+  ${({ hasTags }) => !hasTags && "margin-bottom: -8px"}
 `;
 
 const TagInput = ({
@@ -48,7 +50,10 @@ const TagInput = ({
   };
 
   return (
-    <StyledTagInput className="set_room_params-input set_room_params-tag_input">
+    <StyledTagInput
+      className="set_room_params-input set_room_params-tag_input"
+      hasTags={!!tagHandler.tags.length}
+    >
       <InputParam
         id="shared_tags-input"
         title={`${t("Common:Tags")}:`}

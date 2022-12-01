@@ -11,6 +11,8 @@ const StyledTagList = styled.div`
   width: 100%;
 
   .set_room_params-tag_input-tag {
+    background: ${(props) =>
+      props.theme.createEditRoomDialog.tagInput.tagBackground};
     padding: 6px 8px;
     border-radius: 3px;
     margin: 0;
@@ -31,7 +33,19 @@ const TagList = ({ defaultTagLabel, tagHandler, isDisabled }) => {
 
   return (
     <StyledTagList className="set_room_params-tag_input-tag_list">
-      {tags.length ? (
+      {tags.map((tag) => (
+        <Tag
+          key={tag.id}
+          className="set_room_params-tag_input-tag"
+          tag="script"
+          label={tag.name}
+          isNewTag
+          onDelete={() => {
+            onDeleteAction(tag.id);
+          }}
+        />
+      ))}
+      {/* {tags.length ? (
         tags.map((tag) => (
           <Tag
             key={tag.id}
@@ -51,7 +65,7 @@ const TagList = ({ defaultTagLabel, tagHandler, isDisabled }) => {
           label={defaultTagLabel}
           isDefault
         />
-      )}
+      )} */}
     </StyledTagList>
   );
 };
