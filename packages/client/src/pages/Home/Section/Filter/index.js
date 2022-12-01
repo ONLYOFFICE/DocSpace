@@ -202,7 +202,7 @@ const SectionFilterContent = ({
 
           newFilter.subjectFilter = subjectFilter?.toString()
             ? subjectFilter.toString()
-            : null;
+            : FilterSubject.Member;
         }
 
         if (tags) {
