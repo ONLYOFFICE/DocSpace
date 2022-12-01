@@ -422,8 +422,6 @@ const SectionFilterContent = ({
       newFilter.payments = null;
     }
 
-    console.log(newFilter, group);
-
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
