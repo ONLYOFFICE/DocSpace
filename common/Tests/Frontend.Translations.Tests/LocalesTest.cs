@@ -713,7 +713,7 @@ public class Tests
         var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
 
         Assert.AreEqual(0, notFoundi18nKeys.Count(),
-            "Some i18n-keys are not found in js: \r\nKeys: '\r\n{0}'",
+            "Some i18n-keys are not found in js keys:\r\n{0}",
             string.Join("\r\n", notFoundi18nKeys));
     }
 
