@@ -8,7 +8,11 @@ import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, EmployeeStatus } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  EmployeeStatus,
+  FilterSubject,
+} from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
@@ -288,6 +292,7 @@ class AccountsContextOptionsStore {
     const filter = RoomsFilter.getDefault();
 
     filter.subjectId = user.id;
+    filter.subjectFilter = FilterSubject.Member;
 
     const filterParamsStr = filter.toUrlParams();
     const url = getCategoryUrl(CategoryType.Shared);
