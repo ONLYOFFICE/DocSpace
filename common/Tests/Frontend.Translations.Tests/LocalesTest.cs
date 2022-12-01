@@ -178,6 +178,18 @@ public class Tests
                                  where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.jsx") && !filePath.Contains(".stories.jsx")
                                  select Utils.ConvertPathToOS(filePath));
 
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.ts", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.ts") && !filePath.Contains(".stories.ts")
+                                 select Utils.ConvertPathToOS(filePath));
+
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.tsx", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.tsx") && !filePath.Contains(".stories.tsx")
+                                 select Utils.ConvertPathToOS(filePath));
+
         TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
 
         JavaScriptFiles = new List<JavaScriptFile>();
