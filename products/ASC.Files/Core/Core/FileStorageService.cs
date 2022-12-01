@@ -467,54 +467,32 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
         await _countRoomChecker.CheckAppend();
 
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
-
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
-
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
         var room = roomType switch
         {
-            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, @private),
-            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, @private),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, @private),
-            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, @private),
-            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, @private),
-            _ => await CreateCustomRoomAsync(title, parentId, @private),
+            RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, false),
+            RoomType.FillingFormsRoom => await CreateFillingFormsRoom(title, parentId, false),
+            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, false),
+            RoomType.ReviewRoom => await CreateReviewRoom(title, parentId, false),
+            RoomType.ReadOnlyRoom => await CreateReadOnlyRoom(title, parentId, false),
+            RoomType.PrivateRoom => await CreatePrivateRoom(title, parentId),
+            _ => await CreateCustomRoomAsync(title, parentId, false),
         };
-
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
-        }
 
         return room;
     }
 
-    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
-
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
 
         var folderDao = GetFolderDao();
         var providerDao = GetProviderDao();
@@ -532,30 +510,18 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
-
         var result = roomType switch
         {
-            RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
-            RoomType.FillingFormsRoom => (await CreateFillingFormsRoom(title, parentId, @private), FolderType.FillingFormsRoom),
-            RoomType.EditingRoom => (await CreateEditingRoom(title, parentId, @private), FolderType.EditingRoom),
-            RoomType.ReviewRoom => (await CreateReviewRoom(title, parentId, @private), FolderType.ReviewRoom),
-            RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, @private), FolderType.ReadOnlyRoom),
-            _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
+            RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, false), FolderType.CustomRoom),
+            RoomType.FillingFormsRoom => (await CreateFillingFormsRoom(title, parentId, false), FolderType.FillingFormsRoom),
+            RoomType.EditingRoom => (await CreateEditingRoom(title, parentId, false), FolderType.EditingRoom),
+            RoomType.ReviewRoom => (await CreateReviewRoom(title, parentId, false), FolderType.ReviewRoom),
+            RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, false), FolderType.ReadOnlyRoom),
+            RoomType.PrivateRoom => (await CreatePrivateRoom(title, parentId), FolderType.PrivateRoom),
+            _ => (await CreateCustomRoomAsync(title, parentId, false), FolderType.CustomRoom),
         };
 
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
-        }
-
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
+        _ = await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, false);
 
         return result.Item1;
     }
@@ -583,6 +549,11 @@ public class FileStorageService<T> //: IFileStorageService
     private async Task<Folder<T>> CreateEditingRoom(string title, T parentId, bool privacy)
     {
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom, privacy);
+    }
+
+    private async Task<Folder<T>> CreatePrivateRoom(string title, T parentId)
+    {
+        return await InternalCreateNewFolderAsync(parentId, title, FolderType.PrivateRoom, true);
     }
 
     public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title, FolderType folderType = FolderType.DEFAULT, bool privacy = false)
@@ -3144,6 +3115,134 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
+    public async Task<FileEncryptionInfoDto> GetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var parentRoom = await folderDao.GetParentFoldersAsync(file.ParentId).Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.Private).FirstOrDefaultAsync();
+
+        ErrorIf(parentRoom == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+
+        var securityDao = _daoFactory.GetSecurityDao<T>();
+        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+        var shares = await _fileSharing.GetSharedInfoAsync(parentRoom);
+
+        var ids = shares.Where(s => s.SubjectType == SubjectType.UserOrGroup && s.Access is FileShare.ReadWrite or FileShare.RoomAdmin or FileShare.Editing)
+            .Select(s => s.Id).Concat(admins.Select(u => u.Id));
+        var set = new HashSet<Guid>(ids);
+
+        var task = securityDao.GetPureShareRecordsAsync(file)
+            .Where(r => r.Subject == _authContext.CurrentAccount.ID && r.SubjectType == SubjectType.Encryption).FirstOrDefaultAsync();
+
+        var keyPairDto = new List<EncryptionKeyPairDto>(set.Count);
+
+        var options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        foreach (var id in set)
+        {
+            var fileKeyPairString = _encryptionLoginProvider.GetKeys(id);
+
+            if (string.IsNullOrEmpty(fileKeyPairString))
+            {
+                continue;
+            }
+
+            var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPairDto>(fileKeyPairString, options);
+
+            if (fileKeyPair.UserId != id)
+            {
+                continue;
+            }
+
+            fileKeyPair.PrivateKeyEnc = null;
+            keyPairDto.Add(fileKeyPair);
+        }
+
+        var share = await task;
+
+        return new FileEncryptionInfoDto
+        {
+            HasAccess = share != null,
+            Keys = keyPairDto,
+        };
+    }
+
+    public async Task<FileEncryptionInfoDto> SetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var parentRoom = await folderDao.GetParentFoldersAsync(file.ParentId).Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.Private).FirstOrDefaultAsync();
+
+        ErrorIf(parentRoom == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+
+        var securityDao = _daoFactory.GetSecurityDao<T>();
+        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+        var shares = await _fileSharing.GetSharedInfoAsync(parentRoom);
+
+        var ids = shares.Where(s => s.SubjectType == SubjectType.UserOrGroup && s.Access is FileShare.ReadWrite or FileShare.RoomAdmin or FileShare.Editing)
+            .Select(s => s.Id).Concat(admins.Select(u => u.Id));
+        var set = new HashSet<Guid>(ids);
+
+        var fileShares = await securityDao.GetPureShareRecordsAsync(file).Where(s => s.SubjectType == SubjectType.Encryption).ToDictionaryAsync(r => r.Subject, v => v);
+
+        var options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        var keyPairDto = new List<EncryptionKeyPairDto>(set.Count);
+        var hasAccess = false;
+
+        foreach (var id in set)
+        {
+            var fileKeyPairString = _encryptionLoginProvider.GetKeys(id);
+
+            if (string.IsNullOrEmpty(fileKeyPairString))
+            {
+                continue;
+            }
+
+            var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPairDto>(fileKeyPairString, options);
+
+            if (fileKeyPair.UserId != id)
+            {
+                continue;
+            }
+
+            fileKeyPair.PrivateKeyEnc = null;
+
+            if (!fileShares.TryGetValue(id, out _))
+            {
+                await _fileSecurity.ShareAsync(file.Id, FileEntryType.File, id, FileShare.Restrict, SubjectType.Encryption);
+
+                hasAccess = _authContext.CurrentAccount.ID == id;
+            };
+
+            keyPairDto.Add(fileKeyPair);
+        }
+
+        return new FileEncryptionInfoDto
+        {
+            HasAccess = hasAccess || fileShares.TryGetValue(_authContext.CurrentAccount.ID, out _),
+            Keys = keyPairDto,
+        };
+    }
+
     public string GetHelpCenter()
     {
         return string.Empty; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
@@ -3227,61 +3326,6 @@ public class FileStorageService<T> //: IFileStorageService
             default:
                 return string.Empty;
         }
-    }
-
-    private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
-    {
-        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.Id, v => v);
-
-        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-        var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
-
-        var userInfos = admins.Union(onlyFilesAdmins).ToList();
-
-        foreach (var userInfo in userInfos)
-        {
-            dict[userInfo.Id] = new AceWrapper
-            {
-                Access = FileShare.ReadWrite,
-                Id = userInfo.Id
-            };
-        }
-
-        return dict.Values.ToList();
-    }
-
-    private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
-    {
-        var users = aceWrappers.Select(s => s.Id).ToList();
-        var keys = _encryptionLoginProvider.GetKeys(users);
-
-        foreach (var user in users)
-        {
-            if (!keys.ContainsKey(user))
-            {
-                var userInfo = _userManager.GetUsers(user);
-                throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
-            }
-        }
-    }
-
-    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, List<AceWrapper> aces, bool notify, string sharingMessage)
-    {
-        var advancedSettings = new AceAdvancedSettingsWrapper
-        {
-            AllowSharingPrivateRoom = true
-        };
-
-        var aceCollection = new AceCollection<T>
-        {
-            Folders = new[] { room.Id },
-            Files = Array.Empty<T>(),
-            Aces = aces,
-            Message = sharingMessage,
-            AdvancedSettings = advancedSettings
-        };
-
-        await SetAceObjectAsync(aceCollection, notify);
     }
 }
 
