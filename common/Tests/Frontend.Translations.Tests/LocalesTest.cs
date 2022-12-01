@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,7 +49,7 @@ public class Tests
     {
         get
         {
-            return Path.GetFullPath(Utils.ConvertPathToOS("../../../../../../"));
+            return Environment.GetEnvironmentVariable("BASE_DIR") ?? Path.GetFullPath(Utils.ConvertPathToOS("../../../../../../"));
         }
     }
 
@@ -677,7 +678,7 @@ public class Tests
         var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
 
         Assert.AreEqual(0, notFoundJsKeys.Count(),
-            "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'",
+            "Some i18n-keys are not exist in translations in 'en' language: Keys:\r\n{0}",
             string.Join("\r\n", notFoundJsKeys));
     }
 
