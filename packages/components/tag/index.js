@@ -21,7 +21,6 @@ const Tag = ({
   isLast,
   onDelete,
   onClick,
-  isNoHover,
   advancedOptions,
   tagMaxWidth,
   id,
@@ -96,8 +95,7 @@ const Tag = ({
             isDefault={isDefault}
             isLast={isLast}
             tagMaxWidth={tagMaxWidth}
-            isNoHover={isNoHover}
-            withOnClickAction={!!onClick}
+            isClickable={!!onClick}
           >
             <Text className={"tag-text"} font-size={"13px"} noSelect>
               ...
@@ -139,7 +137,6 @@ const Tag = ({
           onClick={onClickAction}
           isNewTag={isNewTag}
           isDisabled={isDisabled}
-          isNoHover={isNoHover}
           isDefault={isDefault}
           tagMaxWidth={tagMaxWidth}
           data-tag={label}
@@ -147,7 +144,7 @@ const Tag = ({
           className={`tag${className ? ` ${className}` : ""}`}
           style={style}
           isLast={isLast}
-          withOnClickAction={!!onClick}
+          isClickable={!!onClick}
         >
           {icon ? (
             <ReactSVG className="third-party-tag" src={icon} />

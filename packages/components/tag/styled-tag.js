@@ -46,7 +46,8 @@ const StyledTag = styled.div`
   }
 
   ${(props) =>
-    props.withOnClickAction &&
+    props.isClickable &&
+    !props.isDisabled &&
     css`
       cursor: pointer;
       &:hover {
