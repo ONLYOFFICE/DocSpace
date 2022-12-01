@@ -28,11 +28,14 @@ const StyledViewerContainer = styled.div`
   }
   .details {
     z-index: 307;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    height: 25px;
+    padding-top: 21px;
+    height: 64px;
     width: 100%;
-    background: #333333;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
     position: fixed;
     top: 0;
     left: 0;
@@ -40,6 +43,8 @@ const StyledViewerContainer = styled.div`
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
+      font-size: 20px;
+      font-weight: 600;
       text-overflow: ellipsis;
       width: calc(100% - 50px);
       padding-left: 16px;
@@ -49,8 +54,8 @@ const StyledViewerContainer = styled.div`
   }
   .mediaPlayerClose {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 17px;
+    right: 16px;
     height: 17px;
     width: 17px;
     svg {
@@ -103,14 +108,23 @@ const StyledViewer = styled(ViewerBase)`
   }
 
   .react-viewer-footer {
+    padding: 10px 24px;
     position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    border-radius: 18px;
+    bottom: 24px;
     z-index: 307;
     height: 48px;
-    background: #333;
+    background: rgba(0, 0, 0, 0.4);
     text-align: center;
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  .react-viewer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .react-viewer-mask {
@@ -178,23 +192,19 @@ const StyledViewer = styled(ViewerBase)`
   }
 `;
 
-const StyledNextToolbar = styled.div`
+const StyledSwitchToolbar = styled.div`
   height: 100%;
   z-index: 306;
   position: fixed;
-  display: block;
   width: 73px;
   background: inherit;
-  opacity: 1;
-  // transition: all 0.3s;
+  display: block;
+  opacity: 0;
+  transition: all 0.3s;
   ${(props) => (props.left ? "left: 0" : "right: 0")};
   &:hover {
     cursor: pointer;
     opacity: 1;
-    ${(props) =>
-      props.left
-        ? "background: linear-gradient(270deg,rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%)"
-        : "background: linear-gradient(270deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%)"}
   }
 `;
 
@@ -204,16 +214,11 @@ const StyledButtonScroll = styled.div`
   top: calc(50% - 20px);
 
   ${(props) => (props.orientation === "left" ? "left: 20px;" : "right: 20px;")}
-  svg {
-    path {
-      fill: none;
-    }
-  }
 `;
 
 export {
   StyledViewerContainer,
   StyledViewer,
-  StyledNextToolbar,
+  StyledSwitchToolbar,
   StyledButtonScroll,
 };

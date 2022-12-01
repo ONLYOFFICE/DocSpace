@@ -82,7 +82,7 @@ const ViewerBase = (props) => {
   }
   const containerSize = React.useRef(setContainerWidthHeight());
   const [isOpen, setIsOpen] = React.useState(false);
-  const footerHeight = 48;
+  const footerHeight = 0;
   function reducer(s, action) {
     switch (action.type) {
       case ACTION_TYPES.setVisible:
@@ -229,8 +229,7 @@ const ViewerBase = (props) => {
 
       let [width, height] = getImgWidthHeight(realImgWidth, realImgHeight);
       let left = (containerSize.current.width - width) / 2;
-      let top =
-        (containerSize.current.height - height - (footerHeight - 53)) / 2;
+      let top = (containerSize.current.height - height - footerHeight) / 2;
 
       let scaleX = defaultScale;
       let scaleY = defaultScale;
@@ -266,7 +265,7 @@ const ViewerBase = (props) => {
   }, [state.startLoading, state.activeIndex]);
 
   function getImgWidthHeight(imgWidth, imgHeight) {
-    const titleHeight = 53;
+    const titleHeight = 0;
 
     let width = 0;
     let height = 0;
@@ -638,34 +637,36 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter || (
-        <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 7 }}>
-          {noToolbar || (
-            <ViewerToolbar
-              isMobileOnly={isMobileOnly}
-              prefixCls={prefixCls}
-              onAction={handleAction}
-              alt={activeImg.alt}
-              width={state.imageWidth}
-              height={state.imageHeight}
-              percent={state.percent}
-              attribute={attribute}
-              zoomable={zoomable}
-              rotatable={rotatable}
-              onPercentClick={onPercentClick}
-              generateContextMenu={generateContextMenu}
-              scalable={scalable}
-              changeable={changeable}
-              downloadable={downloadable}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              noImgDetails={noImgDetails}
-              toolbars={customToolbar(defaultToolbars)}
-              activeIndex={state.activeIndex}
-              count={images.length}
-              showTotal={showTotal}
-              totalName={totalName}
-            />
-          )}
+        <div className={`${prefixCls}-container`}>
+          <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 7 }}>
+            {noToolbar || (
+              <ViewerToolbar
+                isMobileOnly={isMobileOnly}
+                prefixCls={prefixCls}
+                onAction={handleAction}
+                alt={activeImg.alt}
+                width={state.imageWidth}
+                height={state.imageHeight}
+                percent={state.percent}
+                attribute={attribute}
+                zoomable={zoomable}
+                rotatable={rotatable}
+                onPercentClick={onPercentClick}
+                generateContextMenu={generateContextMenu}
+                scalable={scalable}
+                changeable={changeable}
+                downloadable={downloadable}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                noImgDetails={noImgDetails}
+                toolbars={customToolbar(defaultToolbars)}
+                activeIndex={state.activeIndex}
+                count={images.length}
+                showTotal={showTotal}
+                totalName={totalName}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
