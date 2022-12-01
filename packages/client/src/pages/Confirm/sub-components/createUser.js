@@ -253,7 +253,7 @@ const Confirm = (props) => {
   };
 
   useEffect(() => {
-    const { isAuthenticated, logout, linkData, setProviders } = props;
+    const { isAuthenticated, logout, linkData, capabilities } = props;
 
     if (isAuthenticated) {
       const path = window.location;
@@ -268,12 +268,8 @@ const Confirm = (props) => {
 
       window.authCallback = authCallback;
 
-      const providers = await getAuthProviders();
-      const ssoData = await getCapabilities();
-
-      setProviders(providers);
-      setSsoLabel(ssoData.ssoLabel);
-      setSsoUrl(ssoData.ssoUrl);
+      setSsoLabel(capabilities?.ssoLabel);
+      setSsoUrl(capabilities?.ssoUrl);
       focusInput();
     };
 
@@ -790,9 +786,9 @@ export default inject(({ auth }) => {
     logout,
     isAuthenticated,
     settingsStore,
-    setProviders,
     providers,
     thirdPartyLogin,
+    capabilities,
   } = auth;
   const {
     passwordSettings,
@@ -814,8 +810,8 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
     thirdPartyLogin,
-    setProviders,
     providers,
+    capabilities,
   };
 })(
   withRouter(
