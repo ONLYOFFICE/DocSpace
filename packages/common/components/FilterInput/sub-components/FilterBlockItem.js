@@ -43,6 +43,7 @@ const FilterBlockItem = ({
     isMultiSelect,
     withOptions
   ) => {
+    console.log(key, isSelected);
     changeFilterValue &&
       changeFilterValue(
         group,
@@ -61,6 +62,7 @@ const FilterBlockItem = ({
       target = target.parentNode;
 
       if (target === ref) {
+        console.log("call");
         changeFilterValue && changeFilterValue(group, [], true);
         return;
       }

@@ -195,6 +195,7 @@ const SectionFilterContent = ({
         newFilter.type = type ? type : null;
 
         newFilter.subjectFilter = null;
+        newFilter.subjectId = null;
 
         if (subjectId) {
           newFilter.subjectId = subjectId;

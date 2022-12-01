@@ -161,7 +161,7 @@ const FilterBlock = ({
 
           onFilter(value);
         }
-
+        s;
         return;
       }
 
