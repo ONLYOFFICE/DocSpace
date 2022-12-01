@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Collections;
+
+using ASC.Files.Core.Data;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -3125,22 +3129,13 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
         ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
 
-        var parentRoom = await folderDao.GetParentFoldersAsync(file.ParentId).Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.Private).FirstOrDefaultAsync();
-
-        ErrorIf(parentRoom == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        var subjects = await GetSubjectsAsync(file).ToListAsync();
 
         var securityDao = _daoFactory.GetSecurityDao<T>();
-        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-        var shares = await _fileSharing.GetSharedInfoAsync(parentRoom);
-
-        var ids = shares.Where(s => s.SubjectType == SubjectType.UserOrGroup && s.Access is FileShare.ReadWrite or FileShare.RoomAdmin or FileShare.Editing)
-            .Select(s => s.Id).Concat(admins.Select(u => u.Id));
-        var set = new HashSet<Guid>(ids);
-
         var task = securityDao.GetPureShareRecordsAsync(file)
             .Where(r => r.Subject == _authContext.CurrentAccount.ID && r.SubjectType == SubjectType.Encryption).FirstOrDefaultAsync();
 
-        var keyPairDto = new List<EncryptionKeyPairDto>(set.Count);
+        var keyPairDto = new List<EncryptionKeyPairDto>(subjects.Count);
 
         var options = new JsonSerializerOptions
         {
@@ -3148,7 +3143,7 @@ public class FileStorageService<T> //: IFileStorageService
             PropertyNameCaseInsensitive = true
         };
 
-        foreach (var id in set)
+        foreach (var id in subjects)
         {
             var fileKeyPairString = _encryptionLoginProvider.GetKeys(id);
 
@@ -3186,18 +3181,9 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
         ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
 
-        var parentRoom = await folderDao.GetParentFoldersAsync(file.ParentId).Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.Private).FirstOrDefaultAsync();
-
-        ErrorIf(parentRoom == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        var subjects = await GetSubjectsAsync(file).ToListAsync();
 
         var securityDao = _daoFactory.GetSecurityDao<T>();
-        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-        var shares = await _fileSharing.GetSharedInfoAsync(parentRoom);
-
-        var ids = shares.Where(s => s.SubjectType == SubjectType.UserOrGroup && s.Access is FileShare.ReadWrite or FileShare.RoomAdmin or FileShare.Editing)
-            .Select(s => s.Id).Concat(admins.Select(u => u.Id));
-        var set = new HashSet<Guid>(ids);
-
         var fileShares = await securityDao.GetPureShareRecordsAsync(file).Where(s => s.SubjectType == SubjectType.Encryption).ToDictionaryAsync(r => r.Subject, v => v);
 
         var options = new JsonSerializerOptions
@@ -3206,10 +3192,10 @@ public class FileStorageService<T> //: IFileStorageService
             PropertyNameCaseInsensitive = true
         };
 
-        var keyPairDto = new List<EncryptionKeyPairDto>(set.Count);
+        var keyPairDto = new List<EncryptionKeyPairDto>(subjects.Count);
         var hasAccess = false;
 
-        foreach (var id in set)
+        foreach (var id in subjects)
         {
             var fileKeyPairString = _encryptionLoginProvider.GetKeys(id);
 
@@ -3242,6 +3228,28 @@ public class FileStorageService<T> //: IFileStorageService
             HasAccess = hasAccess || fileShares.TryGetValue(_authContext.CurrentAccount.ID, out _),
             Keys = keyPairDto,
         };
+    }
+
+    private async IAsyncEnumerable<Guid> GetSubjectsAsync(File<T> file)
+    {
+        var folderDao = _daoFactory.GetFolderDao<T>();
+
+        var parentRoom = await folderDao.GetParentFoldersAsync(file.ParentId).Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.Private).FirstOrDefaultAsync();
+
+        ErrorIf(parentRoom == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+
+        var securityDao = _daoFactory.GetSecurityDao<T>();
+        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+        var shares = await _fileSharing.GetSharedInfoAsync(parentRoom);
+
+        var ids = shares.Where(s => s.SubjectType == SubjectType.UserOrGroup && s.Access is FileShare.ReadWrite or FileShare.RoomAdmin or FileShare.Editing)
+            .Select(s => s.Id).Concat(admins.Select(u => u.Id));
+        var set = new HashSet<Guid>(ids);
+
+        foreach (var s in set)
+        {
+            yield return s;
+        }
     }
 
     public string GetHelpCenter()
