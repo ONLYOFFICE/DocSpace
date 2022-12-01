@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import {
   StyledViewer,
   StyledViewerContainer,
-  StyledNextToolbar,
+  StyledSwitchToolbar,
   StyledButtonScroll,
 } from "./styled-viewer";
 import ControlBtn from "./sub-components/control-btn";
@@ -12,8 +12,8 @@ import IconButton from "@docspace/components/icon-button";
 
 import { isMobileOnly } from "react-device-detect";
 
-import MediaNextIcon from "../../../public/images/media.view.react.svg";
-import MediaPrevIcon from "../../../public/images/media.viewer.prev.react.svg";
+import MediaNextIcon from "../../../public/images/viewer.next.react.svg";
+import MediaPrevIcon from "../../../public/images/viewer.prew.react.svg";
 import ViewerPlayer from "./sub-components/viewer-player";
 
 import MediaContextMenu from "../../../public/images/vertical-dots.react.svg";
@@ -172,19 +172,19 @@ export const Viewer = (props) => {
       {playlist.length > 1 && !isFullscreen && displayUI && (
         <>
           {playlistPos !== 0 && (
-            <StyledNextToolbar left onClick={onPrevClick}>
+            <StyledSwitchToolbar left onClick={onPrevClick}>
               <StyledButtonScroll orientation="left">
                 <MediaPrevIcon />
               </StyledButtonScroll>
-            </StyledNextToolbar>
+            </StyledSwitchToolbar>
           )}
           {playlistPos < playlist.length - 1 && (
             <>
-              <StyledNextToolbar onClick={onNextClick}>
+              <StyledSwitchToolbar onClick={onNextClick}>
                 <StyledButtonScroll orientation="right">
                   <MediaNextIcon />
                 </StyledButtonScroll>
-              </StyledNextToolbar>
+              </StyledSwitchToolbar>
             </>
           )}
         </>
