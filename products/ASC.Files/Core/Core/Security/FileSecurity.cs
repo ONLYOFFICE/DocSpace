@@ -771,7 +771,7 @@ public class FileSecurity : IFileSecurity
                 ace = shares
                     .OrderBy(r => r, new SubjectComparer(subjects))
                     .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
-                    .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File);
+                    .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File && r.SubjectType != SubjectType.Encryption);
                 if (ace == null)
                 {
                     // share on parent folders

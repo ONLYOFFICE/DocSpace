@@ -50,7 +50,9 @@ public class FileShareRecord : IMapFrom<DbFilesSecurity>
         private static readonly int[] _shareOrder = new[]
         {
                 (int)FileShare.None,
+                (int)FileShare.RoomAdmin,
                 (int)FileShare.ReadWrite,
+                (int)FileShare.Editing,
                 (int)FileShare.CustomFilter,
                 (int)FileShare.Review,
                 (int)FileShare.FillForms,

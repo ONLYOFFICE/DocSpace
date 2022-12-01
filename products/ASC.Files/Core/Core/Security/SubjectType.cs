@@ -32,4 +32,5 @@ public enum SubjectType
     ExternalLink = 1,
     Restriction = 2,
     InvintationLink = 3,
+    Encryption = 4,
 }
