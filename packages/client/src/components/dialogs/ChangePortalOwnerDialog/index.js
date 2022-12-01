@@ -148,7 +148,7 @@ const ChangePortalOwnerDialog = ({
             withCancelButton
             filter={filter}
             excludeItems={[id]}
-            acceptButtonLabel={t("Common:Select")}
+            acceptButtonLabel={t("Common:SelectAction")}
             onAccept={onAccept}
             onCancel={onBackClick}
             onBackClick={onBackClick}
