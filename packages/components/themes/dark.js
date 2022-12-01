@@ -2390,6 +2390,10 @@ const Dark = {
       descriptionColor: "#a3a9ae",
     },
 
+    tagInput: {
+      tagBackground: "#292929",
+    },
+
     dropdown: {
       background: "#333333",
       borderColor: "#474747",
