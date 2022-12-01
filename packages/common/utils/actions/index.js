@@ -12,6 +12,17 @@ import {
 } from "./Rooms";
 
 import {
+  ArchiveRoomsActions,
+  OwnerArchiveRoomsActions,
+  RoomAdminArchiveRoomsActions,
+  EditorArchiveRoomsActions,
+  FormFillerArchiveRoomsActions,
+  ReviewerArchiveRoomsActions,
+  CommentatorArchiveRoomsActions,
+  ViewerArchiveRoomsActions,
+} from "./ArchiveRoom";
+
+import {
   FilesActions,
   OwnerFilesActions,
   RoomAdminFilesActions,
@@ -21,6 +32,17 @@ import {
   CommentatorFilesActions,
   ViewerFilesActions,
 } from "./Files";
+
+import {
+  ArchiveFilesActions,
+  OwnerArchiveFilesActions,
+  RoomAdminArchiveFilesActions,
+  EditorArchiveFilesActions,
+  FormFillerArchiveFilesActions,
+  ReviewerArchiveFilesActions,
+  CommentatorArchiveFilesActions,
+  ViewerArchiveFilesActions,
+} from "./ArchiveFiles";
 
 import {
   OwnerAccountsActions,
@@ -69,6 +91,50 @@ export const getFileRoleActions = (access) => {
       return ViewerFilesActions;
     default:
       return FilesActions;
+  }
+};
+
+export const getArchiveRoomRoleActions = (access) => {
+  switch (access) {
+    case ShareAccessRights.None:
+    case ShareAccessRights.FullAccess:
+      return OwnerArchiveRoomsActions;
+    case ShareAccessRights.RoomManager:
+      return RoomAdminArchiveRoomsActions;
+    case ShareAccessRights.Editing:
+      return EditorArchiveRoomsActions;
+    case ShareAccessRights.FormFilling:
+      return FormFillerArchiveRoomsActions;
+    case ShareAccessRights.Review:
+      return ReviewerArchiveRoomsActions;
+    case ShareAccessRights.Comment:
+      return CommentatorArchiveRoomsActions;
+    case ShareAccessRights.ReadOnly:
+      return ViewerArchiveRoomsActions;
+    default:
+      return ArchiveRoomsActions;
+  }
+};
+
+export const getArchiveFileRoleActions = (access) => {
+  switch (access) {
+    case ShareAccessRights.None:
+    case ShareAccessRights.FullAccess:
+      return OwnerArchiveFilesActions;
+    case ShareAccessRights.RoomManager:
+      return RoomAdminArchiveFilesActions;
+    case ShareAccessRights.Editing:
+      return EditorArchiveFilesActions;
+    case ShareAccessRights.FormFilling:
+      return FormFillerArchiveFilesActions;
+    case ShareAccessRights.Review:
+      return ReviewerArchiveFilesActions;
+    case ShareAccessRights.Comment:
+      return CommentatorArchiveFilesActions;
+    case ShareAccessRights.ReadOnly:
+      return ViewerArchiveFilesActions;
+    default:
+      return ArchiveFilesActions;
   }
 };
 

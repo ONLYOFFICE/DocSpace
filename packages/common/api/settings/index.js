@@ -186,6 +186,13 @@ export function sendAppearanceTheme(data) {
   });
 }
 
+export function deleteAppearanceTheme(id) {
+  return request({
+    method: "delete",
+    url: `/settings/colortheme?id=${id}`,
+  });
+}
+
 export function getLogoText() {
   return request({
     method: "get",

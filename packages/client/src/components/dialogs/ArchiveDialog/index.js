@@ -89,6 +89,14 @@ const ArchiveDialogComponent = (props) => {
   const acceptButton =
     action === "archive" ? t("Common:OKButton") : t("Common:Restore");
 
+  const isArchive = action === "archive";
+  const idButtonSubmit = isArchive
+    ? "shared_move-to-archived-modal_submit"
+    : "restore-all_submit";
+  const idButtonCancel = isArchive
+    ? "shared_move-to-archived-modal_cancel"
+    : "restore-all_cancel";
+
   return (
     <StyledModal
       isLoading={!tReady}
@@ -102,6 +110,7 @@ const ArchiveDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id={idButtonSubmit}
           key="OkButton"
           label={acceptButton}
           size="normal"
@@ -111,6 +120,7 @@ const ArchiveDialogComponent = (props) => {
           scale
         />
         <Button
+          id={idButtonCancel}
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"
@@ -128,7 +138,7 @@ const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
 );
 
 export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { folders, selection, bufferSelection } = filesStore;
+  const { roomsForRestore, selection, bufferSelection } = filesStore;
   const { setArchiveAction } = filesActionsStore;
 
   const {
@@ -142,7 +152,7 @@ export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
   } = dialogsStore;
 
   const items = restoreAll
-    ? folders
+    ? roomsForRestore
     : selection.length > 0
     ? selection
     : [bufferSelection];

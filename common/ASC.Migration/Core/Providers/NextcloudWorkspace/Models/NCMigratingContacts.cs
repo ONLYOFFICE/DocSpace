@@ -92,8 +92,9 @@ public class NCMigratingContacts : MigratingContacts
         */
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
+        return Task.CompletedTask;
         /*
         if (!ShouldImport)
         {

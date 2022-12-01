@@ -45,16 +45,16 @@ public class SenderChannel : ISenderChannel
         _firstSink = AddSink(_firstSink, dispatcherSink);
     }
 
-    public void SendAsync(INoticeMessage message)
+    public async Task SendAsync(INoticeMessage message)
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        _firstSink.ProcessMessageAsync(message);
+        await _firstSink.ProcessMessageAsync(message);
     }
 
-    public SendResponse DirectSend(INoticeMessage message)
+    public async Task<SendResponse> DirectSend(INoticeMessage message)
     {
-        return _senderSink.ProcessMessage(message);
+        return await _senderSink.ProcessMessage(message);
     }
 
     private ISink AddSink(ISink firstSink, ISink addedSink)

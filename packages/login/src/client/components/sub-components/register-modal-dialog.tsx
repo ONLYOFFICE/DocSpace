@@ -67,6 +67,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
 
   return (
     <ModalDialogContainer
+      id="registration-modal"
       displayType="modal"
       visible={visible}
       onClose={onRegisterModalClose}
@@ -97,7 +98,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
             hasError={isShowError && emailErr}
             placeholder={t("Common:RegistrationEmail")}
             isAutoFocussed={true}
-            id="e-mail"
+            id="registration-modal_email"
             name="e-mail"
             type="email"
             size="base"
@@ -115,6 +116,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="registration-modal_send"
           className="modal-dialog-button"
           key="RegisterSendBtn"
           label={loading ? t("Common:Sending") : t("RegisterSendButton")}
@@ -128,6 +130,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
         />
 
         <Button
+          id="registration-modal_cancel"
           className="modal-dialog-button"
           key="CancelBtn"
           label={t("Common:CancelButton")}

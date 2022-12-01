@@ -60,7 +60,7 @@ public class DocumentsBackupStorage : IBackupStorage
         _webConfigPath = webConfigPath;
     }
 
-    public string Upload(string folderId, string localPath, Guid userId)
+    public async Task<string> Upload(string folderId, string localPath, Guid userId)
     {
         _tenantManager.SetCurrentTenant(_tenantId);
         if (!userId.Equals(Guid.Empty))
@@ -75,62 +75,62 @@ public class DocumentsBackupStorage : IBackupStorage
 
         if (int.TryParse(folderId, out var fId))
         {
-            return Upload(fId, localPath).ToString();
+            return (await Upload(fId, localPath)).ToString();
         }
 
-        return Upload(folderId, localPath);
+        return await Upload(folderId, localPath);
     }
 
-    public void Download(string fileId, string targetLocalPath)
+    public async Task Download(string fileId, string targetLocalPath)
     {
         _tenantManager.SetCurrentTenant(_tenantId);
 
         if (int.TryParse(fileId, out var fId))
         {
-            DownloadDao(fId, targetLocalPath);
+            await DownloadDao(fId, targetLocalPath);
 
             return;
         }
 
-        DownloadDao(fileId, targetLocalPath);
+        await DownloadDao(fileId, targetLocalPath);
     }
 
-    public void Delete(string fileId)
+    public async Task Delete(string fileId)
     {
         _tenantManager.SetCurrentTenant(_tenantId);
 
         if (int.TryParse(fileId, out var fId))
         {
-            DeleteDao(fId);
+            await DeleteDao(fId);
 
             return;
         }
 
-        DeleteDao(fileId);
+        await DeleteDao(fileId);
     }
 
-    public bool IsExists(string fileId)
+    public async Task<bool> IsExists(string fileId)
     {
         _tenantManager.SetCurrentTenant(_tenantId);
         if (int.TryParse(fileId, out var fId))
         {
-            return IsExistsDao(fId);
+            return await IsExistsDao(fId);
         }
 
-        return IsExistsDao(fileId);
+        return await IsExistsDao(fileId);
     }
 
-    public string GetPublicLink(string fileId)
+    public Task<string> GetPublicLink(string fileId)
     {
-        return string.Empty;
+        return Task.FromResult(String.Empty);
     }
 
-    private T Upload<T>(T folderId, string localPath)
+    private async Task<T> Upload<T>(T folderId, string localPath)
     {
         var folderDao = GetFolderDao<T>();
         var fileDao = GetFileDao<T>();
 
-        var folder = folderDao.GetFolderAsync(folderId).Result;
+        var folder = await folderDao.GetFolderAsync(folderId);
         if (folder == null)
         {
             throw new FileNotFoundException("Folder not found.");
@@ -144,52 +144,52 @@ public class DocumentsBackupStorage : IBackupStorage
 
         File<T> file = null;
         var buffer = new byte[_setupInfo.ChunkUploadSize];
-        var chunkedUploadSession = fileDao.CreateUploadSessionAsync(newFile, source.Length).Result;
+        var chunkedUploadSession = await fileDao.CreateUploadSessionAsync(newFile, source.Length);
         chunkedUploadSession.CheckQuota = false;
 
         int bytesRead;
 
-        while ((bytesRead = source.Read(buffer, 0, (int)_setupInfo.ChunkUploadSize)) > 0)
+        while ((bytesRead = await source.ReadAsync(buffer, 0, (int)_setupInfo.ChunkUploadSize)) > 0)
         {
             using (var theMemStream = new MemoryStream())
             {
-                theMemStream.Write(buffer, 0, bytesRead);
+                await theMemStream.WriteAsync(buffer, 0, bytesRead);
                 theMemStream.Position = 0;
-                file = fileDao.UploadChunkAsync(chunkedUploadSession, theMemStream, bytesRead).Result;
+                file = await fileDao.UploadChunkAsync(chunkedUploadSession, theMemStream, bytesRead);
             }
         }
 
         return file.Id;
     }
 
-    private void DownloadDao<T>(T fileId, string targetLocalPath)
+    private async Task DownloadDao<T>(T fileId, string targetLocalPath)
     {
         _tenantManager.SetCurrentTenant(_tenantId);
         var fileDao = GetFileDao<T>();
-        var file = fileDao.GetFileAsync(fileId).Result;
+        var file = await fileDao.GetFileAsync(fileId);
         if (file == null)
         {
             throw new FileNotFoundException("File not found.");
         }
 
-        using var source = fileDao.GetFileStreamAsync(file).Result;
+        using var source = await fileDao.GetFileStreamAsync(file);
         using var destination = File.OpenWrite(targetLocalPath);
-        source.CopyTo(destination);
+        await source.CopyToAsync(destination);
     }
 
-    private void DeleteDao<T>(T fileId)
+    private async Task DeleteDao<T>(T fileId)
     {
         var fileDao = GetFileDao<T>();
-        fileDao.DeleteFileAsync(fileId).Wait();
+        await fileDao.DeleteFileAsync(fileId);
     }
 
-    private bool IsExistsDao<T>(T fileId)
+    private async Task<bool> IsExistsDao<T>(T fileId)
     {
         var fileDao = GetFileDao<T>();
         try
         {
 
-            var file = fileDao.GetFileAsync(fileId).Result;
+            var file = await fileDao.GetFileAsync(fileId);
 
             return file != null && file.RootFolderType != FolderType.TRASH;
         }
