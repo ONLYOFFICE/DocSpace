@@ -75,9 +75,11 @@ const GreetingContainer = styled.div`
   flex-direction: column;
   align-items: left;
   height: 100%;
+  width: 496px;
   padding-bottom: 32px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
+    width: 480px;
     display: ${(props) => !props.isGreetingMode && "none"};
   }
 
