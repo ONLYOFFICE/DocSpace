@@ -83,6 +83,14 @@ const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
   margin-left: 16px;
   margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+
+  .input-link {
+    height: 32px;
+
+    > input {
+      height: 30px;
+    }
+  }
 `;
 
 const StyledAccessSelector = styled.div`
