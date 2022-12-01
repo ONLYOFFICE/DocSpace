@@ -98,11 +98,6 @@ public class AccountLinker
         return GetLinkedProfiles(obj).Where(profile => profile.Provider.Equals(provider));
     }
 
-    public IDictionary<string, LoginProfile> GetLinkedProfiles(IEnumerable<string> objects, string provider)
-    {
-        return GetLinkedProfiles(objects).Where(o => o.Value.Provider.Equals(provider)).ToDictionary(k => k.Key, v => v.Value);
-    }
-
     public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
     {
         return _accountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
