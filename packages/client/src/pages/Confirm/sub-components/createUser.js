@@ -34,6 +34,7 @@ import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
+import Box from "@docspace/components/box";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -46,14 +47,13 @@ export const ButtonsWrapper = styled.div`
   }
 `;
 
-const ConfirmContainer = styled.div`
-  width: 100%;
+const ConfirmContainer = styled(Box)`
+  margin-top: 80px;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
   flex-direction: row;
   justify-content: center;
-  margin-top: 80px;
 
   @media ${tablet} {
     margin: 100px auto 0 auto;
@@ -246,12 +246,6 @@ const Confirm = (props) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
 
-  const getSso = async () => {
-    const data = await getCapabilities();
-    setSsoLabel(data.ssoLabel);
-    setSsoUrl(data.ssoUrl);
-  };
-
   const focusInput = () => {
     if (inputRef) {
       inputRef.current.focus();
@@ -259,16 +253,14 @@ const Confirm = (props) => {
   };
 
   useEffect(() => {
-    const { isAuthenticated, logout } = props;
+    const { isAuthenticated, logout, linkData, setProviders } = props;
+
     if (isAuthenticated) {
       const path = window.location;
       logout().then(() => window.location.replace(path));
     }
-  }, []);
 
-  useEffect(() => {
-    async () => {
-      const { linkData } = props;
+    const fetchData = async () => {
       const uid = linkData.uid;
       const confirmKey = linkData.confirmHeader;
       const user = await getUserFromConfirm(uid, confirmKey);
@@ -276,10 +268,16 @@ const Confirm = (props) => {
 
       window.authCallback = authCallback;
 
-      await setProviders();
-      await getSso();
+      const providers = await getAuthProviders();
+      const ssoData = await getCapabilities();
+
+      setProviders(providers);
+      setSsoLabel(ssoData.ssoLabel);
+      setSsoUrl(ssoData.ssoUrl);
       focusInput();
     };
+
+    fetchData();
   }, []);
 
   const onSubmit = () => {
@@ -373,18 +371,6 @@ const Confirm = (props) => {
       .catch((e) => {
         toastr.error(e);
       });
-  };
-
-  const setProviders = async () => {
-    const { setProviders } = props;
-
-    try {
-      await getAuthProviders().then((providers) => {
-        setProviders(providers);
-      });
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const createConfirmUser = async (registerData, loginData, key) => {
