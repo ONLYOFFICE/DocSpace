@@ -21,11 +21,8 @@ const StyledTagInput = styled.div`
     margin-bottom: -4px;
     max-width: 100%;
     position: relative;
-
-    * {
-      max-width: 100%;
-    }
   }
+
   ${({ hasTags }) => !hasTags && "margin-bottom: -8px"}
 `;
 
@@ -51,8 +48,6 @@ const TagInput = ({
     setIsScrollLocked(false);
     setIsDropdownOpen(false);
   };
-
-  console.log(tagHandler.tags.length);
 
   return (
     <StyledTagInput
