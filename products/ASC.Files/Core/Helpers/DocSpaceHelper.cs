@@ -38,12 +38,14 @@ public static class DocSpaceHelper
         = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None };
     private static readonly HashSet<FileShare> _viewOnlyRoomConstraints
         = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Read, FileShare.None };
+    private static readonly HashSet<FileShare> _privateRoomConstraints
+        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.None };
 
     public static bool IsRoom(FolderType folderType)
     {
         return folderType == FolderType.CustomRoom || folderType == FolderType.EditingRoom 
             || folderType == FolderType.ReviewRoom || folderType == FolderType.ReadOnlyRoom 
-            || folderType == FolderType.FillingFormsRoom;
+            || folderType == FolderType.FillingFormsRoom || folderType == FolderType.PrivateRoom;
     }
 
     public static async Task<bool> LocatedInPrivateRoomAsync<T>(File<T> file, IFolderDao<T> folderDao)
@@ -68,6 +70,7 @@ public static class DocSpaceHelper
             FolderType.EditingRoom => _collaborationRoomConstraints.Contains(fileShare),
             FolderType.ReviewRoom => _reviewRoomConstraints.Contains(fileShare),
             FolderType.ReadOnlyRoom => _viewOnlyRoomConstraints.Contains(fileShare),
+            FolderType.PrivateRoom => _privateRoomConstraints.Contains(fileShare),
             _ => false
         };
     }

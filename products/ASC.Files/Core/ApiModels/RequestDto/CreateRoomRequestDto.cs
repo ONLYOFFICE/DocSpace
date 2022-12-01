@@ -32,7 +32,8 @@ public enum RoomType
     EditingRoom = 2,
     ReviewRoom = 3,
     ReadOnlyRoom = 4,
-    CustomRoom = 5
+    CustomRoom = 5,
+    PrivateRoom = 6,
 }
 
 public enum RoomFilterType
@@ -43,14 +44,11 @@ public enum RoomFilterType
     ReadOnlyRoomOnly = 4,
     CustomRoomOnly = 5,
     FoldersOnly = 6,
+    PrivateRoomOnly = 7,
 }
 
 public class CreateRoomRequestDto
 {
     public string Title { get; set; }
     public RoomType RoomType { get; set; }
-    public bool Private { get; set; }
-    public IEnumerable<FileShareParams> Share { get; set; }
-    public bool Notify { get; set; }
-    public string SharingMessage { get; set; }
 }

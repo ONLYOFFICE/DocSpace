@@ -450,6 +450,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PrivateRooms => FolderType.PrivateRoom,
             _ => FolderType.DEFAULT,
         };
 

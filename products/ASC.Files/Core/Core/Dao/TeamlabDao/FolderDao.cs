@@ -1585,6 +1585,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PrivateRooms => FolderType.PrivateRoom,
             _ => FolderType.CustomRoom,
         };
     }
