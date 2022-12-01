@@ -198,6 +198,11 @@ public class FileUploader
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }
 
+        if (folder.Private && relativePath != null)
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
+
         if (relativePath != null && relativePath.Count > 0)
         {
             var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
