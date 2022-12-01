@@ -295,7 +295,7 @@ public class Tests
         TestContext.Progress.WriteLine($"Found ModuleFolders = {ModuleFolders.Count()}. First path is '{ModuleFolders.FirstOrDefault()?.Path}'");
 
         CommonTranslations = TranslationFiles
-            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS($"{BasePath}public/locales")))
+            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS(Path.Combine(BasePath, "public/locales"))))
             .Select(t => new LanguageItem
             {
                 Path = t.FilePath,
