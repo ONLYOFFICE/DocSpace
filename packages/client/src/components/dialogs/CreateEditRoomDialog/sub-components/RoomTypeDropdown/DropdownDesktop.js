@@ -35,17 +35,17 @@ const StyledDropdownDesktop = styled.div`
 
 StyledDropdownDesktop.defaultProps = { theme: Base };
 
-const DropdownDesktop = ({ t, open, roomTypes, chooseRoomType }) => {
+const DropdownDesktop = ({ t, open, chooseRoomType }) => {
   return (
     <StyledDropdownDesktop className="dropdown-content-wrapper" isOpen={open}>
       <div className="dropdown-content">
-        {roomTypes.map((room) => (
+        {Object.values(RoomsType).map((roomType) => (
           <RoomType
             t={t}
-            key={room.type}
-            room={room}
+            key={roomType}
+            roomType={roomType}
             type="dropdownItem"
-            onClick={() => chooseRoomType(room.type)}
+            onClick={() => chooseRoomType(roomType)}
           />
         ))}
       </div>

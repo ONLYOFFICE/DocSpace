@@ -24,13 +24,7 @@ const StyledTagInput = styled.div`
   }
 `;
 
-const TagInput = ({
-  t,
-  tagHandler,
-  currentRoomTypeData,
-  setIsScrollLocked,
-  isDisabled,
-}) => {
+const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -70,7 +64,7 @@ const TagInput = ({
 
       <TagList
         tagHandler={tagHandler}
-        defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+        defaultTagLabel={""}
         isDisabled={isDisabled}
       />
     </StyledTagInput>

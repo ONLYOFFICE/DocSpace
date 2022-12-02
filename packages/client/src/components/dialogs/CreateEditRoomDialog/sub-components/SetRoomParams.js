@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
@@ -44,18 +43,14 @@ const SetRoomParams = ({
 
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
-  const [currentRoomTypeData] = roomTypes.filter(
-    (room) => room.type === roomParams.type
-  );
-
   return (
     <StyledSetRoomParams>
       {isEdit ? (
-        <RoomType t={t} room={currentRoomTypeData} type="displayItem" />
+        <RoomType t={t} roomType={roomParams.type} type="displayItem" />
       ) : (
         <RoomTypeDropdown
           t={t}
-          currentRoom={currentRoomTypeData}
+          currentRoomType={roomParams.type}
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
           isDisabled={isDisabled}
@@ -85,7 +80,6 @@ const SetRoomParams = ({
       <TagInput
         t={t}
         tagHandler={tagHandler}
-        currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
         isDisabled={isDisabled}
       />
@@ -114,7 +108,7 @@ const SetRoomParams = ({
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
-        currentRoomTypeData={currentRoomTypeData}
+        defaultTagLabel={getRoomTypeDefaultTagTranslation(roomParams.type, t)}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
         isDisabled={isDisabled}
