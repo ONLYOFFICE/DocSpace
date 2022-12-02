@@ -101,7 +101,7 @@ public class FileSecurity : IFileSecurity
 
     public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.ReadHistory);
+        return CanReadHistoryAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry, Guid userId)
@@ -246,6 +246,16 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanLockAsync<T>(FileEntry<T> entry, Guid userId)
     {
         return CanAsync(entry, userId, FilesSecurityActions.Lock);
+    }
+
+    public Task<bool> CanCopyToAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyTo);
+    }
+
+    public Task<bool> CanCopyFromAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyFrom);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -724,19 +734,23 @@ public class FileSecurity : IFileSecurity
 
             if ((e.RootFolderType == FolderType.VirtualRooms || e.RootFolderType == FolderType.Archive) && !isUser)
             {
-                if (e.RootFolderType == FolderType.Archive &&
-                    action != FilesSecurityActions.Read &&
-                    action != FilesSecurityActions.Delete &&
-                    action != FilesSecurityActions.RoomEdit &&
-                    action != FilesSecurityActions.ReadHistory
-                    )
+                if (e.RootFolderType == FolderType.Archive)
                 {
-                    return false;
-                }
+                    if (
+                        action != FilesSecurityActions.Read &&
+                        action != FilesSecurityActions.Delete &&
+                        action != FilesSecurityActions.RoomEdit &&
+                        action != FilesSecurityActions.ReadHistory &&
+                        action != FilesSecurityActions.CopyFrom
+                        )
+                    {
+                        return false;
+                    }
 
-                if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isDocSpaceAdmin)
-                {
-                    return folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
+                    if (action == FilesSecurityActions.Delete && isDocSpaceAdmin)
+                    {
+                        return folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
+                    }
                 }
 
                 if (isDocSpaceAdmin || e.CreateBy == userId)
@@ -1596,6 +1610,8 @@ public class FileSecurity : IFileSecurity
         Rename,
         ReadHistory,
         Lock,
-        ChangeHistory
+        ChangeHistory,
+        CopyTo,
+        CopyFrom
     }
 }

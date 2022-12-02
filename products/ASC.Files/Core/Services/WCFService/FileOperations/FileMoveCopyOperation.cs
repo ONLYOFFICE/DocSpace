@@ -113,6 +113,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     {
         var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
+        var fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
 
         this[Res] += string.Format("folder_{0}{1}", _daoFolderId, SplitChar);
 
@@ -152,28 +153,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
             }
 
-            if (rootFrom != null)
-            {
-                if (rootFrom.FolderType == FolderType.TRASH)
-                {
-                    throw new InvalidOperationException("Can not copy from Trash.");
-                }
-
-                if (rootFrom.FolderType == FolderType.Archive)
-                {
-                    throw new InvalidOperationException("Can not copy from Archive.");
-                }
-            }
-
-            if (toFolder.RootFolderType == FolderType.TRASH)
-            {
-                throw new InvalidOperationException("Can not copy to Trash.");
-            }
-
-            if (toFolder.RootFolderType == FolderType.Archive)
-            {
-                throw new InvalidOperationException("Can not copy to Archive");
-            }
+            await fileSecurity.CanCopyFromAsync(rootFrom);
+            await fileSecurity.CanCopyToAsync(toFolder);
         }
 
         var needToMark = new List<FileEntry<TTo>>();
