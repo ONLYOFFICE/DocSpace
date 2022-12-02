@@ -13,7 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
-
+import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
@@ -245,6 +245,10 @@ const SimpleFilesRow = (props) => {
         }
       : {};
 
+  const idWithFileExst = item.fileExst
+    ? `${item.id}_${item.fileExst}`
+    : item.id ?? "";
+
   return (
     <StyledWrapper
       id={id}
@@ -260,7 +264,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.fileExst}`}
+        className={classNames("files-item", className, idWithFileExst)}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}

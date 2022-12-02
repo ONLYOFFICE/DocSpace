@@ -1365,7 +1365,7 @@ const Dark = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -2388,6 +2388,10 @@ const Dark = {
       background: "#474747",
       isPrivateIcon: "#35ad17",
       descriptionColor: "#a3a9ae",
+    },
+
+    tagInput: {
+      tagBackground: "#292929",
     },
 
     dropdown: {

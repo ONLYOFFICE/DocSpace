@@ -272,7 +272,8 @@ public class FileStorageService<T> //: IFileStorageService
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
         bool excludeSubject = false,
-        ProviderFilter provider = ProviderFilter.None)
+        ProviderFilter provider = ProviderFilter.None,
+        SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -322,7 +323,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, excludeSubject, provider);
+                withoutTags, tagNames, excludeSubject, provider, subjectFilter);
         }
         catch (Exception e)
         {
@@ -3139,7 +3140,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var link = _roomLinkService.GetInvitationLink(user.Email, share.Access, _authContext.CurrentAccount.ID);
-            _studioNotifyService.SendEmailRoomInvite(user.Email, link);
+            _studioNotifyService.SendEmailRoomInvite(user.Email, room.Title, link);
         }
     }
 

@@ -19,7 +19,9 @@ const TagDropdown = ({
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(0);
 
   useEffect(() => {
-    document.getElementById("tags-input").addEventListener("keyup", onKeyPress);
+    document
+      .getElementById("shared_tags-input")
+      .addEventListener("keyup", onKeyPress);
 
     return () => document.removeEventListener("keyup", onKeyPress);
   });
@@ -38,8 +40,9 @@ const TagDropdown = ({
     e.preventDefault();
   };
 
-  const onClickOutside = () => {
-    document.getElementById("tags-input").blur();
+  const onClickOutside = (e) => {
+    if (e.target.id === "shared_tags-input") return;
+    document.getElementById("shared_tags-input").blur();
   };
 
   const addNewTag = () => {
@@ -106,18 +109,18 @@ const TagDropdown = ({
       className="dropdown-content-wrapper"
       onMouseDown={preventDefault}
     >
-      {!!dropdownItems.length && (
-        <StyledDropDown
-          className="dropdown-content"
-          open={open}
-          forwardedRef={dropdownRef}
-          clickOutsideAction={onClickOutside}
-          maxHeight={dropdownMaxHeight}
-          showDisabledItems={false}
-        >
-          {dropdownItems}
-        </StyledDropDown>
-      )}
+      <StyledDropDown
+        className="dropdown-content"
+        open={open}
+        forwardedRef={dropdownRef}
+        maxHeight={dropdownMaxHeight}
+        showDisabledItems={false}
+        hasItems={!!dropdownItems.length}
+        clickOutsideAction={onClickOutside}
+        withBackdrop={false}
+      >
+        {dropdownItems}
+      </StyledDropDown>
     </StyledDropDownWrapper>
   );
 };

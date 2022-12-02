@@ -60,13 +60,13 @@ public class BackupPortalTask : PortalTaskBase
         _tempStream = tempStream;
     }
 
-    public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
+    public void Init(int tenantId, string toFilePath, int limit)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(toFilePath);
 
         BackupFilePath = toFilePath;
         Limit = limit;
-        Init(tenantId, fromConfigPath);
+        Init(tenantId);
 
     }
 
@@ -574,7 +574,7 @@ public class BackupPortalTask : PortalTaskBase
 
     private async Task DoDumpFile(BackupFileInfo file, string dir)
     {
-        var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant, file.Module);
+        var storage = StorageFactory.GetStorage(file.Tenant, file.Module);
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
@@ -708,7 +708,7 @@ public class BackupPortalTask : PortalTaskBase
 
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, TenantId, group.Key);
+                var storage = StorageFactory.GetStorage(TenantId, group.Key);
                 var file1 = file;
                 await ActionInvoker.Try(async state =>
                 {

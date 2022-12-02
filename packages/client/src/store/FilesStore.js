@@ -461,9 +461,29 @@ class FilesStore {
     if (index !== -1) this.files[index] = file;
   };
 
+  updateSelection = (id) => {
+    const indexFileList = this.filesList.findIndex(
+      (filelist) => filelist.id === id
+    );
+    const indexSelectedRoom = this.selection.findIndex(
+      (room) => room.id === id
+    );
+
+    if (~indexFileList && ~indexSelectedRoom) {
+      this.selection[indexSelectedRoom] = this.filesList[indexFileList];
+    }
+    if (this.bufferSelection) {
+      this.bufferSelection = this.filesList.find(
+        (file) => file.id === this.bufferSelection.id
+      );
+    }
+  };
+
   setFolder = (folder) => {
     const index = this.folders.findIndex((x) => x.id === folder.id);
     if (index !== -1) this.folders[index] = folder;
+
+    this.updateSelection(folder.id);
   };
 
   getFilesChecked = (file, selected) => {
@@ -1315,6 +1335,7 @@ class FilesStore {
       let roomOptions = [
         "select",
         "separator0",
+        "link-for-room-members",
         "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
@@ -1626,16 +1647,6 @@ class FilesStore {
   getFileHistory(id) {
     return api.rooms.getFileHistory(id);
   }
-
-  setFile = (file) => {
-    const fileIndex = this.files.findIndex((f) => f.id === file.id);
-    if (fileIndex !== -1) this.files[fileIndex] = file;
-  };
-
-  setFolder = (folder) => {
-    const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
-    if (folderIndex !== -1) this.folders[folderIndex] = folder;
-  };
 
   updateFolderBadge = (id, count) => {
     const folder = this.folders.find((x) => x.id === id);
@@ -2185,6 +2196,42 @@ class FilesStore {
         return t("ReviewRooms");
       case `room-${RoomsType.ReadOnlyRoom}`:
         return t("ViewOnlyRooms");
+
+      default:
+        return "";
+    }
+  };
+
+  getCheckboxItemId = (key) => {
+    switch (key) {
+      case "all":
+        return "selected-all";
+      case FilterType.FoldersOnly:
+        return "selected-only-folders";
+      case FilterType.DocumentsOnly:
+        return "selected-only-documents";
+      case FilterType.PresentationsOnly:
+        return "selected-only-presentations";
+      case FilterType.SpreadsheetsOnly:
+        return "selected-only-spreadsheets";
+      case FilterType.ImagesOnly:
+        return "selected-only-images";
+      case FilterType.MediaOnly:
+        return "selected-only-media";
+      case FilterType.ArchiveOnly:
+        return "selected-only-archives";
+      case FilterType.FilesOnly:
+        return "selected-only-files";
+      case `room-${RoomsType.FillingFormsRoom}`:
+        return "selected-only-filling-form-rooms";
+      case `room-${RoomsType.CustomRoom}`:
+        return "selected-only-custom-room";
+      case `room-${RoomsType.EditingRoom}`:
+        return "selected-only-collaboration-rooms";
+      case `room-${RoomsType.ReviewRoom}`:
+        return "selected-only-review-rooms";
+      case `room-${RoomsType.ReadOnlyRoom}`:
+        return "selected-only-view-rooms";
 
       default:
         return "";

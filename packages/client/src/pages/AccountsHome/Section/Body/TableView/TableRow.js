@@ -333,7 +333,7 @@ const PeopleTableRow = (props) => {
 
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>
 
-        <TableCell className="table-cell_room">
+        {/* <TableCell className="table-cell_room">
           {!rooms?.length ? (
             <Text
               type="page"
@@ -372,7 +372,8 @@ const PeopleTableRow = (props) => {
               modernView
             />
           )}
-        </TableCell>
+        </TableCell> */}
+
         <TableCell>
           <Link
             type="page"

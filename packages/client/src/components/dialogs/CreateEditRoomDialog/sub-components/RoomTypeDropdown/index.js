@@ -10,6 +10,12 @@ const StyledRoomTypeDropdown = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  .backdrop-active {
+    top: -64px;
+    backdrop-filter: unset;
+    background: rgba(6, 22, 38, 0.2);
+  }
 `;
 
 const RoomTypeDropdown = ({
@@ -37,11 +43,12 @@ const RoomTypeDropdown = ({
     setRoomType(roomType);
     toggleDropdown();
   };
-
   return (
     <StyledRoomTypeDropdown isOpen={isOpen}>
       <RoomType
         t={t}
+        id="shared_select-room"
+        selectedId={currentRoom.id}
         room={currentRoom}
         type="dropdownButton"
         isOpen={isOpen}

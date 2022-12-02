@@ -82,7 +82,7 @@ const CreateEvent = ({
 
     setIsLoading(true);
 
-    const newValue = value;
+    let newValue = value;
 
     if (value.trim() === "") {
       newValue =

@@ -161,7 +161,7 @@ public class FileSharingAceHelper<T>
             if (!string.IsNullOrEmpty(w.Email))
             {
                 var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendEmailRoomInvite(w.Email, link);
+                _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
 

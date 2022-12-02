@@ -16,6 +16,8 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       getPortalPasswordSettings,
       history,
+      getAuthProviders,
+      getCapabilities,
     } = props;
     const [inLoad, setInLoad] = useState(false);
 
@@ -42,6 +44,20 @@ export default function withLoader(WrappedComponent) {
           });
       }
     }, [passwordSettings]);
+
+    useEffect(() => {
+      if (type === "LinkInvite") {
+        axios.all([getAuthProviders(), getCapabilities()]).catch((error) => {
+          console.error(error);
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/login/error?message=${error}`
+            )
+          );
+        });
+      }
+    }, []);
 
     const isLoaded =
       type === "TfaActivation" || type === "TfaAuth"
@@ -87,6 +103,7 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       getPortalPasswordSettings,
     } = auth.settingsStore;
+    const { getAuthProviders, getCapabilities } = auth;
 
     return {
       isLoaded,
@@ -94,6 +111,8 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       passwordSettings,
       getPortalPasswordSettings,
+      getAuthProviders,
+      getCapabilities,
     };
   })(observer(withLoader));
 }
