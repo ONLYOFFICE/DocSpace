@@ -226,9 +226,14 @@ public class Tests
             var matches = regexp.Matches(jsFileText);
 
             var translationKeys = matches
-                .Select(m => m.Groups[2].Value == ""
-                    ? m.Groups[4].Value
-                    : m.Groups[2].Value)
+                .Select(m => m.Groups[2].Success
+                    ? m.Groups[2].Value
+                    : m.Groups[4].Success
+                        ? m.Groups[4].Value
+                        : m.Groups[6].Success
+                            ? m.Groups[6].Value
+                            : null)
+                .Where(m => m != null)
                 .ToList();
 
             if (!translationKeys.Any())
