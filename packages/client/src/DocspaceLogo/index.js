@@ -2,29 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { hugeMobile } from "@docspace/components/utils/device";
-import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const StyledWrapper = styled.div`
   .logo-wrapper {
-    width: 100%;
-    height: 46px;
+    width: 386px;
+    height: 44px;
+  }
 
-    @media ${hugeMobile} {
-      display: none;
-    }
+  @media ${hugeMobile} {
+    display: none;
   }
 `;
 
 const DocspaceLogo = (props) => {
   const { className, whiteLabelLogoUrls, userTheme } = props;
 
-  if (isMobileOnly) return <></>;
-
   const logo =
     userTheme === "Dark"
-      ? whiteLabelLogoUrls[1].path.dark
-      : whiteLabelLogoUrls[1].path.light;
+      ? whiteLabelLogoUrls[1]?.path?.dark
+      : whiteLabelLogoUrls[1]?.path?.light;
 
   return (
     <StyledWrapper>
