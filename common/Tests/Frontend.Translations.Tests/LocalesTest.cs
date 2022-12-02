@@ -194,10 +194,11 @@ public class Tests
 
         JavaScriptFiles = new List<JavaScriptFile>();
 
-        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\s{}/_-]+)[\"\'`]\\s*[\\),]";
-        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.-]+)\"";
+        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:\\s{}/-]+)[\"\'`]\\s*[\\),]";
+        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern3 = "tKey:\\s\"([a-zA-Z0-9_.:-]+)\"";
 
-        var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
+        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
         var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
@@ -210,18 +211,15 @@ public class Tests
         {
             var jsFileText = File.ReadAllText(path);
 
-            if (!path.Contains("asc-web-components"))
-            {
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+            var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
 
-                if (toastMatches.Any())
+            if (toastMatches.Any())
+            {
+                foreach (var toastMatch in toastMatches)
                 {
-                    foreach (var toastMatch in toastMatches)
-                    {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
-                    }
+                    var found = toastMatch.Value;
+                    if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                        NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
                 }
             }
 
@@ -702,13 +700,15 @@ public class Tests
              .Where(file => file.Language == "en")
              .SelectMany(item => item.Translations)
              .Select(item => item.Key)
-             .Where(k => !k.StartsWith("Culture_"));
+             .Where(k => !k.StartsWith("Culture_"))
+             .OrderBy(t => t);
 
         var allJsTranslationKeys = JavaScriptFiles
             .SelectMany(j => j.TranslationKeys)
             .Select(k => k.Substring(k.IndexOf(":") + 1))
             .Where(k => !k.StartsWith("Culture_"))
-            .Distinct();
+            .Distinct()
+            .OrderBy(t => t);
 
         var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
 
