@@ -29,6 +29,8 @@ const EditRoomEvent = ({
   setCreateRoomDialogVisible,
 
   withPaging,
+
+  reloadSelection,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -101,11 +103,19 @@ const EditRoomEvent = ({
 
             !withPaging && setFolder(room);
 
+            // to update state info panel
+            reloadSelection();
+
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      } else !withPaging && setFolder(room);
+      } else {
+        !withPaging && setFolder(room);
+
+        // to update state info panel
+        reloadSelection();
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -184,7 +194,7 @@ export default inject(
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-
+    const { reloadSelection } = auth.infoPanelStore;
     return {
       editRoom,
       addTagsToRoom,
@@ -206,6 +216,8 @@ export default inject(
 
       withPaging,
       setCreateRoomDialogVisible,
+
+      reloadSelection,
     };
   }
 )(observer(EditRoomEvent));
