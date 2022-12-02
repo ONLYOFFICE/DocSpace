@@ -2390,6 +2390,10 @@ const Base = {
       descriptionColor: "#555f65",
     },
 
+    tagInput: {
+      tagBackground: "#ECEEF1",
+    },
+
     dropdown: {
       background: "#ffffff",
       borderColor: "#d0d5da",
