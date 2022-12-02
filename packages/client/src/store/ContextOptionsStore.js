@@ -26,6 +26,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   filesSettingsStore;
+  selectedFolderStore;
 
   constructor(
     authStore,
@@ -36,7 +37,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    selectedFolderStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -48,6 +50,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   onOpenFolder = (item) => {
@@ -221,6 +224,14 @@ class ContextOptionsStore {
           : webUrl
         : `${window.location.origin + config.homepage}/filter?folder=${id}` //TODO: Change url by category
     );
+
+    toastr.success(t("Translations:LinkCopySuccess"));
+  };
+
+  onCopyLinkRoom = (item, t) => {
+    const { folderUrl } = item;
+    const url = combineUrl(window.location.origin, config.homepage, folderUrl);
+    copy(url);
 
     toastr.success(t("Translations:LinkCopySuccess"));
   };
@@ -456,16 +467,28 @@ class ContextOptionsStore {
 
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
-
+    const { id, rootFolderId } = this.selectedFolderStore;
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
+    const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
     const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
     const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const hasInfoPanel = contextOptions.includes("show-info");
+
+    const emailSendIsDisabled = true;
+    const showSeparator0 = hasInfoPanel || !isMedia || !emailSendIsDisabled;
+
+    const separator0 = showSeparator0
+      ? {
+          key: "separator0",
+          isSeparator: true,
+        }
+      : false;
 
     const blockAction = isCanWebEdit
       ? {
@@ -605,6 +628,31 @@ class ContextOptionsStore {
             },
           ];
 
+    const pinOptions = isRootRoom
+      ? [
+          {
+            id: "option_pin-room",
+            key: "pin-room",
+            label: t("Pin"),
+            icon: "/static/images/pin.react.svg",
+            onClick: (e) => this.onClickPin(e, item.id, t),
+            disabled: false,
+            "data-action": "pin",
+            action: "pin",
+          },
+          {
+            id: "option_unpin-room",
+            key: "unpin-room",
+            label: t("Unpin"),
+            icon: "/static/images/unpin.react.svg",
+            onClick: (e) => this.onClickPin(e, item.id, t),
+            disabled: false,
+            "data-action": "unpin",
+            action: "unpin",
+          },
+        ]
+      : [];
+
     const optionsModel = [
       {
         id: "option_select",
@@ -662,10 +710,7 @@ class ContextOptionsStore {
         onClick: () => this.onClickMakeForm(item, t),
         disabled: false,
       },
-      {
-        key: "separator0",
-        isSeparator: true,
-      },
+      separator0,
       {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
@@ -699,26 +744,7 @@ class ContextOptionsStore {
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
-      {
-        id: "option_pin-room",
-        key: "pin-room",
-        label: t("Pin"),
-        icon: "/static/images/pin.react.svg",
-        onClick: (e) => this.onClickPin(e, item.id, t),
-        disabled: false,
-        "data-action": "pin",
-        action: "pin",
-      },
-      {
-        id: "option_unpin-room",
-        key: "unpin-room",
-        label: t("Unpin"),
-        icon: "/static/images/unpin.react.svg",
-        onClick: (e) => this.onClickPin(e, item.id, t),
-        disabled: false,
-        "data-action": "unpin",
-        action: "unpin",
-      },
+      ...pinOptions,
       {
         id: "option_sharing-settings",
         key: "sharing-settings",
@@ -744,11 +770,19 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: "/static/images/invitation.link.react.svg",
+        onClick: () => this.onCopyLinkRoom(item, t),
+        disabled: false,
+      },
+      {
         id: "option_send-by-email",
         key: "send-by-email",
         label: t("SendByEmail"),
         icon: "/static/images/mail.react.svg",
-        disabled: true,
+        disabled: emailSendIsDisabled,
       },
       ...versionActions,
       {

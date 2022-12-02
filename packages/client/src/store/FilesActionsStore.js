@@ -890,6 +890,7 @@ class FilesActionStore {
     const { setSelectedFolder } = this.selectedFolderStore;
 
     const { roomsFolder, isRoomsFolder } = this.treeFoldersStore;
+    const { setPortalQuota } = this.authStore.currentQuotaStore;
 
     const {
       secondaryProgressDataStore,
@@ -938,6 +939,7 @@ class FilesActionStore {
 
             this.updateCurrentFolder();
           })
+          .then(() => setPortalQuota())
           .then(() => {
             const successTranslation =
               folders.length !== 1 && Array.isArray(folders)
@@ -974,6 +976,7 @@ class FilesActionStore {
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(null, [items]);
           })
+          .then(() => setPortalQuota())
           .then(() => {
             const successTranslation =
               folders.length !== 1 && Array.isArray(folders)

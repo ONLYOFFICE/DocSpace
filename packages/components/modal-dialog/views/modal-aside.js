@@ -15,6 +15,7 @@ import {
 import CloseButton from "../components/CloseButton";
 import ModalBackdrop from "../components/ModalBackdrop";
 import Scrollbar from "../../scrollbar";
+import { classNames } from "../../utils/classNames";
 
 const Modal = ({
   id,
@@ -62,7 +63,12 @@ const Modal = ({
       >
         <Dialog
           id="modal-onMouseDown-close"
-          className={`${className} modalOnCloseBacdrop dialog not-selectable`}
+          className={classNames(
+            className,
+            "modalOnCloseBacdrop",
+            "not-selectable",
+            "dialog"
+          )}
           currentDisplayType={currentDisplayType}
           style={style}
           onMouseDown={validateOnMouseDown}
@@ -104,7 +110,10 @@ const Modal = ({
                     {header && (
                       <StyledHeader
                         id="modal-header-swipe"
-                        className={`modal-header ${header.props.className}`}
+                        className={classNames(
+                          "modal-header",
+                          header.props.className
+                        )}
                         currentDisplayType={currentDisplayType}
                         {...header.props}
                       >
@@ -120,7 +129,10 @@ const Modal = ({
                     )}
                     {body && (
                       <StyledBody
-                        className={`modal-body ${body.props.className}`}
+                        className={classNames(
+                          "modal-body",
+                          body.props.className
+                        )}
                         withBodyScroll={withBodyScroll}
                         isScrollLocked={isScrollLocked}
                         hasFooter={1 && footer}
@@ -142,7 +154,10 @@ const Modal = ({
                     )}
                     {footer && (
                       <StyledFooter
-                        className={`modal-footer ${footer.props.className}`}
+                        className={classNames(
+                          "modal-footer",
+                          footer.props.className
+                        )}
                         withFooterBorder={withFooterBorder}
                         currentDisplayType={currentDisplayType}
                         isDoubleFooterLine={isDoubleFooterLine}

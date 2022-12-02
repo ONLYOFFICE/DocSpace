@@ -46,10 +46,10 @@ const StyledTag = styled.div`
   }
 
   ${(props) =>
+    props.isClickable &&
     !props.isDisabled &&
     css`
       cursor: pointer;
-
       &:hover {
         background: ${(props) => props.theme.tag.hoverBackground};
       }

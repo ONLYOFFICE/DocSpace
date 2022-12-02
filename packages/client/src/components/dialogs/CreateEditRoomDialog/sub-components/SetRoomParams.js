@@ -19,7 +19,7 @@ const StyledSetRoomParams = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 20px;
+  gap: 22px;
 `;
 
 const SetRoomParams = ({
@@ -32,9 +32,13 @@ const SetRoomParams = ({
   setIsScrollLocked,
   isEdit,
   isDisabled,
+  isValidTitle,
+  setIsValidTitle,
 }) => {
-  const onChangeName = (e) =>
+  const onChangeName = (e) => {
+    setIsValidTitle(true);
     setRoomParams({ ...roomParams, title: e.target.value });
+  };
 
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
@@ -80,6 +84,8 @@ const SetRoomParams = ({
         value={roomParams.title}
         onChange={onChangeName}
         isDisabled={isDisabled}
+        isValidTitle={isValidTitle}
+        errorMessage={t("Common:RequiredField")}
       />
 
       <TagInput

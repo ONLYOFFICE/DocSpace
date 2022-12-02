@@ -29,6 +29,7 @@ class AuthStore {
   version = null;
 
   providers = [];
+  capabilities = [];
   isInit = false;
 
   quota = {};
@@ -299,6 +300,10 @@ class AuthStore {
     this.providers = providers;
   };
 
+  setCapabilities = (capabilities) => {
+    this.capabilities = capabilities;
+  };
+
   getOforms = (filter) => {
     const culture =
       this.userStore.user.cultureName || this.settingsStore.culture;
@@ -334,6 +339,16 @@ class AuthStore {
   setQuota = async () => {
     const res = await api.settings.getPortalQuota();
     if (res) this.quota = res;
+  };
+
+  getAuthProviders = async () => {
+    const providers = await api.settings.getAuthProviders();
+    if (providers) this.setProviders(providers);
+  };
+
+  getCapabilities = async () => {
+    const capabilities = await api.settings.getCapabilities();
+    if (capabilities) this.setCapabilities(capabilities);
   };
 }
 

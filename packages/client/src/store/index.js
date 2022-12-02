@@ -115,7 +115,8 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore
+  settingsStore,
+  selectedFolderStore
 );
 
 const hotkeyStore = new HotkeyStore(
