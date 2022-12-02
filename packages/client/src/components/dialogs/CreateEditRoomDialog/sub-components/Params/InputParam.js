@@ -4,10 +4,12 @@ import { StyledParam } from "./StyledParam";
 
 import Label from "@docspace/components/label";
 import TextInput from "@docspace/components/text-input";
+import FieldContainer from "@docspace/components/field-container";
 
 const StyledInputParam = styled(StyledParam)`
   flex-direction: column;
   gap: 4px;
+  max-height: 54px;
 
   .input-label {
     cursor: pointer;
@@ -24,6 +26,8 @@ const InputParam = ({
   onFocus,
   onBlur,
   isDisabled,
+  isValidTitle,
+  errorMessage,
 }) => {
   return (
     <StyledInputParam>
@@ -34,19 +38,32 @@ const InputParam = ({
         htmlFor={id}
         text={title}
       />
-      <TextInput
-        id={id}
-        value={value}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        scale
-        placeholder={placeholder}
-        tabIndex={2}
-        isDisabled={isDisabled}
-      />
+
+      <FieldContainer
+        isVertical={true}
+        labelVisible={false}
+        hasError={!isValidTitle}
+        errorMessage={errorMessage}
+      >
+        <TextInput
+          id={id}
+          value={value}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          scale
+          placeholder={placeholder}
+          tabIndex={2}
+          isDisabled={isDisabled}
+          hasError={!isValidTitle}
+        />
+      </FieldContainer>
     </StyledInputParam>
   );
+};
+
+InputParam.defaultProps = {
+  isValidTitle: true,
 };
 
 export default InputParam;

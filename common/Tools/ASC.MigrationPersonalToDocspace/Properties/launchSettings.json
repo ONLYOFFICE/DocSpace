@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ASC.Migration.PersonalToDocspace": {
+      "commandName": "Project",
+      "launchBrowser": false
+    }
+  }
+}

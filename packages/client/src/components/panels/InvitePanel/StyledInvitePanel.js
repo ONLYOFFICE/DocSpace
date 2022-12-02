@@ -83,6 +83,14 @@ const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
   margin-left: 16px;
   margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+
+  .input-link {
+    height: 32px;
+
+    > input {
+      height: 30px;
+    }
+  }
 `;
 
 const StyledAccessSelector = styled.div`
@@ -101,9 +109,11 @@ const StyledComboBox = styled(ComboBox)`
     text-decoration: none;
   }
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   .combo-buttons_arrow-icon {
-    margin-top: 6px;
-    margin-right: 8px;
     margin-left: 2px;
   }
 
@@ -111,6 +121,7 @@ const StyledComboBox = styled(ComboBox)`
 
   .combo-button {
     border-radius: 3px;
+    height: auto;
   }
 `;
 

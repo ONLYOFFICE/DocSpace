@@ -73,6 +73,7 @@ const CreateRoomDialog = ({
   };
 
   const [roomParams, setRoomParams] = useState({ ...startRoomParams });
+  const [isValidTitle, setIsValidTitle] = useState(true);
 
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
@@ -87,6 +88,11 @@ const CreateRoomDialog = ({
   };
 
   const onCreateRoom = async () => {
+    if (!roomParams.title.trim()) {
+      setIsValidTitle(false);
+      return;
+    }
+
     await onCreate({ ...roomParams });
     if (isMountRef.current) {
       setRoomParams(startRoomParams);
@@ -142,6 +148,8 @@ const CreateRoomDialog = ({
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
             isDisabled={isLoading}
+            isValidTitle={isValidTitle}
+            setIsValidTitle={setIsValidTitle}
           />
         )}
       </ModalDialog.Body>
