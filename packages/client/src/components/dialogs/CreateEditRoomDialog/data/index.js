@@ -1,45 +1,5 @@
 import { RoomsType } from "@docspace/common/constants";
 
-export const roomTypes = (t) => {
-  return [
-    {
-      type: RoomsType.FillingFormsRoom,
-      title: "FillingFormsRoomTitle",
-      description: "FillingFormsRoomDescription",
-      defaultTag: "Files:FillingFormRooms",
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.EditingRoom,
-      title: "CollaborationRoomTitle",
-      description: "CollaborationRoomDescription",
-      defaultTag: "Files:CollaborationRooms",
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.ReviewRoom,
-      title: "ReviewRoomTitle",
-      description: "ReviewRoomDescription",
-      defaultTag: "Common:Review",
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.ReadOnlyRoom,
-      title: "ViewOnlyRoomTitle",
-      description: "ViewOnlyRoomDescription",
-      defaultTag: "Files:ViewOnlyRooms",
-      withSecondaryInfo: true,
-    },
-    {
-      type: RoomsType.CustomRoom,
-      title: "CustomRoomTitle",
-      description: "CustomRoomDescription",
-      defaultTag: "Files:CustomRooms",
-      withSecondaryInfo: false,
-    },
-  ];
-};
-
 export const getRoomTypeTitleTranslation = (roomType = 1, t) => {
   switch (roomType) {
     case RoomsType.FillingFormsRoom:

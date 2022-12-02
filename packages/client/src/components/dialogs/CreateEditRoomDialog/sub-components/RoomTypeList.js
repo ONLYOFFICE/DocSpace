@@ -17,7 +17,6 @@ const StyledRoomTypeList = styled.div`
 `;
 
 const RoomTypeList = ({ t, setRoomType }) => {
-  console.log(Object.values(RoomsType));
   return (
     <StyledRoomTypeList>
       {Object.values(RoomsType).map((roomType) => (
