@@ -461,9 +461,29 @@ class FilesStore {
     if (index !== -1) this.files[index] = file;
   };
 
+  updateSelection = (id) => {
+    const indexFileList = this.filesList.findIndex(
+      (filelist) => filelist.id === id
+    );
+    const indexSelectedRoom = this.selection.findIndex(
+      (room) => room.id === id
+    );
+
+    if (~indexFileList && ~indexSelectedRoom) {
+      this.selection[indexSelectedRoom] = this.filesList[indexFileList];
+    }
+    if (this.bufferSelection) {
+      this.bufferSelection = this.filesList.find(
+        (file) => file.id === this.bufferSelection.id
+      );
+    }
+  };
+
   setFolder = (folder) => {
     const index = this.folders.findIndex((x) => x.id === folder.id);
     if (index !== -1) this.folders[index] = folder;
+
+    this.updateSelection(folder.id);
   };
 
   getFilesChecked = (file, selected) => {
@@ -1627,16 +1647,6 @@ class FilesStore {
   getFileHistory(id) {
     return api.rooms.getFileHistory(id);
   }
-
-  setFile = (file) => {
-    const fileIndex = this.files.findIndex((f) => f.id === file.id);
-    if (fileIndex !== -1) this.files[fileIndex] = file;
-  };
-
-  setFolder = (folder) => {
-    const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
-    if (folderIndex !== -1) this.folders[folderIndex] = folder;
-  };
 
   updateFolderBadge = (id, count) => {
     const folder = this.folders.find((x) => x.id === id);
