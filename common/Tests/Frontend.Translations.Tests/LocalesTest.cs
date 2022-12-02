@@ -197,8 +197,9 @@ public class Tests
         var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:\\s{}/-]+)[\"\'`]\\s*[\\),]";
         var pattern2 = "i18nKey=\"([a-zA-Z0-9_.:-]+)\"";
         var pattern3 = "tKey:\\s\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern4 = "getTitle\\(\"([a-zA-Z0-9_.:-]+)\"\\)";
 
-        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})", RegexOptions.Multiline | RegexOptions.ECMAScript);
+        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})|({pattern4})", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
         var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
@@ -232,7 +233,9 @@ public class Tests
                         ? m.Groups[4].Value
                         : m.Groups[6].Success
                             ? m.Groups[6].Value
-                            : null)
+                            : m.Groups[8].Success
+                                ? m.Groups[8].Value
+                                : null)
                 .Where(m => m != null)
                 .ToList();
 
