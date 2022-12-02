@@ -119,11 +119,14 @@ const StyledVideoPlayer = styled.div`
     -webkit-appearance: none;
     margin-right: 15px;
     width: 80%;
-    height: 8px;
-    background: #000;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 5px;
-    background-image: linear-gradient(#d1d1d1, #d1d1d1);
+    background-image: linear-gradient(#fff, #fff);
     background-repeat: no-repeat;
+    &:hover {
+      cursor: pointer;
+    }
 
     @media ${tablet} {
       width: 63%;
@@ -131,10 +134,11 @@ const StyledVideoPlayer = styled.div`
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 18px;
-    width: 18px;
+    height: 4px;
+    width: 4px;
     border-radius: 50%;
     background: #fff;
+    opacity: 0;
   }
 
   .mobile-video-progress {
@@ -143,12 +147,11 @@ const StyledVideoPlayer = styled.div`
     align-items: center;
     position: fixed;
     right: 0;
-    bottom: 48px;
+    bottom: 77px;
     left: 0;
     z-index: 307;
-    padding: 0 20px;
+    padding: 0 28px;
     height: 30px;
-    background: rgba(0, 0, 0, 0.5);
 
     input[type="range"] {
       width: 100%;
@@ -159,9 +162,20 @@ const StyledVideoPlayer = styled.div`
 
 const StyledVideoActions = styled.div`
   .actions-container {
+    position: fixed;
+    bottom: 13px;
+    left: 0;
+    right: 0;
+    justify-content: space-between;
+    padding-left: 29px;
+    padding-right: 19px;
     display: flex;
-    justify-content: start;
     align-items: center;
+
+    .controll-box {
+      display: flex;
+      align-items: center;
+    }
 
     ${isMobileOnly &&
     css`
@@ -185,14 +199,31 @@ const StyledVideoActions = styled.div`
   }
 `;
 
+const StyledDuration = styled.div`
+  padding-left: 10px;
+  padding-right: 14px;
+  width: 102px;
+  color: #fff;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 700;
+`;
+
 const StyledVideoControls = styled.div`
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 307;
-  height: 48px;
-  background: rgba(0, 0, 0, 0.5);
+  //align-items: flex-end;
+  display: flex;
+  height: 188px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.64) 48.44%,
+    rgba(0, 0, 0, 0.89) 100%
+  );
   .volume-container {
     position: relative;
 
@@ -613,106 +644,86 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           </div>
         )}
       </div>
-      {isMobileOnly && state.isPlaying && (
-        <div className="mobile-video-progress">
-          <input
-            ref={inputRef}
-            type="range"
-            min="0"
-            max="100"
-            value={state.progress}
-            onChange={(e) => handleVideoProgress(e)}
-          />
-        </div>
-      )}
+
       {displayUI && (
         <StyledVideoControls>
+          <div className="mobile-video-progress">
+            <input
+              ref={inputRef}
+              type="range"
+              min="0"
+              max="100"
+              value={state.progress}
+              onChange={(e) => handleVideoProgress(e)}
+            />
+          </div>
           <StyledVideoActions>
             <div className="actions-container">
-              <div
-                className="controller volume-container video-play"
-                onClick={togglePlay}
-              >
-                {!state.isPlaying ? <IconPlay /> : <IconStop />}
-              </div>
-              {!isMobileOnly && (
-                <input
-                  ref={inputRef}
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={state.progress}
-                  onChange={(e) => handleVideoProgress(e)}
-                />
-              )}
-
-              {!isMobileOnly && (
+              <div className="controll-box">
                 <div
-                  style={{
-                    paddingLeft: "10px",
-                    paddingRight: "14px",
-                    width: "102px",
-                    color: "#DDDDDD",
-                    userSelect: "none",
-                  }}
+                  className="controller volume-container video-play"
+                  onClick={togglePlay}
                 >
-                  {state.duration}
+                  {!state.isPlaying ? <IconPlay /> : <IconStop />}
                 </div>
-              )}
-              {!isMobileOnly && (
-                <div className="controller volume-container">
-                  {!state.isMuted ? (
-                    <IconSound onClick={toggleVolumeMute} />
-                  ) : (
-                    <IconMuted onClick={toggleVolumeMute} />
+                {!isMobileOnly && (
+                  <StyledDuration>{state.duration}</StyledDuration>
+                )}
+                {!isMobileOnly && (
+                  <div className="controller volume-container">
+                    {!state.isMuted ? (
+                      <IconSound onClick={toggleVolumeMute} />
+                    ) : (
+                      <IconMuted onClick={toggleVolumeMute} />
+                    )}
+
+                    <div className="volume-wrapper">
+                      <input
+                        ref={volumeRef}
+                        className="volume-toolbar"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={state.volume}
+                        onChange={(e) => handleVolumeUpdate(e)}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="controll-box">
+                <div
+                  className="controller dropdown-speed"
+                  onClick={toggleSpeedSelectionMenu}
+                >
+                  {speedIcons[state.speedState]}
+                  {state.speedSelection && (
+                    <div className="dropdown-content">
+                      {SpeedButtonComponent()}
+                    </div>
                   )}
-
-                  <div className="volume-wrapper">
-                    <input
-                      ref={volumeRef}
-                      className="volume-toolbar"
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={state.volume}
-                      onChange={(e) => handleVolumeUpdate(e)}
-                    />
-                  </div>
                 </div>
-              )}
-
-              <div
-                className="controller fullscreen-button"
-                onClick={toggleScreen}
-              >
-                {!state.isFullScreen ? (
-                  <IconFullScreen />
-                ) : (
-                  <IconExitFullScreen />
-                )}
-              </div>
-
-              <div
-                className="controller dropdown-speed"
-                onClick={toggleSpeedSelectionMenu}
-              >
-                {speedIcons[state.speedState]}
-                {state.speedSelection && (
-                  <div className="dropdown-content">
-                    {SpeedButtonComponent()}
-                  </div>
-                )}
-              </div>
-              {!isMobileOnly && (
                 <div
-                  className="controller"
-                  onClick={toggleContext}
-                  style={{ position: "relative" }}
+                  className="controller fullscreen-button"
+                  onClick={toggleScreen}
                 >
-                  <MediaContextMenu />
-                  {contextMenu}
+                  {!state.isFullScreen ? (
+                    <IconFullScreen />
+                  ) : (
+                    <IconExitFullScreen />
+                  )}
                 </div>
-              )}
+                {!isMobileOnly && (
+                  <div
+                    className="controller"
+                    onClick={toggleContext}
+                    style={{ position: "relative" }}
+                  >
+                    <MediaContextMenu />
+                    {contextMenu}
+                  </div>
+                )}
+              </div>
             </div>
           </StyledVideoActions>
         </StyledVideoControls>
