@@ -287,7 +287,11 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
+    requests.push(
+      this.getPortalSettings(),
+      this.getAppearanceTheme(),
+      this.getWhiteLabelLogoUrls()
+    );
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
