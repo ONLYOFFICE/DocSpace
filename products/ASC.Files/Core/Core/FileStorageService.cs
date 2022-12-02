@@ -525,7 +525,7 @@ public class FileStorageService<T> //: IFileStorageService
             _ => (await CreateCustomRoomAsync(title, parentId, false), FolderType.CustomRoom),
         };
 
-        _ = await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, false);
+        _ = await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, result.Item2 == FolderType.PrivateRoom);
 
         return result.Item1;
     }
