@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
 import SalesDepartmentRequestDialog from "../../../../../components/dialogs/SalesDepartmentRequestDialog";
@@ -10,8 +11,9 @@ const StyledBody = styled.div`
   }
 `;
 
-const RequestButtonContainer = ({ isDisabled, isLoading, t }) => {
+const RequestButtonContainer = ({ isDisabled, isLoading }) => {
   const [isVisibleDialog, setIsVisibleDialog] = useState(false);
+  const { t } = useTranslation(["Common"]);
 
   const toDoRequest = () => {
     setIsVisibleDialog(true);
@@ -30,7 +32,7 @@ const RequestButtonContainer = ({ isDisabled, isLoading, t }) => {
         />
       )}
       <Button
-        label={t("SendRequest")}
+        label={t("Common:SendRequest")}
         size={"medium"}
         primary
         isDisabled={isLoading || isDisabled}

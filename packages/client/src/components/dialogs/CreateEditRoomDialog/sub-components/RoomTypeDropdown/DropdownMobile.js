@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import RoomType from "../RoomType";
-
+import { RoomsType } from "./../../../../../../../common/constants/index";
 import { Backdrop } from "@docspace/components";
 
 import { Base } from "@docspace/components/themes";
@@ -22,19 +22,19 @@ const StyledDropdownMobile = styled.div`
 
 StyledDropdownMobile.defaultProps = { theme: Base };
 
-const DropdownMobile = ({ t, open, onClose, roomTypes, chooseRoomType }) => {
+const DropdownMobile = ({ t, open, onClose, chooseRoomType }) => {
   return (
     <>
       <Backdrop visible={open} onClick={onClose} zIndex={450} />
       <StyledDropdownMobile className="dropdown-mobile" isOpen={open}>
-        {roomTypes.map((room) => (
+        {Object.values(RoomsType).map((roomType) => (
           <RoomType
-            id={room.id}
+            id={roomType}
             t={t}
-            key={room.type}
-            room={room}
+            key={roomType}
+            roomType={roomType}
             type="dropdownItem"
-            onClick={() => chooseRoomType(room.type)}
+            onClick={() => chooseRoomType(roomType)}
           />
         ))}
       </StyledDropdownMobile>

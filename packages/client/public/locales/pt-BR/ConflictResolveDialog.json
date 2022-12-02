@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Selecione a ação:",
   "ConflictResolveTitle": "Confirmação de substituição",
   "CreateDescription": "Haverão dois arquivos diferentes na pasta.",
-  "CreateTitle": "Criar cópia do arquivo",
   "OverwriteDescription": "O arquivo será adicionado ao arquivo com o mesmo nome como uma versão.",
   "OverwriteTitle": "Substituir por versão atualizada",
   "SkipDescription": "Nenhum arquivo será copiado. O arquivo original será mantido na pasta de destino.",

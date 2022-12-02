@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Selectați acțiune:",
   "ConflictResolveTitle": "Confirmarea suprascrierii",
   "CreateDescription": "Două fișiere diferite vor fi salvate în dosarul.",
-  "CreateTitle": "Crearea copiei fișierului",
   "OverwriteDescription": "Fișierul va fi ajutat ca o versiune a fișierului cu același nume.",
   "OverwriteTitle": "Suprascriere la o versiune actualizată",
   "SkipDescription": "Niciun fișier n-o să fie copiat. Fișierul de origine rămâne în dosarul de destinație.",

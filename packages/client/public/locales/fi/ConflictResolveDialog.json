@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Valitse toiminto:",
   "ConflictResolveTitle": "Korvaamisen vahvistus",
   "CreateDescription": "Kansiossa tulee olemaan kaksi eri tiedostoa.",
-  "CreateTitle": "Luo kopio tiedostosta",
   "OverwriteDescription": "Tiedosto lisätään tiedostoon samalla nimellä versiona.",
   "OverwriteTitle": "Korvaa versiopäivityksellä",
   "SkipDescription": "Mitään tiedostoa ei kopioida. Alkuperäinen tiedosto säilytetään kohdekansiossa.",

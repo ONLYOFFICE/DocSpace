@@ -147,7 +147,7 @@ const MainProfile = (props) => {
           </div>
         </div>
         <LanguagesCombo t={t} />
-        <TimezoneCombo />
+        <TimezoneCombo title={t("Common:ComingSoon")} />
       </StyledInfo>
 
       {changeEmailVisible && (
