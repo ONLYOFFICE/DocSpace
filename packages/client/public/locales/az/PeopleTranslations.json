@@ -14,8 +14,5 @@
   "SendInviteAgain": "Dəvəti bir daha göndər",
   "SuccessChangeUserStatus": "İstifadəçinin statusu müvəffəqiyyətlə dəyişdirilmişdir",
   "SuccessDeletePersonalData": "Şəxsi məlumatlar müvəffəqiyyətlə silindi",
-  "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi",
-  "maxSizeFileError": "Faylın həcmi, maksimum izin verilən həcmdən böyükdür",
-  "orDropFileHereLabel": "faylı buraya sürüşdürün",
-  "selectNewPhotoLabel": "Yeni şəkli seçin"
+  "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi"
 }

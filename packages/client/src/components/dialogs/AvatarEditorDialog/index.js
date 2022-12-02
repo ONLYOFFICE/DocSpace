@@ -18,7 +18,7 @@ import AvatarEditor from "./editor";
 const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
-  const { t } = useTranslation(["Profile", "ProfileAction", "Common"]);
+  const { t } = useTranslation(["Profile", "PeopleTranslations", "ProfileAction", "Common"]);
   const {
     visible,
     onClose,

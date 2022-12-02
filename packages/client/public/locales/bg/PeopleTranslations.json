@@ -14,8 +14,5 @@
   "SendInviteAgain": "Изпрати покана още веднъж",
   "SuccessChangeUserStatus": "Потребителският статус беше променен успешно",
   "SuccessDeletePersonalData": "Личните данни бяха изтрити успешно",
-  "SuccessSentInvitation": "Поканата беше изпратена успешно",
-  "maxSizeFileError": "Максималният размер на файла е надвишен",
-  "orDropFileHereLabel": "или пуснете файла тук",
-  "selectNewPhotoLabel": "Избери нова снимка"
+  "SuccessSentInvitation": "Поканата беше изпратена успешно"
 }

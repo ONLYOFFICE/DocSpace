@@ -14,8 +14,5 @@
   "SendInviteAgain": "Trimiteți invitația din nou",
   "SuccessChangeUserStatus": "Statutul utilizatorului a fost schimbat cu succes",
   "SuccessDeletePersonalData": "Datele cu caracter personal au fost șterse cu succes",
-  "SuccessSentInvitation": "Invitația a fost trimisă cu succes",
-  "maxSizeFileError": "Fișierul depășește limita maximă de dimensiune",
-  "orDropFileHereLabel": "sau plasați fișierul aici",
-  "selectNewPhotoLabel": "Selectați o fotografie nouă"
+  "SuccessSentInvitation": "Invitația a fost trimisă cu succes"
 }

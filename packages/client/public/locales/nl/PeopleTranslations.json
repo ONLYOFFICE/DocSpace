@@ -14,8 +14,5 @@
   "SendInviteAgain": "Stuur uitnodiging opnieuw",
   "SuccessChangeUserStatus": "De gebruikersstatus is met succes gewijzigd",
   "SuccessDeletePersonalData": "Persoonsgegevens zijn met succes verwijderd",
-  "SuccessSentInvitation": "De uitnodiging werd met succes verzonden",
-  "maxSizeFileError": "Maximale bestandsgrootte overschreden",
-  "orDropFileHereLabel": "of zet het bestand hier neer",
-  "selectNewPhotoLabel": "Nieuwe foto selecteren"
+  "SuccessSentInvitation": "De uitnodiging werd met succes verzonden"
 }

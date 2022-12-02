@@ -14,8 +14,5 @@
   "SendInviteAgain": "Nosūtiet ielūgumu vēlreiz",
   "SuccessChangeUserStatus": "Lietotāja statuss tika veiksmīgi mainīts",
   "SuccessDeletePersonalData": "Personas dati ir veiksmīgi izdzēsti",
-  "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts",
-  "maxSizeFileError": "Pārsniegts maksimālais faila lielums",
-  "orDropFileHereLabel": "vai nometiet failu šeit",
-  "selectNewPhotoLabel": "Atlasiet jaunu fotoattēlu"
+  "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts"
 }

@@ -15,7 +15,5 @@
   "SuccessChangeUserStatus": "Stav uživatele byl úspěšně změněn",
   "SuccessDeletePersonalData": "Osobní údaje byly úspěšně odstraněny",
   "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána",
-  "maxSizeFileError": "Maximální velikost souboru překročena",
-  "orDropFileHereLabel": "nebo přetáhněte soubor sem",
-  "selectNewPhotoLabel": "Vybrat novou fotografii"
+  "maxSizeFileError": "Maximální velikost souboru překročena"
 }

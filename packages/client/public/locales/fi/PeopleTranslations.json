@@ -14,8 +14,5 @@
   "SendInviteAgain": "Lähetä kutsu uudelleen",
   "SuccessChangeUserStatus": "Käyttäjän tilan muuttaminen onnistui",
   "SuccessDeletePersonalData": "Henkilötietojen poistaminen onnistui",
-  "SuccessSentInvitation": "Kutsu lähetettiin onnistuneesti",
-  "maxSizeFileError": "Tiedoston enimmäiskoko ylitetty",
-  "orDropFileHereLabel": "tai pudota tiedosto tähän",
-  "selectNewPhotoLabel": "Valitse uusi valokuva"
+  "SuccessSentInvitation": "Kutsu lähetettiin onnistuneesti"
 }

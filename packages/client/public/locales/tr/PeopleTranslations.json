@@ -14,8 +14,5 @@
   "SendInviteAgain": "Bir kez daha davetiye gönder",
   "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
   "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
-  "SuccessSentInvitation": "Davetiye başarıyla gönderildi",
-  "maxSizeFileError": "Maksimum dosya boyutu aşıldı",
-  "orDropFileHereLabel": "veya buraya bir dosya bırakın",
-  "selectNewPhotoLabel": "Yeni fotoğraf seç"
+  "SuccessSentInvitation": "Davetiye başarıyla gönderildi"
 }

@@ -14,8 +14,5 @@
   "SendInviteAgain": "Envoyer une nouvelle invitation",
   "SuccessChangeUserStatus": "Le statut de l'utilisateur a été modifié avec succès",
   "SuccessDeletePersonalData": "Les données personnelles ont été supprimées avec succès",
-  "SuccessSentInvitation": "L'invitation a été envoyée avec succès",
-  "maxSizeFileError": "La taille maximale du fichier est dépassée",
-  "orDropFileHereLabel": "ou déposez un fichier ici",
-  "selectNewPhotoLabel": "Sélectionner une nouvelle photo"
+  "SuccessSentInvitation": "L'invitation a été envoyée avec succès"
 }

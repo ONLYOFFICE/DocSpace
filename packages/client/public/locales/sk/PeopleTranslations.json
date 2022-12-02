@@ -14,8 +14,5 @@
   "SendInviteAgain": "Poslať pozvánku ešte raz",
   "SuccessChangeUserStatus": "Stav používateľa bol úspešne zmenený",
   "SuccessDeletePersonalData": "Osobné údaje boli úspešne odstránené",
-  "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná",
-  "maxSizeFileError": "Bola prekročená maximálna veľkosť súboru",
-  "orDropFileHereLabel": "alebo presuňte súbor sem",
-  "selectNewPhotoLabel": "Vybrať nové foto"
+  "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná"
 }

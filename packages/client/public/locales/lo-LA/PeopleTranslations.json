@@ -12,8 +12,5 @@
   "SendInviteAgain": "ສົ່ງຄໍາເຊີນອີກເທື່ອຫນຶ່ງ",
   "SuccessChangeUserStatus": "ຖານະຜູ້ໃຊ້ໄດ້ຖືກປ່ຽນແປງສໍາເລັດ",
   "SuccessDeletePersonalData": "ຂໍ້ມູນສ່ວນຕົວໄດ້ຖືກລຶບອອກສໍາເລັດ",
-  "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ",
-  "maxSizeFileError": "ເກີນຂະໜາດfileສູງສຸດ",
-  "orDropFileHereLabel": "ຫຼືວາງໄຟລ໌ທີ່ນີ້",
-  "selectNewPhotoLabel": "ເລືອກຮູບໃຫມ່"
+  "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ"
 }

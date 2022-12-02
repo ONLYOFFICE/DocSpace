@@ -14,8 +14,5 @@
   "SendInviteAgain": "Αποστολή πρόσκλησης ακόμα μια φορά",
   "SuccessChangeUserStatus": "Η κατάσταση του χρήστη άλλαξε επιτυχώς",
   "SuccessDeletePersonalData": "Τα προσωπικά δεδομένα έχουν διαγραφεί επιτυχώς",
-  "SuccessSentInvitation": "Η πρόσκληση στάλθηκε με επιτυχία",
-  "maxSizeFileError": "Υπέρβαση μέγιστου μεγέθους αρχείου",
-  "orDropFileHereLabel": "ή σύρετε ένα αρχείο εδώ",
-  "selectNewPhotoLabel": "Επιλογή νέας φωτογραφίας"
+  "SuccessSentInvitation": "Η πρόσκληση στάλθηκε με επιτυχία"
 }
