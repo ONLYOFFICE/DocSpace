@@ -2,7 +2,6 @@
   "AddAccount": "アカウントの追加",
   "AddAuthor": "著者を追加",
   "ArchivingData": "データのアーカイブ",
-  "ButtonShareAccess": "共有設定",
   "ConnectingAccount": "接続アカウント",
   "Copy": "コピー",
   "CopyHere": "ここにコピー",
@@ -38,7 +37,7 @@
   "MoveHere": "ここに移動",
   "MoveToOperation": "移動中",
   "NewForm": "フォーム テンプレート",
-  "NewFormFile": "テキストファイルからのフォーム",
+  "Other": "その他",
   "OwnerChange": "オーナー変更",
   "Presentations": "プレゼンテーション",
   "Spreadsheets": "スプレッドシート",
@@ -55,6 +54,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "その他"
+  "TypeTitlekDrive": "kDrive"
 }

@@ -167,7 +167,7 @@ const Members = ({
           {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
-              title={t("Repeat invitation")}
+              title={t("Common:RepeatInvitation")}
               iconName="/static/images/e-mail+.react.svg"
               isFill={true}
               onClick={onRepeatInvitation}

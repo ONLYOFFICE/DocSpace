@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Оберіть дію:",
   "ConflictResolveTitle": "Підтвердження перезапису",
   "CreateDescription": "У папці буде два різних файли.",
-  "CreateTitle": "Створення копії файлу",
   "OverwriteDescription": "Файл буде додано до файлу з таким же іменем, як версія.",
   "OverwriteTitle": "Перезапис з оновленням версії",
   "SkipDescription": "Жоден файл не буде скопійовано. Оригінальний файл буде збережено у папці призначення.",

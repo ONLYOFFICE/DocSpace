@@ -426,7 +426,7 @@ const PortalIntegration = (props) => {
         </Frame>
 
         <Buttons>
-          <Button primary size="normal" label="Preview" onClick={loadFrame} />
+          <Button primary size="normal" label={t("Common:Preview")} onClick={loadFrame} />
           <Button
             primary
             size="normal"

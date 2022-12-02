@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Kies de actie:",
   "ConflictResolveTitle": "Overschrijf bevestiging",
   "CreateDescription": "Er zullen twee verschillende bestanden in de map staan.",
-  "CreateTitle": "Maak bestandskopie",
   "OverwriteDescription": "Het bestand zal worden toegevoegd aan het bestand met dezelfde naam als een versie.",
   "OverwriteTitle": "Overschrijven met versie update",
   "SkipDescription": "Er wordt geen bestand gekopieerd. Het originele bestand blijft bewaard in de doelmap.",

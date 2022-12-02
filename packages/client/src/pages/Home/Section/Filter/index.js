@@ -206,7 +206,7 @@ const SectionFilterContent = ({
         }
 
         if (tags) {
-          if (tags.includes(t("NoTag"))) {
+          if (!tags?.length) {
             newFilter.tags = null;
             newFilter.withoutTags = true;
           } else {
@@ -424,14 +424,6 @@ const SectionFilterContent = ({
         }
       }
 
-      // if (roomsFilter.withoutTags) {
-      //   filterValues.push({
-      //     key: [t("NoTag")],
-      //     group: FilterGroups.roomFilterTags,
-      //     isMultiSelect: true,
-      //   });
-      // }
-
       if (roomsFilter.type) {
         const key = +roomsFilter.type;
 
@@ -550,6 +542,7 @@ const SectionFilterContent = ({
       }
     }
 
+    return filterValues;
     const currentFilterValues = [];
 
     setSelectedFilterValues((value) => {
@@ -702,7 +695,7 @@ const SectionFilterContent = ({
             id: "filter_type-review",
             key: RoomsType.ReviewRoom,
             group: FilterGroups.roomFilterType,
-            label: t("ReviewRooms"),
+            label: t("Common:Review"),
           },
           {
             id: "filter_type-view-only",
@@ -843,19 +836,12 @@ const SectionFilterContent = ({
           isMultiSelect: true,
         }));
 
-        // tagsOptions.push({
-        //   key: t("NoTag"),
-        //   group: FilterGroups.roomFilterTags,
-        //   label: t("NoTag"),
-        //   isMultiSelect: true,
-        // });
-
         const isLast = connectedThirdParty.length === 0;
 
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
-          label: t("Tags"),
+          label: t("Common:Tags"),
           isHeader: true,
           isLast,
         });
@@ -905,6 +891,7 @@ const SectionFilterContent = ({
             label: "",
             withOptions: true,
             options: [
+              { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
               {
                 id: "filter_folders_with-subfolders",
                 key: FilterKeys.withSubfolders,
@@ -1020,7 +1007,6 @@ const SectionFilterContent = ({
       label: t("ByLastModified"),
       default: true,
     };
-
     const type = {
       id: "sort-by_type",
       key: "Type",
@@ -1045,7 +1031,6 @@ const SectionFilterContent = ({
       label: t("ByAuthor"),
       default: true,
     };
-
     const owner = {
       id: "sort-by_owner",
       key: "Author",
@@ -1055,7 +1040,7 @@ const SectionFilterContent = ({
     const tags = {
       id: "sort-by_tags",
       key: "Tags",
-      label: t("Tags"),
+      label: t("Common:Tags"),
       default: true,
     };
     const roomType = {
@@ -1315,6 +1300,7 @@ const SectionFilterContent = ({
       isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
+      filterTitle={t("Filter")}
     />
   );
 };
