@@ -344,6 +344,7 @@ const StyledProfileWrapper = styled.div`
   left: 0;
   min-width: 251px;
   max-width: 251px;
+  background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
