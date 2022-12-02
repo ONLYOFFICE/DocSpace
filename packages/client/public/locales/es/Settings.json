@@ -70,7 +70,6 @@
   "ManagementCategoryDataManagement": "Archivo local",
   "ManagementCategoryIntegration": "Integración",
   "ManagementCategorySecurity": "Seguridad",
-  "ManualBackup": "Copia de seguridad manual",
   "ManualBackupDescription": "Use esta opción si quiere recibir todos los datos del portal en un archivo.",
   "ManualBackupHelp": "La opción <strong>Copia de seguridad de datos</strong> se usa para crear backup de los datos del portal para que Usted pueda restaurarlos más tarde en su servidor local. ",
   "ManualBackupHelpNote": "Seleccione el almacenamiento para los datos (no olvide introducir los detalles de su almacenamiento de terceros para tener acceso a él).<br/><strong>Nota:</strong> Usted necesita conectar su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive) a la carpeta Documentos Comunes de {{organizationName}} antes de que pueda guardar su copia de seguridad allí.",

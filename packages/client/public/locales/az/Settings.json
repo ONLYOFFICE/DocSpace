@@ -70,7 +70,6 @@
   "ManagementCategoryDataManagement": "Məlumatların idarə olunması",
   "ManagementCategoryIntegration": "İnteqrasiya",
   "ManagementCategorySecurity": "Təhlükəsizlik",
-  "ManualBackup": "Əl ilə ehtiyat nüsxələri",
   "ManualBackupDescription": "Portalda olan bütün məlumatları fayl kimi əldə etmək istəyirsinizsə, bu seçimdən istifadə edin.",
   "ManualBackupHelp": "<strong>Verilənlərin Yedəklənməsi</strong> seçimi portal məlumatlarının ehtiyat nüsxəsini çıxarmaq üçün istifadə olunur ki, onlar daha sonra yerli serverdə bərpa olunsun.",
   "ManualBackupHelpNote": "Verilən üçün yaddaş seçin (onlara daxil olmaq üçün üçüncü tərəf yaddaş məlumatlarını əlavə etməyi unutmayın).<br/>Qeyd:</strong> ehtiyat nüsxənizi orada saxlamaq üçün üçüncü tərəf hesabınızı (Dropbox, Box.com, OneDrive və ya Google Disk) {{organizationName}} Ümumi Sənədlər qovluğu ilə əlaqələndirməlisiniz.",

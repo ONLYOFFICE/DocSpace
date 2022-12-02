@@ -70,7 +70,6 @@
   "ManagementCategoryDataManagement": "Datenmanagement",
   "ManagementCategoryIntegration": "Integration",
   "ManagementCategorySecurity": "Sicherheit",
-  "ManualBackup": "Manuelle Datensicherungen",
   "ManualBackupDescription": "Nutzen Sie diese Option, wenn Sie alle auf dem Portal enthaltenen Daten als Datei erhalten möchten.",
   "ManualBackupHelp": "Die Option <strong>Datensicherung</strong> dient zum Sichern der Portaldaten, um sie später auf Ihrem lokalen Server wiederherstellen zu können.",
   "ManualBackupHelpNote": "Wählen Sie den Speicher für die Daten aus (vergessen Sie nicht, die Speicherdetails Ihres Drittanbieters einzugeben, um darauf zugreifen zu können.)<br/><strong>Hinweis:</strong> Sie müssen Ihr Drittanbieter-Konto (DropBox, Box.com, OneDrive oder Google Drive) mit dem Ordner {{organizationName}} 'Gemeinsame Dokumente' verbinden, bevor Sie Ihr Backup dort speichern können.",

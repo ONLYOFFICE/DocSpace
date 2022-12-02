@@ -67,7 +67,6 @@
   "ManagementCategoryDataManagement": "Datu pārvaldība",
   "ManagementCategoryIntegration": "Integrācija",
   "ManagementCategorySecurity": "Drošība",
-  "ManualBackup": "Manuālā dublēšana",
   "ManualBackupDescription": "Izmantojiet šo iespēju, ka vēlaties visus portāla datus iegūt faila veidā.",
   "ManualBackupHelp": "<strong>Datu rezerves kopēšanas</strong> iespēja tiek izmantota, lai kopētu portāla datus un tos vēlāk noglabātu jūsu vietējā serverī.",
   "ManualBackupHelpNote": "Izvēlieties datu glabātuvi (neaizmirstiet ievadīt trešās puses krātuves datus, lai varētu tiem piekļūt).<br/><strong>Piezīme:</strong> jums ir jāpieslēdzas savu trešās puses kontu (DropBox, Box.com, OneDrive vai Google Drive) {{organizationName}} Kopīgie dokumenti mapei pirms jūs varēsit tajā noglabāt savu rezerves kopiju.",

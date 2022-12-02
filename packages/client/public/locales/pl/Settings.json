@@ -67,7 +67,6 @@
   "ManagementCategoryDataManagement": "Zarządzanie danymi",
   "ManagementCategoryIntegration": "Integracja",
   "ManagementCategorySecurity": "Bezpieczeństwo",
-  "ManualBackup": "Ręczne tworzenie kopii zapasowych",
   "ManualBackupDescription": "Użyj tej opcji, jeśli chcesz pobrać wszystkie dane na portalu jako plik.",
   "ManualBackupHelp": "Opcja <strong>Kopia zapasowa danych</strong> jest używana do tworzenia kopii zapasowych danych portalu, aby móc je później przywrócić na lokalny serwer.",
   "ManualBackupHelpNote": "Wybierz pamięć danych (nie zapomnij wpisać szczegółów przechowywania przez strony trzecie, aby móc uzyskać dostęp do niego).<br/><strong>Uwaga:</strong> musisz się połączyć z kontem osób trzecich (DropBox, Box.com, OneDrive lub Google Drive) w folderze Wspólnych Dokumentów {{organizationName}}, aby można było zapisać kopię zapasową w tym miejscu.",

@@ -67,7 +67,6 @@
   "ManagementCategoryDataManagement": "Správa dat",
   "ManagementCategoryIntegration": "Integrácia",
   "ManagementCategorySecurity": "Bezpečnosť",
-  "ManualBackup": "Manuálne zálohovanie údajov",
   "ManualBackupDescription": "Túto možnosť použite, ak chcete získať všetky údaje obsiahnuté na portáli ako súbor.",
   "ManualBackupHelp": "Možnosť <strong>Zálohovanie dát</strong> sa používa na zálohovanie údajov portálu, aby ho bolo možné neskôr obnoviť na lokálny server.",
   "ManualBackupHelpNote": "Vyberte miesto ukladania údajov (nezabudnite zadať podrobnosti o úložisku tretej strany, aby ste k ním mali prístup).<br/><strong>Poznámka:</strong> skôr ako budete môcť ukladať svoje zálohy, potrebujete prepojiť účet tretej strany (DropBox, Box.com, OneDrive alebo Google Drive) do priečinka Všeobecné Dokumenty {{organizationName}}.",

@@ -70,7 +70,6 @@
   "ManagementCategoryDataManagement": "Gerenciamento de dados",
   "ManagementCategoryIntegration": "Integração",
   "ManagementCategorySecurity": "Segurança",
-  "ManualBackup": "Cópias de segurança manuais",
   "ManualBackupDescription": "Use esta opção se você quiser obter os dados contidos no portal como um arquivo.",
   "ManualBackupHelp": "A opção <strong>Backup de Dados</strong> é usada para fazer backup dos dados do portal para permitir restaurá-lo posteriormente para seu servidor local.",
   "ManualBackupHelpNote": "Selecione o armazenamento para os dados (não se esqueça de inserir seus detalhes de armazenamento de terceiros para conseguir ter acesso).<br/><strong>Nota:</strong> você precisa de uma conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive) para o Comum {{organizationName}} antes de poder salvar seu backup lá.",

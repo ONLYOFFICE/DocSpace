@@ -70,7 +70,6 @@
   "ManagementCategoryDataManagement": "Gestion des données",
   "ManagementCategoryIntegration": "Intégration",
   "ManagementCategorySecurity": "Sécurité",
-  "ManualBackup": "Sauvegardes manuelles",
   "ManualBackupDescription": "Utilisez cette option si vous souhaitez obtenir toutes les données du portail en tant que fichier.",
   "ManualBackupHelp": "L'option <strong>Sauvegarde de données</strong> est utilisée pour sauvegarder les données du portail pour pouvoir les restaurer plus tard sur le serveur local.",
   "ManualBackupHelpNote": "Sélectionnez le stockage pour les données (n'oubliez pas d'ajouter vos détails de stockage tiers afin de l'accéder).<br/><strong>Remarque:</strong>vous devez connecter votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive) au dossier Documents Communs {{organizationName}} avant que vous puissiez enregistrer votre sauvegarde là-bas.",

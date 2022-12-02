@@ -1300,6 +1300,7 @@ const SectionFilterContent = ({
       isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
+      filterTitle={t("Filter")}
     />
   );
 };

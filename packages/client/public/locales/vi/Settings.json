@@ -67,7 +67,6 @@
   "ManagementCategoryDataManagement": "Quản lý dữ liệu",
   "ManagementCategoryIntegration": "Tích hợp",
   "ManagementCategorySecurity": "Bảo mật",
-  "ManualBackup": "Sao lưu thủ công",
   "ManualBackupDescription": "Sử dụng tùy chọn này nếu bạn muốn lấy tất cả dữ liệu chứa trên cổng thông tin này bằng một file.",
   "ManualBackupHelp": "Tùy chọn <strong>Sao lưu dữ liệu</strong> được sử dụng để sao lưu dữ liệu hệ thống để sau đó khôi phục tới máy chủ cục bộ của bạn.",
   "ManualBackupHelpNote": "Chọn dung lượng lưu trữ cho dữ liệu (đừng quên nhập chi tiết lưu trữ của bên thứ ba để có thể truy cập dữ liệu đó).<br/><strong>Lưu ý:</strong> bạn cần kết nối tài khoản bên thứ ba (DropBox, Box.com, OneDrive hoặc Google Drive) với thư mục Cộng  tác của {{organizationName}} trước khi bạn có thể lưu bản sao lưu của mình ở đó.",

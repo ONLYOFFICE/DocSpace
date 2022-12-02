@@ -64,7 +64,6 @@
   "ManagementCategoryDataManagement": "Gestionarea datelor",
   "ManagementCategoryIntegration": "Integrare",
   "ManagementCategorySecurity": "Securitatea",
-  "ManualBackup": "Copiere de rezervă manuală",
   "ManualBackupDescription": "Utilizați această opțiune dacă doriți să obțineți toate datele de portalul sub forma unui fișier.",
   "ManualBackupHelp": "Opțiunea <strong>Copiere de rezervă automată</strong> permite crearea unei copii de rezervă a datelor din portal pentru a fi restaurate ulterior pe un server local.",
   "ManualBackupHelpNote": "Alegeți varianta de stocare a datelor (nu uitați să introduceți detaliile furnizorului de servicii de stocare ca să-l puteți accesa).<br/><strong>Mențiune:</strong> trebuie să vă conectați cu contul de stocare de la terți (DropBox, Box.com, OneDrive sau Google Drive) la folderul Comun al {{organizationName}} înainte de a crea o copie de rezervă acolo.",
