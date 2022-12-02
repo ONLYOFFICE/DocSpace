@@ -335,6 +335,7 @@ const StyledUserName = styled.div`
   max-width: 131px;
   min-width: 131px;
   padding-left: 12px;
+  cursor: pointer;
 `;
 
 const StyledProfileWrapper = styled.div`
