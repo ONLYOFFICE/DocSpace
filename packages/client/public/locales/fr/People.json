@@ -1,5 +1,4 @@
 {
-  "Administrator": "Administrateur",
   "LblInviteAgain": "Inviter à nouveau",
   "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <1>{{email}}</1>",
   "NotFoundTitle": "Aucun collaborateur trouvé ",
