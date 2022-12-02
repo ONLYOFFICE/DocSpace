@@ -4,6 +4,7 @@ import styled from "styled-components";
 import RoomType from "../RoomType";
 
 import { Base } from "@docspace/components/themes";
+import { RoomsType } from "@docspace/common/constants";
 
 const StyledDropdownDesktop = styled.div`
   max-width: 100%;
@@ -41,7 +42,7 @@ const DropdownDesktop = ({ t, open, chooseRoomType }) => {
       <div className="dropdown-content">
         {Object.values(RoomsType).map((roomType) => (
           <RoomType
-            id={room.id}
+            id={roomType}
             t={t}
             key={roomType}
             roomType={roomType}

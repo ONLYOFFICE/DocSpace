@@ -13,6 +13,7 @@ import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
+import { getRoomTypeDefaultTagTranslation } from "../data";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
