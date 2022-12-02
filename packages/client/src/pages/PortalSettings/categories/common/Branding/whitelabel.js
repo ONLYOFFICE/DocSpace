@@ -69,14 +69,17 @@ const WhiteLabel = (props) => {
         width,
         height,
         options.text,
-        options.fontSize
+        options.fontSize,
+        "#000",
+        options.isEditorLogo
       );
       const logoDark = generateLogo(
         width,
         height,
         options.text,
         options.fontSize,
-        "#fff"
+        "#fff",
+        options.isEditorLogo
       );
       newLogos[i].path.light = logoLight;
       newLogos[i].path.dark = logoDark;

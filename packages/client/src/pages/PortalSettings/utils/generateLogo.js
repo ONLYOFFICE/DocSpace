@@ -3,11 +3,12 @@ export const generateLogo = (
   height,
   text,
   fontSize = 18,
-  fontColor = "#000"
+  fontColor = "#000",
+  isEditorLogo = false
 ) => {
   const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = isEditorLogo ? "154" : width;
+  canvas.height = isEditorLogo ? "27" : height;
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "transparent";
   ctx.clearRect(0, 0, width, height);
@@ -29,9 +30,9 @@ export const getLogoOptions = (index, text) => {
     case 2:
       return { fontSize: 16, text: text.trim().charAt(0) };
     case 3:
-      return { fontSize: 12, text: text };
+      return { fontSize: 16, text: text, isEditorLogo: true };
     case 4:
-      return { fontSize: 12, text: text };
+      return { fontSize: 16, text: text, isEditorLogo: true };
     case 5:
       return { fontSize: 30, text: text.trim().charAt(0) };
     case 6:
