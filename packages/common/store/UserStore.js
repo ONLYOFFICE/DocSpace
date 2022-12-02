@@ -114,13 +114,15 @@ class UserStore {
   }
 
   get userTheme() {
-    const theme = this.user?.theme || "Light";
-
-    if (theme === "System") {
-      return window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+    const systemTheme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "Dark"
         : "Light";
+    const theme = this.user?.theme || systemTheme;
+
+    if (theme === "System") {
+      return systemTheme;
     }
     return theme;
   }
