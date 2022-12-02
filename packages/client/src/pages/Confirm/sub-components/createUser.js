@@ -610,7 +610,7 @@ const Confirm = (props) => {
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
               <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
+                {t("Common:Or")}
               </Text>
             </div>
           )}
