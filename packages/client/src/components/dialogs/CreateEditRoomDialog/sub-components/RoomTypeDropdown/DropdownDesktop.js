@@ -41,6 +41,7 @@ const DropdownDesktop = ({ t, open, chooseRoomType }) => {
       <div className="dropdown-content">
         {Object.values(RoomsType).map((roomType) => (
           <RoomType
+            id={room.id}
             t={t}
             key={roomType}
             roomType={roomType}

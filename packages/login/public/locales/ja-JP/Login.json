@@ -8,7 +8,6 @@
   "ExpiredCode": "このコードは有効期限が切られています。新しいコードをリクエストして、もう一度ご入力ください。",
   "ForgotPassword": "パスワードをお忘れですか？",
   "InvalidCode": "このコードが無効です。もう一度ご入力ください。",
-  "LoginDescription": "パスワードなしでログインするためにマジックコードを送ります。または<1>手動でログイン</1>ができます。",
   "MessageAuthorize": "ログインして続ける",
   "MessageEmailConfirmed": "あなたのメールは正常に作動しました。",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "登録時に使用したメールアドレスを入力してください。パスワード回復の手順がそれに送られます。",

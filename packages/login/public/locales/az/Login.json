@@ -8,7 +8,6 @@
   "ExpiredCode": "Bu kod artıq etibarlı deyil. Yeni kod sorğusu göndərin və yenidən cəhd edin",
   "ForgotPassword": "Parolunuzu unutmusunuz mu?",
   "InvalidCode": "Kod etibarsızdır. Yenidən cəhd edin",
-  "LoginDescription": "Sizə şifrəsiz daxil olmaq üçün sehrli kod göndərəcəyik. Yaxud da <1>özünüz giriş edə</1> bilərsiniz.",
   "MessageAuthorize": "Davam etmək üçün daxil olun",
   "MessageEmailConfirmed": "Sizin elektron poçt uğurla aktivləşdirilmişdi.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Xahiş edirik qeydiyyat zamanı istifadə etdiyiniz elektron poçtu qeyd edin. Şifrəni sıfırlamaq üçün təlimat həmin elektron poçta göndəriləcəkdir.",

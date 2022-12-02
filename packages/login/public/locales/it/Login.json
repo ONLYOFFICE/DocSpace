@@ -8,7 +8,6 @@
   "ExpiredCode": "Questo codice non è più valido. Richiedi un nuovo codice e riprova",
   "ForgotPassword": "Password dimenticata?",
   "InvalidCode": "Questo codice non è valido. Riprova",
-  "LoginDescription": "Ti invieremo via email un codice magico per accedere senza password. Oppure puoi <1>accedere manualmente.</1>",
   "MessageAuthorize": "‎Accedere per continuare‎",
   "MessageEmailConfirmed": "Il tuo indirizzo email è stato confermato con successo.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "‎Inserisci l'e-mail che hai usato per la registrazione. Le istruzioni per il recupero della password verranno inviate su di esso.‎",

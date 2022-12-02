@@ -8,7 +8,6 @@
   "ExpiredCode": "Ta koda ni več veljavna. Zahtevajte novo kodo in poskusite znova",
   "ForgotPassword": "Ste pozabili geslo?",
   "InvalidCode": "Ta koda je napačna. Poskusite znova",
-  "LoginDescription": "Po e-pošti vam bomo poslali čarobno kodo za prijavo brez gesla. Lahko pa se <1>prijavite ročno.</1>",
   "MessageAuthorize": "Za nadaljevanje se prijavite",
   "MessageEmailConfirmed": "Vaš e-mail naslov je bil uspešno aktiviran.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Prosimo, vnesite e-mail naslov, ki ste ga uporabili za registracijo. Navodila za obnovitev gesla bodo poslana.",

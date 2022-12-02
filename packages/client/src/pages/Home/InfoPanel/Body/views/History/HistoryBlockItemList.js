@@ -60,7 +60,7 @@ export const HistoryBlockItemList = ({
           <Trans
             t={t}
             ns="InfoPanel"
-            i18nKey={"AndMoreLabel"}
+            i18nKey="AndMoreLabel"
             values={{ count: items.length - 3 }}
             components={{ bold: <strong /> }}
           />

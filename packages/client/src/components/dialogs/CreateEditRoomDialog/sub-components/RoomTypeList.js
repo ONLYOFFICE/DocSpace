@@ -22,6 +22,7 @@ const RoomTypeList = ({ t, setRoomType }) => {
     <StyledRoomTypeList>
       {Object.values(RoomsType).map((roomType) => (
         <RoomType
+          id={room.id}
           t={t}
           key={roomType}
           roomType={roomType}

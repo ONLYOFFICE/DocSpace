@@ -8,7 +8,6 @@
   "ExpiredCode": "Dieser Code ist nicht mehr gültig. Fordern Sie einen neuen Code an und versuchen Sie es erneut",
   "ForgotPassword": "Kennwort vergessen?",
   "InvalidCode": "Dieser Code ist ungültig. Versuchen Sie es erneut",
-  "LoginDescription": "Wir schicken Ihnen einen geheimen Code per E-Mail, mit dem Sie sich ohne Passwort anmelden können. Oder Sie können sich <1>manuell anmelden.</1>",
   "MessageAuthorize": "Bitte einloggen",
   "MessageEmailConfirmed": "Ihre E-Mail-Adresse wurde erfolgreich aktiviert.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Bitte E-Mail eingeben, das Sie bei der Registrierung verwendet haben. Anleitungen zur Änderung eines Passworts werden daran gesendet.",

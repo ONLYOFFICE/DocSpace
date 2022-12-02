@@ -148,7 +148,7 @@ const ChangePortalOwnerDialog = ({
             withCancelButton
             filter={filter}
             excludeItems={[id]}
-            acceptButtonLabel={t("Common:Select")}
+            acceptButtonLabel={t("Common:SelectAction")}
             onAccept={onAccept}
             onCancel={onBackClick}
             onBackClick={onBackClick}
@@ -239,7 +239,7 @@ const ChangePortalOwnerDialog = ({
           <div className="button-wrapper">
             <Button
               tabIndex={5}
-              label={t("ProfileAction:ChangeButton")}
+              label={t("Common:ChangeButton")}
               size="normal"
               primary
               scale

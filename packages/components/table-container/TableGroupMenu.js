@@ -36,6 +36,7 @@ const TableGroupMenu = (props) => {
         {...rest}
       >
         <Checkbox
+          id="menu-checkbox_selected-all-file"
           className="table-container_group-menu-checkbox"
           onChange={onCheckboxChange}
           isChecked={isChecked}
@@ -43,6 +44,7 @@ const TableGroupMenu = (props) => {
           title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
+          id="menu-combobox"
           comboIcon="/static/images/triangle.navigation.down.react.svg"
           noBorder
           advancedOptions={checkboxOptions}
@@ -63,6 +65,7 @@ const TableGroupMenu = (props) => {
           <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
             <div className="info-panel-toggle-bg">
               <IconButton
+                id="info-panel-toggle--open"
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
                 size="16"

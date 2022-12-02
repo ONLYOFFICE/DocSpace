@@ -72,6 +72,7 @@ const DropdownMobile = ({ t, open, onClose, chooseRoomType }) => {
             <div className="dropdown-mobile-content">
               {Object.values(RoomsType).map((roomType) => (
                 <RoomType
+                  id={room.id}
                   t={t}
                   key={roomType}
                   roomType={roomType}

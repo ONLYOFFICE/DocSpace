@@ -8,7 +8,6 @@
   "ExpiredCode": "Tämä koodi ei ole enää voimassa. Pyydä uutta koodia ja yritä uudelleen",
   "ForgotPassword": "Unohditko salasanasi?",
   "InvalidCode": "Tämä koodi ei kelpaa. Yritä uudelleen",
-  "LoginDescription": "Lähetämme sinulle taikakoodin, jotta voit kirjautua sisään ilman salasanaa. Tai voit <1>kirjautua manuaalisesti.</1>",
   "MessageAuthorize": "Kirjaudu sisään jatkaaksesi",
   "MessageEmailConfirmed": "Sähköpostisi aktivointi onnistui.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Kirjoita rekisteröinnissä käyttämäsi sähköpostiosoite. Salasanan palautusohjeet lähetetään siihen.",

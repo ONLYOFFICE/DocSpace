@@ -8,7 +8,6 @@
   "ExpiredCode": "더 이상 유효하지 않은 코드입니다. 새 코드를 요청한 뒤 다시 시도해 주세요",
   "ForgotPassword": "비밀번호를 잊어버리셨나요?",
   "InvalidCode": "유효하지 않은 코드입니다. 다시 시도해 주세요",
-  "LoginDescription": "비밀번호 없이 로그인할 수 있는 마법의 코드를 이메일로 전송해 드렸습니다. 아니면 <1>수동으로 로그인</1>할 수도 있습니다.",
   "MessageAuthorize": "계속하시려면 로그인해주세요",
   "MessageEmailConfirmed": "이메일이 성공적으로 활성화되었습니다.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "가입에 사용하신 이메일을 입력해주세요. 해당 이메일로 비밀번호 복원 방법이 발송됩니다.",

@@ -8,7 +8,6 @@
   "ExpiredCode": "Codul nu mai este valabil. Solicitați un nou cod și încercați din nou",
   "ForgotPassword": "Ați uitat parola?",
   "InvalidCode": "Codul nevalid. Încercaţi din nou",
-  "LoginDescription": "Vă vom trimite un cod magic pentru a vă conecta fără a cere o parolă. Sau puteți <1>să vă conectați manual.</1>",
   "MessageAuthorize": "Trebuie să vă conectați cu contul pentru a continua",
   "MessageEmailConfirmed": "Adresa dvs. de e-mail activată cu succes.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Introduceți email cu care ai creat contul. Instrucțiunile pentru recuperarea parolei vor fi trimise pe adresa dvs. de email.",

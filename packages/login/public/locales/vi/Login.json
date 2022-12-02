@@ -8,7 +8,6 @@
   "ExpiredCode": "Mã này không còn hợp lệ. Yêu cầu mã mới và thử lại",
   "ForgotPassword": "Bạn quên mật khẩu?",
   "InvalidCode": "Mã này không hợp lệ. Thử lại",
-  "LoginDescription": "Chúng tôi sẽ gửi cho bạn một mã thần kỳ để đăng nhập mà không cần mật khẩu. Hoặc bạn có thể <1>đăng nhập thủ công.</1>",
   "MessageAuthorize": "Đăng nhập để tiếp tục",
   "MessageEmailConfirmed": "Email của bạn đã được kích hoạt thành công.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Vui lòng nhập email bạn đã sử dụng để đăng ký. Hướng dẫn khôi phục mật khẩu sẽ được gửi đến email đó.",
