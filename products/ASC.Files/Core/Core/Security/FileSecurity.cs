@@ -724,9 +724,19 @@ public class FileSecurity : IFileSecurity
 
             if ((e.RootFolderType == FolderType.VirtualRooms || e.RootFolderType == FolderType.Archive) && !isUser)
             {
-                if (e.RootFolderType == FolderType.Archive && action != FilesSecurityActions.Read && action != FilesSecurityActions.Delete && action != FilesSecurityActions.RoomEdit)
+                if (e.RootFolderType == FolderType.Archive &&
+                    action != FilesSecurityActions.Read &&
+                    action != FilesSecurityActions.Delete &&
+                    action != FilesSecurityActions.RoomEdit &&
+                    action != FilesSecurityActions.ReadHistory
+                    )
                 {
                     return false;
+                }
+
+                if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isDocSpaceAdmin)
+                {
+                    return folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
                 }
 
                 if (isDocSpaceAdmin || e.CreateBy == userId)
@@ -741,14 +751,10 @@ public class FileSecurity : IFileSecurity
                 {
                     return true;
                 }
+
             }
 
             if (e.RootFolderType == FolderType.ThirdpartyBackup && isDocSpaceAdmin)
-            {
-                return true;
-            }
-
-            if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isDocSpaceAdmin)
             {
                 return true;
             }
@@ -829,8 +835,13 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing) && e.RootFolderType != FolderType.Archive)
+            else if ((action == FilesSecurityActions.Edit || action == FilesSecurityActions.ChangeHistory) && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing) && e.RootFolderType != FolderType.Archive)
             {
+                if (action == FilesSecurityActions.ChangeHistory)
+                {
+                    return file != null && !file.Encrypted;
+                }
+
                 return true;
             }
             else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin) && e.RootFolderType != FolderType.Archive)
@@ -845,7 +856,7 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.ReadHistory && (e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing) && e.RootFolderType != FolderType.Archive)
+            else if (action == FilesSecurityActions.ReadHistory && (e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
@@ -1584,6 +1595,7 @@ public class FileSecurity : IFileSecurity
         RoomEdit,
         Rename,
         ReadHistory,
-        Lock
+        Lock,
+        ChangeHistory
     }
 }
