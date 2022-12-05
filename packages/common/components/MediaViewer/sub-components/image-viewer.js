@@ -205,10 +205,12 @@ class ImageViewer extends React.Component {
       playlist,
       playlistPos,
       isImage,
+      isAudio,
       contextModel,
+      audioIcon,
     } = this.props;
 
-    const generateContextMenu = (isOpen) => {
+    const generateContextMenu = (isOpen, right, bottom) => {
       const model = contextModel();
 
       const onItemClick = (e, item) => {
@@ -225,8 +227,8 @@ class ImageViewer extends React.Component {
           directionX="right"
           fixedDirection={true}
           withBackdrop={false}
-          manualY="63px"
-          manualX="-31px"
+          manualY={(bottom || "63") + "px"}
+          manualX={(right || "-31") + "px"}
         >
           {model.map((item) => {
             const onClick = (e) => {
@@ -389,6 +391,8 @@ class ImageViewer extends React.Component {
           contextModel={contextModel}
           generateContextMenu={generateContextMenu}
           isImage={isImage}
+          isAudio={isAudio}
+          audioIcon={audioIcon}
           onMaskClick={onClose}
           onNextClick={onNextClick}
           onPrevClick={onPrevClick}

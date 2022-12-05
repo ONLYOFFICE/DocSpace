@@ -445,6 +445,7 @@ class MediaViewer extends React.Component {
       onShowInfoPanel,
       onClickDownload,
       onClickDownloadAs,
+      getIcon,
       onClickRename,
       onClickDelete,
       setBufferSelection,
@@ -464,6 +465,7 @@ class MediaViewer extends React.Component {
 
     let isImage = false;
     let isVideo = false;
+    let isAudio = false;
     let canOpen = true;
 
     const isFavorite =
@@ -517,8 +519,12 @@ class MediaViewer extends React.Component {
       isVideo = this.mapSupplied[ext]
         ? this.mapSupplied[ext].type == mediaTypes.video
         : false;
+      isAudio = this.mapSupplied[ext]
+        ? this.mapSupplied[ext].type == mediaTypes.audio
+        : false;
     }
 
+    let audioIcon = getIcon(96, ext);
     // TODO: rewrite with fileURL
     /*if (this.mapSupplied[ext])
       if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
@@ -543,6 +549,8 @@ class MediaViewer extends React.Component {
             onDeleteClick={this.onDelete}
             isFavorite={isFavorite}
             isImage={isImage}
+            isAudio={isAudio}
+            audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}
           />
