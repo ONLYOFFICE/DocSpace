@@ -3051,6 +3051,10 @@ const Dark = {
     disabledBorder: "1px solid #474747",
     disabledColor: "#858585",
   },
+
+  accessRightSelect: {
+    descriptionColor: "#858585",
+  },
 };
 
 export default Dark;

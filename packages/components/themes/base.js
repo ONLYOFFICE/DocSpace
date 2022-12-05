@@ -3051,6 +3051,10 @@ const Base = {
     disabledBorder: "1px solid #ECEEF1",
     disabledColor: "#A3A9AE",
   },
+
+  accessRightSelect: {
+    descriptionColor: gray,
+  },
 };
 
 export default Base;
