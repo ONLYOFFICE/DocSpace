@@ -56,9 +56,10 @@ const getDefaultStyles = ({
 
     ${!isDisabled &&
     !isLoading &&
-    (isHovered
+    (isHovered && primary
       ? hoverCss
       : !disableHover &&
+        primary &&
         css`
           &:hover,
           &:focus {
@@ -69,8 +70,9 @@ const getDefaultStyles = ({
     ${!isDisabled &&
     !isLoading &&
     (isClicked
-      ? activeCss
-      : css`
+      ? primary && activeCss
+      : primary &&
+        css`
           &:active {
             ${activeCss}
           }
