@@ -2,7 +2,7 @@ Source: {{product}}
 Section: web
 Priority: optional
 Maintainer: onlyoffice
-Build-Depends: debhelper (>= 10), nodejs (>=14), dotnet-sdk-6.0, yarn
+Build-Depends: debhelper (>= 10), nodejs (>=18), dotnet-sdk-6.0, yarn
 Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
 Architecture: any
@@ -76,7 +76,7 @@ Description: Description
 Package: {{product}}-socket
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
+ nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -113,7 +113,7 @@ Description: Description
 Package: {{product}}-ssoauth
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
+ nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -153,7 +153,7 @@ Description: Description
 Package: {{product}}-doceditor
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
+ nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
@@ -161,7 +161,7 @@ Description: Description
 Package: {{product}}-login
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
+ nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description

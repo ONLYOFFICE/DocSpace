@@ -19,7 +19,7 @@ Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar
 Source1:        https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz#/document-templates-main-community-server.tar.gz
 Source2:        https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
 
-BuildRequires:  nodejs >= 14.0
+BuildRequires:  nodejs >= 18.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-6.0
 

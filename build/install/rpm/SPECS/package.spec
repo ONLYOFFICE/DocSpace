@@ -64,7 +64,7 @@ AutoReqProv:    no
 Summary:        socket
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       nodejs >= 14.0
+Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    socket
 
@@ -88,7 +88,7 @@ AutoReqProv:    no
 Summary:        ssoauth
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       nodejs >= 14.0
+Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    ssoauth
 
@@ -120,7 +120,7 @@ AutoReqProv:    no
 Summary:        doceditor
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       nodejs >= 14.0
+Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    doceditor
 
@@ -136,6 +136,6 @@ AutoReqProv:    no
 Summary:        login
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       nodejs >= 14.0
+Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
