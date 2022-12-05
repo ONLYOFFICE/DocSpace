@@ -117,6 +117,14 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  ${shlibs:Depends}
 Description: Description
 
+Package: {{product}}-api-system
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
 Package: {{product}}-studio
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
