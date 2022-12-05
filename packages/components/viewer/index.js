@@ -30,6 +30,8 @@ export const Viewer = (props) => {
     playlistPos,
     playlist,
     isImage,
+    isAudio,
+    audioIcon,
     contextModel,
     generateContextMenu,
   } = props;
@@ -132,6 +134,8 @@ export const Viewer = (props) => {
     <ViewerPlayer
       onNextClick={onNextClick}
       onPrevClick={onPrevClick}
+      isAudio={isAudio}
+      audioIcon={audioIcon}
       contextModel={contextModel}
       mobileDetails={mobileDetails}
       displayUI={displayUI}

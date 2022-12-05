@@ -6,12 +6,12 @@ import { tablet } from "@docspace/components/utils/device";
 import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
 import IconStop from "../../../../public/images/videoplayer.stop.react.svg";
 
-import IconSound from "../../../../public/images/videoplayer.sound.react.svg";
-import IconMuted from "../../../../public/images/videoplayer.mute.react.svg";
+import IconVolumeMax from "../../../../public/images/media.volumemax.react.svg";
+import IconVolumeMuted from "../../../../public/images/media.volumeoff.react.svg";
+import IconVolumeMin from "../../../../public/images/media.volumemin.react.svg";
 
 import IconFullScreen from "../../../../public/images/videoplayer.full.react.svg";
 import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react.svg";
-import IconSpeed from "../../../../public/images/videoplayer.speed.react.svg";
 import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
 
 import Icon1x from "../../../../public/images/media.viewer1x.react.svg";
@@ -19,7 +19,7 @@ import Icon05x from "../../../../public/images/media.viewer05x.react.svg";
 import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
 import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
 
-import BigIconPlay from "../../../../public/images/videoplayer.bgplay.react.svg";
+import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
 import { useSwipeable } from "react-swipeable";
 
 let iconWidth = 80;
@@ -55,6 +55,16 @@ const StyledVideoPlayer = styled.div`
     left: 0;
     ${(props) =>
       props.isFullScreen ? "background: #000" : "background: transparent"};
+  }
+
+  .audio-container {
+    width: 190px;
+    height: 190px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
   }
 
   svg {
@@ -149,7 +159,6 @@ const StyledVideoPlayer = styled.div`
     right: 0;
     bottom: 77px;
     left: 0;
-    z-index: 307;
     padding: 0 28px;
     height: 30px;
 
@@ -215,7 +224,6 @@ const StyledVideoControls = styled.div`
   bottom: 0;
   left: 0;
   z-index: 307;
-  //align-items: flex-end;
   display: flex;
   height: 188px;
   background: linear-gradient(
@@ -225,35 +233,30 @@ const StyledVideoControls = styled.div`
     rgba(0, 0, 0, 0.89) 100%
   );
   .volume-container {
-    position: relative;
+    display: flex;
 
-    &:hover {
-      .volume-wrapper {
-        display: flex;
+    svg {
+      &:hover {
+        cursor: pointer;
       }
     }
   }
 
   .volume-wrapper {
-    background: #333;
-    position: absolute;
-    bottom: 78px;
-    border: 1px solid #333;
-    border-top-right-radius: 7px;
-    border-bottom-right-radius: 7px;
-    width: 126px;
-    height: 48px;
-    bottom: 86px;
-    display: none;
-
-    justify-content: center;
+    width: 100px;
+    height: 28px;
+    display: flex;
     align-items: center;
-    transform: rotate(270deg);
-  }
+    padding-left: 15px;
 
-  .volume-toolbar {
-    width: 110px !important;
-    margin: 0px !important;
+    &:hover {
+      input[type="range"]::-webkit-slider-thumb {
+        height: 10px;
+        width: 10px;
+        opacity: 1 !important;
+        border-radius: 50%;
+      }
+    }
   }
 `;
 
@@ -288,6 +291,8 @@ export default function ViewerPlayer(props) {
     onNextClick,
     onMaskClick,
     displayUI,
+    isAudio,
+    audioIcon,
   } = props;
 
   const initialState = {
@@ -605,10 +610,16 @@ export default function ViewerPlayer(props) {
     });
   }, [props.activeIndex]);
 
-  const contextMenu = generateContextMenu(state.isOpenContext);
+  let contextRight = 9;
+  let contextBottom = 48;
+  const contextMenu = generateContextMenu(
+    state.isOpenContext,
+    contextRight,
+    contextBottom
+  );
 
   let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
-  let iconTop = (window.innerHeight - iconHeight - (48 - 53)) / 2 + "px";
+  let iconTop = (window.innerHeight - iconHeight) / 2 + "px";
 
   let imgStyle = {
     width: `${state.width}px`,
@@ -635,12 +646,24 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           style={imgStyle}
           onTimeUpdate={handleOnTimeUpdate}
         ></video>
-        {!state.isPlaying && (
+        {!state.isPlaying && !isAudio && (
           <div
             className="bg-play"
             style={{ left: `${iconLeft}`, top: `${iconTop}` }}
           >
             <BigIconPlay onClick={togglePlay} />
+          </div>
+        )}
+        {isAudio && (
+          <div
+            className="audio-container"
+            style={{
+              left: `${(window.innerWidth - 190) / 2}px`,
+              top: `${(window.innerHeight - 190) / 2}px`,
+              position: "fixed",
+            }}
+          >
+            <img src={audioIcon} />
           </div>
         )}
       </div>
@@ -670,11 +693,13 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                   <StyledDuration>{state.duration}</StyledDuration>
                 )}
                 {!isMobileOnly && (
-                  <div className="controller volume-container">
-                    {!state.isMuted ? (
-                      <IconSound onClick={toggleVolumeMute} />
+                  <div className="volume-container">
+                    {state.isMuted ? (
+                      <IconVolumeMuted onClick={toggleVolumeMute} />
+                    ) : state.volume >= 50 ? (
+                      <IconVolumeMax onClick={toggleVolumeMute} />
                     ) : (
-                      <IconMuted onClick={toggleVolumeMute} />
+                      <IconVolumeMin onClick={toggleVolumeMute} />
                     )}
 
                     <div className="volume-wrapper">
@@ -703,16 +728,19 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                     </div>
                   )}
                 </div>
-                <div
-                  className="controller fullscreen-button"
-                  onClick={toggleScreen}
-                >
-                  {!state.isFullScreen ? (
-                    <IconFullScreen />
-                  ) : (
-                    <IconExitFullScreen />
-                  )}
-                </div>
+                {!isAudio && (
+                  <div
+                    className="controller fullscreen-button"
+                    onClick={toggleScreen}
+                  >
+                    {!state.isFullScreen ? (
+                      <IconFullScreen />
+                    ) : (
+                      <IconExitFullScreen />
+                    )}
+                  </div>
+                )}
+
                 {!isMobileOnly && (
                   <div
                     className="controller"
