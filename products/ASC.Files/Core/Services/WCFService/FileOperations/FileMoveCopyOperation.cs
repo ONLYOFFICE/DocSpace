@@ -140,21 +140,27 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
+
+        Folder<T> rootFrom = null;
+        if (0 < Folders.Count)
+        {
+            rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
+        }
+
+        if (0 < Files.Count)
+        {
+            rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
+        }
+
         if (_copy)
         {
-            Folder<T> rootFrom = null;
-            if (0 < Folders.Count)
-            {
-                rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
-            }
-
-            if (0 < Files.Count)
-            {
-                rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
-            }
-
             await fileSecurity.CanCopyFromAsync(rootFrom);
             await fileSecurity.CanCopyToAsync(toFolder);
+        }
+        else
+        {
+            await fileSecurity.CanMoveFromAsync(rootFrom);
+            await fileSecurity.CanMoveToAsync(toFolder);
         }
 
         var needToMark = new List<FileEntry<TTo>>();

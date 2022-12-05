@@ -85,39 +85,7 @@ public abstract class FileEntryDto<T> : FileEntryDto
 [Scope]
 public class FileEntryDtoHelper
 {
-    private static readonly IDictionary<FileEntryType, IEnumerable<FilesSecurityActions>> SecurityEntries =
-        new Dictionary<FileEntryType, IEnumerable<FilesSecurityActions>>()
-        {
-            {
-                FileEntryType.File, new List<FilesSecurityActions>()
-                {
-                    FilesSecurityActions.Read,
-                    FilesSecurityActions.Comment,
-                    FilesSecurityActions.FillForms,
-                    FilesSecurityActions.Review,
-                    FilesSecurityActions.Edit,
-                    FilesSecurityActions.Delete,
-                    FilesSecurityActions.CustomFilter,
-                    FilesSecurityActions.Rename,
-                    FilesSecurityActions.ReadHistory,
-                    FilesSecurityActions.Lock,
-                    FilesSecurityActions.ChangeHistory,
-                }
-            },
-            {
-                FileEntryType.Folder, new List<FilesSecurityActions>()
-                {
-                    FilesSecurityActions.Read,
-                    FilesSecurityActions.Create,
-                    FilesSecurityActions.Edit,
-                    FilesSecurityActions.Delete,
-                    FilesSecurityActions.RoomEdit,
-                    FilesSecurityActions.Rename,
-                    FilesSecurityActions.CopyTo,
-                    FilesSecurityActions.CopyFrom
-                }
-            }
-        };
+
 
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly EmployeeDtoHelper _employeeWraperHelper;
@@ -161,7 +129,7 @@ public class FileEntryDtoHelper
             ProviderId = entry.ProviderId.NullIfDefault(),
             CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
             CanEdit = await _fileSecurity.CanEditAsync(entry),
-            Security = entry.Security.Where(r => SecurityEntries[entry.FileEntryType].Contains(r.Key)).ToDictionary(r => r.Key, r => r.Value)
+            Security = entry.Security
         };
     }
 }

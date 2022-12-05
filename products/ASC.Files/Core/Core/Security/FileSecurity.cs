@@ -49,12 +49,46 @@ public class FileSecurityCommon
 public class FileSecurity : IFileSecurity
 {
     private readonly IDaoFactory _daoFactory;
+    public readonly FileShare DefaultMyShare = FileShare.Restrict;
+    public readonly FileShare DefaultCommonShare = FileShare.Read;
+    public readonly FileShare DefaultPrivacyShare = FileShare.Restrict;
+    public readonly FileShare DefaultVirtualRoomsShare = FileShare.Restrict;
 
-    public FileShare DefaultMyShare => FileShare.Restrict;
-    public FileShare DefaultProjectsShare => FileShare.ReadWrite;
-    public FileShare DefaultCommonShare => FileShare.Read;
-    public FileShare DefaultPrivacyShare => FileShare.Restrict;
-    public FileShare DefaultVirtualRoomsShare => FileShare.Restrict;
+    private static readonly IDictionary<FileEntryType, IEnumerable<FilesSecurityActions>> _securityEntries =
+    new Dictionary<FileEntryType, IEnumerable<FilesSecurityActions>>()
+    {
+            {
+                FileEntryType.File, new List<FilesSecurityActions>()
+                {
+                    FilesSecurityActions.Read,
+                    FilesSecurityActions.Comment,
+                    FilesSecurityActions.FillForms,
+                    FilesSecurityActions.Review,
+                    FilesSecurityActions.Edit,
+                    FilesSecurityActions.Delete,
+                    FilesSecurityActions.CustomFilter,
+                    FilesSecurityActions.Rename,
+                    FilesSecurityActions.ReadHistory,
+                    FilesSecurityActions.Lock,
+                    FilesSecurityActions.ChangeHistory,
+                }
+            },
+            {
+                FileEntryType.Folder, new List<FilesSecurityActions>()
+                {
+                    FilesSecurityActions.Read,
+                    FilesSecurityActions.Create,
+                    FilesSecurityActions.Edit,
+                    FilesSecurityActions.Delete,
+                    FilesSecurityActions.RoomEdit,
+                    FilesSecurityActions.Rename,
+                    FilesSecurityActions.CopyTo,
+                    FilesSecurityActions.CopyFrom,
+                    FilesSecurityActions.MoveTo,
+                    FilesSecurityActions.MoveFrom,
+                }
+            }
+    };
 
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -91,7 +125,7 @@ public class FileSecurity : IFileSecurity
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
-        return CanAsync(entries, _authContext.CurrentAccount.ID, FilesSecurityActions.Read);
+        return CanReadAsync(entries, _authContext.CurrentAccount.ID);
     }
 
     public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
@@ -254,6 +288,16 @@ public class FileSecurity : IFileSecurity
     }
 
     public Task<bool> CanCopyFromAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyFrom);
+    }
+
+    public Task<bool> CanMoveToAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyTo);
+    }
+
+    public Task<bool> CanMoveFromAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyFrom);
     }
@@ -451,7 +495,7 @@ public class FileSecurity : IFileSecurity
 
     public async IAsyncEnumerable<FileEntry<T>> FilterReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
-        await foreach (var e in CanAsync(entries.Where(f => f != null), _authContext.CurrentAccount.ID, FilesSecurityActions.Read))
+        await foreach (var e in CanReadAsync(entries.Where(f => f != null)))
         {
             if (e.Item2)
             {
@@ -480,11 +524,13 @@ public class FileSecurity : IFileSecurity
                 yield return entry;
             }
 
-            var tasks = Enum.GetValues<FilesSecurityActions>().Select(async e =>
-            {
-                var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
-                return new KeyValuePair<FilesSecurityActions, bool>(e, t);
-            });
+            var tasks = Enum.GetValues<FilesSecurityActions>()
+                .Where(r => _securityEntries[entry.FileEntryType].Contains(r))
+                .Select(async e =>
+                {
+                    var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+                    return new KeyValuePair<FilesSecurityActions, bool>(e, t);
+                });
 
             entry.Security = (await Task.WhenAll(tasks)).ToDictionary(a => a.Key, b => b.Value);
 
@@ -494,7 +540,7 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
-        if (entry.Security != null)
+        if (entry.Security != null && entry.Security.ContainsKey(action))
         {
             return entry.Security[action];
         }
@@ -537,7 +583,14 @@ public class FileSecurity : IFileSecurity
     {
         await foreach (var r in SetSecurity(entry, userId))
         {
-            yield return new Tuple<FileEntry<T>, bool>(r, r.Security[action]);
+            if (r.Security != null && r.Security.ContainsKey(action))
+            {
+                yield return new Tuple<FileEntry<T>, bool>(r, r.Security[action]);
+            }
+            else
+            {
+                yield return new Tuple<FileEntry<T>, bool>(r, await CanAsync(r, userId, action));
+            }
         }
     }
 
@@ -741,7 +794,9 @@ public class FileSecurity : IFileSecurity
                         action != FilesSecurityActions.Delete &&
                         action != FilesSecurityActions.RoomEdit &&
                         action != FilesSecurityActions.ReadHistory &&
-                        action != FilesSecurityActions.CopyFrom
+                        action != FilesSecurityActions.CopyFrom &&
+                        action != FilesSecurityActions.MoveTo &&
+                        action != FilesSecurityActions.MoveFrom
                         )
                     {
                         return false;
@@ -1000,6 +1055,499 @@ public class FileSecurity : IFileSecurity
             // administrator can work with crashed entries (crash in files_folder_tree)
             return true;
         }
+
+        return false;
+    }
+
+    private async Task<bool> FilterEntry1<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
+    {
+        if (!isAuthenticated && userId != FileConstant.ShareLinkId)
+        {
+            return false;
+        }
+
+        var folder = e as Folder<T>;
+
+        switch (e.RootFolderType)
+        {
+            case FolderType.SHARE:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+
+                if (isOutsider)
+                {
+                    return false;
+                }
+
+                break;
+            case FolderType.DEFAULT:
+                if (isDocSpaceAdmin)
+                {
+                    // administrator can work with crashed entries (crash in files_folder_tree)
+                    return true;
+                }
+                break;
+            case FolderType.COMMON:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                if (isDocSpaceAdmin)
+                {
+                    // administrator in Common has all right
+                    return true;
+                }
+                break;
+            case FolderType.BUNCH:
+                break;
+            case FolderType.TRASH:
+                if (action == FilesSecurityActions.Read || action == FilesSecurityActions.Delete)
+                {
+                    var folderDao = _daoFactory.GetFolderDao<T>();
+                    var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
+                    if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
+                    {
+                        if (e.FileEntryType == FileEntryType.Folder && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+                break;
+            case FolderType.USER:
+                if (isOutsider)
+                {
+                    return false;
+                }
+                if (isUser)
+                {
+                    return false;
+                }
+
+                if (e.RootCreateBy == userId && !isUser)
+                {
+                    // user has all right in his folder
+                    return true;
+                }
+
+                break;
+            case FolderType.Projects:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                break;
+            case FolderType.Favorites:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                break;
+            case FolderType.Recent:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                break;
+            case FolderType.Templates:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                if (isUser)
+                {
+                    return false;
+                }
+                break;
+            case FolderType.Privacy:
+                if (!_coreBaseSettings.DisableDocSpace)
+                {
+                    return false;
+                }
+                if (isOutsider)
+                {
+                    return false;
+                }
+                if (isUser)
+                {
+                    return false;
+                }
+                if (e.RootCreateBy == userId && !isUser)
+                {
+                    // user has all right in his privacy folder
+                    return true;
+                }
+                break;
+            case FolderType.VirtualRooms:
+                if (!isUser)
+                {
+                    if (isDocSpaceAdmin || e.CreateBy == userId)
+                    {
+                        return true;
+                    }
+
+                    var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
+                        .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
+
+                    if (parentRoom != null)
+                    {
+                        return true;
+                    }
+                }
+                break;
+            case FolderType.FillingFormsRoom:
+            case FolderType.EditingRoom:
+            case FolderType.ReviewRoom:
+            case FolderType.ReadOnlyRoom:
+            case FolderType.CustomRoom:
+                break;
+            case FolderType.Archive:
+                if (
+                    action != FilesSecurityActions.Read &&
+                    action != FilesSecurityActions.Delete &&
+                    action != FilesSecurityActions.RoomEdit &&
+                    action != FilesSecurityActions.ReadHistory &&
+                    action != FilesSecurityActions.CopyFrom &&
+                    action != FilesSecurityActions.MoveTo &&
+                    action != FilesSecurityActions.MoveFrom
+                    )
+                {
+                    return false;
+                }
+
+                if (isDocSpaceAdmin)
+                {
+                    if (action == FilesSecurityActions.RoomEdit)
+                    {
+                        return true;
+                    }
+
+                    if (action == FilesSecurityActions.Delete)
+                    {
+                        return folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
+                    }
+
+                    if (e.CreateBy == userId)
+                    {
+                        return true;
+                    }
+                }
+
+                if (!isUser)
+                {
+                    var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
+                        .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
+
+                    if (parentRoom != null)
+                    {
+                        return true;
+                    }
+                }
+                break;
+            case FolderType.ThirdpartyBackup:
+                if (isDocSpaceAdmin)
+                {
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (e.FileEntryType == FileEntryType.Folder)
+        {
+            if (folder == null)
+            {
+                return false;
+            }
+
+            if (action != FilesSecurityActions.Read)
+            {
+                if (folder.FolderType == FolderType.Projects)
+                {
+                    // Root Projects folder read-only
+                    return false;
+                }
+
+                if (folder.FolderType == FolderType.SHARE)
+                {
+                    // Root Share folder read-only
+                    return false;
+                }
+
+                if (folder.FolderType == FolderType.Recent)
+                {
+                    // Recent folder read-only
+                    return false;
+                }
+
+                if (folder.FolderType == FolderType.Favorites)
+                {
+                    // Favorites folder read-only
+                    return false;
+                }
+
+                if (folder.FolderType == FolderType.Templates)
+                {
+                    // Templates folder read-only
+                    return false;
+                }
+
+                if (folder.FolderType == FolderType.Archive)
+                {
+                    return false;
+                }
+
+                // DocSpace admins and room admins can create rooms
+                if (action == FilesSecurityActions.Create && !isUser)
+                {
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.VirtualRooms)
+                {
+                    if (action == FilesSecurityActions.Create && !isUser)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (DefaultCommonShare == FileShare.Read && folder.FolderType == FolderType.COMMON)
+                {
+                    // all can read Common folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.SHARE)
+                {
+                    // all can read Share folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.Recent)
+                {
+                    // all can read recent folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.Favorites)
+                {
+                    // all can read favorites folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.Templates)
+                {
+                    // all can read templates folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.VirtualRooms)
+                {
+                    // all can read VirtualRooms folder
+                    return true;
+                }
+
+                if (folder.FolderType == FolderType.Archive)
+                {
+                    return true;
+                }
+            }
+        }
+
+        var file = e as File<T>;
+
+        var subjects = new List<Guid>();
+        if (shares == null)
+        {
+            subjects = GetUserSubjects(userId);
+            shares = (await GetSharesAsync(e))
+                    .Join(subjects, r => r.Subject, s => s, (r, s) => r)
+                    .ToList();
+            // shares ordered by level
+        }
+
+        FileShareRecord ace;
+        if (e.FileEntryType == FileEntryType.File)
+        {
+            ace = shares
+                .OrderBy(r => r, new SubjectComparer(subjects))
+                .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File);
+            if (ace == null)
+            {
+                // share on parent folders
+                ace = shares.Where(r => Equals(r.EntryId, file.ParentId) && r.EntryType == FileEntryType.Folder)
+                            .OrderBy(r => r, new SubjectComparer(subjects))
+                            .ThenBy(r => r.Level)
+                            .FirstOrDefault();
+            }
+        }
+        else
+        {
+            ace = shares.Where(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.Folder)
+                        .OrderBy(r => r, new SubjectComparer(subjects))
+                        .ThenBy(r => r.Level)
+                        .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
+                        .FirstOrDefault();
+        }
+
+        var defaultShare = userId == FileConstant.ShareLinkId
+                ? FileShare.Restrict
+                : e.RootFolderType == FolderType.VirtualRooms
+                ? DefaultVirtualRoomsShare
+                : e.RootFolderType == FolderType.USER
+                ? DefaultMyShare
+            : e.RootFolderType == FolderType.Privacy
+                ? DefaultPrivacyShare
+                : DefaultCommonShare;
+
+        e.Access = ace != null ? ace.Share : defaultShare;
+
+        e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
+
+        switch (action)
+        {
+            case FilesSecurityActions.Read:
+                return e.Access != FileShare.Restrict;
+            case FilesSecurityActions.Comment:
+                if ((e.Access == FileShare.Comment ||
+                    e.Access == FileShare.Review ||
+                    e.Access == FileShare.CustomFilter ||
+                    e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.FillForms)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.FillForms:
+                if ((e.Access == FileShare.FillForms ||
+                    e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Review:
+                if ((e.Access == FileShare.Review ||
+                    e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Create:
+                if ((e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Edit:
+                if ((e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Delete:
+                if (e.Access == FileShare.RoomAdmin)
+                {
+                    if (file != null && (file.RootFolderType == FolderType.VirtualRooms))
+                    {
+                        return true;
+                    }
+                    else if (folder != null && folder.RootFolderType == FolderType.VirtualRooms &&
+                        folder.FolderType == FolderType.DEFAULT)
+                    {
+                        return true;
+                    }
+                }
+                break;
+            case FilesSecurityActions.CustomFilter:
+                if ((e.Access == FileShare.CustomFilter ||
+                    e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.RoomEdit:
+                if (e.Access == FileShare.RoomAdmin
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Rename:
+                if ((e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.ReadHistory:
+                if (e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Lock:
+                if (e.Access == FileShare.RoomAdmin &&
+                    e.RootFolderType != FolderType.Archive)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.ChangeHistory:
+                if ((e.Access == FileShare.ReadWrite ||
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
+                    && e.RootFolderType != FolderType.Archive)
+                {
+                    return file != null && !file.Encrypted;
+                }
+                break;
+            case FilesSecurityActions.CopyTo:
+                break;
+            case FilesSecurityActions.CopyFrom:
+                break;
+            case FilesSecurityActions.MoveTo:
+                break;
+            case FilesSecurityActions.MoveFrom:
+                break;
+        }
+
+        if (e.Access != FileShare.Restrict &&
+            e.CreateBy == userId &&
+            (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON) &&
+            e.RootFolderType != FolderType.Archive)
+        {
+            return true;
+        }
+
+        if (e.CreateBy == userId)
+        {
+            e.Access = FileShare.None; //HACK: for client
+        }
+
 
         return false;
     }
@@ -1612,6 +2160,8 @@ public class FileSecurity : IFileSecurity
         Lock,
         ChangeHistory,
         CopyTo,
-        CopyFrom
+        CopyFrom,
+        MoveTo,
+        MoveFrom,
     }
 }
