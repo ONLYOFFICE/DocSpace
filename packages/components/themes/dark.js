@@ -2921,6 +2921,7 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
+        warningColor: "#E06451",
       },
 
       payment: {
