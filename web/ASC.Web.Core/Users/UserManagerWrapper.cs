@@ -130,6 +130,8 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
+        user.UserName = MakeUniqueName(user);
+
         var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User, checkPermission: false);
 
         var groupId = type switch
@@ -221,11 +223,11 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, checkPermissions: !fromInviteLink);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true, !fromInviteLink);
         }
         else if (isAdmin)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true, !fromInviteLink);
         }
 
         return newUserInfo;
