@@ -1773,8 +1773,7 @@ class FilesActionStore {
     const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
     const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
 
-    const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
-    if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
+    const { id, viewUrl, providerKey, fileStatus, isFolder } = item;
 
     if (isRecycleBinFolder || isLoading) return;
 
