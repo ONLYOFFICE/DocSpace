@@ -1,5 +1,7 @@
 import pkg from "../../../package.json";
 
+import { EDITOR_PROTOCOL } from "@docspace/client/src/helpers/filesConstants";
+
 export const canConvert = (extension, filesSettings) => {
   const array = filesSettings?.extsMustConvert || [];
   const result = array.findIndex((item) => item === extension);
@@ -31,3 +33,28 @@ export const initI18n = (initialI18nStoreASC) => {
     }
   }
 };
+
+export const checkProtocol = (fileId) =>
+  new Promise((resolve, reject) => {
+    const onBlur = () => {
+      clearTimeout(timeout);
+      window.removeEventListener("blur", onBlur);
+      resolve();
+    };
+
+    const timeout = setTimeout(() => {
+      reject();
+      window.removeEventListener("blur", onBlur);
+    }, 1000);
+
+    window.addEventListener("blur", onBlur);
+
+    window.open(
+      combineUrl(
+        `${EDITOR_PROTOCOL}:${window.location.origin}`,
+        "/",
+        `doceditor?fileId=${fileId}`
+      ),
+      "_self"
+    );
+  });
