@@ -130,8 +130,7 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
-            if (this.selectedFolderStore.id !== file.folderId)
-              return;
+            if (this.selectedFolderStore.id !== file.folderId) return;
 
             const newFiles = [file, ...this.files];
 
@@ -219,29 +218,23 @@ class FilesStore {
       }
     });
 
+    socketHelper.on("s:markasnew-folder", ({ folderId, count }) => {
+      console.log(`markasnew-folder ${folderId}:${count}`);
 
-    socketHelper.on("s:markasnew-folder", ({folderId, count}) => {
-      console.log(
-        `markasnew-folder ${folderId}:${count}`
-       );
-      if (!folderId) return;
+      const foundIndex =
+        folderId && this.folders.findIndex((x) => x.id === folderId);
+      if (foundIndex == -1) return;
 
-      console.log(
-       `markasnew-folder ${folderId}:${count}`
-      );
-
+      runInAction(() => {
+        this.folders[foundIndex].new = count || 0;
+      });
     });
-    
-    socketHelper.on("s:markasnew-file", ({fileId, count}) => {
-      console.log(
-        `markasnew-file ${fileId}:${count}`
-       );
+
+    socketHelper.on("s:markasnew-file", ({ fileId, count }) => {
+      console.log(`markasnew-file ${fileId}:${count}`);
       if (!fileId) return;
 
-      console.log(
-       `markasnew-file ${fileId}:${count}`
-      );
-
+      console.log(`markasnew-file ${fileId}:${count}`);
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
@@ -454,7 +447,10 @@ class FilesStore {
     if (this.files?.length > 0) {
       socketHelper.emit({
         command: "unsubscribe",
-        data: { roomParts: this.files.map((f) => `FILE-${f.id}`), individual: true }
+        data: {
+          roomParts: this.files.map((f) => `FILE-${f.id}`),
+          individual: true,
+        },
       });
     }
 
@@ -463,7 +459,10 @@ class FilesStore {
     if (this.files?.length > 0) {
       socketHelper.emit({
         command: "subscribe",
-        data: { roomParts: this.files.map((f) => `FILE-${f.id}`), individual: true }
+        data: {
+          roomParts: this.files.map((f) => `FILE-${f.id}`),
+          individual: true,
+        },
       });
     }
   };
@@ -475,7 +474,10 @@ class FilesStore {
     if (this.folders?.length > 0) {
       socketHelper.emit({
         command: "unsubscribe",
-        data: { roomParts: this.folders.map((f) => `DIR-${f.id}`), individual: true },
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
       });
     }
 
@@ -484,7 +486,10 @@ class FilesStore {
     if (this.folders?.length > 0) {
       socketHelper.emit({
         command: "subscribe",
-        data: { roomParts: this.folders.map((f) => `DIR-${f.id}`), individual: true },
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
       });
     }
   };
@@ -2659,7 +2664,7 @@ class FilesStore {
     if (createdItem?.type == "file") {
       socketHelper.emit({
         command: "subscribe",
-        data: { roomParts: `FILE-${createdItem.id}`, individual: true }
+        data: { roomParts: `FILE-${createdItem.id}`, individual: true },
       });
     }
   };
