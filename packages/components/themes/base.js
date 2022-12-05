@@ -3017,6 +3017,7 @@ const Base = {
     color: "#333",
     borderColor: "#eceef1",
     tickIconColor: "#35AD17",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {

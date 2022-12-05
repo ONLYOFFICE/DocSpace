@@ -3017,6 +3017,7 @@ const Dark = {
     borderColor: "#858585",
     color: "#eeeeee",
     tickIconColor: "#3BA420",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {
