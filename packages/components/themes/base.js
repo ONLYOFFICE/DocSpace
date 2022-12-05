@@ -2246,6 +2246,7 @@ const Base = {
         draggingColor: lightCumulus,
         draggingHoverColor: lightMediumGoldenrod,
         checkedColor: "#f3f4f4",
+        roomsCheckedColor: "#f3f4f4",
         border: `1px solid ${grayMid}`,
         backgroundBadgeColor: white,
         backgroundColor: white,

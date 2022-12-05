@@ -2245,7 +2245,8 @@ const Dark = {
       tile: {
         draggingColor: "rgba(230, 211, 138, 0.12)",
         draggingHoverColor: "rgba(204, 184, 102, 0.2)",
-        checkedColor: black,
+        checkedColor: "#3d3d3d",
+        roomsCheckedColor: black,
         border: "1px solid #474747",
         backgroundBadgeColor: black,
         backgroundColor: "#282828",

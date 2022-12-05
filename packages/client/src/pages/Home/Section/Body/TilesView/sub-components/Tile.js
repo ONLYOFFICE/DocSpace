@@ -85,8 +85,10 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: ${(props) =>
-    props.theme.filesSection.tilesView.tile.checkedColor} !important;
+  background: ${({ theme, isRooms }) =>
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsCheckedColor
+      : theme.filesSection.tilesView.tile.checkedColor};
 `;
 
 const bottomFileBorder = css`
