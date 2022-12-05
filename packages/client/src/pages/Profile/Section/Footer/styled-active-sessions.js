@@ -66,6 +66,14 @@ export const TableDataCell = styled.td`
     }
   }
 
+  .remove-icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.activeSessions.removeIconColor};
+      }
+    }
+  }
+
   @media ${hugeMobile} {
     .session-browser {
       position: relative;
