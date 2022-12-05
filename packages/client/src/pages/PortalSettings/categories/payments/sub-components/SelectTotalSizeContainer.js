@@ -2,11 +2,6 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
-import Slider from "@docspace/components/slider";
-import PlusIcon from "../../../../../../public/images/plus.react.svg";
-import MinusIcon from "../../../../../../public/images/minus.react.svg";
-import { smallTablet } from "@docspace/components/utils/device";
-import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
 import { getConvertedSize } from "@docspace/common/utils";
 const StyledBody = styled.div`
