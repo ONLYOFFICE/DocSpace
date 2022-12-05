@@ -610,7 +610,7 @@ const Confirm = (props) => {
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
               <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
+                {t("Common:Or")}
               </Text>
             </div>
           )}
@@ -661,7 +661,7 @@ const Confirm = (props) => {
                   type="text"
                   hasError={!fnameValid}
                   value={fname}
-                  placeholder={t("FirstName")}
+                  placeholder={t("Common:FirstName")}
                   size="large"
                   scale={true}
                   tabIndex={1}

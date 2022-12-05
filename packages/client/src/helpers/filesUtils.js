@@ -46,7 +46,7 @@ export const getDefaultRoomName = (room, t) => {
       return t("Files:CollaborationRooms");
 
     case RoomsType.ReviewRoom:
-      return t("Files:ReviewRooms");
+      return t("Common:Review");
 
     case RoomsType.ReadOnlyRoom:
       return t("Files:ViewOnlyRooms");

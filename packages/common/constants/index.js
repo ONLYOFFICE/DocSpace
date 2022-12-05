@@ -34,6 +34,22 @@ export const EmployeeType = Object.freeze({
   Owner: "Owner",
 });
 /**
+ * Enum for user payments type.
+ * @readonly
+ */
+export const PaymentsType = Object.freeze({
+  Paid: "0",
+  Free: "1",
+});
+/**
+ * Enum for filter subject.
+ * @readonly
+ */
+export const FilterSubject = Object.freeze({
+  Owner: "0",
+  Member: "1",
+});
+/**
  * Enum for filter type.
  * @readonly
  */
@@ -85,7 +101,7 @@ export const RoomsType = Object.freeze({
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
   2: "Files:CollaborationRooms",
-  3: "Files:ReviewRooms",
+  3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
 });

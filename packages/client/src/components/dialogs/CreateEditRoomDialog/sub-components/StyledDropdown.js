@@ -20,6 +20,8 @@ const StyledDropDown = styled(DropDown)`
   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   border-radius: 3px;
   overflow: hidden;
+  ${(props) => !props.hasItems && "visibility: hidden"};
+  /* visibility: hidden */
 
   width: 446px;
   max-width: 446px;

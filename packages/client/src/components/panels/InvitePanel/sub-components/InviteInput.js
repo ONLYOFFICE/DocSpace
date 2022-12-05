@@ -228,7 +228,7 @@ const InviteInput = ({
             isHovered
             onClick={openUsersPanel}
           >
-            {t("СhooseFromList")}
+            {t("Translations:ChooseFromList")}
           </StyledLink>
         )}
       </StyledSubHeader>

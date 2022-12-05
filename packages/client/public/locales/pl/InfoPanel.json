@@ -1,12 +1,9 @@
 {
-  "FilesEmptyScreenText": "Zobacz szczegóły plików i folderów tutaj",
   "FileExtension": "Rozszerzenie pliku",
+  "FilesEmptyScreenText": "Zobacz szczegóły plików i folderów tutaj",
   "ItemsSelected": "Wybrano elementy",
   "LastModifiedBy": "Ostatnio zmodyfikowany przez",
-  "Members": "członkowie",
-  "OpenSharingSettings": "Otwórz ustawienia udostępniania",
   "SystemProperties": "Właściwości systemu",
   "Versions": "Wersje",
-  "ViewDetails": "Zobacz szczegóły",
-  "WhoHasAccess": "Kto ma dostęp"
+  "ViewDetails": "Zobacz szczegóły"
 }

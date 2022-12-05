@@ -164,7 +164,7 @@ const PortalPlugins = ({
       ) : (
         <EmptyFolderContainer
           headerText={t("FilesSettings:ConnectEmpty")}
-          descriptionText={t("Upload plugins here")}
+          descriptionText={t("UploadPluginsHere")}
           style={{ gridColumnGap: "39px" }}
           buttonStyle={{ marginTop: "16px" }}
           imageSrc="/static/images/empty_screen_alt.svg"

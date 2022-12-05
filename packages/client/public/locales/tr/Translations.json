@@ -2,7 +2,6 @@
   "AddAccount": "Hesap ekle",
   "AddAuthor": "Yazar Ekle",
   "ArchivingData": "Veriler arşivleniyor",
-  "ButtonShareAccess": "Paylaşım Ayarları",
   "ConnectingAccount": "Hesap bağlanıyor",
   "Copy": "Kopyala",
   "CopyHere": "Buraya kopyala",
@@ -38,7 +37,7 @@
   "MoveHere": "Buraya taşı",
   "MoveToOperation": "Taşınıyor",
   "NewForm": "Form şablonu",
-  "NewFormFile": "Dosyadan form",
+  "Other": "Diğer",
   "OwnerChange": "Sahibi değiştir",
   "Presentations": "Sunumlar",
   "Spreadsheets": "Elektronik tablolar",
@@ -55,6 +54,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Diğer"
+  "TypeTitlekDrive": "kDrive"
 }
