@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Slider from "@docspace/components/slider";
-import PlusIcon from "../../../../../../public/images/plus.react.svg";
+import PlusIcon from "../../../../../../public/images/payment.plus.react.svg";
 import MinusIcon from "../../../../../../public/images/minus.react.svg";
 import { smallTablet } from "@docspace/components/utils/device";
 import TextInput from "@docspace/components/text-input";
@@ -49,6 +49,7 @@ const StyledBody = styled.div`
     margin-left: 20px;
     margin-right: 20px;
     padding: 0;
+    font-weight: 700;
     ${(props) =>
       props.isDisabled &&
       css`
@@ -210,7 +211,7 @@ const SelectUsersCountContainer = ({
     isDisabled || isUpdatingTariff ? {} : { onChange: onSliderChange };
   const onchangeNumberProp =
     isDisabled || isUpdatingTariff ? {} : { onChange: onChangeNumber };
-  
+
   return (
     <StyledBody
       className="select-users-count-container"
