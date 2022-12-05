@@ -318,6 +318,8 @@ class WelcomePageSettings extends React.Component {
               {t("CustomTitlesWelcome")}
             </div>
             <HelpButton
+              place="right"
+              offsetRight={0}
               iconName="static/images/combined.shape.svg"
               size={12}
               tooltipContent={tooltipCustomTitlesTooltip}
