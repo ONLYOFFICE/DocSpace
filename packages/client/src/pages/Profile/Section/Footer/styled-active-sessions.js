@@ -42,7 +42,7 @@ export const TableHeaderCell = styled.th`
     left: -8px;
     width: 1px;
     height: 10px;
-    background: ${(props) => props.theme.activeSessions.borderColor};
+    background: #d0d5da;
   }
 `;
 
@@ -110,7 +110,7 @@ export const TableDataCell = styled.td`
       right: -8px;
       width: 1px;
       height: 12px;
-      background: ${(props) => props.theme.activeSessions.borderColor};
+      background: #d0d5da;
     }
   }
 
