@@ -158,7 +158,7 @@ public partial class BaseFilesTests
         var folder = await PutAsync<FolderDto<int>>($"rooms/{id}/unpin");
         Assert.IsFalse(folder.Pinned);
     }
-
+    /*
     [TestCase(DataTests.RoomId, DataTests.Email)]
     [Category("Room")]
     [Order(13)]
@@ -185,7 +185,7 @@ public partial class BaseFilesTests
         var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
         Assert.IsNotNull(share);
     }
-
+    */
     //[TestCase(DataTests.RoomId, DataTests.Image)]
     //[Category("Room")]
     //[Order(16)]

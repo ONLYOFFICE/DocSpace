@@ -29,6 +29,7 @@ namespace ASC.Files.Tests;
 [TestFixture]
 public partial class BaseFilesTests
 {
+    /*
     [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(1)]
@@ -39,7 +40,7 @@ public partial class BaseFilesTests
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);
     }
-
+    
     [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
     [Category("File")]
     [Order(2)]
@@ -65,4 +66,5 @@ public partial class BaseFilesTests
         Assert.IsNotNull(file);
         Assert.AreEqual(fileName, file.Title);
     }
+    */
 }
