@@ -3004,6 +3004,7 @@ const Base = {
   activeSessions: {
     color: "#333",
     borderColor: "#eceef1",
+    tickIconColor: "#35AD17",
   },
 
   formWrapper: {

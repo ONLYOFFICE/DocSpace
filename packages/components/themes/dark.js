@@ -3005,6 +3005,7 @@ const Dark = {
   activeSessions: {
     borderColor: "#858585",
     color: "#eeeeee",
+    tickIconColor: "#3BA420",
   },
 
   formWrapper: {
