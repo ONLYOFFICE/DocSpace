@@ -1,5 +1,7 @@
 import pkg from "../../../package.json";
 
+import { combineUrl } from "@docspace/common/utils";
+
 import { EDITOR_PROTOCOL } from "@docspace/client/src/helpers/filesConstants";
 
 export const canConvert = (extension, filesSettings) => {
