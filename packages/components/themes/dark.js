@@ -2997,6 +2997,7 @@ const Dark = {
       textColor: white,
     },
     themePreview: {
+      descriptionColor: "#ADADAD",
       border: "1px solid #858585",
     },
   },
