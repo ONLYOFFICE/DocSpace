@@ -132,7 +132,7 @@ public sealed class UserManagerWrapper
 
         user.UserName = MakeUniqueName(user);
 
-        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User, checkPermission: false);
+        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User);
 
         var groupId = type switch
         {
@@ -143,7 +143,7 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true, false);
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
 
         return newUser;
@@ -178,7 +178,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav, !fromInviteLink);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -223,11 +223,11 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true, !fromInviteLink);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
         }
         else if (isAdmin)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true, !fromInviteLink);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
         }
 
         return newUserInfo;
