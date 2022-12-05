@@ -2924,8 +2924,7 @@ const Dark = {
       },
 
       payment: {
-        priceColor: "#858585",
-        disabledPriceColor: "#A3A9AE",
+        priceColor: "#ADADAD",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#282828",
@@ -2934,8 +2933,20 @@ const Dark = {
         border: "1px solid #474747",
         backgroundBenefitsColor: "#3333",
         rectangleColor: "#3D3D3D",
-        backgroundPrice: "#282828",
-        backgroundPriceContainer: "#282828",
+
+        priceContainer: {
+          backgroundText: "#3D3D3D",
+          background: "#282828",
+          border: "1px solid #282828",
+          featureTextColor: "#858585",
+          disableColor: "#858585",
+          trackNumberColor: "#858585",
+          disablePriceColor: "#5C5C5C",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#858585",
+        },
         warningColor: "#E06451",
       },
     },
