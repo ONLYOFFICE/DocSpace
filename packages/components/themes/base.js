@@ -2247,8 +2247,14 @@ const Base = {
         draggingHoverColor: lightMediumGoldenrod,
         checkedColor: "#f3f4f4",
         border: `1px solid ${grayMid}`,
+        backgroundBadgeColor: white,
         backgroundColor: white,
-
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: white,
       },
 
@@ -2986,7 +2992,7 @@ const Base = {
     background: "#f3f4f4",
     hoverBackground: "#eceef1",
     disabledBackground: "#f8f9f9",
-    defaultTagColor: "#A3A9AE",
+    defaultTagColor: black,
     newTagBackground: "#eceef1",
   },
 

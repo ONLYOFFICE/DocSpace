@@ -2245,10 +2245,16 @@ const Dark = {
       tile: {
         draggingColor: "rgba(230, 211, 138, 0.12)",
         draggingHoverColor: "rgba(204, 184, 102, 0.2)",
-        checkedColor: "#3D3D3D",
+        checkedColor: black,
         border: "1px solid #474747",
-        backgroundColor: black,
-
+        backgroundBadgeColor: black,
+        backgroundColor: "#282828",
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: "#292929",
       },
 
@@ -2984,10 +2990,10 @@ const Dark = {
 
   tag: {
     color: white,
-    background: "#3D3D3D",
+    background: black,
     hoverBackground: "#333333",
     disabledBackground: "#858585",
-    defaultTagColor: "#858585",
+    defaultTagColor: white,
     newTagBackground: "#333333",
   },
 
