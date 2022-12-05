@@ -3015,9 +3015,10 @@ const Dark = {
   },
 
   activeSessions: {
-    borderColor: "#858585",
     color: "#eeeeee",
+    borderColor: "#474747",
     tickIconColor: "#3BA420",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {
