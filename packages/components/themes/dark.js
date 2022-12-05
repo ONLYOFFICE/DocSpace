@@ -3009,13 +3009,15 @@ const Dark = {
       textColor: white,
     },
     themePreview: {
-      border: "1px solid #858585",
+      descriptionColor: "#ADADAD",
+      border: "1px solid #474747",
     },
   },
 
   activeSessions: {
     borderColor: "#858585",
     color: "#eeeeee",
+    tickIconColor: "#3BA420",
   },
 
   formWrapper: {

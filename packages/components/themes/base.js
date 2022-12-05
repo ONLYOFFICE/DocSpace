@@ -3009,6 +3009,7 @@ const Base = {
       textColor: black,
     },
     themePreview: {
+      descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
   },
@@ -3016,6 +3017,7 @@ const Base = {
   activeSessions: {
     color: "#333",
     borderColor: "#eceef1",
+    tickIconColor: "#35AD17",
   },
 
   formWrapper: {
