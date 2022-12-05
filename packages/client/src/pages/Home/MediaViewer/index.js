@@ -37,6 +37,7 @@ const FilesMediaViewer = (props) => {
     onClickDownloadAs,
     onClickRename,
     onClickDelete,
+    getIcon,
   } = props;
 
   useEffect(() => {
@@ -171,6 +172,7 @@ const FilesMediaViewer = (props) => {
         onClickDelete={onClickDelete}
         onClickRename={onClickRename}
         onClose={onMediaViewerClose}
+        getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaFormats} //TODO:
@@ -213,7 +215,7 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage, extsAudio } = settingsStore;
+    const { extsVideo, extsImage, extsAudio, getIcon } = settingsStore;
     const { isFavoritesFolder } = treeFoldersStore;
 
     const {
@@ -253,6 +255,7 @@ export default inject(
       onClickDownload,
       onShowInfoPanel,
       onClickRename,
+      getIcon,
     };
   }
 )(
