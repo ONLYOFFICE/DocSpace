@@ -28,6 +28,7 @@ const StyledWrapper = styled.div`
   .system-theme-description {
     padding: 4px 0 4px 24px;
     max-width: 295px;
+    color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
 
   .themes-container {
@@ -98,7 +99,7 @@ const InterfaceTheme = (props) => {
           isChecked={isSystemTheme}
           onChange={onChangeSystemTheme}
         />
-        <Text as="div" className="system-theme-description" color="#A3A9AE">
+        <Text as="div" className="system-theme-description">
           {t("SystemThemeDescription")}
         </Text>
       </div>

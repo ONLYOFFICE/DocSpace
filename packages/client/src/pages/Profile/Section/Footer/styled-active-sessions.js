@@ -58,6 +58,22 @@ export const TableDataCell = styled.td`
   padding: 14px 0;
   color: #a3a9ae;
 
+  .tick-icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.activeSessions.tickIconColor};
+      }
+    }
+  }
+
+  .remove-icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.activeSessions.removeIconColor};
+      }
+    }
+  }
+
   @media ${hugeMobile} {
     .session-browser {
       position: relative;

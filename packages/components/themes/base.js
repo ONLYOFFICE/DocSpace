@@ -2925,11 +2925,11 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
+        warningColor: "#f21c0e",
       },
 
       payment: {
         priceColor: "#555F65",
-        disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#f8f9f9",
@@ -2939,8 +2939,21 @@ const Base = {
         backgroundBenefitsColor: "#f8f9f9",
         rectangleColor: "#f3f4f4",
 
-        backgroundPrice: "#f3f4f4",
-        backgroundPriceContainer: "transparent",
+        priceContainer: {
+          backgroundText: "#f3f4f4",
+          background: "transparent",
+          border: "1px solid #d0d5da",
+          featureTextColor: "#A3A9AE",
+
+          disableColor: "#A3A9AE",
+          trackNumberColor: "#A3A9AE",
+          disablePriceColor: "#A3A9AE",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
       },
     },
@@ -3002,6 +3015,7 @@ const Base = {
       textColor: black,
     },
     themePreview: {
+      descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
   },
@@ -3009,6 +3023,8 @@ const Base = {
   activeSessions: {
     color: "#333",
     borderColor: "#eceef1",
+    tickIconColor: "#35AD17",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {
