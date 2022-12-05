@@ -1,0 +1,12 @@
+{
+  "ClickDescription": "Click {{ firstButton }} in the browser dialog box. If the dialog box does not appear, click {{ secondButton }} below.",
+  "DownloadNow": "Download now",
+  "OpenApp": "Open app",
+  "OpenAppOnlyoffice": "Open app \"ONLYOFFICE\"",
+  "OpeningDoc": "Opening the document",
+  "OpeningDocDesc": "This document is encrypted and can only be opened in the ONLYOFFICE desktop editors",
+  "Instructions": "Instructions",
+  "UseApp": "Please use the desktop app to access the files",
+  "NotAvailable": "This file is only available via ONLYOFFICE desktop app",
+  "MissApp": "ONLYOFFICE app not installed?"
+}

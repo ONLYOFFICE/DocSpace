@@ -89,7 +89,7 @@ const StyledContentContainer = styled.div`
   align-items: center;
   flex-direction: column;
 
-  background: #ffffff;
+  background: ${(props) => props.theme.backgroundColor};
 
   ${isMobile &&
   css`
