@@ -232,9 +232,16 @@ class FilesStore {
 
     socketHelper.on("s:markasnew-file", ({ fileId, count }) => {
       console.log(`markasnew-file ${fileId}:${count}`);
-      if (!fileId) return;
 
-      console.log(`markasnew-file ${fileId}:${count}`);
+      const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
+      if (foundIndex == -1) return;
+
+      this.updateFileStatus(
+        foundIndex,
+        count > 0
+          ? this.files[foundIndex].fileStatus | FileStatus.IsNew
+          : this.files[foundIndex].fileStatus & ~FileStatus.IsNew
+      );
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
