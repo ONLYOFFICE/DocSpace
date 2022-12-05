@@ -8,7 +8,7 @@ import {
   getCookie,
   setCookie,
 } from "@docspace/common/utils";
-import { AppServerConfig, ThemeKeys } from "@docspace/common/constants";
+import { AppServerConfig } from "@docspace/common/constants";
 import initDesktop from "./helpers/initDesktop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import store from "client/store";
@@ -58,6 +58,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
             <GlobalStyle fonts={fonts} />
             {showDeepLink ? (
               <DeepLink
+                fileId={rest?.config?.file?.id}
                 currentColorScheme={rest?.currentColorScheme}
                 whiteLabelLogoUrls={rest?.whiteLabelLogoUrls}
               />
