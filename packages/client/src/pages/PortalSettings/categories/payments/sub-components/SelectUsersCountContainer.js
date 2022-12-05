@@ -28,7 +28,7 @@ const StyledBody = styled.div`
     .slider-track-value_min,
     .slider-track-value_max {
       color: ${(props) =>
-        props.theme.avatarEditorBody.slider.trackNumber.color};
+        props.theme.client.settings.payment.priceContainer.trackNumberColor};
     }
 
     .slider-track-value_max {
@@ -52,7 +52,8 @@ const StyledBody = styled.div`
     ${(props) =>
       props.isDisabled &&
       css`
-        color: ${props.theme.text.disableColor};
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
       `};
   }
 
@@ -91,7 +92,7 @@ const StyledBody = styled.div`
         path {
           fill: ${(props) =>
             props.isDisabled
-              ? props.theme.text.disableColor
+              ? props.theme.client.settings.payment.priceContainer.disableColor
               : props.theme.text.color};
         }
       }
@@ -107,6 +108,13 @@ const StyledBody = styled.div`
   .payment-users_text {
     margin-bottom: 4px;
     text-align: center;
+
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
+      `}
   }
 `;
 
@@ -202,16 +210,14 @@ const SelectUsersCountContainer = ({
     isDisabled || isUpdatingTariff ? {} : { onChange: onSliderChange };
   const onchangeNumberProp =
     isDisabled || isUpdatingTariff ? {} : { onChange: onChangeNumber };
-
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
-
+  
   return (
     <StyledBody
       className="select-users-count-container"
       theme={theme}
       isDisabled={isDisabled || isUpdatingTariff}
     >
-      <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
+      <Text noSelect fontWeight={600} className="payment-users_text">
         {addedManagersCountTitle}
       </Text>
       <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />
