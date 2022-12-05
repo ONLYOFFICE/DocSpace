@@ -49,12 +49,16 @@ class MembersHelper {
     };
   };
 
-  getOptionsByRoomType = (roomType, withDeleteOption = false) => {
+  getOptionsByRoomType = (
+    roomType,
+    canChangeUserRole = false,
+    canDeleteUser = false
+  ) => {
     if (!roomType) return;
 
     const options = this.getOptions();
 
-    const deleteOption = withDeleteOption
+    const deleteOption = canDeleteUser
       ? [
           { key: "s2", isSeparator: true },
           {
@@ -65,41 +69,50 @@ class MembersHelper {
         ]
       : [];
 
+    let availableOptions = [];
+
     switch (roomType) {
       case RoomsType.FillingFormsRoom:
-        return [
-          options.roomAdmin,
-          options.formFiller,
-          options.viewer,
-          ...deleteOption,
-        ];
+        if (canChangeUserRole)
+          availableOptions = [
+            options.roomAdmin,
+            options.formFiller,
+            options.viewer,
+          ];
+        return [...availableOptions, ...deleteOption];
       case RoomsType.EditingRoom:
-        return [
-          options.roomAdmin,
-          options.editor,
-          options.viewer,
-          ...deleteOption,
-        ];
+        if (canChangeUserRole)
+          availableOptions = [
+            options.roomAdmin,
+            options.editor,
+            options.viewer,
+          ];
+        return [...availableOptions, ...deleteOption];
       case RoomsType.ReviewRoom:
-        return [
-          options.roomAdmin,
-          options.reviewer,
-          options.commentator,
-          options.viewer,
-          ...deleteOption,
-        ];
+        if (canChangeUserRole)
+          availableOptions = [
+            options.roomAdmin,
+            options.reviewer,
+            options.commentator,
+            options.viewer,
+          ];
+        return [...availableOptions, ...deleteOption];
       case RoomsType.ReadOnlyRoom:
-        return [options.roomAdmin, options.viewer, ...deleteOption];
+        if (canChangeUserRole)
+          availableOptions = [options.roomAdmin, options.viewer];
+        return [...availableOptions, ...deleteOption];
       case RoomsType.CustomRoom:
-        return [
-          options.roomAdmin,
-          options.editor,
-          options.formFiller,
-          options.reviewer,
-          options.commentator,
-          options.viewer,
-          ...deleteOption,
-        ];
+        if (canChangeUserRole)
+          availableOptions = [
+            options.roomAdmin,
+            options.editor,
+            options.formFiller,
+            options.reviewer,
+            options.commentator,
+            options.viewer,
+          ];
+
+        return [...availableOptions, ...deleteOption];
     }
   };
 

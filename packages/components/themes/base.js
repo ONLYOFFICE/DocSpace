@@ -648,7 +648,7 @@ const Base = {
     border: "solid 1px",
 
     borderColor: grayMid,
-    errorBorderColor: red,
+    errorBorderColor: "#F21C0E",
     warningBorderColor: warningColor,
     disabledBorderColor: grayLightMid,
 
@@ -993,7 +993,7 @@ const Base = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#F21C0E",
     },
   },
 
@@ -2390,6 +2390,10 @@ const Base = {
       descriptionColor: "#555f65",
     },
 
+    tagInput: {
+      tagBackground: "#ECEEF1",
+    },
+
     dropdown: {
       background: "#ffffff",
       borderColor: "#d0d5da",
@@ -2673,10 +2677,10 @@ const Base = {
     hoverIconColor: "#3B72A7",
 
     color: white,
-    backgroundColor: gray,
+    backgroundColor: white,
 
     badgeColor: white,
-    badgeBackgroundColor: orangeMain,
+    badgeBackgroundColor: gray,
   },
 
   filesEditingWrapper: {
@@ -2915,11 +2919,11 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
+        warningColor: "#f21c0e",
       },
 
       payment: {
         priceColor: "#555F65",
-        disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#f8f9f9",
@@ -2929,8 +2933,21 @@ const Base = {
         backgroundBenefitsColor: "#f8f9f9",
         rectangleColor: "#f3f4f4",
 
-        backgroundPrice: "#f3f4f4",
-        backgroundPriceContainer: "transparent",
+        priceContainer: {
+          backgroundText: "#f3f4f4",
+          background: "transparent",
+          border: "1px solid #d0d5da",
+          featureTextColor: "#A3A9AE",
+
+          disableColor: "#A3A9AE",
+          trackNumberColor: "#A3A9AE",
+          disablePriceColor: "#A3A9AE",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
       },
     },
@@ -2966,7 +2983,8 @@ const Base = {
   submenu: {
     lineColor: "#eceef1",
     backgroundColor: white,
-    textColor: "#316DAA",
+    textColor: "#657077",
+    activeTextColor: "#316DAA",
     bottomLineColor: "#316DAA",
   },
 
@@ -2991,6 +3009,7 @@ const Base = {
       textColor: black,
     },
     themePreview: {
+      descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
   },
@@ -2998,6 +3017,8 @@ const Base = {
   activeSessions: {
     color: "#333",
     borderColor: "#eceef1",
+    tickIconColor: "#35AD17",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {
@@ -3005,13 +3026,12 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 
-
   preparationPortalProgress: {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
- },
- 
+  },
+
   codeInput: {
     background: white,
     border: "1px solid #d0d5da",

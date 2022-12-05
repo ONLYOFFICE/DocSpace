@@ -14,25 +14,25 @@ const SelectionBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysSelectDown")}</Text>
-          <Text {...keyTextStyles}>j {t("HotkeysOr")} ↓</Text>
+          <Text {...keyTextStyles}>j {t("Common:Or")} ↓</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysSelectUp")}</Text>
-          <Text {...keyTextStyles}>k {t("HotkeysOr")} ↑</Text>
+          <Text {...keyTextStyles}>k {t("Common:Or")} ↑</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysSelectLeft")}</Text>
-          <Text {...keyTextStyles}>h {t("HotkeysOr")} ←</Text>
+          <Text {...keyTextStyles}>h {t("Common:Or")} ←</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysSelectRight")}</Text>
-          <Text {...keyTextStyles}>l {t("HotkeysOr")} →</Text>
+          <Text {...keyTextStyles}>l {t("Common:Or")} →</Text>
         </>
       </Row>
       <Row className="hotkeys_row">
@@ -63,14 +63,14 @@ const SelectionBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
         <>
           <Text {...textStyles}>{t("HotkeysSelectAll")}</Text>
           <Text {...keyTextStyles}>
-            {CtrlKey} + a {t("HotkeysOr")} Shift + а
+            {CtrlKey} + a {t("Common:Or")} Shift + а
           </Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysClearAll")}</Text>
-          <Text {...keyTextStyles}>Shift + n {t("HotkeysOr")} Esc</Text>
+          <Text {...keyTextStyles}>Shift + n {t("Common:Or")} Esc</Text>
         </>
       </Row>
     </>

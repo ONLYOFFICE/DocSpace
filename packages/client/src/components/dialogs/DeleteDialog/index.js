@@ -159,6 +159,7 @@ const DeleteDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="delete-file-modal_submit"
           key="OkButton"
           label={accessButtonLabel}
           size="normal"
@@ -171,6 +172,7 @@ const DeleteDialogComponent = (props) => {
           isDisabled={!selection.length}
         />
         <Button
+          id="delete-file-modal_cancel"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"

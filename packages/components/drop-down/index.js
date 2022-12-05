@@ -307,7 +307,13 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, withBlur = false, open } = this.props;
+    const {
+      withBackdrop = true,
+      withBlur = false,
+      open,
+      isAside,
+      withBackground,
+    } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["click, touchend"] } : {};
 
     return (
@@ -318,6 +324,8 @@ class DropDownContainer extends React.Component {
             zIndex={199}
             onClick={this.toggleDropDown}
             withoutBlur={!withBlur}
+            isAside={isAside}
+            withBackground={withBackground}
           />
         ) : null}
         <EnhancedComponent

@@ -35,7 +35,7 @@ const PureAccountsItem = ({
   return (
     <CatalogItem
       key="accounts"
-      text={t("Accounts")}
+      text={t("Common:Accounts")}
       icon={iconUrl}
       showText={showText}
       onClick={onClick}

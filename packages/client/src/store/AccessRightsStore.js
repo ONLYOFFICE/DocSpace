@@ -50,7 +50,22 @@ class AccessRightsStore {
 
     return getRoomRoleActions(access).changeUserRole;
   };
+  canDeleteUserInRoom = (room) => {
+    const { access, currentUserInList, rootFolderType } = room;
+    const { userStore } = this.authStore;
+    const { user } = userStore;
 
+    const isMyProfile = user.id === currentUserInList.id;
+    const isOwnerRoleRoom =
+      currentUserInList.access === ShareAccessRights.FullAccess;
+
+    if (isMyProfile || isOwnerRoleRoom) return false;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).deleteUsers;
+
+    return getRoomRoleActions(access).deleteUsers;
+  };
   canLockFile = (file) => {
     const { rootFolderType, access } = file;
 
@@ -117,10 +132,9 @@ class AccessRightsStore {
       return getArchiveFileRoleActions(access).rename;
 
     if (
-      rootFolderType === FolderType.TRASH ||
-      (!isFile &&
-        // rootFolderType === FolderType.Privacy &&
-        !isDesktopClient)
+      rootFolderType === FolderType.TRASH
+      // ||
+      // (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
     )
       return false;
 

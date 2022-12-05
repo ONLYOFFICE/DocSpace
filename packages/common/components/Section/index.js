@@ -155,7 +155,6 @@ class Section extends React.Component {
       setMaintenanceExist,
       snackbarExist,
       showText,
-      infoPanelIsVisible,
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
@@ -237,7 +236,6 @@ class Section extends React.Component {
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
-                    infoPanelIsVisible={infoPanelIsVisible}
                     settingsStudio={settingsStudio}
                   >
                     {isSectionHeaderAvailable && !isMobile && (
@@ -246,7 +244,6 @@ class Section extends React.Component {
                         snackbarExist={snackbarExist}
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
-                        infoPanelIsVisible={infoPanelIsVisible}
                         viewAs={viewAs}
                         showText={showText}
                       >
@@ -285,7 +282,6 @@ class Section extends React.Component {
                               isHeaderVisible={isHeaderVisible}
                               viewAs={viewAs}
                               showText={showText}
-                              infoPanelIsVisible={infoPanelIsVisible}
                               settingsStudio={settingsStudio}
                             >
                               {sectionHeaderContent
@@ -464,7 +460,7 @@ Section.SectionPaging = SectionPaging;
 Section.SectionFooter = SectionFooter;
 
 export default inject(({ auth }) => {
-  const { infoPanelStore, settingsStore } = auth;
+  const { settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
@@ -473,8 +469,6 @@ export default inject(({ auth }) => {
     setMaintenanceExist,
     showText,
   } = settingsStore;
-
-  const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
   return {
     isTabletView,
@@ -485,7 +479,5 @@ export default inject(({ auth }) => {
     setMaintenanceExist,
 
     showText,
-
-    infoPanelIsVisible,
   };
 })(observer(Section));

@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
@@ -14,12 +13,13 @@ import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
+import { getRoomTypeDefaultTagTranslation } from "../data";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 20px;
+  gap: 22px;
 `;
 
 const SetRoomParams = ({
@@ -32,9 +32,13 @@ const SetRoomParams = ({
   setIsScrollLocked,
   isEdit,
   isDisabled,
+  isValidTitle,
+  setIsValidTitle,
 }) => {
-  const onChangeName = (e) =>
+  const onChangeName = (e) => {
+    setIsValidTitle(true);
     setRoomParams({ ...roomParams, title: e.target.value });
+  };
 
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
@@ -44,18 +48,14 @@ const SetRoomParams = ({
 
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
-  const [currentRoomTypeData] = roomTypes.filter(
-    (room) => room.type === roomParams.type
-  );
-
   return (
     <StyledSetRoomParams>
       {isEdit ? (
-        <RoomType t={t} room={currentRoomTypeData} type="displayItem" />
+        <RoomType t={t} roomType={roomParams.type} type="displayItem" />
       ) : (
         <RoomTypeDropdown
           t={t}
-          currentRoom={currentRoomTypeData}
+          currentRoomType={roomParams.type}
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
           isDisabled={isDisabled}
@@ -74,18 +74,19 @@ const SetRoomParams = ({
       )}
 
       <InputParam
-        id={"room-name"}
+        id="shared_room-name"
         title={`${t("Common:Name")}:`}
-        placeholder={t("NamePlaceholder")}
+        placeholder={t("Common:EnterName")}
         value={roomParams.title}
         onChange={onChangeName}
         isDisabled={isDisabled}
+        isValidTitle={isValidTitle}
+        errorMessage={t("Common:RequiredField")}
       />
 
       <TagInput
         t={t}
         tagHandler={tagHandler}
-        currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
         isDisabled={isDisabled}
       />
@@ -114,7 +115,7 @@ const SetRoomParams = ({
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
-        currentRoomTypeData={currentRoomTypeData}
+        defaultTagLabel={getRoomTypeDefaultTagTranslation(roomParams.type, t)}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
         isDisabled={isDisabled}

@@ -76,7 +76,6 @@ function Editor({
   // isSharingAccess,
   user,
   doc,
-  actionLink,
   error,
   // sharingDialog,
   // onSDKRequestSharingSettings,
@@ -242,6 +241,7 @@ function Editor({
 
   const onMakeActionLink = (event) => {
     const url = window.location.href;
+    const actionLink = config?.editorConfig?.actionLink;
 
     const actionData = event.data;
 

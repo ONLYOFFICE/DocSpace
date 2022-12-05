@@ -36,7 +36,7 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
 
   const commonSettings = {
     id: "common",
-    name: t("CommonSettings"),
+    name: t("Common:Common"),
     content: <CommonSettings t={t} />,
   };
 

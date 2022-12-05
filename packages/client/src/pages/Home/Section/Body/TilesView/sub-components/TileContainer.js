@@ -179,7 +179,6 @@ class TileContainer extends React.PureComponent {
       style,
       headingFolders,
       headingFiles,
-      headingRooms,
     } = this.props;
 
     const { selectedFilterData } = this.state;
@@ -213,16 +212,6 @@ class TileContainer extends React.PureComponent {
 
     const renderTile = (
       <>
-        {Rooms.length > 0 && (
-          <Heading
-            size="xsmall"
-            id={"room-tile-heading"}
-            className="tile-items-heading"
-          >
-            {headingRooms}
-          </Heading>
-        )}
-
         {Rooms.length > 0 ? (
           useReactWindow ? (
             Rooms

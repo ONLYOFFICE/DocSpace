@@ -985,7 +985,7 @@ const Dark = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#E06451",
     },
   },
 
@@ -1365,7 +1365,7 @@ const Dark = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -2390,6 +2390,10 @@ const Dark = {
       descriptionColor: "#a3a9ae",
     },
 
+    tagInput: {
+      tagBackground: "#292929",
+    },
+
     dropdown: {
       background: "#333333",
       borderColor: "#474747",
@@ -2672,13 +2676,13 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: "#eeeeee",
+    hoverIconColor: grayMaxLight,
 
-    color: "#FFFFFF",
-    backgroundColor: "#858585",
+    color: white,
+    backgroundColor: black,
 
     badgeColor: black,
-    badgeBackgroundColor: "#F58D31",
+    badgeBackgroundColor: "#858585",
   },
 
   filesEditingWrapper: {
@@ -2917,11 +2921,11 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
+        warningColor: "#E06451",
       },
 
       payment: {
-        priceColor: "#858585",
-        disabledPriceColor: "#A3A9AE",
+        priceColor: "#ADADAD",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#282828",
@@ -2930,8 +2934,20 @@ const Dark = {
         border: "1px solid #474747",
         backgroundBenefitsColor: "#3333",
         rectangleColor: "#3D3D3D",
-        backgroundPrice: "#282828",
-        backgroundPriceContainer: "#282828",
+
+        priceContainer: {
+          backgroundText: "#3D3D3D",
+          background: "#282828",
+          border: "1px solid #282828",
+          featureTextColor: "#858585",
+          disableColor: "#858585",
+          trackNumberColor: "#858585",
+          disablePriceColor: "#5C5C5C",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#858585",
+        },
         warningColor: "#E06451",
       },
     },
@@ -2967,7 +2983,8 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
-    textColor: "#FFFFFF",
+    activeTextColor: "#FFFFFF",
+    textColor: "#ADADAD",
     bottomLineColor: "#E06A1B",
   },
 
@@ -2992,13 +3009,16 @@ const Dark = {
       textColor: white,
     },
     themePreview: {
-      border: "1px solid #858585",
+      descriptionColor: "#ADADAD",
+      border: "1px solid #474747",
     },
   },
 
   activeSessions: {
-    borderColor: "#858585",
     color: "#eeeeee",
+    borderColor: "#474747",
+    tickIconColor: "#3BA420",
+    removeIconColor: "#A3A9AE",
   },
 
   formWrapper: {

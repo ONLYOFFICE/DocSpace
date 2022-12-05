@@ -73,9 +73,41 @@ class DetailsHelper {
   getPropertyList = () => {
     return this.getNeededProperties().map((propertyId) => ({
       id: propertyId,
+      className: this.getPropertyClassName(propertyId),
       title: this.getPropertyTitle(propertyId),
       content: this.getPropertyContent(propertyId),
     }));
+  };
+
+  getPropertyClassName = (propertyId) => {
+    switch (propertyId) {
+      case "Owner":
+        return "info_details_owner";
+      case "Location":
+        return "info_details_location";
+      case "Type":
+        return "info_details_type";
+      case "Storage Type":
+        return "info_details_storage-type";
+      case "File extension":
+        return "info_details_file-extension";
+      case "Content":
+        return "info_details_content";
+      case "Size":
+        return "info_details_size";
+      case "Date modified":
+        return "info_details_date_modified";
+      case "Last modified by":
+        return "info_details_last-modified-by";
+      case "Creation date":
+        return "info_details_creation-date";
+      case "Versions":
+        return "info_details_versions";
+      case "Comments":
+        return "info_details_comments";
+      case "Tags":
+        return "info_details_tags";
+    }
   };
 
   getNeededProperties = () => {

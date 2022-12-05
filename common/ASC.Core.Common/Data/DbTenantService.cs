@@ -365,7 +365,7 @@ public class DbTenantService : ITenantService
         // characters
         if (validateCharacters)
         {
-            TenantDomainValidator.ValidateDomainCharacters(domain);
+            _tenantDomainValidator.ValidateDomainCharacters(domain);
         }
 
         using var tenantDbContext = _dbContextFactory.CreateDbContext();

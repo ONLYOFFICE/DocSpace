@@ -161,8 +161,9 @@ public class SecurityContext
                 return false;
             }
 
-            var settingLoginEvents = await _dbLoginEventsManager.GetLoginEventIds(tenant, userid); 
-            if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
+            var loginEventById = await _dbLoginEventsManager.GetById(loginEventId); 
+           
+            if (loginEventById == null)
             {
                 return false;
             }

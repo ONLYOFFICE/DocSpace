@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
@@ -89,6 +90,8 @@ const StyledComponent = styled.div`
 const HexColorPickerComponent = (props) => {
   const { onCloseHexColorPicker, onAppliedColor, setColor, color } = props;
 
+  const { t } = useTranslation("Common");
+
   return (
     <StyledComponent>
       <div className="hex-color-picker">
@@ -107,7 +110,7 @@ const HexColorPickerComponent = (props) => {
 
         <div className="hex-button">
           <Button
-            label="Apply"
+            label={t("Common:ApplyButton")}
             size="small"
             className="apply-button"
             primary={true}
@@ -115,7 +118,7 @@ const HexColorPickerComponent = (props) => {
             onClick={onAppliedColor}
           />
           <Button
-            label="Cancel"
+            label={t("Common:CancelButton")}
             className="button"
             size="small"
             scale={true}

@@ -1,7 +1,1 @@
-{
-  "AllUsers": "Tüm kullanıcılar",
-  "CustomAllGroups": "Tümü {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "bu isimle bir kullanıcı bulunamadı",
-  "EmptyUsers": "Kullanıcı yok",
-  "SearchUsersPlaceholder": "Kullanıcıları ara"
-}
+{}
