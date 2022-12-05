@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import RoomType from "../RoomType";
-
+import { RoomsType } from "./../../../../../../../common/constants/index";
 import { Scrollbar } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
 
@@ -59,7 +59,7 @@ const StyledDropdownMobile = styled.div`
 
 StyledDropdownMobile.defaultProps = { theme: Base };
 
-const DropdownMobile = ({ t, open, onClose, roomTypes, chooseRoomType }) => {
+const DropdownMobile = ({ t, open, onClose, chooseRoomType }) => {
   return (
     <StyledDropdownMobile className="dropdown-mobile" isOpen={open}>
       <div className="dropdown-mobile-backdrop" onClick={onClose}>
@@ -70,14 +70,14 @@ const DropdownMobile = ({ t, open, onClose, roomTypes, chooseRoomType }) => {
         >
           <Scrollbar className="dropdown-mobile-scrollbar">
             <div className="dropdown-mobile-content">
-              {roomTypes.map((room) => (
+              {Object.values(RoomsType).map((roomType) => (
                 <RoomType
-                  id={room.id}
+                  id={roomType}
                   t={t}
-                  key={room.type}
-                  room={room}
+                  key={roomType}
+                  roomType={roomType}
                   type="dropdownItem"
-                  onClick={() => chooseRoomType(room.type)}
+                  onClick={() => chooseRoomType(roomType)}
                 />
               ))}
             </div>

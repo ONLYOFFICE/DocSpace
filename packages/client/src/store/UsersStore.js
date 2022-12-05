@@ -214,6 +214,10 @@ class UsersStore {
           options.push("details");
         }
 
+        if (isAdmin || isOwner) {
+          options.push("room-list");
+        }
+
         if (isMySelf) {
           options.push("separator-1");
 
@@ -272,6 +276,10 @@ class UsersStore {
             options.push("details");
           }
 
+          if (isAdmin || isOwner) {
+            options.push("room-list");
+          }
+
           if (
             isOwner ||
             (isAdmin && (userRole === "manager" || userRole === "user"))
@@ -289,6 +297,10 @@ class UsersStore {
             options.push("profile");
           } else {
             options.push("details");
+          }
+
+          if (isAdmin || isOwner) {
+            options.push("room-list");
           }
         }
 
