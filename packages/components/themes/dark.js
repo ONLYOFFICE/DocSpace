@@ -426,18 +426,21 @@ const Dark = {
   },
 
   checkbox: {
-    fillColor: "#292929",
+    fillColor: "#282828",
     borderColor: "#474747",
-    arrowColor: grayMaxLight,
-    indeterminateColor: grayMaxLight,
+    arrowColor: white,
+    indeterminateColor: white,
 
     disableArrowColor: "#474747",
-    disableBorderColor: "#646464",
-    disableFillColor: "#646464",
+    disableBorderColor: "#545454",
+    disableFillColor: "#545454",
     disableIndeterminateColor: "#474747",
 
-    hoverBorderColor: "#646464",
-    hoverIndeterminateColor: grayMaxLight,
+    hoverBorderColor: "#858585",
+    hoverIndeterminateColor: white,
+
+    pressedBorderColor: "#474747",
+    pressedFillColor: black,
 
     focusColor: "#858585",
   },
