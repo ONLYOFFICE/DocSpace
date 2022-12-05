@@ -648,7 +648,7 @@ const Base = {
     border: "solid 1px",
 
     borderColor: grayMid,
-    errorBorderColor: red,
+    errorBorderColor: "#F21C0E",
     warningBorderColor: warningColor,
     disabledBorderColor: grayLightMid,
 
@@ -993,7 +993,7 @@ const Base = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#F21C0E",
     },
   },
 

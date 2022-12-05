@@ -985,7 +985,7 @@ const Dark = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#E06451",
     },
   },
 
