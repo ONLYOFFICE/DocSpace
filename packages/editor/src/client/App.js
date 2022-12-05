@@ -57,7 +57,10 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
           <ThemeProvider theme={rest?.theme}>
             <GlobalStyle fonts={fonts} />
             {showDeepLink ? (
-              <DeepLink currentColorScheme={rest?.currentColorScheme} />
+              <DeepLink
+                currentColorScheme={rest?.currentColorScheme}
+                whiteLabelLogoUrls={rest?.whiteLabelLogoUrls}
+              />
             ) : (
               <Editor
                 mfReady={isInitialized}

@@ -7,6 +7,7 @@ import {
   getBuildVersion,
   getCurrentCustomSchema,
   getAppearanceTheme,
+  getLogoUrls,
 } from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { AppServerConfig, ThemeKeys } from "@docspace/common/constants";
@@ -72,7 +73,8 @@ export const initDocEditor = async (req) => {
       versionInfo,
       customNames,
       appearanceTheme,
-      themeName,
+      { theme: themeName },
+      whiteLabelLogoUrls,
     ] = await Promise.all([
       getUser(),
       getSettings(),
@@ -81,6 +83,7 @@ export const initDocEditor = async (req) => {
       getCurrentCustomSchema("Common"),
       getAppearanceTheme(),
       getUserTheme(),
+      getLogoUrls(),
     ]);
 
     const successAuth = !!user;
@@ -90,7 +93,7 @@ export const initDocEditor = async (req) => {
       return appearanceTheme.selected === theme.id;
     });
 
-    const theme = themeName.theme === ThemeKeys.BaseStr ? Base : Dark;
+    const theme = themeName === ThemeKeys.BaseStr ? Base : Dark;
 
     if (!successAuth && !doc) {
       error = {
@@ -139,6 +142,7 @@ export const initDocEditor = async (req) => {
       appearanceTheme,
       currentColorScheme,
       theme,
+      whiteLabelLogoUrls: Object.values(whiteLabelLogoUrls),
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };
