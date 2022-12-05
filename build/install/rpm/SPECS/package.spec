@@ -92,6 +92,14 @@ Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    api
 
+%package        api-system
+Summary:        api-system
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    api-system
+
 %package        telegram-service
 Summary:        telegram-service
 Group:          Applications/Internet

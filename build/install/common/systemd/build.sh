@@ -44,6 +44,7 @@ CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=ser
 
 SERVICE_NAME=(
 	api
+	api-system
 	urlshortener
 	socket
 	studio-notify
@@ -70,6 +71,11 @@ reassign_values (){
 		SERVICE_PORT="5000"
 		WORK_DIR="${BASE_DIR}/studio/ASC.Web.Api/"
 		EXEC_FILE="ASC.Web.Api.dll"
+	;;
+	api-system )
+		SERVICE_PORT="5010"
+		WORK_DIR="${BASE_DIR}/services/ASC.ApiSystem/"
+		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	urlshortener )
 		SERVICE_PORT="5029"
