@@ -648,7 +648,7 @@ const Base = {
     border: "solid 1px",
 
     borderColor: grayMid,
-    errorBorderColor: red,
+    errorBorderColor: "#F21C0E",
     warningBorderColor: warningColor,
     disabledBorderColor: grayLightMid,
 
@@ -993,7 +993,7 @@ const Base = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#F21C0E",
     },
   },
 
@@ -2677,10 +2677,10 @@ const Base = {
     hoverIconColor: "#3B72A7",
 
     color: white,
-    backgroundColor: gray,
+    backgroundColor: white,
 
     badgeColor: white,
-    badgeBackgroundColor: orangeMain,
+    badgeBackgroundColor: gray,
   },
 
   filesEditingWrapper: {
@@ -2982,7 +2982,8 @@ const Base = {
   submenu: {
     lineColor: "#eceef1",
     backgroundColor: white,
-    textColor: "#316DAA",
+    textColor: "#657077",
+    activeTextColor: "#316DAA",
     bottomLineColor: "#316DAA",
   },
 

@@ -985,7 +985,7 @@ const Dark = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#E06451",
     },
   },
 
@@ -2676,13 +2676,13 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: "#eeeeee",
+    hoverIconColor: grayMaxLight,
 
-    color: "#FFFFFF",
-    backgroundColor: "#858585",
+    color: white,
+    backgroundColor: black,
 
     badgeColor: black,
-    badgeBackgroundColor: "#F58D31",
+    badgeBackgroundColor: "#858585",
   },
 
   filesEditingWrapper: {
@@ -2982,7 +2982,8 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
-    textColor: "#FFFFFF",
+    activeTextColor: "#FFFFFF",
+    textColor: "#ADADAD",
     bottomLineColor: "#E06A1B",
   },
 
