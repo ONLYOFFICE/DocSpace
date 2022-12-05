@@ -212,19 +212,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
-        if (inDto.FromInviteLink && options.IsCorrect)
-        {
-            var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
-
-            if (currentUserType == EmployeeType.User || (inDto.Type == EmployeeType.DocSpaceAdmin && currentUserType != EmployeeType.DocSpaceAdmin))
-            {
-                throw new SecurityException(Resource.ErrorAccessDenied);
-            }
-        }
-        else
-        {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-        }
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, inDto.Type) ,Constants.Action_AddRemoveUser);
 
         inDto.Type = options != null ? options.EmployeeType : inDto.Type;
 
@@ -311,16 +299,9 @@ public class UserController : PeopleControllerBase
     [HttpPost("invite")]
     public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
-        var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
-
-        if (currentUserType == EmployeeType.User)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
-
         foreach (var invite in inDto.Invitations)
         {
-            if (invite.Type == EmployeeType.DocSpaceAdmin && currentUserType != EmployeeType.DocSpaceAdmin)
+            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
             {
                 continue;
             }
@@ -1077,13 +1058,6 @@ public class UserController : PeopleControllerBase
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();
 
-        var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
-
-        if (currentUserType == EmployeeType.User)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
-
         foreach (var user in users)
         {
             if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
@@ -1096,12 +1070,12 @@ public class UserController : PeopleControllerBase
             {
                 case EmployeeType.RoomAdmin:
                     await _countRoomAdminChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID, false);
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
                 case EmployeeType.User:
                     await _countUserChecker.CheckAppend();
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID, checkPermissions: false);
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
             }
