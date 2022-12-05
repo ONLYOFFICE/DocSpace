@@ -64,6 +64,7 @@ public class UserManager
     private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _countRoomAdminChecker;
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
+    private readonly UserFormatter _userFormatter;
 
     private Tenant _tenant;
     private Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant();
@@ -86,7 +87,8 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> countRoomAdrminChecker,
-        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
+        UserFormatter userFormatter
         )
     {
         _userService = service;
@@ -103,6 +105,7 @@ public class UserManager
         _countRoomAdminChecker = countRoomAdrminChecker;
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
+        _userFormatter = userFormatter;
     }
 
     public UserManager(
@@ -119,8 +122,9 @@ public class UserManager
         ICache cache,
         TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
-        IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
+        IHttpContextAccessor httpContextAccessor,
+        UserFormatter userFormatter)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker, userFormatter)
     {
         _accessor = httpContextAccessor;
     }
@@ -346,17 +350,15 @@ public class UserManager
         return newUser;
     }
 
-    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false, bool checkPermission = true)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        if (checkPermission)
-        {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-        }
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, isVisitor ? EmployeeType.User : EmployeeType.RoomAdmin), 
+            Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -628,22 +630,21 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false, bool checkPermissions = true)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
             return;
         }
 
-        if (checkPermissions)
-        {
-            _permissionContext.DemandPermissions(Constants.Action_EditGroups);
-        }
+        var user = GetUsers(userId);
+
+        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+            Constants.Action_EditGroups);
 
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
         ResetGroupCache(userId);
-        var user = GetUsers(userId);
         if (groupId == Constants.GroupUser.ID)
         {
             var tenant = _tenantManager.GetCurrentTenant();
@@ -658,17 +659,17 @@ public class UserManager
         }
     }
 
-    public void RemoveUserFromGroup(Guid userId, Guid groupId, bool checkPermissions = true)
+    public void RemoveUserFromGroup(Guid userId, Guid groupId)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
             return;
         }
 
-        if (checkPermissions)
-        {
-            _permissionContext.DemandPermissions(Constants.Action_EditGroups);
-        }
+        var user = GetUsers(userId);
+
+        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+            Constants.Action_EditGroups);
 
         _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 
