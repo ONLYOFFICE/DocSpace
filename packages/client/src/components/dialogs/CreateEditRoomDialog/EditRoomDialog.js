@@ -36,7 +36,11 @@ const EditRoomDialog = ({
     }));
 
   const onEditRoom = () => {
-    setIsValidTitle(false);
+    if (!roomParams.title.trim()) {
+      setIsValidTitle(false);
+      return;
+    }
+
     onSave(roomParams);
   };
 

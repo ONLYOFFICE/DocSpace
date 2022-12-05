@@ -2677,10 +2677,10 @@ const Base = {
     hoverIconColor: "#3B72A7",
 
     color: white,
-    backgroundColor: gray,
+    backgroundColor: white,
 
     badgeColor: white,
-    badgeBackgroundColor: orangeMain,
+    badgeBackgroundColor: gray,
   },
 
   filesEditingWrapper: {

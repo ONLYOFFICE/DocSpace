@@ -2676,13 +2676,13 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: "#eeeeee",
+    hoverIconColor: grayMaxLight,
 
-    color: "#FFFFFF",
-    backgroundColor: "#858585",
+    color: white,
+    backgroundColor: black,
 
     badgeColor: black,
-    badgeBackgroundColor: "#F58D31",
+    badgeBackgroundColor: "#858585",
   },
 
   filesEditingWrapper: {
