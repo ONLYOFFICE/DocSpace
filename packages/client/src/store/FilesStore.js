@@ -227,6 +227,7 @@ class FilesStore {
 
       runInAction(() => {
         this.folders[foundIndex].new = count || 0;
+        this.treeFoldersStore.fetchTreeFolders();
       });
     });
 
@@ -242,6 +243,7 @@ class FilesStore {
           ? this.files[foundIndex].fileStatus | FileStatus.IsNew
           : this.files[foundIndex].fileStatus & ~FileStatus.IsNew
       );
+      this.treeFoldersStore.fetchTreeFolders();
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
