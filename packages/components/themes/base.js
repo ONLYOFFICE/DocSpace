@@ -3011,13 +3011,12 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 
-
   preparationPortalProgress: {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
- },
- 
+  },
+
   codeInput: {
     background: white,
     border: "1px solid #d0d5da",
@@ -3026,6 +3025,11 @@ const Base = {
     disabledBackground: "#F8F9F9",
     disabledBorder: "1px solid #ECEEF1",
     disabledColor: "#A3A9AE",
+  },
+
+  deepLinkPage: {
+    logoContainerBackground: "#F8F9F9",
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 };
 

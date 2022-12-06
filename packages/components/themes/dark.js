@@ -3027,6 +3027,11 @@ const Dark = {
     disabledBorder: "1px solid #474747",
     disabledColor: "#858585",
   },
+
+  deepLinkPage: {
+    logoContainerBackground: "#282828",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16)",
+  },
 };
 
 export default Dark;
