@@ -2932,6 +2932,7 @@ const Dark = {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
+        textColor: "#ADADAD",
       },
 
       payment: {
