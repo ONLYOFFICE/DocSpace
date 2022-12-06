@@ -22,15 +22,11 @@ const StyledTagInput = styled.div`
     max-width: 100%;
     position: relative;
   }
+
+  ${({ hasTags }) => !hasTags && "margin-bottom: -8px"}
 `;
 
-const TagInput = ({
-  t,
-  tagHandler,
-  currentRoomTypeData,
-  setIsScrollLocked,
-  isDisabled,
-}) => {
+const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -48,9 +44,12 @@ const TagInput = ({
   };
 
   return (
-    <StyledTagInput className="set_room_params-input set_room_params-tag_input">
+    <StyledTagInput
+      className="set_room_params-input set_room_params-tag_input"
+      hasTags={!!tagHandler.tags.length}
+    >
       <InputParam
-        id={"tags-input"}
+        id="shared_tags-input"
         title={`${t("Common:Tags")}:`}
         placeholder={t("TagsPlaceholder")}
         value={tagInput}
@@ -70,7 +69,7 @@ const TagInput = ({
 
       <TagList
         tagHandler={tagHandler}
-        defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+        defaultTagLabel={""}
         isDisabled={isDisabled}
       />
     </StyledTagInput>

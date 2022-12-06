@@ -71,6 +71,7 @@ const ItemContextOptions = ({
       />
       {options?.length > 0 && (
         <ContextMenuButton
+          id="info-options"
           className="expandButton"
           title={"Show item actions"}
           onClick={onContextMenu}

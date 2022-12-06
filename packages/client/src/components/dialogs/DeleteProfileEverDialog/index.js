@@ -88,10 +88,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
               reassign process before deleting.
             </Trans>
           </Text>
-          {/* <Text color="#c30" fontSize="18px" className="warning-text">
-              {t("Common:Warning")}!
-            </Text>
-            <Text>{t("DeleteUserDataConfirmation")}</Text> */}
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button

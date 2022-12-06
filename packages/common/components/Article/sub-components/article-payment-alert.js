@@ -27,6 +27,7 @@ const ArticlePaymentAlert = ({
   currencySymbol,
   setPortalPaymentQuotas,
   currentTariffPlanTitle,
+  toggleArticleOpen,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -40,6 +41,7 @@ const ArticlePaymentAlert = ({
       "/payments/portal-payments"
     );
     history.push(paymentPageUrl);
+    toggleArticleOpen();
   };
 
   const isShowLoader = !ready;
@@ -64,7 +66,9 @@ const ArticlePaymentAlert = ({
           )}
         </Text>
         <Text fontWeight={600}>
-          {isFreeTariff ? t("ActivateBusinessPlan") : t("GracePeriodActivated")}
+          {isFreeTariff
+            ? t("ActivateBusinessPlan", { planName: currentTariffPlanTitle })
+            : t("GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (

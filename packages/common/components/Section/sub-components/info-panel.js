@@ -11,7 +11,8 @@ import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { Portal } from "@docspace/components";
 
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
@@ -21,7 +22,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   width: auto;
   background: ${(props) => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
-
+  z-index: 300;
   @media ${tablet} {
     z-index: 309;
     position: fixed;
@@ -153,10 +154,13 @@ const InfoPanel = ({
       if (!isDesktop() && isVisible) closeInfoPanel();
     };
 
-    return () => document.removeEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      closeInfoPanel();
+    };
   }, []);
 
-  return (
+  const infoPanelComponent = (
     <StyledInfoPanelWrapper
       isRowView={viewAs === "row"}
       className="info-panel"
@@ -174,6 +178,20 @@ const InfoPanel = ({
       </StyledInfoPanel>
     </StyledInfoPanelWrapper>
   );
+
+  const renderPortalInfoPanel = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={infoPanelComponent}
+        appendTo={rootElement}
+        visible={isVisible}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalInfoPanel() : infoPanelComponent;
 };
 
 InfoPanel.propTypes = {
@@ -189,7 +207,7 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth }) => {
   const { isVisible, setIsVisible, getCanDisplay } = auth.infoPanelStore;
 
   const canDisplay = getCanDisplay();

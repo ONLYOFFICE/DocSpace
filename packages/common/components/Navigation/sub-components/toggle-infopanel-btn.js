@@ -54,6 +54,7 @@ const ToggleInfoPanelButton = ({
   isRootFolder,
   isInfoPanelVisible,
   toggleInfoPanel,
+  id,
 }) => {
   return (
     <StyledInfoPanelToggleWrapper
@@ -62,6 +63,7 @@ const ToggleInfoPanelButton = ({
     >
       <div className="info-panel-toggle-bg">
         <IconButton
+          id={id}
           className="info-panel-toggle"
           iconName="images/panel.react.svg"
           size="16"

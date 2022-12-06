@@ -310,6 +310,7 @@ class SectionHeaderContent extends React.Component {
                     backgroundColor="#EDC409"
                     label="Paid"
                     className="settings-section_badge"
+                    isPaidBadge={true}
                   />
                 ) : (
                   ""

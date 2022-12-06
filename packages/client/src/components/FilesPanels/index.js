@@ -58,7 +58,7 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible,
   } = props;
 
-  const { t } = useTranslation(["Translations", "SelectFile"]);
+  const { t } = useTranslation(["Translations", "Common"]);
 
   const onClose = () => {
     setSelectFileDialogVisible(false);
@@ -111,7 +111,7 @@ const Panels = (props) => {
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("SelectFile:SelectDOCXFormat")}
+        filesListTitle={t("Common:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />

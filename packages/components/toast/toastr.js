@@ -118,6 +118,27 @@ function success(data, title, timeout, withCross, centerPosition) {
   );
 }
 
+function fatal(data, title, timeout, withCross, centerPosition) {
+  const dataType = typeof data;
+  const message =
+    dataType === "string"
+      ? data
+      : dataType === "object" && data.statusText
+      ? data.statusText
+      : dataType === "object" && data.message
+      ? data.message
+      : "";
+
+  return notify(
+    "error",
+    message,
+    title || getTitle("Error"),
+    timeout,
+    withCross,
+    centerPosition
+  );
+}
+
 function error(data, title, timeout, withCross, centerPosition) {
   const dataType = typeof data;
   const message =

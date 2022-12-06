@@ -395,9 +395,9 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     const { isArchiveFolder } = this.treeFoldersStore;
-    const { addActiveItems, folders, getIsEmptyTrash } = this.filesStore;
+    const { addActiveItems, roomsForDelete } = this.filesStore;
 
-    const folderIds = folders.map((f) => f.id);
+    const folderIds = roomsForDelete.map((f) => f.id);
     if (isArchiveFolder) addActiveItems(null, folderIds);
 
     setSecondaryProgressBarData({
@@ -1072,7 +1072,6 @@ class FilesActionStore {
   openLocationAction = async (locationId) => {
     this.filesStore.setBufferSelection(null);
     const files = await this.filesStore.fetchFiles(locationId, null);
-    console.log(files);
     return files;
   };
 
@@ -1257,20 +1256,18 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
-      isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
       selection,
     } = this.filesStore;
 
     const {
-      canCopyFile,
-      canDeleteFile,
-      canMoveFile,
+      canCopyItems,
+      canDeleteItems,
+      canMoveItems,
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
@@ -1278,7 +1275,7 @@ class FilesActionStore {
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyFile({ access, rootFolderType });
+        const canCopy = canCopyItems({ access, rootFolderType });
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1287,16 +1284,12 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveFile({ access, rootFolderType });
-        return (
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !isRecentFolder &&
-          !isFavoritesFolder &&
-          !allFilesIsEditing &&
-          canMove
-        );
+        const canMove = canMoveItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        return hasSelection && isAccessedSelected && canMove;
 
       case "archive":
       case "unarchive":
@@ -1313,12 +1306,12 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteFile({ access, rootFolderType });
-        const deleteCondition =
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !allFilesIsEditing;
+        const canDelete = canDeleteItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        const deleteCondition = hasSelection && isAccessedSelected;
 
         return canDelete && deleteCondition;
     }
@@ -1445,6 +1438,7 @@ class FilesActionStore {
         if (!isTablet() && !isMobile) return null;
         else
           return {
+            id: "menu-show-info",
             key: "show-info",
             label: t("Common:Info"),
             iconUrl: "/static/images/info.outline.react.svg",
@@ -1454,6 +1448,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("copy")) return null;
         else
           return {
+            id: "menu-copy",
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
             iconUrl: "/static/images/copyTo.react.svg",
@@ -1463,6 +1458,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("download")) return null;
         else
           return {
+            id: "menu-download",
             label: t("Common:Download"),
             onClick: () =>
               this.downloadAction(
@@ -1475,6 +1471,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("downloadAs")) return null;
         else
           return {
+            id: "menu-download-as",
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
             iconUrl: "/static/images/downloadAs.react.svg",
@@ -1484,12 +1481,14 @@ class FilesActionStore {
         if (!this.isAvailableOption("moveTo")) return null;
         else
           return {
+            id: "menu-move-to",
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
             iconUrl: "/static/images/move.react.svg",
           };
       case "pin":
         return {
+          id: "menu-pin",
           key: "pin",
           label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
@@ -1498,6 +1497,7 @@ class FilesActionStore {
         };
       case "unpin":
         return {
+          id: "menu-unpin",
           key: "unpin",
           label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
@@ -1508,6 +1508,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("archive")) return null;
         else
           return {
+            id: "menu-archive",
             key: "archive",
             label: t("Archived"),
             iconUrl: "/static/images/room.archive.svg",
@@ -1518,6 +1519,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("unarchive")) return null;
         else
           return {
+            id: "menu-unarchive",
             key: "unarchive",
             label: t("Common:Restore"),
             iconUrl: "images/subtract.react.svg",
@@ -1528,6 +1530,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("delete-room")) return null;
         else
           return {
+            id: "menu-delete-room",
             label: t("Common:Delete"),
             onClick: () => this.deleteRooms(t),
             iconUrl: "/static/images/delete.react.svg",
@@ -1537,6 +1540,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("delete")) return null;
         else
           return {
+            id: "menu-delete",
             label: t("Common:Delete"),
             onClick: () => {
               if (this.settingsStore.confirmDelete) {
@@ -1579,22 +1583,6 @@ class FilesActionStore {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
     const showOption = this.getOption("show-info", t);
-
-    const { selection } = this.filesStore;
-    const { canArchiveRoom } = this.accessRightsStore;
-
-    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
-
-    if (canArchive.length <= 0) {
-      let pinName = "unpin";
-
-      selection.forEach((item) => {
-        if (!item.pinned) pinName = "pin";
-      });
-
-      const pin = this.getOption(pinName, t);
-      itemsCollection.set(pinName, pin);
-    }
 
     itemsCollection
       .set("unarchive", archive)
@@ -1722,6 +1710,7 @@ class FilesActionStore {
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("restore", {
+        id: "menu-restore",
         label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",

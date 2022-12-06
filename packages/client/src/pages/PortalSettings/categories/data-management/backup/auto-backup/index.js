@@ -447,6 +447,7 @@ class AutomaticBackup extends React.PureComponent {
               backgroundColor="#EDC409"
               label="Paid"
               className="auto-backup_badge"
+              isPaidBadge={true}
             />
           )}
         </div>
@@ -547,101 +548,101 @@ class AutomaticBackup extends React.PureComponent {
 }
 export default inject(
   ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
-  const { language, settingsStore, currentQuotaStore } = auth;
-  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
-  const { organizationName, theme } = settingsStore;
-  const {
-    downloadingProgress,
-    backupSchedule,
-    //commonThirdPartyList,
-    clearProgressInterval,
-    deleteSchedule,
-    getProgress,
-    setThirdPartyStorage,
-    setDefaultOptions,
-    setBackupSchedule,
-    selectedStorageType,
-    seStorageType,
-    //setCommonThirdPartyList,
-    selectedPeriodLabel,
-    selectedWeekdayLabel,
-    selectedWeekday,
-    selectedHour,
-    selectedMonthDay,
-    selectedMaxCopiesNumber,
-    selectedPeriodNumber,
-    selectedFolderId,
-    selectedStorageId,
-    toDefault,
-    isFormReady,
-    getStorageParams,
-    setSelectedEnableSchedule,
-    selectedEnableSchedule,
-    updatePathSettings,
+    const { language, settingsStore, currentQuotaStore } = auth;
+    const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
+    const { organizationName, theme } = settingsStore;
+    const {
+      downloadingProgress,
+      backupSchedule,
+      //commonThirdPartyList,
+      clearProgressInterval,
+      deleteSchedule,
+      getProgress,
+      setThirdPartyStorage,
+      setDefaultOptions,
+      setBackupSchedule,
+      selectedStorageType,
+      seStorageType,
+      //setCommonThirdPartyList,
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedWeekday,
+      selectedHour,
+      selectedMonthDay,
+      selectedMaxCopiesNumber,
+      selectedPeriodNumber,
+      selectedFolderId,
+      selectedStorageId,
+      toDefault,
+      isFormReady,
+      getStorageParams,
+      setSelectedEnableSchedule,
+      selectedEnableSchedule,
+      updatePathSettings,
 
-    setStorageRegions,
+      setStorageRegions,
       defaultFolderId,
-  } = backup;
+    } = backup;
 
     const {
       updateBaseFolderPath,
       resetNewFolderPath,
     } = selectFolderDialogStore;
 
-  const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
+    const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
     const isCheckedThirdParty =
       selectedStorageType === `${ResourcesModuleType}`;
-  const isCheckedThirdPartyStorage =
-    selectedStorageType === `${StorageModuleType}`;
+    const isCheckedThirdPartyStorage =
+      selectedStorageType === `${StorageModuleType}`;
 
-  const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+    const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
-  return {
+    return {
       defaultFolderId,
-    isEnableAuto: isRestoreAndAutoBackupAvailable,
-    fetchTreeFolders,
-    rootFoldersTitles,
-    downloadingProgress,
-    theme,
-    language,
-    isFormReady,
-    organizationName,
-    backupSchedule,
-    //commonThirdPartyList,
-    clearProgressInterval,
-    deleteSchedule,
-    getProgress,
-    setThirdPartyStorage,
-    setDefaultOptions,
-    setBackupSchedule,
-    selectedStorageType,
-    seStorageType,
-    //setCommonThirdPartyList,
-    selectedPeriodLabel,
-    selectedWeekdayLabel,
-    selectedWeekday,
-    selectedHour,
-    selectedMonthDay,
-    selectedMaxCopiesNumber,
-    selectedPeriodNumber,
-    selectedFolderId,
-    selectedStorageId,
+      isEnableAuto: isRestoreAndAutoBackupAvailable,
+      fetchTreeFolders,
+      rootFoldersTitles,
+      downloadingProgress,
+      theme,
+      language,
+      isFormReady,
+      organizationName,
+      backupSchedule,
+      //commonThirdPartyList,
+      clearProgressInterval,
+      deleteSchedule,
+      getProgress,
+      setThirdPartyStorage,
+      setDefaultOptions,
+      setBackupSchedule,
+      selectedStorageType,
+      seStorageType,
+      //setCommonThirdPartyList,
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedWeekday,
+      selectedHour,
+      selectedMonthDay,
+      selectedMaxCopiesNumber,
+      selectedPeriodNumber,
+      selectedFolderId,
+      selectedStorageId,
 
-    toDefault,
+      toDefault,
 
-    isCheckedThirdPartyStorage,
-    isCheckedThirdParty,
-    isCheckedDocuments,
+      isCheckedThirdPartyStorage,
+      isCheckedThirdParty,
+      isCheckedDocuments,
 
-    getStorageParams,
+      getStorageParams,
 
-    setSelectedEnableSchedule,
-    selectedEnableSchedule,
+      setSelectedEnableSchedule,
+      selectedEnableSchedule,
 
-    updatePathSettings,
+      updatePathSettings,
       resetNewFolderPath,
-    setStorageRegions,
+      setStorageRegions,
       updateBaseFolderPath,
-  };
+    };
   }
 )(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

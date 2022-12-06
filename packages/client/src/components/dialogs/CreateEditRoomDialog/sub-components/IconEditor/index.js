@@ -21,7 +21,7 @@ const IconEditor = ({
   isEdit,
   title,
   tags,
-  currentRoomTypeData,
+  defaultTagLabel,
   icon,
   onChangeIcon,
   isDisabled,
@@ -50,7 +50,7 @@ const IconEditor = ({
             title={title || t("Files:NewRoom")}
             previewIcon={previewIcon}
             tags={tags.map((tag) => tag.name)}
-            defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+            defaultTagLabel={defaultTagLabel}
             isDisabled={isDisabled}
           />
         </div>

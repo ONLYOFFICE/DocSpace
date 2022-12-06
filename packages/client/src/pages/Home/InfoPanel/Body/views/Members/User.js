@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,
@@ -15,7 +14,9 @@ const User = ({
   currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
-  isArchiveRoot,
+  canChangeUserRoleInRoom,
+  rootFolderType,
+  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -66,11 +67,13 @@ const User = ({
     }
   };
 
-  const isAvailable =
-    !isArchiveRoot &&
-    currCanEditUsers &&
-    currentMember?.id !== user.id &&
-    userRole.access !== ShareAccessRights.FullAccess;
+  const isCanChangeUserRole =
+    user &&
+    canChangeUserRoleInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
 
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
@@ -91,7 +94,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {isAvailable ? (
+          {isCanChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
@@ -101,9 +104,10 @@ const User = ({
               withBackdrop={false}
               size="content"
               modernView
+              title={t("Common:Role")}
             />
           ) : (
-            <div className="disabled-role-combobox">{userRole.label}</div>
+            <div className="disabled-role-combobox" title={t("Common:Role")}>{userRole.label}</div>
           )}
         </div>
       )}

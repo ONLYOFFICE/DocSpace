@@ -101,16 +101,19 @@ const StyledComboBox = styled(ComboBox)`
     text-decoration: none;
   }
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   .combo-buttons_arrow-icon {
-    margin-top: 12px;
-    margin-right: 8px;
-    margin-left: 0px;
+    margin-left: 2px;
   }
 
   padding: 0px;
 
   .combo-button {
     border-radius: 3px;
+    height: auto;
   }
 `;
 
