@@ -381,7 +381,6 @@ export default function template(
             </div>
           </div>
           <div id="root">${appComponent}</div>
-          <noscript> You need to enable JavaScript to run this app. </noscript>
           ${scripts}
         </body>
       </html>
