@@ -636,39 +636,43 @@ const ViewerBase = (props) => {
         drag={drag}
         container={props.container}
       />
-      {props.noFooter || (
-        <div className={`${prefixCls}-container`}>
-          <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 7 }}>
-            {noToolbar || (
-              <ViewerToolbar
-                isMobileOnly={isMobileOnly}
-                prefixCls={prefixCls}
-                onAction={handleAction}
-                alt={activeImg.alt}
-                width={state.imageWidth}
-                height={state.imageHeight}
-                percent={state.percent}
-                attribute={attribute}
-                zoomable={zoomable}
-                rotatable={rotatable}
-                onPercentClick={onPercentClick}
-                generateContextMenu={generateContextMenu}
-                scalable={scalable}
-                changeable={changeable}
-                downloadable={downloadable}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                noImgDetails={noImgDetails}
-                toolbars={customToolbar(defaultToolbars)}
-                activeIndex={state.activeIndex}
-                count={images.length}
-                showTotal={showTotal}
-                totalName={totalName}
-              />
-            )}
+      {props.noFooter ||
+        (!isMobileOnly && (
+          <div className={`${prefixCls}-container`}>
+            <div
+              className={`${prefixCls}-footer`}
+              style={{ zIndex: zIndex + 7 }}
+            >
+              {noToolbar || (
+                <ViewerToolbar
+                  isMobileOnly={isMobileOnly}
+                  prefixCls={prefixCls}
+                  onAction={handleAction}
+                  alt={activeImg.alt}
+                  width={state.imageWidth}
+                  height={state.imageHeight}
+                  percent={state.percent}
+                  attribute={attribute}
+                  zoomable={zoomable}
+                  rotatable={rotatable}
+                  onPercentClick={onPercentClick}
+                  generateContextMenu={generateContextMenu}
+                  scalable={scalable}
+                  changeable={changeable}
+                  downloadable={downloadable}
+                  isOpen={isOpen}
+                  setIsOpen={setIsOpen}
+                  noImgDetails={noImgDetails}
+                  toolbars={customToolbar(defaultToolbars)}
+                  activeIndex={state.activeIndex}
+                  count={images.length}
+                  showTotal={showTotal}
+                  totalName={totalName}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        ))}
     </div>
   );
 };

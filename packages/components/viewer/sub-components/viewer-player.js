@@ -21,6 +21,7 @@ import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
 
 import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
 import { useSwipeable } from "react-swipeable";
+import { isMatchWith } from "lodash";
 
 let iconWidth = 80;
 let iconHeight = 60;
@@ -41,6 +42,14 @@ const StyledVideoPlayer = styled.div`
   &:focus-visible,
   #videoPlayer:focus-visible {
     outline: none;
+  }
+
+  .mobile-details {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
   }
   .video-wrapper {
     position: fixed;
@@ -162,6 +171,12 @@ const StyledVideoPlayer = styled.div`
     padding: 0 28px;
     height: 30px;
 
+    ${isMobileOnly &&
+    css`
+      bottom: 44px;
+      padding: 0 16px;
+    `}
+
     input[type="range"] {
       width: 100%;
       margin-right: 0px;
@@ -181,19 +196,16 @@ const StyledVideoActions = styled.div`
     display: flex;
     align-items: center;
 
+    ${isMobileOnly &&
+    css`
+      bottom: 2px;
+      padding: 0 11px;
+    `}
+
     .controll-box {
       display: flex;
       align-items: center;
     }
-
-    ${isMobileOnly &&
-    css`
-      justify-content: center;
-
-      .fullscreen-button {
-        order: -1;
-      }
-    `}
   }
 
   .controller {
@@ -241,6 +253,12 @@ const StyledVideoControls = styled.div`
       }
     }
   }
+
+  ${isMobileOnly &&
+  css`
+    height: 80px;
+    background: rgba(0, 0, 0, 0.8);
+  `}
 
   .volume-wrapper {
     width: 100px;
@@ -349,8 +367,8 @@ export default function ViewerPlayer(props) {
     },
   });
 
-  const footerHeight = 48;
-  const titleHeight = 53;
+  const footerHeight = 0;
+  const titleHeight = 0;
 
   const togglePlay = (e) => {
     e.stopPropagation();
@@ -465,7 +483,7 @@ export default function ViewerPlayer(props) {
 
     let left = (window.innerWidth - width) / 2;
     let top = !state.isFullScreen
-      ? (window.innerHeight - height - (footerHeight - 53)) / 2
+      ? (window.innerHeight - height - footerHeight) / 2
       : 0;
 
     return [width, height, left, top];
@@ -636,7 +654,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       {...handlers}
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
-      {!state.isFullScreen && isMobileOnly && mobileDetails}
+      {isMobileOnly && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
         <video
           onClick={togglePlay}
@@ -689,9 +707,9 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 >
                   {!state.isPlaying ? <IconPlay /> : <IconStop />}
                 </div>
-                {!isMobileOnly && (
-                  <StyledDuration>{state.duration}</StyledDuration>
-                )}
+
+                <StyledDuration>{state.duration}</StyledDuration>
+
                 {!isMobileOnly && (
                   <div className="volume-container">
                     {state.isMuted ? (

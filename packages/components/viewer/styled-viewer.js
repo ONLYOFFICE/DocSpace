@@ -85,6 +85,11 @@ const StyledViewer = styled(ViewerBase)`
   }
 
   .mobile-details {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
     svg {
       path {
         fill: #fff;
@@ -114,6 +119,7 @@ const StyledViewer = styled(ViewerBase)`
     bottom: 24px;
     z-index: 307;
     height: 48px;
+    transition: all 0.26s ease-out;
     background: rgba(0, 0, 0, 0.4);
     text-align: center;
     &:hover {
