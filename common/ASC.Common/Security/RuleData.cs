@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,52 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Users;
+namespace ASC.Common.Security;
 
-[Serializable]
-public class GroupInfo : IRole, IRecipientsGroup
+public interface IRuleData
 {
-    public Guid ID { get; internal set; }
-    public string Name { get; set; }
-    public Guid CategoryID { get; set; }
-    public GroupInfo Parent { get; internal set; }
-    public string Sid { get; set; }
-
-    public GroupInfo() { }
-
-    public GroupInfo(Guid categoryID)
-    {
-        CategoryID = categoryID;
-    }
-
-    public override string ToString()
-    {
-        return Name;
-    }
-
-    public override int GetHashCode()
-    {
-        return ID != Guid.Empty ? ID.GetHashCode() : base.GetHashCode();
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is not GroupInfo g)
-        {
-            return false;
-        }
-
-        if (ID == Guid.Empty && g.ID == Guid.Empty)
-        {
-            return ReferenceEquals(this, g);
-        }
-
-        return g.ID == ID;
-    }
-
-    string IRecipient.ID => ID.ToString();
-    string IRecipient.Name => Name;
-    public string AuthenticationType => "ASC";
-    public bool IsAuthenticated => false;
-    public string Key => ID.ToString();
+    public string Key { get; }
 }

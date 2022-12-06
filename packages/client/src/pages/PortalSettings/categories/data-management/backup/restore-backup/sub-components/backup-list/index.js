@@ -202,7 +202,6 @@ class BackupListModalDialog extends React.Component {
                   ) : (
                     <Text
                       fontSize="12px"
-                      color="#A3A9AE"
                       textAlign="center"
                       className="backup-restore_empty-list"
                     >

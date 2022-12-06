@@ -74,6 +74,12 @@ public class UserServiceCache
         {
             var key = GetUserCacheKey(userInfo.Tenant);
             Cache.Remove(key);
+
+            if (Guid.TryParse(userInfo.Id, out var userId))
+            {
+                var userKey = GetUserCacheKey(userInfo.Tenant, userId);
+                Cache.Remove(userKey);
+            }
         }
     }
     private void InvalidateCache(GroupCacheItem groupCacheItem)

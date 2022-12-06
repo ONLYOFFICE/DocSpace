@@ -1952,6 +1952,7 @@ const Dark = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#858585",
   },
 
   navigation: {
@@ -2931,6 +2932,7 @@ const Dark = {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
+        textColor: "#ADADAD",
       },
 
       payment: {
