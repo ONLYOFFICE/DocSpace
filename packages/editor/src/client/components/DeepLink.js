@@ -1,14 +1,15 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation, Trans } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import { getBgPattern } from "@docspace/common/utils";
 
 import Heading from "@docspace/components/heading";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import Link from "@docspace/components/link";
 
 import { checkProtocol } from "../helpers/utils";
 
@@ -25,17 +26,18 @@ const DeepLink = ({
   privacyInstructions,
   whiteLabelLogoUrls,
 }) => {
+  const { t } = useTranslation(["DeepLink"]);
+
   const bgPattern = getBgPattern(currentColorScheme.id);
 
   const logo = isMobileOnly ? whiteLabelLogoUrls[0] : whiteLabelLogoUrls[1];
+  const buttonLabel = !isMobile ? t("OpenApp") : t("Instructions");
 
   const isSvgLogo = logo.includes(".svg");
 
   const onOpenHomePage = () => {
     window.open("/rooms/shared/filter", "_self");
   };
-
-  window.onbeforeunload = null;
 
   const onOpenInstruction = () => {
     window.open(privacyInstructions, "_blank");
@@ -50,62 +52,96 @@ const DeepLink = ({
   };
 
   React.useEffect(() => {
-    checkProtocol(fileId);
+    if (!isMobile) {
+      checkProtocol(fileId);
+    }
   }, [fileId]);
+
+  const mobileBlock = (
+    <>
+      <Text className="deep-link-content__mobile-header">
+        {t("NotAvailable")}
+      </Text>
+      <Text className="deep-link-content__mobile-description">
+        {t("UseApp")}
+      </Text>
+    </>
+  );
 
   return (
     <StyledDeepLinkWrapper bgPattern={bgPattern}>
-      {isSvgLogo ? (
-        <ReactSVG
-          className="deep-link__logo"
-          src={logo}
-          onClick={onOpenHomePage}
-        />
-      ) : (
-        <img className="deep-link__logo" src={logo} onClick={onOpenHomePage} />
-      )}
+      <div className="deep-link__logo-container">
+        {isSvgLogo ? (
+          <ReactSVG
+            className="deep-link__logo"
+            src={logo}
+            onClick={onOpenHomePage}
+          />
+        ) : (
+          <img
+            className="deep-link__logo"
+            src={logo}
+            onClick={onOpenHomePage}
+          />
+        )}
+      </div>
 
-      <Heading className={"deep-link__header"}>Открытие документа</Heading>
-      <Text className={"deep-link__description"}>
-        Данный документ зашифрован и может быть открыт только в десктопном
-        редакторе Onlyoffice
-      </Text>
+      {!isMobile && (
+        <>
+          <Heading className={"deep-link__header"}> {t("OpeningDoc")}</Heading>
+          <Text className={"deep-link__description"}>
+            {t("OpeningDocDesc")}
+          </Text>
+        </>
+      )}
       <StyledContentContainer>
-        <Text className={"deep-link-content__description"}>
-          Нажмите{" "}
-          <Text as={"span"} fontWeight={600}>
-            Открыть приложение “Onlyoffice”{" "}
+        {isMobile ? (
+          mobileBlock
+        ) : (
+          <Text className={"deep-link-content__description"}>
+            <Trans t={t} i18nKey="ClickDescription" ns="DeepLink">
+              Click{" "}
+              <Text as={"span"} fontWeight={600}>
+                {{ firstButton: t("OpenAppOnlyoffice") }}
+              </Text>{" "}
+              in the browser dialog box. If the dialog box does not appear,
+              click{" "}
+              <Text as={"span"} fontWeight={600}>
+                {{ secondButton: t("OpenApp") }}
+              </Text>{" "}
+              below.
+            </Trans>
           </Text>
-          в диалоговом окне в браузере. Если диалоговое окно не отображается,
-          нажмите{" "}
-          <Text as={"span"} fontWeight={600}>
-            Открыть приложение ниже
-          </Text>
-          .
-        </Text>
+        )}
 
         <Button
           className={"deep-link-content__button"}
           primary
           scale
-          label={"Открыть приложение"}
+          label={buttonLabel}
           size={"medium"}
           onClick={onButtonAction}
         />
 
-        <Text className={"deep-link-content__without-app"}>
-          Приложение Onlyoffice не установлено?
-        </Text>
+        {!isMobile && (
+          <>
+            <Text className={"deep-link-content__without-app"}>
+              {t("MissApp")}
+            </Text>
 
-        <Link
-          className={"deep-link-content__download-now"}
-          href={downloadDesktopAppLink}
-          target={"_blank"}
-          type={"action"}
-          isHovered
-        >
-          Загрузить сейчас
-        </Link>
+            <ColorTheme
+              className={"deep-link-content__download-now"}
+              href={downloadDesktopAppLink}
+              target={"_blank"}
+              type={"action"}
+              isHovered
+              themeId={ThemeType.Link}
+              currentColorScheme={currentColorScheme}
+            >
+              {t("DownloadNow")}
+            </ColorTheme>
+          </>
+        )}
       </StyledContentContainer>
     </StyledDeepLinkWrapper>
   );

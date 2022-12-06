@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
-import { Base } from "@docspace/components/themes";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
+import { Base } from "@docspace/components/themes";
 
 const StyledDeepLinkWrapper = styled.div`
   width: 100%;
@@ -20,24 +20,6 @@ const StyledDeepLinkWrapper = styled.div`
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;
-
-  @media ${tablet} {
-    background-size: cover;
-  }
-
-  @media ${hugeMobile} {
-    background-image: none;
-  }
-
-  ${isMobile &&
-  css`
-    background-size: cover !important;
-  `}
-
-  ${isMobileOnly &&
-  css`
-    background-image: none !important;
-  `}
 
   .deep-link__logo {
     max-height: 44px;
@@ -69,6 +51,50 @@ const StyledDeepLinkWrapper = styled.div`
 
     margin-bottom: 32px;
   }
+
+  @media ${tablet} {
+    background-size: cover;
+  }
+
+  @media ${hugeMobile} {
+    background-image: none;
+  }
+
+  ${isMobile &&
+  css`
+    background-size: cover;
+  `}
+
+  ${isMobileOnly &&
+  css`
+    position: relative;
+    height: calc(100vh - 96px);
+
+    padding-top: 0px;
+    background-image: none;
+
+    .deep-link__logo-container {
+      width: 100%;
+      height: 48px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      background: ${(props) =>
+        props.theme.deepLinkPage.logoContainerBackground};
+    }
+
+    .deep-link__logo {
+      margin-bottom: 0px;
+    }
+  `}
 `;
 
 StyledDeepLinkWrapper.defaultProps = { theme: Base };
@@ -79,7 +105,7 @@ const StyledContentContainer = styled.div`
 
   padding: 32px;
 
-  box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
+  box-shadow: ${(props) => props.theme.deepLinkPage.boxShadow};
 
   border-radius: 12px;
 
@@ -94,17 +120,32 @@ const StyledContentContainer = styled.div`
   ${isMobile &&
   css`
     width: 480px;
+    align-items: flex-start;
   `}
+
+  ${isMobileOnly &&
+  css`
+    box-shadow: none;
+
+    border-radius: 0px;
+
+    padding: 32px 0;
+  `}
+
   .deep-link-content__description {
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
-
-    margin-bottom: 32px;
   }
 
   .deep-link-content__button {
+    margin-top: 32px;
     margin-bottom: 24px;
+
+    ${isMobile &&
+    css`
+      margin-bottom: 0px;
+    `}
   }
 
   .deep-link-content__without-app {
@@ -119,8 +160,22 @@ const StyledContentContainer = styled.div`
     font-weight: 600;
     font-size: 13px;
     line-height: 15px;
+  }
 
-    color: #3b72a7;
+  .deep-link-content__mobile-header {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+
+    margin-bottom: 8px;
+  }
+
+  .deep-link-content__mobile-description {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+
+    text-align: left;
   }
 `;
 
