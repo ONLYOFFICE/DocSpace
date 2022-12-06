@@ -2893,6 +2893,7 @@ const Dark = {
         tooltipLinkColor: "#e06a1b",
         arrowColor: white,
         descriptionColor: "#858585",
+        brandingDescriptionColor: "#858585",
 
         whiteLabel: {
           borderImg: "1px solid #474747",

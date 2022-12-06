@@ -2891,6 +2891,7 @@ const Base = {
         tooltipLinkColor: black,
         arrowColor: black,
         descriptionColor: cyanBlueDarkShade,
+        brandingDescriptionColor: "#657077",
 
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
