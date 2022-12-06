@@ -2994,7 +2994,7 @@ const Dark = {
     lineColor: "#474747",
     backgroundColor: "#333",
     activeTextColor: "#FFFFFF",
-    textColor: "#ADADAD",
+    textColor: "#858585",
     bottomLineColor: "#E06A1B",
   },
 

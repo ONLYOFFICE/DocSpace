@@ -2900,7 +2900,7 @@ const Base = {
         linkColorHelp: link,
         tooltipLinkColor: black,
         arrowColor: black,
-        descriptionColor: cyanBlueDarkShade,
+        descriptionColor: grayMain,
 
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
