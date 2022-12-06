@@ -2,7 +2,6 @@
   "AddAccount": "Adaugă cont",
   "AddAuthor": "Adăugare autor",
   "ArchivingData": "Se arhivează datele",
-  "ButtonShareAccess": "Setări de partajare",
   "ConnectingAccount": "Conectare cont",
   "Copy": "Copiere",
   "CopyHere": "Copiere în acest loc",
@@ -38,7 +37,7 @@
   "MoveHere": "Mutare în acest loc",
   "MoveToOperation": "Mutare",
   "NewForm": "Șablon formă,",
-  "NewFormFile": "Forma din fișier text",
+  "Other": "Altă",
   "OwnerChange": "Schimbare proprietar",
   "Presentations": "Prezentări",
   "Spreadsheets": "Foi de calcul",
@@ -55,6 +54,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Altă"
+  "TypeTitlekDrive": "kDrive"
 }

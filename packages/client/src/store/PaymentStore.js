@@ -103,7 +103,7 @@ class PaymentStore {
       const res = await api.portal.updatePayment(adminCount);
       console.log("updatePayment", res);
       if (res !== true) {
-        toastr.error("error");
+        console.error(res);
       }
     } catch (e) {
       toastr.error(e);
@@ -190,7 +190,7 @@ class PaymentStore {
   sendPaymentRequest = async (email, userName, message) => {
     try {
       await api.portal.sendPaymentRequest(email, userName, message);
-      toastr.success("Success");
+      toastr.success(t("SuccessfullySentMessage"));
     } catch (e) {
       toastr.error(e);
     }

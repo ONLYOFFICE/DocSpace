@@ -6,6 +6,10 @@ import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import RoomLogo from "@docspace/components/room-logo";
 import { Base } from "@docspace/components/themes";
+import {
+  getRoomTypeDescriptionTranslation,
+  getRoomTypeTitleTranslation,
+} from "./../data/index";
 
 const StyledRoomType = styled.div`
   cursor: pointer;
@@ -133,23 +137,25 @@ const StyledDisplayItem = styled(StyledRoomType)`
 
 const RoomType = ({
   t,
-  room,
+  roomType,
   onClick,
   type = "listItem",
   isOpen,
   id,
   selectedId,
 }) => {
+  const room = {
+    type: roomType,
+    title: getRoomTypeTitleTranslation(roomType, t),
+    description: getRoomTypeDescriptionTranslation(roomType, t),
+  };
+
   const arrowClassName =
     type === "dropdownButton"
       ? "choose_room-forward_btn dropdown-button"
       : type === "dropdownItem"
       ? "choose_room-forward_btn dropdown-item"
       : "choose_room-forward_btn";
-
-  const onSecondaryInfoClick = (e) => {
-    e.stopPropagation();
-  };
 
   const content = (
     <>

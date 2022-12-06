@@ -73,7 +73,7 @@ const CommonSettings = ({
       <Box className="settings-section">
         {showTitle && (
           <Heading className="heading" level={2} size="xsmall">
-            {t("CommonSettings")}
+            {t("Common:Common")}
           </Heading>
         )}
         <ToggleButton

@@ -2182,7 +2182,7 @@ class FilesStore {
       case `room-${RoomsType.EditingRoom}`:
         return t("CollaborationRooms");
       case `room-${RoomsType.ReviewRoom}`:
-        return t("ReviewRooms");
+        return t("Common:Review");
       case `room-${RoomsType.ReadOnlyRoom}`:
         return t("ViewOnlyRooms");
 

@@ -51,7 +51,7 @@ const FieldMapping = (props) => {
       </Box>
 
       <SsoFormField
-        labelText={t("FirstName")}
+        labelText={t("Common:FirstName")}
         name="firstName"
         placeholder="givenName"
         tabIndex={16}
@@ -60,7 +60,7 @@ const FieldMapping = (props) => {
       />
 
       <SsoFormField
-        labelText={t("LastName")}
+        labelText={t("Common:LastName")}
         name="lastName"
         placeholder="sn"
         tabIndex={17}
@@ -78,7 +78,7 @@ const FieldMapping = (props) => {
       />
 
       <SsoFormField
-        labelText={t("Location")}
+        labelText={t("Common:Location")}
         name="location"
         placeholder="sn"
         tabIndex={19}
@@ -87,7 +87,7 @@ const FieldMapping = (props) => {
       />
 
       <SsoFormField
-        labelText={t("Title")}
+        labelText={t("Common:Title")}
         name="title"
         placeholder="sn"
         tabIndex={20}

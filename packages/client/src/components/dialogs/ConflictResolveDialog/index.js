@@ -164,7 +164,9 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text className="radio-option-title">{t("CreateTitle")}</Text>
+          <Text className="radio-option-title">
+            {t("Common:CreateFileCopy")}
+          </Text>
           <Text className="radio-option-description">
             {t("CreateDescription")}
           </Text>
