@@ -132,7 +132,9 @@ class FilesStore {
 
             if (this.selectedFolderStore.id !== file.folderId) return;
 
-            const newFiles = [file, ...this.files];
+            const fileInfo = await api.files.getFileInfo(file.id);
+
+            const newFiles = [fileInfo, ...this.files];
 
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
