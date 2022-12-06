@@ -2895,7 +2895,7 @@ const Dark = {
         descriptionColor: "#858585",
 
         whiteLabel: {
-          borderImg: "1px solid #d1d1d1",
+          borderImg: "1px solid #474747",
 
           backgroundColorWhite: white,
           backgroundColorLight: "#F8F9F9",
