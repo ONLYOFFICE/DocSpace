@@ -113,7 +113,13 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
+            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && 
+                !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
+            {
+                continue;
+            }
+
+            if (!await _fileSecurity.CanAddShareAsync(entry) && w.Access != FileShare.None)
             {
                 continue;
             }
@@ -337,12 +343,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsDocSpaceAdministrator || await _fileSecurity.CanShareAsync(entry)))
-        {
-            return true;
-        }
-
-        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(entry))
+        if (await _fileSecurity.CanAddShareAsync(entry) || await _fileSecurity.CanRemoveShareAsync(entry))
         {
             return true;
         }
