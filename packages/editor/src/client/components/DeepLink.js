@@ -121,6 +121,7 @@ const DeepLink = ({
           label={buttonLabel}
           size={"medium"}
           onClick={onButtonAction}
+          currentColorScheme={currentColorScheme}
         />
 
         {!isMobile && (
