@@ -1,5 +1,5 @@
 {
-  "ClickDescription": "Click {{ firstButton }} in the browser dialog box. If the dialog box does not appear, click {{ secondButton }} below.",
+  "ClickDescription": "Click <1>{{ firstButton }}</1> in the browser dialog box. If the dialog box does not appear, click <1>{{ secondButton }}</1> below.",
   "DownloadNow": "Download now",
   "OpenApp": "Open app",
   "OpenAppOnlyoffice": "Open app \"ONLYOFFICE\"",

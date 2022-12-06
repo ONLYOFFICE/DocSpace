@@ -1,5 +1,5 @@
 {
-  "ClickDescription": "Нажмите {{ firstButton }} в диалоговом окне браузера. Если диалоговое окно не отображается, нажмите {{ secondButton }} ниже.",
+  "ClickDescription": "Нажмите <1>{{ firstButton }}</1> в диалоговом окне браузера. Если диалоговое окно не отображается, нажмите <1>{{ secondButton }}</1> ниже.",
   "DownloadNow": "Загрузить сейчас",
   "OpenApp": "Открыть приложение",
   "OpenAppOnlyoffice": "Открыть приложение \"ONLYOFFICE\"",
