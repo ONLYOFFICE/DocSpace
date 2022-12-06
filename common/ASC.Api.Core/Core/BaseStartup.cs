@@ -33,7 +33,7 @@ public abstract class BaseStartup
     private const string BasicAuthScheme = "Basic";
     private const string MultiAuthSchemes = "MultiAuthSchemes";
 
-    private readonly IConfiguration _configuration;
+    protected readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
 
     protected virtual JsonConverter[] Converters { get; }
