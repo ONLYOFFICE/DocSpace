@@ -38,19 +38,6 @@ export const initI18n = (initialI18nStoreASC) => {
 
 export const checkProtocol = (fileId) =>
   new Promise((resolve, reject) => {
-    const onBlur = () => {
-      clearTimeout(timeout);
-      window.removeEventListener("blur", onBlur);
-      resolve();
-    };
-
-    const timeout = setTimeout(() => {
-      reject();
-      window.removeEventListener("blur", onBlur);
-    }, 1000);
-
-    window.addEventListener("blur", onBlur);
-
     window.open(
       combineUrl(
         `${EDITOR_PROTOCOL}:${window.location.origin}`,
