@@ -83,18 +83,6 @@ const StyledUser = styled.div`
       color: ${(props) =>
         props.theme.infoPanel.members.disabledRoleSelectorColor};
     }
-
-    .role-combobox {
-      .combo-button-label {
-        color: ${(props) => props.theme.infoPanel.members.roleSelectorColor};
-      }
-      .combo-buttons_arrow-icon {
-        path {
-          fill: ${(props) =>
-            props.theme.infoPanel.members.roleSelectorArrowColor};
-        }
-      }
-    }
   }
 `;
 

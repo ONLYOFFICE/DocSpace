@@ -44,8 +44,10 @@ const StyledItemDescription = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 16px;
-  color: #a3a9ae;
+  color: ${(props) => props.theme.accessRightSelect.descriptionColor};
 `;
+
+StyledItemDescription.defaultProps = { theme: Base };
 
 const StyledItemIcon = styled.img`
   margin-right: 8px;

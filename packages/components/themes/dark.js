@@ -426,18 +426,21 @@ const Dark = {
   },
 
   checkbox: {
-    fillColor: "#292929",
+    fillColor: "#282828",
     borderColor: "#474747",
-    arrowColor: grayMaxLight,
-    indeterminateColor: grayMaxLight,
+    arrowColor: white,
+    indeterminateColor: white,
 
     disableArrowColor: "#474747",
-    disableBorderColor: "#646464",
-    disableFillColor: "#646464",
+    disableBorderColor: "#545454",
+    disableFillColor: "#545454",
     disableIndeterminateColor: "#474747",
 
-    hoverBorderColor: "#646464",
-    hoverIndeterminateColor: grayMaxLight,
+    hoverBorderColor: "#858585",
+    hoverIndeterminateColor: white,
+
+    pressedBorderColor: "#474747",
+    pressedFillColor: black,
 
     focusColor: "#858585",
   },
@@ -1579,7 +1582,6 @@ const Dark = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: "#9c9c9c",
     },
 
     button: {
@@ -1616,7 +1618,7 @@ const Dark = {
 
       disabledColor: "#858585",
       color: "#858585",
-      selectedColor: grayMaxLight,
+      selectedColor: white,
 
       maxWidth: "175px",
 
@@ -1630,10 +1632,10 @@ const Dark = {
       height: "16px",
 
       defaultDisabledColor: "#858585",
-      defaultColor: grayMaxLight,
+      defaultColor: white,
       disabledColor: "#858585",
-      color: "#858585",
-      selectedColor: grayMaxLight,
+      color: white,
+      selectedColor: white,
     },
   },
 
@@ -1950,6 +1952,7 @@ const Dark = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#858585",
   },
 
   navigation: {
@@ -2245,10 +2248,17 @@ const Dark = {
       tile: {
         draggingColor: "rgba(230, 211, 138, 0.12)",
         draggingHoverColor: "rgba(204, 184, 102, 0.2)",
-        checkedColor: "#3D3D3D",
+        checkedColor: "#3d3d3d",
+        roomsCheckedColor: black,
         border: "1px solid #474747",
-        backgroundColor: black,
-
+        backgroundBadgeColor: black,
+        backgroundColor: "#282828",
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: "#292929",
       },
 
@@ -2996,10 +3006,10 @@ const Dark = {
 
   tag: {
     color: white,
-    background: "#3D3D3D",
+    background: black,
     hoverBackground: "#333333",
     disabledBackground: "#858585",
-    defaultTagColor: "#858585",
+    defaultTagColor: white,
     newTagBackground: "#333333",
   },
 
@@ -3040,6 +3050,10 @@ const Dark = {
     disabledBackground: "#474747",
     disabledBorder: "1px solid #474747",
     disabledColor: "#858585",
+  },
+
+  accessRightSelect: {
+    descriptionColor: "#858585",
   },
 };
 

@@ -445,7 +445,10 @@ const Base = {
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
 
-    focusColor: "#A3A9AE",
+    pressedBorderColor: grayMid,
+    pressedFillColor: grayLightMid,
+
+    focusColor: gray,
   },
 
   // slider: {
@@ -1589,7 +1592,6 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: grayMain,
     },
 
     button: {
@@ -1958,6 +1960,7 @@ const Base = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#A3A9AE",
   },
 
   navigation: {
@@ -2246,9 +2249,16 @@ const Base = {
         draggingColor: lightCumulus,
         draggingHoverColor: lightMediumGoldenrod,
         checkedColor: "#f3f4f4",
+        roomsCheckedColor: "#f3f4f4",
         border: `1px solid ${grayMid}`,
+        backgroundBadgeColor: white,
         backgroundColor: white,
-
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: white,
       },
 
@@ -2999,7 +3009,7 @@ const Base = {
     background: "#f3f4f4",
     hoverBackground: "#eceef1",
     disabledBackground: "#f8f9f9",
-    defaultTagColor: "#A3A9AE",
+    defaultTagColor: black,
     newTagBackground: "#eceef1",
   },
 
@@ -3040,6 +3050,10 @@ const Base = {
     disabledBackground: "#F8F9F9",
     disabledBorder: "1px solid #ECEEF1",
     disabledColor: "#A3A9AE",
+  },
+
+  accessRightSelect: {
+    descriptionColor: gray,
   },
 };
 

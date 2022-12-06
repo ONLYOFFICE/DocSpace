@@ -100,14 +100,40 @@ const StyledLabel = styled.label`
         ? css`
             cursor: pointer;
 
-            rect:nth-child(2) {
+            rect:nth-child(1) {
               stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
             }
           `
         : css`
           cursor: pointer;
-          rect:nth-child(2) {
+          rect:nth-child(1) {
               stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
+            }
+          rect:last-child {
+              fill: ${(props) => props.theme.checkbox.hoverIndeterminateColor};
+            `}
+  }
+
+  &:active {
+    ${(props) =>
+      props.isDisabled
+        ? css`
+            cursor: not-allowed;
+          `
+        : !props.isIndeterminate
+        ? css`
+            cursor: pointer;
+
+            rect:nth-child(1) {
+              stroke: ${(props) => props.theme.checkbox.pressedBorderColor};
+              fill: ${(props) => props.theme.checkbox.pressedFillColor};
+            }
+          `
+        : css`
+          cursor: pointer;
+          rect:nth-child(1) {
+              stroke: ${(props) => props.theme.checkbox.pressedBorderColor};
+              fill: ${(props) => props.theme.checkbox.pressedFillColor};
             }
           rect:last-child {
               fill: ${(props) => props.theme.checkbox.hoverIndeterminateColor};

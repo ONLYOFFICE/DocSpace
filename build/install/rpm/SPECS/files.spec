@@ -104,12 +104,6 @@
 %dir %{buildpath}/products/ASC.Files/
 %dir %{buildpath}/products/ASC.Files/server/
 
-%files urlshortener
-%defattr(-, onlyoffice, onlyoffice, -)
-%{buildpath}/services/ASC.UrlShortener/
-/usr/lib/systemd/system/%{product}-urlshortener.service
-%dir %{buildpath}/services/
-
 %files socket
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Socket.IO/
@@ -134,29 +128,10 @@
 %dir %{buildpath}/products/ASC.Files/
 %dir %{buildpath}/products/ASC.Files/server/
 
-%files telegram-service
-%defattr(-, onlyoffice, onlyoffice, -)
-%{buildpath}/services/ASC.TelegramService/
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-/usr/lib/systemd/system/%{product}-telegram-service.service
-%dir %{buildpath}/services/
-%dir %{buildpath}/products/
-%dir %{buildpath}/products/ASC.Files/
-%dir %{buildpath}/products/ASC.Files/server/
-%dir %{buildpath}/products/ASC.People/
-%dir %{buildpath}/products/ASC.People/server/
-
 %files ssoauth
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.SsoAuth/
 /usr/lib/systemd/system/%{product}-ssoauth.service
-%dir %{buildpath}/services/
-
-%files webhooks-service
-%defattr(-, onlyoffice, onlyoffice, -)
-%{buildpath}/services/ASC.Webhooks.Service/
-/usr/lib/systemd/system/%{product}-webhooks-service.service
 %dir %{buildpath}/services/
 
 %files clear-events
@@ -169,12 +144,6 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Data.Backup.BackgroundTasks/
 /usr/lib/systemd/system/%{product}-backup-background.service
-%dir %{buildpath}/services/
-
-%files migration
-%defattr(-, onlyoffice, onlyoffice, -)
-%{buildpath}/services/ASC.Migration/
-/usr/lib/systemd/system/%{product}-migration.service
 %dir %{buildpath}/services/
 
 %files radicale
