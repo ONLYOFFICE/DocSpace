@@ -1548,6 +1548,12 @@ class FilesStore {
       });
   };
 
+  updatePrivateFile = (fileId) => {
+    const idx = this.files.findIndex((f) => f.id === fileId);
+
+    this.files[idx].encrypted = true;
+  };
+
   createFolder(parentFolderId, title) {
     return api.files.createFolder(parentFolderId, title);
   }

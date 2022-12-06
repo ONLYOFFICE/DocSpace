@@ -51,6 +51,7 @@ const CreateEvent = ({
   eventDialogVisible,
 
   isPrivateFolder,
+  updatePrivateFile,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -205,24 +206,24 @@ const CreateEvent = ({
                 toastr.info(t("Translations:EncryptedFileSaving"));
 
                 return replaceFileStream(
-                  file.id,
+                  item.id,
                   encryptedFile,
                   true,
                   false
-                ).then(
-                  () => open && openDocEditor(file.id, file.providerKey, tab)
-                );
+                ).then(() => {
+                  open && openDocEditor(file.id, file.providerKey, tab);
+                });
               });
+            } else {
+              return open && openDocEditor(file.id, file.providerKey, tab);
             }
-
-            return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
-
+            isPrivateFolder && updatePrivateFile(item.id);
             clearActiveOperations(fileIds);
             onClose();
             return setIsLoading(false);
@@ -270,6 +271,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       setCreatedItem,
+      updatePrivateFile,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -322,6 +324,7 @@ export default inject(
       setEncryptionAccess,
 
       isPrivateFolder,
+      updatePrivateFile,
     };
   }
 )(observer(CreateEvent));
