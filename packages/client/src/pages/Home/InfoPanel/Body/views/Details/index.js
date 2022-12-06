@@ -20,6 +20,7 @@ const Details = ({
   getInfoPanelItemIcon,
   openUser,
   isVisitor,
+  getIcon,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -53,6 +54,8 @@ const Details = ({
     }
   }, [selection]);
 
+  const fileIcon = selection.fileExst && getIcon(96, selection.fileExst);
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
@@ -67,7 +70,11 @@ const Details = ({
         </StyledThumbnail>
       ) : (
         <StyledNoThumbnail>
-          <ItemIcon item={!!selection && selection} roomLogoSize="large" />
+          <ItemIcon
+            item={!!selection && selection}
+            roomLogoSize="large"
+            fileIcon={fileIcon}
+          />
         </StyledNoThumbnail>
       )}
 
@@ -95,12 +102,14 @@ const Details = ({
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, settingsStore }) => {
   const { userStore } = auth;
   const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
   const { user } = userStore;
+
+  const { getIcon } = settingsStore;
 
   const isVisitor = user.isVisitor;
 
@@ -112,5 +121,6 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
     isVisitor,
+    getIcon,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));
