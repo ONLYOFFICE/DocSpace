@@ -27,6 +27,12 @@ const StyledDeepLinkWrapper = styled.div`
     cursor: pointer;
 
     margin-bottom: 64px;
+
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
   }
 
   .deep-link__header {
