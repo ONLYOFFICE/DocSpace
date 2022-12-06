@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
@@ -14,6 +13,7 @@ import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
+import { getRoomTypeDefaultTagTranslation } from "../data";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -44,18 +44,14 @@ const SetRoomParams = ({
 
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
-  const [currentRoomTypeData] = roomTypes.filter(
-    (room) => room.type === roomParams.type
-  );
-
   return (
     <StyledSetRoomParams>
       {isEdit ? (
-        <RoomType t={t} room={currentRoomTypeData} type="displayItem" />
+        <RoomType t={t} roomType={roomParams.type} type="displayItem" />
       ) : (
         <RoomTypeDropdown
           t={t}
-          currentRoom={currentRoomTypeData}
+          currentRoomType={roomParams.type}
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
           isDisabled={isDisabled}
@@ -74,7 +70,7 @@ const SetRoomParams = ({
       <InputParam
         id="shared_room-name"
         title={`${t("Common:Name")}:`}
-        placeholder={t("NamePlaceholder")}
+        placeholder={t("Common:EnterName")}
         value={roomParams.title}
         onChange={onChangeName}
         isDisabled={isDisabled}
@@ -83,7 +79,6 @@ const SetRoomParams = ({
       <TagInput
         t={t}
         tagHandler={tagHandler}
-        currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
         isDisabled={isDisabled}
       />
@@ -113,9 +108,9 @@ const SetRoomParams = ({
         roomType={roomParams.type}
         title={roomParams.title}
         tags={roomParams.tags}
-        defaultTag={currentRoomTypeData.defaultTag}
         isPrivate={roomParams.isPrivate}
         storageLocation={roomParams.storageLocation}
+        defaultTagLabel={getRoomTypeDefaultTagTranslation(roomParams.type, t)}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
         isDisabled={isDisabled}

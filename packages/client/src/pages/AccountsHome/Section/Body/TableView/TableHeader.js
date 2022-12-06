@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 
 import TableHeader from "@docspace/components/table-container/TableHeader";
 
-const TABLE_VERSION = "2";
+const TABLE_VERSION = "3";
 const TABLE_COLUMNS = `peopleTableColumns_ver-${TABLE_VERSION}`;
 
 class PeopleTableHeader extends React.Component {
@@ -33,13 +33,13 @@ class PeopleTableHeader extends React.Component {
         resizable: true,
         onChange: this.onColumnChange,
       },
-      {
-        key: "Room",
-        title: t("Common:Room"),
-        enable: true,
-        resizable: true,
-        onChange: this.onColumnChange,
-      },
+      // {
+      //   key: "Room",
+      //   title: t("Common:Room"),
+      //   enable: true,
+      //   resizable: true,
+      //   onChange: this.onColumnChange,
+      // },
       {
         key: "Mail",
         title: t("Common:Email"),

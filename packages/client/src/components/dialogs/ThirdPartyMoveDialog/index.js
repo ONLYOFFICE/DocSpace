@@ -123,7 +123,7 @@ const PureThirdPartyMoveContainer = ({
     },
     {
       label: (
-        <Text className="radio-option-title">{t("CreateFileCopyOption")}</Text>
+        <Text className="radio-option-title">{t("Common:CreateFileCopy")}</Text>
       ),
       value: "copy",
     },

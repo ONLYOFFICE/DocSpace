@@ -2396,6 +2396,10 @@ const Dark = {
       icon: "#ffffff",
     },
 
+    tagInput: {
+      tagBackground: "#292929",
+    },
+
     dropdown: {
       background: "#333333",
       borderColor: "#474747",

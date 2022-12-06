@@ -43,7 +43,7 @@ const ChangeNameDialog = (props) => {
       setIsSaving(true);
       const currentProfile = await updateProfile(newProfile);
       fromList && (await updateProfileInUsers(currentProfile));
-      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      toastr.success(t("Common:ChangesSavedSuccessfully"));
     } catch (error) {
       console.error(error);
       toastr.error(error);
@@ -66,7 +66,7 @@ const ChangeNameDialog = (props) => {
       <ModalDialog.Body className="change-name-dialog-body">
         <FieldContainer
           isVertical
-          labelText={t("ProfileAction:FirstName")}
+          labelText={t("Common:FirstName")}
           className="field"
         >
           <TextInput
@@ -74,7 +74,7 @@ const ChangeNameDialog = (props) => {
             isAutoFocussed={true}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder={t("ProfileAction:FirstName")}
+            placeholder={t("Common:FirstName")}
             isDisabled={isSaving}
           />
         </FieldContainer>

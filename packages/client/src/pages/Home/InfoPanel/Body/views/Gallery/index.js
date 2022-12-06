@@ -32,7 +32,7 @@ const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
 
       <StyledSubtitle>
         <Text fontWeight="600" fontSize="14px">
-          {t("SystemProperties")}
+          {t("InfoPanel:SystemProperties")}
         </Text>
       </StyledSubtitle>
 

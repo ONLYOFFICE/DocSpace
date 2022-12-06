@@ -21,9 +21,9 @@ const IconEditor = ({
   roomType,
   title,
   tags,
-  defaultTag,
   isPrivate,
   storageLocation,
+  defaultTagLabel,
   icon,
   onChangeIcon,
   isDisabled,
@@ -52,10 +52,11 @@ const IconEditor = ({
             roomType={roomType}
             title={title || t("Files:NewRoom")}
             tags={tags.map((tag) => tag.name)}
-            defaultTagLabel={t(defaultTag)}
             isPrivate={isPrivate}
             storageLocation={storageLocation}
             previewIcon={previewIcon}
+            defaultTagLabel={defaultTagLabel}
+            isDisabled={isDisabled}
           />
         </div>
       )}
