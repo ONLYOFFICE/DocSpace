@@ -1582,7 +1582,6 @@ const Dark = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: "#9c9c9c",
     },
 
     button: {
@@ -1619,7 +1618,7 @@ const Dark = {
 
       disabledColor: "#858585",
       color: "#858585",
-      selectedColor: grayMaxLight,
+      selectedColor: white,
 
       maxWidth: "175px",
 
@@ -1633,10 +1632,10 @@ const Dark = {
       height: "16px",
 
       defaultDisabledColor: "#858585",
-      defaultColor: grayMaxLight,
+      defaultColor: white,
       disabledColor: "#858585",
-      color: "#858585",
-      selectedColor: grayMaxLight,
+      color: white,
+      selectedColor: white,
     },
   },
 
