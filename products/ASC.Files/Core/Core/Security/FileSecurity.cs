@@ -594,7 +594,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
+    private async Task<bool> FilterEntry1<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
     {
         if (!_coreBaseSettings.DisableDocSpace)
         {
@@ -1059,7 +1059,7 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    private async Task<bool> FilterEntry1<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
+    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
     {
         if (!isAuthenticated && userId != FileConstant.ShareLinkId)
         {
@@ -1183,30 +1183,8 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FolderType.VirtualRooms:
-                if (!isUser)
-                {
-                    if (isDocSpaceAdmin || e.CreateBy == userId)
-                    {
-                        return true;
-                    }
-
-                    var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
-                        .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
-
-                    if (parentRoom != null)
-                    {
-                        return true;
-                    }
-                }
-                break;
-            case FolderType.FillingFormsRoom:
-            case FolderType.EditingRoom:
-            case FolderType.ReviewRoom:
-            case FolderType.ReadOnlyRoom:
-            case FolderType.CustomRoom:
-                break;
             case FolderType.Archive:
-                if (
+                if (e.RootFolderType == FolderType.Archive &&
                     action != FilesSecurityActions.Read &&
                     action != FilesSecurityActions.Delete &&
                     action != FilesSecurityActions.RoomEdit &&
@@ -1219,26 +1197,13 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (isDocSpaceAdmin)
-                {
-                    if (action == FilesSecurityActions.RoomEdit)
-                    {
-                        return true;
-                    }
-
-                    if (action == FilesSecurityActions.Delete)
-                    {
-                        return folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
-                    }
-
-                    if (e.CreateBy == userId)
-                    {
-                        return true;
-                    }
-                }
-
                 if (!isUser)
                 {
+                    if (isDocSpaceAdmin || e.CreateBy == userId)
+                    {
+                        return true;
+                    }
+
                     var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
                         .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
 
