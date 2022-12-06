@@ -77,10 +77,11 @@ CustomRoomLogo.defaultProps = {
 };
 
 export const StyledIconContainer = styled.div<{
-  viewAs: "row" | "table" | "tile";
+  viewAs?: "row" | "table" | "tile";
+  roomLogoSize?: "large" | "medium";
 }>`
-  width: 32px;
-  height: 32px;
+  width: ${(props) => (props.roomLogoSize === "large" ? "96px" : "32px")};
+  height: ${(props) => (props.roomLogoSize === "large" ? "96px" : "32px")};
 
   position: relative;
 
@@ -91,23 +92,37 @@ export const StyledIconContainer = styled.div<{
   .item-icon_privacy {
     position: absolute;
 
-    width: 12px;
-    height: 12px;
+    width: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
+    height: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     div {
-      width: 12px;
-      height: 12px;
+      width: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
+      height: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
 
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    svg {
+      width: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
+      height: ${(props) => (props.roomLogoSize === "large" ? "36px" : "12px")};
+    }
 
-    top: ${(props) => (props.viewAs === "table" ? "18px" : "22px")};
-    left: ${(props) => (props.viewAs === "table" ? "18px" : "22px")};
+    top: ${(props) =>
+      props.viewAs === "table"
+        ? "18px"
+        : props.roomLogoSize === "large"
+        ? "66px"
+        : "22px"};
+    left: ${(props) =>
+      props.viewAs === "table"
+        ? "18px"
+        : props.roomLogoSize === "large"
+        ? "66px"
+        : "22px"};
   }
 `;

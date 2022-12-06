@@ -22,9 +22,16 @@ export interface ItemIconProps {
     [x: string]: any;
   };
   roomLogoSize?: "small" | "medium" | "large";
+  viewAs?: "row" | "table" | "tile";
+  fileIcon?: string;
 }
 
-const ItemIcon = ({ item, roomLogoSize = "medium", viewAs }: ItemIconProps) => {
+const ItemIcon = ({
+  item,
+  roomLogoSize = "medium",
+  viewAs,
+  fileIcon,
+}: ItemIconProps) => {
   const {
     icon,
     logo,
@@ -39,7 +46,11 @@ const ItemIcon = ({ item, roomLogoSize = "medium", viewAs }: ItemIconProps) => {
     const isCustomLogo = !isArchive && !!(logo && logo[roomLogoSize]);
     const roomLogo = isCustomLogo
       ? getCustomRoomLogo({ logo }, roomLogoSize)
-      : getDefaultRoomLogo({ roomType, isArchive, isPrivate });
+      : getDefaultRoomLogo({
+          roomType,
+          isArchive,
+          isPrivate: isPrivate || item?.private,
+        });
 
     return (
       <Styled.RoomLogoWrapper
@@ -76,8 +87,8 @@ const ItemIcon = ({ item, roomLogoSize = "medium", viewAs }: ItemIconProps) => {
   }
 
   return (
-    <Styled.StyledIconContainer viewAs={viewAs}>
-      <ReactSVG className={`react-svg-icon`} src={icon} />
+    <Styled.StyledIconContainer viewAs={viewAs} roomLogoSize={roomLogoSize}>
+      <ReactSVG className={`react-svg-icon`} src={fileIcon || icon} />
       {encrypted && (
         <ReactSVG
           className="item-icon_privacy"
