@@ -206,14 +206,13 @@ public class UserController : PeopleControllerBase
     {
         _apiContext.AuthByClaim();
 
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
         var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
-
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, inDto.Type) ,Constants.Action_AddRemoveUser);
 
         inDto.Type = options != null ? options.EmployeeType : inDto.Type;
 
@@ -264,9 +263,9 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user);
+        UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink && options.IsCorrect, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         await UpdateDepartments(inDto.Department, user);
 
@@ -302,6 +301,11 @@ public class UserController : PeopleControllerBase
     {
         foreach (var invite in inDto.Invitations)
         {
+            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            {
+                continue;
+            }
+
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
