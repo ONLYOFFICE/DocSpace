@@ -293,16 +293,19 @@ const ColorTheme = forwardRef(
   }
 );
 
-export default inject(({ auth, loginStore }) => {
-  if (loginStore) {
-    const { currentColorScheme } = loginStore;
-    return { currentColorScheme };
-  } else {
-    if (!auth) return;
-    const { settingsStore } = auth;
-    const { currentColorScheme } = settingsStore;
-    return {
-      currentColorScheme: currentColorScheme || false,
-    };
+export default inject(
+  ({ auth, loginStore }, { currentColorScheme: currentColorSchemeProps }) => {
+    if (loginStore) {
+      const { currentColorScheme } = loginStore;
+      return { currentColorScheme };
+    } else {
+      if (!auth) return;
+      const { settingsStore } = auth;
+      const { currentColorScheme } = settingsStore;
+      return {
+        currentColorScheme:
+          currentColorScheme || currentColorSchemeProps || false,
+      };
+    }
   }
-})(observer(ColorTheme));
+)(observer(ColorTheme));
