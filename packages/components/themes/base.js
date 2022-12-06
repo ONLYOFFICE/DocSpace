@@ -1592,7 +1592,6 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: grayMain,
     },
 
     button: {

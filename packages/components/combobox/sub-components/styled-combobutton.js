@@ -178,7 +178,7 @@ const StyledArrowIcon = styled.div`
 
   .combo-buttons_expander-icon {
     path {
-      fill: ${(props) => props.theme.comboBox.arrow.fillColor};
+      fill: ${(props) => props.theme.comboBox.label.selectedColor};
     }
   }
 

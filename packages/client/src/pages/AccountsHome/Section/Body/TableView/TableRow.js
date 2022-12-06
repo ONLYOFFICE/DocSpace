@@ -87,15 +87,6 @@ const StyledPeopleRow = styled(TableRow)`
       .combo-button-label {
         font-size: 13px;
         font-weight: 400;
-        color: ${(props) => props.sideInfoColor};
-      }
-
-      .combo-buttons_arrow-icon {
-        svg {
-          path {
-            fill: ${(props) => props.sideInfoColor};
-          }
-        }
       }
     }
   }
