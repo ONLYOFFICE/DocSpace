@@ -174,7 +174,8 @@ StyledIcon.defaultProps = { theme: Base };
 
 const StyledArrowIcon = styled.div`
   display: flex;
-  align-self: start;
+  align-self: center;
+  justify-self: center;
 
   .combo-buttons_expander-icon {
     path {
@@ -186,10 +187,10 @@ const StyledArrowIcon = styled.div`
     props.needDisplay ? props.theme.comboBox.arrow.width : "0px"};
   flex: ${(props) =>
     props.needDisplay ? props.theme.comboBox.arrow.flex : "0px"};
-  margin-top: ${(props) =>
+  /*margin-top: ${(props) =>
     props.noBorder
       ? props.theme.comboBox.arrow.marginTopWithBorder
-      : props.theme.comboBox.arrow.marginTop};
+      : props.theme.comboBox.arrow.marginTop};*/
   margin-right: ${(props) =>
     props.needDisplay ? props.theme.comboBox.arrow.marginRight : "0px"};
   margin-left: ${(props) =>
