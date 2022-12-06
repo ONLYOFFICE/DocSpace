@@ -228,7 +228,7 @@ class FilesStore {
       if (foundIndex == -1) return;
 
       runInAction(() => {
-        this.folders[foundIndex].new = count || 0;
+        this.folders[foundIndex].new = count >= 0 ? count : 0;
         this.treeFoldersStore.fetchTreeFolders();
       });
     });
