@@ -1953,6 +1953,7 @@ const Dark = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#858585",
   },
 
   navigation: {

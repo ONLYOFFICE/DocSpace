@@ -1961,6 +1961,7 @@ const Base = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#A3A9AE",
   },
 
   navigation: {
