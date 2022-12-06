@@ -118,7 +118,7 @@ class FilesStore {
     const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
-      //console.log("Call s:modify-folder", opt);
+      console.log("[WS] s:modify-folder", opt);
 
       if (this.isLoading) return;
 
@@ -133,6 +133,8 @@ class FilesStore {
             if (this.selectedFolderStore.id !== file.folderId) return;
 
             const fileInfo = await api.files.getFileInfo(file.id);
+
+            console.log("[WS] create new file", fileInfo.id, fileInfo.title);
 
             const newFiles = [fileInfo, ...this.files];
 
@@ -150,6 +152,8 @@ class FilesStore {
             if (!file || !file.id) return;
 
             this.getFileInfo(file.id); //this.setFile(file);
+
+            console.log("[WS] update file", file.id, file.title);
 
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
@@ -178,6 +182,12 @@ class FilesStore {
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
+
+            console.log(
+              "[WS] delete file",
+              this.files[foundIndex].id,
+              this.files[foundIndex].title
+            );
 
             this.setFiles(
               this.files.filter((_, index) => {
@@ -216,12 +226,13 @@ class FilesStore {
       //);
 
       if (this.selectedFolderStore.id == id) {
+        console.log("[WS] refresh-folder", id);
         this.fetchFiles(id, this.filter);
       }
     });
 
     socketHelper.on("s:markasnew-folder", ({ folderId, count }) => {
-      console.log(`markasnew-folder ${folderId}:${count}`);
+      console.log(`[WS] markasnew-folder ${folderId}:${count}`);
 
       const foundIndex =
         folderId && this.folders.findIndex((x) => x.id === folderId);
@@ -234,7 +245,7 @@ class FilesStore {
     });
 
     socketHelper.on("s:markasnew-file", ({ fileId, count }) => {
-      console.log(`markasnew-file ${fileId}:${count}`);
+      console.log(`[WS] markasnew-file ${fileId}:${count}`);
 
       const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
       if (foundIndex == -1) return;
@@ -250,9 +261,10 @@ class FilesStore {
 
     //WAIT FOR RESPONSES OF EDITING FILE
     socketHelper.on("s:start-edit-file", (id) => {
-      //console.log(`Call s:start-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
+
+      console.log(`[WS] s:start-edit-file`, id, this.files[foundIndex].title);
 
       this.updateSelectionStatus(
         id,
@@ -267,9 +279,10 @@ class FilesStore {
     });
 
     socketHelper.on("s:stop-edit-file", (id) => {
-      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
+
+      console.log(`[WS] s:stop-edit-file`, id, this.files[foundIndex].title);
 
       this.updateSelectionStatus(
         id,
@@ -475,6 +488,10 @@ class FilesStore {
           individual: true,
         },
       });
+
+      this.files?.forEach((file) =>
+        console.log("[WS] subscribe to file's changes", file.id, file.title)
+      );
     }
   };
 
@@ -2673,6 +2690,12 @@ class FilesStore {
 
     const { socketHelper } = this.authStore.settingsStore;
     if (createdItem?.type == "file") {
+      console.log(
+        "[WS] subscribe to file's changes",
+        createdItem.id,
+        createdItem.title
+      );
+
       socketHelper.emit({
         command: "subscribe",
         data: { roomParts: `FILE-${createdItem.id}`, individual: true },
