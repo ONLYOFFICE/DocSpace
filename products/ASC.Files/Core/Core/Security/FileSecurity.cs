@@ -86,6 +86,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.CopyFrom,
                     FilesSecurityActions.MoveTo,
                     FilesSecurityActions.MoveFrom,
+                    FilesSecurityActions.Pin,
                 }
             }
     };
@@ -300,6 +301,11 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanMoveFromAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.MoveFrom);
+    }
+
+    public Task<bool> CanPinAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Pin);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -1121,6 +1127,11 @@ public class FileSecurity : IFileSecurity
                         return action == FilesSecurityActions.MoveFrom;
                     }
                 }
+
+                if (action == FilesSecurityActions.Pin && !DocSpaceHelper.IsRoom(folder.FolderType))
+                {
+                    return false;
+                }
             }
             else
             {
@@ -1156,7 +1167,7 @@ public class FileSecurity : IFileSecurity
                 var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
                 if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
                 {
-                    if (e.FileEntryType == FileEntryType.Folder && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
+                    if (folder != null && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
                     {
                         return false;
                     }
@@ -1272,6 +1283,7 @@ public class FileSecurity : IFileSecurity
         switch (action)
         {
             case FilesSecurityActions.Read:
+            case FilesSecurityActions.Pin:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
                 if (e.Access == FileShare.Comment ||
@@ -2026,5 +2038,6 @@ public class FileSecurity : IFileSecurity
         CopyFrom,
         MoveTo,
         MoveFrom,
+        Pin,
     }
 }

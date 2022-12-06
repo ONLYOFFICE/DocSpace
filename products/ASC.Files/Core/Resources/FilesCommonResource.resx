@@ -354,6 +354,9 @@
   <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
     <value>You cannot edit archived rooms</value>
   </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>You can't pin a room</value>
+  </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>
   </data>

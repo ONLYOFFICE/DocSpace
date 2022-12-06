@@ -772,6 +772,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t pin a room.
+        /// </summary>
+        public static string ErrorrMessage_PinRoom {
+            get {
+                return ResourceManager.GetString("ErrorrMessage_PinRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everyone.
         /// </summary>
         public static string Everyone {

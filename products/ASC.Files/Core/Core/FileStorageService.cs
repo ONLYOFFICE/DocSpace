@@ -2695,7 +2695,7 @@ public class FileStorageService<T> //: IFileStorageService
         var room = await folderDao.GetFolderAsync(folderId);
 
         ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-        ErrorIf(!await _fileSecurity.CanReadAsync(room), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
+        ErrorIf(!await _fileSecurity.CanPinAsync(room), FilesCommonResource.ErrorrMessage_PinRoom);
 
         var tagDao = GetTagDao();
         var tag = Tag.Pin(_authContext.CurrentAccount.ID, room);
