@@ -376,8 +376,13 @@ const Dark = {
 
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
-    background: "#292929",
-    activeBackground: "#292929",
+    background: "#242424",
+    hoverBackground: "#282828",
+    activeBackground: "#242424",
+
+    iconColor: "#858585",
+    iconColorHover: "#FFFFFF",
+    iconColorActive: "#CCCCCC",
 
     border: `none`,
     boxSizing: "border-box",
