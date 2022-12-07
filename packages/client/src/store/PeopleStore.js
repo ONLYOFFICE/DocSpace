@@ -21,6 +21,7 @@ import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 import { EmployeeStatus } from "@docspace/common/constants";
+import Filter from "@docspace/common/api/people/filter";
 
 class PeopleStore {
   contextOptionsStore = null;
@@ -86,19 +87,12 @@ class PeopleStore {
     this.loadingStore.setIsLoaded(false);
   };
 
-  resetFilter = (withoutGroup = false) => {
-    const { filter } = this.filterStore;
+  resetFilter = () => {
     const { getUsersList } = this.usersStore;
-    let newFilter;
 
-    if (withoutGroup) {
-      const { group } = filter;
-      newFilter = filter.reset(group);
-    } else {
-      newFilter = filter.clone(true);
-    }
+    const filter = Filter.getDefault();
 
-    return getUsersList(newFilter);
+    return getUsersList(filter, true);
   };
 
   onChangeType = (e) => {
