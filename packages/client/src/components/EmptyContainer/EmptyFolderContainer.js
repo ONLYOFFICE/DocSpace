@@ -151,7 +151,6 @@ export default inject(
     filesStore,
     selectedFolderStore,
     contextOptionsStore,
-    treeFoldersStore,
   }) => {
     const { fetchFiles, fetchRooms, setIsEmptyPage } = filesStore;
     const {
@@ -159,31 +158,29 @@ export default inject(
       parentId,
       access,
       id: folderId,
-      rootFolderType,
+      roomType
     } = selectedFolderStore;
-    const { isRoomRoot } = treeFoldersStore;
 
-    let isRootRoom, isRoom, id;
-    if (navigationPath && navigationPath.length) {
+    let id;
+    if (navigationPath?.length) {
       const elem = navigationPath[0];
-
-      isRootRoom = elem.isRootRoom;
-      isRoom = elem.isRoom;
       id = elem.id;
     }
+
+    const isRooms = !!roomType;
 
     const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const canInviteUsers = canInviteUserInRoom({ access });
+    const canInviteUsers = isRooms && canInviteUserInRoom({ access }); // skip sub-folders
 
     return {
       fetchFiles,
       fetchRooms,
       setIsLoading: filesStore.setIsLoading,
       parentId: id ?? parentId,
-      isRooms: isRoom || isRootRoom || isRoomRoot(rootFolderType),
+      isRooms,
       canCreateFiles,
       canInviteUsers,
       setIsEmptyPage,

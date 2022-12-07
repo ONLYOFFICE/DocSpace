@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,52 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Users;
+namespace ASC.Core.Common.Security;
 
-[Serializable]
-public class GroupInfo : IRole, IRecipientsGroup
+public class Rule
 {
-    public Guid ID { get; internal set; }
-    public string Name { get; set; }
-    public Guid CategoryID { get; set; }
-    public GroupInfo Parent { get; internal set; }
-    public string Sid { get; set; }
+    public Guid ActionId { get; }
+    public IRuleData Data { get; }
+    private readonly string _key;
 
-    public GroupInfo() { }
-
-    public GroupInfo(Guid categoryID)
+    public Rule(Guid actionId, IRuleData data)
     {
-        CategoryID = categoryID;
+        ActionId = actionId;
+        Data = data;
+        _key = actionId.ToString() + data?.Key;
     }
 
-    public override string ToString()
+    public Rule(Guid actionId)
     {
-        return Name;
+        ActionId = actionId;
+        _key = actionId.ToString();
     }
 
     public override int GetHashCode()
     {
-        return ID != Guid.Empty ? ID.GetHashCode() : base.GetHashCode();
+        return _key.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        if (obj is not GroupInfo g)
-        {
-            return false;
-        }
-
-        if (ID == Guid.Empty && g.ID == Guid.Empty)
-        {
-            return ReferenceEquals(this, g);
-        }
-
-        return g.ID == ID;
+        return obj is Rule action && action._key == _key;
     }
-
-    string IRecipient.ID => ID.ToString();
-    string IRecipient.Name => Name;
-    public string AuthenticationType => "ASC";
-    public bool IsAuthenticated => false;
-    public string Key => ID.ToString();
 }

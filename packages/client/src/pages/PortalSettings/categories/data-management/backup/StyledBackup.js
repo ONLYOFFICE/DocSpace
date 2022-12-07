@@ -448,6 +448,7 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
     margin-left: 16px;
     margin-right: 16px;
+    color: ${(props) => props.theme.client.settings.backup.textColor};
   }
   #backup-list_help {
     display: flex;

@@ -563,9 +563,9 @@ const Dark = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(208, 213, 218, 1)",
-    backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
-    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
+    backgroundColorVertical: "rgba(255, 255, 255, 0.1)",
+    backgroundColorHorizontal: "rgba(255, 255, 255, 0.1)",
+    hoverBackgroundColorVertical: "#ADADAD",
   },
 
   modalDialog: {
@@ -1582,7 +1582,6 @@ const Dark = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: "#9c9c9c",
     },
 
     button: {
@@ -1619,7 +1618,7 @@ const Dark = {
 
       disabledColor: "#858585",
       color: "#858585",
-      selectedColor: grayMaxLight,
+      selectedColor: white,
 
       maxWidth: "175px",
 
@@ -1633,10 +1632,10 @@ const Dark = {
       height: "16px",
 
       defaultDisabledColor: "#858585",
-      defaultColor: grayMaxLight,
+      defaultColor: white,
       disabledColor: "#858585",
-      color: "#858585",
-      selectedColor: grayMaxLight,
+      color: white,
+      selectedColor: white,
     },
   },
 
@@ -1953,6 +1952,7 @@ const Dark = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#858585",
   },
 
   navigation: {
@@ -2932,6 +2932,7 @@ const Dark = {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
+        textColor: "#ADADAD",
       },
 
       payment: {

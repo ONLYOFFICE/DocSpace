@@ -570,9 +570,9 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(208, 213, 218, 1)",
+    backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
-    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
+    hoverBackgroundColorVertical: grayMid,
   },
 
   modalDialog: {
@@ -1592,7 +1592,6 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: grayMain,
     },
 
     button: {
@@ -1961,6 +1960,7 @@ const Base = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#A3A9AE",
   },
 
   navigation: {
@@ -2930,6 +2930,7 @@ const Base = {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
         warningColor: "#f21c0e",
+        textColor: "#A3A9AE",
       },
 
       payment: {

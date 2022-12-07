@@ -397,6 +397,14 @@ const StyledCatalogItemContainer = styled.div`
     display: flex;
   }
 
+  .catalog-item__icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.catalogItem.trashIconFill};
+      }
+    }
+  }
+
   :hover {
     .catalog-item__icon {
       display: flex;
