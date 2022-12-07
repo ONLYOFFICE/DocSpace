@@ -1,6 +1,9 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
+
+import { PaymentsType } from "@docspace/common/constants";
 
 import Badge from "@docspace/components/badge";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -34,7 +37,24 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
 `;
 
 //TODO: need backed isPaid
-const Badges = ({ t, statusType, withoutPaid, isPaid = false }) => {
+const Badges = ({
+  t,
+  statusType,
+  withoutPaid,
+  isPaid = false,
+  filter,
+  getUsersList,
+}) => {
+  const onClickPaid = () => {
+    if (filter.payments === PaymentsType.Paid) return;
+
+    const newFilter = filter.clone();
+
+    newFilter.payments = PaymentsType.Paid;
+
+    getUsersList(newFilter, true);
+  };
+
   return (
     <StyledBadgesContainer className="badges additional-badges">
       {!withoutPaid && isPaid && (
@@ -47,6 +67,7 @@ const Badges = ({ t, statusType, withoutPaid, isPaid = false }) => {
           fontWeight={800}
           lineHeight={"13px"}
           noHover
+          onClick={onClickPaid}
         />
       )}
       {statusType === "pending" && <StyledSendClockIcon size="small" />}
@@ -55,4 +76,11 @@ const Badges = ({ t, statusType, withoutPaid, isPaid = false }) => {
   );
 };
 
-export default withTranslation(["Common"])(Badges);
+export default inject(({ peopleStore }) => {
+  const { filterStore, usersStore } = peopleStore;
+
+  const { filter } = filterStore;
+
+  const { getUsersList } = usersStore;
+  return { filter, getUsersList };
+})(withTranslation(["Common"])(observer(Badges)));
