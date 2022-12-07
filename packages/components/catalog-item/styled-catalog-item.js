@@ -261,7 +261,8 @@ const StyledCatalogItemImg = styled.div`
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
-    path {
+    path,
+    circle {
       fill: ${(props) =>
         props.isActive
           ? props.theme.catalogItem.img.svg.isActiveFill
