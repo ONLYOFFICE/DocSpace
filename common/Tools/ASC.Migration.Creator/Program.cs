@@ -34,7 +34,7 @@ var builder = WebApplication.CreateBuilder(options);
 
 builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
 {
-    config.AddJsonFile($"appsettings.json", true)
+    config.AddJsonFile($"appsettings.creator.json", true)
                .AddCommandLine(args);
 });
 
