@@ -94,8 +94,10 @@ const Item = React.memo(({ index, style, data }) => {
       onSelect && onSelect(item);
     };
 
-    const onClick = () => {
-      !isMultiSelect && onSelect && onSelect(item);
+    const onClick = (e) => {
+      if (e.target.closest(".checkbox")) return;
+
+      onSelect && onSelect(item);
     };
 
     return (
