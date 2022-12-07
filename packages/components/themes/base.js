@@ -3030,6 +3030,7 @@ const Base = {
     borderColor: "#eceef1",
     tickIconColor: "#35AD17",
     removeIconColor: "#A3A9AE",
+    sortHeaderColor: "#d0d5da",
   },
 
   formWrapper: {

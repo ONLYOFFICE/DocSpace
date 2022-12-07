@@ -3030,6 +3030,7 @@ const Dark = {
     borderColor: "#474747",
     tickIconColor: "#3BA420",
     removeIconColor: "#A3A9AE",
+    sortHeaderColor: "#474747",
   },
 
   formWrapper: {
