@@ -99,7 +99,6 @@ public class FileSecurity : IFileSecurity
     private readonly AuthManager _authManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
-    private readonly CoreBaseSettings _coreBaseSettings;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -108,8 +107,7 @@ public class FileSecurity : IFileSecurity
         AuthContext authContext,
         AuthManager authManager,
         GlobalFolder globalFolder,
-        FileSecurityCommon fileSecurityCommon,
-        CoreBaseSettings coreBaseSettings)
+        FileSecurityCommon fileSecurityCommon)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -118,7 +116,6 @@ public class FileSecurity : IFileSecurity
         _authManager = authManager;
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
-        _coreBaseSettings = coreBaseSettings;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
