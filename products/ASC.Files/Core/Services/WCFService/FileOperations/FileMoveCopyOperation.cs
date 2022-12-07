@@ -141,29 +141,17 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
 
 
-        Folder<T> parentFrom = null;
-        if (0 < Folders.Count)
+        if (_copy && !await fileSecurity.CanCopyToAsync(toFolder))
         {
-            parentFrom = await FolderDao.GetParentFoldersAsync(Folders[0]).LastAsync();
+            this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+            return;
         }
-
-        if (0 < Files.Count)
+        else if (!await fileSecurity.CanMoveToAsync(toFolder))
         {
-            var file = await FileDao.GetFileAsync(Files[0]);
-            parentFrom = await FolderDao.GetParentFoldersAsync(file.ParentId).LastAsync();
-        }
+            this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
 
-        if (parentFrom != null)
-        {
-            if (_copy)
-            {
-                if (!await fileSecurity.CanCopyFromAsync(parentFrom) || !await fileSecurity.CanCopyToAsync(toFolder))
-                {
-                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
-
-                    return;
-                }
-            }
+            return;
         }
 
         var needToMark = new List<FileEntry<TTo>>();
@@ -213,9 +201,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-            else if (!await FilesSecurity.CanReadAsync(folder))
+            else if (copy && !await FilesSecurity.CanCopyAsync(folder))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+            }
+            else if (!copy && !await FilesSecurity.CanMoveAsync(folder))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -283,7 +275,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                             if (!copy)
                             {
-                                if (!await FilesSecurity.CanDeleteAsync(folder))
+                                if (!await FilesSecurity.CanMoveAsync(folder))
                                 {
                                     this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
@@ -319,7 +311,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         sb.Append($"folder_{newFolderId}{SplitChar}");
                                     }
                                 }
-                                else if (!await FilesSecurity.CanDeleteAsync(folder))
+                                else if (!await FilesSecurity.CanMoveAsync(folder))
                                 {
                                     this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
@@ -350,7 +342,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     }
                     else
                     {
-                        if (!await FilesSecurity.CanDeleteAsync(folder))
+                        if (!await FilesSecurity.CanMoveAsync(folder))
                         {
                             this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }
@@ -463,7 +455,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
-            else if (!await FilesSecurity.CanReadAsync(file))
+            else if (copy && !await FilesSecurity.CanCopyAsync(file))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
+            }
+            else if (!copy && !await FilesSecurity.CanMoveAsync(file))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
             }

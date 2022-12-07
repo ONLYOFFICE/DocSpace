@@ -71,6 +71,8 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.ReadHistory,
                     FilesSecurityActions.Lock,
                     FilesSecurityActions.EditHistory,
+                    FilesSecurityActions.Copy,
+                    FilesSecurityActions.Move
                 }
             },
             {
@@ -82,13 +84,12 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.EditRoom,
                     FilesSecurityActions.Rename,
                     FilesSecurityActions.CopyTo,
-                    FilesSecurityActions.CopyFrom,
                     FilesSecurityActions.MoveTo,
-                    FilesSecurityActions.MoveFrom,
                     FilesSecurityActions.Pin,
                     FilesSecurityActions.AddShare,
                     FilesSecurityActions.RemoveShare,
-                    FilesSecurityActions.Archive,
+                    FilesSecurityActions.Copy,
+                    FilesSecurityActions.Move
                 }
             }
     };
@@ -287,9 +288,9 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyTo);
     }
 
-    public Task<bool> CanCopyFromAsync<T>(FileEntry<T> entry)
+    public Task<bool> CanCopyAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyFrom);
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Copy);
     }
 
     public Task<bool> CanMoveToAsync<T>(FileEntry<T> entry)
@@ -297,9 +298,9 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.MoveTo);
     }
 
-    public Task<bool> CanMoveFromAsync<T>(FileEntry<T> entry)
+    public Task<bool> CanMoveAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.MoveFrom);
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Move);
     }
 
     public Task<bool> CanPinAsync<T>(FileEntry<T> entry)
@@ -315,11 +316,6 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanRemoveShareAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.RemoveShare);
-    }
-
-    public Task<bool> CanArchiveAsync<T>(FileEntry<T> entry)
-    {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Archive);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -622,6 +618,20 @@ public class FileSecurity : IFileSecurity
         }
 
         var folder = e as Folder<T>;
+        var isRoom = folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
+
+        if (isRoom)
+        {
+            if (action == FilesSecurityActions.Copy)
+            {
+                return false;
+            }
+
+            if (action == FilesSecurityActions.Delete && folder.RootFolderType == FolderType.VirtualRooms)
+            {
+                return false;
+            }
+        }
 
         if (e.FileEntryType == FileEntryType.Folder)
         {
@@ -634,9 +644,8 @@ public class FileSecurity : IFileSecurity
             {
                 if ((action == FilesSecurityActions.Pin ||
                     action == FilesSecurityActions.AddShare ||
-                    action == FilesSecurityActions.RemoveShare ||
-                    action == FilesSecurityActions.Archive) &&
-                    !DocSpaceHelper.IsRoom(folder.FolderType))
+                    action == FilesSecurityActions.RemoveShare) &&
+                    !isRoom)
                 {
                     return false;
                 }
@@ -647,9 +656,7 @@ public class FileSecurity : IFileSecurity
                     {
                         if (action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.CopyTo ||
-                            action == FilesSecurityActions.CopyFrom ||
-                            action == FilesSecurityActions.MoveTo ||
-                            action == FilesSecurityActions.MoveFrom)
+                            action == FilesSecurityActions.MoveTo)
                         {
                             return true;
                         }
@@ -659,8 +666,7 @@ public class FileSecurity : IFileSecurity
 
                     if (folder.FolderType == FolderType.Archive)
                     {
-                        if (action == FilesSecurityActions.MoveFrom ||
-                            action == FilesSecurityActions.MoveTo)
+                        if (action == FilesSecurityActions.MoveTo)
                         {
                             return true;
                         }
@@ -671,18 +677,12 @@ public class FileSecurity : IFileSecurity
                     if (folder.FolderType == FolderType.VirtualRooms)
                     {
                         if (action == FilesSecurityActions.Create ||
-                            action == FilesSecurityActions.MoveTo ||
-                            action == FilesSecurityActions.MoveFrom)
+                            action == FilesSecurityActions.MoveTo)
                         {
                             return true;
                         }
 
                         return false;
-                    }
-
-                    if (folder.FolderType == FolderType.TRASH)
-                    {
-                        return action == FilesSecurityActions.MoveFrom;
                     }
                 }
             }
@@ -750,9 +750,9 @@ public class FileSecurity : IFileSecurity
                     action != FilesSecurityActions.Delete &&
                     action != FilesSecurityActions.EditRoom &&
                     action != FilesSecurityActions.ReadHistory &&
-                    action != FilesSecurityActions.CopyFrom &&
+                    action != FilesSecurityActions.Copy &&
                     action != FilesSecurityActions.RemoveShare &&
-                    action != FilesSecurityActions.Archive
+                    action != FilesSecurityActions.Move
                     )
                 {
                     return false;
@@ -913,7 +913,7 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FilesSecurityActions.EditRoom:
-                if (e.Access == FileShare.RoomAdmin )
+                if (e.Access == FileShare.RoomAdmin)
                 {
                     return true;
                 }
@@ -945,12 +945,17 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FilesSecurityActions.CopyTo:
-            case FilesSecurityActions.CopyFrom:
+            case FilesSecurityActions.Copy:
             case FilesSecurityActions.MoveTo:
-            case FilesSecurityActions.MoveFrom:
             case FilesSecurityActions.AddShare:
             case FilesSecurityActions.RemoveShare:
                 if (e.Access == FileShare.RoomAdmin)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Move:
+                if (e.Access != FileShare.RoomAdmin && !isRoom)
                 {
                     return true;
                 }
@@ -1582,12 +1587,11 @@ public class FileSecurity : IFileSecurity
         Lock,
         EditHistory,
         CopyTo,
-        CopyFrom,
+        Copy,
         MoveTo,
-        MoveFrom,
+        Move,
         Pin,
         AddShare,
         RemoveShare,
-        Archive,
     }
 }
