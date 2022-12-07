@@ -84,6 +84,11 @@ const IconWrapper = styled.div`
             border: 1px solid
               ${(props) => props.theme.viewSelector.hoverBorderColor};
           `}
+    svg {
+      path {
+        fill: ${(props) => props.theme.iconButton.hoverColor};
+      }
+    }
   }
 
   & > div {
