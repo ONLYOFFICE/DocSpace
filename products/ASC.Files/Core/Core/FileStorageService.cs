@@ -203,11 +203,19 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<Folder<T>> GetFolderAsync(T folderId)
     {
         var folderDao = GetFolderDao();
+        var tagDao = GetTagDao();
         var folder = await folderDao.GetFolderAsync(folderId);
 
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
+
         await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+
+        var tag = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folder).FirstOrDefaultAsync();
+        if (tag != null)
+        {
+            folder.NewForMe = tag.Count;
+        }
 
         return folder;
     }
