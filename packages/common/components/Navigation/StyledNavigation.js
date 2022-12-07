@@ -24,6 +24,11 @@ const StyledContainer = styled.div`
     props.isRootFolder ? "auto 1fr" : "49px auto 1fr"};
 
   height: 100%;
+  ${(props) =>
+    props.isDesktopClient &&
+    css`
+      max-height: 32px;
+    `}
 
   .navigation-arrow-container {
     display: flex;
