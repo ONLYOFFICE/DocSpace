@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import resizeImage from "resize-image";
 import { Base } from "@docspace/components/themes";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledDropzone = styled.div`
   cursor: pointer;
@@ -33,8 +34,6 @@ const StyledDropzone = styled.div`
       font-size: 13px;
       line-height: 20px;
       &-main {
-        color: ${(props) =>
-          props.theme.createEditRoomDialog.dropzone.linkMainColor};
         font-weight: 600;
         text-decoration: underline;
         text-decoration-style: dashed;
@@ -103,7 +102,9 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
         <div className="dropzone-link">
-          <span className="dropzone-link-main">{t("DropzoneTitleLink")}</span>
+          <ColorTheme className="dropzone-link-main" themeId={ThemeType.Link}>
+            {t("DropzoneTitleLink")}
+          </ColorTheme>
           <span className="dropzone-link-secondary">
             {t("DropzoneTitleSecondary")}
           </span>
