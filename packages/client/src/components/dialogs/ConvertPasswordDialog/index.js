@@ -111,6 +111,7 @@ const ConvertPasswordDialogComponent = (props) => {
           .then((file) => {
             toastr.success(t("SuccessfullyCreated", { fileTitle: newTitle }));
             onClose();
+
             open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => {
@@ -123,7 +124,8 @@ const ConvertPasswordDialogComponent = (props) => {
             }
 
             toastr.error(t("CreationError"), t("Common:Warning"));
-            open && openDocEditor(null, null, tab);
+
+            // open && openDocEditor(null, null, tab);
             if (_isMounted) {
               setPasswordValid(false);
               focusInput();
