@@ -2140,6 +2140,7 @@ const Base = {
 
     selectedItems: {
       background: "#eceef1",
+      hoverBackground: "#F3F4F4",
     },
   },
 

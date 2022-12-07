@@ -2133,7 +2133,8 @@ const Dark = {
     },
 
     selectedItems: {
-      background: "#000000",
+      background: "#242424",
+      hoverBackground: "#3d3d3d",
     },
   },
 
