@@ -128,8 +128,8 @@ const StyledTableGroupMenu = styled.div`
   .table-container_group-menu-separator {
     border-right: ${(props) =>
       props.theme.tableContainer.groupMenu.borderRight};
-    width: 2px;
-    height: 20px;
+    width: 1px;
+    height: 21px;
     margin: 0 16px 0 20px;
 
     @media ${tablet} {
@@ -141,7 +141,7 @@ const StyledTableGroupMenu = styled.div`
       height: 36px;
     `}
 
-    @media ${mobile} {
+    @media ${hugeMobile} {
       height: 20px;
     }
 
@@ -158,7 +158,7 @@ const StyledTableGroupMenu = styled.div`
   .table-container_group-menu-combobox {
     height: 24px;
     width: 16px;
-    margin: 3px 0px 0px 3px;
+    margin: 7px 2px 0px 9px;
     background: transparent;
 
     .combo-button {
