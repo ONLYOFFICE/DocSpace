@@ -44,6 +44,7 @@ const Navigation = ({
   withMenu,
   onPlusClick,
   isEmptyPage,
+  isDesktop: isDesktopClient,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -153,6 +154,7 @@ const Navigation = ({
                 toggleInfoPanel={toggleInfoPanel}
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
+                isDesktopClient={isDesktopClient}
               />
             </>
           )}
@@ -164,6 +166,7 @@ const Navigation = ({
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
+            isDesktopClient={isDesktopClient}
             isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
