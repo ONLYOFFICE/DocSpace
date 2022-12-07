@@ -141,26 +141,47 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
 
 
-        Folder<T> rootFrom = null;
+        Folder<T> parentFrom = null;
         if (0 < Folders.Count)
         {
-            rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
+            parentFrom = await FolderDao.GetParentFoldersAsync(Folders[0]).LastAsync();
         }
 
         if (0 < Files.Count)
         {
-            rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
+            var file = await FileDao.GetFileAsync(Files[0]);
+            parentFrom = await FolderDao.GetParentFoldersAsync(file.ParentId).LastAsync();
         }
 
-        if (_copy)
+        if (parentFrom != null)
         {
-            await fileSecurity.CanCopyFromAsync(rootFrom);
-            await fileSecurity.CanCopyToAsync(toFolder);
-        }
-        else
-        {
-            await fileSecurity.CanMoveFromAsync(rootFrom);
-            await fileSecurity.CanMoveToAsync(toFolder);
+            if (_copy)
+            {
+                if (!await fileSecurity.CanCopyFromAsync(parentFrom) || !await fileSecurity.CanCopyToAsync(toFolder))
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                    return;
+                }
+            }
+            else if (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive)
+            {
+                if (!await fileSecurity.CanArchiveAsync(parentFrom))
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                    return;
+                }
+            }
+            else
+            {
+                if (!await fileSecurity.CanMoveFromAsync(parentFrom) || !await fileSecurity.CanMoveToAsync(toFolder))
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                    return;
+                }
+            }
         }
 
         var needToMark = new List<FileEntry<TTo>>();
