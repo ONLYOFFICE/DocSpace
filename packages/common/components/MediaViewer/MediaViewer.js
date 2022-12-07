@@ -170,10 +170,18 @@ class MediaViewer extends React.Component {
   }
 
   componentDidMount() {
-    const { playlist } = this.props;
+    const { playlist, files, setBufferSelection } = this.props;
     const { playlistPos } = this.state;
 
     const currentFile = playlist[playlistPos];
+
+    const currentFileId =
+      playlist.length > 0
+        ? playlist.find((file) => file.id === playlistPos).fileId
+        : 0;
+
+    const targetFile = files.find((item) => item.id === currentFileId);
+    if (targetFile) setBufferSelection(targetFile);
     const { src, title } = currentFile;
     const ext = this.getFileExtension(title);
 
@@ -355,6 +363,7 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
+          if (document.fullscreenElement) return;
           this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateLeft")
@@ -366,6 +375,7 @@ class MediaViewer extends React.Component {
             : null;
           break;
         case ButtonKeys.rightArrow:
+          if (document.fullscreenElement) return;
           this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateRight")
@@ -460,7 +470,6 @@ class MediaViewer extends React.Component {
     const currentFile = playlist[playlistPos];
 
     const targetFile = files.find((item) => item.id === currentFileId);
-    if (targetFile) setBufferSelection(targetFile);
     const { title } = currentFile;
 
     let isImage = false;
@@ -480,7 +489,7 @@ class MediaViewer extends React.Component {
           key: "download",
           label: t("Common:Download"),
           icon: "images/download.react.svg",
-          onClick: () => onClickDownload(currentFile, t),
+          onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         // {
@@ -501,7 +510,7 @@ class MediaViewer extends React.Component {
           key: "delete",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
-          onClick: () => onClickDelete(currentFile, t),
+          onClick: () => onClickDelete(targetFile, t),
           disabled: false,
         },
       ];
