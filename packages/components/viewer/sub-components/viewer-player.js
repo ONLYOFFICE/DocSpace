@@ -536,6 +536,17 @@ export default function ViewerPlayer(props) {
     );
   };
 
+  const onExitFullScreen = () => {
+    if (!document.fullscreenElement) {
+      setIsFullScreen(false);
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          isFullScreen: state.isFullScreen,
+        })
+      );
+    }
+  };
+
   const handleResize = () => {
     let video = videoRef.current;
     const [width, height, left, top] = getVideoPosition(video);
@@ -565,6 +576,12 @@ export default function ViewerPlayer(props) {
       ? (videoRef.current.muted = true)
       : (videoRef.current.muted = false);
   }, [state.isMuted, videoRef.current]);
+
+  React.useEffect(() => {
+    document.addEventListener("fullscreenchange", onExitFullScreen, false);
+    return () =>
+      document.removeEventListener("fullscreenchange", onExitFullScreen, false);
+  }, []);
 
   React.useEffect(() => {
     if (!inputRef.current) return;
