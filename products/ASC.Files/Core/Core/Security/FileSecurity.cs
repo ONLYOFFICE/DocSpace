@@ -762,6 +762,11 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
+                if (action == FilesSecurityActions.ReadHistory && e.ProviderEntry)
+                {
+                    return false;
+                }
+
                 if (!isUser)
                 {
                     if (isDocSpaceAdmin || e.CreateBy == userId)
