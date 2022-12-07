@@ -2133,7 +2133,8 @@ const Dark = {
     },
 
     selectedItems: {
-      background: "#000000",
+      background: "#242424",
+      hoverBackground: "#3d3d3d",
     },
   },
 
@@ -2401,7 +2402,8 @@ const Dark = {
     },
 
     tagInput: {
-      tagBackground: "#292929",
+      tagBackground: "#242424",
+      tagHoverBackground: "#3D3D3D",
     },
 
     dropdown: {

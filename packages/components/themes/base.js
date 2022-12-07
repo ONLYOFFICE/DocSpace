@@ -2140,6 +2140,7 @@ const Base = {
 
     selectedItems: {
       background: "#eceef1",
+      hoverBackground: "#F3F4F4",
     },
   },
 
@@ -2402,6 +2403,7 @@ const Base = {
 
     tagInput: {
       tagBackground: "#ECEEF1",
+      tagHoverBackground: "#F3F4F4",
     },
 
     dropdown: {
