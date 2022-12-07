@@ -72,12 +72,6 @@ public class Startup : BaseStartup
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors(builder =>
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
-
         base.Configure(app, env);
 
         app.MapWhen(
