@@ -955,7 +955,7 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FilesSecurityActions.Move:
-                if (e.Access != FileShare.RoomAdmin && !isRoom)
+                if (e.Access == FileShare.RoomAdmin && !isRoom)
                 {
                     return true;
                 }
