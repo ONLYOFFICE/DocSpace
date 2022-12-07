@@ -2403,6 +2403,7 @@ const Base = {
 
     tagInput: {
       tagBackground: "#ECEEF1",
+      tagHoverBackground: "#F3F4F4",
     },
 
     dropdown: {
