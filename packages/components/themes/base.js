@@ -383,7 +383,12 @@ const Base = {
   },
   selectorAddButton: {
     background: grayLightMid,
-    activeBackground: grayLightMid,
+    hoverBackground: lightGrayishStrongBlue,
+    activeBackground: grayMid,
+
+    iconColor: grayMain,
+    iconColorHover: grayMain,
+    iconColorActive: grayMain,
 
     border: `none`,
     boxSizing: "border-box",
