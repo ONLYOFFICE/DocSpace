@@ -164,24 +164,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     return;
                 }
             }
-            else if (toFolder.FolderType == FolderType.VirtualRooms || toFolder.FolderType == FolderType.Archive)
-            {
-                if (!await fileSecurity.CanArchiveAsync(parentFrom))
-                {
-                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
-
-                    return;
-                }
-            }
-            else
-            {
-                if (!await fileSecurity.CanMoveFromAsync(parentFrom) || !await fileSecurity.CanMoveToAsync(toFolder))
-                {
-                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
-
-                    return;
-                }
-            }
         }
 
         var needToMark = new List<FileEntry<TTo>>();
