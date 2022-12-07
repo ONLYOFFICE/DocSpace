@@ -711,7 +711,7 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FolderType.TRASH:
-                if (action != FilesSecurityActions.Read && action != FilesSecurityActions.Delete)
+                if (action != FilesSecurityActions.Read && action != FilesSecurityActions.Delete && action != FilesSecurityActions.Move)
                 {
                     return false;
                 }
