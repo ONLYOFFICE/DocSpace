@@ -56,16 +56,16 @@ class TreeFoldersStore {
     this.expandedPanelKeys = expandedPanelKeys;
   };
 
-  updateRootBadge = (id, count) => {
-    const index = this.treeFolders.findIndex((x) => x.id === id);
-    if (index < 0) return;
+  // updateRootBadge = (id, count) => {
+  //   const index = this.treeFolders.findIndex((x) => x.id === id);
+  //   if (index < 0) return;
 
-    this.treeFolders = this.treeFolders.map((f, i) => {
-      if (i !== index) return f;
-      f.newItems -= count;
-      return f;
-    });
-  };
+  //   this.treeFolders = this.treeFolders.map((f, i) => {
+  //     if (i !== index) return f;
+  //     f.newItems -= count;
+  //     return f;
+  //   });
+  // };
 
   isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;

@@ -1714,27 +1714,27 @@ class FilesStore {
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
   };
 
-  updateFolderBadge = (id, count) => {
-    const folder = this.folders.find((x) => x.id === id);
-    if (folder) folder.new -= count;
-  };
+  // updateFolderBadge = (id, count) => {
+  //   const folder = this.folders.find((x) => x.id === id);
+  //   if (folder) folder.new -= count;
+  // };
 
-  updateFileBadge = (id) => {
-    const file = this.files.find((x) => x.id === id);
-    if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
-  };
+  // updateFileBadge = (id) => {
+  //   const file = this.files.find((x) => x.id === id);
+  //   if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
+  // };
 
-  updateFilesBadge = () => {
-    for (let file of this.files) {
-      file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
-    }
-  };
+  // updateFilesBadge = () => {
+  //   for (let file of this.files) {
+  //     file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
+  //   }
+  // };
 
-  updateFoldersBadge = () => {
-    for (let folder of this.folders) {
-      folder.new = 0;
-    }
-  };
+  // updateFoldersBadge = () => {
+  //   for (let folder of this.folders) {
+  //     folder.new = 0;
+  //   }
+  // };
 
   updateRoomPin = (item) => {
     const idx = this.folders.findIndex((folder) => folder.id === item);

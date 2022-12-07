@@ -196,24 +196,24 @@ class DialogsStore {
         this.setNewFilesIds(newIds);
       } else {
         newFilesPanelVisible = false;
-        const {
-          getRootFolder,
-          updateRootBadge,
-          treeFolders,
-        } = this.treeFoldersStore;
-        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
+        //   const {
+        //     getRootFolder,
+        //     updateRootBadge,
+        //     treeFolders,
+        //   } = this.treeFoldersStore;
+        //   const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
 
-        if (item) {
-          const { rootFolderType, id } = item;
-          const rootFolder = getRootFolder(rootFolderType);
-          updateRootBadge(rootFolder.id, item.new);
-          updateFolderBadge(id, item.new);
-        } else {
-          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
-          updateRootBadge(rootFolder.id, rootFolder.new);
-          if (this.selectedFolderStore.id === rootFolder.id)
-            updateFoldersBadge();
-        }
+        //   if (item) {
+        //     const { rootFolderType, id } = item;
+        //     const rootFolder = getRootFolder(rootFolderType);
+        //     updateRootBadge(rootFolder.id, item.new);
+        //     updateFolderBadge(id, item.new);
+        //   } else {
+        //     const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+        //     updateRootBadge(rootFolder.id, rootFolder.new);
+        //     if (this.selectedFolderStore.id === rootFolder.id)
+        //       updateFoldersBadge();
+        //   }
       }
     } else {
       this.setNewFilesIds(null);
