@@ -2401,7 +2401,8 @@ const Dark = {
     },
 
     tagInput: {
-      tagBackground: "#292929",
+      tagBackground: "#242424",
+      tagHoverBackground: "#3D3D3D",
     },
 
     dropdown: {
