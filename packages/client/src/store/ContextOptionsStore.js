@@ -633,7 +633,7 @@ class ContextOptionsStore {
           {
             id: "option_pin-room",
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: (e) => this.onClickPin(e, item.id, t),
             disabled: false,
@@ -986,7 +986,7 @@ class ContextOptionsStore {
       const pinOption = isPinOption
         ? {
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: pinRooms,
             disabled: false,
