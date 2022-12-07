@@ -36,7 +36,6 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   }
 `;
 
-//TODO: need backed isPaid
 const Badges = ({
   t,
   statusType,
