@@ -96,6 +96,14 @@ const StyledComboButton = styled.div`
       `
       border-color: ${props.theme.comboBox.button.hoverDisabledBorderColor};
     `}
+
+    .optionalBlock {
+      svg {
+        path {
+          fill: ${(props) => props.theme.iconButton.hoverColor};
+        }
+      }
+    }
   }
   .combo-button-label {
     margin-right: ${(props) =>
@@ -124,6 +132,14 @@ const StyledComboButton = styled.div`
       props.isOpen
         ? props.theme.comboBox.button.hoverBorderColorOpen
         : props.theme.comboBox.button.hoverBorderColor};
+
+    .optionalBlock {
+      svg {
+        path {
+          fill: ${(props) => props.theme.iconButton.hoverColor};
+        }
+      }
+    }
   }
 `;
 StyledComboButton.defaultProps = { theme: Base };
