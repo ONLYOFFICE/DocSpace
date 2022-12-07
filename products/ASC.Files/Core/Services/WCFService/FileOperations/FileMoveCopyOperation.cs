@@ -565,7 +565,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                                 }
 
-                                if (Equals(toFolderId.ToString(), _daoFolderId))
+                                if (Equals(toFolderId, _daoFolderId))
                                 {
                                     needToMark.Add(newFile);
                                 }

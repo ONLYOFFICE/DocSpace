@@ -275,6 +275,7 @@ public class FileMarker
             else if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
             {
                 var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
+                userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
 
                 if (obj.FileEntry.ProviderEntry)
                 {
@@ -575,7 +576,13 @@ public class FileMarker
 
         var socketManager = _serviceProvider.GetRequiredService<SocketManager>();
 
-        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(removeTags.Select(r => new Tag(r.Name, r.Type, r.Owner, 0) { EntryId = r.EntryId })), socketManager));
+        var toRemove = removeTags.Select(r => new Tag(r.Name, r.Type, r.Owner, 0)
+        {
+            EntryId = r.EntryId,
+            EntryType = r.EntryType
+        });
+
+        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(toRemove), socketManager));
 
         async Task UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
         {
@@ -818,6 +825,10 @@ public class FileMarker
         {
             parentFolderTag = Tag.New(_authContext.CurrentAccount.ID, parent, 0);
             parentFolderTag.Id = -1;
+        }
+        else
+        {
+            ((IFolder)parent).NewForMe = parentFolderTag.Count;
         }
 
         if (parent.FolderType != FolderType.VirtualRooms && parent.RootFolderType == FolderType.VirtualRooms && parent.ProviderEntry)
