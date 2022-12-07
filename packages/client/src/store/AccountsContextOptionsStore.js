@@ -296,10 +296,13 @@ class AccountsContextOptionsStore {
 
     const filterParamsStr = filter.toUrlParams();
     const url = getCategoryUrl(CategoryType.Shared);
+    const type = this.authStore.settingsStore.isDesktopClient
+      ? "_self"
+      : "_blank";
 
     window.open(
       combineUrl(PROXY_HOMEPAGE_URL, `${url}?${filterParamsStr}`),
-      "_blank"
+      type
     );
   };
 
