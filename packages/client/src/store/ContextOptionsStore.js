@@ -266,7 +266,11 @@ class ContextOptionsStore {
     let tab =
       !this.authStore.isDesktopClient && fileExst
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/doceditor?fileId=${id}`
+            ),
             "_blank"
           )
         : null;
@@ -633,7 +637,7 @@ class ContextOptionsStore {
           {
             id: "option_pin-room",
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: (e) => this.onClickPin(e, item.id, t),
             disabled: false,
@@ -986,7 +990,7 @@ class ContextOptionsStore {
       const pinOption = isPinOption
         ? {
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: pinRooms,
             disabled: false,

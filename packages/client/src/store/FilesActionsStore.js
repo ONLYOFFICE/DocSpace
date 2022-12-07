@@ -1807,7 +1807,7 @@ class FilesActionStore {
                 combineUrl(
                   AppServerConfig.proxyURL,
                   config.homepage,
-                  "/doceditor"
+                  `/doceditor?fileId=${id}`
                 ),
                 "_blank"
               )

@@ -2145,6 +2145,7 @@ const Base = {
 
     selectedItems: {
       background: "#eceef1",
+      hoverBackground: "#F3F4F4",
     },
   },
 
@@ -2407,6 +2408,7 @@ const Base = {
 
     tagInput: {
       tagBackground: "#ECEEF1",
+      tagHoverBackground: "#F3F4F4",
     },
 
     dropdown: {
@@ -2905,7 +2907,7 @@ const Base = {
         linkColorHelp: link,
         tooltipLinkColor: black,
         arrowColor: black,
-        descriptionColor: cyanBlueDarkShade,
+        descriptionColor: grayMain,
 
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
@@ -3035,6 +3037,7 @@ const Base = {
     borderColor: "#eceef1",
     tickIconColor: "#35AD17",
     removeIconColor: "#A3A9AE",
+    sortHeaderColor: "#d0d5da",
   },
 
   formWrapper: {

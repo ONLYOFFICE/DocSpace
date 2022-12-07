@@ -20,6 +20,7 @@ const StyledComponent = styled.div`
   .subtitle {
     margin-top: 5px;
     margin-bottom: 20px;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
   .header-container {
@@ -390,9 +391,7 @@ const WhiteLabel = (props) => {
     <LoaderWhiteLabel />
   ) : (
     <StyledComponent>
-      <Text className="subtitle" color="#657077">
-        {t("BrandingSubtitle")}
-      </Text>
+      <Text className="subtitle">{t("BrandingSubtitle")}</Text>
 
       <div className="header-container">
         <Text fontSize="16px" fontWeight="700">
