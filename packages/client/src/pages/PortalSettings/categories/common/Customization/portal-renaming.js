@@ -263,6 +263,7 @@ const PortalRenaming = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
+            offsetRight={0}
             iconName="static/images/combined.shape.svg"
             size={12}
             tooltipContent={tooltipPortalRenamingTooltip}
