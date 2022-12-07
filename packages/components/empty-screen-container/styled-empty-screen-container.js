@@ -137,6 +137,8 @@ const EmptyContentBody = styled.div`
     grid-area: descriptionText;
     line-height: 18px;
     margin-top: 2px;
+
+    color: ${(props) => props.theme.emptyContent.description.color};
   }
 
   .ec-buttons {

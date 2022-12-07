@@ -2500,6 +2500,12 @@ const Base = {
     },
   },
 
+  emptyContent: {
+    description: {
+      color: cyanBlueDarkShade,
+    },
+  },
+
   filesPanels: {
     color: black,
 
