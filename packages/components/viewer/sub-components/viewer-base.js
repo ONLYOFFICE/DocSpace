@@ -430,11 +430,6 @@ const ViewerBase = (props) => {
     let keyCode = e.keyCode || e.which || e.charCode;
     let isFeatrue = false;
     switch (keyCode) {
-      // key: esc
-      case 27:
-        onClose();
-        isFeatrue = true;
-        break;
       // key: ↑
       case 38:
         handleDefaultAction(ActionType.zoomIn);
@@ -599,17 +594,6 @@ const ViewerBase = (props) => {
     >
       {isMobileOnly && mobileDetails}
       <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
-      {props.noClose || (
-        <div
-          className={`${prefixCls}-close ${prefixCls}-btn`}
-          onClick={() => {
-            onClose();
-          }}
-          style={{ zIndex: zIndex + 10 }}
-        >
-          <Icon type={ActionType.close} />
-        </div>
-      )}
       <ViewerImage
         prefixCls={prefixCls}
         imgSrc={
