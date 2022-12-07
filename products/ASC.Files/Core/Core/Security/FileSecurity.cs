@@ -78,9 +78,8 @@ public class FileSecurity : IFileSecurity
                 {
                     FilesSecurityActions.Read,
                     FilesSecurityActions.Create,
-                    FilesSecurityActions.Edit,
                     FilesSecurityActions.Delete,
-                    FilesSecurityActions.RoomEdit,
+                    FilesSecurityActions.EditRoom,
                     FilesSecurityActions.Rename,
                     FilesSecurityActions.CopyTo,
                     FilesSecurityActions.CopyFrom,
@@ -184,7 +183,7 @@ public class FileSecurity : IFileSecurity
 
     public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.RoomEdit);
+        return CanAsync(entry, userId, FilesSecurityActions.EditRoom);
     }
 
     public Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
@@ -752,7 +751,7 @@ public class FileSecurity : IFileSecurity
                 if (e.RootFolderType == FolderType.Archive &&
                     action != FilesSecurityActions.Read &&
                     action != FilesSecurityActions.Delete &&
-                    action != FilesSecurityActions.RoomEdit &&
+                    action != FilesSecurityActions.EditRoom &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.CopyFrom &&
                     action != FilesSecurityActions.RemoveShare &&
@@ -916,7 +915,7 @@ public class FileSecurity : IFileSecurity
                     return true;
                 }
                 break;
-            case FilesSecurityActions.RoomEdit:
+            case FilesSecurityActions.EditRoom:
                 if (e.Access == FileShare.RoomAdmin )
                 {
                     return true;
@@ -1580,7 +1579,7 @@ public class FileSecurity : IFileSecurity
         Edit,
         Delete,
         CustomFilter,
-        RoomEdit,
+        EditRoom,
         Rename,
         ReadHistory,
         Lock,
