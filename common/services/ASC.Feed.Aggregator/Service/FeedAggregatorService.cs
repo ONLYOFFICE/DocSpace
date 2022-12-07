@@ -200,7 +200,7 @@ public class FeedAggregatorService : FeedBaseService
                 }
             }
 
-            _socketServiceClient.SendUnreadUsers(unreadUsers);
+            await _socketServiceClient.MakeRequest("sendUnreadUsers", unreadUsers);
 
             _logger.DebugTimeCollectingNews(DateTime.UtcNow - start);
         }

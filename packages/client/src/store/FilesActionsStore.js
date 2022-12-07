@@ -1097,18 +1097,18 @@ class FilesActionStore {
     setConnectItem({ ...provider, ...capability });
   };
 
-  setNewBadgeCount = (item) => {
-    const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
-    const { updateFileBadge, updateFolderBadge } = this.filesStore;
-    const { rootFolderType, fileExst, id } = item;
+  // setNewBadgeCount = (item) => {
+  //   const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
+  //   const { updateFileBadge, updateFolderBadge } = this.filesStore;
+  //   const { rootFolderType, fileExst, id } = item;
 
-    const count = item.new ? item.new : 1;
-    const rootFolder = getRootFolder(rootFolderType);
-    updateRootBadge(rootFolder.id, count);
+  //   const count = item.new ? item.new : 1;
+  //   const rootFolder = getRootFolder(rootFolderType);
+  //   updateRootBadge(rootFolder.id, count);
 
-    if (fileExst) updateFileBadge(id);
-    else updateFolderBadge(id, item.new);
-  };
+  //   if (fileExst) updateFileBadge(id);
+  //   else updateFolderBadge(id, item.new);
+  // };
 
   markAsRead = (folderIds, fileIds, item) => {
     const {
@@ -1132,7 +1132,7 @@ class FilesActionStore {
       .then(() => {
         if (!item) return;
 
-        this.setNewBadgeCount(item);
+        //this.setNewBadgeCount(item);
 
         const { getFileIndex, updateFileStatus } = this.filesStore;
 
