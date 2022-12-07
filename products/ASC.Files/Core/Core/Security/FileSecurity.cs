@@ -89,6 +89,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Pin,
                     FilesSecurityActions.AddShare,
                     FilesSecurityActions.RemoveShare,
+                    FilesSecurityActions.Archive,
                 }
             }
     };
@@ -318,6 +319,11 @@ public class FileSecurity : IFileSecurity
     public Task<bool> CanRemoveShareAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.RemoveShare);
+    }
+
+    public Task<bool> CanArchiveAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Archive);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -1097,7 +1103,8 @@ public class FileSecurity : IFileSecurity
             {
                 if ((action == FilesSecurityActions.Pin ||
                     action == FilesSecurityActions.AddShare ||
-                    action == FilesSecurityActions.RemoveShare) &&
+                    action == FilesSecurityActions.RemoveShare ||
+                    action == FilesSecurityActions.Archive) &&
                     !DocSpaceHelper.IsRoom(folder.FolderType))
                 {
                     return false;
@@ -1213,7 +1220,8 @@ public class FileSecurity : IFileSecurity
                     action != FilesSecurityActions.RoomEdit &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.CopyFrom &&
-                    action != FilesSecurityActions.RemoveShare
+                    action != FilesSecurityActions.RemoveShare &&
+                    action != FilesSecurityActions.Archive
                     )
                 {
                     return false;
@@ -2044,5 +2052,6 @@ public class FileSecurity : IFileSecurity
         Pin,
         AddShare,
         RemoveShare,
+        Archive,
     }
 }
