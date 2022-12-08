@@ -69,8 +69,12 @@ const Badges = ({
           onClick={onClickPaid}
         />
       )}
-      {statusType === "pending" && <StyledSendClockIcon size="small" />}
-      {statusType === "disabled" && <StyledCatalogSpamIcon size="small" />}
+      {statusType === "pending" && (
+        <StyledSendClockIcon className="pending-badge" size="small" />
+      )}
+      {statusType === "disabled" && (
+        <StyledCatalogSpamIcon className="disabled-badge" size="small" />
+      )}
     </StyledBadgesContainer>
   );
 };
