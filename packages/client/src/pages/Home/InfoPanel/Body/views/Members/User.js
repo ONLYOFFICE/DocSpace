@@ -113,9 +113,10 @@ const User = ({
               withBackdrop={false}
               size="content"
               modernView
+              title={t("Common:Role")}
             />
           ) : (
-            <div className="disabled-role-combobox">{userRole.label}</div>
+            <div className="disabled-role-combobox" title={t("Common:Role")}>{userRole.label}</div>
           )}
         </div>
       )}

@@ -118,7 +118,7 @@ class FilesStore {
     const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
-      //console.log("Call s:modify-folder", opt);
+      console.log("[WS] s:modify-folder", opt);
 
       if (this.isLoading) return;
 
@@ -130,7 +130,13 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
-            const newFiles = [file, ...this.files];
+            if (this.selectedFolderStore.id !== file.folderId) return;
+
+            const fileInfo = await api.files.getFileInfo(file.id);
+
+            console.log("[WS] create new file", fileInfo.id, fileInfo.title);
+
+            const newFiles = [fileInfo, ...this.files];
 
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
@@ -146,6 +152,8 @@ class FilesStore {
             if (!file || !file.id) return;
 
             this.getFileInfo(file.id); //this.setFile(file);
+
+            console.log("[WS] update file", file.id, file.title);
 
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
@@ -174,6 +182,12 @@ class FilesStore {
           if (opt?.type == "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
+
+            console.log(
+              "[WS] delete file",
+              this.files[foundIndex].id,
+              this.files[foundIndex].title
+            );
 
             this.setFiles(
               this.files.filter((_, index) => {
@@ -212,15 +226,45 @@ class FilesStore {
       //);
 
       if (this.selectedFolderStore.id == id) {
+        console.log("[WS] refresh-folder", id);
         this.fetchFiles(id, this.filter);
       }
     });
 
+    socketHelper.on("s:markasnew-folder", ({ folderId, count }) => {
+      console.log(`[WS] markasnew-folder ${folderId}:${count}`);
+
+      const foundIndex =
+        folderId && this.folders.findIndex((x) => x.id === folderId);
+      if (foundIndex == -1) return;
+
+      runInAction(() => {
+        this.folders[foundIndex].new = count >= 0 ? count : 0;
+        this.treeFoldersStore.fetchTreeFolders();
+      });
+    });
+
+    socketHelper.on("s:markasnew-file", ({ fileId, count }) => {
+      console.log(`[WS] markasnew-file ${fileId}:${count}`);
+
+      const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
+      if (foundIndex == -1) return;
+
+      this.updateFileStatus(
+        foundIndex,
+        count > 0
+          ? this.files[foundIndex].fileStatus | FileStatus.IsNew
+          : this.files[foundIndex].fileStatus & ~FileStatus.IsNew
+      );
+      this.treeFoldersStore.fetchTreeFolders();
+    });
+
     //WAIT FOR RESPONSES OF EDITING FILE
     socketHelper.on("s:start-edit-file", (id) => {
-      //console.log(`Call s:start-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
+
+      console.log(`[WS] s:start-edit-file`, id, this.files[foundIndex].title);
 
       this.updateSelectionStatus(
         id,
@@ -235,9 +279,10 @@ class FilesStore {
     });
 
     socketHelper.on("s:stop-edit-file", (id) => {
-      console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
+
+      console.log(`[WS] s:stop-edit-file`, id, this.files[foundIndex].title);
 
       this.updateSelectionStatus(
         id,
@@ -426,7 +471,10 @@ class FilesStore {
     if (this.files?.length > 0) {
       socketHelper.emit({
         command: "unsubscribe",
-        data: this.files.map((f) => `FILE-${f.id}`),
+        data: {
+          roomParts: this.files.map((f) => `FILE-${f.id}`),
+          individual: true,
+        },
       });
     }
 
@@ -435,14 +483,43 @@ class FilesStore {
     if (this.files?.length > 0) {
       socketHelper.emit({
         command: "subscribe",
-        data: this.files.map((f) => `FILE-${f.id}`),
+        data: {
+          roomParts: this.files.map((f) => `FILE-${f.id}`),
+          individual: true,
+        },
       });
+
+      this.files?.forEach((file) =>
+        console.log("[WS] subscribe to file's changes", file.id, file.title)
+      );
     }
   };
 
   setFolders = (folders) => {
+    const { socketHelper } = this.authStore.settingsStore;
     if (folders.length === 0 && this.folders.length === 0) return;
+
+    if (this.folders?.length > 0) {
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+    }
+
     this.folders = folders;
+
+    if (this.folders?.length > 0) {
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+    }
   };
 
   getFileIndex = (id) => {
@@ -1637,27 +1714,27 @@ class FilesStore {
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
   };
 
-  updateFolderBadge = (id, count) => {
-    const folder = this.folders.find((x) => x.id === id);
-    if (folder) folder.new -= count;
-  };
+  // updateFolderBadge = (id, count) => {
+  //   const folder = this.folders.find((x) => x.id === id);
+  //   if (folder) folder.new -= count;
+  // };
 
-  updateFileBadge = (id) => {
-    const file = this.files.find((x) => x.id === id);
-    if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
-  };
+  // updateFileBadge = (id) => {
+  //   const file = this.files.find((x) => x.id === id);
+  //   if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
+  // };
 
-  updateFilesBadge = () => {
-    for (let file of this.files) {
-      file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
-    }
-  };
+  // updateFilesBadge = () => {
+  //   for (let file of this.files) {
+  //     file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
+  //   }
+  // };
 
-  updateFoldersBadge = () => {
-    for (let folder of this.folders) {
-      folder.new = 0;
-    }
-  };
+  // updateFoldersBadge = () => {
+  //   for (let folder of this.folders) {
+  //     folder.new = 0;
+  //   }
+  // };
 
   updateRoomPin = (item) => {
     const idx = this.folders.findIndex((folder) => folder.id === item);
@@ -2182,7 +2259,7 @@ class FilesStore {
       case `room-${RoomsType.EditingRoom}`:
         return t("CollaborationRooms");
       case `room-${RoomsType.ReviewRoom}`:
-        return t("ReviewRooms");
+        return t("Common:Review");
       case `room-${RoomsType.ReadOnlyRoom}`:
         return t("ViewOnlyRooms");
 
@@ -2613,9 +2690,15 @@ class FilesStore {
 
     const { socketHelper } = this.authStore.settingsStore;
     if (createdItem?.type == "file") {
+      console.log(
+        "[WS] subscribe to file's changes",
+        createdItem.id,
+        createdItem.title
+      );
+
       socketHelper.emit({
         command: "subscribe",
-        data: `FILE-${createdItem.id}`,
+        data: { roomParts: `FILE-${createdItem.id}`, individual: true },
       });
     }
   };

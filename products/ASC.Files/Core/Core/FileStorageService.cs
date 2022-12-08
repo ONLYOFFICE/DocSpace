@@ -203,11 +203,19 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<Folder<T>> GetFolderAsync(T folderId)
     {
         var folderDao = GetFolderDao();
+        var tagDao = GetTagDao();
         var folder = await folderDao.GetFolderAsync(folderId);
 
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
+
         await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+
+        var tag = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folder).FirstOrDefaultAsync();
+        if (tag != null)
+        {
+            folder.NewForMe = tag.Count;
+        }
 
         return folder;
     }
@@ -272,7 +280,8 @@ public class FileStorageService<T> //: IFileStorageService
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
         bool excludeSubject = false,
-        ProviderFilter provider = ProviderFilter.None)
+        ProviderFilter provider = ProviderFilter.None,
+        SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -322,7 +331,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, excludeSubject, provider);
+                withoutTags, tagNames, excludeSubject, provider, subjectFilter);
         }
         catch (Exception e)
         {
@@ -972,7 +981,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (isFinish)
             {
                 _fileTracker.Remove(id, tabId);
-                _socketManager.StopEdit(id);
+                await _socketManager.StopEdit(id);
             }
             else
             {
@@ -1022,7 +1031,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditingAlone(fileId))
             {
                 _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+                await _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -1047,7 +1056,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditing(fileId))
             {
                 _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+                await _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId,

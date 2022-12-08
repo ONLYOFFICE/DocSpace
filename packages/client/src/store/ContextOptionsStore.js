@@ -649,7 +649,7 @@ class ContextOptionsStore {
       {
         id: "option_select",
         key: "select",
-        label: "Select",
+        label: t("Common:SelectAction"),
         icon: "images/check-box.react.svg",
         onClick: () => this.onSelect(item),
         disabled: false,
@@ -681,7 +681,7 @@ class ContextOptionsStore {
       {
         id: "option_preview",
         key: "preview",
-        label: t("Preview"),
+        label: t("Common:Preview"),
         icon: "/static/images/eye.react.svg",
         onClick: () => this.onPreviewClick(item),
         disabled: false,
@@ -722,7 +722,7 @@ class ContextOptionsStore {
       {
         id: "option_invite-users-to-room",
         key: "invite-users-to-room",
-        label: t("InviteUsers"),
+        label: t("Common:InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,

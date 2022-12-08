@@ -58,7 +58,7 @@ const RemovePortal = (props) => {
             <Button
               scale
               size="medium"
-              label={t("Common:Cancel")}
+              label={t("Common:CancelButton")}
               tabIndex={1}
               onClick={onCancelClick}
             />
