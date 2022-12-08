@@ -124,6 +124,9 @@ const EmptyContentBody = styled.div`
     grid-area: headerText;
     font-size: 16px;
     padding-top: 16px;
+
+    color: ${(props) => props.theme.emptyContent.header.color};
+
     @media (max-width: 375px) {
       margin-top: 5px;
     }
@@ -143,6 +146,18 @@ const EmptyContentBody = styled.div`
 
   .ec-buttons {
     grid-area: button;
+    svg {
+      path {
+        fill: ${(props) => props.theme.emptyContent.button.colorLink};
+      }
+    }
+
+    a {
+      color: ${(props) => props.theme.emptyContent.button.colorLink};
+    }
+    span {
+      color: ${(props) => props.theme.emptyContent.button.colorText};
+    }
   }
 
   @media ${tablet} {

@@ -2501,8 +2501,16 @@ const Base = {
   },
 
   emptyContent: {
+    header: {
+      color: "#333333",
+    },
+
     description: {
       color: cyanBlueDarkShade,
+    },
+    button: {
+      colorLink: "#657077",
+      colorText: "#555F65",
     },
   },
 
