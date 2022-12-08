@@ -22,7 +22,8 @@ const hoverModernViewButton = css`
 const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: ${(props) =>
+    props.isLeftwardContent ? "space-between" : "center"};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   height: ${(props) =>
