@@ -111,7 +111,7 @@ class ComboBox extends React.Component {
       withBackdrop,
       isAside,
       withBackground,
-
+      isLeftwardContent,
       advancedOptionsCount,
     } = this.props;
 
@@ -175,6 +175,7 @@ class ComboBox extends React.Component {
           modernView={modernView}
           fillIcon={fillIcon}
           tabIndex={tabIndex}
+          isLeftwardContent={isLeftwardContent}
         />
         {displayType !== "toggle" && (
           <DropDown

@@ -38,6 +38,7 @@ class ComboButton extends React.Component {
       fillIcon,
       modernView,
       tabIndex,
+      isLeftwardContent,
     } = this.props;
 
     const defaultOption = selectedOption?.default;
@@ -58,6 +59,7 @@ class ComboButton extends React.Component {
         className="combo-button"
         themeId={ThemeType.ComboButton}
         tabIndex={tabIndex}
+        isLeftwardContent={isLeftwardContent}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -141,6 +143,7 @@ ComboButton.propTypes = {
   fillIcon: PropTypes.bool,
   modernView: PropTypes.bool,
   tabIndex: PropTypes.number,
+  isLeftwardContent: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {
@@ -154,6 +157,7 @@ ComboButton.defaultProps = {
   scaled: false,
   modernView: false,
   tabIndex: -1,
+  isLeftwardContent: false,
 };
 
 export default ComboButton;
