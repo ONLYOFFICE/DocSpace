@@ -257,7 +257,6 @@ class AccessRightsStore {
     }
 
     if (
-      rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
       // rootFolderType === FolderType.Privacy ||
