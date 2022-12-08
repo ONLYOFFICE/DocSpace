@@ -37,9 +37,20 @@ public class AuthRequestsDto
     public string Code { get; set; }
     public string CodeOAuth { get; set; }
     public bool Session { get; set; }
+
+    public ConfirmData ConfirmData { get; set; }
 }
 
 public class MobileRequestsDto
 {
     public string MobilePhone { get; set; }
+}
+
+public class ConfirmData
+{
+    public string Email { get; set; }
+    public string Module { get; set; }
+    public bool? First { get; set; }
+    public bool? Sms { get; set; }
+    public string Key { get; set; }
 }
