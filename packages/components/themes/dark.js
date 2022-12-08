@@ -2002,6 +2002,7 @@ const Dark = {
     catalogItemHeader: "#858585",
     catalogItemText: "rgba(255, 255, 255, 0.6)",
     catalogItemActiveBackground: "#333333",
+    catalogShowText: "#adadad",
   },
 
   section: {
