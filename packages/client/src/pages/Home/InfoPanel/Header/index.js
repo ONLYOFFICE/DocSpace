@@ -165,8 +165,9 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
-    withLoader(observer(InfoPanelHeaderContent))(
-      <Loaders.InfoPanelHeaderLoader />
-    )
+    InfoPanelHeaderContent
+    // withLoader(observer(InfoPanelHeaderContent))(
+    //   <Loaders.InfoPanelHeaderLoader />
+    // )
   )
 );

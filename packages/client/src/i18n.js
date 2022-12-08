@@ -28,6 +28,7 @@ newInstance
 
     ns: [
       "InfoPanel",
+      "FormGallery",
       "DownloadDialog",
       "DeleteDialog",
       "EmptyTrashDialog",

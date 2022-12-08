@@ -76,8 +76,9 @@ export default inject(({ auth, settingsStore, oformsStore }) => {
   };
 })(
   withTranslation(["InfoPanel", "FormGallery", "Common", "Translations"])(
-    withLoader(observer(Gallery))(
-      <Loaders.InfoPanelViewLoader view="gallery" />
-    )
+    Gallery
+    // withLoader(observer(Gallery))(
+    //   <Loaders.InfoPanelViewLoader view="gallery" />
+    // )
   )
 );

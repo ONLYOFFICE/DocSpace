@@ -80,7 +80,8 @@ const CreateRoomEvent = ({
         await createTag(createTagsData[i]);
 
       // add new tags to room
-      room = await addTagsToRoom(room.id, addTagsData);
+      if (!!addTagsData.length)
+        room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
       if (roomParams.icon.uploadedFile)
