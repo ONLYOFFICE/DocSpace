@@ -1622,9 +1622,10 @@ const Base = {
       hoverBorderColor: gray,
       hoverBorderColorOpen: blueMain,
       hoverDisabledBorderColor: grayLightMid,
-      hoverBackgroundModernView: "#F8F9F9",
 
-      activeBackgroundModernView: "#F3F4F4",
+      hoverBackgroundModernView: "#ECEEF1",
+      activeBackgroundModernView: "#D0D5DA",
+      focusBackgroundModernView: "#DFE2E3",
     },
 
     label: {

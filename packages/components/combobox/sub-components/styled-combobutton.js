@@ -6,16 +6,16 @@ const modernViewButton = css`
   height: ${(props) => props.theme.comboBox.button.heightModernView};
   background: ${(props) =>
     props.isOpen
-      ? props.theme.comboBox.button.activeBackgroundModernView
+      ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.backgroundModernView};
 
-  border: none;
+  border: none !important;
 `;
 
 const hoverModernViewButton = css`
   background: ${(props) =>
     props.isOpen
-      ? props.theme.comboBox.button.activeBackgroundModernView
+      ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.hoverBackgroundModernView} !important;
 `;
 
@@ -81,8 +81,6 @@ const StyledComboButton = styled.div`
   ${(props) => props.modernView && modernViewButton}
 
   :hover {
-    ${(props) => props.modernView && hoverModernViewButton}
-
     border-color: ${(props) =>
       props.isOpen
         ? props.theme.comboBox.button.hoverBorderColorOpen
@@ -97,6 +95,8 @@ const StyledComboButton = styled.div`
       `
       border-color: ${props.theme.comboBox.button.hoverDisabledBorderColor};
     `}
+
+    ${(props) => props.modernView && hoverModernViewButton}
 
     .optionalBlock {
       svg {

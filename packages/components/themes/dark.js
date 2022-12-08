@@ -1612,9 +1612,10 @@ const Dark = {
       hoverBorderColor: "#858585",
       hoverBorderColorOpen: grayMaxLight,
       hoverDisabledBorderColor: "#474747",
-      hoverBackgroundModernView: "#474747",
 
-      activeBackgroundModernView: "#858585",
+      hoverBackgroundModernView: "#474747",
+      activeBackgroundModernView: "#282828",
+      focusBackgroundModernView: "#242424",
     },
 
     label: {
