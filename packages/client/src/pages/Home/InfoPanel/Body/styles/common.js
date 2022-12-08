@@ -4,10 +4,21 @@ import { Base } from "@docspace/components/themes";
 import { mobile } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
-  padding: 80px 3px 0 20px;
-  @media ${mobile} {
-    padding: 80px 8px 0 16px;
-  }
+  ${({ isAccounts }) =>
+    isAccounts
+      ? css`
+          padding: 0px 3px 0 20px;
+          @media ${mobile} {
+            padding: 0px 8px 0 16px;
+          }
+        `
+      : css`
+          padding: 80px 3px 0 20px;
+          @media ${mobile} {
+            padding: 80px 8px 0 16px;
+          }
+        `}
+
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
