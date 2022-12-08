@@ -2004,10 +2004,6 @@ class FilesStore {
         )
       : null;
 
-    console.log(isFolder);
-
-    console.log(folderUrl);
-
     return folderUrl;
   };
 
