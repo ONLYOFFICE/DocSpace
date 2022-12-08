@@ -121,7 +121,6 @@ const StyledComboBox = styled(ComboBox)`
 
   .combo-button {
     border-radius: 3px;
-    height: auto;
   }
 `;
 
