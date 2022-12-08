@@ -29,7 +29,7 @@ namespace ASC.Files.Core.Helpers;
 [Scope]
 public class FilesLinkUtility
 {
-    public const string FilesBaseVirtualPath = "~/products/files/";
+    public const string FilesBaseVirtualPath = "~/";
     public const string EditorPage = "doceditor";
     private readonly string _filesUploaderURL;
 
@@ -77,7 +77,7 @@ public class FilesLinkUtility
 
     public string FileHandlerPath
     {
-        get { return FilesBaseAbsolutePath + "httphandlers/filehandler.ashx"; }
+        get { return FilesBaseAbsolutePath + "filehandler.ashx"; }
     }
 
     public string DocServiceUrl
@@ -276,22 +276,9 @@ public class FilesLinkUtility
         get { return $"{FileWebEditorUrlString}&{Action}=view"; }
     }
 
-    public string GetFileWebViewerUrlForMobile(object fileId, int fileVersion)
-    {
-        var viewerUrl = _commonLinkUtility.ToAbsolute("~/../products/files/") + EditorPage + "?" + FileId + "={0}";
-
-        return string.Format(viewerUrl, HttpUtility.UrlEncode(fileId.ToString()))
-               + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
-    }
-
     public string FileWebViewerExternalUrlString
     {
         get { return FilesBaseAbsolutePath + EditorPage + "?" + FileUri + "={0}&" + FileTitle + "={1}&" + FolderUrl + "={2}"; }
-    }
-
-    public string GetFileWebViewerExternalUrl(string fileUri, string fileTitle, string refererUrl = "")
-    {
-        return string.Format(FileWebViewerExternalUrlString, HttpUtility.UrlEncode(fileUri), HttpUtility.UrlEncode(fileTitle), HttpUtility.UrlEncode(refererUrl));
     }
 
     public string FileWebEditorUrlString

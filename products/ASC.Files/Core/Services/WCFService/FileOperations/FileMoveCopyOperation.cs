@@ -565,12 +565,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                                 }
 
-                                if (Equals(toFolderId.ToString(), _daoFolderId))
+                                if (Equals(toFolderId, _daoFolderId))
                                 {
                                     needToMark.Add(newFile);
                                 }
 
-                                socketManager.DeleteFile(file);
+                                await socketManager.DeleteFile(file);
 
                                 await socketManager.CreateFileAsync(newFile);
 
@@ -665,7 +665,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
 
-                                            socketManager.DeleteFile(file);
+                                            await socketManager.DeleteFile(file);
 
                                             if (ProcessedFile(fileId))
                                             {
