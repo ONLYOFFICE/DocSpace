@@ -1916,6 +1916,24 @@ class FilesStore {
     return this.filter.search;
   }
 
+  getFolderUrl = (id, isFolder) => {
+    const url = getCategoryUrl(this.categoryType, id);
+
+    const folderUrl = isFolder
+      ? combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `${url}?folder=${id}`
+        )
+      : null;
+
+    console.log(isFolder);
+
+    console.log(folderUrl);
+
+    return folderUrl;
+  };
+
   get filesList() {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
@@ -2011,15 +2029,7 @@ class FilesStore {
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
-      const url = getCategoryUrl(this.categoryType, id);
-
-      const folderUrl = isFolder
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `${url}?folder=${id}`
-          )
-        : null;
+      const folderUrl = this.getFolderUrl(id, isFolder);
 
       const needConvert = canConvert(fileExst);
       const isEditing =
