@@ -176,8 +176,15 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 6px;
+    margin-left: ${(props) => (!props.isPersonalRoom ? "6px" : "0")};
     padding-top: 0px;
+  }
+  .expandButton > div:first-child {
+    ${(props) =>
+      props.isPersonalRoom &&
+      css`
+        padding-left: 0 !important;
+      `}
   }
 `;
 
@@ -209,6 +216,7 @@ const SimpleFilesRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
+    isPersonalRoom,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
@@ -303,6 +311,7 @@ const SimpleFilesRow = (props) => {
           isDragOver={isDragOver}
           isSmallContainer={isSmallContainer}
           isRooms={isRooms}
+          isPersonalRoom={isPersonalRoom}
         >
           <FilesRowContent
             item={item}

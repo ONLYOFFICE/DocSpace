@@ -69,6 +69,8 @@ class AccessRightsStore {
   canLockFile = (file) => {
     const { rootFolderType, access } = file;
 
+    if (rootFolderType === FolderType.USER) return false;
+
     if (rootFolderType === FolderType.Archive)
       return getArchiveFileRoleActions(access).block;
 
