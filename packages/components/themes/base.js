@@ -2010,6 +2010,7 @@ const Base = {
     catalogItemHeader: "#A3A9AE",
     catalogItemText: "#555F65",
     catalogItemActiveBackground: "#DFE2E3",
+    catalogShowText: "#657077",
   },
 
   section: {
