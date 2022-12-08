@@ -140,6 +140,41 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
+        if (0 < Folders.Count)
+        {
+            var firstFolder = await FolderDao.GetFolderAsync(Folders[0]);
+
+            if (_copy && !await FilesSecurity.CanCopyAsync(firstFolder))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                return;
+            }
+            else if (!await FilesSecurity.CanMoveAsync(firstFolder))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                return;
+            }
+        }
+
+        if (0 < Files.Count)
+        {
+            var firstFile = await FileDao.GetFileAsync(Files[0]);
+
+            if (_copy && !await FilesSecurity.CanCopyAsync(firstFile))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                return;
+            }
+            else if (!await FilesSecurity.CanMoveAsync(firstFile))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+
+                return;
+            }
+        }
 
         if (_copy && !await fileSecurity.CanCopyToAsync(toFolder))
         {
