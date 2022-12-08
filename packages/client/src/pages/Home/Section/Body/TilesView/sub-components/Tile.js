@@ -201,7 +201,7 @@ const StyledTile = styled.div`
     margin-right: 14px;
   }
 
-  :hover {
+  .file-icon_container:hover {
     ${(props) =>
       !props.dragging &&
       !props.inProgress &&
