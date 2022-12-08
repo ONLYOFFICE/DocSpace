@@ -199,7 +199,7 @@ const SectionBodyContent = (props) => {
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
-    const providerKey = value ? value.split("_")[2].trim() : treeProvider;
+    const providerKey = value ? value.split("_")[2]?.trim() : treeProvider;
 
     setStartDrag(false);
     setDragging(false);
