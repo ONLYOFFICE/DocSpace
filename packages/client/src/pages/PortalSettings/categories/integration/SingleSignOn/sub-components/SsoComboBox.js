@@ -38,6 +38,7 @@ const SsoComboBox = (props) => {
           selectedOption={currentOption}
           showDisabledItems
           tabIndex={tabIndex}
+          isLeftwardContent
         />
       </StyledInputWrapper>
     </FieldContainer>
