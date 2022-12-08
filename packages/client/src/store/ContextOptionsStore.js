@@ -667,8 +667,6 @@ class ContextOptionsStore {
         ]
       : [];
 
-    console.log(item);
-
     const optionsModel = [
       {
         id: "option_select",
