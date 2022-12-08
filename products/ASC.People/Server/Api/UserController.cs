@@ -212,7 +212,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, inDto.Type) ,Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType) ,Constants.Action_AddRemoveUser);
 
         inDto.Type = options != null ? options.EmployeeType : inDto.Type;
 
