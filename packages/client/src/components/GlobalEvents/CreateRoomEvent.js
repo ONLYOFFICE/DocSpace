@@ -28,12 +28,14 @@ const CreateRoomEvent = ({
   setCreateRoomDialogVisible,
   fetchFiles,
   setInfoPanelIsVisible,
+  setView,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const openNewRoom = (id) => {
+    setView("info_members");
     fetchFiles(id)
       .then(() => {
         setInfoPanelIsVisible(true);
@@ -173,7 +175,10 @@ export default inject(
     } = settingsStore.thirdPartyStore;
     const { withPaging } = auth.settingsStore;
 
-    const { setIsVisible: setInfoPanelIsVisible } = auth.infoPanelStore;
+    const {
+      setIsVisible: setInfoPanelIsVisible,
+      setView,
+    } = auth.infoPanelStore;
 
     return {
       createRoom,
@@ -195,6 +200,7 @@ export default inject(
       setCreateRoomDialogVisible,
       fetchFiles,
       setInfoPanelIsVisible,
+      setView,
     };
   }
 )(observer(CreateRoomEvent));
