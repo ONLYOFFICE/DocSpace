@@ -49,7 +49,6 @@ const StyledDropDown = styled(DropDown)`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
   width: 24px;
   height: 24px;
   position: absolute;
@@ -70,8 +69,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 12px;
-  height: 12px;
+  width: 17px;
+  height: 17px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }
