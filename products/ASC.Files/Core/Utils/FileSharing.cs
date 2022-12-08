@@ -196,9 +196,15 @@ public class FileSharingAceHelper<T>
                                || share == FileShare.Review
                                || share == FileShare.FillForms
                                || share == FileShare.Comment
-                               || share == FileShare.None && entry.RootFolderType == FolderType.COMMON;
-            var removeNew = share == FileShare.None && entry.RootFolderType == FolderType.USER
-                            || share == FileShare.Restrict;
+                               || share == FileShare.RoomAdmin
+                               || share == FileShare.Editing
+                               || (share == FileShare.None && entry.RootFolderType == FolderType.COMMON);
+
+            var removeNew = share == FileShare.Restrict || (share == FileShare.None
+                && (entry.RootFolderType == FolderType.USER ||
+                    entry.RootFolderType == FolderType.VirtualRooms ||
+                    entry.RootFolderType == FolderType.Archive));
+
             listUsersId.ForEach(id =>
             {
                 recipients.Remove(id);

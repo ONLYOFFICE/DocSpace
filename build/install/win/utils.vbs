@@ -221,13 +221,13 @@ Function ElasticSearchSetup
     Set Shell = CreateObject("WScript.Shell")
     Set objFSO = CreateObject("Scripting.FileSystemObject")
 
-    APP_INDEX_DIR = Session.Property("APPDIR") & "Data\Index\v7.13.1\"  
+    APP_INDEX_DIR = Session.Property("APPDIR") & "Data\Index\v7.16.3\"  
    
     If Not fso.FolderExists(APP_INDEX_DIR) Then
         Session.Property("NEED_REINDEX_ELASTICSEARCH") = "TRUE"
     End If
     
-    Call Shell.Run("%COMSPEC% /c mkdir """ & Session.Property("APPDIR") & "Data\Index\v7.13.1\""",0,true)
+    Call Shell.Run("%COMSPEC% /c mkdir """ & Session.Property("APPDIR") & "Data\Index\v7.16.3\""",0,true)
     Call Shell.Run("%COMSPEC% /c mkdir """ & Session.Property("APPDIR") & "Logs\""",0,true)
     
     Set objFile = objFSO.OpenTextFile(Session.Property("CommonAppDataFolder") & "Elastic\Elasticsearch\config\elasticsearch.yml", ForReading)
@@ -279,7 +279,7 @@ Function ElasticSearchSetup
     End if
 
     oRE.Pattern = "path.data:.*"
-    fileContent = oRE.Replace(fileContent, "path.data: " & Session.Property("APPDIR") & "Data\Index\v7.13.1\")                           
+    fileContent = oRE.Replace(fileContent, "path.data: " & Session.Property("APPDIR") & "Data\Index\v7.16.3\")                           
 
     oRE.Pattern = "path.logs:.*"
     fileContent = oRE.Replace(fileContent, "path.logs: " & Session.Property("APPDIR") & "Logs\")                           
@@ -335,8 +335,8 @@ Function ElasticSearchInstallPlugin
 
     Set Shell = CreateObject("WScript.Shell")
 
-    ShellInstallCommand = """C:\Program Files\Elastic\Elasticsearch\7.13.1\bin\elasticsearch-plugin""" & " install -b -s ingest-attachment"""
-    ShellRemoveCommand = """C:\Program Files\Elastic\Elasticsearch\7.13.1\bin\elasticsearch-plugin""" & " remove -s ingest-attachment"""
+    ShellInstallCommand = """C:\Program Files\Elastic\Elasticsearch\7.16.3\bin\elasticsearch-plugin""" & " install -b -s ingest-attachment"""
+    ShellRemoveCommand = """C:\Program Files\Elastic\Elasticsearch\7.16.3\bin\elasticsearch-plugin""" & " remove -s ingest-attachment"""
      
     Call Shell.Run("cmd /C " & """" & ShellRemoveCommand  & """",0,true)
     Call Shell.Run("cmd /C " & """" & ShellInstallCommand  & """",0,true)

@@ -2,7 +2,7 @@ import axios from "axios";
 import { AppServerConfig } from "../constants";
 import combineUrl from "./combineUrl";
 
-const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
+const { proxyURL, apiOrigin, apiPrefix, apiTimeout } = AppServerConfig;
 
 class AxiosClient {
   constructor() {
@@ -11,9 +11,16 @@ class AxiosClient {
 
   initCSR = () => {
     this.isSSR = false;
-    const origin = window.location.origin;
+    const origin = apiOrigin || window.location.origin;
+    let headers = null;
 
-    const apiBaseURL = combineUrl(origin, proxyURL, apiPrefixURL);
+    if (apiOrigin !== "") {
+      headers = {
+		'Access-Control-Allow-Credentials' : true
+      };
+    }
+
+    const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
     const paymentsURL = combineUrl(
       proxyURL,
       "/portal-settings/payments/portal-payments"
@@ -24,23 +31,33 @@ class AxiosClient {
     //   ...window.AppServer,
     //   origin,
     //   proxyURL,
-    //   apiPrefixURL,
+    //   apiPrefix,
     //   apiBaseURL,
     //   apiTimeout,
     //   paymentsURL,
     // };
 
-    this.client = axios.create({
+    const config = {
       baseURL: apiBaseURL,
       responseType: "json",
       timeout: apiTimeout, // default is `0` (no timeout)
-    });
+	  withCredentials: true
+    };
+
+    if (headers) {
+      config.headers = headers;
+    }
+
+    this.client = axios.create(config);
   };
 
   initSSR = (headers) => {
     this.isSSR = true;
     const xRewriterUrl = headers["x-rewriter-url"];
-    const apiBaseURL = combineUrl(xRewriterUrl, proxyURL, apiPrefixURL);
+
+    const origin = apiOrigin || xRewriterUrl;
+
+    const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
 
     this.client = axios.create({
       baseURL: apiBaseURL,

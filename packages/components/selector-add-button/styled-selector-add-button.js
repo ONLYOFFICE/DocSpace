@@ -18,27 +18,38 @@ const StyledButton = styled.div`
       ${(props) =>
         !props.isDisabled &&
         css`
-          fill: ${props.theme.selectorAddButton.color};
+          fill: ${props.theme.selectorAddButton.iconColor};
         `}
     }
   }
 
   &:hover {
+    background: ${(props) =>
+      !props.isDisabled && props.theme.selectorAddButton.hoverBackground};
+
     svg {
       path {
         ${(props) =>
           !props.isDisabled &&
           css`
-            fill: ${props.theme.selectorAddButton.hoverColor};
+            fill: ${props.theme.selectorAddButton.iconColorHover};
           `}
       }
     }
   }
 
   &:active {
-    ${(props) =>
-      !props.isDisabled &&
-      `background-color: ${props.theme.selectorAddButton.activeBackground};`}
+    background: ${(props) =>
+      !props.isDisabled && props.theme.selectorAddButton.activeBackground};
+    svg {
+      path {
+        ${(props) =>
+          !props.isDisabled &&
+          css`
+            fill: ${props.theme.selectorAddButton.iconColorActive};
+          `}
+      }
+    }
   }
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

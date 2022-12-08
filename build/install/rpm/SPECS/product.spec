@@ -19,7 +19,7 @@ Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar
 Source1:        https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz#/document-templates-main-community-server.tar.gz
 Source2:        https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
 
-BuildRequires:  nodejs >= 14.0
+BuildRequires:  nodejs >= 18.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-6.0
 
@@ -31,7 +31,6 @@ Requires:       %name-doceditor = %version-%release
 Requires:       %name-files = %version-%release
 Requires:       %name-files-services = %version-%release
 Requires:       %name-login = %version-%release
-Requires:       %name-migration = %version-%release
 Requires:       %name-migration-runner = %version-%release
 Requires:       %name-notify = %version-%release
 Requires:       %name-people-server = %version-%release
@@ -41,9 +40,6 @@ Requires:       %name-socket = %version-%release
 Requires:       %name-ssoauth = %version-%release
 Requires:       %name-studio = %version-%release
 Requires:       %name-studio-notify = %version-%release
-Requires:       %name-telegram-service = %version-%release
-Requires:       %name-urlshortener = %version-%release
-Requires:       %name-webhooks-service = %version-%release
 
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.

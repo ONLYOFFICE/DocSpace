@@ -76,6 +76,8 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_plus-image {
       margin: 4px 8px 0 0;
       cursor: pointer;
+      width: 10px;
+      height: 10px;
     }
 
     .empty-folder_container_plus-image {

@@ -31,6 +31,7 @@ const CustomInputGroup = ({
   hasWarning,
   isDisabled,
   scale,
+  hoverColor,
   ...props
 }) => <div {...props}></div>;
 /* eslint-enable react/prop-types, no-unused-vars */

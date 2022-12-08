@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Slider from "@docspace/components/slider";
-import PlusIcon from "../../../../../../public/images/plus.react.svg";
+import PlusIcon from "../../../../../../public/images/payment.plus.react.svg";
 import MinusIcon from "../../../../../../public/images/minus.react.svg";
 import { smallTablet } from "@docspace/components/utils/device";
 import TextInput from "@docspace/components/text-input";
@@ -28,7 +28,7 @@ const StyledBody = styled.div`
     .slider-track-value_min,
     .slider-track-value_max {
       color: ${(props) =>
-        props.theme.avatarEditorBody.slider.trackNumber.color};
+        props.theme.client.settings.payment.priceContainer.trackNumberColor};
     }
 
     .slider-track-value_max {
@@ -49,10 +49,12 @@ const StyledBody = styled.div`
     margin-left: 20px;
     margin-right: 20px;
     padding: 0;
+    font-weight: 700;
     ${(props) =>
       props.isDisabled &&
       css`
-        color: ${props.theme.text.disableColor};
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
       `};
   }
 
@@ -91,7 +93,7 @@ const StyledBody = styled.div`
         path {
           fill: ${(props) =>
             props.isDisabled
-              ? props.theme.text.disableColor
+              ? props.theme.client.settings.payment.priceContainer.disableColor
               : props.theme.text.color};
         }
       }
@@ -107,6 +109,13 @@ const StyledBody = styled.div`
   .payment-users_text {
     margin-bottom: 4px;
     text-align: center;
+
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
+      `}
   }
 `;
 
@@ -203,15 +212,13 @@ const SelectUsersCountContainer = ({
   const onchangeNumberProp =
     isDisabled || isUpdatingTariff ? {} : { onChange: onChangeNumber };
 
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
-
   return (
     <StyledBody
       className="select-users-count-container"
       theme={theme}
       isDisabled={isDisabled || isUpdatingTariff}
     >
-      <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
+      <Text noSelect fontWeight={600} className="payment-users_text">
         {addedManagersCountTitle}
       </Text>
       <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />

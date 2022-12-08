@@ -155,7 +155,7 @@ const ActivateUserForm = (props) => {
             id="name"
             name="name"
             value={name}
-            placeholder={t("FirstName")}
+            placeholder={t("Common:FirstName")}
             size="large"
             scale={true}
             tabIndex={1}

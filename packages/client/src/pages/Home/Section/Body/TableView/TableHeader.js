@@ -49,7 +49,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Tags",
-          title: t("Tags"),
+          title: t("Common:Tags"),
           enable: true,
           resizable: true,
           sortBy: "Tags",

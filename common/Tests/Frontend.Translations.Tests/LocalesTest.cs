@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,7 +49,7 @@ public class Tests
     {
         get
         {
-            return Path.GetFullPath(Utils.ConvertPathToOS("../../../../../../"));
+            return Environment.GetEnvironmentVariable("BASE_DIR") ?? Path.GetFullPath(Utils.ConvertPathToOS("../../../../../../"));
         }
     }
 
@@ -177,14 +178,28 @@ public class Tests
                                  where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.jsx") && !filePath.Contains(".stories.jsx")
                                  select Utils.ConvertPathToOS(filePath));
 
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.ts", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.ts") && !filePath.Contains(".stories.ts")
+                                 select Utils.ConvertPathToOS(filePath));
+
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.tsx", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.tsx") && !filePath.Contains(".stories.tsx")
+                                 select Utils.ConvertPathToOS(filePath));
+
         TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
 
         JavaScriptFiles = new List<JavaScriptFile>();
 
-        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\s{}/_-]+)[\"\'`]\\s*[\\),]";
-        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.-]+)\"";
+        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:\\s{}/-]+)[\"\'`]\\s*[\\),]";
+        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern3 = "tKey:\\s\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern4 = "getTitle\\(\"([a-zA-Z0-9_.:-]+)\"\\)";
 
-        var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
+        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})|({pattern4})", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
         var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
@@ -197,27 +212,31 @@ public class Tests
         {
             var jsFileText = File.ReadAllText(path);
 
-            if (!path.Contains("asc-web-components"))
-            {
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+            var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
 
-                if (toastMatches.Any())
+            if (toastMatches.Any())
+            {
+                foreach (var toastMatch in toastMatches)
                 {
-                    foreach (var toastMatch in toastMatches)
-                    {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
-                    }
+                    var found = toastMatch.Value;
+                    if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                        NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
                 }
             }
 
             var matches = regexp.Matches(jsFileText);
 
             var translationKeys = matches
-                .Select(m => m.Groups[2].Value == ""
-                    ? m.Groups[4].Value
-                    : m.Groups[2].Value)
+                .Select(m => m.Groups[2].Success
+                    ? m.Groups[2].Value
+                    : m.Groups[4].Success
+                        ? m.Groups[4].Value
+                        : m.Groups[6].Success
+                            ? m.Groups[6].Value
+                            : m.Groups[8].Success
+                                ? m.Groups[8].Value
+                                : null)
+                .Where(m => m != null)
                 .ToList();
 
             if (!translationKeys.Any())
@@ -294,7 +313,7 @@ public class Tests
         TestContext.Progress.WriteLine($"Found ModuleFolders = {ModuleFolders.Count()}. First path is '{ModuleFolders.FirstOrDefault()?.Path}'");
 
         CommonTranslations = TranslationFiles
-            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS($"{BasePath}public/locales")))
+            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS(Path.Combine(BasePath, "public/locales"))))
             .Select(t => new LanguageItem
             {
                 Path = t.FilePath,
@@ -677,7 +696,7 @@ public class Tests
         var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
 
         Assert.AreEqual(0, notFoundJsKeys.Count(),
-            "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'",
+            "Some i18n-keys are not exist in translations in 'en' language: Keys:\r\n{0}",
             string.Join("\r\n", notFoundJsKeys));
     }
 
@@ -689,18 +708,20 @@ public class Tests
              .Where(file => file.Language == "en")
              .SelectMany(item => item.Translations)
              .Select(item => item.Key)
-             .Where(k => !k.StartsWith("Culture_"));
+             .Where(k => !k.StartsWith("Culture_"))
+             .OrderBy(t => t);
 
         var allJsTranslationKeys = JavaScriptFiles
             .SelectMany(j => j.TranslationKeys)
             .Select(k => k.Substring(k.IndexOf(":") + 1))
             .Where(k => !k.StartsWith("Culture_"))
-            .Distinct();
+            .Distinct()
+            .OrderBy(t => t);
 
         var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
 
         Assert.AreEqual(0, notFoundi18nKeys.Count(),
-            "Some i18n-keys are not found in js: \r\nKeys: '\r\n{0}'",
+            "Some i18n-keys are not found in js keys:\r\n{0}",
             string.Join("\r\n", notFoundi18nKeys));
     }
 

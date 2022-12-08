@@ -10,6 +10,7 @@ const getDefaultStyles = ({
   theme,
 }) =>
   $currentColorScheme &&
+  theme.isBase &&
   css`
     :focus {
       border-color: ${(hasError && theme.input.focusErrorBorderColor) ||

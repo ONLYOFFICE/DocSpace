@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Prosim, izberite akcijo:",
   "ConflictResolveTitle": "Prepišite potrditev",
   "CreateDescription": "V mapi bosta dve različni datoteki.",
-  "CreateTitle": "Ustvari kopijo datoteke",
   "OverwriteDescription": "Datoteka bo dodana datoteki z istim imenom kot različica.",
   "OverwriteTitle": "Prepišite s posodobitvijo različice",
   "SkipDescription": "Nobena datoteka ne bo kopirana. Izvirna datoteka bo shranjena v ciljni mapi.",

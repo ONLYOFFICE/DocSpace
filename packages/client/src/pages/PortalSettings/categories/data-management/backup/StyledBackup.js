@@ -29,7 +29,6 @@ const commonStyles = css`
   }
   .radio-button_text {
     margin-right: 7px;
-    margin-left: 4px;
     font-size: 13px;
     font-weight: 600;
   }
@@ -185,7 +184,7 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: #f21c0e;
+    color: ${(props) => props.theme.client.settings.backup.warningColor};
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -232,7 +231,7 @@ const StyledModules = styled.div`
   margin-bottom: 24px;
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`};
-    margin-left: 29px;
+    margin-left: 25px;
     max-width: 700px;
   }
 `;
@@ -449,6 +448,7 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
     margin-left: 16px;
     margin-right: 16px;
+    color: ${(props) => props.theme.client.settings.backup.textColor};
   }
   #backup-list_help {
     display: flex;

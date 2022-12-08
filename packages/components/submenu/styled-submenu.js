@@ -88,7 +88,9 @@ export const StyledSubmenuItemText = styled.div`
 
   .item-text {
     color: ${(props) =>
-      props.isActive ? props.theme.submenu.textColor : "#657077"};
+      props.isActive
+        ? props.theme.submenu.activeTextColor
+        : props.theme.submenu.textColor};
     font-weight: 600;
   }
 `;

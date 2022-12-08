@@ -5,6 +5,7 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
+import { ReactSVG } from "react-svg";
 
 const EmptyFolderContainer = ({
   t,
@@ -45,12 +46,11 @@ const EmptyFolderContainer = ({
   const buttons = canCreateFiles ? (
     <>
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
           src="images/plus.svg"
           data-format="docx"
           onClick={onCreate}
-          alt="plus_icon"
         />
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
@@ -69,11 +69,10 @@ const EmptyFolderContainer = ({
       </div>
 
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
-          src="images/plus.svg"
           onClick={onCreate}
-          alt="plus_icon"
+          src="images/plus.svg"
         />
         <Link {...linkStyles} onClick={onCreate}>
           {t("Folder")}
@@ -90,13 +89,11 @@ const EmptyFolderContainer = ({
             </div>
 
             <div className="empty-folder_container-links">
-              <img
-                className="empty-folder_container_up-image"
-                src="images/plus.svg"
+              <ReactSVG
+                className="empty-folder_container_plus-image"
                 onClick={onInviteUsersClick}
-                alt="up_icon"
+                src="images/plus.svg"
               />
-
               <Link onClick={onInviteUsersClick} {...linkStyles}>
                 {t("InviteUsersInRoom")}
               </Link>
@@ -107,13 +104,11 @@ const EmptyFolderContainer = ({
         )
       ) : (
         <div className="empty-folder_container-links">
-          <img
+          <ReactSVG
             className="empty-folder_container_up-image"
-            src="images/up.svg"
             onClick={onBackToParentFolder}
-            alt="up_icon"
+            src="images/up.svg"
           />
-
           <Link onClick={onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
           </Link>
@@ -151,7 +146,6 @@ export default inject(
     filesStore,
     selectedFolderStore,
     contextOptionsStore,
-    treeFoldersStore,
   }) => {
     const { fetchFiles, fetchRooms, setIsEmptyPage } = filesStore;
     const {
@@ -159,31 +153,29 @@ export default inject(
       parentId,
       access,
       id: folderId,
-      rootFolderType,
+      roomType,
     } = selectedFolderStore;
-    const { isRoomRoot } = treeFoldersStore;
 
-    let isRootRoom, isRoom, id;
-    if (navigationPath && navigationPath.length) {
+    let id;
+    if (navigationPath?.length) {
       const elem = navigationPath[0];
-
-      isRootRoom = elem.isRootRoom;
-      isRoom = elem.isRoom;
       id = elem.id;
     }
+
+    const isRooms = !!roomType;
 
     const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const canInviteUsers = canInviteUserInRoom({ access });
+    const canInviteUsers = isRooms && canInviteUserInRoom({ access }); // skip sub-folders
 
     return {
       fetchFiles,
       fetchRooms,
       setIsLoading: filesStore.setIsLoading,
       parentId: id ?? parentId,
-      isRooms: isRoom || isRootRoom || isRoomRoot(rootFolderType),
+      isRooms,
       canCreateFiles,
       canInviteUsers,
       setIsEmptyPage,

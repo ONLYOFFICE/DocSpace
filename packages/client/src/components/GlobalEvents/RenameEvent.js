@@ -104,6 +104,7 @@ const RenameEvent = ({
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations(null, [item.id]);
+
             onClose();
           });
   }, []);

@@ -273,7 +273,7 @@ export default function withFileActions(WrappedFileItem) {
         selectTag,
         selectOption,
         onSelectItem,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         openFileAction,
         uploadEmptyFolders,
       } = filesActionsStore;
@@ -360,7 +360,7 @@ export default function withFileActions(WrappedFileItem) {
         isTrashFolder: isRecycleBinFolder,
         getFolderInfo,
         viewAs,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         isActive,
         inProgress,
         setBufferSelection,

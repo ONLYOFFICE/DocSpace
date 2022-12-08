@@ -3,6 +3,6 @@
   "DeleteForeverNote": "All items from Trash will be deleted forever. You won’t be able to restore them.",
   "DeleteForeverNoteArchive": "All items from Archived will be deleted forever. You won’t be able to restore them.",
   "DeleteForeverTitle": "Delete forever?",
-  "SuccessEmptyTrash": "Trash emptied",
-  "SuccessEmptyArchived": "Archived emptied"
+  "SuccessEmptyArchived": "Archived emptied",
+  "SuccessEmptyTrash": "Trash emptied"
 }

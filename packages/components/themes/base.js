@@ -383,7 +383,12 @@ const Base = {
   },
   selectorAddButton: {
     background: grayLightMid,
-    activeBackground: grayLightMid,
+    hoverBackground: lightGrayishStrongBlue,
+    activeBackground: grayMid,
+
+    iconColor: grayMain,
+    iconColorHover: grayMain,
+    iconColorActive: grayMain,
 
     border: `none`,
     boxSizing: "border-box",
@@ -445,7 +450,10 @@ const Base = {
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
 
-    focusColor: "#A3A9AE",
+    pressedBorderColor: grayMid,
+    pressedFillColor: grayLightMid,
+
+    focusColor: gray,
   },
 
   // slider: {
@@ -567,9 +575,9 @@ const Base = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(208, 213, 218, 1)",
+    backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
-    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
+    hoverBackgroundColorVertical: grayMid,
   },
 
   modalDialog: {
@@ -648,7 +656,7 @@ const Base = {
     border: "solid 1px",
 
     borderColor: grayMid,
-    errorBorderColor: red,
+    errorBorderColor: "#F21C0E",
     warningBorderColor: warningColor,
     disabledBorderColor: grayLightMid,
 
@@ -993,7 +1001,7 @@ const Base = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#F21C0E",
     },
   },
 
@@ -1589,7 +1597,6 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "-2px",
-      fillColor: grayMain,
     },
 
     button: {
@@ -1958,6 +1965,7 @@ const Base = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#A3A9AE",
   },
 
   navigation: {
@@ -2137,6 +2145,7 @@ const Base = {
 
     selectedItems: {
       background: "#eceef1",
+      hoverBackground: "#F3F4F4",
     },
   },
 
@@ -2246,9 +2255,16 @@ const Base = {
         draggingColor: lightCumulus,
         draggingHoverColor: lightMediumGoldenrod,
         checkedColor: "#f3f4f4",
+        roomsCheckedColor: "#f3f4f4",
         border: `1px solid ${grayMid}`,
+        backgroundBadgeColor: white,
         backgroundColor: white,
-
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: white,
       },
 
@@ -2392,6 +2408,7 @@ const Base = {
 
     tagInput: {
       tagBackground: "#ECEEF1",
+      tagHoverBackground: "#F3F4F4",
     },
 
     dropdown: {
@@ -2480,6 +2497,20 @@ const Base = {
     linkColor: cyanBlueDarkShade,
     privateRoom: {
       linkColor: "#116d9d",
+    },
+  },
+
+  emptyContent: {
+    header: {
+      color: "#333333",
+    },
+
+    description: {
+      color: cyanBlueDarkShade,
+    },
+    button: {
+      colorLink: "#657077",
+      colorText: "#555F65",
     },
   },
 
@@ -2677,10 +2708,10 @@ const Base = {
     hoverIconColor: "#3B72A7",
 
     color: white,
-    backgroundColor: gray,
+    backgroundColor: white,
 
     badgeColor: white,
-    badgeBackgroundColor: orangeMain,
+    badgeBackgroundColor: gray,
   },
 
   filesEditingWrapper: {
@@ -2890,7 +2921,7 @@ const Base = {
         linkColorHelp: link,
         tooltipLinkColor: black,
         arrowColor: black,
-        descriptionColor: cyanBlueDarkShade,
+        descriptionColor: grayMain,
 
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
@@ -2919,11 +2950,12 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
+        warningColor: "#f21c0e",
+        textColor: "#A3A9AE",
       },
 
       payment: {
         priceColor: "#555F65",
-        disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#f8f9f9",
@@ -2933,8 +2965,21 @@ const Base = {
         backgroundBenefitsColor: "#f8f9f9",
         rectangleColor: "#f3f4f4",
 
-        backgroundPrice: "#f3f4f4",
-        backgroundPriceContainer: "transparent",
+        priceContainer: {
+          backgroundText: "#f3f4f4",
+          background: "transparent",
+          border: "1px solid #d0d5da",
+          featureTextColor: "#A3A9AE",
+
+          disableColor: "#A3A9AE",
+          trackNumberColor: "#A3A9AE",
+          disablePriceColor: "#A3A9AE",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
       },
     },
@@ -2970,7 +3015,8 @@ const Base = {
   submenu: {
     lineColor: "#eceef1",
     backgroundColor: white,
-    textColor: "#316DAA",
+    textColor: "#657077",
+    activeTextColor: "#316DAA",
     bottomLineColor: "#316DAA",
   },
 
@@ -2985,7 +3031,7 @@ const Base = {
     background: "#f3f4f4",
     hoverBackground: "#eceef1",
     disabledBackground: "#f8f9f9",
-    defaultTagColor: "#A3A9AE",
+    defaultTagColor: black,
     newTagBackground: "#eceef1",
   },
 
@@ -2995,6 +3041,7 @@ const Base = {
       textColor: black,
     },
     themePreview: {
+      descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
   },
@@ -3002,6 +3049,9 @@ const Base = {
   activeSessions: {
     color: "#333",
     borderColor: "#eceef1",
+    tickIconColor: "#35AD17",
+    removeIconColor: "#A3A9AE",
+    sortHeaderColor: "#d0d5da",
   },
 
   formWrapper: {
@@ -3023,6 +3073,10 @@ const Base = {
     disabledBackground: "#F8F9F9",
     disabledBorder: "1px solid #ECEEF1",
     disabledColor: "#A3A9AE",
+  },
+
+  accessRightSelect: {
+    descriptionColor: gray,
   },
 };
 

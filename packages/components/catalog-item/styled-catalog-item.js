@@ -261,7 +261,8 @@ const StyledCatalogItemImg = styled.div`
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
-    path {
+    path,
+    circle {
       fill: ${(props) =>
         props.isActive
           ? props.theme.catalogItem.img.svg.isActiveFill
@@ -395,6 +396,14 @@ const StyledCatalogItemContainer = styled.div`
 
   .catalog-item__icon:target {
     display: flex;
+  }
+
+  .catalog-item__icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.catalogItem.trashIconFill};
+      }
+    }
   }
 
   :hover {

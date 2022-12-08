@@ -18,7 +18,7 @@ import AvatarEditor from "./editor";
 const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
-  const { t } = useTranslation(["Profile", "ProfileAction", "Common"]);
+  const { t } = useTranslation(["Profile", "PeopleTranslations", "ProfileAction", "Common"]);
   const {
     visible,
     onClose,
@@ -65,7 +65,7 @@ const AvatarEditorDialog = (props) => {
       updateCreatedAvatar(avatars);
       updateProfile(profile);
 
-      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      toastr.success(t("Common:ChangesSavedSuccessfully"));
       onClose();
     } catch (error) {
       console.error(error);

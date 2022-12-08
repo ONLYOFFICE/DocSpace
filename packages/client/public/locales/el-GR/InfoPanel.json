@@ -1,12 +1,9 @@
 {
-  "FilesEmptyScreenText": "Δείτε εδώ λεπτομέρειες αρχείου και φακέλου",
   "FileExtension": "Επέκταση αρχείου",
+  "FilesEmptyScreenText": "Δείτε εδώ λεπτομέρειες αρχείου και φακέλου",
   "ItemsSelected": "Επιλεγμένα στοιχεία",
   "LastModifiedBy": "Τελευταία Τροποποίηση Από",
-  "Members": "mέλη",
-  "OpenSharingSettings": "Άνοιγμα ρυθμίσεων κοινής χρήσης",
   "SystemProperties": "Ιδιότητες συστήματος",
   "Versions": "Εκδόσεις",
-  "ViewDetails": "Προβολή λεπτομερειών",
-  "WhoHasAccess": "Ποιος έχει πρόσβαση"
+  "ViewDetails": "Προβολή λεπτομερειών"
 }

@@ -24,19 +24,6 @@ const StyledFileInput = styled.div`
     (props.size === "huge" && props.theme.input.width.huge) ||
     (props.size === "large" && props.theme.input.width.large)};
 
-  .text-input {
-    border-color: ${(props) =>
-      (props.hasError && props.theme.input.errorBorderColor) ||
-      (props.hasWarning && props.theme.input.warningBorderColor) ||
-      (props.isDisabled && props.theme.input.disabledBorderColor) ||
-      props.theme.input.borderColor};
-
-    text-overflow: ellipsis;
-    padding-right: 40px;
-    padding-right: ${(props) => paddingRightStyle(props)};
-    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
-  }
-
   :hover {
     .icon {
       border-color: ${(props) =>

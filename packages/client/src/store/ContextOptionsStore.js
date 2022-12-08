@@ -230,7 +230,17 @@ class ContextOptionsStore {
 
   onCopyLinkRoom = (item, t) => {
     const { folderUrl } = item;
-    const url = combineUrl(window.location.origin, config.homepage, folderUrl);
+    const { getFolderUrl } = this.filesStore;
+
+    const newFolderUrl = folderUrl
+      ? folderUrl
+      : getFolderUrl(item.id, item.isRoom || item.isFolder);
+
+    const url = combineUrl(
+      window.location.origin,
+      config.homepage,
+      newFolderUrl
+    );
     copy(url);
 
     toastr.success(t("Translations:LinkCopySuccess"));
@@ -266,7 +276,11 @@ class ContextOptionsStore {
     let tab =
       !this.authStore.isDesktopClient && fileExst
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/doceditor?fileId=${id}`
+            ),
             "_blank"
           )
         : null;
@@ -633,7 +647,7 @@ class ContextOptionsStore {
           {
             id: "option_pin-room",
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: (e) => this.onClickPin(e, item.id, t),
             disabled: false,
@@ -657,7 +671,7 @@ class ContextOptionsStore {
       {
         id: "option_select",
         key: "select",
-        label: "Select",
+        label: t("Common:SelectAction"),
         icon: "images/check-box.react.svg",
         onClick: () => this.onSelect(item),
         disabled: false,
@@ -689,7 +703,7 @@ class ContextOptionsStore {
       {
         id: "option_preview",
         key: "preview",
-        label: t("Preview"),
+        label: t("Common:Preview"),
         icon: "/static/images/eye.react.svg",
         onClick: () => this.onPreviewClick(item),
         disabled: false,
@@ -730,7 +744,7 @@ class ContextOptionsStore {
       {
         id: "option_invite-users-to-room",
         key: "invite-users-to-room",
-        label: t("InviteUsers"),
+        label: t("Common:InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
@@ -986,7 +1000,7 @@ class ContextOptionsStore {
       const pinOption = isPinOption
         ? {
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: pinRooms,
             disabled: false,
