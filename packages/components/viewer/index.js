@@ -46,7 +46,6 @@ export const Viewer = (props) => {
   const [init, setInit] = React.useState(false);
 
   const detailsContainerRef = React.useRef(null);
-  const viewerToolboxRef = React.useRef(null);
   const videoElement = React.useRef(null);
   const cm = React.useRef(null);
 
@@ -58,6 +57,11 @@ export const Viewer = (props) => {
 
   React.useEffect(() => {
     document.addEventListener("mousemove", resetTimer);
+    return () => {
+      document.removeEventListener("mousemove", resetTimer);
+      clearTimeout(timer);
+      setPanelVisible(true);
+    };
   }, []);
 
   function resetTimer() {
