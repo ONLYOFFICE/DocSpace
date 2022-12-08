@@ -32,18 +32,16 @@ public class CustomTagsService<T>
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
-    private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager _userManager;
 
-    public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon,
+    public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext,
         FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, UserManager userManager)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
         _authContext = authContext;
-        _fileSecurityCommon = fileSecurityCommon;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
@@ -66,13 +64,13 @@ public class CustomTagsService<T>
 
         if (tags.Any())
         {
-            throw new Exception("The tag already exists");
+            throw new InvalidOperationException("The tag already exists");
         }
 
         var tagInfo = new TagInfo
         {
             Name = name,
-            Owner = _authContext.CurrentAccount.ID,
+            Owner = Guid.Empty,
             Type = TagType.Custom
         };
 
@@ -122,7 +120,7 @@ public class CustomTagsService<T>
 
         var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
-        var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
+        var tags = tagsInfos.Select(tagInfo => Tag.Custom(Guid.Empty, folder, tagInfo.Name));
 
         await tagDao.SaveTags(tags);
 

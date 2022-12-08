@@ -92,13 +92,14 @@ export default function withQuickButtons(WrappedComponent) {
       dialogsStore,
       settingsStore,
       accessRightsStore,
+      treeFoldersStore,
     }) => {
       const {
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
       } = filesActionsStore;
-
+      const { isPersonalRoom } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
       const { canWebEdit } = settingsStore;
       const { canLockFile } = accessRightsStore;
@@ -112,6 +113,7 @@ export default function withQuickButtons(WrappedComponent) {
         setSharingPanelVisible,
         canWebEdit,
         canLockFile,
+        isPersonalRoom,
       };
     }
   )(observer(WithQuickButtons));
