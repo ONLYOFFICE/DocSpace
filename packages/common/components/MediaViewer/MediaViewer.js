@@ -150,7 +150,8 @@ class MediaViewer extends React.Component {
       if (playlist.length > 0) {
         this.updateHammer();
 
-        const newPlaylistPos = playlistPos < playlist.length ? playlistPos : 0;
+        const newPlaylistPos =
+          playlistPos < playlist.length ? playlistPos + 1 : 0;
 
         this.setState({
           playlist: playlist,
@@ -539,7 +540,6 @@ class MediaViewer extends React.Component {
       if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
         src += (src.includes("?") ? "&" : "?") + "convpreview=true";
       }*/
-
     return (
       <>
         {canOpen && (
