@@ -43,9 +43,13 @@ var param = Parser.Default.ParseArguments<Options>(args).Value;
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-
+builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
+{
+    config.AddJsonFile($"appsettings.personalToDocspace.json", true);
+});
 var config = builder.Configuration;
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
