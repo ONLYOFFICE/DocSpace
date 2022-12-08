@@ -230,7 +230,17 @@ class ContextOptionsStore {
 
   onCopyLinkRoom = (item, t) => {
     const { folderUrl } = item;
-    const url = combineUrl(window.location.origin, config.homepage, folderUrl);
+    const { getFolderUrl } = this.filesStore;
+
+    const newFolderUrl = folderUrl
+      ? folderUrl
+      : getFolderUrl(item.id, item.isRoom || item.isFolder);
+
+    const url = combineUrl(
+      window.location.origin,
+      config.homepage,
+      newFolderUrl
+    );
     copy(url);
 
     toastr.success(t("Translations:LinkCopySuccess"));

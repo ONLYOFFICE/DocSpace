@@ -2493,6 +2493,20 @@ const Dark = {
     color: grayMaxLight,
   },
 
+  emptyContent: {
+    header: {
+      color: "#FFFFFF",
+    },
+
+    description: {
+      color: "#ADADAD",
+    },
+    button: {
+      colorLink: "#ADADAD",
+      colorText: "#ADADAD",
+    },
+  },
+
   filesEmptyContainer: {
     linkColor: "#adadad",
     privateRoom: {

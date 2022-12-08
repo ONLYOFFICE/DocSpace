@@ -389,6 +389,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     _semaphore.Release();
                                 }
+                                else if (isRoom && toFolder.FolderType == FolderType.Archive)
+                                {
+                                    await _semaphore.WaitAsync();
+                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                    if (pins.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(pins);
+                                    }
+                                    _semaphore.Release();
+
+                                }
                                 else
                                 {
                                     newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
@@ -565,12 +577,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                                 }
 
-                                if (Equals(toFolderId.ToString(), _daoFolderId))
+                                if (Equals(toFolderId, _daoFolderId))
                                 {
                                     needToMark.Add(newFile);
                                 }
 
-                                socketManager.DeleteFile(file);
+                                await socketManager.DeleteFile(file);
 
                                 await socketManager.CreateFileAsync(newFile);
 
@@ -665,7 +677,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
 
-                                            socketManager.DeleteFile(file);
+                                            await socketManager.DeleteFile(file);
 
                                             if (ProcessedFile(fileId))
                                             {

@@ -104,7 +104,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             await DeleteFilesAsync(Files, scope, true);
             await DeleteFoldersAsync(Folders, scope, true);
         }
-
     }
 
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false)
@@ -279,7 +278,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         }
                     }
 
-                    socketManager.DeleteFile(file);
+                    await socketManager.DeleteFile(file);
                 }
                 else
                 {
@@ -299,7 +298,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             filesMessageService.Send(file, MessageInitiator.AutoCleanUp, MessageAction.FileDeleted, file.Title);
                         }
 
-                        socketManager.DeleteFile(file);
+                        await socketManager.DeleteFile(file);
                     }
                     catch (Exception ex)
                     {
