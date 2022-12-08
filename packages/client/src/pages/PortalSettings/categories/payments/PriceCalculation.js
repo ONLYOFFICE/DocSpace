@@ -40,6 +40,7 @@ const StyledBody = styled.div`
       props.theme.client.settings.payment.priceContainer.backgroundText};
     margin-top: 24px;
     min-height: 38px;
+    border-radius: 6px;
     p:first-child {
       margin-right: 8px;
     }
