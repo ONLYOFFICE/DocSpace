@@ -2494,8 +2494,16 @@ const Dark = {
   },
 
   emptyContent: {
+    header: {
+      color: "#FFFFFF",
+    },
+
     description: {
       color: "#ADADAD",
+    },
+    button: {
+      colorLink: "#ADADAD",
+      colorText: "#ADADAD",
     },
   },
 
