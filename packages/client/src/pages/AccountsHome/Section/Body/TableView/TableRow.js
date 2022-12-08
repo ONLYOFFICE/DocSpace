@@ -86,7 +86,7 @@ const StyledPeopleRow = styled(TableRow)`
 
       .combo-button-label {
         font-size: 13px;
-        font-weight: 400;
+        font-weight: 600;
       }
     }
   }
@@ -258,7 +258,7 @@ const PeopleTableRow = (props) => {
         type="page"
         title={position}
         fontSize="13px"
-        fontWeight={400}
+        fontWeight={600}
         color={sideInfoColor}
         truncate
         noSelect
@@ -371,7 +371,7 @@ const PeopleTableRow = (props) => {
             type="page"
             title={email}
             fontSize="13px"
-            fontWeight={400}
+            fontWeight={600}
             color={sideInfoColor}
             onClick={onEmailClick}
             isTextOverflow
