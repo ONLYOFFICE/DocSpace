@@ -334,7 +334,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
     <ROW JsonFile="apisystem.json" FileName="APISYS~1.JSO|apisystem.json" DirProperty="config_Dir" Component="config" RootProperty="Root_12" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.env.json" FileName="APPSET~1.JSO|appsettings.PRODUCT.ENVIRONMENT.SUB.json" DirProperty="config_Dir" Component="config" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
-    <ROW JsonFile="appsettings.json_ASC.Migration.Runner" FileName="APPSET~1.JSO|appsettings.json" DirProperty="service_6_Dir" Component="ASC.Migration.Runner.exe" RootProperty="Root_11" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="appsettings.json_ASC.Migration.Runner" FileName="APPSET~2.JSO|appsettings.runner.json" DirProperty="service_6_Dir" Component="ASC.Migration.Runner.exe" RootProperty="Root_11" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.json_config" FileName="APPSET~3.JSO|appsettings.json" DirProperty="config_Dir" Component="config" RootProperty="Root_5" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.services.json" FileName="APPSET~2.JSO|appsettings.services.json" DirProperty="config_Dir" Component="config" RootProperty="Root_4" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="config.json_config_editor" FileName="CONFIG~1.JSO|config.json" DirProperty="editor_Dir" Component="editor" RootProperty="Root_10" Flags="6" IndentUnits="2"/>
