@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
 import { toastr } from "@docspace/components";
+import { isMobile } from "react-device-detect";
 
 const CreateRoomEvent = ({
   visible,
@@ -38,7 +39,7 @@ const CreateRoomEvent = ({
     setView("info_members");
     fetchFiles(id)
       .then(() => {
-        setInfoPanelIsVisible(true);
+        !isMobile && setInfoPanelIsVisible(true);
       })
       .finally(() => {
         setIsLoading(false);

@@ -49,7 +49,7 @@ const StyledSubHeader = styled(Heading)`
   font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  margin: 20px 0;
+  margin: 16px 0;
 
   ${(props) =>
     props.inline &&

@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Notify.Socket;
 
-[Singletone]
+[Scope]
 public class SocketServiceClient
 {
     private readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);

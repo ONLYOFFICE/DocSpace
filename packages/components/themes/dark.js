@@ -488,10 +488,10 @@ const Dark = {
     marginRight: "8px",
 
     background: "#292929",
-    disableBackground: "#646464",
+    disableBackground: "#545454",
 
     fillColor: grayMaxLight,
-    disableFillColor: "#646464",
+    disableFillColor: "#474747",
 
     borderColor: "#646464",
     disableBorderColor: "none",

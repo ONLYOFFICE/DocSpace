@@ -84,6 +84,23 @@ const StyledUser = styled.div`
         props.theme.infoPanel.members.disabledRoleSelectorColor};
     }
   }
+
+  .role-view_remove-icon {
+    cursor: pointer;
+    svg {
+      path {
+        fill: ${(props) => props.theme.iconButton.color};
+      }
+    }
+
+    :hover {
+      svg {
+        path {
+          fill: ${(props) => props.theme.iconButton.hoverColor};
+        }
+      }
+    }
+  }
 `;
 
 StyledUserTypeHeader.defaultProps = { theme: Base };

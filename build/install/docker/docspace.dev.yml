@@ -29,6 +29,7 @@ x-service: &x-service-base
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
     - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+    - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
 services:
   onlyoffice-elasticsearch:
@@ -116,10 +117,10 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
-  # onlyoffice-api-system:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
-  #   container_name: ${API_SYSTEM_HOST}
+  onlyoffice-api-system:
+    <<: *x-service-base
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+    container_name: ${API_SYSTEM_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
@@ -163,7 +164,7 @@ services:
       # - onlyoffice-telegram-service
       # - onlyoffice-urlshortener
       - onlyoffice-api
-      # - onlyoffice-api-system
+      - onlyoffice-api-system
       - onlyoffice-studio
       - onlyoffice-ssoauth
     environment:
