@@ -85,6 +85,11 @@ const InterfaceTheme = (props) => {
   };
 
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
+  const systemThemeValue =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? ThemeKeys.DarkStr
+      : ThemeKeys.BaseStr;
 
   return (
     <StyledWrapper>
@@ -111,7 +116,10 @@ const InterfaceTheme = (props) => {
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.BaseStr}
-          isChecked={currentTheme === ThemeKeys.BaseStr}
+          isChecked={
+            currentTheme === ThemeKeys.BaseStr ||
+            (isSystemTheme && systemThemeValue === ThemeKeys.BaseStr)
+          }
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
@@ -121,7 +129,10 @@ const InterfaceTheme = (props) => {
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.DarkStr}
-          isChecked={currentTheme === ThemeKeys.DarkStr}
+          isChecked={
+            currentTheme === ThemeKeys.DarkStr ||
+            (isSystemTheme && systemThemeValue === ThemeKeys.DarkStr)
+          }
           onChangeTheme={onChangeTheme}
         />
       </div>
