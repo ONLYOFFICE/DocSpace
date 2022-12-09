@@ -565,6 +565,24 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the file.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFile {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the folder.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFolder {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have enough permission to create.
         /// </summary>
         public static string ErrorMassage_SecurityException_Create {
@@ -750,6 +768,24 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMessage_InvintationLink {
             get {
                 return ResourceManager.GetString("ErrorMessage_InvintationLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to copy to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_CopyToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_CopyToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to move to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_MoveToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_MoveToFolder", resourceCulture);
             }
         }
         
