@@ -241,7 +241,11 @@ const InviteInput = ({
           <TextInput
             scale
             onChange={onChange}
-            placeholder={t("SearchPlaceholder")}
+            placeholder={
+              roomId === -1
+                ? t("InviteAccountSearchPlaceholder")
+                : t("InviteRoomSearchPlaceholder")
+            }
             value={inputValue}
             onFocus={openInviteInputPanel}
           />
