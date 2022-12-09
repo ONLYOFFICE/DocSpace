@@ -5,6 +5,7 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
+import EmptyScreenCorporateUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
 
 const EmptyFolderContainer = ({
   t,
@@ -135,7 +136,7 @@ const EmptyFolderContainer = ({
       }
       imageSrc={
         isRooms
-          ? "images/empty_screen_corporate.png"
+          ? EmptyScreenCorporateUrl
           : "/static/images/empty_screen_alt.svg"
       }
       buttons={buttons}
