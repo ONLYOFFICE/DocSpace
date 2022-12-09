@@ -870,7 +870,7 @@ const Dark = {
   linkWithDropdown: {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
-    textDecoration: "underline dashed",
+    textDecoration: "none",
     disableColor: "#5c5c5c",
 
     svg: {
@@ -885,7 +885,19 @@ const Dark = {
     expander: {
       iconColor: white,
     },
+    color: {
+      default: "#858585",
+      hover: "#ADADAD",
+      active: "#FFFFFF",
+      focus: "#FFFFFF",
+    },
 
+    background: {
+      default: "transparent",
+      hover: "#474747",
+      active: "#282828",
+      focus: "#242424",
+    },
     caret: {
       width: "5px",
       minWidth: "5px",
