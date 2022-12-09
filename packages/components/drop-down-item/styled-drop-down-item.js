@@ -129,6 +129,7 @@ const StyledDropdownItem = styled.div`
       props.isActive &&
       css`
         transform: rotate(90deg);
+        height: auto;
       `}
   }
 
