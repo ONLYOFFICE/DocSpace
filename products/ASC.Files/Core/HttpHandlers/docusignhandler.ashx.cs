@@ -43,7 +43,7 @@ public class DocuSignHandlerService
 {
     public static string Path(FilesLinkUtility filesLinkUtility)
     {
-        return filesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx";
+        return filesLinkUtility.FilesBaseAbsolutePath + "docusignhandler.ashx";
     }
 
     private readonly ILogger<DocuSignHandlerService> _log;

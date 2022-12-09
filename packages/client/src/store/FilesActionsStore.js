@@ -1260,7 +1260,6 @@ class FilesActionStore {
 
   isAvailableOption = (option) => {
     const {
-      isAccessedSelected,
       canConvertSelected,
       hasSelection,
       allFilesIsEditing,
@@ -1292,7 +1291,7 @@ class FilesActionStore {
           rootFolderType,
           editing: allFilesIsEditing,
         });
-        return hasSelection && isAccessedSelected && canMove;
+        return hasSelection && canMove;
 
       case "archive":
       case "unarchive":
@@ -1314,9 +1313,8 @@ class FilesActionStore {
           rootFolderType,
           editing: allFilesIsEditing,
         });
-        const deleteCondition = hasSelection && isAccessedSelected;
 
-        return canDelete && deleteCondition;
+        return canDelete && hasSelection;
     }
   };
 
