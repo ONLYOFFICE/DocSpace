@@ -41,6 +41,7 @@ global using ASC.Core.Common;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
+global using ASC.Core.Notify.Socket;
 global using ASC.Core.Tenants;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Service;
