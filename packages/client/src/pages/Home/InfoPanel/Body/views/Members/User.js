@@ -4,8 +4,6 @@ import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
 
-import { ReactSVG } from "react-svg";
-import { FolderType } from "@docspace/common/constants";
 const User = ({
   t,
   user,
@@ -86,29 +84,6 @@ const User = ({
     }
   };
 
-  const isArchiveRoot = rootFolderType === FolderType.Archive;
-
-  const changingMemberInfo = isArchiveRoot ? (
-    <ReactSVG
-      className="role-view_remove-icon"
-      src="images/remove.session.svg"
-      onClick={() => onOptionClick({ key: "remove" })}
-    />
-  ) : (
-    <ComboBox
-      className="role-combobox"
-      selectedOption={userRole}
-      options={userRoleOptions}
-      onSelect={onOptionClick}
-      scaled={false}
-      withBackdrop={false}
-      size="content"
-      modernView
-      title={t("Common:Role")}
-      manualWidth={"fit-content"}
-    />
-  );
-
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -129,7 +104,18 @@ const User = ({
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
           {canChangeUserRole || canDeleteUser ? (
-            changingMemberInfo
+            <ComboBox
+              className="role-combobox"
+              selectedOption={userRole}
+              options={userRoleOptions}
+              onSelect={onOptionClick}
+              scaled={false}
+              withBackdrop={false}
+              size="content"
+              modernView
+              title={t("Common:Role")}
+              manualWidth={"fit-content"}
+            />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>
               {userRole.label}
