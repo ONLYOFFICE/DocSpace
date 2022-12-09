@@ -30,9 +30,7 @@ namespace ASC.Web.Files.Classes;
 public class PathProvider
 {
     public static readonly string ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
-    public static readonly string TemplatePath = "/Products/Files/Templates/";
     public static readonly string StartURL = FilesLinkUtility.FilesBaseVirtualPath;
-    public readonly string GetFileServicePath;
 
     private readonly WebImageSupplier _webImageSupplier;
     private readonly IDaoFactory _daoFactory;
@@ -58,32 +56,11 @@ public class PathProvider
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _globalStore = globalStore;
         _baseCommonLinkUtility = baseCommonLinkUtility;
-        GetFileServicePath = _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
     }
 
     public string GetImagePath(string imgFileName)
     {
         return _webImageSupplier.GetAbsoluteWebPath(imgFileName, ProductEntryPoint.ID);
-    }
-
-    public string GetFileStaticRelativePath(string fileName)
-    {
-        var ext = FileUtility.GetFileExtension(fileName);
-
-        return ext switch
-        {
-            //Attention: Only for ResourceBundleControl
-            ".js" => VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName),
-            ".ascx" => _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName),
-            //Attention: Only for ResourceBundleControl
-            ".css" => VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName),
-            _ => fileName,
-        };
-    }
-
-    public string GetFileControlPath(string fileName)
-    {
-        return _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
     }
 
     public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)
