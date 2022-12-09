@@ -248,6 +248,7 @@ public class DbTenantService : ITenantService
                     dbTenant.Industry = tenant.Industry;
                     dbTenant.Spam = tenant.Spam;
                     dbTenant.Calls = tenant.Calls;
+                    dbTenant.OwnerId = tenant.OwnerId;
                 }
 
                 tenantDbContext.SaveChanges();
