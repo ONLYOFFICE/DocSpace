@@ -224,6 +224,8 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             var (tenantManager, daoFactory, fileSecurity, logger) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
 
+            var currentTenantManager = _serviceProvider.GetService<TenantManager>();
+            currentTenantManager.SetCurrentTenant(CurrentTenant);
 
             Thread.CurrentPrincipal = _principal;
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
