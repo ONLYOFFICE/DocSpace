@@ -878,7 +878,7 @@ const Base = {
   linkWithDropdown: {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
-    textDecoration: "underline dashed",
+    textDecoration: "none",
     disableColor: gray,
 
     svg: {
@@ -892,6 +892,20 @@ const Base = {
 
     expander: {
       iconColor: black,
+    },
+
+    color: {
+      default: "#A3A9AE",
+      hover: "#555F65",
+      active: "#333333",
+      focus: "#333333",
+    },
+
+    background: {
+      default: "transparent",
+      hover: "#ECEEF1",
+      active: "#D0D5DA",
+      focus: "#DFE2E3",
     },
 
     caret: {
