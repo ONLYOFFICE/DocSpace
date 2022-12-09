@@ -97,12 +97,15 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
-    if ((!!usersList.length || clearValue.length > 1) && !searchPanelVisible) {
+    if ((!!usersList.length || clearValue.length > 2) && !searchPanelVisible) {
       openInviteInputPanel();
     }
 
     setInputValue(value);
-    debouncedSearch(clearValue);
+
+    if (roomId !== -1) {
+      debouncedSearch(clearValue);
+    }
   };
 
   const removeExist = (items) => {
@@ -243,28 +246,30 @@ const InviteInput = ({
             onFocus={openInviteInputPanel}
           />
         </StyledInviteInput>
-        <StyledDropDown
-          width={searchRef?.current?.offsetWidth}
-          isDefaultMode={false}
-          open={searchPanelVisible}
-          manualX="16px"
-          showDisabledItems
-          clickOutsideAction={closeInviteInputPanel}
-          {...dropDownMaxHeight}
-        >
-          {!!usersList.length
-            ? foundUsers
-            : inputValue.length > 2 && (
-                <DropDownItem
-                  style={{ width: "inherit" }}
-                  textOverflow
-                  onClick={addEmail}
-                  height={48}
-                >
-                  {t("Add")} «{inputValue}»
-                </DropDownItem>
-              )}
-        </StyledDropDown>
+        {inputValue.length > 2 && (
+          <StyledDropDown
+            width={searchRef?.current?.offsetWidth}
+            isDefaultMode={false}
+            open={searchPanelVisible}
+            manualX="16px"
+            showDisabledItems
+            clickOutsideAction={closeInviteInputPanel}
+            {...dropDownMaxHeight}
+          >
+            {!!usersList.length ? (
+              foundUsers
+            ) : (
+              <DropDownItem
+                style={{ width: "inherit" }}
+                textOverflow
+                onClick={addEmail}
+                height={48}
+              >
+                {t("Add")} «{inputValue}»
+              </DropDownItem>
+            )}
+          </StyledDropDown>
+        )}
 
         <AccessSelector
           t={t}
