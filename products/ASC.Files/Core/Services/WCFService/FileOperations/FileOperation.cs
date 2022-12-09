@@ -202,8 +202,6 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         CurrentTenant = fileOperationData.Tenant;
 
         using var scope = _serviceProvider.CreateScope();
-        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        tenantManager.SetCurrentTenant(CurrentTenant);
 
         var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
         FolderDao = daoFactory.GetFolderDao<TId>();
