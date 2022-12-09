@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 import Base from "../../themes/base";
 import NoUserSelect from "../../utils/commonStyles";
 
@@ -217,6 +218,11 @@ const StyledArrowIcon = styled.div`
     props.isOpen &&
     `
     transform: scale(1, -1);
+  `}
+
+  ${isMobileOnly &&
+  css`
+    margin-left: auto;
   `}
 `;
 StyledArrowIcon.defaultProps = { theme: Base };
