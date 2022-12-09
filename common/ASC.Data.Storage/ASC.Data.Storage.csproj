@@ -32,8 +32,8 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.Extensions.S3.Encryption" Version="2.0.3" />
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.5" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.8.23" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.102.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.101.33" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="3.7.0" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.57.0.2647" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
