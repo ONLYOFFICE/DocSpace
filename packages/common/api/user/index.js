@@ -63,3 +63,12 @@ export function loginWithTfaCode(userName, passwordHash, code) {
     data,
   });
 }
+
+export function loginWithConfirmKey(data) {
+  return request({
+    method: "post",
+    url: `/authentication.json`,
+    skipLogout: true,
+    data,
+  });
+}
