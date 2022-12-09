@@ -112,7 +112,6 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     public T ParentId { get; set; }
     private T _folderIdDisplay;
     private readonly GlobalFolderHelper _globalFolderHelper;
-    private readonly SettingsManager _settingsManager;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly FileDateTime _fileDateTime;
 
@@ -122,12 +121,10 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
         FileHelper fileHelper,
         Global global,
         GlobalFolderHelper globalFolderHelper,
-        SettingsManager settingsManager,
         FilesSettingsHelper filesSettingsHelper,
         FileDateTime fileDateTime) : base(fileHelper, global)
     {
         _globalFolderHelper = globalFolderHelper;
-        _settingsManager = settingsManager;
         _filesSettingsHelper = filesSettingsHelper;
         _fileDateTime = fileDateTime;
     }

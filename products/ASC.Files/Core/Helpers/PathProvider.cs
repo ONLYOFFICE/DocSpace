@@ -38,7 +38,6 @@ public class PathProvider
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly GlobalStore _globalStore;
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
 
     public PathProvider(
         WebImageSupplier webImageSupplier,
@@ -46,8 +45,7 @@ public class PathProvider
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        GlobalStore globalStore,
-        BaseCommonLinkUtility baseCommonLinkUtility)
+        GlobalStore globalStore)
     {
         _webImageSupplier = webImageSupplier;
         _daoFactory = daoFactory;
@@ -55,7 +53,6 @@ public class PathProvider
         _filesLinkUtility = filesLinkUtility;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _globalStore = globalStore;
-        _baseCommonLinkUtility = baseCommonLinkUtility;
     }
 
     public string GetImagePath(string imgFileName)

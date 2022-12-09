@@ -34,22 +34,19 @@ public class AuditReportUploader
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ILogger<AuditReportUploader> _logger;
-    private readonly AuditReportCreator _auditReportCreator;
 
     public AuditReportUploader(
         GlobalFolderHelper globalFolderHelper,
         ILogger<AuditReportUploader> logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
-        CommonLinkUtility commonLinkUtility,
-        AuditReportCreator auditReportCreator)
+        CommonLinkUtility commonLinkUtility)
     {
         _globalFolderHelper = globalFolderHelper;
         _logger = logger;
         _fileUploader = fileUploader;
         _filesLinkUtility = filesLinkUtility;
         _commonLinkUtility = commonLinkUtility;
-        _auditReportCreator = auditReportCreator;
     }
 
     public async Task<string> UploadCsvReport(Stream stream, string reportName)

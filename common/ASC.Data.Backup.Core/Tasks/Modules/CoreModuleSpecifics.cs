@@ -32,25 +32,6 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
-    private const string ForumsNewPostInTopicActionID = "new post in topic";
-    private const string ForumsNewPostInThreadActionID = "new post in thread";
-    private const string NewsNewCommentActionID = "new feed comment";
-    private const string BlogsNewCommentActionID = "new comment";
-
-    private const string CrmCompanyAclObjectStart = "ASC.CRM.Core.Entities.Company|";
-    private const string CrmPersonAclObjectStart = "ASC.CRM.Core.Entities.Person|";
-    private const string CrmDealAclObjectStart = "ASC.CRM.Core.Entities.Deal|";
-    private const string CrmCasesAclObjectStart = "ASC.CRM.Core.Entities.Cases|";
-    private const string CrmRelationshipEventAclObjectStart = "ASC.CRM.Core.Entities.RelationshipEvent|";
-    private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
-    private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
-
-    private static readonly Guid _projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
-    private static readonly Guid _bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
-    private static readonly Guid _forumsSourceID = new Guid("853B6EB9-73EE-438d-9B09-8FFEEDF36234");
-    private static readonly Guid _newsSourceID = new Guid("6504977C-75AF-4691-9099-084D3DDEEA04");
-    private static readonly Guid _blogsSourceID = new Guid("6A598C74-91AE-437d-A5F4-AD339BD11BB2");
-
     private readonly RelationInfo[] _tableRelations;
     private readonly Helpers _helpers;
     private readonly TableInfo[] _tables = new[]

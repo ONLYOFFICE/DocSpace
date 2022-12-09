@@ -282,7 +282,6 @@ public class GlobalFolder
     private readonly SettingsManager _settingsManager;
     private readonly GlobalStore _globalStore;
     private readonly IServiceProvider _serviceProvider;
-    private readonly Global _global;
     private readonly ILogger _logger;
 
     public GlobalFolder(
@@ -296,8 +295,7 @@ public class GlobalFolder
         GlobalStore globalStore,
         ILoggerProvider options,
         IServiceProvider serviceProvider,
-            Global global,
-            ThumbnailSettings thumbnailSettings
+        ThumbnailSettings thumbnailSettings
     )
     {
         _coreBaseSettings = coreBaseSettings;
@@ -309,7 +307,6 @@ public class GlobalFolder
         _settingsManager = settingsManager;
         _globalStore = globalStore;
         _serviceProvider = serviceProvider;
-        _global = global;
         _logger = options.CreateLogger("ASC.Files");
         _thumbnailSettings = thumbnailSettings;
     }
