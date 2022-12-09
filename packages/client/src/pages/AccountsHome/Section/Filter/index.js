@@ -258,6 +258,12 @@ const SectionFilterContent = ({
         label: t("Common:Type"),
         default: true,
       },
+      {
+        id: "sory-by_email",
+        key: "email",
+        label: t("Common:Email"),
+        default: true,
+      },
     ];
   }, [t]);
 

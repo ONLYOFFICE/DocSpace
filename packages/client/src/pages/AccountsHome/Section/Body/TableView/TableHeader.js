@@ -21,7 +21,6 @@ class PeopleTableHeader extends React.Component {
         enable: true,
         default: true,
         sortBy: "AZ",
-        active: true,
         minWidth: 210,
         onClick: this.onFilter,
         onIconClick: this.onIconClick,
@@ -30,8 +29,10 @@ class PeopleTableHeader extends React.Component {
         key: "Type",
         title: t("Common:Type"),
         enable: true,
+        sortBy: "type",
         resizable: true,
         onChange: this.onColumnChange,
+        onClick: this.onFilter,
       },
       // {
       //   key: "Room",
@@ -45,7 +46,9 @@ class PeopleTableHeader extends React.Component {
         title: t("Common:Email"),
         enable: true,
         resizable: true,
+        sortBy: "email",
         onChange: this.onColumnChange,
+        onClick: this.onFilter,
       },
     ];
 
@@ -88,32 +91,43 @@ class PeopleTableHeader extends React.Component {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
-  onFilter = () => {
+  onFilter = (sortBy) => {
     const { filter, setIsLoading, fetchPeople } = this.props;
     const newFilter = filter.clone();
 
-    if (newFilter.sortBy === "lastname") {
-      newFilter.sortBy = "firstname";
+    if (newFilter.sortBy === sortBy && sortBy !== "AZ") {
+      newFilter.sortOrder =
+        newFilter.sortOrder === "ascending" ? "descending" : "ascending";
     } else {
-      newFilter.sortBy = "lastname";
+      newFilter.sortBy = sortBy;
+
+      if (sortBy === "AZ") {
+        if (
+          newFilter.sortBy !== "lastname" &&
+          newFilter.sortBy !== "firstname"
+        ) {
+          newFilter.sortBy = "firstname";
+        } else if (newFilter.sortBy === "lastname") {
+          newFilter.sortBy = "firstname";
+        } else {
+          newFilter.sortBy = "lastname";
+        }
+      }
     }
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   onIconClick = () => {
     const { filter, setIsLoading, fetchPeople } = this.props;
     const newFilter = filter.clone();
 
-    if (newFilter.sortOrder === "ascending") {
-      newFilter.sortOrder = "descending";
-    } else {
-      newFilter.sortOrder = "ascending";
-    }
+    newFilter.sortOrder =
+      newFilter.sortOrder === "ascending" ? "descending" : "ascending";
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   render() {
@@ -129,10 +143,16 @@ class PeopleTableHeader extends React.Component {
     } = this.props;
     const { sortOrder } = filter;
 
+    const sortBy =
+      filter.sortBy === "firstname" || filter.sortBy === "lastname"
+        ? "AZ"
+        : filter.sortBy;
+
     return (
       <TableHeader
         checkboxSize="48px"
         sorted={sortOrder === "descending"}
+        sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
         columnStorageName={columnStorageName}
