@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import logoPersonalAboutUrl from "ASSETS_DIR/images/logo_personal_about.svg";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -106,7 +107,7 @@ const AboutContent = (props) => {
         <div className="avatar">
           {personal ? (
             <ReactSVG
-              src="/images/logo_personal_about.svg"
+              src={logoPersonalAboutUrl}
               className="logo-theme no-select"
             />
           ) : (

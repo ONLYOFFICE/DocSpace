@@ -5,7 +5,7 @@ import TextInput from "@docspace/components/text-input";
 import Text from "@docspace/components/text";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
-import CheckIcon from "../../public/images/check.react.svg";
+import CheckIcon from "ASSETS_DIR/images/check.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";

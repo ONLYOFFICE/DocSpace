@@ -7,6 +7,21 @@ import { isAdmin } from "@docspace/common/utils";
 import { id } from "PACKAGE_FILE";
 //const { isAdmin } = utils;
 
+import PhoneIconUrl from "ASSETS_DIR/images/phone.react.svg";
+import MobileIconUrl from "ASSETS_DIR/images/mobile.react.svg";
+import GmailIconUrl from "ASSETS_DIR/images/gmail.react.svg";
+import SkypeIconUrl from "ASSETS_DIR/images/skype.react.svg";
+import MsnIconUrl from "ASSETS_DIR/images/windows.msn.react.svg";
+import IcqIconUrl from "ASSETS_DIR/images/icq.react.svg";
+import JabberIconUrl from "ASSETS_DIR/images/jabber.react.svg";
+import AimIconUrl from "ASSETS_DIR/images/aim.react.svg";
+import FacebookIconUrl from "ASSETS_DIR/images/share.facebook.react.svg";
+import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg";
+import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg";
+import TwitterIconUrl from "ASSETS_DIR/images/share.twitter.react.svg";
+import BloggerIconUrl from "ASSETS_DIR/images/blogger.react.svg";
+import YahooIconUrl from "ASSETS_DIR/images/yahoo.react.svg";
+
 export const getUserStatus = (user) => {
   if (
     user.status === EmployeeStatus.Active &&
@@ -45,62 +60,62 @@ export const getUserContactsPattern = () => {
       },
       {
         type: "phone",
-        icon: "/images/phone.react.svg",
+        icon: PhoneIconUrl,
         link: "tel:{0}",
       },
       {
         type: "mobphone",
-        icon: "/images/mobile.react.svg",
+        icon: MobileIconUrl,
         link: "tel:{0}",
       },
       {
         type: "gmail",
-        icon: "/images/gmail.react.svg",
+        icon: GmailIconUrl,
         link: "mailto:{0}",
       },
       {
         type: "skype",
-        icon: "/images/skype.react.svg",
+        icon: SkypeIconUrl,
         link: "skype:{0}?userinfo",
       },
-      { type: "msn", icon: "/images/windows.msn.react.svg" },
+      { type: "msn", icon: MsnIconUrl },
       {
         type: "icq",
-        icon: "/images/icq.react.svg",
+        icon: IcqIconUrl,
         link: "https://www.icq.com/people/{0}",
       },
-      { type: "jabber", icon: "/images/jabber.react.svg" },
-      { type: "aim", icon: "/images/aim.react.svg" },
+      { type: "jabber", icon: JabberIconUrl },
+      { type: "aim", icon: AimIconUrl },
     ],
     social: [
       {
         type: "facebook",
-        icon: "/images/share.facebook.react.svg",
+        icon: FacebookIconUrl,
         link: "https://facebook.com/{0}",
       },
       {
         type: "livejournal",
-        icon: "/images/livejournal.react.svg",
+        icon: LivejournalIconUrl,
         link: "https://{0}.livejournal.com",
       },
       {
         type: "myspace",
-        icon: "/images/myspace.react.svg",
+        icon: MyspaceIconUrl,
         link: "https://myspace.com/{0}",
       },
       {
         type: "twitter",
-        icon: "/images/share.twitter.react.svg",
+        icon: TwitterIconUrl,
         link: "https://twitter.com/{0}",
       },
       {
         type: "blogger",
-        icon: "/images/blogger.react.svg",
+        icon: BloggerIconUrl,
         link: "https://{0}.blogspot.com",
       },
       {
         type: "yahoo",
-        icon: "/images/yahoo.react.svg",
+        icon: YahooIconUrl,
         link: "mailto:{0}@yahoo.com",
       },
     ],

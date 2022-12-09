@@ -14,7 +14,15 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
-import PlusIcon from "@docspace/client/public/images/plus.react.svg";
+import PlusIcon from "ASSETS_DIR/images/plus.react.svg";
+import EmptyScreenPersonalUrl from "ASSETS_DIR/images/empty_screen_personal.svg";
+import EmptyScreenFormeUrl from "ASSETS_DIR/images/empty_screen_forme.png";
+import EmptyScreenCorporateUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
+import EmptyScreenFavoritesUrl from "ASSETS_DIR/images/empty_screen_favorites.svg";
+import EmptyScreenRecentUrl from "ASSETS_DIR/images/empty_screen_recent.svg";
+import EmptyScreenPrivacyUrl from "ASSETS_DIR/images/empty_screen_privacy.png";
+import EmptyScreenTrashUrl from "ASSETS_DIR/images/empty_screen_trash_alt.png";
+import EmptyScreenArchiveUrl from "ASSETS_DIR/images/empty_screen_archive.svg";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -127,38 +135,38 @@ const RootFolderContainer = (props) => {
         return {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
-          imageSrc: "images/empty_screen_personal.svg",
+          imageSrc: EmptyScreenPersonalUrl,
           buttons: commonButtons,
         };
       case FolderType.SHARE:
         return {
           descriptionText: shareDescription,
-          imageSrc: "images/empty_screen_forme.png",
+          imageSrc: EmptyScreenFormeUrl,
         };
       case FolderType.COMMON:
         return {
           descriptionText: commonDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: EmptyScreenCorporateUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
         return {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageSrc: "images/empty_screen_favorites.svg",
+          imageSrc: EmptyScreenFavoritesUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
-          imageSrc: "images/empty_screen_recent.svg",
+          imageSrc: EmptyScreenRecentUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
           descriptionText: privateRoomDescription,
-          imageSrc: "images/empty_screen_privacy.png",
+          imageSrc: EmptyScreenPrivacyUrl,
           buttons: isDesktop && isEncryptionSupport && commonButtons,
         };
       case FolderType.TRASH:
@@ -166,23 +174,21 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
-          imageSrc: theme.isBase
-            ? "images/empty_screen_trash_alt.png"
-            : "images/empty_screen_trash_alt.png",
+          imageSrc: EmptyScreenTrashUrl,
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: EmptyScreenCorporateUrl,
           buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
           headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: "images/empty_screen_archive.svg",
+          imageSrc: EmptyScreenArchiveUrl,
           buttons: archiveButtons,
         };
       default:

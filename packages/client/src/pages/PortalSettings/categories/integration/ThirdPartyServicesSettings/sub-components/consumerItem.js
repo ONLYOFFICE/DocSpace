@@ -43,6 +43,7 @@ class ConsumerItem extends React.Component {
       t,
     } = this.props;
 
+    //TODO: think about assets impßort
     const logo = `/images/thirdparties/${consumer.name.toLowerCase()}.svg`;
 
     return (

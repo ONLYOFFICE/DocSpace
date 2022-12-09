@@ -1,3 +1,9 @@
+import SecuritySettingsIconUrl from "ASSETS_DIR/images/security-settings.svg";
+import IntegrationSettingsIconUrl from "ASSETS_DIR/images/integration-settings.svg";
+import PaymentIconUrl from "ASSETS_DIR/images/payment.react.svg";
+import DataManagementIconUrl from "ASSETS_DIR/images/data-management.react.svg";
+import RestoreIconUrl from "ASSETS_DIR/images/restore.react.svg";
+import TrashIconUrl from "ASSETS_DIR/images/trash.react.svg";
 /**
  * Array for generation current settings tree.
  */
@@ -102,7 +108,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-security",
     key: "1",
-    icon: "/images/security-settings.svg",
+    icon: SecuritySettingsIconUrl,
     link: "security",
     tKey: "ManagementCategorySecurity",
     isHeader: true,
@@ -196,7 +202,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-integration",
     key: "3",
-    icon: "/images/integration-settings.svg",
+    icon: IntegrationSettingsIconUrl,
     link: "integration",
     tKey: "ManagementCategoryIntegration",
     isHeader: true,
@@ -238,7 +244,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-payments",
     key: "4",
-    icon: "/images/payment.react.svg",
+    icon: PaymentIconUrl,
     link: "payments",
     tKey: "Payments",
     isHeader: true,
@@ -256,7 +262,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-backup",
     key: "5",
-    icon: "/images/data-management.react.svg",
+    icon: DataManagementIconUrl,
     link: "backup",
     tKey: "Backup",
     isHeader: true,
@@ -283,7 +289,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-restore",
     key: "6",
-    icon: "/images/restore.react.svg",
+    icon: RestoreIconUrl,
     link: "restore",
     tKey: "RestoreBackup",
     isHeader: true,
@@ -300,7 +306,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-delete",
     key: "7",
-    icon: "/images/trash.react.svg",
+    icon: TrashIconUrl,
     link: "delete-data",
     tKey: "PortalDeletion",
     isHeader: true,

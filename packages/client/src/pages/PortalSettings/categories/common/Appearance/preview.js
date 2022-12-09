@@ -8,7 +8,7 @@ import {
   IconBox,
 } from "./StyledPreview";
 
-import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
+import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
   const {

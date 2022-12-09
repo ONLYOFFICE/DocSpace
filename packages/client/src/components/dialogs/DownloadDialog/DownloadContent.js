@@ -3,7 +3,7 @@ import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Checkbox from "@docspace/components/checkbox";
-import ArrowIcon from "@docspace/client/public/images/arrow.react.svg";
+import ArrowIcon from "ASSETS_DIR/images/arrow.react.svg";
 import { StyledDownloadContent } from "./StyledDownloadDialog";
 import DownloadRow from "./DownloadRow";
 

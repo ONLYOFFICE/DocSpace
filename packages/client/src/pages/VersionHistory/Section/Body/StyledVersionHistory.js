@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Row from "@docspace/components/row";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
+import VersionSvg from "ASSETS_DIR/images/versionrevision_active.react.svg";
 
 const StyledBody = styled.div`
   height: 100%;
