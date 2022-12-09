@@ -95,7 +95,30 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif|ico)$/i,
+        test: /\.html$/i,
+        loader: "html-loader",
+        options: {
+          sources: {
+            urlFilter: (attribute, value, resourcePath) => {
+              // The `attribute` argument contains a name of the HTML attribute.
+              // The `value` argument contains a value of the HTML attribute.
+              // The `resourcePath` argument contains a path to the loaded HTML file.
+
+              if (
+                /manifest\.json$/.test(value) ||
+                /favicon\.ico$/.test(value) ||
+                /appIcon-180\.png$/.test(value)
+              ) {
+                return false;
+              }
+
+              return true;
+            },
+          },
+        },
+      },
+      {
+        test: /\.(png|jpe?g|gif|ico|svg)$/i,
         type: "asset/resource",
         generator: {
           filename: "static/images/[hash][ext][query]",
@@ -108,19 +131,19 @@ const config = {
           fullySpecified: false,
         },
       },
-      {
-        test: /\.react.svg$/,
-        use: [
-          {
-            loader: "@svgr/webpack",
-            options: {
-              svgoConfig: {
-                plugins: [{ removeViewBox: false }],
-              },
-            },
-          },
-        ],
-      },
+      // {
+      //   test: /\.react.svg$/,
+      //   use: [
+      //     {
+      //       loader: "@svgr/webpack",
+      //       options: {
+      //         svgoConfig: {
+      //           plugins: [{ removeViewBox: false }],
+      //         },
+      //       },
+      //     },
+      //   ],
+      // },
       { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
@@ -182,19 +205,19 @@ const config = {
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
 
-    new CopyPlugin({
-      patterns: [
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "images/**/*.*",
-        },
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "locales/**/*.json",
-          transform: minifyJson,
-        },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       context: path.resolve(__dirname, "public"),
+    //       from: "images/**/*.*",
+    //     },
+    //     {
+    //       context: path.resolve(__dirname, "public"),
+    //       from: "locales/**/*.json",
+    //       transform: minifyJson,
+    //     },
+    //   ],
+    // }),
   ],
 };
 
@@ -271,9 +294,9 @@ module.exports = (env, argv) => {
   if (!!env.hideText) {
     config.plugins.push(
       new HtmlWebpackPlugin({
+        title: title,
         template: "./public/index.html",
         publicPath: homepage,
-        title: title,
         base: `${homepage}/`,
         custom: `<style type="text/css">
           div,
