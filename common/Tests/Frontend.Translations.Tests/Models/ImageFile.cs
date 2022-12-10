@@ -25,19 +25,34 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using System.Collections.Generic;
+using System.IO;
 
 using Frontend.Tests;
 
-namespace Frontend.Tests;
+namespace Frontend.Tests.Models;
 
-public class JavaScriptFile
+public class TranslationFile
 {
-    public JavaScriptFile(string path)
+    public TranslationFile(string path, List<TranslationItem> translations, string md5hash = null)
     {
-        Path = Utils.ConvertPathToOS(path);
+        FilePath = Utils.ConvertPathToOS(path);
+
+        FileName = Path.GetFileName(FilePath);
+
+        Language = Directory.GetParent(FilePath).Name; //FilePath.Substring(FilePath.IndexOf("locales\\") + 8, 2);
+
+        Translations = translations;
+
+        Md5Hash = md5hash;
     }
 
-    public string Path { get; }
+    public string FilePath { get; }
 
-    public List<string> TranslationKeys { get; set; }
+    public string FileName { get; }
+
+    public string Language { get; }
+
+    public List<TranslationItem> Translations { get; }
+
+    public string Md5Hash { get; }
 }
