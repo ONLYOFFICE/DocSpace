@@ -1996,7 +1996,7 @@ class FilesStore {
 
       if (!icon) disableFetch = true;
 
-      newLogos[key] = icon;
+      newLogos[key] = icon ? icon : "";
     }
 
     return newLogos;
