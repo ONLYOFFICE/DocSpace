@@ -35,6 +35,7 @@ public class RoomLogoManager
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
     private const string ActionName = "logo";
+    private const string Default = "default";
 
     private static Size _originalLogoSize = new Size(1280, 1280);
     private static Size _largeLogoSize = new Size(96, 96);
@@ -317,6 +318,10 @@ public class RoomLogoManager
         var key = original ? GetKey(id) : GetKey(id, size.Value);
 
         var path = _cache.Get<string>(key);
+        if (path == Default)
+        {
+            return string.Empty;
+        }
 
         if (!string.IsNullOrEmpty(path))
         {
@@ -327,7 +332,7 @@ public class RoomLogoManager
 
         path = _cache.Get<string>(key);
 
-        return path ?? string.Empty;
+        return path == null || path == Default ? string.Empty : path;
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)
@@ -354,6 +359,12 @@ public class RoomLogoManager
     {
         var logoPath = await DataStore.ListFilesAsync(string.Empty, $"{ProcessFolderId(id)}*", false)
             .Select(u => u.ToString()).ToListAsync();
+
+        if (logoPath.Count == 0)
+        {
+            SetDefaultCache(id);
+            return;
+        }
 
         var original = logoPath.Where(u => u.Contains("orig")).FirstOrDefault();
 
@@ -392,6 +403,14 @@ public class RoomLogoManager
     private string GetKey<T>(T id)
     {
         return $"{TenantId}/{id}/orig";
+    }
+
+    private void SetDefaultCache<T>(T id)
+    {
+        _cache.Insert(GetKey(id), Default, _cacheLifeTime);
+        _cache.Insert(GetKey(id, _largeLogoSize), Default, _cacheLifeTime);
+        _cache.Insert(GetKey(id, _mediumLogoSize), Default, _cacheLifeTime);
+        _cache.Insert(GetKey(id, _smallLogoSize), Default, _cacheLifeTime);
     }
 
     private T GetId<T>(Folder<T> room)
