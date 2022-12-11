@@ -78,6 +78,8 @@ const EditRoomEvent = ({
 
       let room = await editRoom(item.id, editRoomParams);
 
+      room.isLogoLoading = true;
+
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
       room = await addTagsToRoom(room.id, tags);
       room = await removeTagsFromRoom(room.id, removedTags);
@@ -90,6 +92,7 @@ const EditRoomEvent = ({
           ...room,
           logo: { big: item.logo.small },
         });
+
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -132,6 +135,7 @@ const EditRoomEvent = ({
         await updateCurrentFolder(null, currentFolderId);
       }
       setIsLoading(false);
+
       onClose();
     }
   };

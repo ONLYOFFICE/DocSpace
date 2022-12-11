@@ -60,6 +60,8 @@ const CreateRoomEvent = ({
           ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
 
+      room.isLogoLoading = true;
+
       // delete thirdparty account if not needed
       if (!isThirdparty && storageFolderId)
         await deleteThirdParty(thirdpartyAccount.providerId);
