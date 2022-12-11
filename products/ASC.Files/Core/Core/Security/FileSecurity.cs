@@ -625,17 +625,11 @@ public class FileSecurity : IFileSecurity
         var folder = e as Folder<T>;
         var isRoom = folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
 
-        if (isRoom)
+        if ((action == FilesSecurityActions.ReadHistory ||
+             action == FilesSecurityActions.EditHistory) && 
+             e.ProviderEntry)
         {
-            if (action == FilesSecurityActions.Copy)
-            {
-                return false;
-            }
-
-            if (action == FilesSecurityActions.Delete && folder.RootFolderType == FolderType.VirtualRooms)
-            {
-                return false;
-            }
+            return false;
         }
 
         if (e.FileEntryType == FileEntryType.Folder)
@@ -651,6 +645,11 @@ public class FileSecurity : IFileSecurity
                     action == FilesSecurityActions.AddShare ||
                     action == FilesSecurityActions.RemoveShare) &&
                     !isRoom)
+                {
+                    return false;
+                }
+
+                if (action == FilesSecurityActions.Copy && isRoom)
                 {
                     return false;
                 }
@@ -749,9 +748,18 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FolderType.VirtualRooms:
+                if (action == FilesSecurityActions.Delete && isRoom)
+                {
+                    return false;
+                }
+
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin))
+                {
+                    return true;
+                }
+                break;
             case FolderType.Archive:
-                if (e.RootFolderType == FolderType.Archive &&
-                    action != FilesSecurityActions.Read &&
+                if (action != FilesSecurityActions.Read &&
                     action != FilesSecurityActions.Delete &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.Copy &&
@@ -762,33 +770,16 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (e.RootFolderType == FolderType.Archive && (action == FilesSecurityActions.Delete || action == FilesSecurityActions.Move)
-                    && !isRoom)
+                if ((action == FilesSecurityActions.Delete || 
+                    action == FilesSecurityActions.Move) && 
+                    !isRoom)
                 {
                     return false;
                 }
 
-                if ((action == FilesSecurityActions.ReadHistory || 
-                    action == FilesSecurityActions.EditHistory) && 
-                    e.ProviderEntry)
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin))
                 {
-                    return false;
-                }
-
-                if (!isUser)
-                {
-                    if (isDocSpaceAdmin || e.CreateBy == userId)
-                    {
-                        return true;
-                    }
-
-                    var myRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
-                        .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
-
-                    if (myRoom != null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 break;
             case FolderType.ThirdpartyBackup:
@@ -1557,6 +1548,27 @@ public class FileSecurity : IFileSecurity
         result.Add(Constants.GroupEveryone.ID);
 
         return result;
+    }
+
+    private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin)
+    {
+        if (!isUser)
+        {
+            if (isDocSpaceAdmin || entry.CreateBy == userId)
+            {
+                return true;
+            }
+
+            var myRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(entry.ParentId)
+                .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
+
+            if (myRoom != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private sealed class SubjectComparer : IComparer<FileShareRecord>
