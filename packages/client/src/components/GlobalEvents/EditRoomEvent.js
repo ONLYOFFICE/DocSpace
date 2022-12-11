@@ -29,6 +29,7 @@ const EditRoomEvent = ({
   setCreateRoomDialogVisible,
 
   withPaging,
+  getRoomLogo,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -99,13 +100,31 @@ const EditRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && setFolder(room);
+            if (!withPaging) {
+              const newLogo = await getRoomLogo(room.logo);
+
+              room.logoHandlers = room.logo;
+              room.logo = newLogo;
+              room.isLogoLoading = false;
+
+              setFolder(room);
+            }
 
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      } else !withPaging && setFolder(room);
+      } else {
+        if (!withPaging) {
+          const newLogo = await getRoomLogo(room.logo);
+
+          room.logoHandlers = room.logo;
+          room.logo = newLogo;
+          room.isLogoLoading = false;
+
+          setFolder(room);
+        }
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -176,6 +195,7 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
+      getRoomLogo,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -189,6 +209,7 @@ export default inject(
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
+      getRoomLogo,
 
       createTag,
       fetchTags,
