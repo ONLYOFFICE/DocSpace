@@ -13,11 +13,41 @@ export function getRooms(filter) {
     res.folders = decodeDisplayName(res.folders);
 
     if (res.current.rootFolderType === FolderType.Archive) {
-      res.folders.forEach((room) => (room.isArchive = true));
+      res.folders.forEach((room) => {
+        room.isArchive = true;
+        room.isLogoLoading = false;
+        for (let key in room.logo) {
+          room.logo[key] = "";
+        }
+      });
+    } else {
+      res.folders.forEach((f, index) => {
+        res.folders[index].isLogoLoading = true;
+        res.folders[index].logoHandlers = f.logo;
+
+        const newLogos = {};
+
+        for (let key in f.logo) {
+          newLogos[key] = "";
+        }
+
+        res.folders[index].logo = newLogos;
+      });
     }
 
     return res;
   });
+}
+
+export function getLogoIcon(url) {
+  const options = {
+    // baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+    method: "get",
+    url: `/products/files/httphandlers${url}`,
+    responseType: "text",
+  };
+
+  return request(options);
 }
 
 export function getRoomInfo(id) {
@@ -26,8 +56,40 @@ export function getRoomInfo(id) {
     url: `/files/rooms/${id}`,
   };
 
-  return request(options).then((res) => {
-    return res;
+  return request(options).then(async (res) => {
+    return new Promise((resolve, reject) => {
+      if (res.rootFolderType === FolderType.Archive) {
+        res.isLogoLoading = false;
+        for (let key in room.logo) {
+          room.logo[key] = "";
+        }
+
+        return resolve(res);
+      }
+
+      res.isLogoLoading = false;
+      res.logoHandlers = res.logo;
+
+      const newLogos = {};
+
+      const actions = [];
+
+      const getLogo = async (key) => {
+        const logo = await getLogoIcon(res.logo[key]);
+
+        newLogos[key] = logo;
+      };
+
+      for (let key in res.logo) {
+        actions.push(getLogo(key));
+      }
+
+      return Promise.all(actions).then(() => {
+        res.logo = newLogos;
+
+        resolve(res);
+      });
+    });
   });
 }
 
