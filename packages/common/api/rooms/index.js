@@ -60,8 +60,9 @@ export function getRoomInfo(id) {
     return new Promise((resolve, reject) => {
       if (res.rootFolderType === FolderType.Archive) {
         res.isLogoLoading = false;
-        for (let key in room.logo) {
-          room.logo[key] = "";
+        res.isArchive = true;
+        for (let key in res.logo) {
+          res.logo[key] = "";
         }
 
         return resolve(res);

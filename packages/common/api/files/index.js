@@ -124,7 +124,7 @@ export function getFolder(folderId, filter) {
           });
         });
       } else {
-        for (let key in room.logo) {
+        for (let key in res.current.logo) {
           res.current.logo[key] = "";
         }
       }
