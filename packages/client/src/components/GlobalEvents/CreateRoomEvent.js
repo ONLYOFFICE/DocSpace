@@ -27,6 +27,7 @@ const CreateRoomEvent = ({
   withPaging,
   addFile,
   setCreateRoomDialogVisible,
+  getRoomLogo,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
@@ -71,7 +72,7 @@ const CreateRoomEvent = ({
       room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
-      if (roomParams.icon.uploadedFile)
+      if (roomParams.icon.uploadedFile) {
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -82,13 +83,35 @@ const CreateRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && addFile(room, true);
+            if (!withPaging) {
+              const newLogo = await getRoomLogo(room.logo);
+
+              room.logoHandlers = room.logo;
+              room.logo = newLogo;
+              room.isLogoLoading = false;
+
+              console.log(room);
+
+              addFile(room, true);
+            }
 
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      else !withPaging && addFile(room, true);
+      } else {
+        if (!withPaging) {
+          const newLogo = await getRoomLogo(room.logo);
+
+          room.logoHandlers = room.logo;
+          room.logo = newLogo;
+          room.isLogoLoading = false;
+
+          console.log(room);
+
+          addFile(room, true);
+        }
+      }
     } catch (err) {
       toastr.error(err);
       console.log(err);
@@ -146,6 +169,7 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
       addFile,
+      getRoomLogo,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
@@ -171,6 +195,7 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
+      getRoomLogo,
 
       connectDialogVisible,
       currrentFolderId,
