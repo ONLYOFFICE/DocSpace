@@ -24,24 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Collections.Generic;
 using System.IO;
-
-using Frontend.Tests;
 
 namespace Frontend.Tests.Models;
 
-public class TranslationFile
+public class ImageFile
 {
-    public TranslationFile(string path, List<TranslationItem> translations, string md5hash = null)
+    public ImageFile(string path, ModuleTypes moduleType, string md5hash = null)
     {
         FilePath = Utils.ConvertPathToOS(path);
 
         FileName = Path.GetFileName(FilePath);
 
-        Language = Directory.GetParent(FilePath).Name; //FilePath.Substring(FilePath.IndexOf("locales\\") + 8, 2);
+        FileExt = Path.GetExtension(FilePath);
 
-        Translations = translations;
+        ModuleType = moduleType;
 
         Md5Hash = md5hash;
     }
@@ -50,9 +47,9 @@ public class TranslationFile
 
     public string FileName { get; }
 
-    public string Language { get; }
+    public string FileExt { get; }
 
-    public List<TranslationItem> Translations { get; }
+    public ModuleTypes ModuleType { get; }
 
     public string Md5Hash { get; }
 }

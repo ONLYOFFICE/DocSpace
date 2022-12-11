@@ -29,9 +29,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 using Frontend.Tests;
 using Frontend.Tests.Models;
+
+using Microsoft.VisualBasic;
 
 using NUnit.Framework;
 
@@ -49,40 +52,51 @@ public class ImagesTest
 
     public List<string> Workspaces { get; set; }
     public List<ImageFile> ImageFiles { get; set; }
-    public List<JavaScriptFile> JavaScriptFiles { get; set; }
+    public List<SourceImageFile> SourceImageFiles { get; set; }
     public Dictionary<string, string> HashErrorFiles { get; set; }
+
+    private static Dictionary<ModuleTypes, string> Modules
+    {
+        get
+        {
+            return new Dictionary<ModuleTypes, string>() {
+                { ModuleTypes.PUBLIC, Path.Combine(BasePath,Utils.ConvertPathToOS("public")) },
+                { ModuleTypes.COMMON, Path.Combine(BasePath,Utils.ConvertPathToOS("packages/common")) },
+                { ModuleTypes.COMPONENTS, Path.Combine(BasePath,Utils.ConvertPathToOS("packages/components")) },
+                { ModuleTypes.CLIENT, Path.Combine(BasePath,Utils.ConvertPathToOS("packages/client")) },
+                { ModuleTypes.EDITOR, Path.Combine(BasePath,Utils.ConvertPathToOS("packages/editor")) },
+                { ModuleTypes.LOGIN, Path.Combine(BasePath,Utils.ConvertPathToOS("packages/login")) }
+            };
+        }
+    }
+
+    private static ModuleTypes GetModuleType(string path)
+    {
+        var mType = Modules.First(m => path.Contains(m.Value)).Key;
+        return mType;
+    }
 
     [OneTimeSetUp]
     public void Setup()
     {
+        TestContext.Progress.WriteLine($"Base path = {BasePath}");
+
         HashErrorFiles = new Dictionary<string, string>();
 
-        var moduleWorkspaces = new List<string>
-        {
-            Utils.ConvertPathToOS("packages/client"),
-            Utils.ConvertPathToOS("packages/common"),
-            Utils.ConvertPathToOS("packages/components"),
-            Utils.ConvertPathToOS("packages/editor"),
-            Utils.ConvertPathToOS("packages/login")
-        };
+        Workspaces = Modules.Values.ToList();
 
-        Workspaces = new List<string>();
-
-        Workspaces.AddRange(moduleWorkspaces);
-
-        Workspaces.Add(Utils.ConvertPathToOS("public/images"));
+        TestContext.Progress.WriteLine($"Workspaces: {string.Join("\r\n", Workspaces)}");
 
         //var searchPaterns = new string[] { "*.svg", "*.png", "*.jpg", "*.ico", "*.jpeg" };
-        var searchPatern = @"\.svg|\.png|\.jpg|\.ico|\.jpeg";
+        var imageSearchPatern = @"\.svg|\.png|\.jpg|\.ico|\.jpeg";
 
         var imageFiles = from wsPath in Workspaces
-                               let clientDir = Path.Combine(BasePath, wsPath)
-                               from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
-                               where filePath.Contains(Utils.ConvertPathToOS("public/images/"))
-                               select Path.GetFullPath(filePath);
+                         from filePath in Utils.GetFiles(wsPath, imageSearchPatern, SearchOption.AllDirectories)
+                         where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(Utils.ConvertPathToOS("tests/"))
+                         //where filePath.Contains(Utils.ConvertPathToOS("public/images/"))
+                         select Path.GetFullPath(filePath);
 
-        TestContext.Progress.WriteLine($"Base path = {BasePath}");
-        TestContext.Progress.WriteLine($"Found imageFiles by '{searchPatern}' filter = {imageFiles.Count()}. First path is '{imageFiles.FirstOrDefault()}'");
+        //TestContext.Progress.WriteLine($"Found imageFiles by filter '{imageSearchPatern}' count={imageFiles.Count()}. First path is '{imageFiles.FirstOrDefault()}'");
 
         ImageFiles = new List<ImageFile>();
 
@@ -97,7 +111,7 @@ public class ImagesTest
                         var hash = md5.ComputeHash(stream);
                         var md5hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-                        ImageFiles.Add(new ImageFile(path, md5hash));
+                        ImageFiles.Add(new ImageFile(path, GetModuleType(path), md5hash));
 
                     }
                 }
@@ -109,158 +123,54 @@ public class ImagesTest
             }
         }
 
-        TestContext.Progress.WriteLine($"Found TranslationFiles = {ImageFiles.Count()}. First path is '{ImageFiles.FirstOrDefault()?.FilePath}'");
+        TestContext.Progress.WriteLine($"Found ImageFiles by filter '{imageSearchPatern}' count={ImageFiles.Count}. First path is '{ImageFiles.FirstOrDefault()?.FilePath}'");
 
-        searchPatern = @"\.js|\.jsx|\.ts|\.tsx";
+        var sourceSearchPatern = @"(\.js|\.jsx|\.ts|\.tsx|\.html|\.css|\.scss|\.sass)$";
 
-        var javascriptFiles = (from wsPath in Workspaces
-                               let clientDir = Path.Combine(BasePath, wsPath)
-                               from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
-                               where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
-                               && !filePath.Contains(".test.js")
-                               && !filePath.Contains(".stories.js")
-                               && !filePath.Contains(".test.ts")
-                               && !filePath.Contains(".stories.ts")
-                               && !filePath.Contains(".test.tsx")
-                               && !filePath.Contains(".stories.tsx")
-                               select Utils.ConvertPathToOS(filePath))
+        var sourceFiles = (from wsPath in Workspaces
+                           from filePath in Utils.GetFiles(wsPath, sourceSearchPatern, SearchOption.AllDirectories)
+                           where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                           && !filePath.Contains(".test.js")
+                           && !filePath.Contains(".stories.js")
+                           && !filePath.Contains(".test.ts")
+                           && !filePath.Contains(".stories.ts")
+                           && !filePath.Contains(".test.tsx")
+                           && !filePath.Contains(".stories.tsx")
+                           select Utils.ConvertPathToOS(filePath))
                               .ToList();
 
-        TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
+        //TestContext.Progress.WriteLine($"Found sourceFiles by '{searchPatern}' filter = {sourceFiles.Count()}. First path is '{sourceFiles.FirstOrDefault()}'");
 
-        JavaScriptFiles = new List<JavaScriptFile>();
+        SourceImageFiles = new List<SourceImageFile>();
 
-        /*var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:\\s{}/-]+)[\"\'`]\\s*[\\),]";
-        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.:-]+)\"";
-        var pattern3 = "tKey:\\s\"([a-zA-Z0-9_.:-]+)\"";
-        var pattern4 = "getTitle\\(\"([a-zA-Z0-9_.:-]+)\"\\)";
+        var pattern = $"\"([a-zA-Z0-9_.:/-]+({imageSearchPatern}))\"";
 
-        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})|({pattern4})", RegexOptions.Multiline | RegexOptions.ECMAScript);
+        var regexp = new Regex(pattern, RegexOptions.Multiline | RegexOptions.ECMAScript);
 
-        var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
-            "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
-            "|(?<=toastr.success\\([\"`\'])(.*)(?=[\"\'`])" +
-            "|(?<=toastr.warn\\([\"`\'])(.*)(?=[\"\'`])", RegexOptions.Multiline | RegexOptions.ECMAScript);
-
-        NotTranslatedToasts = new List<KeyValuePair<string, string>>();
-
-        foreach (var path in javascriptFiles)
+        foreach (var path in sourceFiles)
         {
-            var jsFileText = File.ReadAllText(path);
+            var sourceText = File.ReadAllText(path);
 
-            var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+            var matches = regexp.Matches(sourceText);
 
-            if (toastMatches.Any())
-            {
-                foreach (var toastMatch in toastMatches)
-                {
-                    var found = toastMatch.Value;
-                    if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                        NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
-                }
-            }
-
-            var matches = regexp.Matches(jsFileText);
-
-            var translationKeys = matches
-                .Select(m => m.Groups[2].Success
-                    ? m.Groups[2].Value
-                    : m.Groups[4].Success
-                        ? m.Groups[4].Value
-                        : m.Groups[6].Success
-                            ? m.Groups[6].Value
-                            : m.Groups[8].Success
-                                ? m.Groups[8].Value
-                                : null)
+            var images = matches
+                .Select(m => m.Groups[1].Success
+                    ? m.Groups[1].Value
+                    : null)
                 .Where(m => m != null)
                 .ToList();
 
-            if (!translationKeys.Any())
+            if (!images.Any())
                 continue;
 
-            var jsFile = new JavaScriptFile(path);
+            var sourceImageFile = new SourceImageFile(path, GetModuleType(path));
 
-            jsFile.TranslationKeys = translationKeys;
+            sourceImageFile.Images = images;
 
-            JavaScriptFiles.Add(jsFile);
+            SourceImageFiles.Add(sourceImageFile);
         }
 
-        TestContext.Progress.WriteLine($"Found JavaScriptFiles = {JavaScriptFiles.Count()}. First path is '{JavaScriptFiles.FirstOrDefault()?.Path}'");
-
-        ModuleFolders = new List<ModuleFolder>();
-
-        var list = TranslationFiles
-            .Select(t => new
-            {
-                ModulePath = moduleWorkspaces.FirstOrDefault(m => t.FilePath.Contains(m)),
-                Language = new LanguageItem
-                {
-                    Path = t.FilePath,
-                    Language = t.Language,
-                    Translations = t.Translations
-                },
-                lng = t.Language
-            }).ToList();
-
-        var moduleTranslations = list
-            .GroupBy(t => t.ModulePath)
-            .Select(g => new
-            {
-                ModulePath = g.Key,
-                Languages = g.ToList().Select(t => t.Language).ToList()
-            })
-            .ToList();
-
-        TestContext.Progress.WriteLine($"Found moduleTranslations = {moduleTranslations.Count()}. First path is '{moduleTranslations.FirstOrDefault()?.ModulePath}'");
-
-        var moduleJsTranslatedFiles = JavaScriptFiles
-            .Select(t => new
-            {
-                ModulePath = moduleWorkspaces.FirstOrDefault(m => t.Path.Contains(m)),
-                t.Path,
-                t.TranslationKeys
-            })
-            .GroupBy(t => t.ModulePath)
-            .Select(g => new
-            {
-                ModulePath = g.Key,
-                TranslationKeys = g.ToList().SelectMany(t => t.TranslationKeys).ToList()
-            })
-            .ToList();
-
-        TestContext.Progress.WriteLine($"Found moduleJsTranslatedFiles = {moduleJsTranslatedFiles.Count()}. First path is '{moduleJsTranslatedFiles.FirstOrDefault()?.ModulePath}'");
-
-        foreach (var wsPath in moduleWorkspaces)
-        {
-            var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == wsPath);
-            var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == wsPath);
-
-            if (j == null && t == null)
-                continue;
-
-            ModuleFolders.Add(new ModuleFolder
-            {
-                Path = wsPath,
-                AvailableLanguages = t?.Languages,
-                AppliedJsTranslationKeys = j?.TranslationKeys
-            });
-        }
-
-        TestContext.Progress.WriteLine($"Found ModuleFolders = {ModuleFolders.Count()}. First path is '{ModuleFolders.FirstOrDefault()?.Path}'");
-
-        CommonTranslations = TranslationFiles
-            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS(Path.Combine(BasePath, "public/locales"))))
-            .Select(t => new LanguageItem
-            {
-                Path = t.FilePath,
-                Language = t.Language,
-                Translations = t.Translations
-            }).ToList();
-
-        TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
-
-        TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");*/
-
+        TestContext.Progress.WriteLine($"Found SourceImageFiles by filter '{sourceSearchPatern}' count={SourceImageFiles.Count}. First path is '{SourceImageFiles.FirstOrDefault()?.Path}'");
     }
 
     [Test]

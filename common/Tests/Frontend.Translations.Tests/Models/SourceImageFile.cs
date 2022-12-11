@@ -25,34 +25,24 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using System.Collections.Generic;
-using System.IO;
 
 using Frontend.Tests;
+using Frontend.Tests.Models;
 
-namespace Frontend.Tests.Models;
+namespace Frontend.Tests;
 
-public class TranslationFile
+public class SourceImageFile
 {
-    public TranslationFile(string path, List<TranslationItem> translations, string md5hash = null)
+    public SourceImageFile(string path, ModuleTypes moduleType)
     {
-        FilePath = Utils.ConvertPathToOS(path);
+        Path = Utils.ConvertPathToOS(path);
 
-        FileName = Path.GetFileName(FilePath);
-
-        Language = Directory.GetParent(FilePath).Name; //FilePath.Substring(FilePath.IndexOf("locales\\") + 8, 2);
-
-        Translations = translations;
-
-        Md5Hash = md5hash;
+        ModuleType = moduleType;
     }
 
-    public string FilePath { get; }
+    public string Path { get; }
 
-    public string FileName { get; }
+    public ModuleTypes ModuleType { get; }
 
-    public string Language { get; }
-
-    public List<TranslationItem> Translations { get; }
-
-    public string Md5Hash { get; }
+    public List<string> Images { get; set; }
 }
