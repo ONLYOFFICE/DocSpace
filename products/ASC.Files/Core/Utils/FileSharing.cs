@@ -119,11 +119,6 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if (!await _fileSecurity.CanAddShareAsync(entry) && w.Access != FileShare.None)
-            {
-                continue;
-            }
-
             if (!await ProcessEmailAceAsync(w))
             {
                 continue;
@@ -343,7 +338,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (await _fileSecurity.CanAddShareAsync(entry) || await _fileSecurity.CanRemoveShareAsync(entry))
+        if (await _fileSecurity.CanEditAccess(entry))
         {
             return true;
         }

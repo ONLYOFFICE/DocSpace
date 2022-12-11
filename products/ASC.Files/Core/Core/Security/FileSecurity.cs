@@ -85,11 +85,10 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Rename,
                     FilesSecurityActions.CopyTo,
                     FilesSecurityActions.MoveTo,
-                    FilesSecurityActions.Pin,
-                    FilesSecurityActions.AddShare,
-                    FilesSecurityActions.RemoveShare,
                     FilesSecurityActions.Copy,
-                    FilesSecurityActions.Move
+                    FilesSecurityActions.Move,
+                    FilesSecurityActions.Pin,
+                    FilesSecurityActions.EditAccess,
                 }
             }
     };
@@ -308,14 +307,9 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Pin);
     }
 
-    public Task<bool> CanAddShareAsync<T>(FileEntry<T> entry)
+    public Task<bool> CanEditAccess<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.AddShare);
-    }
-
-    public Task<bool> CanRemoveShareAsync<T>(FileEntry<T> entry)
-    {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.RemoveShare);
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditAccess);
     }
 
     public Task<bool> CanEditHistory<T>(FileEntry<T> entry)
@@ -642,8 +636,7 @@ public class FileSecurity : IFileSecurity
             if (action != FilesSecurityActions.Read)
             {
                 if ((action == FilesSecurityActions.Pin ||
-                    action == FilesSecurityActions.AddShare ||
-                    action == FilesSecurityActions.RemoveShare) &&
+                     action == FilesSecurityActions.EditAccess) &&
                     !isRoom)
                 {
                     return false;
@@ -687,6 +680,11 @@ public class FileSecurity : IFileSecurity
                         }
 
                         return false;
+                    }
+
+                    if (folder.FolderType == FolderType.TRASH)
+                    {
+                        return action == FilesSecurityActions.MoveTo;
                     }
                 }
             }
@@ -763,7 +761,6 @@ public class FileSecurity : IFileSecurity
                     action != FilesSecurityActions.Delete &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.Copy &&
-                    action != FilesSecurityActions.RemoveShare &&
                     action != FilesSecurityActions.Move
                     )
                 {
@@ -950,8 +947,7 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.CopyTo:
             case FilesSecurityActions.Copy:
             case FilesSecurityActions.MoveTo:
-            case FilesSecurityActions.AddShare:
-            case FilesSecurityActions.RemoveShare:
+            case FilesSecurityActions.EditAccess:
                 if (e.Access == FileShare.RoomAdmin)
                 {
                     return true;
@@ -1620,7 +1616,6 @@ public class FileSecurity : IFileSecurity
         MoveTo,
         Move,
         Pin,
-        AddShare,
-        RemoveShare,
+        EditAccess
     }
 }
