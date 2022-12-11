@@ -104,12 +104,12 @@ public class RoomLogoManager
         return room;
     }
 
-    public async Task<Folder<T>> DeleteAsync<T>(T id)
+    public async Task<Folder<T>> DeleteAsync<T>(T id, bool checkPermissions = true)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
         var room = await folderDao.GetFolderAsync(id);
 
-        if (!await _fileSecurity.CanEditRoomAsync(room))
+        if (checkPermissions && !await _fileSecurity.CanEditRoomAsync(room))
         {
             throw new InvalidOperationException("You don't have permission to edit the room");
         }

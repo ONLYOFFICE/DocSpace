@@ -762,6 +762,12 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
+                if (e.RootFolderType == FolderType.Archive && (action == FilesSecurityActions.Delete || action == FilesSecurityActions.Move)
+                    && !isRoom)
+                {
+                    return false;
+                }
+
                 if ((action == FilesSecurityActions.ReadHistory || 
                     action == FilesSecurityActions.EditHistory) && 
                     e.ProviderEntry)
