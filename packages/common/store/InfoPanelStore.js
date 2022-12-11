@@ -144,6 +144,7 @@ class InfoPanelStore {
     if (!currentFolderRoomId || currentFolderRoomId === prevRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+
     if (prevRoomId === newSelectionParentRoom.id) return;
 
     this.setSelectionParentRoom(

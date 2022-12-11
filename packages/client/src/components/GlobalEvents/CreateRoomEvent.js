@@ -90,8 +90,6 @@ const CreateRoomEvent = ({
               room.logo = newLogo;
               room.isLogoLoading = false;
 
-              console.log(room);
-
               addFile(room, true);
             }
 
@@ -106,8 +104,6 @@ const CreateRoomEvent = ({
           room.logoHandlers = room.logo;
           room.logo = newLogo;
           room.isLogoLoading = false;
-
-          console.log(room);
 
           addFile(room, true);
         }
