@@ -150,7 +150,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return;
             }
-            else if (!await FilesSecurity.CanMoveAsync(firstFolder))
+            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
@@ -168,7 +168,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return;
             }
-            else if (!await FilesSecurity.CanMoveAsync(firstFile))
+            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFile))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
@@ -182,7 +182,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
             return;
         }
-        else if (!await fileSecurity.CanMoveToAsync(toFolder))
+        else if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
             this[Err] = FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
@@ -242,7 +242,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!copy && !await FilesSecurity.CanMoveAsync(folder))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
