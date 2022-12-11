@@ -318,6 +318,11 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.RemoveShare);
     }
 
+    public Task<bool> CanEditHistory<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditHistory);
+    }
+
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
     {
         return WhoCanAsync(entry, FilesSecurityActions.Read);
@@ -748,7 +753,6 @@ public class FileSecurity : IFileSecurity
                 if (e.RootFolderType == FolderType.Archive &&
                     action != FilesSecurityActions.Read &&
                     action != FilesSecurityActions.Delete &&
-                    action != FilesSecurityActions.EditRoom &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.Copy &&
                     action != FilesSecurityActions.RemoveShare &&
@@ -758,7 +762,9 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (action == FilesSecurityActions.ReadHistory && e.ProviderEntry)
+                if ((action == FilesSecurityActions.ReadHistory || 
+                    action == FilesSecurityActions.EditHistory) && 
+                    e.ProviderEntry)
                 {
                     return false;
                 }
@@ -770,10 +776,10 @@ public class FileSecurity : IFileSecurity
                         return true;
                     }
 
-                    var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
+                    var myRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
                         .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
 
-                    if (parentRoom != null)
+                    if (myRoom != null)
                     {
                         return true;
                     }
@@ -870,7 +876,8 @@ public class FileSecurity : IFileSecurity
                 if (e.Access == FileShare.Review ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.FillForms)
                 {
                     return true;
                 }
@@ -938,8 +945,7 @@ public class FileSecurity : IFileSecurity
                 break;
             case FilesSecurityActions.EditHistory:
                 if (e.Access == FileShare.ReadWrite ||
-                    e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.RoomAdmin)
                 {
                     return file != null && !file.Encrypted;
                 }
