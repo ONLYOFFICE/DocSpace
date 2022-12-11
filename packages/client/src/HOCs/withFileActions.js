@@ -314,7 +314,8 @@ export default function withFileActions(WrappedFileItem) {
           (x) =>
             x === item.id &&
             (item.isFolder || (!item.fileExst && item.id === -1))
-        ) !== -1;
+        ) !== -1 ||
+        (item.isRoom && item.isLogoLoading);
 
       let isActive = false;
 
