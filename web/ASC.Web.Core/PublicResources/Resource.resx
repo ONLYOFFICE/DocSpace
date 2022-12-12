@@ -909,6 +909,12 @@
   <data name="ErrorIpSecurity" xml:space="preserve">
     <value>The access to the portal is restricted</value>
   </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unknown image file type</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Image size exceed the allowed parameters</value>
+  </data>
   <data name="ConsumersTelegram" xml:space="preserve">
     <value>Telegram</value>
   </data>

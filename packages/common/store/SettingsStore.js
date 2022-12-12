@@ -151,7 +151,6 @@ class SettingsStore {
   companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
-  docSpaceLogo = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -288,7 +287,11 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
+    requests.push(
+      this.getPortalSettings(),
+      this.getAppearanceTheme(),
+      this.getWhiteLabelLogoUrls()
+    );
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -387,10 +390,6 @@ class SettingsStore {
     );
   };
 
-  setDocSpaceLogo = (urls) => {
-    this.docSpaceLogo = urls[6];
-  };
-
   setLogoUrl = (url) => {
     this.logoUrl = url[0];
   };
@@ -410,7 +409,6 @@ class SettingsStore {
     const res = await api.settings.getLogoUrls();
 
     this.setLogoUrls(Object.values(res));
-    this.setDocSpaceLogo(Object.values(res));
     this.setLogoUrl(Object.values(res));
   };
 
