@@ -1606,8 +1606,8 @@ const Dark = {
       heightWithBorder: "30px",
 
       paddingLeft: "16px",
-      paddingRightNoArrow: "8px",
-      paddingRight: "16px",
+      paddingRightNoArrow: "16px",
+      paddingRight: "8px",
 
       selectPaddingLeft: "8px",
       selectPaddingRightNoArrow: "14px",
