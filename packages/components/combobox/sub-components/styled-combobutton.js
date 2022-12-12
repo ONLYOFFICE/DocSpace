@@ -3,6 +3,13 @@ import { isMobileOnly } from "react-device-detect";
 import Base from "../../themes/base";
 import NoUserSelect from "../../utils/commonStyles";
 
+import TriangleDownIcon from "../../../../public/images/triangle.down.react.svg";
+import commonIconsStyles from "../../utils/common-icons-style";
+
+const StyledTriangleDownIcon = styled(TriangleDownIcon)`
+  ${commonIconsStyles}
+`;
+
 const modernViewButton = css`
   height: ${(props) => props.theme.comboBox.button.heightModernView};
   background: ${(props) =>
@@ -11,6 +18,7 @@ const modernViewButton = css`
       : props.theme.comboBox.button.backgroundModernView};
 
   border: none !important;
+  padding-right: 0px;
 `;
 
 const hoverModernViewButton = css`
@@ -23,8 +31,7 @@ const hoverModernViewButton = css`
 const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${(props) =>
-    props.isLeftwardContent ? "space-between" : "center"};
+  justify-content: center;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   height: ${(props) =>
@@ -41,7 +48,19 @@ const StyledComboButton = styled.div`
 
   ${NoUserSelect};
 
-  padding-left: ${(props) => props.theme.comboBox.button.paddingLeft};
+  padding-left: ${(props) =>
+    props.size === "content"
+      ? props.theme.comboBox.button.paddingLeft
+      : props.theme.comboBox.button.selectPaddingLeft};
+
+  padding-right: ${(props) =>
+    props.size === "content"
+      ? props.displayArrow
+        ? props.theme.comboBox.button.paddingRight
+        : props.theme.comboBox.button.paddingRightNoArrow
+      : props.displayArrow
+      ? props.theme.comboBox.button.selectPaddingRight
+      : props.theme.comboBox.button.selectPaddingRightNoArrow};
 
   background: ${(props) =>
     !props.noBorder
@@ -207,7 +226,6 @@ StyledIcon.defaultProps = { theme: Base };
 const StyledArrowIcon = styled.div`
   display: flex;
   align-self: center;
-  justify-self: center;
 
   .combo-buttons_expander-icon {
     path {
@@ -216,17 +234,13 @@ const StyledArrowIcon = styled.div`
   }
 
   width: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.width : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.width : "0px"};
   flex: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.flex : "0px"};
-  /*margin-top: ${(props) =>
-    props.noBorder
-      ? props.theme.comboBox.arrow.marginTopWithBorder
-      : props.theme.comboBox.arrow.marginTop};*/
+    props.displayArrow ? props.theme.comboBox.arrow.flex : "0px"};
   margin-right: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.marginRight : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
   margin-left: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.marginLeft : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.marginLeft : "0px"};
 
   ${(props) =>
     props.isOpen &&
@@ -241,4 +255,10 @@ const StyledArrowIcon = styled.div`
 `;
 StyledArrowIcon.defaultProps = { theme: Base };
 
-export { StyledArrowIcon, StyledIcon, StyledOptionalItem, StyledComboButton };
+export {
+  StyledArrowIcon,
+  StyledIcon,
+  StyledOptionalItem,
+  StyledComboButton,
+  StyledTriangleDownIcon,
+};
