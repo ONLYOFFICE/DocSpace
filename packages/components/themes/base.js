@@ -1610,7 +1610,7 @@ const Base = {
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "-2px",
+      marginLeft: "auto",
     },
 
     button: {
@@ -1618,7 +1618,13 @@ const Base = {
       heightWithBorder: "30px",
       heightModernView: "28px",
 
-      paddingLeft: "8px",
+      paddingLeft: "16px",
+      paddingRightNoArrow: "16px",
+      paddingRight: "8px",
+
+      selectPaddingLeft: "8px",
+      selectPaddingRightNoArrow: "14px",
+      selectPaddingRight: "6px",
 
       color: black,
       disabledColor: grayMid,

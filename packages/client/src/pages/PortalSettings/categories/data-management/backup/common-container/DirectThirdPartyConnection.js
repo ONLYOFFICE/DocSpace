@@ -325,7 +325,6 @@ const DirectThirdPartyConnection = (props) => {
             isLoading ||
             accounts.length === 0
           }
-          isLeftwardContent
         />
 
         <ContextMenuButton

@@ -1598,13 +1598,20 @@ const Dark = {
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "-2px",
+      marginLeft: "auto",
     },
 
     button: {
       height: "18px",
       heightWithBorder: "30px",
-      paddingLeft: "8px",
+
+      paddingLeft: "16px",
+      paddingRightNoArrow: "16px",
+      paddingRight: "8px",
+
+      selectPaddingLeft: "8px",
+      selectPaddingRightNoArrow: "14px",
+      selectPaddingRight: "8px",
 
       color: "#858585",
       disabledColor: "#858585",
