@@ -437,7 +437,6 @@ public class UserPhotoManager
         };
     }
 
-    private static readonly HashSet<int> _tenantDiskCache = new HashSet<int>();
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
 

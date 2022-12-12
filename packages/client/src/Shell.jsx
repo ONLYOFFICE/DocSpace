@@ -202,7 +202,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     socketHelper.emit({
       command: "subscribe",
-      data: "backup-restore",
+      data: { roomParts: "backup-restore" }
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);

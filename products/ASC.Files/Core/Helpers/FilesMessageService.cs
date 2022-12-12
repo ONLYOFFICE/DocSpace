@@ -76,7 +76,7 @@ public class FilesMessageService
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
+        SendHeadersMessage(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
     }
 
     private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)

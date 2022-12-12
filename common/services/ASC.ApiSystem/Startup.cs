@@ -28,16 +28,18 @@ namespace ASC.ApiSystem;
 
 public class Startup
 {
-
+    private const string CustomCorsPolicyName = "Basic";
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly DIHelper _diHelper;
+    private readonly string _corsOrigin;
 
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
         _diHelper = new DIHelper();
+        _corsOrigin = _configuration["core:cors"];
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -89,6 +91,22 @@ public class Startup
         _diHelper.TryAdd<CookieAuthHandler>();
         _diHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CustomCorsPolicyName,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(_corsOrigin)
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
+                                  });
+            });
+        }
+
         services.AddDistributedCache(_configuration);
         services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
@@ -117,6 +135,11 @@ public class Startup
     {
         app.UseRouting();
 
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            app.UseCors(CustomCorsPolicyName);
+        }
+
         app.UseAuthentication();
 
         app.UseAuthorization();
@@ -129,7 +152,7 @@ public class Startup
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
+            });
             endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("self")

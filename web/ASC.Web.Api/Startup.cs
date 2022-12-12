@@ -39,8 +39,11 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        services.AddHostedService<LdapNotifyService>();
-        DIHelper.TryAdd<LdapNotifyService>();
+        if (!_configuration.GetValue<bool>("disableLdapNotifyService"))
+        {
+            services.AddHostedService<LdapNotifyService>();
+            DIHelper.TryAdd<LdapNotifyService>();
+        }
         services.AddBaseDbContextPool<FilesDbContext>();
         services.AddBaseDbContextPool<BackupsContext>();
 
@@ -49,6 +52,8 @@ public class Startup : BaseStartup
 
         services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
         services.AddScoped<CountRoomCheckerStatistic>();
+
+        DIHelper.TryAdd<AdditionalWhiteLabelSettingsConverter>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

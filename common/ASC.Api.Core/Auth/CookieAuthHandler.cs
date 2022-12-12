@@ -61,7 +61,7 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
     {
         try
         {
-            var authorization = _httpContextAccessor.HttpContext.Request.Cookies["asc_auth_key"] ?? _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
+            var authorization = _httpContextAccessor.HttpContext.Request.Cookies[_cookiesManager.GetAscCookiesName()] ?? _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
 
             if (string.IsNullOrEmpty(authorization))
             {
