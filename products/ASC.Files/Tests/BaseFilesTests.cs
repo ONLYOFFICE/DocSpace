@@ -27,7 +27,9 @@
 
 
 using ASC.Files.Core.EF;
+using ASC.MessagingSystem.Core;
 using ASC.MessagingSystem.EF.Context;
+using ASC.Web.Core;
 using ASC.Webhooks.Core.EF.Context;
 
 using Microsoft.EntityFrameworkCore;
@@ -49,11 +51,6 @@ class FilesApplication : WebApplicationFactory<Program>
         {
             builder.UseSetting(s.Key, s.Value);
         }
-
-        builder.ConfigureAppConfiguration((context, a) =>
-        {
-            (a.Sources[0] as ChainedConfigurationSource).Configuration["pathToConf"] = a.Build()["pathToConf"];
-        });
 
         builder.ConfigureServices(services =>
         {
@@ -86,7 +83,6 @@ public class MySetUpClass
     {
         var args = new Dictionary<string, string>
                 {
-                    { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection },
                     { "migration:enabled", "true" },
                     { "core:products:folder", Path.Combine("..", "..", "..", "products") },
@@ -175,7 +171,6 @@ public partial class BaseFilesTests
     {
         var host = new FilesApplication(new Dictionary<string, string>
             {
-                { "pathToConf", Path.Combine("..","..", "..", "config") },
                 { "ConnectionStrings:default:connectionString", TestConnection },
                 { "migration:enabled", "true" },
                 { "web:hub:internal", "" },
@@ -197,8 +192,9 @@ public partial class BaseFilesTests
         var tenant = tenantManager.GetTenant(1);
         tenantManager.SetCurrentTenant(tenant);
 
-        var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-        _cookie = securityContext.AuthenticateMe(tenant.OwnerId);
+        var _cookiesManager = scope.ServiceProvider.GetService<CookiesManager>();
+        var action = MessageAction.LoginSuccessViaApi;
+        _cookie = _cookiesManager.AuthenticateMeAndSetCookies(tenant.Id, tenant.OwnerId, action);
 
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _cookie);
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));

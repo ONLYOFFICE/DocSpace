@@ -28,7 +28,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations;
 
-public partial class TestMigration : Microsoft.EntityFrameworkCore.Migrations.Migration
+public partial class TestMigration : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
@@ -41,8 +41,8 @@ public partial class TestMigration : Microsoft.EntityFrameworkCore.Migrations.Mi
 
         migrationBuilder.InsertData(
             table: "core_user",
-            columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate" },
-            values: new object[] { "99223c7b-e3c9-11eb-9063-982cbc0ea1e5", 0, null, null, null, "test@gmail.com", "Test", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2928), "User", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "TestUser", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2940) });
+            columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate", "create_on" },
+            values: new object[] { "99223c7b-e3c9-11eb-9063-982cbc0ea1e5", 0, null, null, null, "test@gmail.com", "Test", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2928), "User", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "TestUser", new DateTime(2021, 8, 4, 11, 1, 4, 513, DateTimeKind.Utc).AddTicks(2940), DateTime.UtcNow });
 
         migrationBuilder.InsertData(
             table: "core_usersecurity",

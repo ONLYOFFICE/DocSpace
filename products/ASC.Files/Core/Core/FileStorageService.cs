@@ -82,7 +82,6 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly CountRoomChecker _countRoomChecker;
-    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
     private readonly RoomLinkService _roomLinkService;
     private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
@@ -138,7 +137,6 @@ public class FileStorageService<T> //: IFileStorageService
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         CountRoomChecker countRoomChecker,
-        CountRoomCheckerStatistic countRoomCheckerStatistic,
         RoomLinkService roomLinkService,
         DocSpaceLinkHelper docSpaceLinkHelper,
         StudioNotifyService studioNotifyService)
@@ -194,7 +192,6 @@ public class FileStorageService<T> //: IFileStorageService
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
         _countRoomChecker = countRoomChecker;
-        _countRoomCheckerStatistic = countRoomCheckerStatistic;
         _roomLinkService = roomLinkService;
         _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;

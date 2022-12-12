@@ -324,7 +324,6 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
-    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -353,8 +352,7 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings,
-        Global global)
+        ThumbnailSettings thumbnailSettings)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -380,7 +378,6 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
-        _global = global;
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;

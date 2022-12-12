@@ -46,16 +46,15 @@ class ApiApplication : WebApplicationFactory<Program>
             builder.UseSetting(s.Key, s.Value);
         }
 
-        builder.ConfigureAppConfiguration((context, a) =>
-        {
-            (a.Sources[0] as ChainedConfigurationSource).Configuration["pathToConf"] = a.Build()["pathToConf"];
-        });
-
         builder.ConfigureServices(services =>
         {
+            services.AddBaseDbContext<UserDbContext>();
+            services.AddBaseDbContext<TenantDbContext>();
+            services.AddBaseDbContext<WebstudioDbContext>();
+
             var DIHelper = new ASC.Common.DIHelper();
             DIHelper.Configure(services);
-            foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+            foreach (var a in Assembly.Load("ASC.Web.Api").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
             {
                 DIHelper.TryAdd(a);
             }
@@ -73,19 +72,18 @@ public class MySetUpClass
     [OneTimeSetUp]
     public void CreateDb()
     {
-        var host = new ApiApplication(new Dictionary<string, string>
+        var args = new Dictionary<string, string>
                 {
-                    { "pathToConf", Path.Combine("..","..", "..", "config") },
                     { "ConnectionStrings:default:connectionString", BaseApiTests.TestConnection },
                     { "migration:enabled", "true" },
-                    { "core:products:folder", Path.Combine("..","..", "..", "products") },
-                    { "web:hub::internal", "" }
-                })
-       .WithWebHostBuilder(builder =>
-       {
-       });
+                    { "web:hub::internal", "" },
+                    { "disableLdapNotifyService", "true" }
+                };
 
-        Migrate(host.Services);
+        var host = new ApiApplication(args);
+        Migrate(host.Services, "ASC.Migrations.MySql");
+
+        host = new ApiApplication(args);
         Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
         _scope = host.Services.CreateScope();
@@ -99,18 +97,21 @@ public class MySetUpClass
     }
 
 
-    private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+    private void Migrate(IServiceProvider serviceProvider, string testAssembly )
     {
         using var scope = serviceProvider.CreateScope();
 
-        if (!string.IsNullOrEmpty(testAssembly))
-        {
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            configuration["testAssembly"] = testAssembly;
-        }
+        var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+        configuration["testAssembly"] = testAssembly;
 
-        using var db = scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>().CreateDbContext();
-        db.Database.Migrate();
+        using var userDbContext = scope.ServiceProvider.GetService<UserDbContext>();
+        userDbContext.Database.Migrate();
+
+        using var tenantDbContext = scope.ServiceProvider.GetService<TenantDbContext>();
+        tenantDbContext.Database.Migrate();
+        
+        using var webstudioDbContext = scope.ServiceProvider.GetService<WebstudioDbContext>();
+        webstudioDbContext.Database.Migrate();
     }
 }
 
@@ -131,10 +132,10 @@ class BaseApiTests
     {
         var host = new ApiApplication(new Dictionary<string, string>
             {
-                { "pathToConf", Path.Combine("..","..", "..", "config") },
                 { "ConnectionStrings:default:connectionString", TestConnection },
                 { "migration:enabled", "true" },
-                { "web:hub:internal", "" }
+                { "web:hub:internal", "" },
+                { "disableLdapNotifyService", "true" }
             })
         .WithWebHostBuilder(a => { });
 

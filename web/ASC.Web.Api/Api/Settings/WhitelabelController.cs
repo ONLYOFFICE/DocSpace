@@ -39,7 +39,6 @@ public class WhitelabelController : BaseSettingsController
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IMapper _mapper;
     private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -54,7 +53,7 @@ public class WhitelabelController : BaseSettingsController
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
-        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -65,7 +64,6 @@ public class WhitelabelController : BaseSettingsController
         _commonLinkUtility = commonLinkUtility;
         _mapper = mapper;
         _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
-        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     ///<visible>false</visible>
