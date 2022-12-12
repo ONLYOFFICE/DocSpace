@@ -36,8 +36,13 @@ public class CustomTagsService<T>
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager _userManager;
 
-    public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext,
-        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, UserManager userManager)
+    public CustomTagsService(
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        AuthContext authContext,
+        FilesMessageService filesMessageService,
+        IHttpContextAccessor httpContextAccessor,
+        UserManager userManager)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;

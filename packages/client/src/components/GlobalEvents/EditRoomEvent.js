@@ -31,6 +31,7 @@ const EditRoomEvent = ({
   withPaging,
 
   reloadSelection,
+  getRoomLogo,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -79,6 +80,8 @@ const EditRoomEvent = ({
 
       let room = await editRoom(item.id, editRoomParams);
 
+      room.isLogoLoading = true;
+
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
       room = await addTagsToRoom(room.id, tags);
       room = await removeTagsFromRoom(room.id, removedTags);
@@ -91,6 +94,7 @@ const EditRoomEvent = ({
           ...room,
           logo: { big: item.logo.small },
         });
+
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -101,7 +105,15 @@ const EditRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && setFolder(room);
+            if (!withPaging) {
+              const newLogo = await getRoomLogo(room.logo);
+
+              room.logoHandlers = room.logo;
+              room.logo = newLogo;
+              room.isLogoLoading = false;
+
+              setFolder(room);
+            }
 
             // to update state info panel
             reloadSelection();
@@ -111,8 +123,15 @@ const EditRoomEvent = ({
           img.src = url;
         });
       } else {
-        !withPaging && setFolder(room);
+        if (!withPaging) {
+          const newLogo = await getRoomLogo(room.logo);
 
+          room.logoHandlers = room.logo;
+          room.logo = newLogo;
+          room.isLogoLoading = false;
+
+          setFolder(room);
+        }
         // to update state info panel
         reloadSelection();
       }
@@ -123,6 +142,7 @@ const EditRoomEvent = ({
         await updateCurrentFolder(null, currentFolderId);
       }
       setIsLoading(false);
+
       onClose();
     }
   };
@@ -186,6 +206,7 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
+      getRoomLogo,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -199,6 +220,7 @@ export default inject(
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
+      getRoomLogo,
 
       createTag,
       fetchTags,

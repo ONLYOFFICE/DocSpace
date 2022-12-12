@@ -45,7 +45,6 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -59,8 +58,7 @@ public class LdapUserManager
         SettingsManager settingsManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
-        NovellLdapUserImporter novellLdapUserImporter,
-        CountRoomAdminChecker countRoomAdminChecker)
+        NovellLdapUserImporter novellLdapUserImporter)
     {
         _logger = logger;
         _userManager = userManager;
@@ -73,7 +71,6 @@ public class LdapUserManager
         _userFormatter = userFormatter;
         _serviceProvider = serviceProvider;
         _novellLdapUserImporter = novellLdapUserImporter;
-        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     public void Init(LdapLocalization resource = null)

@@ -32,25 +32,19 @@ namespace ASC.Data.Backup.Controllers;
 public class BackupController : ControllerBase
 {
     private readonly BackupAjaxHandler _backupHandler;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantExtra _tenantExtra;
     private readonly IEventBus _eventBus;
     private readonly Guid _currentUserId;
     private readonly int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,
-        CoreBaseSettings coreBaseSettings,
         TenantManager tenantManager,
         SecurityContext securityContext,
-        TenantExtra tenantExtra,
         IEventBus eventBus)
     {
         _currentUserId = securityContext.CurrentAccount.ID;
         _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
-        _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
         _eventBus = eventBus;
     }
     /// <summary>

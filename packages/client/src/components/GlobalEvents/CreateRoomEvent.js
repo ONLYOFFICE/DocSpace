@@ -74,6 +74,8 @@ const CreateRoomEvent = ({
           ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
 
+      room.isLogoLoading = true;
+
       // delete thirdparty account if not needed
       if (!isThirdparty && storageFolderId)
         await deleteThirdParty(thirdpartyAccount.providerId);
@@ -87,7 +89,7 @@ const CreateRoomEvent = ({
         room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
-      if (roomParams.icon.uploadedFile)
+      if (roomParams.icon.uploadedFile) {
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -104,7 +106,7 @@ const CreateRoomEvent = ({
           };
           img.src = url;
         });
-      else !withPaging && openNewRoom(room.id);
+      } else !withPaging && openNewRoom(room.id);
     } catch (err) {
       toastr.error(err);
       console.log(err);
@@ -162,6 +164,7 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
       fetchFiles,
+      addFile,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
