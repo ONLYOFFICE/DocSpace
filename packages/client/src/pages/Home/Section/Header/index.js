@@ -634,6 +634,7 @@ class SectionHeaderContent extends React.Component {
       canCreateFiles,
       isEmptyArchive,
       isVisitor,
+      isRoom,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -693,6 +694,7 @@ class SectionHeaderContent extends React.Component {
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
                     isEmptyPage={isEmptyPage}
+                    isRoom={isRoom}
                   />
                 )}
               </div>
