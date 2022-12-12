@@ -59,22 +59,19 @@ const StyledContainer = styled.div`
   @media ${tablet} {
     width: 100%;
     grid-template-columns: ${(props) =>
-      props.isRootFolder ? "auto 1fr" : "49px 1fr auto"};
+      props.isRootFolder ? "1fr auto" : "49px 1fr auto"};
   }
 
   @media ${mobile} {
     grid-template-columns: ${(props) =>
-      props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
+      props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
 
   ${isMobile &&
   css`
     width: 100%;
     grid-template-columns: ${(props) =>
-      props.isRootFolder ? "auto 1fr" : "49px 1fr auto"};
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+      props.isRootFolder ? "1fr auto" : "49px 1fr auto"};
   `}
 `;
 
