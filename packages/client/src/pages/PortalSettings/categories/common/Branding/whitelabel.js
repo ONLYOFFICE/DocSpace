@@ -167,7 +167,7 @@ const WhiteLabel = (props) => {
   return !isLoadedData ? (
     <LoaderWhiteLabel />
   ) : (
-    <StyledComponent>
+    <WhiteLabelWrapper>
       <Text className="subtitle" color="#657077">
         {t("BrandingSubtitle")}
       </Text>
