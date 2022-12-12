@@ -4,7 +4,6 @@ import api from "@docspace/common/api";
 
 class CommonStore {
   whiteLabelLogoUrls = [];
-  whiteLabelLogoSizes = [];
   whiteLabelLogoText = null;
 
   isInit = false;
@@ -38,7 +37,6 @@ class CommonStore {
       authStore.settingsStore.getPortalCultures(),
       this.getWhiteLabelLogoUrls(),
       this.getWhiteLabelLogoText(),
-      this.getWhiteLabelLogoSizes(),
       this.getGreetingSettingsIsDefault()
     );
 
@@ -51,10 +49,6 @@ class CommonStore {
 
   setLogoText = (text) => {
     this.whiteLabelLogoText = text;
-  };
-
-  setLogoSizes = (sizes) => {
-    this.whiteLabelLogoSizes = sizes;
   };
 
   restoreWhiteLabelSettings = async (isDefault) => {
@@ -74,11 +68,6 @@ class CommonStore {
   getWhiteLabelLogoText = async () => {
     const res = await api.settings.getLogoText();
     this.setLogoText(res);
-  };
-
-  getWhiteLabelLogoSizes = async () => {
-    const res = await api.settings.getLogoSizes();
-    this.setLogoSizes(res);
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {

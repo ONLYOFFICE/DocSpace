@@ -72,34 +72,6 @@ public static class StorageFactoryExtenstion
         var pathUtils = builder.ServiceProvider.GetService<PathUtils>();
         if (section != null)
         {
-            //old scheme
-            var discHandler = section.GetHandler("disc");
-            if (discHandler != null && section.Module != null)
-            {
-                var props = discHandler.Property != null ? discHandler.Property.ToDictionary(r => r.Name, r => r.Value) : new Dictionary<string, string>();
-                foreach (var m in section.Module.Where(m => m.Type == "disc"))
-                {
-                    if (m.Path.Contains(Constants.StorageRootParam))
-                    {
-                        builder.RegisterDiscDataHandler(
-                            pathUtils.ResolveVirtualPath(m.VirtualPath),
-                            pathUtils.ResolvePhysicalPath(m.Path, props),
-                            m.Public);
-                    }
-
-                    if (m.Domain != null)
-                    {
-                        foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.StorageRootParam)))
-                        {
-                            builder.RegisterDiscDataHandler(
-                                pathUtils.ResolveVirtualPath(d.VirtualPath),
-                                pathUtils.ResolvePhysicalPath(d.Path, props));
-                        }
-                    }
-                }
-            }
-
-            //new scheme
             if (section.Module != null)
             {
                 foreach (var m in section.Module)

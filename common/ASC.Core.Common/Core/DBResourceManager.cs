@@ -33,14 +33,11 @@ public class WhiteLabelHelper
     private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
     public string DefaultLogoText { get; set; }
 
-    private readonly IConfiguration _configuration;
-
-    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
+    public WhiteLabelHelper(ILoggerProvider option)
     {
         _logger = option.CreateLogger("ASC.Resources");
         _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
         DefaultLogoText = string.Empty;
-        _configuration = configuration;
     }
 
     public void SetNewText(int tenantId, string newText)

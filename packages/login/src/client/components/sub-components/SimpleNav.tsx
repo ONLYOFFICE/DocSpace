@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { hugeMobile } from "@docspace/components/utils/device";
-import { ReactSVG } from "react-svg";
+import { Dark } from "@docspace/components/themes";
 
 const StyledNav = styled.div`
   display: none;
@@ -21,10 +21,13 @@ const StyledNav = styled.div`
   }
 `;
 
-const SimpleNav = ({ theme }) => {
+const SimpleNav = ({ theme, logoUrls }) => {
+  const logo = Object.values(logoUrls)[0];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+
   return (
     <StyledNav id="login-header" theme={theme}>
-      <ReactSVG src="/static/images/logo.docspace.react.svg" />
+      <img src={logoUrl} />
     </StyledNav>
   );
 };

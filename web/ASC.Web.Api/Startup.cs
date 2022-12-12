@@ -39,7 +39,7 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        if (!_configuration.GetValue<bool>("disableLdapNotifyService")) 
+        if (!_configuration.GetValue<bool>("disableLdapNotifyService"))
         {
             services.AddHostedService<LdapNotifyService>();
             DIHelper.TryAdd<LdapNotifyService>();
@@ -52,5 +52,19 @@ public class Startup : BaseStartup
 
         services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
         services.AddScoped<CountRoomCheckerStatistic>();
+
+        DIHelper.TryAdd<AdditionalWhiteLabelSettingsConverter>();
+    }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        base.Configure(app, env);
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("logoUploader.ashx"),
+            appBranch =>
+            {
+                appBranch.UseLogoUploader();
+            });
     }
 }
