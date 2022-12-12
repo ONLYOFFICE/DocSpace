@@ -751,7 +751,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin))
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom))
                 {
                     return true;
                 }
@@ -774,7 +774,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin))
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom))
                 {
                     return true;
                 }
@@ -1546,11 +1546,11 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
-    private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin)
+    private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom)
     {
         if (!isUser)
         {
-            if (isDocSpaceAdmin)
+            if (isDocSpaceAdmin || (isRoom && entry.CreateBy == userId))
             {
                 return true;
             }
