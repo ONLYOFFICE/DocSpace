@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { StyledDownloadDialog } from "./StyledDownloadDialog";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -276,7 +276,11 @@ class DownloadDialogComponent extends React.Component {
         <ModalDialog.Body>
           <div className="download-dialog-description">
             <Text noSelect>{t("ChooseFormatText")}.</Text>
-            {!isSingleFile && <Text noSelect>{t("ConvertToZip")}</Text>}
+            {!isSingleFile && (
+              <Text noSelect>
+                <Trans t={t} i18nKey="ConvertToZip" />
+              </Text>
+            )}
           </div>
           {documents.length > 0 && (
             <DownloadContent

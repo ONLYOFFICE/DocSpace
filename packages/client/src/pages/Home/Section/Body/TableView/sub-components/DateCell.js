@@ -8,7 +8,7 @@ const DateCell = ({ create, updatedDate, createdDate, sideColor }) => {
     <StyledText
       title={date}
       fontSize="12px"
-      fontWeight={400}
+      fontWeight={600}
       color={sideColor}
       className="row_update-text"
       truncate

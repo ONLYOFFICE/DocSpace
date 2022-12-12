@@ -31,16 +31,12 @@ public class FeedAggregatorService : FeedBaseService
 {
     protected override string LoggerName { get; set; } = "ASC.Feed.Aggregator";
 
-    private readonly SocketServiceClient _socketServiceClient;
-
     public FeedAggregatorService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
-        ILoggerProvider optionsMonitor,
-        SocketServiceClient socketServiceClient)
+        ILoggerProvider optionsMonitor)
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
-        _socketServiceClient = socketServiceClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -112,6 +108,7 @@ public class FeedAggregatorService : FeedBaseService
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var authManager = scope.ServiceProvider.GetService<AuthManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var socketServiceClient = scope.ServiceProvider.GetRequiredService<SocketServiceClient>();
 
             foreach (var module in modules)
             {
@@ -200,7 +197,7 @@ public class FeedAggregatorService : FeedBaseService
                 }
             }
 
-            await _socketServiceClient.MakeRequest("sendUnreadUsers", unreadUsers);
+            await socketServiceClient.MakeRequest("sendUnreadUsers", unreadUsers);
 
             _logger.DebugTimeCollectingNews(DateTime.UtcNow - start);
         }

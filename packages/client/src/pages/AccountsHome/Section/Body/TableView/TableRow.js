@@ -86,7 +86,7 @@ const StyledPeopleRow = styled(TableRow)`
 
       .combo-button-label {
         font-size: 13px;
-        font-weight: 400;
+        font-weight: 600;
       }
     }
   }
@@ -149,10 +149,6 @@ const PeopleTableRow = (props) => {
     ? theme.peopleTableRow.pendingNameColor
     : theme.peopleTableRow.nameColor;
   const sideInfoColor = theme.peopleTableRow.sideInfoColor;
-
-  const onChange = (e) => {
-    onContentRowSelect && onContentRowSelect(e.target.checked, item);
-  };
 
   const getTypesOptions = React.useCallback(() => {
     const options = [];
@@ -258,7 +254,7 @@ const PeopleTableRow = (props) => {
         type="page"
         title={position}
         fontSize="13px"
-        fontWeight={400}
+        fontWeight={600}
         color={sideInfoColor}
         truncate
         noSelect
@@ -275,6 +271,23 @@ const PeopleTableRow = (props) => {
 
   const typeCell = renderTypeCell();
 
+  const onChange = (e) => {
+    onContentRowSelect && onContentRowSelect(e.target.checked, item);
+  };
+
+  const onRowClick = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.closest(".type-combobox") ||
+      e.target.closest(".paid-badge") ||
+      e.target.closest(".pending-badge") ||
+      e.target.closest(".disabled-badge")
+    ) {
+      return;
+    }
+    onContentRowSelect && onContentRowSelect(!isChecked, item);
+  };
+
   return (
     <StyledWrapper
       className={`user-item ${
@@ -288,6 +301,7 @@ const PeopleTableRow = (props) => {
         checked={isChecked}
         fileContextClick={userContextClick}
         isActive={isActive}
+        onClick={onRowClick}
         {...contextOptionsProps}
       >
         <TableCell className={"table-container_user-name-cell"}>
@@ -371,7 +385,7 @@ const PeopleTableRow = (props) => {
             type="page"
             title={email}
             fontSize="13px"
-            fontWeight={400}
+            fontWeight={600}
             color={sideInfoColor}
             onClick={onEmailClick}
             isTextOverflow

@@ -570,7 +570,7 @@ public class UserManager
 
         var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(_accessor?.HttpContext, "GroupInfo");
         var result = httpRequestDictionary.Get(userID.ToString());
-        if (result != null)
+        if (result != null && result.Count > 0)
         {
             if (categoryId.HasValue)
             {

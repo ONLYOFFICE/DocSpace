@@ -82,7 +82,6 @@ class WizardTest : BaseApiTests
             PasswordHash = passwordHash,
             Lng = lng,
             TimeZone = timeZone,
-            Promocode = promocode,
             AmiId = amiid,
             SubscribeFromSite = subscribeFromSite
         };

@@ -130,6 +130,7 @@ const DownloadContent = (props) => {
             {(isChecked || isIndeterminate) && !isOther && (
               <LinkWithDropdown
                 className="download-dialog-link"
+                dropDownClassName="download-dialog-dropDown"
                 containerMinWidth="fit-content"
                 data={titleData}
                 directionX="left"

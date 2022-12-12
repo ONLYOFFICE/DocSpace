@@ -330,15 +330,6 @@ const StyledBackup = styled.div`
     grid-template-columns: minmax(100px, 310px) 32px;
     grid-gap: 8px;
   }
-  .backup_third-party-combo {
-    .combo-button {
-      justify-content: flex-start;
-      .combo-button-label {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
-  }
 
   .backup_modules-separation {
     margin-bottom: 28px;

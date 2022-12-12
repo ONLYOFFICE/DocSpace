@@ -10,6 +10,7 @@
   "InviteUsersToRoom": "Invite users to room",
   "Invited": "Invited",
   "LinkCopySuccess": "Link has been copied",
-  "SearchPlaceholder": "Invite people by name or email",
+  "InviteRoomSearchPlaceholder": "Invite people by name or email",
+  "InviteAccountSearchPlaceholder": "Invite people by email",
   "SendInvitation": "Send invitation"
 }

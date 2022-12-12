@@ -111,7 +111,6 @@ class ComboBox extends React.Component {
       withBackdrop,
       isAside,
       withBackground,
-
       advancedOptionsCount,
     } = this.props;
 

@@ -39,8 +39,11 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        services.AddHostedService<LdapNotifyService>();
-        DIHelper.TryAdd<LdapNotifyService>();
+        if (!_configuration.GetValue<bool>("disableLdapNotifyService")) 
+        {
+            services.AddHostedService<LdapNotifyService>();
+            DIHelper.TryAdd<LdapNotifyService>();
+        }
         services.AddBaseDbContextPool<FilesDbContext>();
         services.AddBaseDbContextPool<BackupsContext>();
 

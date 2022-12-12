@@ -83,7 +83,7 @@ HELP_TARGET="install-Docker.sh";
 
 SKIP_HARDWARE_CHECK="false";
 
-EXTERNAL_PORT="8092"
+EXTERNAL_PORT="80"
 SERVICE_PORT="5050"
 
 while [ "$1" != "" ]; do
@@ -863,11 +863,11 @@ install_product () {
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml
+		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
 	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
-	docker-compose -f $BASE_DIR/appserver.yml up -d
+	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 }
 
@@ -900,7 +900,7 @@ check_image_RepoDigest() {
 }
 
 docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/${PRODUCT}.yml down --volumes
     docker-compose -f $BASE_DIR/build.yml pull
 }
 
@@ -947,7 +947,7 @@ save_parameters_from_configs() {
 	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
 	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
 	if [ ${EXTERNAL_PORT} = "8092" ]; then 
-		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/appserver.yml)
+		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/${PRODUCT}.yml)
 	fi
 }
 

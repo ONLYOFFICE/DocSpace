@@ -878,7 +878,7 @@ const Base = {
   linkWithDropdown: {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
-    textDecoration: "underline dashed",
+    textDecoration: "none",
     disableColor: gray,
 
     svg: {
@@ -892,6 +892,20 @@ const Base = {
 
     expander: {
       iconColor: black,
+    },
+
+    color: {
+      default: "#A3A9AE",
+      hover: "#555F65",
+      active: "#333333",
+      focus: "#333333",
+    },
+
+    background: {
+      default: "transparent",
+      hover: "#ECEEF1",
+      active: "#D0D5DA",
+      focus: "#DFE2E3",
     },
 
     caret: {
@@ -1596,7 +1610,7 @@ const Base = {
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "-2px",
+      marginLeft: "auto",
     },
 
     button: {
@@ -1604,7 +1618,13 @@ const Base = {
       heightWithBorder: "30px",
       heightModernView: "28px",
 
-      paddingLeft: "8px",
+      paddingLeft: "16px",
+      paddingRightNoArrow: "16px",
+      paddingRight: "8px",
+
+      selectPaddingLeft: "8px",
+      selectPaddingRightNoArrow: "14px",
+      selectPaddingRight: "6px",
 
       color: black,
       disabledColor: grayMid,
@@ -1622,9 +1642,10 @@ const Base = {
       hoverBorderColor: gray,
       hoverBorderColorOpen: blueMain,
       hoverDisabledBorderColor: grayLightMid,
-      hoverBackgroundModernView: "#F8F9F9",
 
-      activeBackgroundModernView: "#F3F4F4",
+      hoverBackgroundModernView: "#ECEEF1",
+      activeBackgroundModernView: "#D0D5DA",
+      focusBackgroundModernView: "#DFE2E3",
     },
 
     label: {
@@ -2010,6 +2031,7 @@ const Base = {
     catalogItemHeader: "#A3A9AE",
     catalogItemText: "#555F65",
     catalogItemActiveBackground: "#DFE2E3",
+    catalogShowText: "#657077",
   },
 
   section: {

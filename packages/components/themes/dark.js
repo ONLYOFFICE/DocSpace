@@ -488,10 +488,10 @@ const Dark = {
     marginRight: "8px",
 
     background: "#292929",
-    disableBackground: "#646464",
+    disableBackground: "#545454",
 
     fillColor: grayMaxLight,
-    disableFillColor: "#646464",
+    disableFillColor: "#474747",
 
     borderColor: "#646464",
     disableBorderColor: "none",
@@ -870,7 +870,7 @@ const Dark = {
   linkWithDropdown: {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
-    textDecoration: "underline dashed",
+    textDecoration: "none",
     disableColor: "#5c5c5c",
 
     svg: {
@@ -885,7 +885,19 @@ const Dark = {
     expander: {
       iconColor: white,
     },
+    color: {
+      default: "#858585",
+      hover: "#ADADAD",
+      active: "#FFFFFF",
+      focus: "#FFFFFF",
+    },
 
+    background: {
+      default: "transparent",
+      hover: "#474747",
+      active: "#282828",
+      focus: "#242424",
+    },
     caret: {
       width: "5px",
       minWidth: "5px",
@@ -1586,13 +1598,20 @@ const Dark = {
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "-2px",
+      marginLeft: "auto",
     },
 
     button: {
       height: "18px",
       heightWithBorder: "30px",
-      paddingLeft: "8px",
+
+      paddingLeft: "16px",
+      paddingRightNoArrow: "8px",
+      paddingRight: "16px",
+
+      selectPaddingLeft: "8px",
+      selectPaddingRightNoArrow: "14px",
+      selectPaddingRight: "8px",
 
       color: "#858585",
       disabledColor: "#858585",
@@ -1612,9 +1631,10 @@ const Dark = {
       hoverBorderColor: "#858585",
       hoverBorderColorOpen: grayMaxLight,
       hoverDisabledBorderColor: "#474747",
-      hoverBackgroundModernView: "#474747",
 
-      activeBackgroundModernView: "#858585",
+      hoverBackgroundModernView: "#474747",
+      activeBackgroundModernView: "#282828",
+      focusBackgroundModernView: "#242424",
     },
 
     label: {
@@ -2002,6 +2022,7 @@ const Dark = {
     catalogItemHeader: "#858585",
     catalogItemText: "rgba(255, 255, 255, 0.6)",
     catalogItemActiveBackground: "#333333",
+    catalogShowText: "#adadad",
   },
 
   section: {
