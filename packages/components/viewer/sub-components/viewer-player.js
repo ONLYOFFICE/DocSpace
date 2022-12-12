@@ -330,6 +330,8 @@ export default function ViewerPlayer(props) {
     isOpenContext: false,
     volume: 100,
     size: "0%",
+    opacity: 1,
+    deltaY: 0,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -357,13 +359,50 @@ export default function ViewerPlayer(props) {
   const [currentVolume, setCurrentVolume] = React.useState(100);
   const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
   const handlers = useSwipeable({
+    onSwiping: (e) => {
+      const [width, height, left, top] = getVideoPosition(videoRef.current);
+      const opacity = state.opacity - Math.abs(e.deltaX) / 500;
+
+      const direction =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
+
+      return dispatch(
+        createAction(ACTION_TYPES.update, {
+          left: direction === "horizontal" ? e.deltaX : 0,
+          top:
+            direction === "vertical"
+              ? e.deltaY >= 0
+                ? top + e.deltaY
+                : top
+              : top,
+          opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
+          deltaY: direction === "vertical" ? (e.deltaY > 0 ? e.deltaY : 0) : 0,
+        })
+      );
+    },
     onSwipedLeft: (e) => {
       if (e.event.path[0] === inputRef.current) return;
-      onNextClick();
+      if (e.deltaX <= -100) onNextClick();
     },
     onSwipedRight: (e) => {
       if (e.event.path[0] === inputRef.current) return;
-      onPrevClick();
+      if (e.deltaX >= 100) onPrevClick();
+    },
+    onSwipedDown: (e) => {
+      if (e.deltaY > 70) onClose();
+    },
+    onSwiped: (e) => {
+      const [width, height, left, top] = getVideoPosition(videoRef.current);
+      if (Math.abs(e.deltaX) < 100) {
+        return dispatch(
+          createAction(ACTION_TYPES.update, {
+            left: 0,
+            top: top,
+            opacity: 1,
+            deltaY: 0,
+          })
+        );
+      }
     },
   });
 
@@ -631,6 +670,8 @@ export default function ViewerPlayer(props) {
         isFullScreen: state.isFullScreen,
         speedSelection: false,
         volume: state.volume,
+        opacity: 1,
+        deltaY: 0,
       })
     );
   }
@@ -653,10 +694,13 @@ export default function ViewerPlayer(props) {
     contextBottom
   );
 
-  let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
-  let iconTop = (window.innerHeight - iconHeight) / 2 + "px";
+  let iconLeft = state.left
+    ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
+    : (window.innerWidth - iconWidth) / 2 + "px";
+  let iconTop = (window.innerHeight - iconHeight) / 2 + state.deltaY + "px";
 
   let imgStyle = {
+    opacity: `${state.opacity}`,
     width: `${state.width}px`,
     height: `${state.height}px`,
     transform: `
@@ -684,7 +728,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
         {!state.isPlaying && !isAudio && (
           <div
             className="bg-play"
-            style={{ left: `${iconLeft}`, top: `${iconTop}` }}
+            style={{
+              left: `${iconLeft}`,
+              top: `${iconTop}`,
+              opacity: `${state.opacity}`,
+            }}
           >
             <BigIconPlay onClick={togglePlay} />
           </div>
