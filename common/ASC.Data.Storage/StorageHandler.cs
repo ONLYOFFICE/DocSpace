@@ -97,6 +97,20 @@ public class StorageHandler
             return;
         }
 
+        var FileEtagTuple = await storage.TryGetFileEtagAsync(_domain, path);
+        if (FileEtagTuple.success)
+        {
+            var etag = FileEtagTuple.etag;
+
+            if (string.Equals(context.Request.Headers["If-None-Match"], etag))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+                return;
+            }
+
+            context.Response.Headers.ETag = etag;
+        }
+
         string encoding = null;
         if (storage is DiscDataStore && await storage.IsFileAsync(_domain, path + ".gz"))
         {

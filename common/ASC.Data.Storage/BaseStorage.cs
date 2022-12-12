@@ -33,6 +33,7 @@ public abstract class BaseStorage : IDataStore
     public virtual bool IsSupportedPreSignedUri => true;
     public virtual bool IsSupportChunking => false;
     internal string Modulename { get; set; }
+    internal bool Cache { get; set; }
     internal DataList DataList { get; set; }
     internal string Tenant { get; set; }
     internal Dictionary<string, TimeSpan> DomainsExpires { get; set; }
@@ -345,6 +346,22 @@ public abstract class BaseStorage : IDataStore
     internal static string EnsureLeadingSlash(string str)
     {
         return "/" + str.TrimStart('/');
+    }
+
+    protected abstract Task<DateTime> GetLastModificationDateAsync(string domain, string path);
+
+    public async Task<(bool success, string etag)> TryGetFileEtagAsync(string domain, string path)
+    {
+        var etag = "";
+
+        if (Cache)
+        {
+            var lastModificationDate = await GetLastModificationDateAsync(domain, path);
+            etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+            return (true, etag);
+        }
+
+        return (false, etag);
     }
 
     internal class MonoUri : Uri

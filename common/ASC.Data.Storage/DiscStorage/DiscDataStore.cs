@@ -43,6 +43,7 @@ public class DiscDataStore : BaseStorage
         Tenant = tenant;
         //Fill map path
         Modulename = moduleConfig.Name;
+        Cache = moduleConfig.Cache;
         DataList = new DataList(moduleConfig);
 
         foreach (var domain in moduleConfig.Domain)
@@ -759,5 +760,16 @@ public class DiscDataStore : BaseStorage
         {
             throw new FileNotFoundException("file not found", target);
         }
+    }
+
+    protected override Task<DateTime> GetLastModificationDateAsync(string domain, string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        var target = GetTarget(domain, path);
+
+        return File.Exists(target)
+            ? Task.FromResult(File.GetLastWriteTimeUtc(target))
+            : throw new FileNotFoundException("File not found" + target);
     }
 }
