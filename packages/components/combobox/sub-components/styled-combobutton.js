@@ -100,6 +100,17 @@ const StyledComboButton = styled.div`
 
   ${(props) => props.modernView && modernViewButton}
 
+
+  .optionalBlock {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.isOpen
+            ? props.theme.iconButton.hoverColor
+            : props.theme.iconButton.color};
+      }
+    }
+  }
   :hover {
     border-color: ${(props) =>
       props.isOpen
@@ -157,7 +168,10 @@ const StyledComboButton = styled.div`
     .optionalBlock {
       svg {
         path {
-          fill: ${(props) => props.theme.iconButton.hoverColor};
+          fill: ${(props) =>
+            props.isOpen
+              ? props.theme.iconButton.hoverColor
+              : props.theme.iconButton.color};
         }
       }
     }
