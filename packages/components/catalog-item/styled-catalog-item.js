@@ -137,7 +137,7 @@ const StyledCatalogItemBadgeWrapper = styled.div`
     align-items: center;
     justify-content: center;
 
-    width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+    //width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     min-width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     min-height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
@@ -147,7 +147,6 @@ const StyledCatalogItemBadgeWrapper = styled.div`
       align-items: center;
       justify-content: center;
 
-      width: 6px;
       height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
 
       p {
