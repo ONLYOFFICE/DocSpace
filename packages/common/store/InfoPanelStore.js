@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
 import { getUserById } from "@docspace/common/api/people";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, FolderType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
 import { getRoomInfo } from "../api/rooms";
@@ -163,7 +163,16 @@ class InfoPanelStore {
 
   getInfoPanelItemIcon = (item, size) => {
     return item.isRoom || !!item.roomType
-      ? item.logo && item.logo.medium
+      ? item.rootFolderType === FolderType.Archive
+        ? this.settingsStore.getIcon(
+            size,
+            null,
+            null,
+            null,
+            item.roomType,
+            true
+          )
+        : item.logo && item.logo.medium
         ? item.logo.medium
         : item.icon
         ? item.icon
