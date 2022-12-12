@@ -30,12 +30,10 @@ namespace ASC.MessagingSystem.EF.Model;
 public class MessageTarget
 {
     private IEnumerable<string> _items;
-    private readonly ILogger _logger;
     private readonly ILoggerProvider _option;
 
     public MessageTarget(ILoggerProvider option)
     {
-        _logger = option.CreateLogger("ASC.Messaging");
         _option = option;
     }
 

@@ -140,7 +140,7 @@ const Layout = (props) => {
 
       let vh = windowHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
-      setContentHeight("height");
+      setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
       //console.log("changeRootHeight setInterval"); TODO: need to refactoring

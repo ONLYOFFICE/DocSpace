@@ -42,7 +42,6 @@ public class AuthenticationController : ControllerBase
     private readonly CookiesManager _cookiesManager;
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
-    private readonly ICache _cache;
     private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
@@ -79,7 +78,6 @@ public class AuthenticationController : ControllerBase
         CookiesManager cookiesManager,
         PasswordHasher passwordHasher,
         EmailValidationKeyModelHelper emailValidationKeyModelHelper,
-        ICache cache,
         SetupInfo setupInfo,
         MessageService messageService,
         ProviderManager providerManager,
@@ -115,7 +113,6 @@ public class AuthenticationController : ControllerBase
         _cookiesManager = cookiesManager;
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
-        _cache = cache;
         _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;

@@ -40,7 +40,6 @@ public class StudioPeriodicNotify
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly SetupInfo _setupInfo;
-    private readonly IDbContextFactory<FeedDbContext> _dbContextFactory;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -61,7 +60,6 @@ public class StudioPeriodicNotify
         CommonLinkUtility commonLinkUtility,
         ApiSystemHelper apiSystemHelper,
         SetupInfo setupInfo,
-        IDbContextFactory<FeedDbContext> dbContextFactory,
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
         DisplayUserSettingsHelper displayUserSettingsHelper,
@@ -79,7 +77,6 @@ public class StudioPeriodicNotify
         _commonLinkUtility = commonLinkUtility;
         _apiSystemHelper = apiSystemHelper;
         _setupInfo = setupInfo;
-        _dbContextFactory = dbContextFactory;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
         _displayUserSettingsHelper = displayUserSettingsHelper;

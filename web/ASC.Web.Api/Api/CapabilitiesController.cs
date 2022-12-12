@@ -35,8 +35,6 @@ public class CapabilitiesController : ControllerBase
     private readonly TenantManager _tenantManager;
     private readonly ProviderManager _providerManager;
     private readonly SettingsManager _settingsManager;
-    private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger _log;
 
 
@@ -45,16 +43,12 @@ public class CapabilitiesController : ControllerBase
         TenantManager tenantManager,
         ProviderManager providerManager,
         SettingsManager settingsManager,
-        IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
         ILogger<CapabilitiesController> logger)
     {
         _coreBaseSettings = coreBaseSettings;
         _tenantManager = tenantManager;
         _providerManager = providerManager;
         _settingsManager = settingsManager;
-        _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
         _log = logger;
     }
 
