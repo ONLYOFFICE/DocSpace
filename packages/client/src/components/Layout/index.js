@@ -16,7 +16,8 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) => props.contentHeight};
+  height: ${(props) =>
+    isMobileOnly && isIOS ? "calc(var(--vh, 1vh) * 100)" : props.contentHeight};
   /* height: ${(props) =>
     (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
@@ -139,7 +140,7 @@ const Layout = (props) => {
 
       let vh = windowHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
-      setContentHeight(height);
+      setContentHeight("height");
     };
     intervalHandler = setInterval(() => {
       //console.log("changeRootHeight setInterval"); TODO: need to refactoring
