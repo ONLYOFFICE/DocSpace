@@ -45,6 +45,7 @@ const Navigation = ({
   onPlusClick,
   isEmptyPage,
   isDesktop: isDesktopClient,
+  isRoom,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -59,7 +60,10 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
-  const infoPanelIsVisible = isDesktop && !isEmptyPage;
+  const infoPanelIsVisible = React.useMemo(
+    () => isDesktop && (!isEmptyPage || (isEmptyPage && isRoom)),
+    [isDesktop, isEmptyPage, isRoom]
+  );
 
   const onMissClick = React.useCallback(
     (e) => {
@@ -225,6 +229,7 @@ Navigation.propTypes = {
   onBackToParentFolder: PropTypes.func,
   titles: PropTypes.object,
   isEmptyPage: PropTypes.bool,
+  isRoom: PropTypes.bool,
 };
 
 export default React.memo(Navigation);
