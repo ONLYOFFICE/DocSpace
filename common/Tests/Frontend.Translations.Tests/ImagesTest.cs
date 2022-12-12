@@ -151,6 +151,8 @@ public class ImagesTest
         {
             var sourceText = File.ReadAllText(path);
 
+            var mType = GetModuleType(path);
+
             var matches = regexp.Matches(sourceText);
 
             var images = matches
@@ -158,12 +160,14 @@ public class ImagesTest
                     ? m.Groups[1].Value
                     : null)
                 .Where(m => m != null)
+                .Distinct()
+                .Select(p => new ImageFile(p, mType))
                 .ToList();
 
             if (!images.Any())
                 continue;
 
-            var sourceImageFile = new SourceImageFile(path, GetModuleType(path));
+            var sourceImageFile = new SourceImageFile(path, mType);
 
             sourceImageFile.Images = images;
 
@@ -192,6 +196,32 @@ public class ImagesTest
             .ToList();
 
         Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" + string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}':\r\n{string.Join("\r\n", d.Paths.Select(p => p))}'")));
+    }
+
+    [Test]
+    [Category("FastRunning")]
+    public void UselessImagesTest()
+    {
+        var usedImages = SourceImageFiles
+             .SelectMany(item => item.Images.Select(p => p.FileName))
+             .Distinct()
+             .ToList();
+
+        var existingImages = ImageFiles
+            .Select(j => j.FileName)
+            .Distinct()
+            .ToList();
+
+        var notFoundInSourceImages = existingImages.Except(usedImages).ToList();
+
+        var notFoundPaths = ImageFiles
+            .Where(i => notFoundInSourceImages.Contains(i.FileName))
+            .Select(i => i.FilePath)
+            .ToList();
+
+        Assert.AreEqual(0, notFoundPaths.Count,
+            "Some images are not used in source files by name:\r\n{0}",
+            string.Join("\r\n", notFoundPaths));
     }
 
     /*[Test]

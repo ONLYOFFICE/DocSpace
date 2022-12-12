@@ -44,5 +44,5 @@ public class SourceImageFile
 
     public ModuleTypes ModuleType { get; }
 
-    public List<string> Images { get; set; }
+    public List<ImageFile> Images { get; set; }
 }
