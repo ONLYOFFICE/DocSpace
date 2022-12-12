@@ -348,6 +348,7 @@ export const FeedItemTypes = Object.freeze({
   File: "file",
   Folder: "folder",
   Room: "room",
+  Tag: "tag",
   User: "sharedRoom",
 });
 
