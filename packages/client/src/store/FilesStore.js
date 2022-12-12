@@ -1028,6 +1028,8 @@ class FilesStore {
             this.setCreatedItem(null);
           }
 
+          this.updateRoomLoadingLogo();
+
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -2002,6 +2004,41 @@ class FilesStore {
     return folderUrl;
   };
 
+  getRoomLogo = async (logoHandlers) => {
+    const newLogos = {};
+
+    let disableFetch = false;
+
+    for (let key in logoHandlers) {
+      const icon = disableFetch
+        ? ""
+        : await api.rooms.getLogoIcon(logoHandlers[key]);
+
+      if (!icon) disableFetch = true;
+
+      newLogos[key] = icon ? icon : "";
+    }
+
+    return newLogos;
+  };
+
+  updateRoomLoadingLogo = async () => {
+    const newRooms = await Promise.all(
+      this.folders.map(async (f) => {
+        const newRoom = JSON.parse(JSON.stringify(f));
+
+        if (!newRoom.isLogoLoading) return newRoom;
+
+        newRoom.isLogoLoading = false;
+        newRoom.logo = await this.getRoomLogo(newRoom.logoHandlers);
+
+        return newRoom;
+      })
+    );
+
+    this.setFolders(newRooms);
+  };
+
   get filesList() {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
@@ -2032,6 +2069,8 @@ class FilesStore {
         foldersCount,
         id,
         logo,
+        logoHandlers,
+        isLogoLoading,
         locked,
         parentId,
         pureContentLength,
@@ -2137,7 +2176,9 @@ class FilesStore {
         icon,
         id,
         isFolder,
+        isLogoLoading,
         logo,
+        logoHandlers,
         locked,
         new: item.new,
         parentId,

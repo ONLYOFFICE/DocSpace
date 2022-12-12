@@ -69,8 +69,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 17px;
-  height: 17px;
+  width: 12px;
+  height: 12px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }

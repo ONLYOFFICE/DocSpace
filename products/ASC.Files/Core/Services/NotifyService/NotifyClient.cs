@@ -43,7 +43,6 @@ public class NotifyClient
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly IServiceScopeFactory _scope;
     private readonly Context _notifyContext;
     private readonly NotifyEngineQueue _notifyEngineQueue;
 
@@ -59,8 +58,7 @@ public class NotifyClient
         PathProvider pathProvider,
         UserManager userManager,
         TenantManager tenantManager,
-        StudioNotifyHelper studioNotifyHelper,
-        IServiceScopeFactory serviceScope)
+        StudioNotifyHelper studioNotifyHelper)
     {
         _notifyContext = notifyContext;
         _notifyEngineQueue = notifyEngineQueue;
@@ -74,7 +72,6 @@ public class NotifyClient
         _userManager = userManager;
         _tenantManager = tenantManager;
         _studioNotifyHelper = studioNotifyHelper;
-        _scope = serviceScope;
     }
 
     public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)

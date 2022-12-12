@@ -6,7 +6,6 @@ import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -19,6 +18,7 @@ const ArticleHeader = ({
   onClick,
   isBurgerLoading,
   whiteLabelLogoUrls,
+  userTheme,
   ...rest
 }) => {
   const history = useHistory();
@@ -26,7 +26,14 @@ const ArticleHeader = ({
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
   const onLogoClick = () => history.push("/");
 
-  const isSvgLogo = whiteLabelLogoUrls[0].includes(".svg");
+  const burgerLogo =
+    userTheme === "Dark"
+      ? whiteLabelLogoUrls[5].path.dark
+      : whiteLabelLogoUrls[5].path.light;
+  const logo =
+    userTheme === "Dark"
+      ? whiteLabelLogoUrls[0].path.dark
+      : whiteLabelLogoUrls[0].path.light;
 
   if (isMobileOnly) return <></>;
   return (
@@ -35,7 +42,7 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <img src={whiteLabelLogoUrls[5]} onClick={onLogoClick} />
+          <img src={burgerLogo} onClick={onLogoClick} />
         </StyledIconBox>
       )}
 
@@ -44,29 +51,10 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            isSvgLogo ? (
-              <ReactSVG
-                className="logo-icon_svg"
-                src={whiteLabelLogoUrls[0]}
-                onClick={onLogoClick}
-              />
-            ) : (
-              <img
-                className="logo-icon_svg"
-                src={whiteLabelLogoUrls[0]}
-                onClick={onLogoClick}
-              />
-            )
+            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
           ) : (
             <Link to="/">
-              {isSvgLogo ? (
-                <ReactSVG
-                  className="logo-icon_svg"
-                  src={whiteLabelLogoUrls[0]}
-                />
-              ) : (
-                <img className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
-              )}
+              <img className="logo-icon_svg" src={logo} />
             </Link>
           )}
         </StyledHeading>
@@ -84,10 +72,13 @@ ArticleHeader.propTypes = {
 ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, userStore } = auth;
   const { isBurgerLoading, whiteLabelLogoUrls } = settingsStore;
+  const { userTheme } = userStore;
+
   return {
     isBurgerLoading,
     whiteLabelLogoUrls,
+    userTheme,
   };
 })(observer(ArticleHeader));

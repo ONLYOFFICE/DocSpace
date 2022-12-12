@@ -39,7 +39,6 @@ public class FilesModule : FeedModule
     private const string SharedFileItem = Constants.SharedFileItem;
 
     private readonly FileSecurity _fileSecurity;
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
@@ -48,7 +47,6 @@ public class FilesModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
@@ -56,7 +54,6 @@ public class FilesModule : FeedModule
         _fileDao = daoFactory.GetFileDao<int>();
         _folderDao = daoFactory.GetFolderDao<int>();
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
     }
 
