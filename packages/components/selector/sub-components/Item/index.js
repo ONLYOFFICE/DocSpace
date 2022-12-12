@@ -20,11 +20,6 @@ const StyledItem = styled.div`
 
   box-sizing: border-box;
 
-  :hover {
-    cursor: pointer;
-    background: ${(props) => props.theme.selector.item.hoverBackground};
-  }
-
   ${(props) => props.isSelected && !props.isMultiSelect && selectedCss}
 
   .room-logo,
@@ -50,6 +45,13 @@ const StyledItem = styled.div`
   .checkbox {
     svg {
       margin-right: 0px;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      cursor: pointer;
+      background: ${(props) => props.theme.selector.item.hoverBackground};
     }
   }
 `;
@@ -106,6 +108,7 @@ const Item = React.memo(({ index, style, data }) => {
         isMultiSelect={isMultiSelect}
         style={style}
         onClick={onClick}
+        className="test-22"
       >
         {!isLogo ? (
           <Avatar
