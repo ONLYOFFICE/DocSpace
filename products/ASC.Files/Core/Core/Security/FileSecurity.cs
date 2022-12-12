@@ -964,7 +964,7 @@ public class FileSecurity : IFileSecurity
         if (e.Access != FileShare.Restrict &&
             e.CreateBy == userId &&
             (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON) &&
-            e.RootFolderType != FolderType.Archive)
+            e.RootFolderType != FolderType.Archive && e.RootFolderType != FolderType.VirtualRooms)
         {
             return true;
         }
@@ -1550,7 +1550,7 @@ public class FileSecurity : IFileSecurity
     {
         if (!isUser)
         {
-            if (isDocSpaceAdmin || entry.CreateBy == userId)
+            if (isDocSpaceAdmin)
             {
                 return true;
             }
