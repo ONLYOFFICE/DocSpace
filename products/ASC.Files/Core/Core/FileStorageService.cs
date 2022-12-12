@@ -3213,7 +3213,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     private IDictionary<string, StringValues> GetHttpHeaders()
     {
-        return _httpContextAccessor?.HttpContext?.Request?.Headers;
+        return _httpContextAccessor?.HttpContext?.Request?.Headers?.ToDictionary(k => k.Key, v => v.Value);
     }
 
     private static string GetAccessString(FileShare fileShare)
