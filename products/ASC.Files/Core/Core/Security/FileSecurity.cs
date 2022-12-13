@@ -72,7 +72,8 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Lock,
                     FilesSecurityActions.EditHistory,
                     FilesSecurityActions.Copy,
-                    FilesSecurityActions.Move
+                    FilesSecurityActions.Move,
+                    FilesSecurityActions.Duplicate,
                 }
             },
             {
@@ -89,6 +90,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Pin,
                     FilesSecurityActions.EditAccess,
+                    FilesSecurityActions.Duplicate,
                 }
             }
     };
@@ -731,15 +733,11 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FolderType.USER:
-                if (isOutsider)
+                if (isOutsider || isUser || action == FilesSecurityActions.Lock)
                 {
                     return false;
                 }
-                if (isUser)
-                {
-                    return false;
-                }
-                if (e.RootCreateBy == userId && !isUser)
+                if (e.RootCreateBy == userId)
                 {
                     // user has all right in his folder
                     return true;
@@ -948,6 +946,7 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Copy:
             case FilesSecurityActions.MoveTo:
             case FilesSecurityActions.EditAccess:
+            case FilesSecurityActions.Duplicate:
                 if (e.Access == FileShare.RoomAdmin)
                 {
                     return true;
@@ -1616,6 +1615,7 @@ public class FileSecurity : IFileSecurity
         MoveTo,
         Move,
         Pin,
-        EditAccess
+        EditAccess,
+        Duplicate
     }
 }
