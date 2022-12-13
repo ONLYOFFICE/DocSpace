@@ -40,6 +40,8 @@ const Details = ({
   });
 
   const getLargeRoomLogo = React.useCallback(async (url) => {
+    if (selection.logo.large) return setLargeLogoIcon(selection.logo.large);
+
     const icon = await api.rooms.getLogoIcon(url);
 
     setLargeLogoIcon(icon);
