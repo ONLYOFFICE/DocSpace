@@ -166,6 +166,10 @@ public class StudioNotifyService
     public void UserPasswordChange(UserInfo userInfo)
     {
         var auditEventDate = DateTime.UtcNow;
+        var accuracy = TimeSpan.FromSeconds(1);
+        var ticks = (auditEventDate.Ticks + (accuracy.Ticks / 2) + 1) / accuracy.Ticks;
+
+        auditEventDate = new DateTime(ticks * accuracy.Ticks, auditEventDate.Kind);
 
         var hash = auditEventDate.ToString("s");
 
