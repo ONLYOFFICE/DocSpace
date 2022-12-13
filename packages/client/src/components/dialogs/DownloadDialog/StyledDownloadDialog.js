@@ -4,10 +4,15 @@ import ModalDialog from "@docspace/components/modal-dialog";
 const StyledDownloadDialog = styled(ModalDialog)`
   .download-dialog-description {
     margin-bottom: 16px;
+    line-height: 20px;
   }
 
   .download-dialog-convert-message {
     margin-top: 16px;
+  }
+
+  .modal-header {
+    margin-bottom: 24px;
   }
 `;
 
@@ -43,6 +48,9 @@ const StyledDownloadContent = styled.div`
 
   .download-dialog_hidden-items {
     display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+    border-bottom: ${(props) =>
+      `1px solid ${props.theme.modalDialog.headerBorderColor}`};
+    margin-bottom: 16px;
   }
 
   .download-dialog-row {

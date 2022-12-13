@@ -89,6 +89,43 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
         return command;
     }
 
+    public DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset, Guid id)
+    {
+        var command = connection.CreateCommand();
+
+        var conditionUserText = GetContitionUserText(table, id);
+
+        command.CommandText = string.Format("select t.* from {0} as t {1} {2} limit {3},{4};", table.Name, GetSelectCommandConditionText(tenantId, table, id), conditionUserText, offset, limit);
+
+        return command; 
+    }
+
+    private string GetSelectCommandConditionText(int tenantId, TableInfo table, Guid id)
+    {
+        var conditionText = GetSelectCommandConditionText(tenantId, table);
+        if (table.Name == "files_folder_tree")
+        {
+            conditionText += $" and t1.create_by = '{id}'";
+        }
+        if (table.Name == "files_bunch_objects")
+        {
+            conditionText = $"inner join files_folder as t1 on t1.id = t.left_node {conditionText} and t1.create_by = '{id}'";
+        }
+        return conditionText;
+    }
+
+    private string GetContitionUserText(TableInfo table, Guid id)
+    {
+        if (table.UserIDColumns.Any())
+        {
+            return "and t." + table.UserIDColumns[0] + " = '" + id + "' ";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
     public DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table)
     {
         var command = connection.CreateCommand();

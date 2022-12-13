@@ -24,6 +24,10 @@ const StyledSelectedItem = styled.div`
 
   background: ${(props) => props.theme.filterInput.selectedItems.background};
 
+  :hover {
+    background: ${(props) =>
+      props.theme.filterInput.selectedItems.hoverBackground};
+  }
   .selected-item_label {
     line-height: 20px;
     margin-right: 10px;

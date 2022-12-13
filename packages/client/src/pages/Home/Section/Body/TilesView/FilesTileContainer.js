@@ -94,7 +94,6 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       useReactWindow={!withPaging}
       headingFolders={t("Translations:Folders")}
       headingFiles={t("Translations:Files")}
-      headingRooms={t("Common:Rooms")}
     >
       {filesList.map((item, index) => {
         return index % 11 == 0 ? (

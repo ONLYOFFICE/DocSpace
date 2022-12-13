@@ -44,6 +44,8 @@ const Navigation = ({
   withMenu,
   onPlusClick,
   isEmptyPage,
+  isDesktop: isDesktopClient,
+  isRoom,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -58,7 +60,10 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
-  const infoPanelIsVisible = isDesktop && !isEmptyPage;
+  const infoPanelIsVisible = React.useMemo(
+    () => isDesktop && (!isEmptyPage || (isEmptyPage && isRoom)),
+    [isDesktop, isEmptyPage, isRoom]
+  );
 
   const onMissClick = React.useCallback(
     (e) => {
@@ -153,6 +158,7 @@ const Navigation = ({
                 toggleInfoPanel={toggleInfoPanel}
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
+                isDesktopClient={isDesktopClient}
               />
             </>
           )}
@@ -164,6 +170,7 @@ const Navigation = ({
             isTabletView={isTabletView}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
+            isDesktopClient={isDesktopClient}
             isInfoPanelVisible={isInfoPanelVisible}
           >
             <ArrowButton
@@ -222,6 +229,7 @@ Navigation.propTypes = {
   onBackToParentFolder: PropTypes.func,
   titles: PropTypes.object,
   isEmptyPage: PropTypes.bool,
+  isRoom: PropTypes.bool,
 };
 
 export default React.memo(Navigation);

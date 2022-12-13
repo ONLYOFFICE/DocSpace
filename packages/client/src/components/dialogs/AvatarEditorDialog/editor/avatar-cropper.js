@@ -125,9 +125,12 @@ const AvatarCropper = ({
   const handleDeleteImage = () => setUploadedFile(null);
 
   const handleImageChange = throttle(() => {
-    if (editorRef) {
+    try {
+      if (!editorRef) return;
       const newPreveiwImage = editorRef.getImageScaledToCanvas()?.toDataURL();
       setPreviewAvatar(newPreveiwImage);
+    } catch (e) {
+      console.error(e);
     }
   }, 300);
 
@@ -159,6 +162,7 @@ const AvatarCropper = ({
           onPositionChange={handlePositionChange}
           onImageReady={handleImageChange}
           disableHiDPIScaling
+          crossOrigin="anonymous"
         />
       </div>
 

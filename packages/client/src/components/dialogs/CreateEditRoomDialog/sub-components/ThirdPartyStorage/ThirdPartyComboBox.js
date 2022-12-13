@@ -261,6 +261,7 @@ const ThirdPartyComboBox = ({
           maxHeight={isHugeMobile() ? 158 : 382}
           directionY={dropdownDirection}
           marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
+          hasItems={isOpen}
         >
           {thirdparties.map((thirdparty) => (
             <DropDownItem

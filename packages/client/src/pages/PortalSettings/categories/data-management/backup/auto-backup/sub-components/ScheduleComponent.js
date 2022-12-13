@@ -62,7 +62,6 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
           showDisabledItems
         />

@@ -33,7 +33,7 @@ var options = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(options);
 builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
  {
-     config.AddJsonFile($"appsettings.json", true)
+     config.AddJsonFile($"appsettings.runner.json", true)
                 .AddCommandLine(args);
  });
 

@@ -228,6 +228,24 @@ class ContextOptionsStore {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
+  onCopyLinkRoom = (item, t) => {
+    const { folderUrl } = item;
+    const { getFolderUrl } = this.filesStore;
+
+    const newFolderUrl = folderUrl
+      ? folderUrl
+      : getFolderUrl(item.id, item.isRoom || item.isFolder);
+
+    const url = combineUrl(
+      window.location.origin,
+      config.homepage,
+      newFolderUrl
+    );
+    copy(url);
+
+    toastr.success(t("Translations:LinkCopySuccess"));
+  };
+
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
     const canConvert = this.settingsStore.canConvert(item.fileExst);
@@ -258,7 +276,11 @@ class ContextOptionsStore {
     let tab =
       !this.authStore.isDesktopClient && fileExst
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/doceditor?fileId=${id}`
+            ),
             "_blank"
           )
         : null;
@@ -625,7 +647,7 @@ class ContextOptionsStore {
           {
             id: "option_pin-room",
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: (e) => this.onClickPin(e, item.id, t),
             disabled: false,
@@ -759,6 +781,14 @@ class ContextOptionsStore {
         label: t("LinkForPortalUsers"),
         icon: "/static/images/invitation.link.react.svg",
         onClick: () => this.onClickLinkForPortal(item, t),
+        disabled: false,
+      },
+      {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: "/static/images/invitation.link.react.svg",
+        onClick: () => this.onCopyLinkRoom(item, t),
         disabled: false,
       },
       {
@@ -970,7 +1000,7 @@ class ContextOptionsStore {
       const pinOption = isPinOption
         ? {
             key: "pin-room",
-            label: t("Pin"),
+            label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
             onClick: pinRooms,
             disabled: false,

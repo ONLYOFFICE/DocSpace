@@ -36,12 +36,12 @@ const InfoPanelBodyContent = ({
 
   const isSeveralItems = props.selectedItems?.length > 1;
 
-  const isNoItem =
-    (isGallery && !gallerySelected) ||
-    (!selection?.title && !isSeveralItems && !isAccounts) ||
-    ((isRootFolder || isAccounts) &&
-      selection?.isSelectedFolder &&
-      !selection?.wasContextMenuSelection);
+  const isNoItem = isGallery
+    ? !gallerySelected
+    : (!selection?.title && !isSeveralItems && !isAccounts) ||
+      ((isRootFolder || isAccounts) &&
+        selection?.isSelectedFolder &&
+        !selection?.wasContextMenuSelection);
 
   const defaultProps = {
     selection,
@@ -145,7 +145,7 @@ const InfoPanelBodyContent = ({
   if (!selection && !isGallery) return null;
 
   return (
-    <StyledInfoPanelBody>
+    <StyledInfoPanelBody isAccounts={isAccounts}>
       {!isNoItem && (
         <ItemTitle {...defaultProps} selectionLength={selectedItems.length} />
       )}
@@ -154,7 +154,7 @@ const InfoPanelBodyContent = ({
   );
 };
 
-export default inject(({ auth, selectedFolderStore }) => {
+export default inject(({ auth, selectedFolderStore, oformsStore }) => {
   const {
     selection,
     setSelection,
@@ -170,6 +170,8 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsAccounts,
     getIsGallery,
   } = auth.infoPanelStore;
+
+  const { gallerySelected } = oformsStore;
 
   const { isRootFolder } = selectedFolderStore;
 
@@ -195,5 +197,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     selectedFolder,
 
     isRootFolder,
+    gallerySelected,
   };
 })(withRouter(observer(InfoPanelBodyContent)));

@@ -55,4 +55,16 @@ public class Startup : BaseStartup
 
         DIHelper.TryAdd<AdditionalWhiteLabelSettingsConverter>();
     }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        base.Configure(app, env);
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("logoUploader.ashx"),
+            appBranch =>
+            {
+                appBranch.UseLogoUploader();
+            });
+    }
 }

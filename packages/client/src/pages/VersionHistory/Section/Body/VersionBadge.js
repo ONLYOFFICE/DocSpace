@@ -22,7 +22,7 @@ const VersionBadge = ({
     index={index}
     {...rest}
   >
-    <StyledVersionSvg isVersion={isVersion} theme={theme} index={index} />
+    <StyledVersionSvg $isVersion={isVersion} theme={theme} index={index} />
 
     <Text
       className="version_badge-text"

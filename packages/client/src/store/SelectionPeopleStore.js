@@ -183,7 +183,7 @@ class SelectionStore {
 
     const users = this.selection.filter((x) => canRemoveUser(x));
 
-    return users.length > 0 ? users : false;
+    return users.map((u) => u.id);
   }
 }
 

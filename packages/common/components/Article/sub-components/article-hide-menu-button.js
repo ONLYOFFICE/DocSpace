@@ -5,6 +5,7 @@ import { ReactSVG } from "react-svg";
 import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { useTranslation } from "react-i18next";
+import Base from "@docspace/components/themes/base";
 
 const StyledHideArticleMenuButton = styled.div`
   display: flex;
@@ -72,14 +73,26 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+  }
 
+  .article-hide-menu-icon_svg {
     svg {
       path {
         fill: ${({ currentColorScheme }) => currentColorScheme.main.accent};
       }
     }
   }
+
+  .article-show-menu-icon_svg {
+    svg {
+      path {
+        fill: ${(props) => props.theme.article.catalogShowText};
+      }
+    }
+  }
 `;
+
+StyledHideArticleMenuButton.defaultProps = { theme: Base };
 
 const HideArticleMenuButton = ({
   showText,

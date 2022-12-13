@@ -11,7 +11,7 @@ import { isChrome, browserVersion } from "react-device-detect";
 
 const StyledButton = styled(Button)`
   border: none;
-  padding: 0 10px;
+  padding: 0 12px;
   height: 100%;
   min-width: fit-content;
 
@@ -78,7 +78,11 @@ const StyledButton = styled(Button)`
   .button-content {
     @media ${tablet} {
       flex-direction: column;
-      gap: 0px;
+      gap: 4px;
+    }
+
+    @media ${hugeMobile} {
+      margin-top: 4px;
     }
 
     ${isChrome &&

@@ -17,6 +17,10 @@ const StyledTagList = styled.div`
     border-radius: 3px;
     margin: 0;
 
+    :hover {
+      background: ${(props) =>
+        props.theme.createEditRoomDialog.tagInput.tagHoverBackground};
+    }
     .tag-icon {
       margin-left: 10px;
     }

@@ -112,6 +112,20 @@ class UserStore {
   get isAuthenticated() {
     return !!this.user;
   }
+
+  get userTheme() {
+    const systemTheme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "Dark"
+        : "Light";
+    const theme = this.user?.theme || systemTheme;
+
+    if (theme === "System") {
+      return systemTheme;
+    }
+    return theme;
+  }
 }
 
 export default UserStore;

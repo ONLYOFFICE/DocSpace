@@ -69,6 +69,8 @@ class AccessRightsStore {
   canLockFile = (file) => {
     const { rootFolderType, access } = file;
 
+    if (rootFolderType === FolderType.USER) return false;
+
     if (rootFolderType === FolderType.Archive)
       return getArchiveFileRoleActions(access).block;
 
@@ -132,10 +134,9 @@ class AccessRightsStore {
       return getArchiveFileRoleActions(access).rename;
 
     if (
-      rootFolderType === FolderType.TRASH ||
-      (!isFile &&
-        // rootFolderType === FolderType.Privacy &&
-        !isDesktopClient)
+      rootFolderType === FolderType.TRASH
+      // ||
+      // (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
     )
       return false;
 
@@ -256,7 +257,6 @@ class AccessRightsStore {
     }
 
     if (
-      rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
       // rootFolderType === FolderType.Privacy ||

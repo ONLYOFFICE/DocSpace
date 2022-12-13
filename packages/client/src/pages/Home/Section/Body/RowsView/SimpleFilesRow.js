@@ -13,7 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
-
+import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
@@ -176,8 +176,15 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 6px;
+    margin-left: ${(props) => (!props.isPersonalRoom ? "6px" : "0")};
     padding-top: 0px;
+  }
+  .expandButton > div:first-child {
+    ${(props) =>
+      props.isPersonalRoom &&
+      css`
+        padding-left: 0 !important;
+      `}
   }
 `;
 
@@ -209,6 +216,7 @@ const SimpleFilesRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
+    isPersonalRoom,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
@@ -245,6 +253,10 @@ const SimpleFilesRow = (props) => {
         }
       : {};
 
+  const idWithFileExst = item.fileExst
+    ? `${item.id}_${item.fileExst}`
+    : item.id ?? "";
+
   return (
     <StyledWrapper
       id={id}
@@ -260,7 +272,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.fileExst}`}
+        className={classNames("files-item", className, idWithFileExst)}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -299,6 +311,7 @@ const SimpleFilesRow = (props) => {
           isDragOver={isDragOver}
           isSmallContainer={isSmallContainer}
           isRooms={isRooms}
+          isPersonalRoom={isPersonalRoom}
         >
           <FilesRowContent
             item={item}

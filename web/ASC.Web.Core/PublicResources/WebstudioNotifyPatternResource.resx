@@ -1235,7 +1235,8 @@ $Body</value>
   </data>
   <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
     <value>Confirm DocSpace Invite</value>
-  </data>  <data name="ButtonConfirmEmail" xml:space="preserve">
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
     <value>CONFIRM</value>
   </data>
   <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
@@ -1807,5 +1808,37 @@ ONLYOFFICE Team
   </data>
   <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
     <value>Get free ONLYOFFICE apps</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join ONLYOFFICE DocSpace at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
+
+$GreenButton
+
+After clicking on the invitation link, please set a new password for your account.
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join $Message room at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
+
+$GreenButton
+
+After clicking on the invitation link, please set a new password for your account.
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
   </data>
 </root>

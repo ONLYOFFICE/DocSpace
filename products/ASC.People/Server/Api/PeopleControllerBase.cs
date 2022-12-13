@@ -72,9 +72,12 @@ public abstract class PeopleControllerBase : ApiControllerBase
         return user;
     }
 
-    protected void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
+    protected void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user, bool checkPermissions = true)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        if (checkPermissions)
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        }
 
         if (contacts == null)
         {

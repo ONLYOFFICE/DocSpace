@@ -164,6 +164,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.CanFillForms = await _fileSecurity.CanFillFormsAsync(file);
         result.DenyDownload = file.DenyDownload;
         result.DenySharing = file.DenySharing;
+        result.Access = file.Access;
 
         try
         {
