@@ -4,6 +4,7 @@ import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "react-swipeable";
 
 export default function ViewerImage(props) {
+  const { dispatch, createAction, actionType } = props;
   const isMouseDown = React.useRef(false);
   const imgRef = React.useRef(null);
   const prePosition = React.useRef({
@@ -16,11 +17,48 @@ export default function ViewerImage(props) {
   });
 
   const handlers = useSwipeable({
+    onSwiping: (e) => {
+      const opacity = props.opacity - Math.abs(e.deltaX) / 500;
+
+      const direction =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
+
+      return dispatch(
+        createAction(actionType.update, {
+          left: direction === "horizontal" ? e.deltaX : 0,
+          opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
+          top:
+            direction === "vertical"
+              ? e.deltaY >= 0
+                ? props.currentTop + e.deltaY
+                : props.currentTop
+              : props.currentTop,
+          deltaY: direction === "vertical" ? (e.deltaY > 0 ? e.deltaY : 0) : 0,
+          deltaX: direction === "horizontal" ? e.deltaX : 0,
+        })
+      );
+    },
     onSwipedLeft: (e) => {
-      props.onNextClick();
+      if (e.deltaX <= -100) props.onNextClick();
     },
     onSwipedRight: (e) => {
-      props.onPrevClick();
+      if (e.deltaX >= 100) props.onPrevClick();
+    },
+    onSwipedDown: (e) => {
+      if (e.deltaY > 70) props.onMaskClick();
+    },
+    onSwiped: (e) => {
+      if (Math.abs(e.deltaX) < 100) {
+        return dispatch(
+          createAction(actionType.update, {
+            left: 0,
+            top: props.currentTop,
+            deltaY: 0,
+            deltaX: 0,
+            opacity: 1,
+          })
+        );
+      }
     },
   });
 
@@ -129,6 +167,7 @@ export default function ViewerImage(props) {
   let imgStyle = {
     width: `${props.width}px`,
     height: `${props.height}px`,
+    opacity: `${props.opacity}`,
     transition: `${props.withTransition ? "all .26s ease-out" : "none"}`,
     transform: `
 translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${

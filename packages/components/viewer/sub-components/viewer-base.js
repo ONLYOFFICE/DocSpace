@@ -71,6 +71,7 @@ const ViewerBase = (props) => {
     startLoading: false,
     percent: 100,
     withTransition: false,
+    opacity: 1,
   };
   function setContainerWidthHeight() {
     let width = window.innerWidth;
@@ -252,6 +253,7 @@ const ViewerBase = (props) => {
           loadFailed: !success,
           startLoading: false,
           percent: 100,
+          opacity: 1,
         })
       );
     }
@@ -549,6 +551,7 @@ const ViewerBase = (props) => {
     );
   }
 
+  let currentTop = (containerSize.current.height - state.height) / 2;
   const prefixCls = "react-viewer";
 
   const className = classnames(`${prefixCls}`, `${prefixCls}-transition`, {
@@ -603,6 +606,11 @@ const ViewerBase = (props) => {
         }
         visible={visible}
         width={state.width}
+        dispatch={dispatch}
+        createAction={createAction}
+        actionType={ACTION_TYPES}
+        currentTop={currentTop}
+        opacity={state.opacity}
         height={state.height}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
