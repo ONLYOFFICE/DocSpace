@@ -2093,6 +2093,7 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        security,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2213,6 +2214,7 @@ class FilesStore {
         pinned,
         thirdPartyIcon,
         providerType,
+        security,
       };
     });
 

@@ -26,21 +26,15 @@ class AccessRightsStore {
   }
 
   canInviteUserInRoom(room) {
-    const { access, rootFolderType } = room;
+    const { security } = room;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).inviteUsers;
-
-    return getRoomRoleActions(access).inviteUsers;
+    return security?.EditAccess;
   }
 
   canChangeUserRoleInRoom = (room) => {
-    const { access, rootFolderType, currentUserInList } = room;
+    const { currentUserInList, security } = room;
     const { userStore } = this.authStore;
     const { user } = userStore;
-
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).changeUserRole;
 
     const isMyProfile = user.id === currentUserInList.id;
     const isOwnerRoleRoom =
@@ -48,10 +42,10 @@ class AccessRightsStore {
 
     if (isMyProfile || isOwnerRoleRoom) return false;
 
-    return getRoomRoleActions(access).changeUserRole;
+    return security?.EditAccess;
   };
   canDeleteUserInRoom = (room) => {
-    const { access, currentUserInList, rootFolderType } = room;
+    const { currentUserInList, security } = room;
     const { userStore } = this.authStore;
     const { user } = userStore;
 
@@ -61,10 +55,7 @@ class AccessRightsStore {
 
     if (isMyProfile || isOwnerRoleRoom) return false;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).deleteUsers;
-
-    return getRoomRoleActions(access).deleteUsers;
+    return security?.EditAccess;
   };
   canLockFile = (file) => {
     const { security } = file;

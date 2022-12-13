@@ -15,8 +15,8 @@ const User = ({
   setSelectionParentRoom,
   canChangeUserRoleInRoom,
   canDeleteUserInRoom,
-  rootFolderType,
-  access,
+
+  security,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -27,16 +27,14 @@ const User = ({
   const canChangeUserRole =
     user &&
     canChangeUserRoleInRoom({
-      access,
-      rootFolderType,
+      security,
       currentUserInList: { id: user.id, access: user.access },
     });
 
   const canDeleteUser =
     user &&
     canDeleteUserInRoom({
-      access,
-      rootFolderType,
+      security,
       currentUserInList: { id: user.id, access: user.access },
     });
 
