@@ -1029,12 +1029,20 @@ public class UserController : PeopleControllerBase
                         }
 
                         user.Status = EmployeeStatus.Active;
-                        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
+                        
+                        if (_coreBaseSettings.DisableDocSpace)
+                        {
+                            await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
+                        }
                     }
                     break;
                 case EmployeeStatus.Terminated:
                     user.Status = EmployeeStatus.Terminated;
-                    await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
+                    
+                    if (_coreBaseSettings.DisableDocSpace)
+                    {
+                        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
+                    }
 
                     await _cookiesManager.ResetUserCookie(user.Id);
                     _messageService.Send(MessageAction.CookieSettingsUpdated);
