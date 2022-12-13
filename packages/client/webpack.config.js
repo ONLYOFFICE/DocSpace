@@ -131,12 +131,12 @@ const config = {
         generator: {
           filename: "static/images/[name].[contenthash][ext][query]",
         },
-        resourceQuery: { not: [/react/] }, // exclude react component if *.svg?react
+        resourceQuery: /url/, // *.svg?url
       },
       {
         test: /\.svg$/i,
         issuer: /\.[jt]sx?$/,
-        resourceQuery: /react/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",
