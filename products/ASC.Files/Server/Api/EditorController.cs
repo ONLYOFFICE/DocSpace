@@ -40,8 +40,13 @@ public class EditorControllerInternal : EditorController<int>
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper)
-        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        DaoFactory daoFactory,
+        TenantManager tenantManager,
+        FileSecurity fileSecurity,
+        PathProvider pathProvider,
+        DocumentServiceConnector documentServiceConnector)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper, daoFactory, tenantManager, fileSecurity, pathProvider, documentServiceConnector)
     {
     }
 }
@@ -62,8 +67,13 @@ public class EditorControllerThirdparty : EditorController<string>
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper)
-        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        DaoFactory daoFactory,
+        TenantManager tenantManager,
+        FileSecurity fileSecurity,
+        PathProvider pathProvider,
+        DocumentServiceConnector documentServiceConnector)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper, daoFactory, tenantManager, fileSecurity, pathProvider, documentServiceConnector)
     {
         _thirdPartySelector = thirdPartySelector;
     }
@@ -119,6 +129,11 @@ public abstract class EditorController<T> : ApiControllerBase
     private readonly IMapper _mapper;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly DaoFactory _daoFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly FileSecurity _fileSecurity;
+    private readonly PathProvider _pathProvider;
+    private readonly DocumentServiceConnector _documentServiceConnector;
 
     public EditorController(
         FileStorageService<T> fileStorageService,
@@ -131,7 +146,12 @@ public abstract class EditorController<T> : ApiControllerBase
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        DaoFactory daoFactory,
+        TenantManager tenantManager,
+        FileSecurity fileSecurity,
+        PathProvider pathProvider,
+        DocumentServiceConnector documentServiceConnector) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _documentServiceHelper = documentServiceHelper;
@@ -142,6 +162,11 @@ public abstract class EditorController<T> : ApiControllerBase
         _mapper = mapper;
         _commonLinkUtility = commonLinkUtility;
         _filesLinkUtility = filesLinkUtility;
+        _daoFactory = daoFactory;
+        _tenantManager = tenantManager;
+        _fileSecurity = fileSecurity;
+        _pathProvider = pathProvider;
+        _documentServiceConnector = documentServiceConnector;
     }
 
     /// <summary>
@@ -254,6 +279,81 @@ public abstract class EditorController<T> : ApiControllerBase
     public Task<List<MentionWrapper>> SharedUsers(T fileId)
     {
         return _fileStorageService.SharedUsersAsync(fileId);
+    }
+    
+    [HttpGet("file/{fileId}/referencedata")]
+    public async Task<FileReference<T>> GetReferenceDataAsync(T fileId, GetReferenceDataDto<T> inDto)
+    {
+        if (inDto.PortalId != _tenantManager.GetCurrentTenant().Id)
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+            };
+        }
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        return await InternalGetReferenceDataAsync(file);
+    }
+
+    [HttpGet("file/{fileId}/fromPath/referencedata")]
+    public async Task<FileReference<T>> GetReferenceDataFromPathAsync(T fileId, GetReferenceDataFromPathDto<T> inDto)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var source = await fileDao.GetFileAsync(fileId);
+        if (!await _fileSecurity.CanReadAsync(source))
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+            };
+        }
+
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var folder = await folderDao.GetFolderAsync(source.ParentId);
+        if (!await _fileSecurity.CanReadAsync(folder))
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder
+            };
+        }
+
+        var list = fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, inDto.Path, false, false);
+        var file = await list.FirstOrDefaultAsync(fileItem => fileItem.Title == inDto.Path);
+
+        return await InternalGetReferenceDataAsync(file);
+    }
+
+    private async Task<FileReference<T>> InternalGetReferenceDataAsync(File<T> file)
+    {
+        if (file == null)
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_FileNotFound
+            };
+        }
+
+        if (! await _fileSecurity.CanReadAsync(file))
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+            };
+        }
+
+        return new FileReference<T>
+        {
+            Path = file.Title,
+            ReferenceData = new FileReferenceData<T>
+            {
+                FileId = file.Id,
+                PortalId = _tenantManager.GetCurrentTenant().Id
+            },
+            Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true))
+        };
     }
 }
 

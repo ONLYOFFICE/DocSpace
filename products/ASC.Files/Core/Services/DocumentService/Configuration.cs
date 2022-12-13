@@ -156,6 +156,7 @@ public class DocumentConfig<T>
 
     public PermissionsConfig Permissions { get; set; }
     public string SharedLinkKey { get; set; }
+    public FileReferenceData<T> ReferenceData { get; set; }
 
     public string Title
     {
@@ -180,12 +181,18 @@ public class DocumentConfig<T>
         }
     }
 
-    public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig<T> infoConfig)
+    public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig<T> infoConfig, TenantManager tenantManager)
     {
         Info = infoConfig;
         Permissions = new PermissionsConfig();
         _documentServiceConnector = documentServiceConnector;
         _pathProvider = pathProvider;
+
+        ReferenceData = new FileReferenceData<T>()
+        {
+            FileId = Info.GetFile().Id,
+            PortalId = tenantManager.GetCurrentTenant().Id
+        };
     }
 }
 
@@ -603,6 +610,20 @@ public class PermissionsConfig
     public bool Print { get; set; } = true;
     public bool Rename { get; set; }
     public bool Review { get; set; } = true;
+}
+
+public class FileReference<T>
+{
+    public string Error { get; set; }
+    public string Path { get; set; }
+    public FileReferenceData<T> ReferenceData { get; set; }
+    public string Url { get; set; }
+}
+
+public class FileReferenceData<T>
+{
+    public T FileId { get; set; }
+    public int PortalId { get; set; }
 }
 
 #endregion Nested Classes
