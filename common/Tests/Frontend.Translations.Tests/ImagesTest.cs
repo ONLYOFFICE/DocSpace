@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using Frontend.Tests;
@@ -129,7 +130,7 @@ public class ImagesTest
 
         var sourceFiles = (from wsPath in Workspaces
                            from filePath in Utils.GetFiles(wsPath, sourceSearchPatern, SearchOption.AllDirectories)
-                           where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                           where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(Utils.ConvertPathToOS("tests/"))
                            && !filePath.Contains(".test.js")
                            && !filePath.Contains(".stories.js")
                            && !filePath.Contains(".test.ts")
@@ -222,6 +223,68 @@ public class ImagesTest
         Assert.AreEqual(0, notFoundPaths.Count,
             "Some images are not used in source files by name:\r\n{0}",
             string.Join("\r\n", notFoundPaths));
+    }
+
+    private static string Capitalize(string str)
+    {
+        if (str.Length == 0)
+            return str;
+
+        if (str.Length == 1)
+            return char.ToUpper(str[0]) + "";
+
+        return char.ToUpper(str[0]) + str.Substring(1);
+    }
+
+    private static string GetVariableByName(string name)
+    {
+        var split = name.Split(new char[] { '.', '_', '-' });
+
+        return (split.Length == 1
+                ? Capitalize(split[0])
+                : string.Join("", split.Select(s => Capitalize(s)))
+            ) + "Url";
+    }
+
+    [Test]
+    [Category("FastRunning")]
+    public void FixStaticTest()
+    {
+        var onlyJsFiles = SourceImageFiles
+            .Where(f => f.ModuleType == ModuleTypes.CLIENT && f.Path.EndsWith(".js"))
+            .ToList();
+
+
+        foreach (var f in onlyJsFiles)
+        {
+            var dictionary = new Dictionary<string, string>();
+
+            foreach (var i in f.Images.Where(i => i.FilePath.StartsWith("/static/images")))
+            {
+                dictionary.TryAdd(i.FilePath, GetVariableByName(i.FileName));
+            }
+
+            if (!dictionary.Any())
+                continue;
+
+            var content = File.ReadAllText(f.Path);
+
+            var sb = new StringBuilder();
+
+            foreach (var item in dictionary)
+            {
+                content = content.Replace($"=\"{item.Key}\"", "={" + item.Value + "}");
+                content = content.Replace($"\"{item.Key}\"", item.Value);
+
+                sb.AppendLine($"import {item.Value} from \"{item.Key.Replace("/static/images", "PUBLIC_DIR/images")}\";");
+            }
+
+            content = sb.ToString() + content;
+
+            File.WriteAllText(f.Path, content, Encoding.UTF8);
+        }
+
+        Assert.AreEqual(0, 0);
     }
 
     /*[Test]
