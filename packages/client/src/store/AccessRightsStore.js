@@ -67,81 +67,39 @@ class AccessRightsStore {
     return getRoomRoleActions(access).deleteUsers;
   };
   canLockFile = (file) => {
-    const { rootFolderType, access } = file;
+    const { security } = file;
 
-    if (rootFolderType === FolderType.USER) return false;
+    // if (rootFolderType === FolderType.USER) return false;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).block;
-
-    if (rootFolderType === FolderType.TRASH) return false;
-
-    return getFileRoleActions(access).block;
+    return security?.Lock;
   };
 
   canChangeVersionFileHistory = (file) => {
-    const { rootFolderType, editing, providerKey, access } = file;
+    const { editing, security } = file;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).changeVersionHistory;
+    if (editing) return false;
 
-    if (
-      rootFolderType === FolderType.TRASH ||
-      // rootFolderType === FolderType.Privacy ||
-      editing ||
-      providerKey
-    )
-      return false;
-
-    return getFileRoleActions(access).changeVersionHistory;
+    return security?.EditHistory;
   };
+
   canViewVersionFileHistory = (file) => {
-    const { rootFolderType, access, providerKey } = file;
+    const { security } = file;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).viewVersionHistory;
-
-    if (
-      rootFolderType === FolderType.TRASH ||
-      // rootFolderType === FolderType.Privacy ||
-      providerKey
-    )
-      return false;
-
-    return getFileRoleActions(access).viewVersionHistory;
+    return security?.ReadHistory;
   };
 
   canEditFile = (file) => {
-    const { rootFolderType, access } = file;
+    const { security } = file;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).edit;
-
-    if (
-      rootFolderType === FolderType.TRASH
-      // || rootFolderType === FolderType.Privacy
-    )
-      return false;
-
-    return getFileRoleActions(access).edit;
+    return security?.Edit;
   };
 
   canRenameItem = (item = {}) => {
-    const { rootFolderType, access, isFile } = item;
-    const { isDesktopClient } = this.authStore.settingsStore;
+    const { security } = item;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).rename;
-
-    if (
-      rootFolderType === FolderType.TRASH
-      // ||
-      // (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
-    )
-      return false;
-
-    return getFileRoleActions(access).rename;
+    return security?.Rename;
   };
+
   canFillForm = (file) => {
     const { rootFolderType, access } = file;
 
@@ -171,18 +129,15 @@ class AccessRightsStore {
   };
 
   canArchiveRoom = (room) => {
-    const { archive } = getRoomRoleActions(room.access);
+    const { security } = room;
 
-    return archive;
+    return security?.Move;
   };
 
   canRemoveRoom = (room) => {
-    const { access, rootFolderType } = room;
+    const { security } = room;
 
-    if (rootFolderType !== FolderType.Archive)
-      return getRoomRoleActions(access).delete;
-
-    return getArchiveRoomRoleActions(access).delete;
+    return security?.Delete;
   };
 
   canViewRoomInfo = (room) => {
@@ -195,21 +150,15 @@ class AccessRightsStore {
   };
 
   canPinRoom = (room) => {
-    const { access, rootFolderType } = room;
+    const { security } = room;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).canPin;
-
-    return getRoomRoleActions(access).canPin;
+    return security?.Pin;
   };
 
   canEditRoom = (room) => {
-    const { access, rootFolderType } = room;
+    const { security } = room;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).edit;
-
-    return getRoomRoleActions(access).edit;
+    return security?.EditRoom;
   };
 
   get canCreateFiles() {
@@ -224,65 +173,25 @@ class AccessRightsStore {
   }
 
   canMoveItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing, providerKey } = item;
+    const { editing: fileEditing, security } = item;
 
-    if (rootFolderType === FolderType.Archive) {
-      const { moveSelf, moveAlien } = getArchiveFileRoleActions(access);
+    if (fileEditing) return false;
 
-      return moveSelf || moveAlien;
-    }
-
-    if (
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      // rootFolderType === FolderType.Privacy ||
-      providerKey ||
-      fileEditing
-    )
-      return false;
-
-    const { moveSelf, moveAlien } = getFileRoleActions(access);
-
-    return moveSelf || moveAlien;
+    return security?.Move;
   };
 
   canDeleteItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing } = item;
+    const { editing: fileEditing, security } = item;
 
-    if (rootFolderType === FolderType.Archive) {
-      const { deleteSelf, deleteAlien } = getArchiveFileRoleActions(access);
+    if (fileEditing) return false;
 
-      return deleteSelf || deleteAlien;
-    }
-
-    if (
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      // rootFolderType === FolderType.Privacy ||
-      fileEditing
-    )
-      return false;
-
-    const { deleteSelf, deleteAlien } = getFileRoleActions(access);
-
-    return deleteSelf || deleteAlien;
+    return security?.Delete;
   };
 
   canCopyItems = (item) => {
-    const { rootFolderType, access } = item;
+    const { security } = item;
 
-    if (
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent
-      // || rootFolderType === FolderType.Privacy
-    )
-      return false;
-
-    const { canCopy } = getFileRoleActions(access);
-
-    return canCopy;
+    return security?.Copy;
   };
   canDuplicateFile = (item) => {
     const { rootFolderType, access } = item;
