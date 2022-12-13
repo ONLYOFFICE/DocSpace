@@ -2034,7 +2034,13 @@ class FilesStore {
       })
     );
 
-    this.setFolders(newRooms);
+    if (
+      (this.treeFoldersStore.isRoomsFolder ||
+        this.treeFoldersStore.isArchiveFolder) &&
+      this.selectedFolderStore.navigationPath.length === 0
+    ) {
+      this.setFolders(newRooms);
+    }
   };
 
   get filesList() {
