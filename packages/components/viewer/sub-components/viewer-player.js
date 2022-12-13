@@ -332,6 +332,7 @@ export default function ViewerPlayer(props) {
     size: "0%",
     opacity: 1,
     deltaY: 0,
+    deltaX: 0,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -377,6 +378,7 @@ export default function ViewerPlayer(props) {
               : top,
           opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
           deltaY: direction === "vertical" ? (e.deltaY > 0 ? e.deltaY : 0) : 0,
+          deltaX: direction === "horizontal" ? e.deltaX : 0,
         })
       );
     },
@@ -400,6 +402,7 @@ export default function ViewerPlayer(props) {
             top: top,
             opacity: 1,
             deltaY: 0,
+            deltaX: 0,
           })
         );
       }
@@ -672,6 +675,7 @@ export default function ViewerPlayer(props) {
         volume: state.volume,
         opacity: 1,
         deltaY: 0,
+        deltaX: 0,
       })
     );
   }
@@ -694,9 +698,10 @@ export default function ViewerPlayer(props) {
     contextBottom
   );
 
-  let iconLeft = state.left
-    ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
-    : (window.innerWidth - iconWidth) / 2 + "px";
+  let iconLeft =
+    state.left && isMobileOnly
+      ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
+      : (window.innerWidth - iconWidth) / 2 + "px";
   let iconTop = (window.innerHeight - iconHeight) / 2 + state.deltaY + "px";
 
   let imgStyle = {
@@ -741,9 +746,10 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           <div
             className="audio-container"
             style={{
-              left: `${(window.innerWidth - 190) / 2}px`,
-              top: `${(window.innerHeight - 190) / 2}px`,
+              left: `${(window.innerWidth - 190) / 2 + state.deltaX}px`,
+              top: `${(window.innerHeight - 190) / 2 + state.deltaY}px`,
               position: "fixed",
+              opacity: `${state.opacity}`,
             }}
           >
             <img src={audioIcon} />
