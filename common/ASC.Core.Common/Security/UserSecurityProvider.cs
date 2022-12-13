@@ -63,7 +63,7 @@ public class UserSecurityProvider : SecurityObject
             EmployeeType.DocSpaceAdmin => new[] { AuthConstants.DocSpaceAdmin },
             EmployeeType.RoomAdmin => new[] { AuthConstants.RoomAdmin },
             EmployeeType.User => new[] { AuthConstants.User },
-            _ => throw new NotImplementedException(),
+            _ => Array.Empty<IRole>(),
         };
     }
 
