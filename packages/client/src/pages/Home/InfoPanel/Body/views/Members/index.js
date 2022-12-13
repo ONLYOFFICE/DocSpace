@@ -38,11 +38,10 @@ const Members = ({
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const { access, rootFolderType } = selection;
+  const { security } = selection;
 
   const canInviteUserInRoomAbility = canInviteUserInRoom({
-    access,
-    rootFolderType,
+    security,
   });
 
   const fetchMembers = async (roomId) => {
@@ -144,8 +143,7 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
-            access={access}
-            rootFolderType={rootFolderType}
+            security={security}
             key={user.id}
             t={t}
             user={user}
@@ -181,8 +179,7 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.expected).map((user) => (
           <User
-            access={access}
-            rootFolderType={rootFolderType}
+            security={security}
             isExpect
             key={user.id}
             t={t}
