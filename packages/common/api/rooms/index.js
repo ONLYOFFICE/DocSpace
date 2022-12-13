@@ -40,6 +40,8 @@ export function getRooms(filter) {
 }
 
 export function getLogoIcon(url) {
+  if (!url) return "";
+
   const options = {
     // baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
     method: "get",
