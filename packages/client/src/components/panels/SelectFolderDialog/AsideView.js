@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import IconButton from "@docspace/components/icon-button";
 import FolderTreeBody from "../../FolderTreeBody";
@@ -56,7 +57,7 @@ const SelectFolderDialogAsideView = ({
               theme={theme}
               className="selection-panel_aside-header-icon"
               size="16"
-              iconName="/static/images/arrow.path.react.svg"
+              iconName={ArrowPathReactSvgUrl}
               onClick={onClose}
             />
           )}

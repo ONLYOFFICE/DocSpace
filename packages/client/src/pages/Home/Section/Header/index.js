@@ -1,3 +1,10 @@
+﻿import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
+import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
+import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
@@ -388,7 +395,7 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
         disabled: true,
-        icon: "/static/images/share.react.svg",
+        icon: ShareReactSvgUrl,
       },
       {
         id: "header_option_link-portal-users",
@@ -396,7 +403,7 @@ class SectionHeaderContent extends React.Component {
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: true,
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
       },
       {
         id: "header_option_empty-trash",
@@ -420,7 +427,7 @@ class SectionHeaderContent extends React.Component {
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
         disabled: isDisabled,
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
       },
       {
         id: "header_option_reconnect-storage",
@@ -442,7 +449,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_invite-users-to-room",
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
-        icon: "/static/images/person.react.svg",
+        icon: PersonReactSvgUrl,
         onClick: () => onClickInviteUsers(selectedFolder.id),
         disabled: !isRoom,
       },
@@ -450,7 +457,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_room-info",
         key: "room-info",
         label: t("Common:Info"),
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         onClick: this.onToggleInfoPanel,
         disabled: !isRoom,
       },
@@ -464,7 +471,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_archive-room",
         key: "archive-room",
         label: t("Archived"),
-        icon: "/static/images/room.archive.svg",
+        icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e, selectedFolder, t),
         disabled: !isRoom,
         "data-action": "archive",
@@ -492,7 +499,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: isDisabled,
-        icon: "/static/images/copy.react.svg",
+        icon: CopyReactSvgUrl,
       },
       {
         id: "header_option_rename",
@@ -514,7 +521,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: isDisabled,
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: CatalogTrashReactSvgUrl,
       },
     ];
   };

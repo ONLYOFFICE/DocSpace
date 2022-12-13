@@ -1,3 +1,5 @@
+﻿import EmptyScreenPersonsPngUrl from "PUBLIC_DIR/images/empty_screen_persons.png";
+import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +24,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   return (
     <>
       <EmptyScreenContainer
-        imageSrc="/static/images/empty_screen_persons.png"
+        imageSrc={EmptyScreenPersonsPngUrl}
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}
@@ -39,7 +41,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                     className="empty-folder_container-icon"
                     size="12"
                     onClick={onResetFilter}
-                    iconName="/static/images/clear.empty.filter.svg"
+                    iconName={ClearEmptyFilterSvgUrl}
                     isFill
                   />
                 </Box>

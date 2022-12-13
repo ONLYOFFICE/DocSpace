@@ -1,3 +1,12 @@
+﻿import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/downloadAs.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
+import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
+import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import {
   checkFileConflicts,
   deleteFile,
@@ -1441,7 +1450,7 @@ class FilesActionStore {
             id: "menu-show-info",
             key: "show-info",
             label: t("Common:Info"),
-            iconUrl: "/static/images/info.outline.react.svg",
+            iconUrl: InfoOutlineReactSvgUrl,
             onClick: this.onShowInfoPanel,
           };
       case "copy":
@@ -1451,7 +1460,7 @@ class FilesActionStore {
             id: "menu-copy",
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
-            iconUrl: "/static/images/copyTo.react.svg",
+            iconUrl: CopyToReactSvgUrl,
           };
 
       case "download":
@@ -1464,7 +1473,7 @@ class FilesActionStore {
               this.downloadAction(
                 t("Translations:ArchivingData")
               ).catch((err) => toastr.error(err)),
-            iconUrl: "/static/images/download.react.svg",
+            iconUrl: DownloadReactSvgUrl,
           };
 
       case "downloadAs":
@@ -1474,7 +1483,7 @@ class FilesActionStore {
             id: "menu-download-as",
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
-            iconUrl: "/static/images/downloadAs.react.svg",
+            iconUrl: DownloadAsReactSvgUrl,
           };
 
       case "moveTo":
@@ -1484,14 +1493,14 @@ class FilesActionStore {
             id: "menu-move-to",
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
-            iconUrl: "/static/images/move.react.svg",
+            iconUrl: MoveReactSvgUrl,
           };
       case "pin":
         return {
           id: "menu-pin",
           key: "pin",
           label: t("Pin"),
-          iconUrl: "/static/images/pin.react.svg",
+          iconUrl: PinReactSvgUrl,
           onClick: () => this.pinRooms(t),
           disabled: false,
         };
@@ -1500,7 +1509,7 @@ class FilesActionStore {
           id: "menu-unpin",
           key: "unpin",
           label: t("Unpin"),
-          iconUrl: "/static/images/unpin.react.svg",
+          iconUrl: UnpinReactSvgUrl,
           onClick: () => this.unpinRooms(t),
           disabled: false,
         };
@@ -1511,7 +1520,7 @@ class FilesActionStore {
             id: "menu-archive",
             key: "archive",
             label: t("Archived"),
-            iconUrl: "/static/images/room.archive.svg",
+            iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,
           };
@@ -1533,7 +1542,7 @@ class FilesActionStore {
             id: "menu-delete-room",
             label: t("Common:Delete"),
             onClick: () => this.deleteRooms(t),
-            iconUrl: "/static/images/delete.react.svg",
+            iconUrl: DeleteReactSvgUrl,
           };
 
       case "delete":
@@ -1559,7 +1568,7 @@ class FilesActionStore {
                 );
               }
             },
-            iconUrl: "/static/images/delete.react.svg",
+            iconUrl: DeleteReactSvgUrl,
           };
     }
   };
@@ -1713,7 +1722,7 @@ class FilesActionStore {
         id: "menu-restore",
         label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
-        iconUrl: "/static/images/move.react.svg",
+        iconUrl: MoveReactSvgUrl,
       })
       .set("delete", deleteOption)
       .set("showInfo", showInfo);

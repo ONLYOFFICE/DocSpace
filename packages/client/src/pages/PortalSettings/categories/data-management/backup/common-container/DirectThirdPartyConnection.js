@@ -1,3 +1,5 @@
+﻿import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 import React, { useEffect, useState, useReducer } from "react";
 import Button from "@docspace/components/button";
 import SelectFolderInput from "client/SelectFolderInput";
@@ -289,14 +291,14 @@ const DirectThirdPartyConnection = (props) => {
           : t("Common:Connect"),
         onClick: selectedThirdPartyAccount.connected ? onReconnect : onConnect,
         disabled: false,
-        icon: "/static/images/refresh.react.svg",
+        icon: RefreshReactSvgUrl,
       },
       {
         key: "Disconnect-settings",
         label: t("Common:Disconnect"),
         onClick: onDisconnect,
         disabled: selectedThirdPartyAccount.connected ? false : true,
-        icon: "/static/images/access.none.react.svg",
+        icon: AccessNoneReactSvgUrl,
       },
     ];
   };

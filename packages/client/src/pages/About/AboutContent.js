@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-import logoPersonalAboutUrl from "ASSETS_DIR/images/logo_personal_about.svg";
+import logoPersonalAboutUrl from "ASSETS_DIR/images/logo_personal_about.svg?url";
 
 const StyledAboutBody = styled.div`
   width: 100%;

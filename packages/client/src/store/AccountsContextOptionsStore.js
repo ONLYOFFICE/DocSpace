@@ -1,3 +1,8 @@
+﻿import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
@@ -48,7 +53,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_profile",
             key: option,
-            icon: "/static/images/profile.react.svg",
+            icon: ProfileReactSvgUrl,
             label: t("Common:Profile"),
             onClick: this.onProfileClick,
           };
@@ -81,7 +86,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-owner",
             key: option,
-            icon: "/static/images/refresh.react.svg",
+            icon: RefreshReactSvgUrl,
             label: t("Translations:OwnerChange"),
             onClick: () => this.toggleChangeOwnerDialog(item),
           };
@@ -147,7 +152,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_invite-again",
             key: option,
-            icon: "/static/images/invite.again.react.svg",
+            icon: InviteAgainReactSvgUrl,
             label: t("LblInviteAgain"),
             onClick: () => this.onInviteAgainClick(t, item),
           };
@@ -230,7 +235,7 @@ class AccountsContextOptionsStore {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: !hasUsersToMakeEmployees,
-        icon: "/static/images/change.to.employee.react.svg",
+        icon: ChangeToEmployeeReactSvgUrl,
         items: options,
       },
       {
@@ -245,7 +250,7 @@ class AccountsContextOptionsStore {
         label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
-        icon: "/static/images/invite.again.react.svg",
+        icon: InviteAgainReactSvgUrl,
       },
       {
         key: "cm-enable",
@@ -266,7 +271,7 @@ class AccountsContextOptionsStore {
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: () => setDeleteDialogVisible(true),
-        icon: "/static/images/delete.react.svg",
+        icon: DeleteReactSvgUrl,
       },
     ];
 

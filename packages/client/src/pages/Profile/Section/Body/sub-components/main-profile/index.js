@@ -1,3 +1,4 @@
+﻿import PencilOutlineReactSvgUrl from "PUBLIC_DIR/images/pencil.outline.react.svg?url";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
@@ -67,7 +68,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeNameVisible(true)}
             />
@@ -107,7 +108,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeEmailVisible(true)}
             />
@@ -140,7 +141,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangePasswordVisible(true)}
             />

@@ -1,9 +1,11 @@
-import SecuritySettingsIconUrl from "ASSETS_DIR/images/security-settings.svg";
-import IntegrationSettingsIconUrl from "ASSETS_DIR/images/integration-settings.svg";
-import PaymentIconUrl from "ASSETS_DIR/images/payment.react.svg";
-import DataManagementIconUrl from "ASSETS_DIR/images/data-management.react.svg";
-import RestoreIconUrl from "ASSETS_DIR/images/restore.react.svg";
-import TrashIconUrl from "ASSETS_DIR/images/trash.react.svg";
+﻿import CommonSettingsSvgUrl from "PUBLIC_DIR/images/common-settings.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SecuritySettingsIconUrl from "ASSETS_DIR/images/security-settings.svg?url";
+import IntegrationSettingsIconUrl from "ASSETS_DIR/images/integration-settings.svg?url";
+import PaymentIconUrl from "ASSETS_DIR/images/payment.react.svg?url";
+import DataManagementIconUrl from "ASSETS_DIR/images/data-management.react.svg?url";
+import RestoreIconUrl from "ASSETS_DIR/images/restore.react.svg?url";
+import TrashIconUrl from "ASSETS_DIR/images/trash.react.svg?url";
 /**
  * Array for generation current settings tree.
  */
@@ -12,7 +14,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-common",
     key: "0",
-    icon: "/static/images/common-settings.svg",
+    icon: CommonSettingsSvgUrl,
     link: "common",
     tKey: "Common:Common",
     isHeader: true,
@@ -338,7 +340,7 @@ export const settingsTreeFull = [
   {
     title: "Common",
     key: "0",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "common",
     children: [
       {
@@ -364,7 +366,7 @@ export const settingsTreeFull = [
   {
     title: "Security",
     key: "1",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "security",
     children: [
       {
@@ -396,7 +398,7 @@ export const settingsTreeFull = [
   {
     title: "Data Management",
     key: "2",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "data-management",
     children: [
       {
@@ -422,7 +424,7 @@ export const settingsTreeFull = [
   {
     title: "Integration",
     key: "3",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "integration",
     children: [
       {
@@ -448,7 +450,7 @@ export const settingsTreeFull = [
   {
     title: "Statistics",
     key: "4",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "statistics",
   },
 ];

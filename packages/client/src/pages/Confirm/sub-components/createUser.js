@@ -1,3 +1,4 @@
+﻿import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
@@ -504,7 +505,7 @@ const Confirm = (props) => {
     return (
       <div className="buttonWrapper">
         <SocialButton
-          iconName="/static/images/sso.react.svg"
+          iconName={SsoReactSvgUrl}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
           onClick={() => (window.location.href = ssoUrl)}

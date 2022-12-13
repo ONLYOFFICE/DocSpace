@@ -1,3 +1,5 @@
+﻿import CatalogShareSmallReactSvgUrl from "PUBLIC_DIR/images/catalog.share.small.react.svg?url";
+import CatalogShareReactSvgUrl from "PUBLIC_DIR/images/catalog.share.react.svg?url";
 import React from "react";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
@@ -23,8 +25,8 @@ const SharedButton = ({
   };
 
   const icon = isSmallIcon
-    ? "/static/images/catalog.share.small.react.svg"
-    : "/static/images/catalog.share.react.svg";
+    ? CatalogShareSmallReactSvgUrl
+    : CatalogShareReactSvgUrl;
 
   return (
     <Text

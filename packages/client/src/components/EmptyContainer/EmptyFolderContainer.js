@@ -1,3 +1,4 @@
+﻿import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
@@ -137,7 +138,7 @@ const EmptyFolderContainer = ({
       imageSrc={
         isRooms
           ? EmptyScreenCorporateUrl
-          : "/static/images/empty_screen_alt.svg"
+          : EmptyScreenAltSvgUrl
       }
       buttons={buttons}
       sectionWidth={sectionWidth}

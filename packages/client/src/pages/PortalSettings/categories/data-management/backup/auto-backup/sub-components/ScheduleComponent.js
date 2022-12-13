@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -44,7 +45,7 @@ const ScheduleComponent = ({
         <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
         <HelpButton
           className="schedule_help-button"
-          iconName={"/static/images/help.react.svg"}
+          iconName={HelpReactSvgUrl}
           getContent={renderHelpContent}
           tooltipMaxWidth="310px"
           offsetLeft={160}

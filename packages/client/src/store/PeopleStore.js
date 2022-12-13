@@ -1,3 +1,6 @@
+﻿import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
@@ -232,7 +235,7 @@ class PeopleStore {
         key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: !hasUsersToMakeEmployees,
-        iconUrl: "/static/images/change.to.employee.react.svg",
+        iconUrl: ChangeToEmployeeReactSvgUrl,
         withDropDown: true,
         options: options,
       },
@@ -252,7 +255,7 @@ class PeopleStore {
         label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
-        iconUrl: "/static/images/invite.again.react.svg",
+        iconUrl: InviteAgainReactSvgUrl,
       },
       {
         id: "menu-enable",
@@ -276,7 +279,7 @@ class PeopleStore {
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: () => setDeleteDialogVisible(true),
-        iconUrl: "/static/images/delete.react.svg",
+        iconUrl: DeleteReactSvgUrl,
       },
     ];
 

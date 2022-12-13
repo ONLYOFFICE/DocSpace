@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React, { useCallback } from "react";
 import IconButton from "@docspace/components/icon-button";
 import Headline from "@docspace/common/components/Headline";
@@ -37,7 +38,7 @@ const SectionHeaderContent = (props) => {
     <Wrapper>
       <div style={{ width: "17px" }}>
         <IconButton
-          iconName="/static/images/arrow.path.react.svg"
+          iconName={ArrowPathReactSvgUrl}
           // color="#A3A9AE"
           size="17"
           // hoverColor="#657077"

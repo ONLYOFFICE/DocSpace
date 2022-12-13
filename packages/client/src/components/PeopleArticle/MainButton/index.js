@@ -1,3 +1,6 @@
+﻿import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import PlaneReactSvgUrl from "PUBLIC_DIR/images/plane.react.svg?url";
+import ImportReactSvgUrl from "PUBLIC_DIR/images/import.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -125,7 +128,7 @@ class ArticleMainButtonContent extends React.Component {
         key: "invite-link",
         icon: combineUrl(
           AppServerConfig.proxyURL,
-          "/static/images/invitation.link.react.svg"
+          InvitationLinkReactSvgUrl
         ),
         label: t("PeopleTranslations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
@@ -133,7 +136,7 @@ class ArticleMainButtonContent extends React.Component {
       /* {
         icon: combineUrl(
           AppServerConfig.proxyURL,
-          "/static/images/plane.react.svg"
+          PlaneReactSvgUrl
         ),
         label: t("SendInvitesAgain"),
         onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
@@ -142,7 +145,7 @@ class ArticleMainButtonContent extends React.Component {
       {
         icon: combineUrl(
           AppServerConfig.proxyURL,
-          "/static/images/import.react.svg"
+          ImportReactSvgUrl
         ),
         label: t("ImportPeople"),
         onClick: this.onImportClick,

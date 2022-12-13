@@ -1,3 +1,12 @@
+﻿import CloudServicesGoogleDriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.google.drive.react.svg?url";
+import CloudServicesBoxReactSvgUrl from "PUBLIC_DIR/images/cloud.services.box.react.svg?url";
+import CloudServicesDropboxReactSvgUrl from "PUBLIC_DIR/images/cloud.services.dropbox.react.svg?url";
+import CloudServicesOnedriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.onedrive.react.svg?url";
+import CloudServicesKdriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.kdrive.react.svg?url";
+import CloudServicesYandexReactSvgUrl from "PUBLIC_DIR/images/cloud.services.yandex.react.svg?url";
+import CloudServicesNextcloudReactSvgUrl from "PUBLIC_DIR/images/cloud.services.nextcloud.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import CloudServicesWebdavReactSvgUrl from "PUBLIC_DIR/images/cloud.services.webdav.react.svg?url";
 import authStore from "@docspace/common/store/AuthStore";
 import {
   AppServerConfig,
@@ -236,25 +245,25 @@ export const connectedCloudsTypeTitleTranslation = (key, t) => {
 export const connectedCloudsTypeIcon = (key) => {
   switch (key) {
     case "GoogleDrive":
-      return "/static/images/cloud.services.google.drive.react.svg";
+      return CloudServicesGoogleDriveReactSvgUrl;
     case "Box":
-      return "/static/images/cloud.services.box.react.svg";
+      return CloudServicesBoxReactSvgUrl;
     case "DropboxV2":
-      return "/static/images/cloud.services.dropbox.react.svg";
+      return CloudServicesDropboxReactSvgUrl;
     case "OneDrive":
-      return "/static/images/cloud.services.onedrive.react.svg";
+      return CloudServicesOnedriveReactSvgUrl;
     case "SharePoint":
-      return "/static/images/cloud.services.onedrive.react.svg";
+      return CloudServicesOnedriveReactSvgUrl;
     case "kDrive":
-      return "/static/images/cloud.services.kdrive.react.svg";
+      return CloudServicesKdriveReactSvgUrl;
     case "Yandex":
-      return "/static/images/cloud.services.yandex.react.svg";
+      return CloudServicesYandexReactSvgUrl;
     case "NextCloud":
-      return "/static/images/cloud.services.nextcloud.react.svg";
+      return CloudServicesNextcloudReactSvgUrl;
     case "OwnCloud":
-      return "/static/images/catalog.folder.react.svg";
+      return CatalogFolderReactSvgUrl;
     case "WebDav":
-      return "/static/images/cloud.services.webdav.react.svg";
+      return CloudServicesWebdavReactSvgUrl;
     default:
   }
 };

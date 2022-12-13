@@ -1,3 +1,18 @@
+﻿import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
+import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import FormPlusReactSvgUrl from "PUBLIC_DIR/images/form.plus.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
+import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
+import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
+import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import { makeAutoObservable } from "mobx";
 import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
@@ -472,7 +487,7 @@ class ContextOptionsStore {
           id: "option_block-unblock-version",
           key: "block-unblock-version",
           label: t("UnblockVersion"),
-          icon: "/static/images/locked.react.svg",
+          icon: LockedReactSvgUrl,
           onClick: () => this.lockFile(item, t),
           disabled: false,
         }
@@ -549,7 +564,7 @@ class ContextOptionsStore {
               id: "option_move-or-copy",
               key: "move",
               label: t("MoveOrCopy"),
-              icon: "/static/images/copy.react.svg",
+              icon: CopyReactSvgUrl,
               items: [
                 {
                   id: "option_move-to",
@@ -563,7 +578,7 @@ class ContextOptionsStore {
                   id: "option_copy-to",
                   key: "copy-to",
                   label: t("Translations:Copy"),
-                  icon: "/static/images/copy.react.svg",
+                  icon: CopyReactSvgUrl,
                   onClick: this.onCopyAction,
                   disabled: false,
                 },
@@ -571,7 +586,7 @@ class ContextOptionsStore {
                   id: "option_create-copy",
                   key: "copy",
                   label: t("Common:Duplicate"),
-                  icon: "/static/images/duplicate.react.svg",
+                  icon: DuplicateReactSvgUrl,
                   onClick: () => this.onDuplicate(item, t),
                   disabled: false,
                 },
@@ -591,7 +606,7 @@ class ContextOptionsStore {
               id: "option_copy-to",
               key: "copy-to",
               label: t("Translations:Copy"),
-              icon: "/static/images/copy.react.svg",
+              icon: CopyReactSvgUrl,
               onClick: this.onCopyAction,
               disabled: false,
             },
@@ -599,7 +614,7 @@ class ContextOptionsStore {
               id: "option_create-copy",
               key: "copy",
               label: t("Common:Duplicate"),
-              icon: "/static/images/duplicate.react.svg",
+              icon: DuplicateReactSvgUrl,
               onClick: () => this.onDuplicate(item, t),
               disabled: false,
             },
@@ -626,7 +641,7 @@ class ContextOptionsStore {
         id: "option_fill-form",
         key: "fill-form",
         label: t("Common:FillFormButton"),
-        icon: "/static/images/form.fill.rect.svg",
+        icon: FormFillRectSvgUrl,
         onClick: () => this.onClickLinkFillForm(item),
         disabled: false,
       },
@@ -634,7 +649,7 @@ class ContextOptionsStore {
         id: "option_edit",
         key: "edit",
         label: t("Common:EditButton"),
-        icon: "/static/images/access.edit.react.svg",
+        icon: AccessEditReactSvgUrl,
         onClick: () => this.onClickLinkEdit(item),
         disabled: false,
       },
@@ -642,7 +657,7 @@ class ContextOptionsStore {
         id: "option_preview",
         key: "preview",
         label: t("Common:Preview"),
-        icon: "/static/images/eye.react.svg",
+        icon: EyeReactSvgUrl,
         onClick: () => this.onPreviewClick(item),
         disabled: false,
       },
@@ -650,7 +665,7 @@ class ContextOptionsStore {
         id: "option_view",
         key: "view",
         label: t("Common:View"),
-        icon: "/static/images/eye.react.svg",
+        icon: EyeReactSvgUrl,
         onClick: (fileId) => this.onMediaFileClick(fileId, item),
         disabled: false,
       },
@@ -658,7 +673,7 @@ class ContextOptionsStore {
         id: "option_make-form",
         key: "make-form",
         label: t("Common:MakeForm"),
-        icon: "/static/images/form.plus.react.svg",
+        icon: FormPlusReactSvgUrl,
         onClick: () => this.onClickMakeForm(item, t),
         disabled: false,
       },
@@ -686,7 +701,7 @@ class ContextOptionsStore {
         id: "option_invite-users-to-room",
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
-        icon: "/static/images/person.react.svg",
+        icon: PersonReactSvgUrl,
         onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
         action: item.id,
@@ -695,7 +710,7 @@ class ContextOptionsStore {
         id: "option_room-info",
         key: "room-info",
         label: t("Common:Info"),
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
@@ -703,7 +718,7 @@ class ContextOptionsStore {
         id: "option_pin-room",
         key: "pin-room",
         label: t("Pin"),
-        icon: "/static/images/pin.react.svg",
+        icon: PinReactSvgUrl,
         onClick: (e) => this.onClickPin(e, item.id, t),
         disabled: false,
         "data-action": "pin",
@@ -713,7 +728,7 @@ class ContextOptionsStore {
         id: "option_unpin-room",
         key: "unpin-room",
         label: t("Unpin"),
-        icon: "/static/images/unpin.react.svg",
+        icon: UnpinReactSvgUrl,
         onClick: (e) => this.onClickPin(e, item.id, t),
         disabled: false,
         "data-action": "unpin",
@@ -723,7 +738,7 @@ class ContextOptionsStore {
         id: "option_sharing-settings",
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
-        icon: "/static/images/share.react.svg",
+        icon: ShareReactSvgUrl,
         onClick: this.onClickShare,
         disabled: !isShareable,
       },
@@ -739,7 +754,7 @@ class ContextOptionsStore {
         id: "option_link-for-portal-users",
         key: "link-for-portal-users",
         label: t("LinkForPortalUsers"),
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onClickLinkForPortal(item, t),
         disabled: false,
       },
@@ -747,7 +762,7 @@ class ContextOptionsStore {
         id: "option_send-by-email",
         key: "send-by-email",
         label: t("SendByEmail"),
-        icon: "/static/images/mail.react.svg",
+        icon: MailReactSvgUrl,
         disabled: true,
       },
       ...versionActions,
@@ -755,7 +770,7 @@ class ContextOptionsStore {
         id: "option_show-info",
         key: "show-info",
         label: t("Common:Info"),
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
@@ -849,7 +864,7 @@ class ContextOptionsStore {
         id: "option_change-thirdparty-info",
         key: "change-thirdparty-info",
         label: t("Translations:ThirdPartyInfo"),
-        icon: "/static/images/access.edit.react.svg",
+        icon: AccessEditReactSvgUrl,
         onClick: () => this.onChangeThirdPartyInfo(item.providerKey),
         disabled: false,
       },
@@ -857,7 +872,7 @@ class ContextOptionsStore {
         id: "option_archive-room",
         key: "archive-room",
         label: t("Archived"),
-        icon: "/static/images/room.archive.svg",
+        icon: RoomArchiveSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "archive",
@@ -953,14 +968,14 @@ class ContextOptionsStore {
         ? {
             key: "pin-room",
             label: t("Pin"),
-            icon: "/static/images/pin.react.svg",
+            icon: PinReactSvgUrl,
             onClick: pinRooms,
             disabled: false,
           }
         : {
             key: "unpin-room",
             label: t("Unpin"),
-            icon: "/static/images/unpin.react.svg",
+            icon: UnpinReactSvgUrl,
             onClick: unpinRooms,
             disabled: false,
           };
@@ -969,7 +984,7 @@ class ContextOptionsStore {
         archiveOptions = {
           key: "archive-room",
           label: t("Archived"),
-          icon: "/static/images/room.archive.svg",
+          icon: RoomArchiveSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
           "data-action": "archive",
@@ -1058,7 +1073,7 @@ class ContextOptionsStore {
       {
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
-        icon: "/static/images/share.react.svg",
+        icon: ShareReactSvgUrl,
         onClick: this.onClickShare,
         disabled: !sharingItems,
       },
@@ -1112,7 +1127,7 @@ class ContextOptionsStore {
       {
         key: "copy-to",
         label: t("Translations:Copy"),
-        icon: "/static/images/copy.react.svg",
+        icon: CopyReactSvgUrl,
         onClick: this.onCopyAction,
         disabled: isRecycleBinFolder || !copyItems,
       },

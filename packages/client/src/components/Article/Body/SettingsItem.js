@@ -1,3 +1,4 @@
+﻿import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import React from "react";
 import { withRouter } from "react-router";
 import CatalogItem from "@docspace/components/catalog-item";
@@ -10,7 +11,7 @@ import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 
-const iconUrl = "/static/images/catalog.settings.react.svg";
+const iconUrl = CatalogSettingsReactSvgUrl;
 
 const PureSettingsItem = ({
   match,

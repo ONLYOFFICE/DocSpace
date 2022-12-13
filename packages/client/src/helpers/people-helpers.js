@@ -1,3 +1,4 @@
+﻿import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import { find, cloneDeep } from "lodash";
 import {
   EmployeeActivationStatus,
@@ -7,20 +8,20 @@ import { isAdmin } from "@docspace/common/utils";
 import { id } from "PACKAGE_FILE";
 //const { isAdmin } = utils;
 
-import PhoneIconUrl from "ASSETS_DIR/images/phone.react.svg";
-import MobileIconUrl from "ASSETS_DIR/images/mobile.react.svg";
-import GmailIconUrl from "ASSETS_DIR/images/gmail.react.svg";
-import SkypeIconUrl from "ASSETS_DIR/images/skype.react.svg";
-import MsnIconUrl from "ASSETS_DIR/images/windows.msn.react.svg";
-import IcqIconUrl from "ASSETS_DIR/images/icq.react.svg";
-import JabberIconUrl from "ASSETS_DIR/images/jabber.react.svg";
-import AimIconUrl from "ASSETS_DIR/images/aim.react.svg";
-import FacebookIconUrl from "ASSETS_DIR/images/share.facebook.react.svg";
-import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg";
-import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg";
-import TwitterIconUrl from "ASSETS_DIR/images/share.twitter.react.svg";
-import BloggerIconUrl from "ASSETS_DIR/images/blogger.react.svg";
-import YahooIconUrl from "ASSETS_DIR/images/yahoo.react.svg";
+import PhoneIconUrl from "ASSETS_DIR/images/phone.react.svg?url";
+import MobileIconUrl from "ASSETS_DIR/images/mobile.react.svg?url";
+import GmailIconUrl from "ASSETS_DIR/images/gmail.react.svg?url";
+import SkypeIconUrl from "ASSETS_DIR/images/skype.react.svg?url";
+import MsnIconUrl from "ASSETS_DIR/images/windows.msn.react.svg?url";
+import IcqIconUrl from "ASSETS_DIR/images/icq.react.svg?url";
+import JabberIconUrl from "ASSETS_DIR/images/jabber.react.svg?url";
+import AimIconUrl from "ASSETS_DIR/images/aim.react.svg?url";
+import FacebookIconUrl from "ASSETS_DIR/images/share.facebook.react.svg?url";
+import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg?url";
+import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg?url";
+import TwitterIconUrl from "ASSETS_DIR/images/share.twitter.react.svg?url";
+import BloggerIconUrl from "ASSETS_DIR/images/blogger.react.svg?url";
+import YahooIconUrl from "ASSETS_DIR/images/yahoo.react.svg?url";
 
 export const getUserStatus = (user) => {
   if (
@@ -55,7 +56,7 @@ export const getUserContactsPattern = () => {
     contact: [
       {
         type: "mail",
-        icon: "/static/images/mail.react.svg",
+        icon: MailReactSvgUrl,
         link: "mailto:{0}",
       },
       {

@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import TextInput from "@docspace/components/text-input";
@@ -257,7 +258,7 @@ class AmazonSettings extends React.Component {
       return (
         <>
           <HelpButton
-            iconName={"/static/images/help.react.svg"}
+            iconName={HelpReactSvgUrl}
             tooltipContent={
               <>
                 <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">

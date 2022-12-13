@@ -1,3 +1,4 @@
+﻿import FileSvgUrl from "PUBLIC_DIR/images/icons/32/file.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -57,7 +58,7 @@ const CertificatesTable = (props) => {
 
     return (
       <div key={`certificate-${index}`} className="row">
-        <ReactSVG src="/static/images/icons/32/file.svg" />
+        <ReactSVG src={FileSvgUrl} />
         <div className="column">
           <div className="column-row">
             <Text fontWeight={600} fontSize="14px" lineHeight="16px" noSelect>

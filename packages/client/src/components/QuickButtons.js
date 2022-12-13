@@ -1,3 +1,7 @@
+﻿import FileActionsLockedReactSvgUrl from "PUBLIC_DIR/images/file.actions.locked.react.svg?url";
+import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
+import FileActionsFavoriteReactSvgUrl from "PUBLIC_DIR/images/file.actions.favorite.react.svg?url";
+import FavoriteReactSvgUrl from "PUBLIC_DIR/images/favorite.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import IconButton from "@docspace/components/icon-button";
@@ -34,16 +38,16 @@ const QuickButtons = (props) => {
   const isTile = viewAs === "tile";
 
   const iconLock = locked
-    ? "/static/images/file.actions.locked.react.svg"
-    : "/static/images/locked.react.svg";
+    ? FileActionsLockedReactSvgUrl
+    : LockedReactSvgUrl;
 
   const colorLock = locked
     ? theme.filesQuickButtons.sharedColor
     : theme.filesQuickButtons.color;
 
   const iconFavorite = isFavorite
-    ? "/static/images/file.actions.favorite.react.svg"
-    : "/static/images/favorite.react.svg";
+    ? FileActionsFavoriteReactSvgUrl
+    : FavoriteReactSvgUrl;
 
   const colorFavorite = isFavorite
     ? theme.filesQuickButtons.sharedColor

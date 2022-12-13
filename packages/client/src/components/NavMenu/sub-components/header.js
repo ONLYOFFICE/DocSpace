@@ -1,3 +1,4 @@
+﻿import PersonalLogoReactSvgUrl from "PUBLIC_DIR/images/personal.logo.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -247,7 +248,7 @@ const HeaderComponent = ({
               className="header-logo-icon"
               src={combineUrl(
                 AppServerConfig.proxyURL,
-                "/static/images/personal.logo.react.svg"
+                PersonalLogoReactSvgUrl
               )}
             />
           )}

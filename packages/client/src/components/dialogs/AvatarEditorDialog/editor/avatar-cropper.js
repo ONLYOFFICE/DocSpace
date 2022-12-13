@@ -1,3 +1,5 @@
+﻿import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -178,7 +180,7 @@ const AvatarCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomOutClick}
-          iconName={"/static/images/zoom-minus.react.svg"}
+          iconName={ZoomMinusReactSvgUrl}
           isFill={true}
           isClickable={false}
         />
@@ -194,7 +196,7 @@ const AvatarCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomInClick}
-          iconName={"/static/images/zoom-plus.react.svg"}
+          iconName={ZoomPlusReactSvgUrl}
           isFill={true}
           isClickable={false}
         />

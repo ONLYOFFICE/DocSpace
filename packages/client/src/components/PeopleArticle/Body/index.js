@@ -1,3 +1,4 @@
+﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import Filter from "@docspace/common/api/people/filter";
@@ -14,7 +15,7 @@ import CatalogItem from "@docspace/components/catalog-item";
 import withLoader from "../../../HOCs/withLoader";
 
 const departmentsIcon = "images/departments.group.react.svg";
-const groupIcon = "/static/images/catalog.folder.react.svg";
+const groupIcon = CatalogFolderReactSvgUrl;
 
 const ArticleBodyContent = ({
   selectedKey,

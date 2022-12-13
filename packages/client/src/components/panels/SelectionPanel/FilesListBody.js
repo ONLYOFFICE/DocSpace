@@ -1,3 +1,4 @@
+﻿import EmptyScreenReactSvgUrl from "PUBLIC_DIR/images/empty.screen.react.svg?url";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Loader from "@docspace/components/loader";
 import Text from "@docspace/components/text";
@@ -198,7 +199,7 @@ const FilesListBody = ({
           <EmptyContainer
             theme={theme}
             headerText={t("Files:EmptyFolderHeader")}
-            imageSrc="/static/images/empty.screen.react.svg"
+            imageSrc={EmptyScreenReactSvgUrl}
           />
         </div>
       )}

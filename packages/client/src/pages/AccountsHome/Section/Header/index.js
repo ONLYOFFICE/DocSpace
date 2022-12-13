@@ -1,3 +1,7 @@
+﻿import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
+import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -230,7 +234,7 @@ const SectionHeaderContent = (props) => {
       isOwner && {
         id: "accounts-add_administrator",
         className: "main-button_drop-down",
-        icon: "/static/images/person.admin.react.svg",
+        icon: PersonAdminReactSvgUrl,
         label: t("Common:DocSpaceAdmin"),
         onClick: onInvite,
         "data-type": EmployeeType.Admin,
@@ -239,7 +243,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "accounts-add_manager",
         className: "main-button_drop-down",
-        icon: "/static/images/person.manager.react.svg",
+        icon: PersonManagerReactSvgUrl,
         label: t("Common:RoomAdmin"),
         onClick: onInvite,
         "data-type": EmployeeType.User,
@@ -248,7 +252,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "accounts-add_user",
         className: "main-button_drop-down",
-        icon: "/static/images/person.user.react.svg",
+        icon: PersonUserReactSvgUrl,
         label: t("Common:User"),
         onClick: onInvite,
         "data-type": EmployeeType.Guest,
@@ -261,7 +265,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "accounts-add_invite-again",
         className: "main-button_drop-down",
-        icon: "/static/images/invite.again.react.svg",
+        icon: InviteAgainReactSvgUrl,
         label: t("LblInviteAgain"),
         onClick: onInviteAgain,
         "data-action": "invite-again",

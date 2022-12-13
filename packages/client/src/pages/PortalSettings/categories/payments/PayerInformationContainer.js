@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
@@ -68,7 +69,7 @@ const PayerInformationContainer = ({
 
   const renderTooltip = (
     <HelpButton
-      iconName={"/static/images/help.react.svg"}
+      iconName={HelpReactSvgUrl}
       tooltipContent={
         <>
           <Text isBold>{t("Payer")}</Text>

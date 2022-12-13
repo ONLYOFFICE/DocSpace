@@ -1,3 +1,5 @@
+﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
+import EmptyScreenPersonsPngUrl from "PUBLIC_DIR/images/empty_screen_persons.png";
 import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -185,9 +187,9 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 
 PeopleSelector.defaultProps = {
   excludeItems: [],
-  selectAllIcon: "/static/images/catalog.accounts.react.svg",
-  emptyScreenImage: "/static/images/empty_screen_persons.png",
-  searchEmptyScreenImage: "/static/images/empty_screen_persons.png",
+  selectAllIcon: CatalogAccountsReactSvgUrl,
+  emptyScreenImage: EmptyScreenPersonsPngUrl,
+  searchEmptyScreenImage: EmptyScreenPersonsPngUrl,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {

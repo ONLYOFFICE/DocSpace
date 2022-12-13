@@ -1,3 +1,5 @@
+﻿import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
@@ -978,13 +980,13 @@ const SectionFilterContent = ({
         id: "view-switch_rows",
         value: "row",
         label: t("ViewList"),
-        icon: "/static/images/view-rows.react.svg",
+        icon: ViewRowsReactSvgUrl,
       },
       {
         id: "view-switch_tiles",
         value: "tile",
         label: t("ViewTiles"),
-        icon: "/static/images/view-tiles.react.svg",
+        icon: ViewTilesReactSvgUrl,
         callback: createThumbnails,
       },
     ];

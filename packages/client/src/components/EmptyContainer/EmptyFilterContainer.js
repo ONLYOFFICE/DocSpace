@@ -1,3 +1,4 @@
+﻿import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -43,7 +44,7 @@ const EmptyFilterContainer = ({
         className="empty-folder_container-icon"
         size="12"
         onClick={onResetFilter}
-        iconName="/static/images/clear.empty.filter.svg"
+        iconName={ClearEmptyFilterSvgUrl}
         isFill
       />
       <Link onClick={onResetFilter} {...linkStyles}>

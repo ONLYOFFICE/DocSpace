@@ -1,3 +1,5 @@
+﻿import MediaDownloadReactSvgUrl from "PUBLIC_DIR/images/media.download.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
@@ -130,7 +132,7 @@ const ExternalLinks = ({
           <div style={{ position: "relative" }}>
             <IconButton
               size={16}
-              iconName="/static/images/media.download.react.svg"
+              iconName={MediaDownloadReactSvgUrl}
               hoverColor="#333333"
               iconColor="#A3A9AE"
               onClick={toggleActionLinks}
@@ -162,7 +164,7 @@ const ExternalLinks = ({
               scale
               value={activeLink.shareLink}
               isReadOnly
-              iconName="/static/images/copy.react.svg"
+              iconName={CopyReactSvgUrl}
               onIconClick={() => copyLink(activeLink.shareLink)}
               hoverColor="#333333"
               iconColor="#A3A9AE"

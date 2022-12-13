@@ -1,3 +1,7 @@
+﻿import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
+import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
 
 import { inject, observer } from "mobx-react";
@@ -280,7 +284,7 @@ const ArticleMainButtonContent = (props) => {
           isOwner && {
             id: "invite_doc-space-administrator",
             className: "main-button_drop-down",
-            icon: "/static/images/person.admin.react.svg",
+            icon: PersonAdminReactSvgUrl,
             label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
             action: EmployeeType.Admin,
@@ -289,7 +293,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_room-admin",
             className: "main-button_drop-down",
-            icon: "/static/images/person.manager.react.svg",
+            icon: PersonManagerReactSvgUrl,
             label: t("Common:RoomAdmin"),
             onClick: onInvite,
             action: EmployeeType.User,
@@ -298,7 +302,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_user",
             className: "main-button_drop-down",
-            icon: "/static/images/person.user.react.svg",
+            icon: PersonUserReactSvgUrl,
             label: t("Common:User"),
             onClick: onInvite,
             action: EmployeeType.Guest,
@@ -349,7 +353,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_again",
             className: "main-button_drop-down",
-            icon: "/static/images/invite.again.react.svg",
+            icon: InviteAgainReactSvgUrl,
             label: t("People:LblInviteAgain"),
             onClick: onInviteAgain,
             action: "invite-again",

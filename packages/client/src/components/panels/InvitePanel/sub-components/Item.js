@@ -1,3 +1,4 @@
+﻿import InfoEditReactSvgUrl from "PUBLIC_DIR/images/info.edit.react.svg?url";
 import React, { useState, useEffect } from "react";
 
 import Text from "@docspace/components/text";
@@ -113,7 +114,7 @@ const Item = ({
       {hasError ? (
         <>
           <StyledHelpButton
-            iconName="/static/images/info.edit.react.svg"
+            iconName={InfoEditReactSvgUrl}
             displayType="auto"
             offsetRight={0}
             tooltipContent={t("EmailErrorMessage")}

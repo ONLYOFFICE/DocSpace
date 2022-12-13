@@ -1,3 +1,4 @@
+﻿import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -126,7 +127,7 @@ const ActiveSessions = ({
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
-          iconName="/static/images/info.react.svg"
+          iconName={InfoReactSvgUrl}
           tooltipContent={
             <Text fontSize="13px">
               {t("Profile:LogoutAllActiveSessionsDescription")}

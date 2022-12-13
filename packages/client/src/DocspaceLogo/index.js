@@ -1,3 +1,4 @@
+﻿import DocspaceBigReactSvgUrl from "PUBLIC_DIR/images/docspace.big.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -27,7 +28,7 @@ const DocspaceLogo = (props) => {
   return (
     <StyledWrapper>
       <ReactSVG
-        src="/static/images/docspace.big.react.svg"
+        src={DocspaceBigReactSvgUrl}
         className={`logo-wrapper ${className}`}
       />
     </StyledWrapper>

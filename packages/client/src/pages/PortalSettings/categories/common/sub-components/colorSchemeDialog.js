@@ -1,3 +1,4 @@
+﻿import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
 import React, { useEffect } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
@@ -37,8 +38,8 @@ const StyledComponent = styled(ModalDialog)`
       props.currentColorAccent
         ? props.currentColorAccent
         : props.theme.isBase
-        ? `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`
-        : `#474747 url("/static/images/plus.theme.svg") no-repeat center`};
+        ? `#eceef1 url(PlusThemeSvgUrl) no-repeat center`
+        : `#474747 url(PlusThemeSvgUrl) no-repeat center`};
   }
 
   .buttons-box {
@@ -46,8 +47,8 @@ const StyledComponent = styled(ModalDialog)`
       props.currentColorButtons
         ? props.currentColorButtons
         : props.theme.isBase
-        ? `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`
-        : `#474747 url("/static/images/plus.theme.svg") no-repeat center`};
+        ? `#eceef1 url(PlusThemeSvgUrl) no-repeat center`
+        : `#474747 url(PlusThemeSvgUrl) no-repeat center`};
   }
 
   .modal-add-theme {

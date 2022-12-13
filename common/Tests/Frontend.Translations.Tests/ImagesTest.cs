@@ -276,7 +276,9 @@ public class ImagesTest
                 content = content.Replace($"=\"{item.Key}\"", "={" + item.Value + "}");
                 content = content.Replace($"\"{item.Key}\"", item.Value);
 
-                sb.AppendLine($"import {item.Value} from \"{item.Key.Replace("/static/images", "PUBLIC_DIR/images")}\";");
+                var query = item.Key.EndsWith(".svg") ? "?url" : "";
+
+                sb.AppendLine($"import {item.Value} from \"{item.Key.Replace("/static/images", "PUBLIC_DIR/images")}{query}\";");
             }
 
             content = sb.ToString() + content;

@@ -1,3 +1,4 @@
+﻿import LogoDocspaceReactSvgUrl from "PUBLIC_DIR/images/logo.docspace.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -74,7 +75,7 @@ const HeaderUnAuth = ({
                 className="header-logo-icon"
                 src={combineUrl(
                   AppServerConfig.proxyURL,
-                  "/static/images/logo.docspace.react.svg"
+                  LogoDocspaceReactSvgUrl
                 )}
               />
             </a>
