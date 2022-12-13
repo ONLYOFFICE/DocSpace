@@ -9,6 +9,7 @@ import Text from "@docspace/components/text";
 import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
+import api from "@docspace/common/api/index.js";
 
 const Details = ({
   t,
@@ -21,6 +22,7 @@ const Details = ({
   isVisitor,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
+  const [largeLogoIcon, setLargeLogoIcon] = useState("");
 
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
@@ -37,8 +39,18 @@ const Details = ({
     culture,
   });
 
+  const getLargeRoomLogo = React.useCallback(async (url) => {
+    const icon = await api.rooms.getLogoIcon(url);
+
+    setLargeLogoIcon(icon);
+  }, []);
+
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
+
+    if (selection?.isRoom || selection?.roomType) {
+      getLargeRoomLogo(selection.logoHandlers.large);
+    }
 
     if (
       !selection.isFolder &&
@@ -50,7 +62,11 @@ const Details = ({
     ) {
       await createThumbnail(selection.id);
     }
-  }, [selection]);
+  }, [selection, getLargeRoomLogo]);
+
+  const currentIcon = largeLogoIcon
+    ? largeLogoIcon
+    : getInfoPanelItemIcon(selection, 96);
 
   return (
     <>
@@ -70,7 +86,7 @@ const Details = ({
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
               selection.isRoom && selection.logo?.large && "custom-logo"
             }`}
-            src={getInfoPanelItemIcon(selection, 96)}
+            src={currentIcon}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>
