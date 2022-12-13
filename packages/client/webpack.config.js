@@ -95,7 +95,7 @@ const config = {
 
   module: {
     rules: [
-      {
+      /*{
         test: /\.html$/i,
         loader: "html-loader",
         options: {
@@ -117,13 +117,36 @@ const config = {
             },
           },
         },
-      },
+      },*/
       {
-        test: /\.(png|jpe?g|gif|ico|svg)$/i,
+        test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
         generator: {
-          filename: "static/images/[hash][ext][query]",
+          filename: "static/images/[name].[contenthash][ext][query]",
         },
+      },
+      {
+        test: /\.svg$/i,
+        type: "asset/resource",
+        generator: {
+          filename: "static/images/[name].[contenthash][ext][query]",
+        },
+        resourceQuery: { not: [/react/] }, // exclude react component if *.svg?react
+      },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: /react/,
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [{ removeViewBox: false }],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.m?js/,
@@ -132,19 +155,6 @@ const config = {
           fullySpecified: false,
         },
       },
-      // {
-      //   test: /\.react.svg$/,
-      //   use: [
-      //     {
-      //       loader: "@svgr/webpack",
-      //       options: {
-      //         svgoConfig: {
-      //           plugins: [{ removeViewBox: false }],
-      //         },
-      //       },
-      //     },
-      //   ],
-      // },
       { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
