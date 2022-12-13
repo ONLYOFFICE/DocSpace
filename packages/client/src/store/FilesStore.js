@@ -144,7 +144,13 @@ class FilesStore {
               newFiles.pop(); // Remove last
             }
 
-            this.setFiles(newFiles);
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFiles(newFiles);
+            });
           }
           break;
         case "update":

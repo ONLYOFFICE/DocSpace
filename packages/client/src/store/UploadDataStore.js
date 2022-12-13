@@ -431,7 +431,7 @@ class UploadDataStore {
             }
           });
 
-          storeOriginalFiles && this.refreshFiles(file);
+          // storeOriginalFiles && this.refreshFiles(file);
 
           if (fileInfo && fileInfo !== "password") {
             file.fileInfo = fileInfo;
