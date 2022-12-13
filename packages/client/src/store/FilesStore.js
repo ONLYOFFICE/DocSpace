@@ -2007,16 +2007,14 @@ class FilesStore {
   getRoomLogo = async (logoHandlers) => {
     const newLogos = {};
 
-    let disableFetch = false;
-
     for (let key in logoHandlers) {
-      const icon = disableFetch
-        ? ""
-        : await api.rooms.getLogoIcon(logoHandlers[key]);
+      let icon = "";
 
-      if (!icon) disableFetch = true;
+      if (key === "medium") {
+        icon = await api.rooms.getLogoIcon(logoHandlers[key]);
+      }
 
-      newLogos[key] = icon ? icon : "";
+      newLogos[key] = icon;
     }
 
     return newLogos;
