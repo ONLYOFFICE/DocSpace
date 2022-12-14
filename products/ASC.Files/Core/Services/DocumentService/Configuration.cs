@@ -142,9 +142,11 @@ public class DocumentConfig<T>
 {
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly PathProvider _pathProvider;
+    private readonly TenantManager _tenantManager;
     private string _fileUri;
     private string _key = string.Empty;
     private string _title;
+    private FileReferenceData<T> _referenceData;
     public string FileType => Info.GetFile().ConvertedExtension.Trim('.');
     public InfoConfig<T> Info { get; set; }
 
@@ -156,7 +158,22 @@ public class DocumentConfig<T>
 
     public PermissionsConfig Permissions { get; set; }
     public string SharedLinkKey { get; set; }
-    public FileReferenceData<T> ReferenceData { get; set; }
+    public FileReferenceData<T> ReferenceData
+    {
+        get 
+        {
+            if(_referenceData == null)
+            {
+                _referenceData = new FileReferenceData<T>()
+                {
+                    FileId = Info.GetFile().Id,
+                    PortalId = _tenantManager.GetCurrentTenant().Id
+                };
+            }
+
+            return _referenceData;
+        }
+    }
 
     public string Title
     {
@@ -187,12 +204,7 @@ public class DocumentConfig<T>
         Permissions = new PermissionsConfig();
         _documentServiceConnector = documentServiceConnector;
         _pathProvider = pathProvider;
-
-        ReferenceData = new FileReferenceData<T>()
-        {
-            FileId = Info.GetFile().Id,
-            PortalId = tenantManager.GetCurrentTenant().Id
-        };
+        _tenantManager = tenantManager;
     }
 }
 
@@ -614,9 +626,9 @@ public class PermissionsConfig
 
 public class FileReference<T>
 {
+    public FileReferenceData<T> ReferenceData { get; set; }
     public string Error { get; set; }
     public string Path { get; set; }
-    public FileReferenceData<T> ReferenceData { get; set; }
     public string Url { get; set; }
 }
 

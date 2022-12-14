@@ -281,62 +281,51 @@ public abstract class EditorController<T> : ApiControllerBase
         return _fileStorageService.SharedUsersAsync(fileId);
     }
     
-    [HttpGet("file/{fileId}/referencedata")]
-    public async Task<FileReference<T>> GetReferenceDataAsync(T fileId, GetReferenceDataDto<T> inDto)
+    [HttpGet("file/referencedata")]
+    public async Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
-        if (inDto.PortalId != _tenantManager.GetCurrentTenant().Id)
-        {
-            return new FileReference<T>
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
-            };
-        }
+        File<T> file = null;
         var fileDao = _daoFactory.GetFileDao<T>();
-        var file = await fileDao.GetFileAsync(fileId);
-
-        return await InternalGetReferenceDataAsync(file);
-    }
-
-    [HttpGet("file/{fileId}/fromPath/referencedata")]
-    public async Task<FileReference<T>> GetReferenceDataFromPathAsync(T fileId, GetReferenceDataFromPathDto<T> inDto)
-    {
-        var fileDao = _daoFactory.GetFileDao<T>();
-        var source = await fileDao.GetFileAsync(fileId);
-        if (!await _fileSecurity.CanReadAsync(source))
+        if (inDto.PortalId == _tenantManager.GetCurrentTenant().Id) 
         {
-            return new FileReference<T>
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
-            };
+            file = await fileDao.GetFileAsync(inDto.FileId);
         }
 
-        var folderDao = _daoFactory.GetFolderDao<T>();
-        var folder = await folderDao.GetFolderAsync(source.ParentId);
-        if (!await _fileSecurity.CanReadAsync(folder))
+        if(file == null)
         {
-            return new FileReference<T>
+            var source = await fileDao.GetFileAsync(inDto.SourceFileId);
+
+            if (source == null)
             {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder
-            };
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_FileNotFound
+                };
+            }
+
+            if (!await _fileSecurity.CanReadAsync(source))
+            {
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+                };
+            }
+
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            var folder = await folderDao.GetFolderAsync(source.ParentId);
+            if (!await _fileSecurity.CanReadAsync(folder))
+            {
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder
+                };
+            }
+
+            var list = fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, inDto.Path, false, false);
+            file = await list.FirstOrDefaultAsync(fileItem => fileItem.Title == inDto.Path);
         }
 
-        var list = fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, inDto.Path, false, false);
-        var file = await list.FirstOrDefaultAsync(fileItem => fileItem.Title == inDto.Path);
-
-        return await InternalGetReferenceDataAsync(file);
-    }
-
-    private async Task<FileReference<T>> InternalGetReferenceDataAsync(File<T> file)
-    {
-        if (file == null)
-        {
-            return new FileReference<T>
-            {
-                Error = FilesCommonResource.ErrorMassage_FileNotFound
-            };
-        }
-
-        if (! await _fileSecurity.CanReadAsync(file))
+        if (!await _fileSecurity.CanReadAsync(file))
         {
             return new FileReference<T>
             {
