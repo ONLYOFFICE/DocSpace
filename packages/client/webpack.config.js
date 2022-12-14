@@ -98,7 +98,7 @@ const config = {
 
       let folder = result.join("/");
 
-      return `${folder}/[name][ext]?hash=[contenthash]`;
+      return `${folder}/[name].[contenthash][ext]`; //`${folder}/[name][ext]?hash=[contenthash]`;
     },
   },
 
