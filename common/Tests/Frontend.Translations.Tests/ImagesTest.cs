@@ -286,6 +286,68 @@ public class ImagesTest
             File.WriteAllText(f.Path, content, Encoding.UTF8);
         }
 
+        foreach (var f in onlyJsFiles)
+        {
+            var dictionary = new Dictionary<string, string>();
+
+            foreach (var i in f.Images.Where(i => i.FilePath.StartsWith("static/images")))
+            {
+                dictionary.TryAdd(i.FilePath, GetVariableByName(i.FileName));
+            }
+
+            if (!dictionary.Any())
+                continue;
+
+            var content = File.ReadAllText(f.Path);
+
+            var sb = new StringBuilder();
+
+            foreach (var item in dictionary)
+            {
+                content = content.Replace($"=\"{item.Key}\"", "={" + item.Value + "}");
+                content = content.Replace($"\"{item.Key}\"", item.Value);
+
+                var query = item.Key.EndsWith(".svg") ? "?url" : "";
+
+                sb.AppendLine($"import {item.Value} from \"{item.Key.Replace("static/images", "PUBLIC_DIR/images")}{query}\";");
+            }
+
+            content = sb.ToString() + content;
+
+            File.WriteAllText(f.Path, content, Encoding.UTF8);
+        }
+
+        foreach (var f in onlyJsFiles)
+        {
+            var dictionary = new Dictionary<string, string>();
+
+            foreach (var i in f.Images.Where(i => i.FilePath.StartsWith("images/")))
+            {
+                dictionary.TryAdd(i.FilePath, GetVariableByName(i.FileName));
+            }
+
+            if (!dictionary.Any())
+                continue;
+
+            var content = File.ReadAllText(f.Path);
+
+            var sb = new StringBuilder();
+
+            foreach (var item in dictionary)
+            {
+                content = content.Replace($"=\"{item.Key}\"", "={" + item.Value + "}");
+                content = content.Replace($"\"{item.Key}\"", item.Value);
+
+                var query = item.Key.EndsWith(".svg") ? "?url" : "";
+
+                sb.AppendLine($"import {item.Value} from \"{item.Key.Replace("images", "ASSETS_DIR/images")}{query}\";");
+            }
+
+            content = sb.ToString() + content;
+
+            File.WriteAllText(f.Path, content, Encoding.UTF8);
+        }
+
         Assert.AreEqual(0, 0);
     }
 
