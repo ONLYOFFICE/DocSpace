@@ -24,51 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
+namespace ASC.Data.Storage.ZipOperators;
 
-[Scope]
-public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
+public interface IDataWriteOperator : IAsyncDisposable
 {
-    public Task<string> Upload(string storageBasePath, string localPath, Guid userId)
-    {
-        if (!Directory.Exists(storageBasePath))
-        {
-            throw new FileNotFoundException("Directory not found.");
-        }
+    Task WriteEntryAsync(string key, Stream stream);
+    bool NeedUpload { get; }
+    string Hash { get; }
+    string StoragePath { get; }
+}
 
-        var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
-        if (localPath != storagePath)
-        {
-            File.Copy(localPath, storagePath, true);
-        }
+public interface IDataReadOperator : IDisposable
+{
+    Stream GetEntry(string key);
+    IEnumerable<string> GetEntries(string key);
+    IEnumerable<string> GetDirectories(string key);
 
-        return Task.FromResult(storagePath);
-    }
-
-    public Task Download(string storagePath, string targetLocalPath)
-    {
-        File.Copy(storagePath, targetLocalPath, true);
-        return Task.CompletedTask;
-    }
-
-    public Task Delete(string storagePath)
-    {
-        File.Delete(storagePath);
-        return Task.CompletedTask;
-    }
-
-    public Task<bool> IsExists(string storagePath)
-    {
-        return Task.FromResult(File.Exists(storagePath));
-    }
-
-    public Task<string> GetPublicLink(string storagePath)
-    {
-        return Task.FromResult(string.Empty);
-    }
-
-    public Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
-    {
-        return Task.FromResult<IDataWriteOperator>(null);
-    }
 }

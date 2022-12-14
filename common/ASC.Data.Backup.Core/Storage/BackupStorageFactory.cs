@@ -31,7 +31,6 @@ public class BackupStorageFactory
 {
     private readonly ConfigurationExtension _configuration;
     private readonly DocumentsBackupStorage _documentsBackupStorage;
-    private readonly DataStoreBackupStorage _dataStoreBackupStorage;
     private readonly ILogger<BackupStorageFactory> _logger;
     private readonly LocalBackupStorage _localBackupStorage;
     private readonly ConsumerBackupStorage _consumerBackupStorage;
@@ -43,12 +42,10 @@ public class BackupStorageFactory
         ConfigurationExtension configuration,
         DocumentsBackupStorage documentsBackupStorage,
         TenantManager tenantManager,
-        DataStoreBackupStorage dataStoreBackupStorage,
         ILogger<BackupStorageFactory> logger)
     {
         _configuration = configuration;
         _documentsBackupStorage = documentsBackupStorage;
-        _dataStoreBackupStorage = dataStoreBackupStorage;
         _logger = logger;
         _localBackupStorage = localBackupStorage;
         _consumerBackupStorage = consumerBackupStorage;
@@ -72,7 +69,6 @@ public class BackupStorageFactory
     public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
     {
         var settings = _configuration.GetSetting<BackupSettings>("backup");
-        var webConfigPath = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
 
 
         switch (type)
@@ -80,15 +76,15 @@ public class BackupStorageFactory
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
                 {
-                    _documentsBackupStorage.Init(tenantId, webConfigPath);
+                    _documentsBackupStorage.Init(tenantId, null);
 
                     return _documentsBackupStorage;
                 }
             case BackupStorageType.DataStore:
                 {
-                    _dataStoreBackupStorage.Init(tenantId, webConfigPath);
+                    _consumerBackupStorage.Init(tenantId, null);
 
-                    return _dataStoreBackupStorage;
+                    return _consumerBackupStorage;
                 }
             case BackupStorageType.Local:
                 return _localBackupStorage;

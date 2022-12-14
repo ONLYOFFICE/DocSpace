@@ -112,7 +112,6 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
         try
         {
-
             using var scope = _serviceScopeProvider.CreateScope();
 
             _tenantManager = scope.ServiceProvider.GetService<TenantManager>();

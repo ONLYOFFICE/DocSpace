@@ -47,6 +47,7 @@ public abstract class PortalTaskBase
     public int TenantId { get; private set; }
     public string ConfigPath { get; private set; }
     public bool ProcessStorage { get; set; }
+    protected IDataWriteOperator WriteOperator { get; set; }
     protected ModuleProvider ModuleProvider { get; set; }
     protected DbFactory DbFactory { get; set; }
 
