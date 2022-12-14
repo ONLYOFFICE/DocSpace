@@ -40,7 +40,7 @@ const Details = ({
   });
 
   const getLargeRoomLogo = React.useCallback(async (url) => {
-    if (selection.logo.large) return setLargeLogoIcon(selection.logo.large);
+    if (selection?.logo?.large) return setLargeLogoIcon(selection.logo.large);
 
     const icon = await api.rooms.getLogoIcon(url);
 
@@ -50,8 +50,8 @@ const Details = ({
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
 
-    if (selection?.isRoom || selection?.roomType) {
-      getLargeRoomLogo(selection.logoHandlers.large);
+    if ((selection?.isRoom || selection?.roomType) && !selection.isArchive) {
+      getLargeRoomLogo(selection?.logoHandlers?.large);
     }
 
     if (
