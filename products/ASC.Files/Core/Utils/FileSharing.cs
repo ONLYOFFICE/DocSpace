@@ -441,6 +441,7 @@ public class FileSharing
         var result = new List<AceWrapper>();
         var shares = await _fileSecurity.GetSharesAsync(entry);
         var isRoom = entry is Folder<T> { Private: false } room && DocSpaceHelper.IsRoom(room.FolderType);
+        var canEditAccess = await _fileSecurity.CanEditAccessAsync(entry);
 
         var records = shares
             .GroupBy(r => r.Subject)
@@ -495,13 +496,16 @@ public class FileSharing
                 Id = r.Subject,
                 SubjectGroup = isgroup,
                 Access = share,
-                FileShareOptions = r.FileShareOptions
+                FileShareOptions = r.FileShareOptions,
             };
+
+            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
 
             if (isRoom && r.IsLink)
             {
                 w.Link = _roomLinkService.GetInvitationLink(r.Subject, r.Owner);
                 w.SubjectGroup = true;
+                w.CanEditAccess = false;
             }
             else
             {
@@ -556,7 +560,8 @@ public class FileSharing
                 SubjectName = _global.GetUserName(ownerId),
                 SubjectGroup = false,
                 Access = FileShare.ReadWrite,
-                Owner = true
+                Owner = true,
+                CanEditAccess = false,
             };
 
             result.Add(w);
