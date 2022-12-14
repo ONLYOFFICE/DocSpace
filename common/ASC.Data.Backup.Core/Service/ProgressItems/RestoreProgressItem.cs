@@ -98,6 +98,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         Notify = request.NotifyAfterCompletion;
         StoragePath = request.FilePathOrId;
         StorageType = request.StorageType;
+        StorageParams = request.StorageParams;
         TempFolder = tempFolder;
         _upgradesPath = upgradesPath;
         _currentRegion = currentRegion;
