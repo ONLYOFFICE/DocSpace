@@ -231,13 +231,14 @@ class FilesStore {
     socketHelper.on("refresh-folder", (id) => {
       if (!id || this.isLoading) return;
 
-      console.log("TODO: refresh-folder");
-
       //console.log(
       //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
       //);
 
-      if (this.selectedFolderStore.id == id) {
+      if (
+        this.selectedFolderStore.id == id &&
+        this.authStore.settingsStore.withPaging //TODO: no longer deletes the folder in other tabs
+      ) {
         console.log("[WS] refresh-folder", id);
         this.fetchFiles(id, this.filter);
       }
