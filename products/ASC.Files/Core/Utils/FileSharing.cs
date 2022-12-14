@@ -344,7 +344,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (await _fileSecurity.CanEditAccess(entry))
+        if (await _fileSecurity.CanEditAccessAsync(entry))
         {
             return true;
         }
@@ -429,7 +429,7 @@ public class FileSharing
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await _fileSecurity.CanReadAsync(entry))
+        if (!await _fileSecurity.CanReadAccessAsync(entry))
         {
             _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 

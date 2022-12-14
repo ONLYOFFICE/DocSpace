@@ -91,6 +91,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Pin,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.ReadAccess
                 }
             }
     };
@@ -309,14 +310,19 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Pin);
     }
 
-    public Task<bool> CanEditAccess<T>(FileEntry<T> entry)
+    public Task<bool> CanEditAccessAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditAccess);
     }
 
-    public Task<bool> CanEditHistory<T>(FileEntry<T> entry)
+    public Task<bool> CanEditHistoryAsync<T>(FileEntry<T> entry)
     {
         return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditHistory);
+    }
+
+    public Task<bool> CanReadAccessAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.ReadAccess);
     }
 
     public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
@@ -638,7 +644,8 @@ public class FileSecurity : IFileSecurity
             if (action != FilesSecurityActions.Read)
             {
                 if ((action == FilesSecurityActions.Pin ||
-                     action == FilesSecurityActions.EditAccess) &&
+                     action == FilesSecurityActions.EditAccess
+                     || action == FilesSecurityActions.ReadAccess) &&
                     !isRoom)
                 {
                     return false;
@@ -759,7 +766,8 @@ public class FileSecurity : IFileSecurity
                     action != FilesSecurityActions.Delete &&
                     action != FilesSecurityActions.ReadHistory &&
                     action != FilesSecurityActions.Copy &&
-                    action != FilesSecurityActions.Move
+                    action != FilesSecurityActions.Move &&
+                    action != FilesSecurityActions.ReadAccess
                     )
                 {
                     return false;
@@ -843,6 +851,13 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Read:
             case FilesSecurityActions.Pin:
                 return e.Access != FileShare.Restrict;
+            case FilesSecurityActions.ReadAccess:
+                if ((e.RootFolderType != FolderType.Archive && e.Access != FileShare.Restrict) ||
+                    e.Access == FileShare.RoomAdmin)
+                {
+                    return true;
+                }
+                break;
             case FilesSecurityActions.Comment:
                 if (e.Access == FileShare.Comment ||
                     e.Access == FileShare.Review ||
@@ -1616,6 +1631,7 @@ public class FileSecurity : IFileSecurity
         Move,
         Pin,
         EditAccess,
-        Duplicate
+        Duplicate,
+        ReadAccess,
     }
 }
