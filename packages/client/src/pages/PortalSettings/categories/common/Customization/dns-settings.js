@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import HelpButton from "@docspace/components/help-button";
@@ -125,7 +126,7 @@ const DNSSettings = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("DNSSettings")}</div>
           <HelpButton
-            iconName="static/images/combined.shape.svg"
+            iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipDNSSettingsTooltip}
             className="dns-setting_helpbutton "

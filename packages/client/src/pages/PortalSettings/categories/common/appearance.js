@@ -1,3 +1,4 @@
+﻿import CheckWhiteSvgUrl from "PUBLIC_DIR/images/check.white.svg?url";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -42,8 +43,9 @@ const Appearance = (props) => {
   const headerAddTheme = t("Settings:NewColorScheme");
   const headerEditTheme = t("Settings:EditColorScheme");
 
-  const checkImg = "static/images/check.white.svg";
-  const checkImgHover = <ReactSVG className="check-hover" src={checkImg} />;
+  const checkImgHover = (
+    <ReactSVG className="check-hover" src={CheckWhiteSvgUrl} />
+  );
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 

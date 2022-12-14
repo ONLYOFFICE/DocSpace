@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import FieldContainer from "@docspace/components/field-container";
@@ -495,7 +496,7 @@ class LanguageAndTimeZone extends React.Component {
               {t("StudioTimeLanguageSettings")}
             </div>
             <HelpButton
-              iconName="static/images/combined.shape.svg"
+              iconName={CombinedShapeSvgUrl}
               size={12}
               tooltipContent={tooltipLanguageTimeSettings}
             />

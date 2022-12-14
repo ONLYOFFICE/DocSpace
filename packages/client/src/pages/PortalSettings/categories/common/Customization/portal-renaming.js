@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -263,7 +264,7 @@ const PortalRenaming = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
-            iconName="static/images/combined.shape.svg"
+            iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipPortalRenamingTooltip}
           />

@@ -1,4 +1,6 @@
-﻿import FileSvgUrl from "PUBLIC_DIR/images/icons/32/file.svg?url";
+﻿import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
+import FileSvgUrl from "PUBLIC_DIR/images/icons/32/file.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -39,13 +41,13 @@ const CertificatesTable = (props) => {
       {
         key: "edit",
         label: t("Common:EditButton"),
-        icon: "static/images/access.edit.react.svg",
+        icon: AccessEditReactSvgUrl,
         onClick: onEdit,
       },
       {
         key: "delete",
         label: t("Common:Delete"),
-        icon: "static/images/catalog.trash.react.svg",
+        icon: CatalogTrashReactSvgUrl,
         onClick: onDelete,
       },
     ];

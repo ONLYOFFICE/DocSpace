@@ -1,4 +1,5 @@
-﻿import ClearActiveReactSvgUrl from "ASSETS_DIR/images/clear.active.react.svg?url";
+﻿import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
+import ClearActiveReactSvgUrl from "ASSETS_DIR/images/clear.active.react.svg?url";
 import ButtonCancelReactSvgUrl from "ASSETS_DIR/images/button.cancel.react.svg?url";
 import React from "react";
 import IconButton from "@docspace/components/icon-button";
@@ -132,7 +133,7 @@ class UploadPanelComponent extends React.Component {
                 {/*<div className="upload_panel-vertical-dots-icon">
                   <IconButton
                     size="20"
-                    iconName="static/images/vertical-dots.react.svg"
+                    iconName={VerticalDotsReactSvgUrl}
                     color="#A3A9AE"
                   />
                   </div>*/}
