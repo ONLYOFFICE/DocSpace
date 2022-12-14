@@ -26,10 +26,6 @@ import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
-import {
-  getArchiveFileRoleActions,
-  getFileRoleActions,
-} from "@docspace/common/utils/actions";
 
 toast.configure();
 
