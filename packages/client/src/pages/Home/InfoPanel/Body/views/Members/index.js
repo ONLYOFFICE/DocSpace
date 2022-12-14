@@ -38,7 +38,8 @@ const Members = ({
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const { security } = selection;
+
+  const security = selectionParentRoom ? selectionParentRoom.security : {};
 
   const canInviteUserInRoomAbility = canInviteUserInRoom({
     security,
