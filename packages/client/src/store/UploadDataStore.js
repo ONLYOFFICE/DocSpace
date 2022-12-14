@@ -769,7 +769,7 @@ class UploadDataStore {
       return Promise.resolve();
     } else {
       if (currentFile.action === "uploaded") {
-        this.refreshFiles(currentFile);
+        // this.refreshFiles(currentFile);
       }
       return Promise.resolve();
     }
