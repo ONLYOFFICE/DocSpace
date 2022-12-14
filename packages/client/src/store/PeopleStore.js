@@ -1,4 +1,7 @@
-﻿import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
+﻿import InfoReactSvgUrl from "ASSETS_DIR/images/info.react.svg?url";
+import EnableReactSvgUrl from "ASSETS_DIR/images/enable.react.svg?url";
+import DisableReactSvgUrl from "ASSETS_DIR/images/disable.react.svg?url";
+import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import { makeAutoObservable } from "mobx";
@@ -247,7 +250,7 @@ class PeopleStore {
           isVisible ||
           !(isTablet() || isMobile() || isMobileRDD || !isDesktop()),
         onClick: (item) => this.onOpenInfoPanel(item),
-        iconUrl: "images/info.react.svg",
+        iconUrl: InfoReactSvgUrl,
       },
       {
         id: "menu-invite",
@@ -263,7 +266,7 @@ class PeopleStore {
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
         onClick: () => this.onChangeStatus(EmployeeStatus.Active),
-        iconUrl: "images/enable.react.svg",
+        iconUrl: EnableReactSvgUrl,
       },
       {
         id: "menu-disable",
@@ -271,7 +274,7 @@ class PeopleStore {
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
         onClick: () => this.onChangeStatus(EmployeeStatus.Disabled),
-        iconUrl: "images/disable.react.svg",
+        iconUrl: DisableReactSvgUrl,
       },
       {
         id: "menu-delete",

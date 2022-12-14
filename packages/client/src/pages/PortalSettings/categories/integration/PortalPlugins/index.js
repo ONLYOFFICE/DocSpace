@@ -1,4 +1,5 @@
-﻿import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -175,7 +176,7 @@ const PortalPlugins = ({
                 <div className="empty-folder_container-links empty-connect_container-links">
                   <img
                     className="empty-folder_container_plus-image"
-                    src="images/plus.svg"
+                    src={PlusSvgUrl}
                     onClick={onUploadPluginClick}
                     alt="plus_icon"
                   />

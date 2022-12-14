@@ -1,4 +1,6 @@
-﻿import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
+﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+import PanelReactSvgUrl from "ASSETS_DIR/images/panel.react.svg?url";
+import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
@@ -306,7 +308,7 @@ const SectionHeaderContent = (props) => {
               className="action-button"
               directionX="left"
               title={t("Common:Actions")}
-              iconName="images/plus.svg"
+              iconName={PlusSvgUrl}
               size={15}
               getData={getContextOptions}
               isDisabled={false}
@@ -323,7 +325,7 @@ const SectionHeaderContent = (props) => {
                     <IconButton
                       id="info-panel-toggle--open"
                       className="info-panel-toggle"
-                      iconName="images/panel.react.svg"
+                      iconName={PanelReactSvgUrl}
                       size="16"
                       isFill={true}
                       onClick={onSetInfoPanelVisible}

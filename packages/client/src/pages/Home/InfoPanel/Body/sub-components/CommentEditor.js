@@ -1,3 +1,4 @@
+﻿import PencilReactSvgUrl from "ASSETS_DIR/images/pencil.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject } from "mobx-react";
 import { ReactSVG } from "react-svg";
@@ -77,7 +78,7 @@ const CommentEditor = ({
             <div className="edit_toggle" onClick={onOpenEditor}>
               <ReactSVG
                 className="edit_toggle-icon"
-                src="images/pencil.react.svg"
+                src={PencilReactSvgUrl}
               />
               <div className="property-content edit_toggle-text">
                 {comment ? t("Common:EditButton") : t("Common:AddButton")}

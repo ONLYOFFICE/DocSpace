@@ -1,4 +1,5 @@
-﻿import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+﻿import CatalogQuestionReactSvgUrl from "ASSETS_DIR/images/catalog.question.react.svg?url";
+import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 import AccessReviewReactSvgUrl from "PUBLIC_DIR/images/access.review.react.svg?url";
@@ -24,7 +25,7 @@ export const getAccessIcon = (access) => {
     case 3:
       return AccessNoneReactSvgUrl;
     case 4:
-      return "images/catalog.question.react.svg";
+      return CatalogQuestionReactSvgUrl;
     case 5:
       return AccessReviewReactSvgUrl;
     case 6:

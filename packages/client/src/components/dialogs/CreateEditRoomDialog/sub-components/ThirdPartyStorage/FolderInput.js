@@ -1,3 +1,4 @@
+﻿import FolderReactSvgUrl from "ASSETS_DIR/images/folder.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
@@ -143,7 +144,7 @@ const FolderInput = ({
         <div className="icon-wrapper">
           <IconButton
             size={16}
-            iconName="images/folder.react.svg"
+            iconName={FolderReactSvgUrl}
             isClickable
           />
         </div>

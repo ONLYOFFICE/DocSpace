@@ -1,4 +1,6 @@
-﻿import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+﻿import IconCropperGridSvgUrl from "ASSETS_DIR/images/icon-cropper-grid.svg?url";
+import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
+import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
 import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
 import React, { useEffect } from "react";
 import styled from "styled-components";
@@ -145,7 +147,7 @@ const AvatarCropper = ({
       <div className="icon_cropper-crop_area">
         <ReactSVG
           className="icon_cropper-grid"
-          src="images/icon-cropper-grid.svg"
+          src={IconCropperGridSvgUrl}
         />
         <AvatarEditor
           ref={setEditorRef}
@@ -169,7 +171,7 @@ const AvatarCropper = ({
         onClick={handleDeleteImage}
         title={t("Common:Delete")}
       >
-        <ReactSVG src={"images/trash.react.svg"} />
+        <ReactSVG src={TrashReactSvgUrl} />
         <div className="icon_cropper-delete_button-text">
           {t("Common:Delete")}
         </div>

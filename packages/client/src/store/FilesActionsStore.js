@@ -1,4 +1,6 @@
-﻿import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+﻿import SubtractReactSvgUrl from "ASSETS_DIR/images/subtract.react.svg?url";
+import FavoritesReactSvgUrl from "ASSETS_DIR/images/favorites.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/downloadAs.react.svg?url";
@@ -1531,7 +1533,7 @@ class FilesActionStore {
             id: "menu-unarchive",
             key: "unarchive",
             label: t("Common:Restore"),
-            iconUrl: "images/subtract.react.svg",
+            iconUrl: SubtractReactSvgUrl,
             onClick: () => this.archiveRooms("unarchive"),
             disabled: false,
           };
@@ -1691,7 +1693,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
-        iconUrl: "images/favorites.react.svg",
+        iconUrl: FavoritesReactSvgUrl,
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)

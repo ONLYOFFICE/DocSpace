@@ -1,4 +1,6 @@
-﻿import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+import UpSvgUrl from "ASSETS_DIR/images/up.svg?url";
+import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
@@ -49,7 +51,7 @@ const EmptyFolderContainer = ({
       <div className="empty-folder_container-links">
         <img
           className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+          src={PlusSvgUrl}
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
@@ -73,7 +75,7 @@ const EmptyFolderContainer = ({
       <div className="empty-folder_container-links">
         <img
           className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+          src={PlusSvgUrl}
           onClick={onCreate}
           alt="plus_icon"
         />
@@ -94,7 +96,7 @@ const EmptyFolderContainer = ({
             <div className="empty-folder_container-links">
               <img
                 className="empty-folder_container_up-image"
-                src="images/plus.svg"
+                src={PlusSvgUrl}
                 onClick={onInviteUsersClick}
                 alt="up_icon"
               />
@@ -111,7 +113,7 @@ const EmptyFolderContainer = ({
         <div className="empty-folder_container-links">
           <img
             className="empty-folder_container_up-image"
-            src="images/up.svg"
+            src={UpSvgUrl}
             onClick={onBackToParentFolder}
             alt="up_icon"
           />

@@ -1,3 +1,4 @@
+﻿import PanelReactSvgUrl from "ASSETS_DIR/images/panel.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -102,7 +103,7 @@ const InfoPanelHeaderContent = (props) => {
               <IconButton
                 id="info-panel-toggle--close"
                 className="info-panel-toggle"
-                iconName="images/panel.react.svg"
+                iconName={PanelReactSvgUrl}
                 size="16"
                 isFill={true}
                 onClick={closeInfoPanel}

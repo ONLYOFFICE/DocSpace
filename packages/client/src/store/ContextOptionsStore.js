@@ -1,4 +1,21 @@
-﻿import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
+﻿import HistoryReactSvgUrl from "ASSETS_DIR/images/history.react.svg?url";
+import HistoryFinalizedReactSvgUrl from "ASSETS_DIR/images/history-finalized.react.svg?url";
+import MoveReactSvgUrl from "ASSETS_DIR/images/move.react.svg?url";
+import CheckBoxReactSvgUrl from "ASSETS_DIR/images/check-box.react.svg?url";
+import FolderReactSvgUrl from "ASSETS_DIR/images/folder.react.svg?url";
+import ReconnectSvgUrl from "ASSETS_DIR/images/reconnect.svg?url";
+import SettingsReactSvgUrl from "ASSETS_DIR/images/settings.react.svg?url";
+import FileActionsOwnerReactSvgUrl from "ASSETS_DIR/images/file.actions.owner.react.svg?url";
+import FolderLocationReactSvgUrl from "ASSETS_DIR/images/folder.location.react.svg?url";
+import TickRoundedSvgUrl from "ASSETS_DIR/images/tick.rounded.svg?url";
+import FavoritesReactSvgUrl from "ASSETS_DIR/images/favorites.react.svg?url";
+import DownloadReactSvgUrl from "ASSETS_DIR/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "ASSETS_DIR/images/download-as.react.svg?url";
+import RenameReactSvgUrl from "ASSETS_DIR/images/rename.react.svg?url";
+import RemoveSvgUrl from "ASSETS_DIR/images/remove.svg?url";
+import SubtractReactSvgUrl from "ASSETS_DIR/images/subtract.react.svg?url";
+import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
+import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
@@ -505,7 +522,7 @@ class ContextOptionsStore {
                 id: "option_show-version-history",
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
-                icon: "images/history.react.svg",
+                icon: HistoryReactSvgUrl,
                 onClick: () => this.showVersionHistory(item.id, item.access),
                 disabled: false,
               },
@@ -515,13 +532,13 @@ class ContextOptionsStore {
                 id: "option_version",
                 key: "version",
                 label: t("VersionHistory"),
-                icon: "images/history-finalized.react.svg",
+                icon: HistoryFinalizedReactSvgUrl,
                 items: [
                   {
                     id: "option_finalize-version",
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
-                    icon: "images/history-finalized.react.svg",
+                    icon: HistoryFinalizedReactSvgUrl,
                     onClick: () => this.finalizeVersion(item.id, item.access),
                     disabled: false,
                   },
@@ -529,7 +546,7 @@ class ContextOptionsStore {
                     id: "option_version-history",
                     key: "show-version-history",
                     label: t("ShowVersionHistory"),
-                    icon: "images/history.react.svg",
+                    icon: HistoryReactSvgUrl,
                     onClick: () =>
                       this.showVersionHistory(item.id, item.access),
                     disabled: false,
@@ -542,7 +559,7 @@ class ContextOptionsStore {
               id: "option_finalize-version",
               key: "finalize-version",
               label: t("FinalizeVersion"),
-              icon: "images/history-finalized.react.svg",
+              icon: HistoryFinalizedReactSvgUrl,
               onClick: () => this.finalizeVersion(item.id),
               disabled: false,
             },
@@ -550,7 +567,7 @@ class ContextOptionsStore {
               id: "option_version-history",
               key: "show-version-history",
               label: t("ShowVersionHistory"),
-              icon: "images/history.react.svg",
+              icon: HistoryReactSvgUrl,
               onClick: () => this.showVersionHistory(item.id, item.access),
               disabled: false,
             },
@@ -570,7 +587,7 @@ class ContextOptionsStore {
                   id: "option_move-to",
                   key: "move-to",
                   label: t("MoveTo"),
-                  icon: "images/move.react.svg",
+                  icon: MoveReactSvgUrl,
                   onClick: this.onMoveAction,
                   disabled: false,
                 },
@@ -598,7 +615,7 @@ class ContextOptionsStore {
               id: "option_move-to",
               key: "move-to",
               label: t("MoveTo"),
-              icon: "images/move.react.svg",
+              icon: MoveReactSvgUrl,
               onClick: this.onMoveAction,
               disabled: false,
             },
@@ -625,7 +642,7 @@ class ContextOptionsStore {
         id: "option_select",
         key: "select",
         label: t("Common:SelectAction"),
-        icon: "images/check-box.react.svg",
+        icon: CheckBoxReactSvgUrl,
         onClick: () => this.onSelect(item),
         disabled: false,
       },
@@ -633,7 +650,7 @@ class ContextOptionsStore {
         id: "option_open",
         key: "open",
         label: t("Open"),
-        icon: "images/folder.react.svg",
+        icon: FolderReactSvgUrl,
         onClick: () => this.onOpenFolder(item),
         disabled: false,
       },
@@ -685,7 +702,7 @@ class ContextOptionsStore {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
-        icon: "images/reconnect.svg",
+        icon: ReconnectSvgUrl,
         onClick: () => this.onClickReconnectStorage(item, t),
         disabled: false,
       },
@@ -693,7 +710,7 @@ class ContextOptionsStore {
         id: "option_edit-room",
         key: "edit-room",
         label: t("EditRoom"),
-        icon: "images/settings.react.svg",
+        icon: SettingsReactSvgUrl,
         onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
@@ -746,7 +763,7 @@ class ContextOptionsStore {
         id: "option_owner-change",
         key: "owner-change",
         label: t("Translations:OwnerChange"),
-        icon: "images/file.actions.owner.react.svg",
+        icon: FileActionsOwnerReactSvgUrl,
         onClick: this.onOwnerChange,
         disabled: false,
       },
@@ -783,7 +800,7 @@ class ContextOptionsStore {
         id: "option_open-location",
         key: "open-location",
         label: t("OpenLocation"),
-        icon: "images/folder.location.react.svg",
+        icon: FolderLocationReactSvgUrl,
         onClick: () => this.onOpenLocation(item),
         disabled: false,
       },
@@ -791,7 +808,7 @@ class ContextOptionsStore {
         id: "option_mark-read",
         key: "mark-read",
         label: t("MarkRead"),
-        icon: "images/tick.rounded.svg",
+        icon: TickRoundedSvgUrl,
         onClick: () => this.onClickMarkRead(item),
         disabled: false,
       },
@@ -799,7 +816,7 @@ class ContextOptionsStore {
         id: "option_mark-as-favorite",
         key: "mark-as-favorite",
         label: t("MarkAsFavorite"),
-        icon: "images/favorites.react.svg",
+        icon: FavoritesReactSvgUrl,
         onClick: (e) => this.onClickFavorite(e, item.id, t),
         disabled: false,
         "data-action": "mark",
@@ -809,7 +826,7 @@ class ContextOptionsStore {
         id: "option_remove-from-favorites",
         key: "remove-from-favorites",
         label: t("RemoveFromFavorites"),
-        icon: "images/favorites.react.svg",
+        icon: FavoritesReactSvgUrl,
         onClick: (e) => this.onClickFavorite(e, item.id, t),
         disabled: false,
         "data-action": "remove",
@@ -819,7 +836,7 @@ class ContextOptionsStore {
         id: "option_download",
         key: "download",
         label: t("Common:Download"),
-        icon: "images/download.react.svg",
+        icon: DownloadReactSvgUrl,
         onClick: () => this.onClickDownload(item, t),
         disabled: false,
       },
@@ -827,7 +844,7 @@ class ContextOptionsStore {
         id: "option_download-as",
         key: "download-as",
         label: t("Translations:DownloadAs"),
-        icon: "images/download-as.react.svg",
+        icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
         disabled: false,
       },
@@ -836,7 +853,7 @@ class ContextOptionsStore {
         id: "option_restore",
         key: "restore",
         label: t("Common:Restore"),
-        icon: "images/move.react.svg",
+        icon: MoveReactSvgUrl,
         onClick: this.onMoveAction,
         disabled: false,
       },
@@ -844,7 +861,7 @@ class ContextOptionsStore {
         id: "option_rename",
         key: "rename",
         label: t("Rename"),
-        icon: "images/rename.react.svg",
+        icon: RenameReactSvgUrl,
         onClick: () => this.onClickRename(item),
         disabled: false,
       },
@@ -856,7 +873,7 @@ class ContextOptionsStore {
         id: "option_unsubscribe",
         key: "unsubscribe",
         label: t("RemoveFromList"),
-        icon: "images/remove.svg",
+        icon: RemoveSvgUrl,
         onClick: this.onClickUnsubscribe,
         disabled: false,
       },
@@ -882,7 +899,7 @@ class ContextOptionsStore {
         id: "option_unarchive-room",
         key: "unarchive-room",
         label: t("Common:Restore"),
-        icon: "images/subtract.react.svg",
+        icon: SubtractReactSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "unarchive",
@@ -894,7 +911,7 @@ class ContextOptionsStore {
         label: isRootThirdPartyFolder
           ? t("Common:Disconnect")
           : t("Common:Delete"),
-        icon: "images/trash.react.svg",
+        icon: TrashReactSvgUrl,
         onClick: () => this.onClickDelete(item, t),
         disabled: false,
       },
@@ -995,7 +1012,7 @@ class ContextOptionsStore {
         archiveOptions = {
           key: "unarchive-room",
           label: t("Common:Restore"),
-          icon: "images/subtract.react.svg",
+          icon: SubtractReactSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
           "data-action": "unarchive",
@@ -1019,7 +1036,7 @@ class ContextOptionsStore {
         options.push({
           key: "delete-rooms",
           label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
+          icon: TrashReactSvgUrl,
           onClick: () => deleteRooms(t),
         });
 
@@ -1085,7 +1102,7 @@ class ContextOptionsStore {
       {
         key: "mark-as-favorite",
         label: t("MarkAsFavorite"),
-        icon: "images/favorites.react.svg",
+        icon: FavoritesReactSvgUrl,
         onClick: (e) => this.onClickFavorite(e, favoriteItemsIds, t),
         disabled: !favoriteItems.length,
         "data-action": "mark",
@@ -1094,7 +1111,7 @@ class ContextOptionsStore {
       {
         key: "remove-from-favorites",
         label: t("RemoveFromFavorites"),
-        icon: "images/favorites.react.svg",
+        icon: FavoritesReactSvgUrl,
         onClick: (e) => this.onClickFavorite(e, removeFromFavoriteItemsIds, t),
         disabled: favoriteItems.length || !removeFromFavoriteItems.length,
         "data-action": "remove",
@@ -1103,7 +1120,7 @@ class ContextOptionsStore {
       {
         key: "download",
         label: t("Common:Download"),
-        icon: "images/download.react.svg",
+        icon: DownloadReactSvgUrl,
         onClick: () =>
           this.filesActionsStore
             .downloadAction(t("Translations:ArchivingData"))
@@ -1113,14 +1130,14 @@ class ContextOptionsStore {
       {
         key: "download-as",
         label: t("Translations:DownloadAs"),
-        icon: "images/download-as.react.svg",
+        icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
         disabled: !downloadAs,
       },
       {
         key: "move-to",
         label: t("MoveTo"),
-        icon: "images/move.react.svg",
+        icon: MoveReactSvgUrl,
         onClick: this.onMoveAction,
         disabled: isRecycleBinFolder || !moveItems,
       },
@@ -1134,7 +1151,7 @@ class ContextOptionsStore {
       {
         key: "restore",
         label: t("Common:Restore"),
-        icon: "images/move.react.svg",
+        icon: MoveReactSvgUrl,
         onClick: this.onMoveAction,
         disabled: !isRecycleBinFolder || !restoreItems,
       },
@@ -1146,7 +1163,7 @@ class ContextOptionsStore {
       {
         key: "delete",
         label: t("Common:Delete"),
-        icon: "images/trash.react.svg",
+        icon: TrashReactSvgUrl,
         onClick: () => {
           if (this.settingsStore.confirmDelete) {
             setDeleteDialogVisible(true);

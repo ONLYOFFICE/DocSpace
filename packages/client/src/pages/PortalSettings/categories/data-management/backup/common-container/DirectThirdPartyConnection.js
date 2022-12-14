@@ -1,4 +1,5 @@
-﻿import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+﻿import VerticalDotsReactSvgUrl from "ASSETS_DIR/images/vertical-dots.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 import React, { useEffect, useState, useReducer } from "react";
 import Button from "@docspace/components/button";
@@ -333,7 +334,7 @@ const DirectThirdPartyConnection = (props) => {
         <ContextMenuButton
           zIndex={402}
           className="backup_third-party-context"
-          iconName="images/vertical-dots.react.svg"
+          iconName={VerticalDotsReactSvgUrl}
           size={15}
           getData={getContextOptions}
           isDisabled={

@@ -1,4 +1,16 @@
-﻿import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
+﻿import PencilReactSvgUrl from "ASSETS_DIR/images/pencil.react.svg?url";
+import ChangeMailReactSvgUrl from "ASSETS_DIR/images/change.mail.react.svg?url";
+import ChangeSecurityReactSvgUrl from "ASSETS_DIR/images/change.security.react.svg?url";
+import FolderReactSvgUrl from "ASSETS_DIR/images/folder.react.svg?url";
+import EnableReactSvgUrl from "ASSETS_DIR/images/enable.react.svg?url";
+import RemoveReactSvgUrl from "ASSETS_DIR/images/remove.react.svg?url";
+import RessingDataReactSvgUrl from "ASSETS_DIR/images/ressing_data.react.svg?url";
+import DelDataReactSvgUrl from "ASSETS_DIR/images/del_data.react.svg?url";
+import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
+import InfoReactSvgUrl from "ASSETS_DIR/images/info.react.svg?url";
+import RestoreAuthReactSvgUrl from "ASSETS_DIR/images/restore.auth.react.svg?url";
+import DisableReactSvgUrl from "ASSETS_DIR/images/disable.react.svg?url";
+import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
@@ -62,7 +74,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-name",
             key: option,
-            icon: "images/pencil.react.svg",
+            icon: PencilReactSvgUrl,
             label: t("PeopleTranslations:NameChangeButton"),
             onClick: this.toggleChangeNameDialog,
           };
@@ -70,7 +82,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-email",
             key: option,
-            icon: "images/change.mail.react.svg",
+            icon: ChangeMailReactSvgUrl,
             label: t("PeopleTranslations:EmailChangeButton"),
             onClick: () => this.toggleChangeEmailDialog(item),
           };
@@ -78,7 +90,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-password",
             key: option,
-            icon: "images/change.security.react.svg",
+            icon: ChangeSecurityReactSvgUrl,
             label: t("PeopleTranslations:PasswordChangeButton"),
             onClick: () => this.toggleChangePasswordDialog(item),
           };
@@ -93,7 +105,7 @@ class AccountsContextOptionsStore {
         case "room-list":
           return {
             key: option,
-            icon: "images/folder.react.svg",
+            icon: FolderReactSvgUrl,
             label: "Room list",
             onClick: () => this.openUserRoomList(item),
           };
@@ -101,7 +113,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_enable",
             key: option,
-            icon: "images/enable.react.svg",
+            icon: EnableReactSvgUrl,
             label: t("PeopleTranslations:EnableUserButton"),
             onClick: () => this.onEnableClick(t, item),
           };
@@ -109,7 +121,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_disable",
             key: option,
-            icon: "images/remove.react.svg",
+            icon: RemoveReactSvgUrl,
             label: t("PeopleTranslations:DisableUserButton"),
             onClick: () => this.onDisableClick(t, item),
           };
@@ -118,7 +130,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_reassign-data",
             key: option,
-            icon: "images/ressing_data.react.svg",
+            icon: RessingDataReactSvgUrl,
             label: t("PeopleTranslations:ReassignData"),
             onClick: () => this.onReassignDataClick(item),
           };
@@ -126,7 +138,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_delete-personal-data",
             key: option,
-            icon: "images/del_data.react.svg",
+            icon: DelDataReactSvgUrl,
             label: t("PeopleTranslations:RemoveData"),
             onClick: () => this.onDeletePersonalDataClick(t, item),
           };
@@ -134,7 +146,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_delete-user",
             key: option,
-            icon: "images/trash.react.svg",
+            icon: TrashReactSvgUrl,
             label: t("DeleteProfileEverDialog:DeleteUser"),
             onClick: () => this.toggleDeleteProfileEverDialog(item),
           };
@@ -143,7 +155,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_details",
             key: option,
-            icon: "images/info.react.svg",
+            icon: InfoReactSvgUrl,
             label: t("Common:Info"),
             onClick: this.onDetailsClick,
           };
@@ -160,7 +172,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_reset-auth",
             key: option,
-            icon: "images/restore.auth.react.svg",
+            icon: RestoreAuthReactSvgUrl,
             label: t("PeopleTranslations:ResetAuth"),
             onClick: () => this.onResetAuth(item),
           };
@@ -243,7 +255,7 @@ class AccountsContextOptionsStore {
         label: t("Common:Info"),
         disabled: isVisible,
         onClick: () => setIsVisible(true),
-        icon: "images/info.react.svg",
+        icon: InfoReactSvgUrl,
       },
       {
         key: "cm-invite",
@@ -257,14 +269,14 @@ class AccountsContextOptionsStore {
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
         onClick: () => onChangeStatus(EmployeeStatus.Active),
-        icon: "images/enable.react.svg",
+        icon: EnableReactSvgUrl,
       },
       {
         key: "cm-disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
         onClick: () => onChangeStatus(EmployeeStatus.Disabled),
-        icon: "images/disable.react.svg",
+        icon: DisableReactSvgUrl,
       },
       {
         key: "cm-delete",

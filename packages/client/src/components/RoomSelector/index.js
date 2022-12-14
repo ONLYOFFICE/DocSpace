@@ -1,3 +1,4 @@
+﻿import EmptyScreenCorporatePngUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
 import React from "react";
 import { withTranslation } from "react-i18next";
 
@@ -188,13 +189,13 @@ const RoomSelector = ({
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.png"}
+      emptyScreenImage={emptyScreenImage || EmptyScreenCorporatePngUrl}
       emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
       emptyScreenDescription={
         emptyScreenDescription || t("EmptyRoomsDescription")
       }
       searchEmptyScreenImage={
-        searchEmptyScreenImage || "images/empty_screen_corporate.png"
+        searchEmptyScreenImage || EmptyScreenCorporatePngUrl
       }
       searchEmptyScreenHeader={
         searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")

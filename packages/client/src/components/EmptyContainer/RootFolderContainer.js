@@ -1,3 +1,7 @@
+﻿import PrivacySvgUrl from "ASSETS_DIR/images/privacy.svg?url";
+import PersonSvgUrl from "ASSETS_DIR/images/person.svg?url";
+import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+import EmptyFolderImageSvgUrl from "ASSETS_DIR/images/empty-folder-image.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
@@ -76,7 +80,7 @@ const RootFolderContainer = (props) => {
     : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
-  const privacyIcon = <img alt="" src="images/privacy.svg" />;
+  const privacyIcon = <img alt="" src={PrivacySvgUrl} />;
   const privateRoomDescTranslations = [
     t("PrivateRoomDescriptionSafest"),
     t("PrivateRoomDescriptionSecure"),
@@ -273,7 +277,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/person.svg"
+        src={PersonSvgUrl}
         alt="person_icon"
         onClick={onGoToPersonal}
       />
@@ -287,7 +291,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container_plus-image"
-        src="images/plus.svg"
+        src={PlusSvgUrl}
         onClick={onCreateRoom}
         alt="plus_icon"
       />
@@ -301,7 +305,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/empty-folder-image.svg"
+        src={EmptyFolderImageSvgUrl}
         onClick={onGoToShared}
         alt="folder_icon"
       />
@@ -315,7 +319,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/person.svg"
+        src={PersonSvgUrl}
         alt="person_icon"
         onClick={onGoToPersonal}
       />

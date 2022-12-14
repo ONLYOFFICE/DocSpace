@@ -41,7 +41,7 @@ const StyledComponent = styled.div`
     border-radius: 8px;
     cursor: pointer;
     background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
-      url(PlusThemeSvgUrl) no-repeat center;
+      url(${PlusThemeSvgUrl}) no-repeat center;
   }
 
   .add-theme {

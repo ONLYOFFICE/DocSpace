@@ -1,3 +1,4 @@
+﻿import SecuritySvgUrl from "ASSETS_DIR/images/security.svg?url";
 import styled from "styled-components";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -9,7 +10,7 @@ import EditFormIcon from "ASSETS_DIR/images/file.actions.edit.form.react.svg";
 import Base from "@docspace/components/themes/base";
 
 export const EncryptedFileIcon = styled.div`
-  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  background: url(${SecuritySvgUrl}) no-repeat 0 0 / 16px 16px transparent;
   height: 16px;
   position: absolute;
   width: 16px;

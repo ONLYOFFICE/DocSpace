@@ -17,6 +17,7 @@ import TypeCell from "./sub-components/TypeCell";
 import TagsCell from "./sub-components/TagsCell";
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
+import CursorPalmReactSvgURL from "PUBLIC_DIR/images/cursor.palm.react.svg";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -91,7 +92,7 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(/static/images/cursor.palm.react.svg), auto !important"};
+      `url(${CursorPalmReactSvgURL}), auto !important`};
 
     ${(props) =>
       props.inProgress &&

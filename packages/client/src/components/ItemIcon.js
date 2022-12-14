@@ -1,3 +1,4 @@
+﻿import SecuritySvgUrl from "ASSETS_DIR/images/security.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
@@ -15,7 +16,7 @@ const StyledIcon = styled.img`
 `;
 
 const EncryptedFileIcon = styled.div`
-  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  background: url(${SecuritySvgUrl}) no-repeat 0 0 / 16px 16px transparent;
   height: 16px;
   position: absolute;
   width: 16px;

@@ -38,8 +38,8 @@ const StyledComponent = styled(ModalDialog)`
       props.currentColorAccent
         ? props.currentColorAccent
         : props.theme.isBase
-        ? `#eceef1 url(PlusThemeSvgUrl) no-repeat center`
-        : `#474747 url(PlusThemeSvgUrl) no-repeat center`};
+        ? `#eceef1 url(${PlusThemeSvgUrl}) no-repeat center`
+        : `#474747 url(${PlusThemeSvgUrl}) no-repeat center`};
   }
 
   .buttons-box {
@@ -47,8 +47,8 @@ const StyledComponent = styled(ModalDialog)`
       props.currentColorButtons
         ? props.currentColorButtons
         : props.theme.isBase
-        ? `#eceef1 url(PlusThemeSvgUrl) no-repeat center`
-        : `#474747 url(PlusThemeSvgUrl) no-repeat center`};
+        ? `#eceef1 url(${PlusThemeSvgUrl}) no-repeat center`
+        : `#474747 url(${PlusThemeSvgUrl}) no-repeat center`};
   }
 
   .modal-add-theme {

@@ -1,3 +1,4 @@
+﻿import InfoPanelRoomEmptyScreenSvgUrl from "ASSETS_DIR/images/info-panel-room-empty-screen.svg?url";
 import React from "react";
 import Text from "@docspace/components/text";
 
@@ -8,7 +9,7 @@ const NoRoomItem = ({ t }) => {
     <StyledNoItemContainer className="info-panel_gallery-empty-screen">
       <div className="no-thumbnail-img-wrapper">
         <img
-          src="images/info-panel-room-empty-screen.svg"
+          src={InfoPanelRoomEmptyScreenSvgUrl}
           alt="No Room Image"
         />
       </div>

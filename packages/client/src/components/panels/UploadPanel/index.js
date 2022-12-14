@@ -1,3 +1,5 @@
+﻿import ClearActiveReactSvgUrl from "ASSETS_DIR/images/clear.active.react.svg?url";
+import ButtonCancelReactSvgUrl from "ASSETS_DIR/images/button.cancel.react.svg?url";
 import React from "react";
 import IconButton from "@docspace/components/icon-button";
 import Backdrop from "@docspace/components/backdrop";
@@ -112,7 +114,7 @@ class UploadPanelComponent extends React.Component {
                   {uploaded && converted ? (
                     <IconButton
                       size="20"
-                      iconName="images/clear.active.react.svg"
+                      iconName={ClearActiveReactSvgUrl}
                       // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={this.clearUploadPanel}
@@ -120,7 +122,7 @@ class UploadPanelComponent extends React.Component {
                   ) : (
                     <IconButton
                       size="20"
-                      iconName="images/button.cancel.react.svg"
+                      iconName={ButtonCancelReactSvgUrl}
                       // color={theme.filesPanels.upload.color}
                       isClickable
                       onClick={uploaded ? cancelConversion : cancelUpload}

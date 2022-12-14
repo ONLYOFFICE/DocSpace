@@ -1,3 +1,9 @@
+﻿import PaymentsEnterpriseSvgUrl from "ASSETS_DIR/images/payments_enterprise.svg?url";
+import PaymentsEnterpriseCubesSvgUrl from "ASSETS_DIR/images/payments_enterprise_cubes.svg?url";
+import PaymentsEnterpriseLockSvgUrl from "ASSETS_DIR/images/payments_enterprise_lock.svg?url";
+import PaymentsEnterpriseSmartphoneSvgUrl from "ASSETS_DIR/images/payments_enterprise_smartphone.svg?url";
+import PaymentsEnterpriseUpdateSvgUrl from "ASSETS_DIR/images/payments_enterprise_update.svg?url";
+import PaymentsEnterpriseHelpSvgUrl from "ASSETS_DIR/images/payments_enterprise_help.svg?url";
 import React from "react";
 import styled from "styled-components";
 
@@ -16,7 +22,7 @@ const StyledBodyAdvantages = styled.div`
   grid-template-rows: repeat(4, min-content);
   grid-row-gap: 18px;
 
-  background: url("images/payments_enterprise.svg")
+  background: url(${PaymentsEnterpriseSvgUrl})
     ${(props) => props.theme.client.paymentsEnterprise.background} bottom 32px
     right 32px no-repeat;
 
@@ -49,7 +55,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 
       <Box className="row-advantages">
         <img
-          src="images/payments_enterprise_cubes.svg"
+          src={PaymentsEnterpriseCubesSvgUrl}
           width="24px"
           height="23px"
           alt="Icon_cubes"
@@ -65,7 +71,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 
       <Box className="row-advantages">
         <img
-          src="images/payments_enterprise_lock.svg"
+          src={PaymentsEnterpriseLockSvgUrl}
           width="24px"
           height="23px"
           alt="Icon_lock"
@@ -77,7 +83,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 
       <Box className="row-advantages">
         <img
-          src="images/payments_enterprise_smartphone.svg"
+          src={PaymentsEnterpriseSmartphoneSvgUrl}
           width="24px"
           height="23px"
           alt="Icon_smartphone"
@@ -89,7 +95,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 
       <Box className="row-advantages">
         <img
-          src="images/payments_enterprise_update.svg"
+          src={PaymentsEnterpriseUpdateSvgUrl}
           width="24px"
           height="23px"
           alt="Icon_update"
@@ -101,7 +107,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 
       <Box className="row-advantages">
         <img
-          src="images/payments_enterprise_help.svg"
+          src={PaymentsEnterpriseHelpSvgUrl}
           width="24px"
           height="23px"
           alt="Icon_help"
