@@ -2450,11 +2450,9 @@ class FilesStore {
   }
 
   get isViewedSelected() {
-    const { canViewedDocs } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return canViewedDocs(selected.fileExst);
+      return selected.viewAccessability?.WebView;
     });
   }
 

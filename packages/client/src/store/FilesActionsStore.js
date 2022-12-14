@@ -1760,7 +1760,7 @@ class FilesActionStore {
     const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
     const canConvert = this.settingsStore.canConvert(item.fileExst);
     const canWebEdit = item.viewAccessability?.WebEdit;
-    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
+    const canViewedDocs = item.viewAccessability?.WebView;
 
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);

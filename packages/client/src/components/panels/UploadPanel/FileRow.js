@@ -359,12 +359,7 @@ export default inject(
       name = splitted[0];
     }
     const { personal, theme } = auth.settingsStore;
-    const {
-      canViewedDocs,
-      isMediaOrImage,
-      getIconSrc,
-      isArchive,
-    } = settingsStore;
+    const { isMediaOrImage, getIconSrc, isArchive } = settingsStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -395,7 +390,8 @@ export default inject(
         ? loadingFile.percent
         : null;
 
-    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
+    const downloadInCurrentTab =
+      isArchive(ext) || !item.viewAccessability?.WebView;
 
     return {
       isPersonal: personal,
