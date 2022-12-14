@@ -26,7 +26,8 @@ const Members = ({
 
   getRoomMembers,
   updateRoomMemberRole,
-
+  setView,
+  roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
 }) => {
@@ -89,6 +90,9 @@ const Members = ({
       ...selection,
       members: fetchedMembers,
     });
+     if (roomsView === "info_members" && !selection?.security?.ReadAccess)
+       setView("info_details");
+
   }, [selection]);
 
   const onClickInviteUsers = () => {
@@ -195,7 +199,12 @@ const Members = ({
 
 export default inject(
   ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
-    const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
+    const {
+      selectionParentRoom,
+      setSelectionParentRoom,
+      setView,
+      roomsView,
+    } = auth.infoPanelStore;
     const {
       getRoomMembers,
       updateRoomMemberRole,
@@ -205,6 +214,8 @@ export default inject(
     const { setInvitePanelOptions } = dialogsStore;
 
     return {
+      setView,
+      roomsView,
       selectionParentRoom,
       setSelectionParentRoom,
 
