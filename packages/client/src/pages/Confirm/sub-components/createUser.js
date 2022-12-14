@@ -195,7 +195,7 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-fields {
-    @media (max-width: 768px) {
+    @media ${hugeMobile} {
       display: ${(props) => props.isGreetingMode && "none"};
     }
   }
