@@ -13,21 +13,17 @@ const CommentEditor = ({
   setSelection,
   fetchFileVersions,
   updateCommentVersion,
-  canChangeVersionFileHistory,
-  setVerHistoryFileId,
-  setVerHistoryFileAccess,
-}) => {
-  const { id, comment, version, access, folderType } = item;
 
-  const changeVersionHistoryAbility = canChangeVersionFileHistory({
-    access,
-    folderType,
-    editing,
-  });
+  setVerHistoryFileId,
+  setVerHistoryFileSecurity,
+}) => {
+  const { id, comment, version, access, security } = item;
+
+  const changeVersionHistoryAbility = !editing && security?.EditHistory;
 
   useEffect(() => {
     setVerHistoryFileId(id);
-    setVerHistoryFileAccess(access);
+    setVerHistoryFileSecurity(security);
   }, []);
 
   const [isEdit, setIsEdit] = useState(false);
@@ -116,7 +112,7 @@ const CommentEditor = ({
   );
 };
 
-export default inject(({ auth, versionHistoryStore, accessRightsStore }) => {
+export default inject(({ auth, versionHistoryStore }) => {
   const { setSelection } = auth.infoPanelStore;
 
   const {
@@ -126,19 +122,18 @@ export default inject(({ auth, versionHistoryStore, accessRightsStore }) => {
     isEditing,
     fileId,
     setVerHistoryFileId,
-    setVerHistoryFileAccess,
+    setVerHistoryFileSecurity,
   } = versionHistoryStore;
 
-  const { canChangeVersionFileHistory } = accessRightsStore;
   const editing = isEditingVersion || isEditing;
 
   return {
     setSelection,
     fetchFileVersions,
     updateCommentVersion,
-    canChangeVersionFileHistory,
+
     editing,
     setVerHistoryFileId,
-    setVerHistoryFileAccess,
+    setVerHistoryFileSecurity,
   };
 })(CommentEditor);

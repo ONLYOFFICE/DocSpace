@@ -52,23 +52,6 @@ class AccessRightsStore {
     return security?.EditAccess;
   };
 
-  canChangeVersionFileHistory = (file) => {
-    const { editing, security } = file;
-
-    if (editing) return false;
-
-    return security?.EditHistory;
-  };
-
-  canViewRoomInfo = (room) => {
-    const { access, rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveRoomRoleActions(access).viewInfo;
-
-    return getRoomRoleActions(access).viewInfo;
-  };
-
   get canCreateFiles() {
     const { security } = this.selectedFolderStore;
 

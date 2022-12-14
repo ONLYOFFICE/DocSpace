@@ -164,7 +164,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id) => {
+  showVersionHistory = (id, security) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -172,7 +172,7 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    fetchFileVersions(id + "");
+    fetchFileVersions(id + "", security);
     setIsVerHistoryPanel(true);
   };
 
@@ -528,7 +528,7 @@ class ContextOptionsStore {
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
                 icon: "images/history.react.svg",
-                onClick: () => this.showVersionHistory(item.id, item.access),
+                onClick: () => this.showVersionHistory(item.id, item.security),
                 disabled: false,
               },
             ]
@@ -544,7 +544,7 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: "images/history-finalized.react.svg",
-                    onClick: () => this.finalizeVersion(item.id, item.access),
+                    onClick: () => this.finalizeVersion(item.id, item.security),
                     disabled: false,
                   },
                   {
@@ -553,7 +553,7 @@ class ContextOptionsStore {
                     label: t("ShowVersionHistory"),
                     icon: "images/history.react.svg",
                     onClick: () =>
-                      this.showVersionHistory(item.id, item.access),
+                      this.showVersionHistory(item.id, item.security),
                     disabled: false,
                   },
                 ],

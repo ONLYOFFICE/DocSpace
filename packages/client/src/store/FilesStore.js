@@ -1147,9 +1147,8 @@ class FilesStore {
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = item.security?.Lock;
-      const canChangeVersionFileHistory = this.accessRightsStore.canChangeVersionFileHistory(
-        { ...item, ...{ editing: isEditing } }
-      );
+      const canChangeVersionFileHistory =
+        !isEditing && item.security?.EditHistory;
 
       const canViewVersionFileHistory = item.security?.ReadHistory;
       const canFillForm = item.security?.FillForms;
@@ -1394,7 +1393,7 @@ class FilesStore {
 
       const canEditRoom = item.security?.EditRoom;
 
-      const canViewRoomInfo = this.accessRightsStore.canViewRoomInfo(item);
+      const canViewRoomInfo = item.security?.Read;
 
       let roomOptions = [
         "select",
