@@ -25,33 +25,6 @@ class AccessRightsStore {
     makeAutoObservable(this);
   }
 
-  canChangeUserRoleInRoom = (room) => {
-    const { currentUserInList, security } = room;
-    const { userStore } = this.authStore;
-    const { user } = userStore;
-
-    const isMyProfile = user.id === currentUserInList.id;
-    const isOwnerRoleRoom =
-      currentUserInList.access === ShareAccessRights.FullAccess;
-
-    if (isMyProfile || isOwnerRoleRoom) return false;
-
-    return security?.EditAccess;
-  };
-  canDeleteUserInRoom = (room) => {
-    const { currentUserInList, security } = room;
-    const { userStore } = this.authStore;
-    const { user } = userStore;
-
-    const isMyProfile = user.id === currentUserInList.id;
-    const isOwnerRoleRoom =
-      currentUserInList.access === ShareAccessRights.FullAccess;
-
-    if (isMyProfile || isOwnerRoleRoom) return false;
-
-    return security?.EditAccess;
-  };
-
   get canCreateFiles() {
     const { security } = this.selectedFolderStore;
 

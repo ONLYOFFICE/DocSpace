@@ -29,10 +29,6 @@ const Members = ({
 
   resendEmailInvitations,
   setInvitePanelOptions,
-  canDeleteUserInRoom,
-  changeUserType,
-
-  canChangeUserRoleInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -47,6 +43,7 @@ const Members = ({
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
     let data = await getRoomMembers(roomId);
+
     data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);
 
@@ -55,6 +52,7 @@ const Members = ({
     data.map((fetchedMember) => {
       const member = {
         access: fetchedMember.access,
+        canEditAccess: fetchedMember.canEditAccess,
         ...fetchedMember.sharedTo,
       };
       if (member.activationStatus !== 2) inRoomMembers.push(member);
@@ -119,7 +117,7 @@ const Members = ({
   const [currentMember] = members.inRoom.filter(
     (member) => member.id === selfId
   );
-
+  console.log("members", members);
   return (
     <>
       <StyledUserTypeHeader>
@@ -153,8 +151,6 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
-            canDeleteUserInRoom={canDeleteUserInRoom}
           />
         ))}
       </StyledUserList>
@@ -190,8 +186,6 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            canDeleteUserInRoom={canDeleteUserInRoom}
-            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
           />
         ))}
       </StyledUserList>
@@ -209,8 +203,6 @@ export default inject(
     } = filesStore;
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
-    const { changeType: changeUserType } = peopleStore;
-    const { canChangeUserRoleInRoom, canDeleteUserInRoom } = accessRightsStore;
 
     return {
       selectionParentRoom,
@@ -225,11 +217,6 @@ export default inject(
 
       setInvitePanelOptions,
       resendEmailInvitations,
-
-      changeUserType,
-
-      canChangeUserRoleInRoom,
-      canDeleteUserInRoom,
     };
   }
 )(
