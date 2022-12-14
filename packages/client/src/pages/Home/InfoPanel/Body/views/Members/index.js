@@ -117,7 +117,7 @@ const Members = ({
   const [currentMember] = members.inRoom.filter(
     (member) => member.id === selfId
   );
-  console.log("members", members);
+
   return (
     <>
       <StyledUserTypeHeader>
