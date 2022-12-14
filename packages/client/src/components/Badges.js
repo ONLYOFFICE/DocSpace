@@ -58,7 +58,6 @@ const Badges = ({
   newItems,
   sectionWidth,
   item,
-  canWebEdit,
   isTrashFolder,
   isPrivacyFolder,
   isDesktopClient,

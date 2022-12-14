@@ -2082,6 +2082,7 @@ class FilesStore {
         tags,
         pinned,
         security,
+        viewAccessability,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2203,6 +2204,7 @@ class FilesStore {
         thirdPartyIcon,
         providerType,
         security,
+        viewAccessability,
       };
     });
 
@@ -2503,7 +2505,6 @@ class FilesStore {
 
   getOptions = (selection, externalAccess = false) => {
     const {
-      canWebEdit,
       canWebComment,
       canWebReview,
       canFormFillingDocs,
@@ -2519,7 +2520,7 @@ class FilesStore {
 
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    const webEdit = selection.find((x) => canWebEdit(x.fileExst));
+    const webEdit = selection.find((x) => x.viewAccessability?.WebEdit);
 
     const webComment = selection.find((x) => canWebComment(x.fileExst));
 

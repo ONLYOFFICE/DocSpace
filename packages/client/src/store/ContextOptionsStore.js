@@ -491,7 +491,7 @@ class ContextOptionsStore {
     const isShareable = item.canShare;
 
     const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
-    const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const isCanWebEdit = item.viewAccessability?.WebEdit;
     const hasInfoPanel = contextOptions.includes("show-info");
 
     const emailSendIsDisabled = true;

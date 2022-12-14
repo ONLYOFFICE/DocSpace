@@ -82,7 +82,6 @@ export default function withBadges(WrappedComponent) {
         t,
         theme,
         item,
-        canWebEdit,
         isTrashFolder,
         isPrivacyFolder,
         canConvert,
@@ -111,7 +110,6 @@ export default function withBadges(WrappedComponent) {
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
-          canWebEdit={canWebEdit}
           canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
@@ -156,13 +154,12 @@ export default function withBadges(WrappedComponent) {
       } = dialogsStore;
       const { setIsLoading } = filesStore;
 
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
       const canConvert = settingsStore.canConvert(item.fileExst);
 
       return {
         theme,
         isAdmin: auth.isAdmin,
-        canWebEdit,
+
         canConvert,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
