@@ -97,6 +97,8 @@ class FilesStore {
 
   isEmptyPage = false;
 
+  operationAction = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -122,7 +124,7 @@ class FilesStore {
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
 
-      if (this.isLoading) return;
+      if (this.isLoading || this.operationAction) return;
 
       switch (opt?.cmd) {
         case "create":
@@ -229,6 +231,8 @@ class FilesStore {
     socketHelper.on("refresh-folder", (id) => {
       if (!id || this.isLoading) return;
 
+      console.log("TODO: refresh-folder");
+
       //console.log(
       //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
       //);
@@ -310,6 +314,10 @@ class FilesStore {
       }
     });
   }
+
+  setOperationAction = (operationAction) => {
+    this.operationAction = operationAction;
+  };
 
   updateSelectionStatus = (id, status, isEditing) => {
     const index = this.selection.findIndex((x) => x.id === id);
@@ -1815,9 +1823,12 @@ class FilesStore {
 
         showToast && showToast();
       })
-      .catch(() => {
+      .catch((err) => {
         toastr.error(err);
         console.log("Need page reload");
+      })
+      .finally(() => {
+        this.setOperationAction(false);
       });
   };
 

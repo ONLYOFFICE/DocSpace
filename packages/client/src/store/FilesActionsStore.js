@@ -277,6 +277,7 @@ class FilesActionStore {
       this.isMediaOpen();
 
       try {
+        this.filesStore.setOperationAction(true);
         await removeFiles(folderIds, fileIds, deleteAfter, immediately)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
@@ -330,6 +331,8 @@ class FilesActionStore {
         });
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return toastr.error(err.message ? err.message : err);
+      } finally {
+        this.filesStore.setOperationAction(false);
       }
     }
   };
@@ -675,24 +678,28 @@ class FilesActionStore {
       label: translations?.deleteOperation,
     };
 
+    this.filesStore.setOperationAction(true);
+
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
-      return deleteFile(itemId).then(async (res) => {
-        if (res[0]?.error) return Promise.reject(res[0].error);
-        const data = res[0] ? res[0] : null;
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFile(itemId)
+        .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
+          const data = res[0] ? res[0] : null;
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (withPaging) {
-          this.updateCurrentFolder([itemId]);
-          toastr.success(translations.successRemoveFile);
-        } else {
-          this.updateFilesAfterDelete();
-          this.filesStore.removeFiles([itemId], null, () =>
-            toastr.success(translations.successRemoveFile)
-          );
-        }
-      });
+          if (withPaging) {
+            this.updateCurrentFolder([itemId]);
+            toastr.success(translations.successRemoveFile);
+          } else {
+            this.updateFilesAfterDelete();
+            this.filesStore.removeFiles([itemId], null, () =>
+              toastr.success(translations.successRemoveFile)
+            );
+          }
+        })
+        .finally(() => this.filesStore.setOperationAction(false));
     } else if (isRoom) {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
@@ -715,23 +722,25 @@ class FilesActionStore {
         );
     } else {
       addActiveItems(null, [itemId]);
-      return deleteFolder(itemId).then(async (res) => {
-        if (res[0]?.error) return Promise.reject(res[0].error);
-        const data = res[0] ? res[0] : null;
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFolder(itemId)
+        .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
+          const data = res[0] ? res[0] : null;
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (withPaging) {
-          this.updateCurrentFolder(null, [itemId]);
-          toastr.success(translations.successRemoveFolder);
-        } else {
-          this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles(null, [itemId], () =>
-            toastr.success(translations.successRemoveFolder)
-          );
-        }
+          if (withPaging) {
+            this.updateCurrentFolder(null, [itemId]);
+            toastr.success(translations.successRemoveFolder);
+          } else {
+            this.updateFilesAfterDelete([itemId]);
+            this.filesStore.removeFiles(null, [itemId], () =>
+              toastr.success(translations.successRemoveFolder)
+            );
+          }
 
-        getIsEmptyTrash();
-      });
+          getIsEmptyTrash();
+        })
+        .finally(() => this.filesStore.setOperationAction(false));
     }
   };
 
