@@ -199,9 +199,6 @@ class SettingsStore {
   canFormFillingDocs = (extension) =>
     presentInArray(this.extsWebRestrictedEditing, extension);
 
-  canWebFilterEditing = (extension) =>
-    presentInArray(this.extsWebCustomFilterEditing, extension);
-
   isMediaOrImage = (fileExst) => {
     if (
       this.extsVideo.includes(fileExst) ||

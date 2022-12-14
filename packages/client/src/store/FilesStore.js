@@ -2504,7 +2504,7 @@ class FilesStore {
   getOptions = (selection, externalAccess = false) => {
     const {
       canFormFillingDocs,
-      canWebFilterEditing,
+
       canConvert,
     } = this.filesSettingsStore;
 
@@ -2526,7 +2526,9 @@ class FilesStore {
       canFormFillingDocs(x.fileExst)
     );
 
-    const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
+    const webFilter = selection.find(
+      (x) => x.viewAccessability?.WebCustomFilterEditing
+    );
 
     const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
 
