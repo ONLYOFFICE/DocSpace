@@ -60,8 +60,6 @@ class AccessRightsStore {
   canLockFile = (file) => {
     const { security } = file;
 
-    // if (rootFolderType === FolderType.USER) return false;
-
     return security?.Lock;
   };
 
@@ -92,31 +90,15 @@ class AccessRightsStore {
   };
 
   canFillForm = (file) => {
-    const { rootFolderType, access } = file;
+    const { security } = file;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).fillForm;
-
-    if (rootFolderType === FolderType.TRASH) return false;
-
-    return getFileRoleActions(access).fillForm;
+    return security?.FillForms;
   };
 
   canMakeForm = (item) => {
-    const { rootFolderType, access } = item;
+    const { security } = item;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).saveAsForm;
-
-    if (
-      rootFolderType === FolderType.TRASH ||
-      // rootFolderType === FolderType.Privacy ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent
-    )
-      return false;
-
-    return getFileRoleActions(access).saveAsForm;
+    return security?.Duplicate;
   };
 
   canArchiveRoom = (room) => {
@@ -153,14 +135,9 @@ class AccessRightsStore {
   };
 
   get canCreateFiles() {
-    const { access, rootFolderType } = this.selectedFolderStore;
+    const { security } = this.selectedFolderStore;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).create;
-
-    const { create } = getFileRoleActions(access);
-
-    return create;
+    return security?.Create;
   }
 
   canMoveItems = (item) => {
@@ -185,20 +162,9 @@ class AccessRightsStore {
     return security?.Copy;
   };
   canDuplicateFile = (item) => {
-    const { rootFolderType, access } = item;
+    const { security } = item;
 
-    if (rootFolderType === FolderType.Archive)
-      return getArchiveFileRoleActions(access).canDuplicate;
-
-    if (
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent
-      // || rootFolderType === FolderType.Privacy
-    )
-      return false;
-
-    return getFileRoleActions(access).canDuplicate;
+    return security?.Duplicate;
   };
   canChangeUserType = (user) => {
     const { id, isOwner } = this.authStore.userStore.user;
