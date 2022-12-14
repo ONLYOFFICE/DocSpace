@@ -39,13 +39,16 @@ const Details = ({
     culture,
   });
 
-  const getLargeRoomLogo = React.useCallback(async (url) => {
-    if (selection?.logo?.large) return setLargeLogoIcon(selection.logo.large);
+  const getLargeRoomLogo = React.useCallback(
+    async (url) => {
+      if (selection?.logo?.large) return setLargeLogoIcon(selection.logo.large);
 
-    const icon = await api.rooms.getLogoIcon(url);
+      const icon = await api.rooms.getLogoIcon(url);
 
-    setLargeLogoIcon(icon);
-  }, []);
+      setLargeLogoIcon(icon);
+    },
+    [selection?.logo?.large]
+  );
 
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
