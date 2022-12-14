@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Core.Log;
-internal static partial class LogoUploaderLogger
+internal static partial class StorageHelperLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "SaveTmpLogo")]
     public static partial void ErrorSaveTmpLogo(this ILogger<StorageHelper> logger, Exception exception);

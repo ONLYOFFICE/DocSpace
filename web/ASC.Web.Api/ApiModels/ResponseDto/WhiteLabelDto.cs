@@ -24,47 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class Startup : BaseStartup
+public class WhiteLabelItemDto
 {
-    protected override bool ConfirmAddScheme { get => true; }
+    public string Name { get; set; }
+    public SixLabors.ImageSharp.Size Size { get; set; }
+    public WhiteLabelItemPathDto Path { get; set; }
+}
 
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
-    {
-
-    }
-
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-
-        if (!_configuration.GetValue<bool>("disableLdapNotifyService"))
-        {
-            services.AddHostedService<LdapNotifyService>();
-            DIHelper.TryAdd<LdapNotifyService>();
-        }
-        services.AddBaseDbContextPool<FilesDbContext>();
-        services.AddBaseDbContextPool<BackupsContext>();
-
-        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
-        services.AddScoped<CountRoomChecker>();
-
-        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
-        services.AddScoped<CountRoomCheckerStatistic>();
-
-        DIHelper.TryAdd<AdditionalWhiteLabelSettingsConverter>();
-    }
-
-    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        base.Configure(app, env);
-
-        app.MapWhen(
-            context => context.Request.Path.ToString().EndsWith("logoUploader.ashx"),
-            appBranch =>
-            {
-                appBranch.UseLogoUploader();
-            });
-    }
+public class WhiteLabelItemPathDto
+{
+    public string Light { get; set; }
+    public string Dark { get; set; }
 }
