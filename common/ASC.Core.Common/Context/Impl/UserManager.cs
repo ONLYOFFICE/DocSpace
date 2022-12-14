@@ -345,7 +345,11 @@ public class UserManager
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
 
         var newUser = UpdateUserInfo(u);
-        await SyncCardDavAsync(u, oldUserData, newUser);
+        
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            await SyncCardDavAsync(u, oldUserData, newUser);
+        }
 
         return newUser;
     }
