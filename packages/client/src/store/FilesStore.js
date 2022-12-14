@@ -2857,15 +2857,11 @@ class FilesStore {
   }
 
   get roomsForRestore() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).restore
-    );
+    return this.folders.filter((f) => f.security.Move);
   }
 
   get roomsForDelete() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).delete
-    );
+    return this.folders.filter((f) => f.security.Delete);
   }
 }
 
