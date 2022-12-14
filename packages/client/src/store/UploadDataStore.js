@@ -431,7 +431,7 @@ class UploadDataStore {
             }
           });
 
-          storeOriginalFiles && this.refreshFiles(file);
+          // storeOriginalFiles && this.refreshFiles(file);
 
           if (fileInfo && fileInfo !== "password") {
             file.fileInfo = fileInfo;
@@ -769,7 +769,9 @@ class UploadDataStore {
       return Promise.resolve();
     } else {
       if (currentFile.action === "uploaded") {
-        this.refreshFiles(currentFile);
+        if (currentFile?.path?.length > 1) {
+          this.refreshFiles(currentFile);
+        }
       }
       return Promise.resolve();
     }

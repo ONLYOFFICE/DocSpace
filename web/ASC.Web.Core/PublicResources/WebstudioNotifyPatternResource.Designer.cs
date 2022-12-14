@@ -566,16 +566,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is valid for 7 days.
         ///
-        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
-        ///  &lt;/data&gt;
-        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
-        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
-        ///
-        ///$GreenButton 
-        ///
-        ///The link is valid for 7 days.
-        ///
-        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message.
         /// </summary>
         public static string pattern_change_password_v115 {
             get {

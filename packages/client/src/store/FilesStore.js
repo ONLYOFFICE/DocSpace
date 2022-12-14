@@ -145,7 +145,13 @@ class FilesStore {
               newFiles.pop(); // Remove last
             }
 
-            this.setFiles(newFiles);
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFiles(newFiles);
+            });
           }
           break;
         case "update":
@@ -2013,16 +2019,17 @@ class FilesStore {
   getRoomLogo = async (logoHandlers) => {
     const newLogos = {};
 
-    let disableFetch = false;
-
     for (let key in logoHandlers) {
-      const icon = disableFetch
-        ? ""
-        : await api.rooms.getLogoIcon(logoHandlers[key]);
+      let icon = "";
 
-      if (!icon) disableFetch = true;
+      if (key === "medium") {
+        icon = await api.rooms.getLogoIcon(logoHandlers[key]);
 
-      newLogos[key] = icon ? icon : "";
+        // check for null
+        icon = icon ? icon : "";
+      }
+
+      newLogos[key] = icon;
     }
 
     return newLogos;
@@ -2042,7 +2049,13 @@ class FilesStore {
       })
     );
 
-    this.setFolders(newRooms);
+    if (
+      (this.treeFoldersStore.isRoomsFolder ||
+        this.treeFoldersStore.isArchiveFolder) &&
+      this.selectedFolderStore.navigationPath.length === 0
+    ) {
+      this.setFolders(newRooms);
+    }
   };
 
   get filesList() {

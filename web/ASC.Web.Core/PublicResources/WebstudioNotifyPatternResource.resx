@@ -1174,17 +1174,17 @@ The link is only valid for 7 days.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>You’re invited to join ${__VirtualRootPath}</value>
   </data>
-  <data name="pattern_change_password_v115" xml:space="preserve">
-    <value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
+	<data name="pattern_change_password_v115" xml:space="preserve">
+		<value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
 
 $GreenButton
 
 The link is valid for 7 days.
 
-Don’t want to change your password? Just ignore this message&lt;/value&gt;
-  &lt;/data&gt;
-  &lt;data name="pattern_personal_change_password_v115" xml:space="preserve"&gt;
-    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+Don’t want to change your password? Just ignore this message</value>
+  </data>
+	<data name="pattern_personal_change_password_v115" xml:space="preserve">
+		<value>Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
 
 $GreenButton 
 
