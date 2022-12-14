@@ -2125,7 +2125,7 @@ const Dark = {
   filterInput: {
     button: {
       border: "1px solid #474747",
-      hoverBorder: "1px solid #a3a9ae",
+      hoverBorder: "1px solid #858585",
 
       openBackground: "#a3a9ae",
 

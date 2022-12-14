@@ -39,7 +39,6 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      padding-bottom: 1px;
       ${marginStyles}
     }
     .files-row::after {
@@ -50,8 +49,10 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -1px;
-      ${marginStyles}
+      margin-top: -2px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      ${marginStyles};
     }
   }
 `;
