@@ -25,12 +25,6 @@ class AccessRightsStore {
     makeAutoObservable(this);
   }
 
-  canInviteUserInRoom(room) {
-    const { security } = room;
-
-    return security?.EditAccess;
-  }
-
   canChangeUserRoleInRoom = (room) => {
     const { currentUserInList, security } = room;
     const { userStore } = this.authStore;
@@ -66,18 +60,6 @@ class AccessRightsStore {
     return security?.EditHistory;
   };
 
-  canArchiveRoom = (room) => {
-    const { security } = room;
-
-    return security?.Move;
-  };
-
-  canRemoveRoom = (room) => {
-    const { security } = room;
-
-    return security?.Delete;
-  };
-
   canViewRoomInfo = (room) => {
     const { access, rootFolderType } = room;
 
@@ -99,20 +81,6 @@ class AccessRightsStore {
     if (rootFolderType === FolderType.TRASH || fileEditing) return false;
 
     return security?.Move;
-  };
-
-  canDeleteItems = (item) => {
-    const { editing: fileEditing, security } = item;
-
-    if (fileEditing) return false;
-
-    return security?.Delete;
-  };
-
-  canCopyItems = (item) => {
-    const { security } = item;
-
-    return security?.Copy;
   };
 
   canChangeUserType = (user) => {

@@ -1139,12 +1139,9 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
-    const canDelete = this.accessRightsStore.canDeleteItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
+    const canDelete = !isEditing && item.security?.Delete;
 
-    const canCopy = this.accessRightsStore.canCopyItems(item);
+    const canCopy = item.security?.Copy;
     const canCreateCopy = item.security?.Duplicate;
 
     if (isFile) {
@@ -1389,12 +1386,10 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const canInviteUserInRoom = this.accessRightsStore.canInviteUserInRoom(
-        item
-      );
-      const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
+      const canInviteUserInRoom = item.security?.EditAccess;
+      const canRemoveRoom = item.security?.Delete;
 
-      const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
+      const canArchiveRoom = item.security?.Move;
       const canPinRoom = item.security?.Pin;
 
       const canEditRoom = item.security?.EditRoom;

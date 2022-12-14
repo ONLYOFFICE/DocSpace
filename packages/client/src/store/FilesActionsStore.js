@@ -1266,20 +1266,12 @@ class FilesActionStore {
       selection,
     } = this.filesStore;
 
-    const {
-      canCopyItems,
-      canDeleteItems,
-      canMoveItems,
-      canArchiveRoom,
-      canRemoveRoom,
-    } = this.accessRightsStore;
+    const { canMoveItems } = this.accessRightsStore;
     const { access, rootFolderType, security } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyItems({ security });
-
-        return hasSelection && canCopy;
+        return hasSelection && security?.Copy;
       case "showInfo":
       case "download":
         return hasSelection;
@@ -1296,23 +1288,19 @@ class FilesActionStore {
       case "archive":
       case "unarchive":
         const canArchive = selection
-          .map((s) => canArchiveRoom(s))
+          .map((s) => s.security?.Move)
           .filter((s) => s);
 
         return canArchive.length > 0;
       case "delete-room":
         const canRemove = selection
-          .map((s) => canRemoveRoom(s))
+          .map((s) => s.security?.Delete)
           .filter((r) => r);
 
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteItems({
-          access,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
+        const canDelete = !allFilesIsEditing && security?.Delete;
 
         return canDelete && hasSelection;
     }

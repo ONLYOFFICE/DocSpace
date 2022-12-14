@@ -154,6 +154,7 @@ export default inject(
       access,
       id: folderId,
       roomType,
+      security,
     } = selectedFolderStore;
 
     let id;
@@ -164,11 +165,11 @@ export default inject(
 
     const isRooms = !!roomType;
 
-    const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
+    const { canCreateFiles } = accessRightsStore;
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const canInviteUsers = isRooms && canInviteUserInRoom({ access }); // skip sub-folders
+    const canInviteUsers = isRooms && security?.EditAccess; // skip sub-folders
 
     return {
       fetchFiles,

@@ -31,7 +31,7 @@ const Members = ({
   setInvitePanelOptions,
   canDeleteUserInRoom,
   changeUserType,
-  canInviteUserInRoom,
+
   canChangeUserRoleInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
@@ -41,9 +41,7 @@ const Members = ({
 
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
-  const canInviteUserInRoomAbility = canInviteUserInRoom({
-    security,
-  });
+  const canInviteUserInRoomAbility = security?.EditAccess;
 
   const fetchMembers = async (roomId) => {
     let timerId;
@@ -212,11 +210,7 @@ export default inject(
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
-    const {
-      canInviteUserInRoom,
-      canChangeUserRoleInRoom,
-      canDeleteUserInRoom,
-    } = accessRightsStore;
+    const { canChangeUserRoleInRoom, canDeleteUserInRoom } = accessRightsStore;
 
     return {
       selectionParentRoom,
@@ -233,7 +227,7 @@ export default inject(
       resendEmailInvitations,
 
       changeUserType,
-      canInviteUserInRoom,
+
       canChangeUserRoleInRoom,
       canDeleteUserInRoom,
     };
