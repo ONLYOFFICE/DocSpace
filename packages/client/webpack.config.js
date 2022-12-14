@@ -86,6 +86,20 @@ const config = {
     //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      return `${folder}/[name][ext]?hash=[contenthash]`;
+    },
   },
 
   performance: {
@@ -121,16 +135,16 @@ const config = {
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
-        generator: {
-          filename: "static/images/[name].[contenthash][ext][query]",
-        },
+        // generator: {
+        //   filename: "static/images/[name].[contenthash][ext]",
+        // },
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
-        generator: {
-          filename: "static/images/[name].[contenthash][ext][query]",
-        },
+        // generator: {
+        //   filename: "static/images/[name].[contenthash][ext]",
+        // },
         resourceQuery: /url/, // *.svg?url
       },
       {
@@ -216,19 +230,19 @@ const config = {
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
 
-    // new CopyPlugin({
-    //   patterns: [
-    //     {
-    //       context: path.resolve(__dirname, "public"),
-    //       from: "images/**/*.*",
-    //     },
-    //     {
-    //       context: path.resolve(__dirname, "public"),
-    //       from: "locales/**/*.json",
-    //       transform: minifyJson,
-    //     },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        // {
+        //   context: path.resolve(__dirname, "public"),
+        //   from: "images/**/*.*",
+        // },
+        {
+          context: path.resolve(__dirname, "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
   ],
 };
 
