@@ -96,6 +96,7 @@ class FilesStore {
   filesIsLoading = false;
 
   isEmptyPage = false;
+  isLoadedFetchFiles = false;
 
   constructor(
     authStore,
@@ -775,6 +776,8 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
+    this.isLoadedFetchFiles = false;
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -927,6 +930,9 @@ class FilesStore {
             "/rooms/shared/"
           );
         }, 5000);
+      })
+      .finally(() => {
+        this.isLoadedFetchFiles = true;
       });
   };
 
