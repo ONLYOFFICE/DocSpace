@@ -196,8 +196,6 @@ class SettingsStore {
 
   canConvert = (extension) => presentInArray(this.extsMustConvert, extension);
 
-  canWebReview = (extension) => presentInArray(this.extsWebReviewed, extension);
-
   canFormFillingDocs = (extension) =>
     presentInArray(this.extsWebRestrictedEditing, extension);
 

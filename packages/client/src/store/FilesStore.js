@@ -2503,7 +2503,6 @@ class FilesStore {
 
   getOptions = (selection, externalAccess = false) => {
     const {
-      canWebReview,
       canFormFillingDocs,
       canWebFilterEditing,
       canConvert,
@@ -2521,7 +2520,7 @@ class FilesStore {
 
     const webComment = selection.find((x) => x.viewAccessability?.WebComment);
 
-    const webReview = selection.find((x) => canWebReview(x.fileExst));
+    const webReview = selection.find((x) => x.viewAccessability?.WebReview);
 
     const formFillingDocs = selection.find((x) =>
       canFormFillingDocs(x.fileExst)
