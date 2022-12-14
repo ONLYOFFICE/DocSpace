@@ -39,8 +39,12 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -1px;
+        margin-top: -2px;
+        padding-top: 1px;
+        padding-bottom: 1px;
         border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
           `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     `};
