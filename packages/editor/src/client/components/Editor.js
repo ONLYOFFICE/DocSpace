@@ -103,9 +103,7 @@ function Editor({
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
-    userAccessRights = isArchiveFolderRoot
-      ? getArchiveFileRoleActions(fileInfo.access)
-      : getFileRoleActions(fileInfo.access);
+    userAccessRights = fileInfo.security;
   }
   useEffect(() => {
     if (error && mfReady) {
@@ -551,11 +549,11 @@ function Editor({
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename) {
+      if (userAccessRights.Rename) {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (userAccessRights.viewVersionHistory) {
+      if (userAccessRights.ReadHistory) {
         onRequestHistory = onSDKRequestHistory;
       }
 
@@ -569,7 +567,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory) {
+      if (userAccessRights.EditHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
 
