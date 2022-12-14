@@ -937,7 +937,8 @@ public class FileSecurity : IFileSecurity
                 break;
             case FilesSecurityActions.EditHistory:
                 if (e.Access == FileShare.ReadWrite ||
-                    e.Access == FileShare.RoomAdmin)
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Editing)
                 {
                     return file != null && !file.Encrypted;
                 }
