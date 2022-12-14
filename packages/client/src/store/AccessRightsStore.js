@@ -141,9 +141,9 @@ class AccessRightsStore {
   }
 
   canMoveItems = (item) => {
-    const { editing: fileEditing, security } = item;
+    const { editing: fileEditing, security, rootFolderType } = item;
 
-    if (fileEditing) return false;
+    if (rootFolderType === FolderType.TRASH || fileEditing) return false;
 
     return security?.Move;
   };
