@@ -1317,7 +1317,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-        ErrorIf(!readLink && !await _fileSecurity.CanEditHistory(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+        ErrorIf(!readLink && !await _fileSecurity.CanReadHistoryAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
         await foreach (var f in fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id))
@@ -1345,7 +1345,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-        ErrorIf(!readLink && !await _fileSecurity.CanEditHistory(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+        ErrorIf(!readLink && !await _fileSecurity.CanReadHistoryAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
         var result = new EditHistoryDataDto
