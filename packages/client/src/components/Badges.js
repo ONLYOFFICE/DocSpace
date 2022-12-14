@@ -71,7 +71,6 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
-  canViewVersionFileHistory,
 }) => {
   const {
     id,
@@ -143,7 +142,7 @@ const Badges = ({
     "data-id": id,
   };
 
-  const onShowVersionHistoryProp = canViewVersionFileHistory
+  const onShowVersionHistoryProp = item.security?.ReadHistory
     ? { onClick: onShowVersionHistory }
     : {};
 

@@ -57,11 +57,6 @@ class AccessRightsStore {
 
     return security?.EditAccess;
   };
-  canLockFile = (file) => {
-    const { security } = file;
-
-    return security?.Lock;
-  };
 
   canChangeVersionFileHistory = (file) => {
     const { editing, security } = file;
@@ -69,36 +64,6 @@ class AccessRightsStore {
     if (editing) return false;
 
     return security?.EditHistory;
-  };
-
-  canViewVersionFileHistory = (file) => {
-    const { security } = file;
-
-    return security?.ReadHistory;
-  };
-
-  canEditFile = (file) => {
-    const { security } = file;
-
-    return security?.Edit;
-  };
-
-  canRenameItem = (item = {}) => {
-    const { security } = item;
-
-    return security?.Rename;
-  };
-
-  canFillForm = (file) => {
-    const { security } = file;
-
-    return security?.FillForms;
-  };
-
-  canMakeForm = (item) => {
-    const { security } = item;
-
-    return security?.Duplicate;
   };
 
   canArchiveRoom = (room) => {
@@ -120,18 +85,6 @@ class AccessRightsStore {
       return getArchiveRoomRoleActions(access).viewInfo;
 
     return getRoomRoleActions(access).viewInfo;
-  };
-
-  canPinRoom = (room) => {
-    const { security } = room;
-
-    return security?.Pin;
-  };
-
-  canEditRoom = (room) => {
-    const { security } = room;
-
-    return security?.EditRoom;
   };
 
   get canCreateFiles() {
@@ -161,11 +114,7 @@ class AccessRightsStore {
 
     return security?.Copy;
   };
-  canDuplicateFile = (item) => {
-    const { security } = item;
 
-    return security?.Duplicate;
-  };
   canChangeUserType = (user) => {
     const { id, isOwner } = this.authStore.userStore.user;
 

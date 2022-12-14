@@ -1132,10 +1132,7 @@ class FilesStore {
     const pluginAllKeys =
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
-    const canRenameItem = this.accessRightsStore.canRenameItem({
-      ...item,
-      ...isFile,
-    });
+    const canRenameItem = item.security?.Rename;
 
     const canMove = this.accessRightsStore.canMoveItems({
       ...item,
@@ -1148,23 +1145,21 @@ class FilesStore {
     });
 
     const canCopy = this.accessRightsStore.canCopyItems(item);
-    const canCreateCopy = this.accessRightsStore.canDuplicateFile(item);
+    const canCreateCopy = item.security?.Duplicate;
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const canLockFile = this.accessRightsStore.canLockFile(item);
+      const canLockFile = item.security?.Lock;
       const canChangeVersionFileHistory = this.accessRightsStore.canChangeVersionFileHistory(
         { ...item, ...{ editing: isEditing } }
       );
 
-      const canViewVersionFileHistory = this.accessRightsStore.canViewVersionFileHistory(
-        item
-      );
-      const canFillForm = this.accessRightsStore.canFillForm(item);
+      const canViewVersionFileHistory = item.security?.ReadHistory;
+      const canFillForm = item.security?.FillForms;
 
-      const canEditFile = this.accessRightsStore.canEditFile(item);
+      const canEditFile = item.security?.Edit;
       const isMasterForm = item.fileExst === ".docxf";
-      const canMakeForm = this.accessRightsStore.canMakeForm(item);
+      const canMakeForm = item.security?.Duplicate;
 
       let fileOptions = [
         //"open",
@@ -1400,9 +1395,9 @@ class FilesStore {
       const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
 
       const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
-      const canPinRoom = this.accessRightsStore.canPinRoom(item);
+      const canPinRoom = item.security?.Pin;
 
-      const canEditRoom = this.accessRightsStore.canEditRoom(item);
+      const canEditRoom = item.security?.EditRoom;
 
       const canViewRoomInfo = this.accessRightsStore.canViewRoomInfo(item);
 
