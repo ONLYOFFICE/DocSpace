@@ -620,7 +620,7 @@ const Appearance = (props) => {
                   onMouseOver={onColorCheckImgHover}
                 >
                   {selectThemeId === item.id && (
-                    <ReactSVG className="check-img" src={checkImg} />
+                    <ReactSVG className="check-img" src={CheckWhiteSvgUrl} />
                   )}
 
                   {selectThemeId !== item.id && checkImgHover}
@@ -647,7 +647,7 @@ const Appearance = (props) => {
                     onMouseOver={onColorCheckImgHover}
                   >
                     {selectThemeId === item.id && (
-                      <ReactSVG className="check-img" src={checkImg} />
+                      <ReactSVG className="check-img" src={CheckWhiteSvgUrl} />
                     )}
                     {selectThemeId !== item.id && checkImgHover}
                   </StyledTheme>
