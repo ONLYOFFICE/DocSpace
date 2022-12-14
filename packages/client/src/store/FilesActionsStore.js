@@ -1273,11 +1273,11 @@ class FilesActionStore {
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
-    const { access, rootFolderType } = this.selectedFolderStore;
+    const { access, rootFolderType, security } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyItems({ access, rootFolderType });
+        const canCopy = canCopyItems({ security });
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1287,7 +1287,7 @@ class FilesActionStore {
         return canConvertSelected;
       case "moveTo":
         const canMove = canMoveItems({
-          access,
+          security,
           rootFolderType,
           editing: allFilesIsEditing,
         });
