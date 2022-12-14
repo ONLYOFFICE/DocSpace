@@ -194,8 +194,6 @@ class SettingsStore {
     this.hideConfirmConvertSave = hideConfirmConvertSave;
   };
 
-  canWebEdit = (extension) => presentInArray(this.extsWebEdited, extension);
-
   canViewedDocs = (extension) =>
     presentInArray(this.extsWebPreviewed, extension);
 
