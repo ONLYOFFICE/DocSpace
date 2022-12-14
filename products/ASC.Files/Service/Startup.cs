@@ -91,6 +91,7 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<SecurityContext>();
         DIHelper.TryAdd<TenantManager>();
         DIHelper.TryAdd<UserManager>();
+        DIHelper.TryAdd<SocketServiceClient>();
 
         services.AddBaseDbContextPool<FilesDbContext>();
 

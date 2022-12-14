@@ -14,7 +14,7 @@ const App: React.FC<ILoginProps> = (props) => {
   const loginStore = initLoginStore(props.currentColorScheme);
   return (
     <MobxProvider {...loginStore}>
-      <SimpleNav />
+      <SimpleNav {...props} />
       <Switch>
         <Route path="/login/error">
           <InvalidRoute />

@@ -143,7 +143,7 @@ public class TenantInfoSettingsHelper
     /// <summary>
     /// Get logo stream or null in case of default logo
     /// </summary>
-    public Stream GetStorageLogoData(TenantInfoSettings tenantInfoSettings)
+    public async Task<Stream> GetStorageLogoData(TenantInfoSettings tenantInfoSettings)
     {
         if (tenantInfoSettings.IsDefault)
         {
@@ -159,6 +159,6 @@ public class TenantInfoSettingsHelper
 
         var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 
-        return storage.IsFileAsync(fileName).Result ? storage.GetReadStreamAsync(fileName).Result : null;
+        return await storage.IsFileAsync(fileName) ? await storage.GetReadStreamAsync(fileName) : null;
     }
 }

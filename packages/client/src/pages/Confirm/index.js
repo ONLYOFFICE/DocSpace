@@ -20,6 +20,7 @@ const DeactivatePortal = lazy(() =>
   import("./sub-components/deactivatePortal")
 );
 const ContinuePortal = lazy(() => import("./sub-components/continuePortal"));
+const Auth = lazy(() => import("./sub-components/auth"));
 
 const Confirm = ({ match }) => {
   //console.log("Confirm render");
@@ -88,6 +89,7 @@ const Confirm = ({ match }) => {
           path={`${path}/PortalContinue`}
           component={ContinuePortal}
         />
+        <ConfirmRoute forUnauthorized path={`${path}/Auth`} component={Auth} />
 
         {/* <Route component={Error404} /> */}
       </Switch>

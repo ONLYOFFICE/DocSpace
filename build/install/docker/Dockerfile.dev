@@ -150,7 +150,7 @@ RUN dos2unix /docker-entrypoint.d/prepare-nginx-proxy.sh && \
 RUN chown nginx:nginx /etc/nginx/* -R && \
     chown nginx:nginx /docker-entrypoint.d/* && \
     # changes for upstream configure
-    # sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
@@ -175,13 +175,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
 # ASC.ApiSystem ##
-# FROM dotnetrun AS api_system
-# WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
+FROM dotnetrun AS api_system
+WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
 
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
 
-# CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
 ## ASC.ClearEvents ##
 FROM dotnetrun AS clear-events

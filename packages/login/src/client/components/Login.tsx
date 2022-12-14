@@ -23,7 +23,6 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
-import { ReactSVG } from "react-svg";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -175,8 +174,8 @@ const Login: React.FC<ILoginProps> = ({
 
   const bgPattern = getBgPattern(currentColorScheme.id);
 
-  const loginLogo = Object.values(logoUrls)[1];
-  const isSvgLogo = loginLogo.includes(".svg");
+  const logo = Object.values(logoUrls)[1];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
 
   if (!mounted) return <></>;
 
@@ -189,11 +188,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        {isSvgLogo ? (
-          <ReactSVG src={loginLogo} className="logo-wrapper" />
-        ) : (
-          <img src={loginLogo} className="logo-wrapper" />
-        )}
+        <img src={logoUrl} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}

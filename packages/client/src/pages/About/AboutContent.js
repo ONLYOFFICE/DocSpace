@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
-import Link from "@docspace/components/link";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -76,7 +75,8 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
-    docSpaceLogo,
+    whiteLabelLogoUrls,
+    userTheme,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -101,6 +101,11 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
+  const logo =
+    userTheme === "Dark"
+      ? whiteLabelLogoUrls[6]?.path.dark
+      : whiteLabelLogoUrls[6]?.path.light;
+
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -112,7 +117,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <img
-              src={docSpaceLogo}
+              src={logo}
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
@@ -235,9 +240,15 @@ const AboutContent = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, userStore } = auth;
 
-  const { theme, companyInfoSettingsData, docSpaceLogo } = settingsStore;
+  const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
+  const { userTheme } = userStore;
 
-  return { theme, companyInfoSettingsData, docSpaceLogo };
+  return {
+    theme,
+    companyInfoSettingsData,
+    whiteLabelLogoUrls,
+    userTheme,
+  };
 })(observer(AboutContent));

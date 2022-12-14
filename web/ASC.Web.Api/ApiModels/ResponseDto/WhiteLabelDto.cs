@@ -24,45 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Tests;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-[TestFixture]
-public partial class BaseFilesTests
+public class WhiteLabelItemDto
 {
-    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
-    [Category("File")]
-    [Order(1)]
-    [Description("post - file/{fileId}/recent - add file to recent")]
-    public async Task RecentFileReturnsFolderWrapper(int fileId, string fileName)
-    {
-        var file = await PostAsync<FileDto<int>>($"file/{fileId}/recent");
-        Assert.IsNotNull(file);
-        Assert.AreEqual(fileName, file.Title);
-    }
+    public string Name { get; set; }
+    public SixLabors.ImageSharp.Size Size { get; set; }
+    public WhiteLabelItemPathDto Path { get; set; }
+}
 
-    [TestCase(DataTests.FileIdForRecent, DataTests.FileNameForRecent)]
-    [Category("File")]
-    [Order(2)]
-    [Description("delete - file/{fileId}/recent - delete file which added to recent")]
-    public async Task DeleteRecentFileReturnsFolderWrapper(int fileId, string fileTitleExpected)
-    {
-        await PostAsync<FileDto<int>>($"file/{fileId}/recent");
-
-        await DeleteAsync($"file/{fileId}", new { DeleteAfter = false, Immediately = true });
-        await WaitLongOperation();
-
-        var recents = await GetAsync<FolderContentDto<int>>("@recent");
-        Assert.IsTrue(!recents.Files.Any(r => r.Title == fileTitleExpected + ".docx"));
-    }
-
-    [TestCase(DataTests.SharedForReadFileId, DataTests.FileName)]
-    [Category("File")]
-    [Order(3)]
-    public async Task ShareFileToAnotherUserAddToRecent(int fileId, string fileName)
-    {
-        var file = await PostAsync<FileDto<int>>($"file/{fileId}/recent");
-
-        Assert.IsNotNull(file);
-        Assert.AreEqual(fileName, file.Title);
-    }
+public class WhiteLabelItemPathDto
+{
+    public string Light { get; set; }
+    public string Dark { get; set; }
 }

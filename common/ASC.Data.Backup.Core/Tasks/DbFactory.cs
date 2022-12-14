@@ -65,8 +65,6 @@ public class DbFactory
     private DbProviderFactory _dbProviderFactory;
     private readonly IConfiguration _configuration;
     private readonly ConfigurationExtension _configurationExtension;
-    private string _connectionString;
-    private string _path;
 
     public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
     {
@@ -76,8 +74,6 @@ public class DbFactory
 
     public DbConnection OpenConnection(string path = "default", string connectionString = null)
     {
-        _connectionString = connectionString;
-        _path = path;
         var connection = DbProviderFactory.CreateConnection();
         if (connection != null)
         {
