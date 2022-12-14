@@ -2018,6 +2018,9 @@ class FilesStore {
 
       if (key === "medium") {
         icon = await api.rooms.getLogoIcon(logoHandlers[key]);
+
+        // check for null
+        icon = icon ? icon : "";
       }
 
       newLogos[key] = icon;
