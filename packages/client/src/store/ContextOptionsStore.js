@@ -574,7 +574,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id, item.access),
+              onClick: () => this.showVersionHistory(item.id, item.security),
               disabled: false,
             },
           ]
