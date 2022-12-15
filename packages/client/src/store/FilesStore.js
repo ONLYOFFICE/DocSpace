@@ -1178,7 +1178,7 @@ class FilesStore {
     const canDelete = !isEditing && item.security?.Delete;
 
     const canCopy = item.security?.Copy;
-    const canCreateCopy = item.security?.Duplicate;
+    const canDuplicate = item.security?.Duplicate;
 
     if (isFile) {
       const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
@@ -1195,7 +1195,6 @@ class FilesStore {
       const canViewFile = item.viewAccessability.WebView;
 
       const isMasterForm = item.fileExst === ".docxf";
-      const canMakeForm = item.security?.Duplicate;
 
       let fileOptions = [
         //"open",
@@ -1281,14 +1280,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
-      if (!(isMasterForm && canMakeForm))
+      if (!(isMasterForm && canDuplicate))
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       if (item.rootFolderType === FolderType.Archive) {
@@ -1542,11 +1541,11 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
