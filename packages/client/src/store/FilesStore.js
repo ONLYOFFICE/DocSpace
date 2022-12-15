@@ -2829,6 +2829,8 @@ class FilesStore {
       this.setFolders([...this.folders, ...newFiles.folders]);
       this.setFilesIsLoading(false);
     });
+
+    if (isRooms) this.updateRoomLoadingLogo();
   };
 
   //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.
