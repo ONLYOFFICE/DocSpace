@@ -83,7 +83,6 @@ const config = {
   output: {
     publicPath: "auto",
     chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
     assetModuleFilename: (pathData) => {
@@ -135,16 +134,10 @@ const config = {
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
-        // generator: {
-        //   filename: "static/images/[name].[contenthash][ext]",
-        // },
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
-        // generator: {
-        //   filename: "static/images/[name].[contenthash][ext]",
-        // },
         resourceQuery: /url/, // *.svg?url
       },
       {
