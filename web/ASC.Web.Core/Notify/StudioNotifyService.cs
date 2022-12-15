@@ -167,6 +167,16 @@ public class StudioNotifyService
     {
         var auditEventDate = DateTime.UtcNow;
 
+        auditEventDate = new DateTime(
+            auditEventDate.Year, 
+            auditEventDate.Month, 
+            auditEventDate.Day, 
+            auditEventDate.Hour, 
+            auditEventDate.Minute, 
+            auditEventDate.Second, 
+            0, 
+            DateTimeKind.Utc);
+
         var hash = auditEventDate.ToString("s");
 
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
