@@ -263,6 +263,8 @@ class ContextOptionsStore {
   };
 
   gotoDocEditor = (preview = false, item) => {
+    const { isDesktopClient } = this.authStore.settingsStore;
+
     const { id, providerKey, fileExst } = item;
 
     const urlFormation = preview
@@ -274,13 +276,9 @@ class ContextOptionsStore {
       : null;
 
     let tab =
-      !this.authStore.isDesktopClient && fileExst
+      !isDesktopClient && fileExst
         ? window.open(
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/doceditor?fileId=${id}`
-            ),
+            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
             "_blank"
           )
         : null;

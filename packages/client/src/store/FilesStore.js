@@ -26,6 +26,7 @@ import {
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -97,6 +98,9 @@ class FilesStore {
   isEmptyPage = false;
   isLoadedFetchFiles = false;
 
+  tempActionFilesIds = [];
+  operationAction = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -122,7 +126,7 @@ class FilesStore {
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
 
-      if (this.isLoading) return;
+      if (this.isLoading || this.operationAction) return;
 
       switch (opt?.cmd) {
         case "create":
@@ -197,15 +201,23 @@ class FilesStore {
               this.files[foundIndex].title
             );
 
-            this.setFiles(
-              this.files.filter((_, index) => {
-                return index !== foundIndex;
-              })
-            );
+            // this.setFiles(
+            //   this.files.filter((_, index) => {
+            //     return index !== foundIndex;
+            //   })
+            // );
 
-            const newFilter = this.filter.clone();
-            newFilter.total -= 1;
-            this.setFilter(newFilter);
+            // const newFilter = this.filter.clone();
+            // newFilter.total -= 1;
+            // this.setFilter(newFilter);
+
+            const tempActionFilesIds = JSON.parse(
+              JSON.stringify(this.tempActionFilesIds)
+            );
+            tempActionFilesIds.push(this.files[foundIndex].id);
+
+            this.setTempActionFilesIds(tempActionFilesIds);
+            this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -233,7 +245,10 @@ class FilesStore {
       //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
       //);
 
-      if (this.selectedFolderStore.id == id) {
+      if (
+        this.selectedFolderStore.id == id &&
+        this.authStore.settingsStore.withPaging //TODO: no longer deletes the folder in other tabs
+      ) {
         console.log("[WS] refresh-folder", id);
         this.fetchFiles(id, this.filter);
       }
@@ -310,6 +325,18 @@ class FilesStore {
       }
     });
   }
+
+  debounceRemoveFiles = debounce(() => {
+    this.removeFiles(this.tempActionFilesIds);
+  }, 1000);
+
+  setTempActionFilesIds = (tempActionFilesIds) => {
+    this.tempActionFilesIds = tempActionFilesIds;
+  };
+
+  setOperationAction = (operationAction) => {
+    this.operationAction = operationAction;
+  };
 
   updateSelectionStatus = (id, status, isEditing) => {
     const index = this.selection.findIndex((x) => x.id === id);
@@ -1795,9 +1822,13 @@ class FilesStore {
 
         showToast && showToast();
       })
-      .catch(() => {
+      .catch((err) => {
         toastr.error(err);
         console.log("Need page reload");
+      })
+      .finally(() => {
+        this.setOperationAction(false);
+        this.setTempActionFilesIds([]);
       });
   };
 
