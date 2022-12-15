@@ -100,7 +100,9 @@ const PeopleSelector = ({
     setIsNextPageLoading(true);
     setIsLoading(true);
 
-    const currentFilter = filter || Filter.getDefault();
+    const currentFilter =
+      typeof filter === "function" ? filter() : filter ?? Filter.getDefault();
+
     currentFilter.page = startIndex / pageCount;
     currentFilter.pageCount = pageCount;
 

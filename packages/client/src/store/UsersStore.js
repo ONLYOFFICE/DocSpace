@@ -343,7 +343,7 @@ class UsersStore {
   }
 
   getUsersByQuery = async (query) => {
-    const filter = Filter.getDefault();
+    const filter = Filter.getFilterWithOutDisabledUser();
 
     filter.search = query;
     filter.pageCount = 100;

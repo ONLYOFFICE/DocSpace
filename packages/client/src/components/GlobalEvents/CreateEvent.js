@@ -30,6 +30,7 @@ const CreateEvent = ({
   openDocEditor,
   setIsUpdatingRowItem,
   gallerySelected,
+  setGallerySelected,
   setCreatedItem,
 
   parentId,
@@ -54,6 +55,13 @@ const CreateEvent = ({
   const [startValue, setStartValue] = React.useState("");
 
   const { t } = useTranslation(["Translations", "Common"]);
+
+  const onCloseAction = () => {
+    if (gallerySelected) {
+      setGallerySelected && setGallerySelected(null);
+    }
+    onClose && onClose();
+  };
 
   React.useEffect(() => {
     const defaultName = getDefaultFileName(extension);
@@ -93,13 +101,13 @@ const CreateEvent = ({
       setStartValue(newValue);
     }
 
-    // let tab =
-    //   !isDesktop && extension && open
-    //     ? window.open(
-    //         combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
-    //         "_blank"
-    //       )
-    //     : null;
+    let tab =
+      !isDesktop && extension && open
+        ? window.open(
+            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
+            "_blank"
+          )
+        : null;
 
     if (!extension) {
       createFolder(parentId, newValue)
@@ -116,7 +124,7 @@ const CreateEvent = ({
           createdFolderId && folderIds.push(createdFolderId);
 
           clearActiveOperations(null, folderIds);
-          onClose();
+          onCloseAction();
           return setIsLoading(false);
         });
     } else {
@@ -127,7 +135,7 @@ const CreateEvent = ({
             createdFileId = file.id;
             addActiveItems([file.id]);
 
-            open && openDocEditor(file.id, file.providerKey, null);
+            open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((err) => {
@@ -161,7 +169,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else if (fromTemplate) {
@@ -177,7 +185,7 @@ const CreateEvent = ({
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
 
-            return open && openDocEditor(file.id, file.providerKey, null);
+            return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
@@ -186,7 +194,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else {
@@ -208,12 +216,12 @@ const CreateEvent = ({
                   true,
                   false
                 ).then(
-                  () => open && openDocEditor(file.id, file.providerKey, null)
+                  () => open && openDocEditor(file.id, file.providerKey, tab)
                 );
               });
             }
 
-            return open && openDocEditor(file.id, file.providerKey, null);
+            return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
@@ -222,7 +230,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       }
@@ -231,9 +239,9 @@ const CreateEvent = ({
 
   const onCancel = React.useCallback(
     (e) => {
-      onClose && onClose();
+      onCloseAction && onCloseAction();
     },
-    [onClose]
+    [onCloseAction]
   );
 
   return (
@@ -244,7 +252,7 @@ const CreateEvent = ({
       startValue={startValue}
       onSave={onSave}
       onCancel={onCancel}
-      onClose={onClose}
+      onClose={onCloseAction}
     />
   );
 };
@@ -270,7 +278,7 @@ export default inject(
       setCreatedItem,
     } = filesStore;
 
-    const { gallerySelected } = oformsStore;
+    const { gallerySelected, setGallerySelected } = oformsStore;
 
     const { editCompleteAction } = filesActionsStore;
 
@@ -301,6 +309,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       gallerySelected,
+      setGallerySelected,
       setCreatedItem,
 
       parentId,

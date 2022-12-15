@@ -153,9 +153,9 @@ const EditRoomEvent = ({
       ? item.logo.original
       : await api.rooms.getLogoIcon(item?.logoHandlers?.original);
 
-    const imgExst = logo.slice(".")[1];
-
     if (logo) {
+      const imgExst = logo.slice(".")[1];
+
       const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
