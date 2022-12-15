@@ -134,11 +134,14 @@ StyledCrossIcon.defaultProps = { theme: Base };
 const InfoPanel = ({
   children,
   isVisible,
+  isMobileHidden,
   setIsVisible,
   canDisplay,
   viewAs,
 }) => {
   if (!isVisible || !canDisplay) return null;
+  if ((isTablet() || isMobile || isMobileUtils()) && isMobileHidden)
+    return null;
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -180,13 +183,14 @@ const InfoPanel = ({
   );
 
   const renderPortalInfoPanel = () => {
+    console.log(isMobileHidden);
     const rootElement = document.getElementById("root");
 
     return (
       <Portal
         element={infoPanelComponent}
         appendTo={rootElement}
-        visible={isVisible}
+        visible={isVisible && !isMobileHidden}
       />
     );
   };
@@ -208,12 +212,18 @@ StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
 export default inject(({ auth }) => {
-  const { isVisible, setIsVisible, getCanDisplay } = auth.infoPanelStore;
+  const {
+    isVisible,
+    isMobileHidden,
+    setIsVisible,
+    getCanDisplay,
+  } = auth.infoPanelStore;
 
   const canDisplay = getCanDisplay();
 
   return {
     isVisible,
+    isMobileHidden,
     setIsVisible,
     canDisplay,
   };

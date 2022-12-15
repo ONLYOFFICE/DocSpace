@@ -37,6 +37,7 @@ const InvitePanel = ({
   adminLink,
   defaultAccess,
   inviteUsers,
+  setInfoPanelIsMobileHidden,
   reloadSelectionParentRoom,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -118,6 +119,7 @@ const InvitePanel = ({
   }, [inviteItems]);
 
   const onClose = () => {
+    setInfoPanelIsMobileHidden(false);
     setInvitePanelOptions({
       visible: false,
       hideSelector: false,
@@ -244,7 +246,10 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
   const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
-  const { reloadSelectionParentRoom } = auth.infoPanelStore;
+  const {
+    setIsMobileHidden: setInfoPanelIsMobileHidden,
+    reloadSelectionParentRoom,
+  } = auth.infoPanelStore;
 
   const {
     getPortalInviteLinks,
@@ -285,6 +290,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     guestLink,
     adminLink,
     inviteUsers,
+    setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
   };
 })(
