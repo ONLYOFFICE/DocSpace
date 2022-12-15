@@ -130,7 +130,8 @@ public class ImagesTest
 
         var sourceFiles = (from wsPath in Workspaces
                            from filePath in Utils.GetFiles(wsPath, sourceSearchPatern, SearchOption.AllDirectories)
-                           where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(Utils.ConvertPathToOS("tests/"))
+                           where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                           && !filePath.Contains(Utils.ConvertPathToOS("tests/"))
                            && !filePath.Contains(".test.js")
                            && !filePath.Contains(".stories.js")
                            && !filePath.Contains(".test.ts")
@@ -175,14 +176,16 @@ public class ImagesTest
             SourceImageFiles.Add(sourceImageFile);
         }
 
-        TestContext.Progress.WriteLine($"Found SourceImageFiles by filter '{sourceSearchPatern}' count={SourceImageFiles.Count}. First path is '{SourceImageFiles.FirstOrDefault()?.Path}'");
+        TestContext.Progress.WriteLine($"Found SourceImageFiles by filter '{sourceSearchPatern}' " +
+            $"count={SourceImageFiles.Count}. First path is '{SourceImageFiles.FirstOrDefault()?.Path}'");
     }
 
     [Test]
     [Category("FastRunning")]
     public void ParseMd5Test()
     {
-        Assert.AreEqual(0, HashErrorFiles.Count, string.Join("\r\n", HashErrorFiles.Select(e => $"File path = '{e.Key}' failed to parse with error: '{e.Value}'")));
+        Assert.AreEqual(0, HashErrorFiles.Count, string.Join("\r\n",
+            HashErrorFiles.Select(e => $"File path = '{e.Key}' failed to parse with error: '{e.Value}'")));
     }
 
     [Test]
@@ -196,7 +199,26 @@ public class ImagesTest
             .OrderByDescending(itm => itm.Count)
             .ToList();
 
-        Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" + string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}':\r\n{string.Join("\r\n", d.Paths.Select(p => p))}'")));
+        Assert.AreEqual(0, duplicatesByMD5.Count, "Dublicates by MD5 hash:\r\n" +
+            string.Join("\r\n", duplicatesByMD5.Select(d => $"\r\nMD5='{d.Key}':\r\n" +
+            $"{string.Join("\r\n", d.Paths.Select(p => p))}'")));
+    }
+
+    [Test]
+    [Category("FastRunning")]
+    public void DublicatesFilesByFileNameButDifferentByMD5HashTest()
+    {
+        var duplicatesByNameWithDifMD5 = ImageFiles
+            .Where(i => !i.FilePath.Contains(Utils.ConvertPathToOS("public/images/icons/")))
+            .GroupBy(t => t.FileName)
+            .Where(grp => grp.Count() > 1)
+            .Select(grp => new { Key = grp.Key, Count = grp.Count(), Images = grp.ToList() })
+            .Where(g => g.Images.Any(i => i.Md5Hash != g.Images[0].Md5Hash))
+            .ToList();
+
+        Assert.AreEqual(0, duplicatesByNameWithDifMD5.Count, "Dublicates by Name but different by MD5 hashs:\r\n" +
+            string.Join("\r\n", duplicatesByNameWithDifMD5.Select(d => $"\r\nFileName='{d.Key}':\r\n" +
+            $"{string.Join("\r\n", d.Images.Select(p => $"MD5='{p.Md5Hash}' Path='{p.FilePath}'"))}")));
     }
 
     [Test]
@@ -247,7 +269,7 @@ public class ImagesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Ignore("Ignore a fixture")]
     public void FixStaticTest()
     {
         var onlyJsFiles = SourceImageFiles
