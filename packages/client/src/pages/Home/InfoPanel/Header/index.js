@@ -73,8 +73,8 @@ const InfoPanelHeaderContent = (props) => {
     },
   ];
   const selectionRoomRights = selectionParentRoom
-    ? selectionParentRoom.security?.ReadAccess
-    : selection?.security?.ReadAccess;
+    ? selectionParentRoom.security?.Read
+    : selection?.security?.Read;
 
   const roomsSubmenu = isArchiveRoot
     ? selectionRoomRights

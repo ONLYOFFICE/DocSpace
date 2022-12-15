@@ -90,9 +90,8 @@ const Members = ({
       ...selection,
       members: fetchedMembers,
     });
-     if (roomsView === "info_members" && !selection?.security?.ReadAccess)
-       setView("info_details");
-
+    if (roomsView === "info_members" && !selection?.security?.Read)
+      setView("info_details");
   }, [selection]);
 
   const onClickInviteUsers = () => {
