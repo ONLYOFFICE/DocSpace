@@ -26,7 +26,6 @@
 
 namespace ASC.Data.Storage.ZipOperators;
 
-[Transient]
 public class ChunkZipWriteOperator : IDataWriteOperator
 {
     private readonly TarOutputStream _tarOutputStream;

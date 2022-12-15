@@ -26,7 +26,6 @@
 
 namespace ASC.Data.Storage.ZipOperators;
 
-[Transient]
 public class S3ZipWriteOperator : IDataWriteOperator
 {
     private readonly TarOutputStream _tarOutputStream;
