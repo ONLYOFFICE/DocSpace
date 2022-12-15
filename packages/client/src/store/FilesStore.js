@@ -1117,8 +1117,6 @@ class FilesStore {
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
-    const { canFormFillingDocs } = this.filesSettingsStore;
-
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isThirdPartyFolder =
@@ -1144,7 +1142,7 @@ class FilesStore {
     const canCreateCopy = item.security?.Duplicate;
 
     if (isFile) {
-      const shouldFillForm = canFormFillingDocs(item.fileExst);
+      const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
       const canLockFile = item.security?.Lock;
       const canChangeVersionFileHistory =
         !isEditing && item.security?.EditHistory;
@@ -2490,11 +2488,7 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const {
-      canFormFillingDocs,
-
-      canConvert,
-    } = this.filesSettingsStore;
+    const { canConvert } = this.filesSettingsStore;
 
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
@@ -2510,8 +2504,8 @@ class FilesStore {
 
     const webReview = selection.find((x) => x.viewAccessability?.WebReview);
 
-    const formFillingDocs = selection.find((x) =>
-      canFormFillingDocs(x.fileExst)
+    const formFillingDocs = selection.find(
+      (x) => x.viewAccessability?.WebRestrictedEditing
     );
 
     const webFilter = selection.find(

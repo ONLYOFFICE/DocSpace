@@ -196,9 +196,6 @@ class SettingsStore {
 
   canConvert = (extension) => presentInArray(this.extsMustConvert, extension);
 
-  canFormFillingDocs = (extension) =>
-    presentInArray(this.extsWebRestrictedEditing, extension);
-
   isMediaOrImage = (fileExst) => {
     if (
       this.extsVideo.includes(fileExst) ||
