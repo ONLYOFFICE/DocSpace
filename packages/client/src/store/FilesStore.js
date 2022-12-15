@@ -1268,7 +1268,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
       }
 
-      if (!canViewFile) {
+      if (!canViewFile || isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 

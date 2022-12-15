@@ -491,7 +491,7 @@ class ContextOptionsStore {
     const isShareable = item.canShare;
 
     const isMedia =
-      item.viewAccessability.ImageView || item.viewAccessability.MediaView;
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
     const isCanWebEdit = item.viewAccessability?.WebEdit;
     const hasInfoPanel = contextOptions.includes("show-info");
 
