@@ -490,7 +490,8 @@ class ContextOptionsStore {
     const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
-    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
+    const isMedia =
+      item.viewAccessability.ImageView || item.viewAccessability.MediaView;
     const isCanWebEdit = item.viewAccessability?.WebEdit;
     const hasInfoPanel = contextOptions.includes("show-info");
 

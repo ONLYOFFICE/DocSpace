@@ -1757,7 +1757,8 @@ class FilesActionStore {
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
-    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
+    const isMediaOrImage =
+      item.viewAccessability.ImageView || item.viewAccessability.MediaView;
     const canConvert = this.settingsStore.canConvert(item.fileExst);
     const canWebEdit = item.viewAccessability?.WebEdit;
     const canViewedDocs = item.viewAccessability?.WebView;

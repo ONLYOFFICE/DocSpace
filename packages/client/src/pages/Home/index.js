@@ -46,7 +46,7 @@ class PureHome extends React.Component {
       setFirstLoad,
       setToPreviewFile,
       playlist,
-      isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
@@ -68,7 +68,9 @@ class PureHome extends React.Component {
       setTimeout(() => {
         getFileInfo(fileId)
           .then((data) => {
-            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const canOpenPlayer =
+              data.viewAccessability.ImageView ||
+              data.viewAccessability.MediaView;
             const file = { ...data, canOpenPlayer };
             setToPreviewFile(file, true);
           })
@@ -744,7 +746,7 @@ export default inject(
       personal,
       setToPreviewFile,
       playlist,
-      isMediaOrImage: settingsStore.isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,

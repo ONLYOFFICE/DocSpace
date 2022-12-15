@@ -2081,9 +2081,10 @@ class FilesStore {
           Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
         ];
 
-      const { canConvert, isMediaOrImage } = this.filesSettingsStore;
+      const { canConvert } = this.filesSettingsStore;
 
-      const canOpenPlayer = isMediaOrImage(item.fileExst);
+      const canOpenPlayer =
+        item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
 
       const previewUrl = canOpenPlayer
         ? combineUrl(
@@ -2443,11 +2444,12 @@ class FilesStore {
   }
 
   get isMediaSelected() {
-    const { isMediaOrImage } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return isMediaOrImage(selected.fileExst);
+      return (
+        selected.viewAccessability?.ImageView ||
+        selected.viewAccessability?.MediaView
+      );
     });
   }
 
