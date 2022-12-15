@@ -429,7 +429,7 @@ public class FileSharing
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await _fileSecurity.CanReadAccessAsync(entry))
+        if (!await _fileSecurity.CanReadAsync(entry))
         {
             _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 
