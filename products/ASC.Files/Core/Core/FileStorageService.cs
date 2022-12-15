@@ -2710,8 +2710,8 @@ public class FileStorageService<T> //: IFileStorageService
             Path = file.Title,
             ReferenceData = new FileReferenceData<T>
             {
-                FileId = file.Id,
-                PortalName = _tenantManager.GetCurrentTenant().Id.ToString()
+                FileKey = file.Id,
+                InstanceId = _tenantManager.GetCurrentTenant().Id.ToString()
             },
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true))
         };

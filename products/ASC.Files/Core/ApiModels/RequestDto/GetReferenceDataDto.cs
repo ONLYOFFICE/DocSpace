@@ -27,8 +27,8 @@
 namespace ASC.Files.Core.ApiModels.RequestDto;
 public class GetReferenceDataDto<T>
 {
-    public T FileId { get; set; }
-    public string PortalName { get; set; }
+    public T FileKey { get; set; }
+    public string InstanceId { get; set; }
     public T SourceFileId { get; set; }
     public string Path { get; set; }
 }

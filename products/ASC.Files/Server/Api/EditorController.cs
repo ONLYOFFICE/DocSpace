@@ -260,7 +260,7 @@ public abstract class EditorController<T> : ApiControllerBase
     public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
 
-        return  _fileStorageService.GetReferenceDataAsync(inDto.FileId, inDto.PortalName, inDto.SourceFileId, inDto.Path);
+        return  _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
     }
 }
 
