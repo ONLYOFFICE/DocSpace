@@ -125,9 +125,9 @@ function Editor({
     if (
       !view &&
       fileInfo &&
-      fileInfo.canWebRestrictedEditing &&
-      fileInfo.canFillForms &&
-      !fileInfo.canEdit
+      fileInfo.viewAccessability.WebRestrictedEditing &&
+      fileInfo.security.FillForms &&
+      !fileInfo.security.Edit
     ) {
       try {
         initForm();
