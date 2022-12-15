@@ -83,11 +83,10 @@ const StyledInfoPanel = styled.div`
 const StyledControlContainer = styled.div`
   display: none;
 
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
 
-  border-radius: 100px;
   cursor: pointer;
 
   align-items: center;
@@ -97,22 +96,22 @@ const StyledControlContainer = styled.div`
   @media ${tablet} {
     display: flex;
 
-    top: 16px;
-    left: -34px;
+    top: 18px;
+    left: -27px;
   }
 
   ${isMobile &&
   css`
     display: flex;
 
-    top: 16px;
-    left: -34px;
+    top: 18px;
+    left: -27px;
   `}
 
   @media (max-width: 428px) {
     display: flex;
 
-    top: -34px;
+    top: -27px;
     right: 10px;
     left: unset;
   }
