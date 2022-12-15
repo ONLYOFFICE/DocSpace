@@ -17,7 +17,7 @@ const CommentEditor = ({
   setVerHistoryFileId,
   setVerHistoryFileSecurity,
 }) => {
-  const { id, comment, version, access, security } = item;
+  const { id, comment, version, security } = item;
 
   const changeVersionHistoryAbility = !editing && security?.EditHistory;
 
@@ -40,7 +40,7 @@ const CommentEditor = ({
   const onSave = async () => {
     setIsLoading(true);
 
-    await fetchFileVersions(id, access).catch((err) => {
+    await fetchFileVersions(id, security).catch((err) => {
       toastr.error(err);
       setIsLoading(false);
     });

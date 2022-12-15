@@ -29,7 +29,7 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-      fetchFileVersions(item.id + "", item.access);
+      fetchFileVersions(item.id + "", item.security);
       setIsVerHistoryPanel(true);
     };
 
