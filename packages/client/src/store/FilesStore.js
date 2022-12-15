@@ -1098,7 +1098,7 @@ class FilesStore {
     return newOptions.filter((o) => o);
   };
 
-  getFilesContextOptions = (item, canOpenPlayer) => {
+  getFilesContextOptions = (item) => {
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -1152,7 +1152,11 @@ class FilesStore {
       const canViewVersionFileHistory = item.security?.ReadHistory;
       const canFillForm = item.security?.FillForms;
 
-      const canEditFile = item.security?.Edit;
+      const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
+      const canOpenPlayer =
+        item.viewAccessability.ImageView || item.viewAccessability.MediaView;
+      const canViewFile = item.viewAccessability.WebView;
+
       const isMasterForm = item.fileExst === ".docxf";
       const canMakeForm = item.security?.Duplicate;
 
@@ -1266,10 +1270,12 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
       }
 
+      if (!canViewFile) {
+        fileOptions = this.removeOptions(fileOptions, ["preview"]);
+      }
+
       if (!canOpenPlayer) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
-      } else {
-        fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
       if (!isDocuSign) {
@@ -1314,35 +1320,17 @@ class FilesStore {
       //   ]);
       // }
 
-      if (isRecycleBinFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "open",
-          "open-location",
-          "view",
-          "preview",
-          //"link-for-portal-users",
-          //"sharing-settings",
-          //"external-link",
-          "send-by-email",
-          "mark-read",
-          // "mark-as-favorite",
-          // "remove-from-favorites",
-          "separator0",
-          "separator1",
-        ]);
-      } else {
+      if (!isRecycleBinFolder)
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-        if (enablePlugins) {
-          const pluginFilesKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Files
-          );
+      if (enablePlugins && !isRecycleBinFolder) {
+        const pluginFilesKeys = getContextMenuKeysByType(
+          PluginContextMenuItemType.Files
+        );
 
-          pluginAllKeys &&
-            pluginAllKeys.forEach((key) => fileOptions.push(key));
-          pluginFilesKeys &&
-            pluginFilesKeys.forEach((key) => fileOptions.push(key));
-        }
+        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
+        pluginFilesKeys &&
+          pluginFilesKeys.forEach((key) => fileOptions.push(key));
       }
 
       if (!this.canShareOwnerChange(item)) {
