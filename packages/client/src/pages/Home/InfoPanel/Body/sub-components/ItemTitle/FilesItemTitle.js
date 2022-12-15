@@ -30,10 +30,7 @@ const FilesItemTitle = ({
       </StyledTitle>
     );
 
-  const icon =
-    selection?.isRoom && selection?.logo?.medium
-      ? selection.logo.medium
-      : selection.icon;
+  const icon = selection.icon;
 
   return (
     <StyledTitle ref={itemTitleRef}>

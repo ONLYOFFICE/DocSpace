@@ -32,7 +32,6 @@ const EditRoomEvent = ({
   withPaging,
 
   reloadSelection,
-  getRoomLogo,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -107,12 +106,6 @@ const EditRoomEvent = ({
             });
 
             if (!withPaging) {
-              const newLogo = await getRoomLogo(room.logo);
-
-              room.logoHandlers = room.logo;
-              room.logo = newLogo;
-              room.isLogoLoading = false;
-
               setFolder(room);
             }
 
@@ -125,12 +118,6 @@ const EditRoomEvent = ({
         });
       } else {
         if (!withPaging) {
-          const newLogo = await getRoomLogo(room.logo);
-
-          room.logoHandlers = room.logo;
-          room.logo = newLogo;
-          room.isLogoLoading = false;
-
           setFolder(room);
         }
         // to update state info panel
@@ -149,9 +136,7 @@ const EditRoomEvent = ({
   };
 
   useEffect(async () => {
-    const logo = item?.logo?.original
-      ? item.logo.original
-      : await api.rooms.getLogoIcon(item?.logoHandlers?.original);
+    const logo = item?.logo?.original ? item.logo.original : "";
 
     if (logo) {
       const imgExst = logo.slice(".")[1];
@@ -212,7 +197,6 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
-      getRoomLogo,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -226,7 +210,6 @@ export default inject(
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
-      getRoomLogo,
 
       createTag,
       fetchTags,
