@@ -211,8 +211,6 @@ class SettingsStore {
 
   isImage = (extension) => presentInArray(this.extsImage, extension);
 
-  isVideo = (extension) => presentInArray(this.extsVideo, extension);
-
   isSound = (extension) => presentInArray(this.extsAudio, extension);
 
   isHtml = (extension) => presentInArray(this.html, extension);

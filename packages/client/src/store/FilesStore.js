@@ -2199,8 +2199,6 @@ class FilesStore {
 
   get cbMenuItems() {
     const {
-      isImage,
-      isVideo,
       isDocument,
       isPresentation,
       isSpreadsheet,
@@ -2240,8 +2238,10 @@ class FilesStore {
         cbMenu.push(FilterType.PresentationsOnly);
       else if (isSpreadsheet(item.fileExst))
         cbMenu.push(FilterType.SpreadsheetsOnly);
-      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
-      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (item.viewAccessability?.ImageView)
+        cbMenu.push(FilterType.ImagesOnly);
+      else if (item.viewAccessability?.MediaView)
+        cbMenu.push(FilterType.MediaOnly);
       else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
     }
 
