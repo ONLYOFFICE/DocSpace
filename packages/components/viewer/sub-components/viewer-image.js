@@ -16,6 +16,8 @@ export default function ViewerImage(props) {
     y: 0,
   });
 
+  const tpCache = [];
+
   const handlers = useSwipeable({
     onSwiping: (e) => {
       const opacity = props.opacity - Math.abs(e.deltaX) / 500;
@@ -76,6 +78,38 @@ export default function ViewerImage(props) {
       bindWindowResizeEvent(true);
     };
   });
+
+  React.useEffect(() => {
+    document.addEventListener("touchmove", (e) => {
+      if (e.targetTouches.length === 2 && e.changedTouches.length === 2) {
+        const point1 = tpCache.findLastIndex(
+          (tp) => tp.identifier === e.targetTouches[0].identifier
+        );
+        const point2 = tpCache.findLastIndex(
+          (tp) => tp.identifier === e.targetTouches[1].identifier
+        );
+
+        if (point1 >= 0 && point2 >= 0) {
+          const diffX1 = tpCache[point1].clientX - e.targetTouches[0].clientX;
+          const diffX2 = tpCache[point2].clientX - e.targetTouches[1].clientX;
+          const diffY1 = tpCache[point1].clientY - e.targetTouches[0].clientY;
+          const diffY2 = tpCache[point2].clientY - e.targetTouches[1].clientY;
+        } else {
+          tpCache = [];
+        }
+      }
+    });
+  }, []);
+
+  React.useEffect(() => {
+    document.addEventListener("touchstart", (e) => {
+      if (e.targetTouches.length === 2) {
+        for (let i = 0; i < e.targetTouches.length; i++) {
+          tpCache.push(e.targetTouches[i]);
+        }
+      }
+    });
+  }, []);
 
   React.useEffect(() => {
     if (props.visible && props.drag) {
