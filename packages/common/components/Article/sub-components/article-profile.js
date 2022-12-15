@@ -69,7 +69,10 @@ const ArticleProfile = (props) => {
         </div>
         {(!isTabletView || showText) && (
           <>
-            <StyledUserName length={user.displayName.length}>
+            <StyledUserName
+              length={user.displayName.length}
+              onClick={onProfileClick}
+            >
               <Text fontWeight={600} noSelect truncate>
                 {username[0]}
                 &nbsp;

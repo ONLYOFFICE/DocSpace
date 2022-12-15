@@ -13,7 +13,7 @@ const AuthorCell = ({ fileOwner, sideColor, item }) => {
       <StyledText
         color={sideColor}
         fontSize="12px"
-        fontWeight={400}
+        fontWeight={600}
         title={fileOwner}
         truncate
       >

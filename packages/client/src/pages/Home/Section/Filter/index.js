@@ -893,7 +893,6 @@ const SectionFilterContent = ({
             label: "",
             withOptions: true,
             options: [
-              { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
               {
                 id: "filter_folders_with-subfolders",
                 key: FilterKeys.withSubfolders,

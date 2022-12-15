@@ -9,6 +9,8 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
 import EmptyScreenCorporateUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
+import { ReactSVG } from "react-svg";
+import LoaderEmptyContainer from "./sub-components/loaderEmptyContainer";
 
 const EmptyFolderContainer = ({
   t,
@@ -25,6 +27,8 @@ const EmptyFolderContainer = ({
   setIsEmptyPage,
   onClickInviteUsers,
   folderId,
+  tReady,
+  isLoadedFetchFiles,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -49,12 +53,11 @@ const EmptyFolderContainer = ({
   const buttons = canCreateFiles ? (
     <>
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
           src={PlusSvgUrl}
           data-format="docx"
           onClick={onCreate}
-          alt="plus_icon"
         />
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
@@ -73,11 +76,10 @@ const EmptyFolderContainer = ({
       </div>
 
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
-          src={PlusSvgUrl}
           onClick={onCreate}
-          alt="plus_icon"
+          src={PlusSvgUrl}
         />
         <Link {...linkStyles} onClick={onCreate}>
           {t("Folder")}
@@ -94,13 +96,11 @@ const EmptyFolderContainer = ({
             </div>
 
             <div className="empty-folder_container-links">
-              <img
-                className="empty-folder_container_up-image"
-                src={PlusSvgUrl}
+              <ReactSVG
+                className="empty-folder_container_plus-image"
                 onClick={onInviteUsersClick}
-                alt="up_icon"
+                src={PlusSvgUrl}
               />
-
               <Link onClick={onInviteUsersClick} {...linkStyles}>
                 {t("InviteUsersInRoom")}
               </Link>
@@ -111,13 +111,11 @@ const EmptyFolderContainer = ({
         )
       ) : (
         <div className="empty-folder_container-links">
-          <img
+          <ReactSVG
             className="empty-folder_container_up-image"
             src={UpSvgUrl}
             onClick={onBackToParentFolder}
-            alt="up_icon"
           />
-
           <Link onClick={onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
           </Link>
@@ -128,6 +126,10 @@ const EmptyFolderContainer = ({
     <></>
   );
 
+  if (!isLoadedFetchFiles || !tReady) {
+    return <LoaderEmptyContainer />;
+  }
+
   return (
     <EmptyContainer
       headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
@@ -137,11 +139,7 @@ const EmptyFolderContainer = ({
           ? t("EmptyFolderDecription")
           : t("EmptyFolderDescriptionUser")
       }
-      imageSrc={
-        isRooms
-          ? EmptyScreenCorporateUrl
-          : EmptyScreenAltSvgUrl
-      }
+      imageSrc={isRooms ? EmptyScreenCorporateUrl : EmptyScreenAltSvgUrl}
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
@@ -156,40 +154,46 @@ export default inject(
     selectedFolderStore,
     contextOptionsStore,
   }) => {
-    const { fetchFiles, fetchRooms, setIsEmptyPage } = filesStore;
+    const {
+      fetchFiles,
+      fetchRooms,
+      setIsEmptyPage,
+      isLoadedFetchFiles,
+    } = filesStore;
     const {
       navigationPath,
       parentId,
       access,
       id: folderId,
+      roomType,
     } = selectedFolderStore;
 
-    let isRootRoom, isRoom, id;
-    if (navigationPath && navigationPath.length) {
+    let id;
+    if (navigationPath?.length) {
       const elem = navigationPath[0];
-
-      isRootRoom = elem.isRootRoom;
-      isRoom = elem.isRoom;
       id = elem.id;
     }
+
+    const isRooms = !!roomType;
 
     const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const canInviteUsers = canInviteUserInRoom({ access });
+    const canInviteUsers = isRooms && canInviteUserInRoom({ access }); // skip sub-folders
 
     return {
       fetchFiles,
       fetchRooms,
       setIsLoading: filesStore.setIsLoading,
       parentId: id ?? parentId,
-      isRooms: isRoom || isRootRoom,
+      isRooms,
       canCreateFiles,
       canInviteUsers,
       setIsEmptyPage,
       onClickInviteUsers,
       folderId,
+      isLoadedFetchFiles,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

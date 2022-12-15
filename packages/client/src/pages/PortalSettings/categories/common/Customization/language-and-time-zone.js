@@ -496,6 +496,7 @@ class LanguageAndTimeZone extends React.Component {
               {t("StudioTimeLanguageSettings")}
             </div>
             <HelpButton
+              offsetRight={0}
               iconName={CombinedShapeSvgUrl}
               size={12}
               tooltipContent={tooltipLanguageTimeSettings}

@@ -126,6 +126,7 @@ const DNSSettings = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("DNSSettings")}</div>
           <HelpButton
+            offsetRight={0}
             iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipDNSSettingsTooltip}

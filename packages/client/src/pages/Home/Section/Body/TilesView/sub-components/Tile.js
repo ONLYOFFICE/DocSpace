@@ -50,6 +50,13 @@ const roomsStyles = css`
     align-content: center;
 
     border-bottom: ${(props) => props.theme.filesSection.tilesView.tile.border};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
+
+    border-radius: ${({ theme, isRooms }) =>
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
+        : theme.filesSection.tilesView.tile.upperBorderRadius};
   }
 
   .room-tile_bottom-content {
@@ -60,6 +67,12 @@ const roomsStyles = css`
     box-sizing: border-box;
 
     padding: 16px;
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
+    border-radius: ${({ theme, isRooms }) =>
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
+        : theme.filesSection.tilesView.tile.bottomBorderRadius};
   }
 `;
 
@@ -72,8 +85,10 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: ${(props) =>
-    props.theme.filesSection.tilesView.tile.checkedColor} !important;
+  background: ${({ theme, isRooms }) =>
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsCheckedColor
+      : theme.filesSection.tilesView.tile.checkedColor};
 `;
 
 const bottomFileBorder = css`
@@ -93,9 +108,14 @@ const StyledTile = styled.div`
   box-sizing: border-box;
   width: 100%;
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
-  border-radius: 6px;
+
+  border-radius: ${({ isRooms, theme }) =>
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsBorderRadius
+      : theme.filesSection.tilesView.tile.borderRadius};
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
-  ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
+  ${(props) =>
+    props.isFolder && !props.isRooms && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && (props.isRoom ? roomsStyles : FlexBoxStyles)};
@@ -104,7 +124,18 @@ const StyledTile = styled.div`
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
-    checkedStyle};
+    css`
+      .room-tile_top-content {
+        ${checkedStyle}
+      }
+      ${checkedStyle}
+    `};
+
+  :hover {
+    .room-tile_top-content {
+      ${checkedStyle}
+    }
+  }
 
   ${(props) =>
     !props.isDragging &&
@@ -170,7 +201,7 @@ const StyledTile = styled.div`
     margin-right: 14px;
   }
 
-  :hover {
+  .file-icon_container:hover {
     ${(props) =>
       !props.dragging &&
       !props.inProgress &&
@@ -345,7 +376,7 @@ const StyledIcons = styled.div`
     justify-content: center;
     padding: 8px;
     background: ${(props) =>
-      props.theme.filesSection.tilesView.tile.backgroundColor};
+      props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }

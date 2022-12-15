@@ -25,8 +25,9 @@ class SelectedFolderStore {
   pinned = null;
   isRoom = null;
   logo = null;
+  logoHandlers = null;
   tags = null;
-
+  rootFolderId = null;
   settingsStore = null;
 
   constructor(settingsStore) {
@@ -64,6 +65,7 @@ class SelectedFolderStore {
     this.isRoom = null;
     this.logo = null;
     this.tags = null;
+    this.rootFolderId = null;
   };
 
   setParentId = (parentId) => {

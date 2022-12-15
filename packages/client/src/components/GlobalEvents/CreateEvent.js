@@ -30,6 +30,7 @@ const CreateEvent = ({
   openDocEditor,
   setIsUpdatingRowItem,
   gallerySelected,
+  setGallerySelected,
   setCreatedItem,
 
   parentId,
@@ -54,6 +55,13 @@ const CreateEvent = ({
   const [startValue, setStartValue] = React.useState("");
 
   const { t } = useTranslation(["Translations", "Common"]);
+
+  const onCloseAction = () => {
+    if (gallerySelected) {
+      setGallerySelected && setGallerySelected(null);
+    }
+    onClose && onClose();
+  };
 
   React.useEffect(() => {
     const defaultName = getDefaultFileName(extension);
@@ -82,7 +90,7 @@ const CreateEvent = ({
 
     setIsLoading(true);
 
-    const newValue = value;
+    let newValue = value;
 
     if (value.trim() === "") {
       newValue =
@@ -96,7 +104,7 @@ const CreateEvent = ({
     let tab =
       !isDesktop && extension && open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
             "_blank"
           )
         : null;
@@ -116,7 +124,7 @@ const CreateEvent = ({
           createdFolderId && folderIds.push(createdFolderId);
 
           clearActiveOperations(null, folderIds);
-          onClose();
+          onCloseAction();
           return setIsLoading(false);
         });
     } else {
@@ -154,14 +162,14 @@ const CreateEvent = ({
             });
             setConvertPasswordDialogVisible(true);
 
-            open && openDocEditor(null, null, tab);
+            // open && openDocEditor(null, null, null);
           })
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else if (fromTemplate) {
@@ -186,7 +194,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else {
@@ -222,7 +230,7 @@ const CreateEvent = ({
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       }
@@ -231,9 +239,9 @@ const CreateEvent = ({
 
   const onCancel = React.useCallback(
     (e) => {
-      onClose && onClose();
+      onCloseAction && onCloseAction();
     },
-    [onClose]
+    [onCloseAction]
   );
 
   return (
@@ -244,7 +252,7 @@ const CreateEvent = ({
       startValue={startValue}
       onSave={onSave}
       onCancel={onCancel}
-      onClose={onClose}
+      onClose={onCloseAction}
     />
   );
 };
@@ -270,7 +278,7 @@ export default inject(
       setCreatedItem,
     } = filesStore;
 
-    const { gallerySelected } = oformsStore;
+    const { gallerySelected, setGallerySelected } = oformsStore;
 
     const { editCompleteAction } = filesActionsStore;
 
@@ -301,6 +309,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       gallerySelected,
+      setGallerySelected,
       setCreatedItem,
 
       parentId,

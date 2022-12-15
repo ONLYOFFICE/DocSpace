@@ -161,7 +161,7 @@ public class FileSharingAceHelper<T>
             if (!string.IsNullOrEmpty(w.Email))
             {
                 var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendEmailRoomInvite(w.Email, link);
+                _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
 
@@ -196,9 +196,15 @@ public class FileSharingAceHelper<T>
                                || share == FileShare.Review
                                || share == FileShare.FillForms
                                || share == FileShare.Comment
-                               || share == FileShare.None && entry.RootFolderType == FolderType.COMMON;
-            var removeNew = share == FileShare.None && entry.RootFolderType == FolderType.USER
-                            || share == FileShare.Restrict;
+                               || share == FileShare.RoomAdmin
+                               || share == FileShare.Editing
+                               || (share == FileShare.None && entry.RootFolderType == FolderType.COMMON);
+
+            var removeNew = share == FileShare.Restrict || (share == FileShare.None
+                && (entry.RootFolderType == FolderType.USER ||
+                    entry.RootFolderType == FolderType.VirtualRooms ||
+                    entry.RootFolderType == FolderType.Archive));
+
             listUsersId.ForEach(id =>
             {
                 recipients.Remove(id);

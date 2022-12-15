@@ -45,7 +45,6 @@ import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
@@ -611,11 +610,8 @@ class SectionHeaderContent extends React.Component {
       setIsLoading,
 
       fetchRooms,
-      history,
 
       setAlreadyFetchingRooms,
-
-      categoryType,
 
       rootFolderType,
     } = this.props;
@@ -630,21 +626,9 @@ class SectionHeaderContent extends React.Component {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter)
-      .then(() => {
-        const filterParamsStr = filter.toUrlParams();
-
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    fetchRooms(null, filter).finally(() => {
+      setIsLoading(false);
+    });
   };
 
   render() {
@@ -673,6 +657,8 @@ class SectionHeaderContent extends React.Component {
       isEmptyPage,
       canCreateFiles,
       isEmptyArchive,
+      isVisitor,
+      isRoom,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -702,7 +688,11 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
+                    canCreate={
+                      canCreate &&
+                      !isVisitor &&
+                      (canCreateFiles || isRoomsFolder)
+                    }
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -728,6 +718,7 @@ class SectionHeaderContent extends React.Component {
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
                     isEmptyPage={isEmptyPage}
+                    isRoom={isRoom}
                   />
                 )}
               </div>
@@ -776,7 +767,6 @@ export default inject(
       roomsForRestore,
       roomsForDelete,
 
-      categoryType,
       isEmptyPage,
     } = filesStore;
 
@@ -899,8 +889,6 @@ export default inject(
       isRoomsFolder,
 
       setAlreadyFetchingRooms,
-
-      categoryType,
 
       enablePlugins,
 

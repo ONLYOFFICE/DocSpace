@@ -57,7 +57,7 @@ const ActiveSessions = ({
       setCurrentSession(res.loginEvent);
     });
   }, []);
-  
+
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
@@ -129,6 +129,7 @@ const ActiveSessions = ({
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
+          offsetRight={0}
           iconName={InfoReactSvgUrl}
           tooltipContent={
             <Text fontSize="13px">

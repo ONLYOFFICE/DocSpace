@@ -197,6 +197,7 @@ const PaymentsPage = ({
     return (
       <>
         <HelpButton
+          offsetRight={0}
           iconName={HelpReactSvgUrl}
           tooltipContent={
             <>

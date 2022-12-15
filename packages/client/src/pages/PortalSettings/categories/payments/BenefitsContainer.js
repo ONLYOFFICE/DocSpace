@@ -31,7 +31,9 @@ const StyledBody = styled.div`
     }
     svg {
       path {
-        //fill: red !important;
+        fill: ${(props) =>
+          props.theme.client.settings.payment.benefitsContainer
+            .iconsColor} !important;
       }
     }
   }

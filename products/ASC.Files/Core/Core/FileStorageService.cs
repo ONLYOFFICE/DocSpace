@@ -3145,7 +3145,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var link = _roomLinkService.GetInvitationLink(user.Email, share.Access, _authContext.CurrentAccount.ID);
-            _studioNotifyService.SendEmailRoomInvite(user.Email, link);
+            _studioNotifyService.SendEmailRoomInvite(user.Email, room.Title, link);
         }
     }
 

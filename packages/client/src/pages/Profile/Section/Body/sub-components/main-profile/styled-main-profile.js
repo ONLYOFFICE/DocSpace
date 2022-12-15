@@ -206,12 +206,7 @@ export const StyledRow = styled.div`
 
   @media ${desktop} {
     height: 28px;
-  }
-
-  .combo {
-    & > div {
-      justify-content: flex-start !important;
-    }
+    align-items: center;
   }
 
   .label {

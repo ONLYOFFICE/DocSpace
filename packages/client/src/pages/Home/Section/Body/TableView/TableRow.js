@@ -18,6 +18,7 @@ import TagsCell from "./sub-components/TagsCell";
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 import CursorPalmReactSvgURL from "PUBLIC_DIR/images/cursor.palm.react.svg";
+import { classNames } from "@docspace/components/utils/classNames";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -400,18 +401,19 @@ const FilesTableRow = (props) => {
       availableColumns.includes("Activity") && !hideColumns;
   }
 
+  const idWithFileExst = item.fileExst
+    ? `${item.id}_${item.fileExst}`
+    : item.id ?? "";
+
   return (
     <StyledDragAndDrop
       id={id}
       data-title={item.title}
       value={value}
-      className={`files-item ${className} ${item.id}_${item.fileExst} ${
-        showHotkeyBorder
-          ? "table-hotkey-border"
-          : checkedProps || isActive
-          ? "table-row-selected"
-          : ""
-      }`}
+      className={classNames("files-item", className, idWithFileExst, {
+        ["table-hotkey-border"]: showHotkeyBorder,
+        ["table-row-selected"]: !showHotkeyBorder && (checkedProps || isActive),
+      })}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
       dragging={dragging && isDragging}
@@ -446,7 +448,10 @@ const FilesTableRow = (props) => {
       >
         <TableCell
           {...dragStyles}
-          className={`${selectionProp?.className} table-container_file-name-cell`}
+          className={classNames(
+            selectionProp?.className,
+            "table-container_file-name-cell"
+          )}
           value={value}
         >
           <FileNameCell
@@ -587,7 +592,10 @@ const FilesTableRow = (props) => {
               !buttonsAvailableDrag ? { background: "none" } : dragStyles.style
             }
             {...selectionProp}
-            className={`${selectionProp?.className} table-container_quick-buttons-wrapper`}
+            className={classNames(
+              selectionProp?.className,
+              "table-container_quick-buttons-wrapper"
+            )}
           >
             <StyledQuickButtonsContainer>
               {quickButtonsComponent}

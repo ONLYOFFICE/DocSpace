@@ -69,13 +69,13 @@ public class CustomTagsService<T>
 
         if (tags.Any())
         {
-            throw new Exception("The tag already exists");
+            throw new InvalidOperationException("The tag already exists");
         }
 
         var tagInfo = new TagInfo
         {
             Name = name,
-            Owner = _authContext.CurrentAccount.ID,
+            Owner = Guid.Empty,
             Type = TagType.Custom
         };
 
@@ -125,7 +125,7 @@ public class CustomTagsService<T>
 
         var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
-        var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
+        var tags = tagsInfos.Select(tagInfo => Tag.Custom(Guid.Empty, folder, tagInfo.Name));
 
         await tagDao.SaveTags(tags);
 

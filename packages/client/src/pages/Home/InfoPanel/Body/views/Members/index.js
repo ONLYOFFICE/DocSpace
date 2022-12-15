@@ -29,7 +29,7 @@ const Members = ({
 
   resendEmailInvitations,
   setInvitePanelOptions,
-
+  canDeleteUserInRoom,
   changeUserType,
   canInviteUserInRoom,
   canChangeUserRoleInRoom,
@@ -157,6 +157,7 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             canChangeUserRoleInRoom={canChangeUserRoleInRoom}
+            canDeleteUserInRoom={canDeleteUserInRoom}
           />
         ))}
       </StyledUserList>
@@ -193,6 +194,8 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            canDeleteUserInRoom={canDeleteUserInRoom}
+            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
           />
         ))}
       </StyledUserList>
@@ -211,7 +214,11 @@ export default inject(
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
-    const { canInviteUserInRoom, canChangeUserRoleInRoom } = accessRightsStore;
+    const {
+      canInviteUserInRoom,
+      canChangeUserRoleInRoom,
+      canDeleteUserInRoom,
+    } = accessRightsStore;
 
     return {
       selectionParentRoom,
@@ -230,6 +237,7 @@ export default inject(
       changeUserType,
       canInviteUserInRoom,
       canChangeUserRoleInRoom,
+      canDeleteUserInRoom,
     };
   }
 )(

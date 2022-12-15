@@ -1,6 +1,6 @@
-﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
+import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import EmptyScreenPersonsPngUrl from "PUBLIC_DIR/images/empty_screen_persons.png";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -12,6 +12,8 @@ import Filter from "@docspace/common/api/people/filter";
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
 import { getUserRole } from "SRC_DIR/helpers/people-helpers";
+
+let timer = null;
 
 const PeopleSelector = ({
   acceptButtonLabel,
@@ -52,12 +54,32 @@ const PeopleSelector = ({
   const [total, setTotal] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const cleanTimer = () => {
+    timer && clearTimeout(timer);
+    timer = null;
+  };
 
   useEffect(() => {
-    setIsLoading(true);
     loadNextPage(0);
   }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      cleanTimer();
+      timer = setTimeout(() => {
+        setIsLoading(true);
+      }, 100);
+    } else {
+      cleanTimer();
+      setIsLoading(false);
+    }
+
+    return () => {
+      cleanTimer();
+    };
+  }, [isLoading]);
 
   const toListItem = (item) => {
     const { id, email, avatar, icon, displayName } = item;
@@ -78,8 +100,11 @@ const PeopleSelector = ({
     const pageCount = 100;
 
     setIsNextPageLoading(true);
+    setIsLoading(true);
 
-    const currentFilter = filter || Filter.getDefault();
+    const currentFilter =
+      typeof filter === "function" ? filter() : filter ?? Filter.getDefault();
+
     currentFilter.page = startIndex / pageCount;
     currentFilter.pageCount = pageCount;
 
@@ -119,13 +144,11 @@ const PeopleSelector = ({
 
   const onSearch = (value) => {
     setSearchValue(value);
-    setIsLoading(true);
     loadNextPage(0, value);
   };
 
   const onClearSearch = () => {
     setSearchValue("");
-    setIsLoading(true);
     loadNextPage(0, "");
   };
 

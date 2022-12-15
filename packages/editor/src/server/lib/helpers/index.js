@@ -108,15 +108,12 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
-    const actionLink = config?.editorConfig?.actionLink || null;
-
     return {
       config,
       personal,
       successAuth,
       user,
       error,
-      actionLink,
       //isSharingAccess,
       url,
       doc,

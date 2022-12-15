@@ -171,6 +171,7 @@ const WhiteLabel = (props) => {
       <Text className="subtitle" color="#657077">
         {t("BrandingSubtitle")}
       </Text>
+
       <div className="header-container">
         <Text fontSize="16px" fontWeight="700">
           {t("WhiteLabel")}

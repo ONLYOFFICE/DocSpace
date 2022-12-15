@@ -42,7 +42,7 @@
   "BrandingSectionDescription": "Specify your company information, add links to external resources, and email addresses displayed within the online office interface.",
   "BrandingSubtitle": "Use this option to provide on-brand experience to your users. These settings will be effective for all of your portals.",
   "BreakpointWarningText": "This section is only available in desktop version",
-  "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{content}}</1>",
+  "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{sectionName}}</1> settings",
   "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
   "Buttons": "Buttons",
   "ByApp": "By authenticator app",

@@ -76,6 +76,9 @@ const StyledDropdown = styled.div`
       padding-right: 0 !important;
     }
   }
+  &.download-dialog-dropDown {
+    margin-top: 4px;
+  }
 `;
 
 StyledDropdown.defaultProps = { theme: Base };

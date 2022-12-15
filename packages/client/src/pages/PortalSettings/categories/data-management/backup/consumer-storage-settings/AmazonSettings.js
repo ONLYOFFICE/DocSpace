@@ -258,6 +258,7 @@ class AmazonSettings extends React.Component {
       return (
         <>
           <HelpButton
+            offsetRight={0}
             iconName={HelpReactSvgUrl}
             tooltipContent={
               <>

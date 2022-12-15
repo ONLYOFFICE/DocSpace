@@ -11,10 +11,10 @@ const User = ({
   membersHelper,
   currentMember,
   updateRoomMemberRole,
-  currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
   canChangeUserRoleInRoom,
+  canDeleteUserInRoom,
   rootFolderType,
   access,
 }) => {
@@ -24,9 +24,26 @@ const User = ({
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
 
+  const canChangeUserRole =
+    user &&
+    canChangeUserRoleInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
+
+  const canDeleteUser =
+    user &&
+    canDeleteUserInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
+
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
-    currCanEditUsers
+    canChangeUserRole,
+    canDeleteUser
   );
 
   const userRole = membersHelper.getOptionByUserAccess(user.access);
@@ -67,14 +84,6 @@ const User = ({
     }
   };
 
-  const isCanChangeUserRole =
-    user &&
-    canChangeUserRoleInRoom({
-      access,
-      rootFolderType,
-      currentUserInList: { id: user.id, access: user.access },
-    });
-
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -94,7 +103,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {isCanChangeUserRole ? (
+          {canChangeUserRole || canDeleteUser ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
@@ -105,9 +114,12 @@ const User = ({
               size="content"
               modernView
               title={t("Common:Role")}
+              manualWidth={"fit-content"}
             />
           ) : (
-            <div className="disabled-role-combobox" title={t("Common:Role")}>{userRole.label}</div>
+            <div className="disabled-role-combobox" title={t("Common:Role")}>
+              {userRole.label}
+            </div>
           )}
         </div>
       )}

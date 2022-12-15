@@ -18,7 +18,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
 
   const onResetFilter = () => {
     setIsLoading(true);
-    resetFilter(true).finally(() => setIsLoading(false));
+    resetFilter().finally(() => setIsLoading(false));
   };
 
   return (

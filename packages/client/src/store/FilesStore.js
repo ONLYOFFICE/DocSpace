@@ -31,6 +31,8 @@ import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
+let requestCounter = 0;
+
 class FilesStore {
   authStore;
 
@@ -94,6 +96,7 @@ class FilesStore {
   filesIsLoading = false;
 
   isEmptyPage = false;
+  isLoadedFetchFiles = false;
 
   constructor(
     authStore,
@@ -142,7 +145,13 @@ class FilesStore {
               newFiles.pop(); // Remove last
             }
 
-            this.setFiles(newFiles);
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFiles(newFiles);
+            });
           }
           break;
         case "update":
@@ -538,9 +547,29 @@ class FilesStore {
     if (index !== -1) this.files[index] = file;
   };
 
+  updateSelection = (id) => {
+    const indexFileList = this.filesList.findIndex(
+      (filelist) => filelist.id === id
+    );
+    const indexSelectedRoom = this.selection.findIndex(
+      (room) => room.id === id
+    );
+
+    if (~indexFileList && ~indexSelectedRoom) {
+      this.selection[indexSelectedRoom] = this.filesList[indexFileList];
+    }
+    if (this.bufferSelection) {
+      this.bufferSelection = this.filesList.find(
+        (file) => file.id === this.bufferSelection.id
+      );
+    }
+  };
+
   setFolder = (folder) => {
     const index = this.folders.findIndex((x) => x.id === folder.id);
     if (index !== -1) this.folders[index] = folder;
+
+    this.updateSelection(folder.id);
   };
 
   getFilesChecked = (file, selected) => {
@@ -753,6 +782,8 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
+    this.isLoadedFetchFiles = false;
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -772,147 +803,143 @@ class FilesStore {
 
     setSelectedNode([folderId + ""]);
 
-    //TODO: fix @my
-    let requestCounter = 1;
-    const request = () =>
-      api.files
-        .getFolder(folderId, filterData)
-        .then(async (data) => {
-          filterData.total = data.total;
+    return api.files
+      .getFolder(folderId, filterData)
+      .then(async (data) => {
+        filterData.total = data.total;
 
-          if (data.total > 0) {
-            const lastPage = filterData.getLastPage();
+        if (data.total > 0) {
+          const lastPage = filterData.getLastPage();
 
-            if (filterData.page > lastPage) {
-              filterData.page = lastPage;
+          if (filterData.page > lastPage) {
+            filterData.page = lastPage;
 
-              return this.fetchFiles(
-                folderId,
-                filterData,
-                clearFilter,
-                withSubfolders
-              );
-            }
-          }
-
-          runInAction(() => {
-            this.categoryType = getCategoryTypeByFolderType(
-              data.current.rootFolderType,
-              data.current.parentId
-            );
-          });
-
-          this.setFilesFilter(filterData); //TODO: FILTER
-
-          const isPrivacyFolder =
-            data.current.rootFolderType === FolderType.Privacy;
-
-          runInAction(() => {
-            this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
-            this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
-          });
-
-          if (clearFilter) {
-            if (clearSelection) {
-              this.setSelected("close");
-            }
-          }
-
-          const navigationPath = await Promise.all(
-            data.pathParts.map(async (folder) => {
-              const { Rooms, Archive } = FolderType;
-
-              let folderId = folder;
-
-              if (
-                data.current.providerKey &&
-                data.current.rootFolderType === Rooms &&
-                this.treeFoldersStore.sharedRoomId
-              ) {
-                folderId = this.treeFoldersStore.sharedRoomId;
-              }
-
-              const folderInfo =
-                data.current.id === folderId
-                  ? data.current
-                  : await api.files.getFolderInfo(folderId);
-
-              const {
-                id,
-                title,
-                roomType,
-                rootFolderId,
-                rootFolderType,
-              } = folderInfo;
-
-              const isRootRoom =
-                rootFolderId === id &&
-                (rootFolderType === Rooms || rootFolderType === Archive);
-
-              return {
-                id: folderId,
-                title,
-                isRoom: !!roomType,
-                isRootRoom,
-              };
-            })
-          ).then((res) => {
-            return res
-              .filter((item, index) => index !== res.length - 1)
-              .reverse();
-          });
-
-          this.selectedFolderStore.setSelectedFolder({
-            folders: data.folders,
-            ...data.current,
-            pathParts: data.pathParts,
-            navigationPath: navigationPath,
-            ...{ new: data.new },
-          });
-
-          const selectedFolder = {
-            selectedFolder: { ...this.selectedFolderStore },
-          };
-
-          this.viewAs === "tile" && this.createThumbnails();
-
-          if (this.createdItem) {
-            const newItem = this.filesList.find(
-              (item) => item.id === this.createdItem.id
-            );
-
-            if (newItem) {
-              this.setBufferSelection(newItem);
-              this.setScrollToItem({
-                id: newItem.id,
-                type: this.createdItem.type,
-              });
-            }
-
-            this.setCreatedItem(null);
-          }
-
-          return Promise.resolve(selectedFolder);
-        })
-        .catch((err) => {
-          console.error(err);
-          toastr.error(err);
-          if (!requestCounter) return;
-          requestCounter--;
-
-          if (folderId === "@my" /*  && !this.isInit */) {
-            setTimeout(() => {
-              return request();
-            }, 5000);
-          } else {
-            this.treeFoldersStore.fetchTreeFolders();
             return this.fetchFiles(
-              this.authStore.userStore.user.isVisitor ? "@common" : "@my"
+              folderId,
+              filterData,
+              clearFilter,
+              withSubfolders
             );
           }
+        }
+
+        runInAction(() => {
+          this.categoryType = getCategoryTypeByFolderType(
+            data.current.rootFolderType,
+            data.current.parentId
+          );
         });
 
-    return request();
+        this.setFilesFilter(filterData); //TODO: FILTER
+
+        const isPrivacyFolder =
+          data.current.rootFolderType === FolderType.Privacy;
+
+        runInAction(() => {
+          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+        });
+
+        if (clearFilter) {
+          if (clearSelection) {
+            this.setSelected("close");
+          }
+        }
+
+        const navigationPath = await Promise.all(
+          data.pathParts.map(async (folder) => {
+            const { Rooms, Archive } = FolderType;
+
+            let folderId = folder;
+
+            if (
+              data.current.providerKey &&
+              data.current.rootFolderType === Rooms &&
+              this.treeFoldersStore.sharedRoomId
+            ) {
+              folderId = this.treeFoldersStore.sharedRoomId;
+            }
+
+            const folderInfo =
+              data.current.id === folderId
+                ? data.current
+                : await api.files.getFolderInfo(folderId);
+
+            const {
+              id,
+              title,
+              roomType,
+              rootFolderId,
+              rootFolderType,
+            } = folderInfo;
+
+            const isRootRoom =
+              rootFolderId === id &&
+              (rootFolderType === Rooms || rootFolderType === Archive);
+
+            return {
+              id: folderId,
+              title,
+              isRoom: !!roomType,
+              isRootRoom,
+            };
+          })
+        ).then((res) => {
+          return res
+            .filter((item, index) => index !== res.length - 1)
+            .reverse();
+        });
+
+        this.selectedFolderStore.setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+          navigationPath: navigationPath,
+          ...{ new: data.new },
+        });
+
+        const selectedFolder = {
+          selectedFolder: { ...this.selectedFolderStore },
+        };
+
+        this.viewAs === "tile" && this.createThumbnails();
+
+        if (this.createdItem) {
+          const newItem = this.filesList.find(
+            (item) => item.id === this.createdItem.id
+          );
+
+          if (newItem) {
+            this.setBufferSelection(newItem);
+            this.setScrollToItem({
+              id: newItem.id,
+              type: this.createdItem.type,
+            });
+          }
+
+          this.setCreatedItem(null);
+        }
+
+        return Promise.resolve(selectedFolder);
+      })
+      .catch((err) => {
+        console.error(err);
+        toastr.error(err);
+
+        if (requestCounter > 0) return;
+
+        requestCounter++;
+        setTimeout(() => {
+          window.location.href = combineUrl(
+            AppServerConfig.proxyURL,
+            config.homepage,
+            "/rooms/shared/"
+          );
+        }, 5000);
+      })
+      .finally(() => {
+        this.isLoadedFetchFiles = true;
+      });
   };
 
   fetchRooms = (
@@ -1394,6 +1421,7 @@ class FilesStore {
       let roomOptions = [
         "select",
         "separator0",
+        "link-for-room-members",
         "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
@@ -1706,16 +1734,6 @@ class FilesStore {
     return api.rooms.getFileHistory(id);
   }
 
-  setFile = (file) => {
-    const fileIndex = this.files.findIndex((f) => f.id === file.id);
-    if (fileIndex !== -1) this.files[fileIndex] = file;
-  };
-
-  setFolder = (folder) => {
-    const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
-    if (folderIndex !== -1) this.folders[folderIndex] = folder;
-  };
-
   // updateFolderBadge = (id, count) => {
   //   const folder = this.folders.find((x) => x.id === id);
   //   if (folder) folder.new -= count;
@@ -1984,19 +2002,34 @@ class FilesStore {
     return this.filter.search;
   }
 
+  getFolderUrl = (id, isFolder) => {
+    const url = getCategoryUrl(this.categoryType, id);
+
+    const folderUrl = isFolder
+      ? combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `${url}?folder=${id}`
+        )
+      : null;
+
+    return folderUrl;
+  };
+
   getRoomLogo = async (logoHandlers) => {
     const newLogos = {};
 
-    let disableFetch = false;
-
     for (let key in logoHandlers) {
-      const icon = disableFetch
-        ? ""
-        : await api.rooms.getLogoIcon(logoHandlers[key]);
+      let icon = "";
 
-      if (!icon) disableFetch = true;
+      if (key === "medium") {
+        icon = await api.rooms.getLogoIcon(logoHandlers[key]);
 
-      newLogos[key] = icon ? icon : "";
+        // check for null
+        icon = icon ? icon : "";
+      }
+
+      newLogos[key] = icon;
     }
 
     return newLogos;
@@ -2016,7 +2049,13 @@ class FilesStore {
       })
     );
 
-    this.setFolders(newRooms);
+    if (
+      (this.treeFoldersStore.isRoomsFolder ||
+        this.treeFoldersStore.isArchiveFolder) &&
+      this.selectedFolderStore.navigationPath.length === 0
+    ) {
+      this.setFolders(newRooms);
+    }
   };
 
   get filesList() {
@@ -2116,15 +2155,7 @@ class FilesStore {
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
-      const url = getCategoryUrl(this.categoryType, id);
-
-      const folderUrl = isFolder
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `${url}?folder=${id}`
-          )
-        : null;
+      const folderUrl = this.getFolderUrl(id, isFolder);
 
       const needConvert = canConvert(fileExst);
       const isEditing =
@@ -2804,6 +2835,8 @@ class FilesStore {
       this.setFolders([...this.folders, ...newFiles.folders]);
       this.setFilesIsLoading(false);
     });
+
+    if (isRooms) this.updateRoomLoadingLogo();
   };
 
   //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.

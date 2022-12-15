@@ -161,6 +161,7 @@ const ExternalLinks = ({
         <StyledInviteInputContainer key={activeLink.id}>
           <StyledInviteInput>
             <InputBlock
+              className="input-link"
               scale
               value={activeLink.shareLink}
               isReadOnly

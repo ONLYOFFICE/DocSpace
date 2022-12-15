@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
@@ -14,9 +14,10 @@ import { Trans } from "react-i18next";
 
 const StyledBody = styled.div`
   border-radius: 12px;
-  border: 1px solid #d0d5da;
+  border: ${(props) =>
+    props.theme.client.settings.payment.priceContainer.border};
   background: ${(props) =>
-    props.theme.client.settings.payment.backgroundPriceContainer};
+    props.theme.client.settings.payment.priceContainer.background};
   max-width: 320px;
 
   padding: 24px;
@@ -24,15 +25,22 @@ const StyledBody = styled.div`
 
   .payment_main-title {
     margin-bottom: 24px;
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
+      `}
   }
   .payment_price_user {
     display: flex;
     align-items: center;
     justify-content: center;
     background: ${(props) =>
-      props.theme.client.settings.payment.backgroundPrice};
+      props.theme.client.settings.payment.priceContainer.backgroundText};
     margin-top: 24px;
     min-height: 38px;
+    border-radius: 6px;
     p:first-child {
       margin-right: 8px;
     }
@@ -122,8 +130,6 @@ const PriceCalculation = ({
     ? false
     : (!user.isOwner && !user.isAdmin) || !isPayer;
 
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
-
   const priceInfoPerManager = (
     <div className="payment_price_user">
       <Text
@@ -131,7 +137,7 @@ const PriceCalculation = ({
         fontSize={"13px"}
         color={
           isDisabled
-            ? theme.client.settings.payment.disabledPriceColor
+            ? theme.client.settings.payment.priceContainer.disablePriceColor
             : theme.client.settings.payment.priceColor
         }
         fontWeight={600}
@@ -145,7 +151,7 @@ const PriceCalculation = ({
             fontWeight={600}
             color={
               isDisabled
-                ? theme.client.settings.payment.disabledPriceColor
+                ? theme.client.settings.payment.priceContainer.disablePriceColor
                 : theme.client.settings.payment.priceColor
             }
           >
@@ -160,12 +166,11 @@ const PriceCalculation = ({
     </div>
   );
   return (
-    <StyledBody className="price-calculation-container">
+    <StyledBody className="price-calculation-container" isDisabled={isDisabled}>
       <Text
         fontSize="16px"
         fontWeight={600}
         noSelect
-        {...color}
         className="payment_main-title"
       >
         {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod

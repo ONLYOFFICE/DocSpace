@@ -25,6 +25,7 @@ const Item = ({
   changeInviteItem,
   setHasErrors,
   roomType,
+  isOwner,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -35,7 +36,7 @@ const Item = ({
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = getAccessOptions(t, roomType, true);
+  const accesses = getAccessOptions(t, roomType, true, false, isOwner);
 
   const defaultAccess = accesses.find((option) => option.access === +access);
 

@@ -48,13 +48,7 @@ const EmptyScreenContainer = (props) => {
       )}
 
       {descriptionText && (
-        <Text
-          as="span"
-          color="#6A7378"
-          fontSize="12px"
-          className="ec-desc"
-          noSelect
-        >
+        <Text as="span" fontSize="12px" className="ec-desc" noSelect>
           {descriptionText}
         </Text>
       )}

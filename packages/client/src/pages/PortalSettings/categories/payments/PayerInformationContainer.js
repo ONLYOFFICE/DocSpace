@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
   padding: 16px;
   box-sizing: border-box;
   margin-top: 16px;
-
+  border-radius: 6px;
   .change-payer,
   .payer-info {
     margin-left: 3px;

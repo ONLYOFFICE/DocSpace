@@ -89,13 +89,11 @@ const LanguagesCombo = (props) => {
         />
       </Text>
       <ComboBox
-        className="combo"
         directionY="both"
         options={cultureNames}
         selectedOption={selectedLanguage}
         onSelect={onLanguageSelect}
         isDisabled={false}
-        noBorder={!isMobileOnly}
         scaled={isMobileOnly}
         scaledOptions={false}
         size="content"
@@ -105,6 +103,7 @@ const LanguagesCombo = (props) => {
         isDefaultMode={!isMobileOnly}
         withBlur={isMobileOnly}
         fillIcon={false}
+        modernView={!isMobileOnly}
       />
     </StyledRow>
   );

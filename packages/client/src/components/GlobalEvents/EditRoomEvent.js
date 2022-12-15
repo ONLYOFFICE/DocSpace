@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
+import api from "@docspace/common/api";
 
 const EditRoomEvent = ({
   visible,
@@ -29,6 +30,8 @@ const EditRoomEvent = ({
   setCreateRoomDialogVisible,
 
   withPaging,
+
+  reloadSelection,
   getRoomLogo,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
@@ -113,6 +116,9 @@ const EditRoomEvent = ({
               setFolder(room);
             }
 
+            // to update state info panel
+            reloadSelection();
+
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
@@ -127,6 +133,8 @@ const EditRoomEvent = ({
 
           setFolder(room);
         }
+        // to update state info panel
+        reloadSelection();
       }
     } catch (err) {
       console.log(err);
@@ -141,9 +149,14 @@ const EditRoomEvent = ({
   };
 
   useEffect(async () => {
-    const imgExst = item.logo.original.slice(".")[1];
-    if (item.logo.original) {
-      const file = await fetch(item.logo.original)
+    const logo = item?.logo?.original
+      ? item.logo.original
+      : await api.rooms.getLogoIcon(item?.logoHandlers?.original);
+
+    if (logo) {
+      const imgExst = logo.slice(".")[1];
+
+      const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
           (buf) =>
@@ -208,7 +221,7 @@ export default inject(
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-
+    const { reloadSelection } = auth.infoPanelStore;
     return {
       editRoom,
       addTagsToRoom,
@@ -231,6 +244,8 @@ export default inject(
 
       withPaging,
       setCreateRoomDialogVisible,
+
+      reloadSelection,
     };
   }
 )(observer(EditRoomEvent));

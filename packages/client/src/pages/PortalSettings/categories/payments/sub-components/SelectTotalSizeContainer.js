@@ -10,6 +10,10 @@ const StyledBody = styled.div`
     margin-left: auto;
     margin-right: auto;
     width: max-content;
+    color: ${(props) =>
+      props.isDisabled
+        ? props.theme.client.settings.payment.priceContainer.disableColor
+        : props.theme.client.settings.payment.priceContainer.featureTextColor};
   }
 `;
 
@@ -28,6 +32,7 @@ const SelectTotalSizeContainer = ({
       <Text
         noSelect
         fontWeight={600}
+        fontSize="11px"
         className="select-total-size_title"
         color={theme.client.settings.payment.storageSizeTitle}
       >

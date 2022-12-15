@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Link from "@docspace/components/link";
 
@@ -54,6 +54,14 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
+  ${({ isRooms }) =>
+    isRooms &&
+    css`
+      .item-file-name {
+        font-size: 16px;
+      }
+    `}
+
   @media (max-width: 1024px) {
     display: inline-flex;
     height: auto;
@@ -64,7 +72,13 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 `;
 
-const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
+const FilesTileContent = ({
+  item,
+  titleWithoutExt,
+  linkStyles,
+  theme,
+  isRooms,
+}) => {
   const { fileExst, title } = item;
 
   return (
@@ -72,6 +86,7 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
       <SimpleFilesTileContent
         sideColor={theme.filesSection.tilesView.sideColor}
         isFile={fileExst}
+        isRooms={isRooms}
       >
         <Link
           className="item-file-name"
@@ -92,8 +107,12 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
   );
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, treeFoldersStore }) => {
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
+
+  return { theme: auth.settingsStore.theme, isRooms };
 })(
   observer(
     withRouter(

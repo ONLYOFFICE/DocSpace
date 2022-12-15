@@ -21,7 +21,7 @@ const DialogHeader = ({ t, isEdit, isChooseRoomType, onArrowClick }) => {
             className="sharing_panel-arrow"
             onClick={onArrowClick}
           />
-          <div>{t("CreateRoom")}</div>
+          <div>{t("Files:CreateRoom")}</div>
         </div>
       )}
     </>
