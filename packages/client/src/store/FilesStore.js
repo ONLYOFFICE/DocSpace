@@ -27,6 +27,7 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
+import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -97,6 +98,7 @@ class FilesStore {
 
   isEmptyPage = false;
 
+  tempActionFilesIds = [];
   operationAction = false;
 
   constructor(
@@ -199,15 +201,23 @@ class FilesStore {
               this.files[foundIndex].title
             );
 
-            this.setFiles(
-              this.files.filter((_, index) => {
-                return index !== foundIndex;
-              })
-            );
+            // this.setFiles(
+            //   this.files.filter((_, index) => {
+            //     return index !== foundIndex;
+            //   })
+            // );
 
-            const newFilter = this.filter.clone();
-            newFilter.total -= 1;
-            this.setFilter(newFilter);
+            // const newFilter = this.filter.clone();
+            // newFilter.total -= 1;
+            // this.setFilter(newFilter);
+
+            const tempActionFilesIds = JSON.parse(
+              JSON.stringify(this.tempActionFilesIds)
+            );
+            tempActionFilesIds.push(this.files[foundIndex].id);
+
+            this.setTempActionFilesIds(tempActionFilesIds);
+            this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -315,6 +325,14 @@ class FilesStore {
       }
     });
   }
+
+  debounceRemoveFiles = debounce(() => {
+    this.removeFiles(this.tempActionFilesIds);
+  }, 1000);
+
+  setTempActionFilesIds = (tempActionFilesIds) => {
+    this.tempActionFilesIds = tempActionFilesIds;
+  };
 
   setOperationAction = (operationAction) => {
     this.operationAction = operationAction;
@@ -1830,6 +1848,7 @@ class FilesStore {
       })
       .finally(() => {
         this.setOperationAction(false);
+        this.setTempActionFilesIds([]);
       });
   };
 
