@@ -30,29 +30,25 @@ const Members = ({
 
   getRoomMembers,
   updateRoomMemberRole,
-
+  setView,
+  roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
-  canDeleteUserInRoom,
-  changeUserType,
-  canInviteUserInRoom,
-  canChangeUserRoleInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const { access, rootFolderType } = selection;
 
-  const canInviteUserInRoomAbility = canInviteUserInRoom({
-    access,
-    rootFolderType,
-  });
+  const security = selectionParentRoom ? selectionParentRoom.security : {};
+
+  const canInviteUserInRoomAbility = security?.EditAccess;
 
   const fetchMembers = async (roomId) => {
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
     let data = await getRoomMembers(roomId);
+
     data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);
 
@@ -61,6 +57,7 @@ const Members = ({
     data.map((fetchedMember) => {
       const member = {
         access: fetchedMember.access,
+        canEditAccess: fetchedMember.canEditAccess,
         ...fetchedMember.sharedTo,
       };
       if (member.activationStatus !== 2) inRoomMembers.push(member);
@@ -98,6 +95,8 @@ const Members = ({
       ...selection,
       members: fetchedMembers,
     });
+    if (roomsView === "info_members" && !selection?.security?.Read)
+      setView("info_details");
   }, [selection]);
 
   useEffect(async () => {
@@ -162,8 +161,7 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
-            access={access}
-            rootFolderType={rootFolderType}
+            security={security}
             key={user.id}
             t={t}
             user={user}
@@ -174,8 +172,6 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
-            canDeleteUserInRoom={canDeleteUserInRoom}
           />
         ))}
       </StyledUserList>
@@ -199,8 +195,7 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.expected).map((user) => (
           <User
-            access={access}
-            rootFolderType={rootFolderType}
+            security={security}
             isExpect
             key={user.id}
             t={t}
@@ -212,8 +207,6 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            canDeleteUserInRoom={canDeleteUserInRoom}
-            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
           />
         ))}
       </StyledUserList>
@@ -226,7 +219,9 @@ export default inject(
     const {
       setIsMobileHidden,
       selectionParentRoom,
+
       setSelectionParentRoom,
+      setView,
       roomsView,
 
       updateRoomMembers,
@@ -239,14 +234,10 @@ export default inject(
     } = filesStore;
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
-    const { changeType: changeUserType } = peopleStore;
-    const {
-      canInviteUserInRoom,
-      canChangeUserRoleInRoom,
-      canDeleteUserInRoom,
-    } = accessRightsStore;
 
     return {
+      setView,
+      roomsView,
       setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
@@ -263,11 +254,6 @@ export default inject(
 
       setInvitePanelOptions,
       resendEmailInvitations,
-
-      changeUserType,
-      canInviteUserInRoom,
-      canChangeUserRoleInRoom,
-      canDeleteUserInRoom,
     };
   }
 )(

@@ -201,7 +201,6 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        canWebEdit,
       } = this.props;
       const { fileExst, access, id } = item;
 

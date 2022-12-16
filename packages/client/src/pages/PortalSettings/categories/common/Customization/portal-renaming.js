@@ -114,8 +114,19 @@ const PortalRenaming = (props) => {
     setPortalRename(portalName)
       .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
       .catch((error) => {
-        setErrorValue(error);
-        saveToSessionStorage("errorValue", error);
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        setErrorValue(errorMessage);
+        saveToSessionStorage("errorValue", errorMessage);
       })
       .finally(() => setIsLoadingPortalNameSave(false));
 

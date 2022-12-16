@@ -16,7 +16,7 @@ class AxiosClient {
 
     if (apiOrigin !== "") {
       headers = {
-		'Access-Control-Allow-Credentials' : true
+        "Access-Control-Allow-Credentials": true,
       };
     }
 
@@ -41,7 +41,7 @@ class AxiosClient {
       baseURL: apiBaseURL,
       responseType: "json",
       timeout: apiTimeout, // default is `0` (no timeout)
-	  withCredentials: true
+      withCredentials: true,
     };
 
     if (headers) {
@@ -106,11 +106,11 @@ class AxiosClient {
     };
 
     const onError = (error) => {
-      //console.error("Request Failed:", error);
+      console.log("Request Failed:", { error });
 
-      let errorText = error.response
-        ? this.getResponseError(error.response)
-        : error.message;
+      // let errorText = error.response
+      //   ? this.getResponseError(error.response)
+      //   : error.message;
 
       if (error?.response?.status === 401 && this.isSSR) errorText = 401;
 
@@ -138,7 +138,7 @@ class AxiosClient {
             break;
         }
 
-        return Promise.reject(errorText || error);
+        return Promise.reject(error);
       } else {
         switch (error.response?.status) {
           case 401:

@@ -220,44 +220,34 @@ const VersionRow = (props) => {
   );
 };
 
-export default inject(
-  ({ auth, versionHistoryStore, accessRightsStore, selectedFolderStore }) => {
-    const { user } = auth.userStore;
-    const { culture, isTabletView } = auth.settingsStore;
-    const language = (user && user.cultureName) || culture || "en";
+export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
+  const { user } = auth.userStore;
+  const { culture, isTabletView } = auth.settingsStore;
+  const language = (user && user.cultureName) || culture || "en";
 
-    const {
-      markAsVersion,
-      restoreVersion,
-      updateCommentVersion,
-      isEditing,
-      isEditingVersion,
-      fileAccess,
-    } = versionHistoryStore;
+  const {
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+    isEditing,
+    isEditingVersion,
+    fileSecurity,
+  } = versionHistoryStore;
 
-    const { rootFolderType } = selectedFolderStore;
+  const isEdit = isEditingVersion || isEditing;
+  const canChangeVersionFileHistory = !isEdit && fileSecurity?.EditHistory;
 
-    const isEdit = isEditingVersion || isEditing;
-    const canChangeVersionFileHistory = accessRightsStore.canChangeVersionFileHistory(
-      {
-        access: fileAccess,
-        rootFolderType,
-        editing: isEdit,
-      }
-    );
-
-    return {
-      theme: auth.settingsStore.theme,
-      culture: language,
-      isTabletView,
-      markAsVersion,
-      restoreVersion,
-      updateCommentVersion,
-      isEditing: isEdit,
-      canChangeVersionFileHistory,
-    };
-  }
-)(
+  return {
+    theme: auth.settingsStore.theme,
+    culture: language,
+    isTabletView,
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+    isEditing: isEdit,
+    canChangeVersionFileHistory,
+  };
+})(
   withRouter(
     withTranslation(["VersionHistory", "Common", "Translations"])(
       observer(VersionRow)

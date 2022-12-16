@@ -163,7 +163,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id) => {
+  showVersionHistory = (id, security) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -171,7 +171,7 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    fetchFileVersions(id + "");
+    fetchFileVersions(id + "", security);
     setIsVerHistoryPanel(true);
   };
 
@@ -257,7 +257,7 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canConvert = item.viewAccessability?.Convert;
 
     if (canConvert) {
       setConvertItem(item);
@@ -497,8 +497,9 @@ class ContextOptionsStore {
     const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
-    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
-    const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const isMedia =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
+    const isCanWebEdit = item.viewAccessability?.WebEdit;
     const hasInfoPanel = contextOptions.includes("show-info");
 
     const emailSendIsDisabled = true;
@@ -535,7 +536,7 @@ class ContextOptionsStore {
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
                 icon: "images/history.react.svg",
-                onClick: () => this.showVersionHistory(item.id, item.access),
+                onClick: () => this.showVersionHistory(item.id, item.security),
                 disabled: false,
               },
             ]
@@ -551,7 +552,7 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: "images/history-finalized.react.svg",
-                    onClick: () => this.finalizeVersion(item.id, item.access),
+                    onClick: () => this.finalizeVersion(item.id, item.security),
                     disabled: false,
                   },
                   {
@@ -560,7 +561,7 @@ class ContextOptionsStore {
                     label: t("ShowVersionHistory"),
                     icon: "images/history.react.svg",
                     onClick: () =>
-                      this.showVersionHistory(item.id, item.access),
+                      this.showVersionHistory(item.id, item.security),
                     disabled: false,
                   },
                 ],
@@ -580,7 +581,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id, item.access),
+              onClick: () => this.showVersionHistory(item.id, item.security),
               disabled: false,
             },
           ]

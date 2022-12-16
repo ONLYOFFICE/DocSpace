@@ -16,6 +16,7 @@ import {
   ConflictResolveType,
   FileAction,
   FileStatus,
+  FolderType,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { isMobile } from "react-device-detect";
@@ -1275,18 +1276,11 @@ class FilesActionStore {
       selection,
     } = this.filesStore;
 
-    const {
-      canCopyItems,
-      canDeleteItems,
-      canMoveItems,
-      canArchiveRoom,
-      canRemoveRoom,
-    } = this.accessRightsStore;
-    const { access, rootFolderType } = this.selectedFolderStore;
+    const { rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyItems({ access, rootFolderType });
+        const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1295,35 +1289,33 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveItems({
-          access,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
-        return hasSelection && canMove;
+        const canMove = selection.every((s) => s.security?.Move);
+
+        return (
+          hasSelection &&
+          !allFilesIsEditing &&
+          canMove &&
+          rootFolderType !== FolderType.TRASH
+        );
 
       case "archive":
       case "unarchive":
         const canArchive = selection
-          .map((s) => canArchiveRoom(s))
+          .map((s) => s.security?.Move)
           .filter((s) => s);
 
         return canArchive.length > 0;
       case "delete-room":
         const canRemove = selection
-          .map((s) => canRemoveRoom(s))
+          .map((s) => s.security?.Delete)
           .filter((r) => r);
 
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteItems({
-          access,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
+        const canDelete = selection.every((s) => s.security?.Delete);
 
-        return canDelete && hasSelection;
+        return !allFilesIsEditing && canDelete && hasSelection;
     }
   };
 
@@ -1778,10 +1770,11 @@ class FilesActionStore {
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
-    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
-    const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
-    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
+    const isMediaOrImage =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
+    const canConvert = item.viewAccessability?.Convert;
+    const canWebEdit = item.viewAccessability?.WebEdit;
+    const canViewedDocs = item.viewAccessability?.WebView;
 
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);

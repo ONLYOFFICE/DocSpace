@@ -123,7 +123,11 @@ const InfoPanelBodyContent = ({
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
     if (storeRoomId === newSelectionParentRoom.id) return;
 
-    setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
+    if (
+      newSelectionParentRoom.parentId === newSelectionParentRoom.rootFolderId
+    ) {
+      setSelectionParentRoom(null);
+    } else setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
   }, [selectedFolder]);
 
   //////////////////////////////////////////////////////////
