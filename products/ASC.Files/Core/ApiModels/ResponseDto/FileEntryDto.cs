@@ -69,7 +69,6 @@ public abstract class FileEntryDto<T> : FileEntryDto
     public T Id { get; set; }
     public T RootFolderId { get; set; }
     public bool CanShare { get; set; }
-    public bool CanEdit { get; set; }
     public IDictionary<FilesSecurityActions, bool> Security { get; set; }
 
     protected FileEntryDto(FileEntry<T> entry)
@@ -128,7 +127,6 @@ public class FileEntryDtoHelper
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),
             CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
-            CanEdit = await _fileSecurity.CanEditAsync(entry),
             Security = entry.Security
         };
     }

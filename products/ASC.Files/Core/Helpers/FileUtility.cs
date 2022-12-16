@@ -184,7 +184,8 @@ public enum Accessability
     WebCustomFilterEditing,
     WebRestrictedEditing,
     WebComment,
-    CoAuhtoring
+    CoAuhtoring,
+    Convert
 }
 
 [Scope]
@@ -346,6 +347,9 @@ public class FileUtility
                 case Accessability.CoAuhtoring:
                     val = CanCoAuhtoring(fileName);
                     break;
+                case Accessability.Convert:
+                    val = CanConvert(fileName);
+                    break;
             }
 
             result.Add(r, val);
@@ -406,6 +410,13 @@ public class FileUtility
     {
         var ext = GetFileExtension(fileName);
         return ExtsCoAuthoring.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
+    }
+
+
+    public bool CanConvert(string fileName)
+    {
+        var ext = GetFileExtension(fileName);
+        return ExtsConvertible.Keys.Any(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool CanIndex(string fileName)
