@@ -71,8 +71,18 @@ class ConfirmRoute extends React.Component {
         }
       })
       .catch((error) => {
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
         history.push(
-          combineUrl(AppServerConfig.proxyURL, path, `/error=${error}`)
+          combineUrl(AppServerConfig.proxyURL, path, `/error=${errorMessage}`)
         );
       });
   }

@@ -465,6 +465,7 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isErrorRoomNotAvailable,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -525,13 +526,15 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <Section.SectionHeader>
-            {isFrame ? (
-              showTitle && <SectionHeaderContent />
-            ) : (
-              <SectionHeaderContent />
-            )}
-          </Section.SectionHeader>
+          {!isErrorRoomNotAvailable && (
+            <Section.SectionHeader>
+              {isFrame ? (
+                showTitle && <SectionHeaderContent />
+              ) : (
+                <SectionHeaderContent />
+              )}
+            </Section.SectionHeader>
+          )}
 
           {!isEmptyPage && (
             <Section.SectionFilter>
@@ -619,6 +622,7 @@ export default inject(
       isEmptyPage,
 
       disableDrag,
+      isErrorRoomNotAvailable,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -721,7 +725,7 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
-
+      isErrorRoomNotAvailable,
       isRoomsFolder,
       isArchiveFolder,
 
