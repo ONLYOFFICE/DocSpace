@@ -1289,7 +1289,7 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = selection.map((s) => s.security?.Move).filter((r) => r);
+        const canMove = selection.every((s) => s.security?.Move);
 
         return (
           hasSelection &&
@@ -1313,9 +1313,7 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = selection
-          .map((s) => s.security?.Delete)
-          .filter((s) => s);
+        const canDelete = selection.every((s) => s.security?.Delete);
 
         return !allFilesIsEditing && canDelete && hasSelection;
     }
