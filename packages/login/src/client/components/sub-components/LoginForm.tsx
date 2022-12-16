@@ -164,9 +164,20 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         else window.location.replace("/"); //TODO: save { user, hash } for tfa
       })
       .catch((error) => {
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
         setIsEmailErrorShow(true);
-        setErrorText(error);
-        setPasswordValid(!error);
+        setErrorText(errorMessage);
+        setPasswordValid(!errorMessage);
         setIsLoading(false);
         focusInput();
       });

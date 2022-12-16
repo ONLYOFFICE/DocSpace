@@ -27,6 +27,8 @@ class InfoPanelStore {
   roomsView = "info_details";
   fileView = "info_history";
 
+  updateRoomMembers = null;
+
   authStore = null;
   settingsStore = null;
   peopleStore = null;
@@ -57,6 +59,10 @@ class InfoPanelStore {
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
+  };
+
+  setUpdateRoomMembers = (updateRoomMembers) => {
+    this.updateRoomMembers = updateRoomMembers;
   };
 
   // Selection helpers //

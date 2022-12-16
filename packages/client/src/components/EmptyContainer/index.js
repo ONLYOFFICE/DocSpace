@@ -6,6 +6,7 @@ import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@docspace/common/constants";
 import { isMobile } from "react-device-detect";
 import { Events } from "@docspace/common/constants";
+import RoomNoAccessContainer from "./RoomNoAccessContainer";
 
 const linkStyles = {
   isHovered: true,
@@ -21,6 +22,7 @@ const EmptyContainer = ({
   theme,
   setCreateRoomDialogVisible,
   sectionWidth,
+  isRoomNotFoundOrMoved,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -42,6 +44,15 @@ const EmptyContainer = ({
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };
+
+  if (isRoomNotFoundOrMoved) {
+    return (
+      <RoomNoAccessContainer
+        linkStyles={linkStyles}
+        sectionWidth={sectionWidth}
+      />
+    );
+  }
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
@@ -69,7 +80,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { filter, roomsFilter } = filesStore;
+    const { filter, roomsFilter, isErrorRoomNotAvailable } = filesStore;
 
     const {
       authorType,
@@ -113,12 +124,18 @@ export default inject(
           searchInContent) &&
         !(isPrivacyFolder && isMobile);
 
+    const isRoomNotFoundOrMoved =
+      isFiltered === null &&
+      selectedFolderStore.parentId === null &&
+      isErrorRoomNotAvailable;
+
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
       setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
+      isRoomNotFoundOrMoved,
     };
   }
 )(observer(EmptyContainer));

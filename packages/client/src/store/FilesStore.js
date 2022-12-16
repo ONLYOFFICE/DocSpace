@@ -33,6 +33,11 @@ const storageViewAs = localStorage.getItem("viewAs");
 
 let requestCounter = 0;
 
+const NotFoundHttpCode = 404;
+const ForbiddenHttpCode = 403;
+const PaymentRequiredHttpCode = 402;
+const UnauthorizedHttpCode = 401;
+
 class FilesStore {
   authStore;
 
@@ -100,6 +105,8 @@ class FilesStore {
 
   tempActionFilesIds = [];
   operationAction = false;
+
+  isErrorRoomNotAvailable = false;
 
   constructor(
     authStore,
@@ -808,6 +815,7 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
+    this.isErrorRoomNotAvailable = false;
     this.isLoadedFetchFiles = false;
 
     const filterStorageItem =
@@ -950,18 +958,23 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
-        toastr.error(err);
 
         if (requestCounter > 0) return;
 
         requestCounter++;
-        setTimeout(() => {
-          window.location.href = combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            "/rooms/shared/"
-          );
-        }, 5000);
+        const isUserError = [
+          NotFoundHttpCode,
+          ForbiddenHttpCode,
+          PaymentRequiredHttpCode,
+          UnauthorizedHttpCode,
+        ].includes(err?.response?.status);
+
+        if (isUserError) {
+          this.isErrorRoomNotAvailable = true;
+          this.isEmptyPage = true;
+        } else {
+          toastr.error(err);
+        }
       })
       .finally(() => {
         this.isLoadedFetchFiles = true;
@@ -1065,7 +1078,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-
+          this.isErrorRoomNotAvailable = false;
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {

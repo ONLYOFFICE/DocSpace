@@ -23,9 +23,22 @@ class ChangeEmail extends React.PureComponent {
             )
           );
         })
-        .catch((e) => {
+        .catch((error) => {
+          let errorMessage = "";
+          if (typeof error === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+
           console.log("change client email error", e);
-          tryRedirectTo(combineUrl(AppServerConfig.proxyURL, `/error=${e}`));
+          tryRedirectTo(
+            combineUrl(AppServerConfig.proxyURL, `/error=${errorMessage}`)
+          );
         });
     }
   }

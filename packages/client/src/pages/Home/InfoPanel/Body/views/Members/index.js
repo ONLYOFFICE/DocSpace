@@ -22,6 +22,9 @@ const Members = ({
   selection,
 
   setIsMobileHidden,
+  updateRoomMembers,
+  setUpdateRoomMembers,
+
   selectionParentRoom,
   setSelectionParentRoom,
 
@@ -62,6 +65,7 @@ const Members = ({
     });
 
     setShowLoader(false);
+    setUpdateRoomMembers(false);
     return {
       inRoom: inRoomMembers,
       expected: expectedMembers,
@@ -94,6 +98,18 @@ const Members = ({
     if (roomsView === "info_members" && !selection?.security?.Read)
       setView("info_details");
   }, [selection]);
+
+  useEffect(async () => {
+    if (!updateRoomMembers) return;
+
+    const fetchedMembers = await fetchMembers(selection.id);
+
+    setSelectionParentRoom({
+      ...selectionParentRoom,
+      members: fetchedMembers,
+    });
+    setMembers(fetchedMembers);
+  }, [selectionParentRoom, selection?.id, updateRoomMembers]);
 
   const onClickInviteUsers = () => {
     setIsMobileHidden(true);
@@ -207,6 +223,9 @@ export default inject(
       setSelectionParentRoom,
       setView,
       roomsView,
+
+      updateRoomMembers,
+      setUpdateRoomMembers,
     } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -225,6 +244,9 @@ export default inject(
 
       getRoomMembers,
       updateRoomMemberRole,
+
+      updateRoomMembers,
+      setUpdateRoomMembers,
 
       isOwner,
       isAdmin,

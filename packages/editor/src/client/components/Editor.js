@@ -272,9 +272,20 @@ function Editor({
         ),
         history: getDocumentHistory(updateVersions, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -323,9 +334,19 @@ function Editor({
         currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
         history: getDocumentHistory(fileHistory, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -354,9 +375,20 @@ function Editor({
         url: versionDifference.url,
         version,
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.setHistoryData({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
         version,
       });
     }

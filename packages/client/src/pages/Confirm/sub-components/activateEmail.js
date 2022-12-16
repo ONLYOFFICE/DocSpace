@@ -26,10 +26,24 @@ class ActivateEmail extends React.PureComponent {
             )
           );
         })
-        .catch((e) => {
+        .catch((error) => {
           // console.log('activate email error', e);
+          let errorMessage = "";
+          if (typeof error === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+
           tryRedirectTo(
-            combineUrl(AppServerConfig.proxyURL, `/login/error?message=${e}`)
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/login/error?message=${errorMessage}`
+            )
           );
         })
     );
