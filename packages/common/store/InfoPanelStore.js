@@ -19,6 +19,7 @@ const observedKeys = [
 
 class InfoPanelStore {
   isVisible = false;
+  isMobileHidden = false;
 
   selection = null;
   selectionParentRoom = null;
@@ -40,6 +41,7 @@ class InfoPanelStore {
   // Setters
 
   setIsVisible = (bool) => (this.isVisible = bool);
+  setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
     if (this.getIsAccounts() && (!selection.email || !selection.displayName)) {

@@ -21,6 +21,7 @@ const Members = ({
   isAdmin,
   selection,
 
+  setIsMobileHidden,
   selectionParentRoom,
   setSelectionParentRoom,
 
@@ -95,6 +96,7 @@ const Members = ({
   }, [selection]);
 
   const onClickInviteUsers = () => {
+    setIsMobileHidden(true);
     const parentRoomId = selectionParentRoom.id;
 
     setInvitePanelOptions({
@@ -199,7 +201,9 @@ const Members = ({
 export default inject(
   ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
     const {
+      setIsMobileHidden,
       selectionParentRoom,
+
       setSelectionParentRoom,
       setView,
       roomsView,
@@ -215,6 +219,7 @@ export default inject(
     return {
       setView,
       roomsView,
+      setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
 

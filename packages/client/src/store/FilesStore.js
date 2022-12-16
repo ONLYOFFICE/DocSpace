@@ -1066,8 +1066,6 @@ class FilesStore {
             this.setCreatedItem(null);
           }
 
-          this.updateRoomLoadingLogo();
-
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -2020,48 +2018,6 @@ class FilesStore {
     return folderUrl;
   };
 
-  getRoomLogo = async (logoHandlers) => {
-    const newLogos = {};
-
-    for (let key in logoHandlers) {
-      let icon = "";
-
-      if (key === "medium") {
-        icon = await api.rooms.getLogoIcon(logoHandlers[key]);
-
-        // check for null
-        icon = icon ? icon : "";
-      }
-
-      newLogos[key] = icon;
-    }
-
-    return newLogos;
-  };
-
-  updateRoomLoadingLogo = async () => {
-    const newRooms = await Promise.all(
-      this.folders.map(async (f) => {
-        const newRoom = JSON.parse(JSON.stringify(f));
-
-        if (!newRoom.isLogoLoading) return newRoom;
-
-        newRoom.isLogoLoading = false;
-        newRoom.logo = await this.getRoomLogo(newRoom.logoHandlers);
-
-        return newRoom;
-      })
-    );
-
-    if (
-      (this.treeFoldersStore.isRoomsFolder ||
-        this.treeFoldersStore.isArchiveFolder) &&
-      this.selectedFolderStore.navigationPath.length === 0
-    ) {
-      this.setFolders(newRooms);
-    }
-  };
-
   get filesList() {
     const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
@@ -2092,8 +2048,6 @@ class FilesStore {
         foldersCount,
         id,
         logo,
-        logoHandlers,
-        isLogoLoading,
         locked,
         parentId,
         pureContentLength,
@@ -2144,14 +2098,6 @@ class FilesStore {
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       const iconSize = this.viewAs === "table" ? 24 : 32;
-      const icon = getIcon(
-        iconSize,
-        fileExst,
-        providerKey,
-        contentLength,
-        roomType,
-        isArchive
-      );
 
       let isFolder = false;
       this.folders.map((x) => {
@@ -2182,6 +2128,18 @@ class FilesStore {
 
       const isRoom = !!roomType;
 
+      const icon =
+        isRoom && !isArchive && logo?.medium
+          ? logo?.medium
+          : getIcon(
+              iconSize,
+              fileExst,
+              providerKey,
+              contentLength,
+              roomType,
+              isArchive
+            );
+
       return {
         access,
         //checked,
@@ -2200,9 +2158,8 @@ class FilesStore {
         icon,
         id,
         isFolder,
-        isLogoLoading,
         logo,
-        logoHandlers,
+
         locked,
         new: item.new,
         parentId,
@@ -2834,8 +2791,6 @@ class FilesStore {
       this.setFolders([...this.folders, ...newFiles.folders]);
       this.setFilesIsLoading(false);
     });
-
-    if (isRooms) this.updateRoomLoadingLogo();
   };
 
   //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.
