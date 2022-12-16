@@ -167,7 +167,7 @@ public class DocumentConfig<T>
                 _referenceData = new FileReferenceData<T>()
                 {
                     FileId = Info.GetFile().Id,
-                    PortalName = _tenantManager.GetCurrentTenant().Id
+                    PortalName = _tenantManager.GetCurrentTenant().Id.ToString()
                 };
             }
 
@@ -635,7 +635,7 @@ public class FileReference<T>
 public class FileReferenceData<T>
 {
     public T FileId { get; set; }
-    public int PortalName { get; set; }
+    public string PortalName { get; set; }
 }
 
 #endregion Nested Classes

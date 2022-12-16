@@ -286,7 +286,7 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         File<T> file = null;
         var fileDao = _daoFactory.GetFileDao<T>();
-        if (inDto.PortalName == _tenantManager.GetCurrentTenant().Id) 
+        if (inDto.PortalName == _tenantManager.GetCurrentTenant().Id.ToString()) 
         {
             file = await fileDao.GetFileAsync(inDto.FileId);
         }
@@ -339,7 +339,7 @@ public abstract class EditorController<T> : ApiControllerBase
             ReferenceData = new FileReferenceData<T>
             {
                 FileId = file.Id,
-                PortalName = _tenantManager.GetCurrentTenant().Id
+                PortalName = _tenantManager.GetCurrentTenant().Id.ToString()
             },
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true))
         };
