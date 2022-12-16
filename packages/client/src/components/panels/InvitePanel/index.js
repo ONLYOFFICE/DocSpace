@@ -39,6 +39,8 @@ const InvitePanel = ({
   inviteUsers,
   setInfoPanelIsMobileHidden,
   reloadSelectionParentRoom,
+  setUpdateRoomMembers,
+  roomsView,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -162,6 +164,8 @@ const InvitePanel = ({
       roomId === -1
         ? await inviteUsers(data)
         : await setRoomSecurity(roomId, data);
+
+      if (roomsView === "info_members") setUpdateRoomMembers(true);
       onClose();
       toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
@@ -249,7 +253,12 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const {
     setIsMobileHidden: setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
+    filesView,
   } = auth.infoPanelStore;
+
+  console.log(roomsView, filesView);
 
   const {
     getPortalInviteLinks,
@@ -292,6 +301,8 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     inviteUsers,
     setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
   };
 })(
   withTranslation([
