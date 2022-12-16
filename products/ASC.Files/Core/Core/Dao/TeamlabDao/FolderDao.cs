@@ -446,6 +446,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             toUpdate.CreateBy = folder.CreateBy;
             toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn);
             toUpdate.ModifiedBy = folder.ModifiedBy;
+            toUpdate.HasLogo = folder.HasLogo;
 
             await filesDbContext.SaveChangesAsync();
 
