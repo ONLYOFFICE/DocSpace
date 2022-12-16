@@ -101,7 +101,7 @@ const Members = ({
   }, [selection]);
 
   useEffect(async () => {
-    if (!selection.isRoom || !updateRoomMembers) return;
+    if (!updateRoomMembers) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
 
@@ -110,12 +110,7 @@ const Members = ({
       members: fetchedMembers,
     });
     setMembers(fetchedMembers);
-  }, [
-    selectionParentRoom,
-    selection?.isRoom,
-    selection?.id,
-    updateRoomMembers,
-  ]);
+  }, [selectionParentRoom, selection?.id, updateRoomMembers]);
 
   const onClickInviteUsers = () => {
     setIsMobileHidden(true);

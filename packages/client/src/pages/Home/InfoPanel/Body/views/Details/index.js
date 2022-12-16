@@ -53,7 +53,6 @@ const Details = ({
     }
   }, [selection]);
 
-  console.log(selection);
   const currentIcon =
     !selection.isArchive && selection?.logo?.large
       ? selection?.logo?.large

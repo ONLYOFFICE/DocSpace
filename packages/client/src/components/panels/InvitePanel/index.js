@@ -258,8 +258,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     filesView,
   } = auth.infoPanelStore;
 
-  console.log(roomsView, filesView);
-
   const {
     getPortalInviteLinks,
     userLink,
