@@ -16,6 +16,7 @@ import {
   ConflictResolveType,
   FileAction,
   FileStatus,
+  FolderType,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { isMobile } from "react-device-detect";
@@ -1275,24 +1276,27 @@ class FilesActionStore {
       selection,
     } = this.filesStore;
 
-    const { canMoveItems } = this.accessRightsStore;
-    const { access, rootFolderType, security } = this.selectedFolderStore;
+    const { rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        return hasSelection && security?.Copy;
+        const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
+
+        return hasSelection && canCopy;
       case "showInfo":
       case "download":
         return hasSelection;
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveItems({
-          security,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
-        return hasSelection && canMove;
+        const canMove = selection.map((s) => s.security?.Move).filter((r) => r);
+
+        return (
+          hasSelection &&
+          !allFilesIsEditing &&
+          canMove &&
+          rootFolderType !== FolderType.TRASH
+        );
 
       case "archive":
       case "unarchive":
@@ -1309,9 +1313,11 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = !allFilesIsEditing && security?.Delete;
+        const canDelete = selection
+          .map((s) => s.security?.Delete)
+          .filter((s) => s);
 
-        return canDelete && hasSelection;
+        return !allFilesIsEditing && canDelete && hasSelection;
     }
   };
 
