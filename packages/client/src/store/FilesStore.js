@@ -1370,10 +1370,7 @@ class FilesStore {
       // }
 
       if (!isRecycleBinFolder)
-        fileOptions = this.removeOptions(fileOptions, [
-          "restore",
-          "link-for-room-members",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
       if (enablePlugins && !isRecycleBinFolder) {
         const pluginFilesKeys = getContextMenuKeysByType(
@@ -1407,7 +1404,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
-      if (isMyFolder) {
+      if (isMyFolder || isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "link-for-room-members",
         ]);

@@ -236,12 +236,14 @@ class ContextOptionsStore {
       return toastr.success(t("Translations:LinkCopySuccess"));
     }
 
-    const { canConvert, isMediaOrImage } = this.settingsStore;
+    const { canConvert } = this.settingsStore;
 
     const { getItemUrl } = this.filesStore;
 
     const needConvert = canConvert(item.fileExst);
-    const canOpenPlayer = isMediaOrImage(item.fileExst);
+
+    const canOpenPlayer =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
 
     const url = getItemUrl(
       item.id,
