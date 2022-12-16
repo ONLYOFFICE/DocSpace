@@ -248,7 +248,7 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canConvert = item.viewAccessability?.Convert;
 
     if (canConvert) {
       setConvertItem(item);

@@ -1768,7 +1768,7 @@ class FilesActionStore {
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canConvert = item.viewAccessability?.Convert;
     const canWebEdit = item.viewAccessability?.WebEdit;
     const canViewedDocs = item.viewAccessability?.WebView;
 
