@@ -416,7 +416,7 @@ public class FileUtility
     public bool CanConvert(string fileName)
     {
         var ext = GetFileExtension(fileName);
-        return ExtsConvertible.Keys.Any(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
+        return ExtsMustConvert.Exists(r => r.Equals(ext, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool CanIndex(string fileName)
