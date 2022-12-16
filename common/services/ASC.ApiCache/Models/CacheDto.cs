@@ -26,7 +26,7 @@
 
 namespace ASC.ApiCache.Models;
 
-public class CacheModel
+public class CacheDto
 {
     public string PortalName { get; set; }
 }

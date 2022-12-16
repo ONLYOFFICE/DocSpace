@@ -24,14 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Hosting;
-using ASC.EventBus.Extensions.Logger;
-using ASC.Feed.Context;
-using ASC.MessagingSystem.EF.Context;
-using ASC.Web.Core.Helpers;
-using ASC.Webhooks.Core.EF.Context;
-
 namespace ASC.ApiCache;
 
 public class Startup

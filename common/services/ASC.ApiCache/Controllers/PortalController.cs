@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.ApiCache.Models;
-using ASC.Core.Common.EF.Teamlabsite.Context;
-using ASC.Core.Common.EF.Teamlabsite.Model;
-
 namespace ASC.ApiCache.Controllers;
 
 [Scope]
@@ -35,17 +31,14 @@ namespace ASC.ApiCache.Controllers;
 [Route("[controller]")]
 public class PortalController : ControllerBase
 {
+    private readonly PortalControllerHelper _portalControllerHelper;
     private readonly ILogger<PortalController> _log;
-    private readonly TenantDomainValidator _tenantDomainValidator;
-    private readonly TeamlabSiteContext _teamlabSiteContext;
 
-    public PortalController(ILogger<PortalController> log,
-        TenantDomainValidator tenantDomainValidator,
-        CreatorDbContext creatorDb)
+    public PortalController(PortalControllerHelper portalControllerHelper,
+        ILogger<PortalController> log)
     {
+        _portalControllerHelper = portalControllerHelper;
         _log = log;
-        _tenantDomainValidator = tenantDomainValidator;
-        _teamlabSiteContext = creatorDb.CreateDbContext<TeamlabSiteContext>(nameConnectionString: "teamlabsite");
     }
 
     [HttpGet("test")]
@@ -58,9 +51,9 @@ public class PortalController : ControllerBase
     }
 
     [HttpGet("find")]
-    public IActionResult FindPortalNameInCache([FromQuery] CacheModel model)
+    public IActionResult FindPortalNameInCache([FromQuery] CacheDto inDto)
     {
-        if (String.IsNullOrEmpty(model.PortalName))
+        if (String.IsNullOrEmpty(inDto.PortalName))
         {
             return BadRequest(new
             {
@@ -69,9 +62,9 @@ public class PortalController : ControllerBase
             });
         }
 
-        _log.LogDebug("FindPortalNameInCache method. portalname = {0}", model.PortalName);
+        _log.LogDebug("FindPortalNameInCache method. portalname = {0}", inDto.PortalName);
 
-        var sameAliasTenants = FindTenantsInCache(model.PortalName);
+        var sameAliasTenants = _portalControllerHelper.FindTenantsInCache(inDto.PortalName);
         return Ok(new
         {
             variants = sameAliasTenants
@@ -80,9 +73,9 @@ public class PortalController : ControllerBase
 
     [HttpPost("add")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult AddPortalNameToCache(CacheModel model)
+    public IActionResult AddPortalNameToCache(CacheDto inDto)
     {
-        if (String.IsNullOrEmpty(model.PortalName))
+        if (String.IsNullOrEmpty(inDto.PortalName))
         {
             return BadRequest(new
             {
@@ -93,7 +86,7 @@ public class PortalController : ControllerBase
 
         try
         {
-            AddTenantToCache(model.PortalName);
+            _portalControllerHelper.AddTenantToCache(inDto.PortalName);
         }
         catch (Exception e)
         {
@@ -103,15 +96,15 @@ public class PortalController : ControllerBase
 
         return Ok(new
         {
-            portalName = model.PortalName
+            portalName = inDto.PortalName
         });
     }
 
     [HttpDelete("remove")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult RemoveFromCache([FromQuery] CacheModel model)
+    public IActionResult RemoveFromCache([FromQuery] CacheDto inDto)
     {
-        if (String.IsNullOrEmpty(model.PortalName))
+        if (String.IsNullOrEmpty(inDto.PortalName))
         {
             return BadRequest(new
             {
@@ -122,7 +115,7 @@ public class PortalController : ControllerBase
 
         try
         {
-            RemoveTenantFromCache(model.PortalName);
+            _portalControllerHelper.RemoveTenantFromCache(inDto.PortalName);
         }
         catch (Exception e)
         {
@@ -132,56 +125,7 @@ public class PortalController : ControllerBase
 
         return Ok(new
         {
-            portalName = model.PortalName
+            portalName = inDto.PortalName
         });
-    }
-
-    private void AddTenantToCache(string tenant)
-    {
-        var cache = new DbCache()
-        {
-            TenantAlias = tenant.ToLowerInvariant()
-        };
-        _teamlabSiteContext.Cache.Add(cache);
-        _teamlabSiteContext.SaveChanges();
-
-    }
-
-    private void RemoveTenantFromCache(string domain)
-    {
-        domain = domain.ToLowerInvariant();
-        var cache = _teamlabSiteContext.Cache.SingleOrDefault(q => q.TenantAlias == domain);
-        _teamlabSiteContext.Cache.Remove(cache);
-        _teamlabSiteContext.SaveChanges();
-    }
-
-    private List<string> FindTenantsInCache(string portalName)
-    {
-        //return tenants starts like current
-        _log.LogDebug("FindTenantsInCache method");
-
-        portalName = (portalName ?? "").Trim().ToLowerInvariant();
-
-        // forbidden or exists
-        var exists = _teamlabSiteContext.Cache.Where(q => q.TenantAlias.Equals(portalName)).Any();
-
-        if (exists)
-        {
-            // cut number suffix
-            while (true)
-            {
-                if (_tenantDomainValidator.MinLength < portalName.Length && char.IsNumber(portalName, portalName.Length - 1))
-                {
-                    portalName = portalName[0..^1];
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return _teamlabSiteContext.Cache.Select(q => q.TenantAlias).Where(q => q.StartsWith(portalName)).ToList();
-        }
-        return null;
     }
 }
