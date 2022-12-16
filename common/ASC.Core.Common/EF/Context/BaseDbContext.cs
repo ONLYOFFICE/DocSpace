@@ -36,14 +36,14 @@ public static class BaseDbContextExtension
 {
     public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder)
     {
-        OptionsAction(sp, optionsBuilder, "current");
+        OptionsAction(sp, optionsBuilder, "current", "default");
     }
 
-    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder, string region)
+    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder, string region, string nameConnectionString)
     {
         var configuration = new ConfigurationExtension(sp.GetRequiredService<IConfiguration>());
         var migrateAssembly = configuration["testAssembly"];
-        var connectionString = configuration.GetConnectionStrings("default", region);
+        var connectionString = configuration.GetConnectionStrings(nameConnectionString, region);
         var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
 
         optionsBuilder.UseLoggerFactory(loggerFactory);

@@ -30,12 +30,6 @@
 			"ios": ""
 		}
 	},
-	"auth" : {
-		"allowskip" : {
-			"default" : false,
-			"registerportal": true
-		}
-	},
 	 "ConnectionStrings": {
         "default": {
             "name": "default",

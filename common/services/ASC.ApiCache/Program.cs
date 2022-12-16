@@ -24,56 +24,57 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.ApiCache;
+
 var options = new WebApplicationOptions
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+Args = args,
+ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
 };
 
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddApiSystemConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
 var logger = LogManager.Setup()
                             .SetupExtensions(s =>
-                            {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
-                            })
+{
+s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
+})
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger(typeof(Startup).Namespace);
 
 try
 {
-    logger.Info("Configuring web host ({applicationContext})...", AppName);
-    builder.Host.ConfigureDefault();
+logger.Info("Configuring web host ({applicationContext})...", AppName);
+builder.Host.ConfigureDefault();
 
-    var startup = new Startup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
-    startup.ConfigureServices(builder.Services);
+startup.ConfigureServices(builder.Services);
 
-    var app = builder.Build();
+var app = builder.Build();
 
-    startup.Configure(app, app.Environment);
+startup.Configure(app, app.Environment);
 
-    logger.Info("Starting web host ({applicationContext})...", AppName);
-    await app.RunWithTasksAsync();
+logger.Info("Starting web host ({applicationContext})...", AppName);
+await app.RunWithTasksAsync();
 }
 catch (Exception ex)
 {
-    if (logger != null)
-    {
-        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
-    }
+if (logger != null)
+{
+logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
+}
 
-    throw;
+throw;
 }
 finally
 {
-    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-    LogManager.Shutdown();
+// Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+LogManager.Shutdown();
 }
 
 public partial class Program
