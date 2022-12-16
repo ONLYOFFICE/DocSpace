@@ -25,7 +25,6 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
-  filesSettingsStore;
   selectedFolderStore;
 
   constructor(
@@ -228,19 +227,29 @@ class ContextOptionsStore {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
-  onCopyLinkRoom = (item, t) => {
-    const { folderUrl } = item;
-    const { getFolderUrl } = this.filesStore;
+  onCopyLink = (item, t) => {
+    const { href } = item;
 
-    const newFolderUrl = folderUrl
-      ? folderUrl
-      : getFolderUrl(item.id, item.isRoom || item.isFolder);
+    if (href) {
+      copy(href);
 
-    const url = combineUrl(
-      window.location.origin,
-      config.homepage,
-      newFolderUrl
+      return toastr.success(t("Translations:LinkCopySuccess"));
+    }
+
+    const { canConvert, isMediaOrImage } = this.settingsStore;
+
+    const { getItemUrl } = this.filesStore;
+
+    const needConvert = canConvert(item.fileExst);
+    const canOpenPlayer = isMediaOrImage(item.fileExst);
+
+    const url = getItemUrl(
+      item.id,
+      item.isRoom || item.isFolder,
+      needConvert,
+      canOpenPlayer
     );
+
     copy(url);
 
     toastr.success(t("Translations:LinkCopySuccess"));
@@ -786,7 +795,7 @@ class ContextOptionsStore {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         icon: "/static/images/invitation.link.react.svg",
-        onClick: () => this.onCopyLinkRoom(item, t),
+        onClick: () => this.onCopyLink(item, t),
         disabled: false,
       },
       {

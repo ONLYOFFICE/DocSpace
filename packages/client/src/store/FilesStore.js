@@ -1212,6 +1212,7 @@ class FilesStore {
         "view",
         "make-form",
         "separator0",
+        "link-for-room-members",
         // "sharing-settings",
         // "external-link",
         "owner-change",
@@ -1348,6 +1349,7 @@ class FilesStore {
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
+          "link-for-room-members",
           // "link-for-portal-users",
           // "external-link",
           "send-by-email",
@@ -1367,6 +1369,7 @@ class FilesStore {
           "open-location",
           "view",
           "preview",
+          "link-for-room-members",
           //"link-for-portal-users",
           //"sharing-settings",
           //"external-link",
@@ -1412,6 +1415,12 @@ class FilesStore {
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
+      }
+
+      if (isMyFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "link-for-room-members",
+        ]);
       }
 
       // if (isPrivacyFolder) {
@@ -1533,6 +1542,7 @@ class FilesStore {
         "open",
         // "separator0",
         // "sharing-settings",
+        "link-for-room-members",
         "owner-change",
         "show-info",
         // "link-for-portal-users",
@@ -1590,6 +1600,7 @@ class FilesStore {
       if (isRecycleBinFolder) {
         folderOptions = this.removeOptions(folderOptions, [
           "open",
+          "link-for-room-members",
           // "link-for-portal-users",
           // "sharing-settings",
           "mark-read",
@@ -1659,6 +1670,12 @@ class FilesStore {
 
       if (!(isMyFolder && (this.filterType || this.filterSearch))) {
         folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
+      if (isMyFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "link-for-room-members",
+        ]);
       }
 
       folderOptions = this.removeSeparator(folderOptions);
@@ -2031,18 +2048,32 @@ class FilesStore {
     return this.filter.search;
   }
 
-  getFolderUrl = (id, isFolder) => {
+  getItemUrl = (id, isFolder, needConvert, canOpenPlayer) => {
+    const proxyURL = AppServerConfig?.proxyURL?.trim()
+      ? AppServerConfig?.proxyURL
+      : window.location.origin;
+
     const url = getCategoryUrl(this.categoryType, id);
 
-    const folderUrl = isFolder
-      ? combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `${url}?folder=${id}`
-        )
-      : null;
+    if (canOpenPlayer) {
+      return combineUrl(proxyURL, config.homepage, `${url}/#preview/${id}`);
+    }
 
-    return folderUrl;
+    if (isFolder) {
+      const folderUrl = isFolder
+        ? combineUrl(proxyURL, config.homepage, `${url}?folder=${id}`)
+        : null;
+
+      return folderUrl;
+    } else {
+      const url = combineUrl(
+        proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
+      );
+
+      return url;
+    }
   };
 
   get filesList() {
@@ -2114,11 +2145,7 @@ class FilesStore {
       const canOpenPlayer = isMediaOrImage(item.fileExst);
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/#preview/${id}`
-          )
+        ? this.getItemUrl(id, false, needConvert, canOpenPlayer)
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
@@ -2132,17 +2159,14 @@ class FilesStore {
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
-      const folderUrl = this.getFolderUrl(id, isFolder);
+      const folderUrl = isFolder && this.getItemUrl(id, isFolder, false, false);
 
       const needConvert = canConvert(fileExst);
       const isEditing =
         (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
-      const docUrl = combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
-      );
+      const docUrl =
+        !canOpenPlayer && !isFolder && this.getItemUrl(id, false, needConvert);
 
       const href = isRecycleBinFolder
         ? null
