@@ -2283,6 +2283,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("folder_type");
 
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_logo");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -2429,6 +2433,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("FoldersCount")
                         .HasColumnType("integer")
                         .HasColumnName("foldersCount");
+
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_logo");
 
                     b.Property<Guid>("ModifiedBy")
                         .HasMaxLength(38)
