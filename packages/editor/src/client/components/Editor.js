@@ -241,7 +241,7 @@ function Editor({
     }
   };
 
-  const onRequestReferenceData = async (event) => {
+  const onSDKRequestReferenceData = async (event) => {
     const referenceData = await getReferenceData(
       event.data.referenceData ?? event.data
     );
@@ -554,7 +554,8 @@ function Editor({
         onRequestMailMergeRecipients,
         onRequestCompareFile,
         onRequestRestore,
-        onRequestHistory;
+        onRequestHistory,
+        onRequestReferenceData;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -580,6 +581,10 @@ function Editor({
 
       if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
+      }
+
+      if (!fileInfo?.providerKey) {
+        onRequestReferenceData = onSDKRequestReferenceData;
       }
 
       const events = {
