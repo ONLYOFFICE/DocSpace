@@ -30,6 +30,7 @@ import StyledExternalLinkIcon from "@docspace/client/src/components/StyledExtern
 import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base, Dark } from "@docspace/components/themes";
 import { ReactSVG } from "react-svg";
+import { getLogoFromPath } from "SRC_DIR/helpers/utils";
 
 const { proxyURL } = AppServerConfig;
 
@@ -218,8 +219,9 @@ const HeaderComponent = ({
     });
   }, [history]);
 
-  const logo =
-    userTheme === "Dark" ? logoUrl?.path?.dark : logoUrl?.path?.light;
+  const logo = getLogoFromPath(
+    userTheme === "Dark" ? logoUrl?.path?.dark : logoUrl?.path?.light
+  );
 
   return (
     <>
