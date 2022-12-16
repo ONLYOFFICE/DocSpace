@@ -18,6 +18,7 @@ import {
   updateFile,
   checkFillFormDraft,
   convertFile,
+  getReferenceData,
 } from "@docspace/common/api/files";
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
@@ -238,6 +239,14 @@ function Editor({
       history.pushState({}, null, convertUrl);
       document.location.reload();
     }
+  };
+
+  const onRequestReferenceData = async (event) => {
+    const referenceData = await getReferenceData(
+      event.data.referenceData ?? event.data
+    );
+
+    docEditor.setReferenceData(referenceData);
   };
 
   const onMakeActionLink = (event) => {
@@ -575,6 +584,7 @@ function Editor({
 
       const events = {
         events: {
+          onRequestReferenceData,
           onAppReady: onSDKAppReady,
           onDocumentStateChange: onDocumentStateChange,
           onMetaChange: onMetaChange,
