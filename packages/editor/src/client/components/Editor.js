@@ -22,7 +22,6 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
@@ -160,7 +159,7 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        canConvert(fileInfo.fileExst, filesSettings)
+        fileInfo?.viewAccessability?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -222,7 +221,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (canConvert(fileInfo.fileExst, filesSettings)) {
+      if (fileInfo?.viewAccessability?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;

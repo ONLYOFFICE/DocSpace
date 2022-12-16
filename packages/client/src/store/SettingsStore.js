@@ -194,8 +194,6 @@ class SettingsStore {
     this.hideConfirmConvertSave = hideConfirmConvertSave;
   };
 
-  canConvert = (extension) => presentInArray(this.extsMustConvert, extension);
-
   isArchive = (extension) => presentInArray(this.extsArchive, extension);
 
   isImage = (extension) => presentInArray(this.extsImage, extension);

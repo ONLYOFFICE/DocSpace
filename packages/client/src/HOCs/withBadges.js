@@ -84,7 +84,6 @@ export default function withBadges(WrappedComponent) {
         item,
         isTrashFolder,
         isPrivacyFolder,
-        canConvert,
         onFilesClick,
         isAdmin,
         isDesktopClient,
@@ -110,7 +109,6 @@ export default function withBadges(WrappedComponent) {
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
-          canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
@@ -139,7 +137,6 @@ export default function withBadges(WrappedComponent) {
         versionHistoryStore,
         dialogsStore,
         filesStore,
-        settingsStore,
       },
       { item }
     ) => {
@@ -154,13 +151,10 @@ export default function withBadges(WrappedComponent) {
       } = dialogsStore;
       const { setIsLoading } = filesStore;
 
-      const canConvert = settingsStore.canConvert(item.fileExst);
-
       return {
         theme,
         isAdmin: auth.isAdmin,
 
-        canConvert,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
         homepage: config.homepage,

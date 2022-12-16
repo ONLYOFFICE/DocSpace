@@ -61,7 +61,6 @@ const Badges = ({
   isTrashFolder,
   isPrivacyFolder,
   isDesktopClient,
-  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -159,7 +158,7 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {canConvert && !isTrashFolder && (
+      {item.viewAccessability?.Convert && !isTrashFolder && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}

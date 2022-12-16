@@ -2130,8 +2130,6 @@ class FilesStore {
           Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
         ];
 
-      const { canConvert } = this.filesSettingsStore;
-
       const canOpenPlayer =
         item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
 
@@ -2164,7 +2162,7 @@ class FilesStore {
 
       const folderUrl = this.getFolderUrl(id, isFolder);
 
-      const needConvert = canConvert(fileExst);
+      const needConvert = item.viewAccessability?.Convert;
       const isEditing =
         (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
@@ -2539,8 +2537,6 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const { canConvert } = this.filesSettingsStore;
-
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
     }
@@ -2563,7 +2559,7 @@ class FilesStore {
       (x) => x.viewAccessability?.WebCustomFilterEditing
     );
 
-    const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
+    const webNeedConvert = selection.find((x) => x.viewAccessability?.Convert);
 
     if ((webEdit && !webNeedConvert) || !externalAccess)
       AccessOptions.push("FullAccess");
