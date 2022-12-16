@@ -40,13 +40,8 @@ public class EditorControllerInternal : EditorController<int>
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper,
-        DaoFactory daoFactory,
-        TenantManager tenantManager,
-        FileSecurity fileSecurity,
-        PathProvider pathProvider,
-        DocumentServiceConnector documentServiceConnector)
-        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper, daoFactory, tenantManager, fileSecurity, pathProvider, documentServiceConnector)
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -67,13 +62,8 @@ public class EditorControllerThirdparty : EditorController<string>
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper,
-        DaoFactory daoFactory,
-        TenantManager tenantManager,
-        FileSecurity fileSecurity,
-        PathProvider pathProvider,
-        DocumentServiceConnector documentServiceConnector)
-        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper, daoFactory, tenantManager, fileSecurity, pathProvider, documentServiceConnector)
+        FileDtoHelper fileDtoHelper)
+        : base(fileStorageService, documentServiceHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor, mapper, commonLinkUtility, filesLinkUtility, folderDtoHelper, fileDtoHelper)
     {
         _thirdPartySelector = thirdPartySelector;
     }
@@ -129,11 +119,6 @@ public abstract class EditorController<T> : ApiControllerBase
     private readonly IMapper _mapper;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
-    private readonly DaoFactory _daoFactory;
-    private readonly TenantManager _tenantManager;
-    private readonly FileSecurity _fileSecurity;
-    private readonly PathProvider _pathProvider;
-    private readonly DocumentServiceConnector _documentServiceConnector;
 
     public EditorController(
         FileStorageService<T> fileStorageService,
@@ -146,12 +131,7 @@ public abstract class EditorController<T> : ApiControllerBase
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper,
-        DaoFactory daoFactory,
-        TenantManager tenantManager,
-        FileSecurity fileSecurity,
-        PathProvider pathProvider,
-        DocumentServiceConnector documentServiceConnector) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _documentServiceHelper = documentServiceHelper;
@@ -162,11 +142,6 @@ public abstract class EditorController<T> : ApiControllerBase
         _mapper = mapper;
         _commonLinkUtility = commonLinkUtility;
         _filesLinkUtility = filesLinkUtility;
-        _daoFactory = daoFactory;
-        _tenantManager = tenantManager;
-        _fileSecurity = fileSecurity;
-        _pathProvider = pathProvider;
-        _documentServiceConnector = documentServiceConnector;
     }
 
     /// <summary>
@@ -282,67 +257,10 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     [HttpPost("file/referencedata")]
-    public async Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
+    public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
-        File<T> file = null;
-        var fileDao = _daoFactory.GetFileDao<T>();
-        if (inDto.PortalName == _tenantManager.GetCurrentTenant().Id.ToString()) 
-        {
-            file = await fileDao.GetFileAsync(inDto.FileId);
-        }
 
-        if(file == null)
-        {
-            var source = await fileDao.GetFileAsync(inDto.SourceFileId);
-
-            if (source == null)
-            {
-                return new FileReference<T>
-                {
-                    Error = FilesCommonResource.ErrorMassage_FileNotFound
-                };
-            }
-
-            if (!await _fileSecurity.CanReadAsync(source))
-            {
-                return new FileReference<T>
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
-                };
-            }
-
-            var folderDao = _daoFactory.GetFolderDao<T>();
-            var folder = await folderDao.GetFolderAsync(source.ParentId);
-            if (!await _fileSecurity.CanReadAsync(folder))
-            {
-                return new FileReference<T>
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder
-                };
-            }
-
-            var list = fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, inDto.Path, false, false);
-            file = await list.FirstOrDefaultAsync(fileItem => fileItem.Title == inDto.Path);
-        }
-
-        if (!await _fileSecurity.CanReadAsync(file))
-        {
-            return new FileReference<T>
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
-            };
-        }
-
-        return new FileReference<T>
-        {
-            Path = file.Title,
-            ReferenceData = new FileReferenceData<T>
-            {
-                FileId = file.Id,
-                PortalName = _tenantManager.GetCurrentTenant().Id.ToString()
-            },
-            Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true))
-        };
+        return  _fileStorageService.GetReferenceDataAsync(inDto.FileId, inDto.PortalName, inDto.SourceFileId, inDto.Path);
     }
 }
 
