@@ -207,11 +207,15 @@ public class RoomLogoManager
     {
         var index = fileName.LastIndexOf('.');
         var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
+
         try
         {
             await DataStore.DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
         }
-        catch { }
+        catch(Exception e)
+        {
+            _logger.ErrorRemoveTempPhoto(e);
+        }
     }
 
     private async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
