@@ -113,6 +113,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     {
         var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
+        var fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
 
         this[Res] += string.Format("folder_{0}{1}", _daoFolderId, SplitChar);
 
@@ -139,41 +140,53 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
-        if (_copy)
+        if (0 < Folders.Count)
         {
-            Folder<T> rootFrom = null;
-            if (0 < Folders.Count)
-            {
-                rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
-            }
+            var firstFolder = await FolderDao.GetFolderAsync(Folders[0]);
 
-            if (0 < Files.Count)
+            if (_copy && !await FilesSecurity.CanCopyAsync(firstFolder))
             {
-                rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
-            }
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFolder;
 
-            if (rootFrom != null)
+                return;
+            }
+            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
             {
-                if (rootFrom.FolderType == FolderType.TRASH)
-                {
-                    throw new InvalidOperationException("Can not copy from Trash.");
-                }
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
-                if (rootFrom.FolderType == FolderType.Archive)
-                {
-                    throw new InvalidOperationException("Can not copy from Archive.");
-                }
+                return;
             }
+        }
 
-            if (toFolder.RootFolderType == FolderType.TRASH)
+        if (0 < Files.Count)
+        {
+            var firstFile = await FileDao.GetFileAsync(Files[0]);
+
+            if (_copy && !await FilesSecurity.CanCopyAsync(firstFile))
             {
-                throw new InvalidOperationException("Can not copy to Trash.");
-            }
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFile;
 
-            if (toFolder.RootFolderType == FolderType.Archive)
-            {
-                throw new InvalidOperationException("Can not copy to Archive");
+                return;
             }
+            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFile))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+
+                return;
+            }
+        }
+
+        if (_copy && !await fileSecurity.CanCopyToAsync(toFolder))
+        {
+            this[Err] = FilesCommonResource.ErrorMessage_SecurityException_CopyToFolder;
+
+            return;
+        }
+        else if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
+        {
+            this[Err] = FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
+
+            return;
         }
 
         var needToMark = new List<FileEntry<TTo>>();
@@ -191,7 +204,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents)
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
     {
         var needToMark = new List<FileEntry<TTo>>();
 
@@ -215,7 +228,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var folder = await FolderDao.GetFolderAsync(folderId);
-            var (isError, message) = await WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
 
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
@@ -223,9 +235,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-            else if (!await FilesSecurity.CanReadAsync(folder))
+            else if (copy && checkPermissions && !await FilesSecurity.CanCopyAsync(folder))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFolder;
+            }
+            else if (!copy && checkPermissions && !await FilesSecurity.CanMoveAsync(folder))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -239,7 +255,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-            else if (!await FilesSecurity.CanDownloadAsync(folder))
+            else if (checkPermissions && !await FilesSecurity.CanDownloadAsync(folder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
@@ -250,6 +266,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!Equals(folder.ParentId ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
             {
+                checkPermissions = isRoom ? false : checkPermissions;
+
+                var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
+                var (isError, message) = await WithErrorAsync(scope, files, checkPermissions);
+
                 try
                 {
                     //if destination folder contains folder with same name then merge folders
@@ -288,12 +309,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
                             && FolderDao.UseRecursiveOperation(folder.Id, toFolderId))
                         {
-                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.Id).ToListAsync(), newFolder, copy, toFolderParents);
-                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.Id).Select(f => f.Id).ToListAsync(), newFolder, copy, toFolderParents);
+                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.Id).ToListAsync(), newFolder, copy, toFolderParents, checkPermissions);
+                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.Id).Select(f => f.Id).ToListAsync(), newFolder, copy, toFolderParents, checkPermissions);
 
                             if (!copy)
                             {
-                                if (!await FilesSecurity.CanDeleteAsync(folder))
+                                if (checkPermissions && !await FilesSecurity.CanMoveAsync(folder))
                                 {
                                     this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
@@ -329,7 +350,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         sb.Append($"folder_{newFolderId}{SplitChar}");
                                     }
                                 }
-                                else if (!await FilesSecurity.CanDeleteAsync(folder))
+                                else if (checkPermissions && !await FilesSecurity.CanMoveAsync(folder))
                                 {
                                     this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
@@ -360,7 +381,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     }
                     else
                     {
-                        if (!await FilesSecurity.CanDeleteAsync(folder))
+                        if (checkPermissions && !await FilesSecurity.CanMoveAsync(folder))
                         {
                             this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }
@@ -453,7 +474,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         return needToMark;
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toParentFolders)
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toParentFolders, bool checkPermissions = true)
     {
         var needToMark = new List<FileEntry<TTo>>();
 
@@ -475,7 +496,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var file = await FileDao.GetFileAsync(fileId);
-            var (isError, message) = await WithErrorAsync(scope, new[] { file });
+            var (isError, message) = await WithErrorAsync(scope, new[] { file }, checkPermissions);
 
             if (file == null)
             {
@@ -485,11 +506,15 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
-            else if (!await FilesSecurity.CanReadAsync(file))
+            else if (copy && !await FilesSecurity.CanCopyAsync(file))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFile;
             }
-            else if (!await FilesSecurity.CanDownloadAsync(file))
+            else if (!copy && checkPermissions && !await FilesSecurity.CanMoveAsync(file))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+            }
+            else if (checkPermissions && !await FilesSecurity.CanDownloadAsync(file))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
@@ -597,7 +622,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     {
                         if (_resolveType == FileConflictResolveType.Overwrite)
                         {
-                            if (!await FilesSecurity.CanEditAsync(conflict))
+                            if (checkPermissions && !await FilesSecurity.CanEditAsync(conflict))
                             {
                                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
                             }
@@ -710,20 +735,20 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         return needToMark;
     }
 
-    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files)
+    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool checkPermissions = true)
     {
         var entryManager = scope.ServiceProvider.GetService<EntryManager>();
         var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
         string error = null;
         foreach (var file in files)
         {
-            if (!await FilesSecurity.CanDeleteAsync(file))
+            if(checkPermissions && !await FilesSecurity.CanMoveAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
                 return (true, error);
             }
-            if (await entryManager.FileLockedForMeAsync(file.Id))
+            if (checkPermissions && await entryManager.FileLockedForMeAsync(file.Id))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 

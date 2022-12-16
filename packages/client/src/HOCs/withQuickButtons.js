@@ -10,7 +10,7 @@ export default function withQuickButtons(WrappedComponent) {
 
       this.state = {
         isLoading: false,
-        isCanWebEdit: props.canWebEdit(props.item.fileExst),
+        isCanWebEdit: props.item.viewAccessability?.WebEdit,
       };
     }
 
@@ -50,15 +50,7 @@ export default function withQuickButtons(WrappedComponent) {
     render() {
       const { isLoading, isCanWebEdit } = this.state;
 
-      const {
-        t,
-        theme,
-        item,
-        isAdmin,
-        sectionWidth,
-        viewAs,
-        canLockFile,
-      } = this.props;
+      const { t, theme, item, isAdmin, sectionWidth, viewAs } = this.props;
 
       const quickButtonsComponent = (
         <QuickButtons
@@ -72,7 +64,6 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          canLockFile={canLockFile}
         />
       );
 
@@ -90,8 +81,7 @@ export default function withQuickButtons(WrappedComponent) {
       auth,
       filesActionsStore,
       dialogsStore,
-      settingsStore,
-      accessRightsStore,
+
       treeFoldersStore,
     }) => {
       const {
@@ -101,8 +91,6 @@ export default function withQuickButtons(WrappedComponent) {
       } = filesActionsStore;
       const { isPersonalRoom } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
-      const { canWebEdit } = settingsStore;
-      const { canLockFile } = accessRightsStore;
 
       return {
         theme: auth.settingsStore.theme,
@@ -111,8 +99,7 @@ export default function withQuickButtons(WrappedComponent) {
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
-        canWebEdit,
-        canLockFile,
+
         isPersonalRoom,
       };
     }

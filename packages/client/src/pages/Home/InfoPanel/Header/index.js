@@ -18,7 +18,6 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
-import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -33,7 +32,7 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     isRootFolder,
     rootFolderType,
-    canViewUsers,
+    selectionParentRoom,
   } = props;
 
   const isRooms = getIsRooms();
@@ -73,9 +72,12 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
+  const selectionRoomRights = selectionParentRoom
+    ? selectionParentRoom.security?.Read
+    : selection?.security?.Read;
 
   const roomsSubmenu = isArchiveRoot
-    ? canViewUsers(selection)
+    ? selectionRoomRights
       ? [{ ...submenuData[0] }, { ...submenuData[2] }]
       : [{ ...submenuData[2] }]
     : [...submenuData];
@@ -144,9 +146,9 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
+    selectionParentRoom,
   } = auth.infoPanelStore;
   const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canViewUsers } = accessRightsStore;
 
   return {
     selection,
@@ -161,7 +163,8 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
 
     isRootFolder,
     rootFolderType,
-    canViewUsers,
+
+    selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

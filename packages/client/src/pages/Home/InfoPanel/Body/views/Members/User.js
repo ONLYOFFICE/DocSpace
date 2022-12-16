@@ -13,10 +13,6 @@ const User = ({
   updateRoomMemberRole,
   selectionParentRoom,
   setSelectionParentRoom,
-  canChangeUserRoleInRoom,
-  canDeleteUserInRoom,
-  rootFolderType,
-  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -24,26 +20,11 @@ const User = ({
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
 
-  const canChangeUserRole =
-    user &&
-    canChangeUserRoleInRoom({
-      access,
-      rootFolderType,
-      currentUserInList: { id: user.id, access: user.access },
-    });
-
-  const canDeleteUser =
-    user &&
-    canDeleteUserInRoom({
-      access,
-      rootFolderType,
-      currentUserInList: { id: user.id, access: user.access },
-    });
+  const canChangeUserRole = user.canEditAccess;
 
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
-    canChangeUserRole,
-    canDeleteUser
+    canChangeUserRole
   );
 
   const userRole = membersHelper.getOptionByUserAccess(user.access);
@@ -103,7 +84,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {canChangeUserRole || canDeleteUser ? (
+          {canChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}

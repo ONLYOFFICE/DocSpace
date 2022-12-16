@@ -26,7 +26,6 @@ import {
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
-import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
@@ -1149,7 +1148,7 @@ class FilesStore {
     return newOptions.filter((o) => o);
   };
 
-  getFilesContextOptions = (item, canOpenPlayer) => {
+  getFilesContextOptions = (item) => {
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -1168,8 +1167,6 @@ class FilesStore {
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
-    const { canFormFillingDocs } = this.filesSettingsStore;
-
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isThirdPartyFolder =
@@ -1182,39 +1179,33 @@ class FilesStore {
     const pluginAllKeys =
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
-    const canRenameItem = this.accessRightsStore.canRenameItem({
-      ...item,
-      ...isFile,
-    });
+    const canRenameItem = item.security?.Rename;
 
     const canMove = this.accessRightsStore.canMoveItems({
       ...item,
       ...{ editing: isEditing },
     });
 
-    const canDelete = this.accessRightsStore.canDeleteItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
+    const canDelete = !isEditing && item.security?.Delete;
 
-    const canCopy = this.accessRightsStore.canCopyItems(item);
-    const canCreateCopy = this.accessRightsStore.canDuplicateFile(item);
+    const canCopy = item.security?.Copy;
+    const canDuplicate = item.security?.Duplicate;
 
     if (isFile) {
-      const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const canLockFile = this.accessRightsStore.canLockFile(item);
-      const canChangeVersionFileHistory = this.accessRightsStore.canChangeVersionFileHistory(
-        { ...item, ...{ editing: isEditing } }
-      );
+      const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
+      const canLockFile = item.security?.Lock;
+      const canChangeVersionFileHistory =
+        !isEditing && item.security?.EditHistory;
 
-      const canViewVersionFileHistory = this.accessRightsStore.canViewVersionFileHistory(
-        item
-      );
-      const canFillForm = this.accessRightsStore.canFillForm(item);
+      const canViewVersionFileHistory = item.security?.ReadHistory;
+      const canFillForm = item.security?.FillForms;
 
-      const canEditFile = this.accessRightsStore.canEditFile(item);
+      const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
+      const canOpenPlayer =
+        item.viewAccessability.ImageView || item.viewAccessability.MediaView;
+      const canViewFile = item.viewAccessability.WebView;
+
       const isMasterForm = item.fileExst === ".docxf";
-      const canMakeForm = this.accessRightsStore.canMakeForm(item);
 
       let fileOptions = [
         //"open",
@@ -1300,14 +1291,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
-      if (!(isMasterForm && canMakeForm))
+      if (!(isMasterForm && canDuplicate))
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       if (item.rootFolderType === FolderType.Archive) {
@@ -1326,10 +1317,12 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
       }
 
+      if (!canViewFile || isRecycleBinFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["preview"]);
+      }
+
       if (!canOpenPlayer) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
-      } else {
-        fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
       if (!isDocuSign) {
@@ -1374,35 +1367,17 @@ class FilesStore {
       //   ]);
       // }
 
-      if (isRecycleBinFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "open",
-          "open-location",
-          "view",
-          "preview",
-          //"link-for-portal-users",
-          //"sharing-settings",
-          //"external-link",
-          "send-by-email",
-          "mark-read",
-          // "mark-as-favorite",
-          // "remove-from-favorites",
-          "separator0",
-          "separator1",
-        ]);
-      } else {
+      if (!isRecycleBinFolder)
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-        if (enablePlugins) {
-          const pluginFilesKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Files
-          );
+      if (enablePlugins && !isRecycleBinFolder) {
+        const pluginFilesKeys = getContextMenuKeysByType(
+          PluginContextMenuItemType.Files
+        );
 
-          pluginAllKeys &&
-            pluginAllKeys.forEach((key) => fileOptions.push(key));
-          pluginFilesKeys &&
-            pluginFilesKeys.forEach((key) => fileOptions.push(key));
-        }
+        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
+        pluginFilesKeys &&
+          pluginFilesKeys.forEach((key) => fileOptions.push(key));
       }
 
       if (!this.canShareOwnerChange(item)) {
@@ -1444,17 +1419,15 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const canInviteUserInRoom = this.accessRightsStore.canInviteUserInRoom(
-        item
-      );
-      const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
+      const canInviteUserInRoom = item.security?.EditAccess;
+      const canRemoveRoom = item.security?.Delete;
 
-      const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
-      const canPinRoom = this.accessRightsStore.canPinRoom(item);
+      const canArchiveRoom = item.security?.Move;
+      const canPinRoom = item.security?.Pin;
 
-      const canEditRoom = this.accessRightsStore.canEditRoom(item);
+      const canEditRoom = item.security?.EditRoom;
 
-      const canViewRoomInfo = this.accessRightsStore.canViewRoomInfo(item);
+      const canViewRoomInfo = item.security?.Read;
 
       let roomOptions = [
         "select",
@@ -1579,11 +1552,11 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
@@ -2110,6 +2083,8 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        security,
+        viewAccessability,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2122,9 +2097,8 @@ class FilesStore {
           Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
         ];
 
-      const { canConvert, isMediaOrImage } = this.filesSettingsStore;
-
-      const canOpenPlayer = isMediaOrImage(item.fileExst);
+      const canOpenPlayer =
+        item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
 
       const previewUrl = canOpenPlayer
         ? combineUrl(
@@ -2147,7 +2121,7 @@ class FilesStore {
 
       const folderUrl = this.getFolderUrl(id, isFolder);
 
-      const needConvert = canConvert(fileExst);
+      const needConvert = item.viewAccessability?.Convert;
       const isEditing =
         (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
@@ -2233,6 +2207,8 @@ class FilesStore {
         pinned,
         thirdPartyIcon,
         providerType,
+        security,
+        viewAccessability,
       };
     });
 
@@ -2241,8 +2217,6 @@ class FilesStore {
 
   get cbMenuItems() {
     const {
-      isImage,
-      isVideo,
       isDocument,
       isPresentation,
       isSpreadsheet,
@@ -2282,8 +2256,10 @@ class FilesStore {
         cbMenu.push(FilterType.PresentationsOnly);
       else if (isSpreadsheet(item.fileExst))
         cbMenu.push(FilterType.SpreadsheetsOnly);
-      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
-      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (item.viewAccessability?.ImageView)
+        cbMenu.push(FilterType.ImagesOnly);
+      else if (item.viewAccessability?.MediaView)
+        cbMenu.push(FilterType.MediaOnly);
       else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
     }
 
@@ -2478,20 +2454,19 @@ class FilesStore {
   }
 
   get isViewedSelected() {
-    const { canViewedDocs } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return canViewedDocs(selected.fileExst);
+      return selected.viewAccessability?.WebView;
     });
   }
 
   get isMediaSelected() {
-    const { isMediaOrImage } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return isMediaOrImage(selected.fileExst);
+      return (
+        selected.viewAccessability?.ImageView ||
+        selected.viewAccessability?.MediaView
+      );
     });
   }
 
@@ -2532,15 +2507,6 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const {
-      canWebEdit,
-      canWebComment,
-      canWebReview,
-      canFormFillingDocs,
-      canWebFilterEditing,
-      canConvert,
-    } = this.filesSettingsStore;
-
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
     }
@@ -2549,19 +2515,21 @@ class FilesStore {
 
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    const webEdit = selection.find((x) => canWebEdit(x.fileExst));
+    const webEdit = selection.find((x) => x.viewAccessability?.WebEdit);
 
-    const webComment = selection.find((x) => canWebComment(x.fileExst));
+    const webComment = selection.find((x) => x.viewAccessability?.WebComment);
 
-    const webReview = selection.find((x) => canWebReview(x.fileExst));
+    const webReview = selection.find((x) => x.viewAccessability?.WebReview);
 
-    const formFillingDocs = selection.find((x) =>
-      canFormFillingDocs(x.fileExst)
+    const formFillingDocs = selection.find(
+      (x) => x.viewAccessability?.WebRestrictedEditing
     );
 
-    const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
+    const webFilter = selection.find(
+      (x) => x.viewAccessability?.WebCustomFilterEditing
+    );
 
-    const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
+    const webNeedConvert = selection.find((x) => x.viewAccessability?.Convert);
 
     if ((webEdit && !webNeedConvert) || !externalAccess)
       AccessOptions.push("FullAccess");
@@ -2886,15 +2854,11 @@ class FilesStore {
   }
 
   get roomsForRestore() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).restore
-    );
+    return this.folders.filter((f) => f.security.Move);
   }
 
   get roomsForDelete() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).delete
-    );
+    return this.folders.filter((f) => f.security.Delete);
   }
 }
 

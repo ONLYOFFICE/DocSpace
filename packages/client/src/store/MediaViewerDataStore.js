@@ -46,7 +46,6 @@ class MediaViewerDataStore {
   };
 
   get playlist() {
-    const { isMediaOrImage } = this.settingsStore;
     const { files } = this.filesStore;
 
     const filesList = [...files];
@@ -66,7 +65,8 @@ class MediaViewerDataStore {
 
     if (filesList.length > 0) {
       filesList.forEach((file) => {
-        const canOpenPlayer = isMediaOrImage(file.fileExst);
+        const canOpenPlayer =
+          file.viewAccessability.ImageView || file.viewAccessability.MediaView;
         if (canOpenPlayer) {
           playlist.push({
             id: id,
