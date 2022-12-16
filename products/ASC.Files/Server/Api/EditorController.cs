@@ -280,8 +280,8 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         return _fileStorageService.SharedUsersAsync(fileId);
     }
-    
-    [HttpGet("file/referencedata")]
+
+    [HttpPost("file/referencedata")]
     public async Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
         File<T> file = null;
