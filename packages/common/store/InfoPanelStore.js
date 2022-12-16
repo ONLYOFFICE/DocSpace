@@ -19,12 +19,15 @@ const observedKeys = [
 
 class InfoPanelStore {
   isVisible = false;
+  isMobileHidden = false;
 
   selection = null;
   selectionParentRoom = null;
 
   roomsView = "info_details";
   fileView = "info_history";
+
+  updateRoomMembers = null;
 
   authStore = null;
   settingsStore = null;
@@ -40,6 +43,7 @@ class InfoPanelStore {
   // Setters
 
   setIsVisible = (bool) => (this.isVisible = bool);
+  setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
     if (this.getIsAccounts() && (!selection.email || !selection.displayName)) {
@@ -55,6 +59,10 @@ class InfoPanelStore {
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
+  };
+
+  setUpdateRoomMembers = (updateRoomMembers) => {
+    this.updateRoomMembers = updateRoomMembers;
   };
 
   // Selection helpers //

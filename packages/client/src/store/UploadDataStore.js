@@ -431,7 +431,7 @@ class UploadDataStore {
             }
           });
 
-          // storeOriginalFiles && this.refreshFiles(file);
+          storeOriginalFiles && this.refreshFiles(file);
 
           if (fileInfo && fileInfo !== "password") {
             file.fileInfo = fileInfo;
@@ -653,6 +653,8 @@ class UploadDataStore {
             }
           }
         }
+
+        this.filesStore.setOperationAction(false);
       };
 
       const isFiltered =
@@ -694,6 +696,7 @@ class UploadDataStore {
     file,
     path
   ) => {
+    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (
@@ -769,9 +772,7 @@ class UploadDataStore {
       return Promise.resolve();
     } else {
       if (currentFile.action === "uploaded") {
-        if (currentFile?.path?.length > 1) {
-          this.refreshFiles(currentFile);
-        }
+        this.refreshFiles(currentFile);
       }
       return Promise.resolve();
     }

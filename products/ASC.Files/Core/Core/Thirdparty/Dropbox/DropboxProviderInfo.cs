@@ -56,6 +56,7 @@ internal class DropboxProviderInfo : IProviderInfo
     public FolderType FolderType { get; set; }
     public string FolderId { get; set; }
     public bool Private { get; set; }
+    public bool HasLogo { get; set; }
 
     private readonly DropboxStorageDisposableWrapper _wrapper;
     private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;

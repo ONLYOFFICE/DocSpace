@@ -196,9 +196,6 @@ public class FileHandlerService
                 case "track":
                     await TrackFile(context);
                     break;
-                case "logo":
-                    await GetRoomLogoPathAsync(context);
-                    break;
                 default:
                     throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
             }
@@ -1568,60 +1565,6 @@ public class FileHandlerService
         result ??= new TrackResponse();
 
         await context.Response.WriteAsync(TrackResponse.Serialize(result));
-    }
-
-    private async Task GetRoomLogoPathAsync(HttpContext context)
-    {
-        if (!_securityContext.IsAuthenticated)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return;
-        }
-
-        var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
-        var size = context.Request.Query[FilesLinkUtility.Size].FirstOrDefault();
-
-        string result;
-
-        try
-        {
-            if (int.TryParse(folderId, out var id))
-            {
-                result = await _roomLogoManager.GetLogoPathAsync(id, size);
-            }
-            else
-            {
-                result = await _roomLogoManager.GetLogoPathAsync(folderId, size);
-            }
-        }
-        catch(ItemNotFoundException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return;
-        }
-        catch (SecurityException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return;
-        }
-        catch
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return;
-        }
-
-        context.Response.Clear();
-        await context.Response.WriteAsync(result);
-
-        try
-        {
-            await context.Response.Body.FlushAsync();
-            await context.Response.CompleteAsync();
-        }
-        catch (HttpException ex)
-        {
-            _logger.Error(ex.Message);
-        }
     }
 }
 

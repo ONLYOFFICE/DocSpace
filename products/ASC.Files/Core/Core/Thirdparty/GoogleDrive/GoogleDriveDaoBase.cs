@@ -140,6 +140,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
         folder.Private = ProviderInfo.Private;
+        folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
 
         folder.Title = MakeFolderTitle(driveEntry);
