@@ -1658,7 +1658,7 @@ class FilesStore {
       }
 
       if (isMyFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
+        folderOptions = this.removeOptions(folderOptions, [
           "link-for-room-members",
         ]);
       }
