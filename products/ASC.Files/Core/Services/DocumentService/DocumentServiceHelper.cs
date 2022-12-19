@@ -185,7 +185,7 @@ public class DocumentServiceHelper
 
         string strError = null;
         if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-            && await _lockerManager.FileLockedForMeAsync(file.Id))
+            && await _lockerManager.FileLockedForMeAsync(file))
         {
             if (tryEdit)
             {

@@ -585,7 +585,7 @@ public class FileConverter
             if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.Id) || !file.ProviderEntry))
             {
                 newFile = await fileDao.GetFileAsync(folderId, newFileTitle);
-                if (newFile != null && await _fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
+                if (newFile != null && await _fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile) && !_fileTracker.IsEditing(newFile.Id))
                 {
                     newFile.Version++;
                 }

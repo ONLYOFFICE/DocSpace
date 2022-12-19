@@ -626,7 +626,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
                             }
-                            else if (await entryManager.FileLockedForMeAsync(conflict.Id))
+                            else if (await entryManager.FileLockedForMeAsync(conflict))
                             {
                                 this[Err] = FilesCommonResource.ErrorMassage_LockedFile;
                             }
@@ -748,7 +748,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return (true, error);
             }
-            if (checkPermissions && await entryManager.FileLockedForMeAsync(file.Id))
+            if (checkPermissions && await entryManager.FileLockedForMeAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 

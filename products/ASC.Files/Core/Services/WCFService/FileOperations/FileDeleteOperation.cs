@@ -332,7 +332,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                 return (true, error);
             }
-            if (checkPermissions && await entryManager.FileLockedForMeAsync(file.Id))
+            if (checkPermissions && await entryManager.FileLockedForMeAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 

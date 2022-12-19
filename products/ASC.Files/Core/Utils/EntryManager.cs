@@ -32,11 +32,14 @@ public class LockerManager
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
     private readonly ThirdPartySelector _thirdPartySelector;
-    public LockerManager(AuthContext authContext, IDaoFactory daoFactory, ThirdPartySelector thirdPartySelector)
+    private readonly FileSecurity _fileSecurity;
+
+    public LockerManager(AuthContext authContext, IDaoFactory daoFactory, ThirdPartySelector thirdPartySelector, FileSecurity fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _thirdPartySelector = thirdPartySelector;
+        _fileSecurity = fileSecurity;
     }
 
     public async Task<bool> FileLockedForMe<T>(T fileId, Guid userId = default)
@@ -54,17 +57,22 @@ public class LockerManager
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
 
-    public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMeAsync<T>(File<T> file, Guid userId = default)
     {
-        var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
+        var app = _thirdPartySelector.GetAppByFileId(file.Id.ToString());
         if (app != null)
+        {
+            return false;
+        }
+
+        if (await _fileSecurity.CanLockAsync(file))
         {
             return false;
         }
 
         userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
-        var lockedBy = await FileLockedByAsync(fileId, tagDao);
+        var lockedBy = await FileLockedByAsync(file.Id, tagDao);
 
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
@@ -228,6 +236,7 @@ public class EntryStatusManager
             {
                 var lockedBy = lockedTag.Owner;
                 file.Locked = lockedBy != Guid.Empty;
+                file.LockedForMe = file.Access != FileShare.None && file.Access != FileShare.RoomAdmin;
                 file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
                     ? _global.GetUserName(lockedBy)
                     : null;
@@ -1017,9 +1026,9 @@ public class EntryManager
         }
     }
 
-    public Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+    public Task<bool> FileLockedForMeAsync<T>(File<T> file, Guid userId = default)
     {
-        return _lockerManager.FileLockedForMeAsync(fileId, userId);
+        return _lockerManager.FileLockedForMeAsync(file, userId);
     }
 
     public Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
@@ -1046,7 +1055,7 @@ public class EntryManager
             linkedFile = await fileDao.GetFileAsync(int.Parse(linkedId));
             if (linkedFile == null
                 || !await _fileSecurity.CanFillFormsAsync(linkedFile)
-                || await FileLockedForMeAsync(linkedFile.Id)
+                || await FileLockedForMeAsync(linkedFile)
                 || linkedFile.RootFolderType == FolderType.TRASH)
             {
                 await linkDao.DeleteLinkAsync(sourceFile.Id.ToString());
@@ -1297,7 +1306,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        if (checkRight && await FileLockedForMeAsync(file.Id))
+        if (checkRight && await FileLockedForMeAsync(file))
         {
             throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
         }
@@ -1478,7 +1487,7 @@ public class EntryManager
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
-        if (await FileLockedForMeAsync(file.Id, userId))
+        if (await FileLockedForMeAsync(file, userId))
         {
             throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
         }
@@ -1530,7 +1539,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        if (await FileLockedForMeAsync(fromFile.Id))
+        if (await FileLockedForMeAsync(fromFile))
         {
             throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
         }
@@ -1653,7 +1662,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        if (await FileLockedForMeAsync(fileVersion.Id))
+        if (await FileLockedForMeAsync(fileVersion))
         {
             throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
         }
@@ -1716,7 +1725,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
 
-        if (await FileLockedForMeAsync(file.Id))
+        if (await FileLockedForMeAsync(file))
         {
             throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
         }
