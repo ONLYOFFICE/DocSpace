@@ -23,33 +23,7 @@ const EncryptedFileIcon = styled.div`
   margin-left: 12px;
 `;
 
-const ItemIcon = ({
-  id,
-  icon,
-  fileExst,
-  isPrivacy,
-  viewAs,
-  isRoom,
-  // actionType,
-  // actionExtension,
-  // actionId,
-}) => {
-  // const isEdit =
-  //   (actionType !== null && actionId === id && fileExst === actionExtension) ||
-  //   id <= 0;
-
-  // return (
-  //   <>
-  //     <StyledIcon
-  //       className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
-  //       src={icon}
-  //     />
-  //     {isPrivacy && fileExst && (
-  //       <EncryptedFileIcon isEdit={isEdit && viewAs !== "tile"} />
-  //     )}
-  //   </>
-  // );
-
+const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom }) => {
   return (
     <>
       <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
@@ -58,14 +32,8 @@ const ItemIcon = ({
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore }) => {
-  // const { type, extension, id } = filesStore.fileActionStore;
-
+export default inject(({ treeFoldersStore }) => {
   return {
-    viewAs: filesStore.viewAs,
     isPrivacy: treeFoldersStore.isPrivacyFolder,
-    // actionType: type,
-    // actionExtension: extension,
-    // actionId: id,
   };
 })(observer(ItemIcon));
