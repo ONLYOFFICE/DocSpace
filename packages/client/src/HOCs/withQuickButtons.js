@@ -15,10 +15,10 @@ export default function withQuickButtons(WrappedComponent) {
     }
 
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, t } = this.props;
-      const { locked, id, access } = item;
+      const { item, lockFileAction, t } = this.props;
+      const { locked, id, security } = item;
 
-      if ((isAdmin || access === 0) && !this.state.isLoading) {
+      if (security?.Lock && !this.state.isLoading) {
         this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .then(() =>
