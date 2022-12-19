@@ -2329,6 +2329,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("folder_type")
                         .HasDefaultValueSql("'0'");
 
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("varchar(512)")
@@ -2501,6 +2505,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("foldersCount")
                         .HasDefaultValueSql("'0'");
+
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()

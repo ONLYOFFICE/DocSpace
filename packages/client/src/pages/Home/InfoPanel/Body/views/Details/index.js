@@ -22,7 +22,6 @@ const Details = ({
   isVisitor,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
-  const [largeLogoIcon, setLargeLogoIcon] = useState("");
 
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
@@ -39,23 +38,8 @@ const Details = ({
     culture,
   });
 
-  const getLargeRoomLogo = React.useCallback(
-    async (url) => {
-      if (selection?.logo?.large) return setLargeLogoIcon(selection.logo.large);
-
-      const icon = await api.rooms.getLogoIcon(url);
-
-      setLargeLogoIcon(icon);
-    },
-    [selection?.logo?.large]
-  );
-
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
-
-    if ((selection?.isRoom || selection?.roomType) && !selection.isArchive) {
-      getLargeRoomLogo(selection?.logoHandlers?.large);
-    }
 
     if (
       !selection.isFolder &&
@@ -67,11 +51,12 @@ const Details = ({
     ) {
       await createThumbnail(selection.id);
     }
-  }, [selection, getLargeRoomLogo]);
+  }, [selection]);
 
-  const currentIcon = largeLogoIcon
-    ? largeLogoIcon
-    : getInfoPanelItemIcon(selection, 96);
+  const currentIcon =
+    !selection.isArchive && selection?.logo?.large
+      ? selection?.logo?.large
+      : getInfoPanelItemIcon(selection, 96);
 
   return (
     <>
@@ -89,7 +74,10 @@ const Details = ({
         <StyledNoThumbnail>
           <img
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom && selection.logo?.large && "custom-logo"
+              selection.isRoom &&
+              !selection.isArchive &&
+              selection.logo?.large &&
+              "custom-logo"
             }`}
             src={currentIcon}
             alt="thumbnail-icon-big"

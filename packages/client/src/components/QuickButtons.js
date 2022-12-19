@@ -22,11 +22,10 @@ const QuickButtons = (props) => {
     onClickFavorite,
     viewAs,
     isCanWebEdit,
-    canLockFile,
   } = props;
 
-  const { id, locked, fileStatus, title, fileExst, access, folderType } = item;
-  const canLockFileAbility = canLockFile(item);
+  const { id, locked, fileStatus, title, fileExst, security } = item;
+  const canLockFileAbility = security?.Lock;
 
   const isFavorite =
     (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;

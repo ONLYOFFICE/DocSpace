@@ -26,12 +26,17 @@ import {
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
-import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
+import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
 let requestCounter = 0;
+
+const NotFoundHttpCode = 404;
+const ForbiddenHttpCode = 403;
+const PaymentRequiredHttpCode = 402;
+const UnauthorizedHttpCode = 401;
 
 class FilesStore {
   authStore;
@@ -98,6 +103,11 @@ class FilesStore {
   isEmptyPage = false;
   isLoadedFetchFiles = false;
 
+  tempActionFilesIds = [];
+  operationAction = false;
+
+  isErrorRoomNotAvailable = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -123,7 +133,7 @@ class FilesStore {
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
 
-      if (this.isLoading) return;
+      if (this.isLoading || this.operationAction) return;
 
       switch (opt?.cmd) {
         case "create":
@@ -198,15 +208,23 @@ class FilesStore {
               this.files[foundIndex].title
             );
 
-            this.setFiles(
-              this.files.filter((_, index) => {
-                return index !== foundIndex;
-              })
-            );
+            // this.setFiles(
+            //   this.files.filter((_, index) => {
+            //     return index !== foundIndex;
+            //   })
+            // );
 
-            const newFilter = this.filter.clone();
-            newFilter.total -= 1;
-            this.setFilter(newFilter);
+            // const newFilter = this.filter.clone();
+            // newFilter.total -= 1;
+            // this.setFilter(newFilter);
+
+            const tempActionFilesIds = JSON.parse(
+              JSON.stringify(this.tempActionFilesIds)
+            );
+            tempActionFilesIds.push(this.files[foundIndex].id);
+
+            this.setTempActionFilesIds(tempActionFilesIds);
+            this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -234,7 +252,10 @@ class FilesStore {
       //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
       //);
 
-      if (this.selectedFolderStore.id == id) {
+      if (
+        this.selectedFolderStore.id == id &&
+        this.authStore.settingsStore.withPaging //TODO: no longer deletes the folder in other tabs
+      ) {
         console.log("[WS] refresh-folder", id);
         this.fetchFiles(id, this.filter);
       }
@@ -311,6 +332,18 @@ class FilesStore {
       }
     });
   }
+
+  debounceRemoveFiles = debounce(() => {
+    this.removeFiles(this.tempActionFilesIds);
+  }, 1000);
+
+  setTempActionFilesIds = (tempActionFilesIds) => {
+    this.tempActionFilesIds = tempActionFilesIds;
+  };
+
+  setOperationAction = (operationAction) => {
+    this.operationAction = operationAction;
+  };
 
   updateSelectionStatus = (id, status, isEditing) => {
     const index = this.selection.findIndex((x) => x.id === id);
@@ -782,6 +815,7 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
+    this.isErrorRoomNotAvailable = false;
     this.isLoadedFetchFiles = false;
 
     const filterStorageItem =
@@ -924,18 +958,23 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
-        toastr.error(err);
 
         if (requestCounter > 0) return;
 
         requestCounter++;
-        setTimeout(() => {
-          window.location.href = combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            "/rooms/shared/"
-          );
-        }, 5000);
+        const isUserError = [
+          NotFoundHttpCode,
+          ForbiddenHttpCode,
+          PaymentRequiredHttpCode,
+          UnauthorizedHttpCode,
+        ].includes(err?.response?.status);
+
+        if (isUserError) {
+          this.isErrorRoomNotAvailable = true;
+          this.isEmptyPage = true;
+        } else {
+          toastr.error(err);
+        }
       })
       .finally(() => {
         this.isLoadedFetchFiles = true;
@@ -1039,9 +1078,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-
-          this.updateRoomLoadingLogo();
-
+          this.isErrorRoomNotAvailable = false;
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -1111,7 +1148,7 @@ class FilesStore {
     return newOptions.filter((o) => o);
   };
 
-  getFilesContextOptions = (item, canOpenPlayer) => {
+  getFilesContextOptions = (item) => {
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -1130,8 +1167,6 @@ class FilesStore {
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
-    const { canFormFillingDocs } = this.filesSettingsStore;
-
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isThirdPartyFolder =
@@ -1144,39 +1179,33 @@ class FilesStore {
     const pluginAllKeys =
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
-    const canRenameItem = this.accessRightsStore.canRenameItem({
-      ...item,
-      ...isFile,
-    });
+    const canRenameItem = item.security?.Rename;
 
     const canMove = this.accessRightsStore.canMoveItems({
       ...item,
       ...{ editing: isEditing },
     });
 
-    const canDelete = this.accessRightsStore.canDeleteItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
+    const canDelete = !isEditing && item.security?.Delete;
 
-    const canCopy = this.accessRightsStore.canCopyItems(item);
-    const canCreateCopy = this.accessRightsStore.canDuplicateFile(item);
+    const canCopy = item.security?.Copy;
+    const canDuplicate = item.security?.Duplicate;
 
     if (isFile) {
-      const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const canLockFile = this.accessRightsStore.canLockFile(item);
-      const canChangeVersionFileHistory = this.accessRightsStore.canChangeVersionFileHistory(
-        { ...item, ...{ editing: isEditing } }
-      );
+      const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
+      const canLockFile = item.security?.Lock;
+      const canChangeVersionFileHistory =
+        !isEditing && item.security?.EditHistory;
 
-      const canViewVersionFileHistory = this.accessRightsStore.canViewVersionFileHistory(
-        item
-      );
-      const canFillForm = this.accessRightsStore.canFillForm(item);
+      const canViewVersionFileHistory = item.security?.ReadHistory;
+      const canFillForm = item.security?.FillForms;
 
-      const canEditFile = this.accessRightsStore.canEditFile(item);
+      const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
+      const canOpenPlayer =
+        item.viewAccessability.ImageView || item.viewAccessability.MediaView;
+      const canViewFile = item.viewAccessability.WebView;
+
       const isMasterForm = item.fileExst === ".docxf";
-      const canMakeForm = this.accessRightsStore.canMakeForm(item);
 
       let fileOptions = [
         //"open",
@@ -1187,6 +1216,7 @@ class FilesStore {
         "view",
         "make-form",
         "separator0",
+        "link-for-room-members",
         // "sharing-settings",
         // "external-link",
         "owner-change",
@@ -1262,14 +1292,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
-      if (!(isMasterForm && canMakeForm))
+      if (!(isMasterForm && canDuplicate))
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       if (item.rootFolderType === FolderType.Archive) {
@@ -1288,10 +1318,12 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
       }
 
+      if (!canViewFile || isRecycleBinFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["preview"]);
+      }
+
       if (!canOpenPlayer) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
-      } else {
-        fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
       if (!isDocuSign) {
@@ -1323,6 +1355,7 @@ class FilesStore {
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
+          "link-for-room-members",
           // "link-for-portal-users",
           // "external-link",
           "send-by-email",
@@ -1336,35 +1369,17 @@ class FilesStore {
       //   ]);
       // }
 
-      if (isRecycleBinFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "open",
-          "open-location",
-          "view",
-          "preview",
-          //"link-for-portal-users",
-          //"sharing-settings",
-          //"external-link",
-          "send-by-email",
-          "mark-read",
-          // "mark-as-favorite",
-          // "remove-from-favorites",
-          "separator0",
-          "separator1",
-        ]);
-      } else {
+      if (!isRecycleBinFolder)
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-        if (enablePlugins) {
-          const pluginFilesKeys = getContextMenuKeysByType(
-            PluginContextMenuItemType.Files
-          );
+      if (enablePlugins && !isRecycleBinFolder) {
+        const pluginFilesKeys = getContextMenuKeysByType(
+          PluginContextMenuItemType.Files
+        );
 
-          pluginAllKeys &&
-            pluginAllKeys.forEach((key) => fileOptions.push(key));
-          pluginFilesKeys &&
-            pluginFilesKeys.forEach((key) => fileOptions.push(key));
-        }
+        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
+        pluginFilesKeys &&
+          pluginFilesKeys.forEach((key) => fileOptions.push(key));
       }
 
       if (!this.canShareOwnerChange(item)) {
@@ -1389,6 +1404,12 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
+      if (isMyFolder || isRecycleBinFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "link-for-room-members",
+        ]);
+      }
+
       // if (isPrivacyFolder) {
       //   fileOptions = this.removeOptions(fileOptions, [
       //     "preview",
@@ -1406,17 +1427,15 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const canInviteUserInRoom = this.accessRightsStore.canInviteUserInRoom(
-        item
-      );
-      const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
+      const canInviteUserInRoom = item.security?.EditAccess;
+      const canRemoveRoom = item.security?.Delete;
 
-      const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
-      const canPinRoom = this.accessRightsStore.canPinRoom(item);
+      const canArchiveRoom = item.security?.Move;
+      const canPinRoom = item.security?.Pin;
 
-      const canEditRoom = this.accessRightsStore.canEditRoom(item);
+      const canEditRoom = item.security?.EditRoom;
 
-      const canViewRoomInfo = this.accessRightsStore.canViewRoomInfo(item);
+      const canViewRoomInfo = item.security?.Read;
 
       let roomOptions = [
         "select",
@@ -1508,6 +1527,7 @@ class FilesStore {
         "open",
         // "separator0",
         // "sharing-settings",
+        "link-for-room-members",
         "owner-change",
         "show-info",
         // "link-for-portal-users",
@@ -1541,11 +1561,11 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["copy-to"]);
       }
 
-      if (!canCreateCopy) {
+      if (!canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
-      if (!canMove && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canDuplicate) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
@@ -1565,6 +1585,7 @@ class FilesStore {
       if (isRecycleBinFolder) {
         folderOptions = this.removeOptions(folderOptions, [
           "open",
+          "link-for-room-members",
           // "link-for-portal-users",
           // "sharing-settings",
           "mark-read",
@@ -1634,6 +1655,12 @@ class FilesStore {
 
       if (!(isMyFolder && (this.filterType || this.filterSearch))) {
         folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
+      if (isMyFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "link-for-room-members",
+        ]);
       }
 
       folderOptions = this.removeSeparator(folderOptions);
@@ -1821,9 +1848,13 @@ class FilesStore {
 
         showToast && showToast();
       })
-      .catch(() => {
+      .catch((err) => {
         toastr.error(err);
         console.log("Need page reload");
+      })
+      .finally(() => {
+        this.setOperationAction(false);
+        this.setTempActionFilesIds([]);
       });
   };
 
@@ -2002,59 +2033,31 @@ class FilesStore {
     return this.filter.search;
   }
 
-  getFolderUrl = (id, isFolder) => {
+  getItemUrl = (id, isFolder, needConvert, canOpenPlayer) => {
+    const proxyURL = AppServerConfig?.proxyURL?.trim()
+      ? AppServerConfig?.proxyURL
+      : window.location.origin;
+
     const url = getCategoryUrl(this.categoryType, id);
 
-    const folderUrl = isFolder
-      ? combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `${url}?folder=${id}`
-        )
-      : null;
-
-    return folderUrl;
-  };
-
-  getRoomLogo = async (logoHandlers) => {
-    const newLogos = {};
-
-    for (let key in logoHandlers) {
-      let icon = "";
-
-      if (key === "medium") {
-        icon = await api.rooms.getLogoIcon(logoHandlers[key]);
-
-        // check for null
-        icon = icon ? icon : "";
-      }
-
-      newLogos[key] = icon;
+    if (canOpenPlayer) {
+      return combineUrl(proxyURL, config.homepage, `${url}/#preview/${id}`);
     }
 
-    return newLogos;
-  };
+    if (isFolder) {
+      const folderUrl = isFolder
+        ? combineUrl(proxyURL, config.homepage, `${url}?folder=${id}`)
+        : null;
 
-  updateRoomLoadingLogo = async () => {
-    const newRooms = await Promise.all(
-      this.folders.map(async (f) => {
-        const newRoom = JSON.parse(JSON.stringify(f));
+      return folderUrl;
+    } else {
+      const url = combineUrl(
+        proxyURL,
+        config.homepage,
+        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
+      );
 
-        if (!newRoom.isLogoLoading) return newRoom;
-
-        newRoom.isLogoLoading = false;
-        newRoom.logo = await this.getRoomLogo(newRoom.logoHandlers);
-
-        return newRoom;
-      })
-    );
-
-    if (
-      (this.treeFoldersStore.isRoomsFolder ||
-        this.treeFoldersStore.isArchiveFolder) &&
-      this.selectedFolderStore.navigationPath.length === 0
-    ) {
-      this.setFolders(newRooms);
+      return url;
     }
   };
 
@@ -2088,8 +2091,6 @@ class FilesStore {
         foldersCount,
         id,
         logo,
-        logoHandlers,
-        isLogoLoading,
         locked,
         parentId,
         pureContentLength,
@@ -2112,6 +2113,8 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        security,
+        viewAccessability,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2124,29 +2127,16 @@ class FilesStore {
           Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
         ];
 
-      const { canConvert, isMediaOrImage } = this.filesSettingsStore;
-
-      const canOpenPlayer = isMediaOrImage(item.fileExst);
+      const canOpenPlayer =
+        item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
 
       const previewUrl = canOpenPlayer
-        ? combineUrl(
-            AppServerConfig.proxyURL,
-            config.homepage,
-            `/#preview/${id}`
-          )
+        ? this.getItemUrl(id, false, needConvert, canOpenPlayer)
         : null;
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       const iconSize = this.viewAs === "table" ? 24 : 32;
-      const icon = getIcon(
-        iconSize,
-        fileExst,
-        providerKey,
-        contentLength,
-        roomType,
-        isArchive
-      );
 
       let isFolder = false;
       this.folders.map((x) => {
@@ -2155,17 +2145,14 @@ class FilesStore {
 
       const { isRecycleBinFolder } = this.treeFoldersStore;
 
-      const folderUrl = this.getFolderUrl(id, isFolder);
+      const folderUrl = isFolder && this.getItemUrl(id, isFolder, false, false);
 
-      const needConvert = canConvert(fileExst);
+      const needConvert = item.viewAccessability?.Convert;
       const isEditing =
         (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
-      const docUrl = combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/doceditor?fileId=${id}${needConvert ? "&action=view" : ""}`
-      );
+      const docUrl =
+        !canOpenPlayer && !isFolder && this.getItemUrl(id, false, needConvert);
 
       const href = isRecycleBinFolder
         ? null
@@ -2176,6 +2163,18 @@ class FilesStore {
         : folderUrl;
 
       const isRoom = !!roomType;
+
+      const icon =
+        isRoom && !isArchive && logo?.medium
+          ? logo?.medium
+          : getIcon(
+              iconSize,
+              fileExst,
+              providerKey,
+              contentLength,
+              roomType,
+              isArchive
+            );
 
       return {
         access,
@@ -2195,9 +2194,8 @@ class FilesStore {
         icon,
         id,
         isFolder,
-        isLogoLoading,
         logo,
-        logoHandlers,
+
         locked,
         new: item.new,
         parentId,
@@ -2232,6 +2230,8 @@ class FilesStore {
         pinned,
         thirdPartyIcon,
         providerType,
+        security,
+        viewAccessability,
       };
     });
 
@@ -2240,8 +2240,6 @@ class FilesStore {
 
   get cbMenuItems() {
     const {
-      isImage,
-      isVideo,
       isDocument,
       isPresentation,
       isSpreadsheet,
@@ -2281,8 +2279,10 @@ class FilesStore {
         cbMenu.push(FilterType.PresentationsOnly);
       else if (isSpreadsheet(item.fileExst))
         cbMenu.push(FilterType.SpreadsheetsOnly);
-      else if (isImage(item.fileExst)) cbMenu.push(FilterType.ImagesOnly);
-      else if (isVideo(item.fileExst)) cbMenu.push(FilterType.MediaOnly);
+      else if (item.viewAccessability?.ImageView)
+        cbMenu.push(FilterType.ImagesOnly);
+      else if (item.viewAccessability?.MediaView)
+        cbMenu.push(FilterType.MediaOnly);
       else if (isArchive(item.fileExst)) cbMenu.push(FilterType.ArchiveOnly);
     }
 
@@ -2477,20 +2477,19 @@ class FilesStore {
   }
 
   get isViewedSelected() {
-    const { canViewedDocs } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return canViewedDocs(selected.fileExst);
+      return selected.viewAccessability?.WebView;
     });
   }
 
   get isMediaSelected() {
-    const { isMediaOrImage } = this.filesSettingsStore;
-
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return isMediaOrImage(selected.fileExst);
+      return (
+        selected.viewAccessability?.ImageView ||
+        selected.viewAccessability?.MediaView
+      );
     });
   }
 
@@ -2531,15 +2530,6 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const {
-      canWebEdit,
-      canWebComment,
-      canWebReview,
-      canFormFillingDocs,
-      canWebFilterEditing,
-      canConvert,
-    } = this.filesSettingsStore;
-
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
     }
@@ -2548,19 +2538,21 @@ class FilesStore {
 
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    const webEdit = selection.find((x) => canWebEdit(x.fileExst));
+    const webEdit = selection.find((x) => x.viewAccessability?.WebEdit);
 
-    const webComment = selection.find((x) => canWebComment(x.fileExst));
+    const webComment = selection.find((x) => x.viewAccessability?.WebComment);
 
-    const webReview = selection.find((x) => canWebReview(x.fileExst));
+    const webReview = selection.find((x) => x.viewAccessability?.WebReview);
 
-    const formFillingDocs = selection.find((x) =>
-      canFormFillingDocs(x.fileExst)
+    const formFillingDocs = selection.find(
+      (x) => x.viewAccessability?.WebRestrictedEditing
     );
 
-    const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
+    const webFilter = selection.find(
+      (x) => x.viewAccessability?.WebCustomFilterEditing
+    );
 
-    const webNeedConvert = selection.find((x) => canConvert(x.fileExst));
+    const webNeedConvert = selection.find((x) => x.viewAccessability?.Convert);
 
     if ((webEdit && !webNeedConvert) || !externalAccess)
       AccessOptions.push("FullAccess");
@@ -2885,15 +2877,11 @@ class FilesStore {
   }
 
   get roomsForRestore() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).restore
-    );
+    return this.folders.filter((f) => f.security.Move);
   }
 
   get roomsForDelete() {
-    return this.folders.filter(
-      (f) => getArchiveRoomRoleActions(f.access).delete
-    );
+    return this.folders.filter((f) => f.security.Delete);
   }
 }
 

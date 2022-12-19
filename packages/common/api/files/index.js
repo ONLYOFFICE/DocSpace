@@ -5,7 +5,7 @@ import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
 import { getFolderOptions, decodeDisplayName } from "../../utils";
 import { Encoder } from "../../utils/encoder";
-import { getLogoIcon, getRooms } from "../rooms";
+import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
 export function openEdit(fileId, version, doc, view) {
@@ -39,45 +39,7 @@ export function getFolderInfo(folderId) {
     url: `/files/folder/${folderId}`,
   };
 
-  return request(options).then((res) => {
-    if (res.roomType) {
-      return new Promise((resolve, reject) => {
-        if (res.rootFolderType === FolderType.Archive) {
-          res.isLogoLoading = false;
-          for (let key in room.logo) {
-            room.logo[key] = "";
-          }
-
-          return resolve(res);
-        }
-
-        res.isLogoLoading = false;
-        res.logoHandlers = res.logo;
-
-        const newLogos = {};
-
-        const actions = [];
-
-        const getLogo = async (key) => {
-          const logo = await getLogoIcon(res.logo[key]);
-
-          newLogos[key] = logo;
-        };
-
-        for (let key in res.logo) {
-          actions.push(getLogo(key));
-        }
-
-        return Promise.all(actions).then(() => {
-          res.logo = newLogos;
-
-          resolve(res);
-        });
-      });
-    }
-
-    return res;
-  });
+  return request(options);
 }
 
 export function getFolderPath(folderId) {
@@ -95,40 +57,9 @@ export function getFolder(folderId, filter) {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
-    const { current } = res;
-
-    if (current.roomType) {
-      res.current.isLogoLoading = false;
-      res.current.logoHandlers = current.logo;
-
-      if (current.rootFolderType === FolderType.Rooms) {
-        return new Promise((resolve, reject) => {
-          const actions = [];
-
-          const newLogos = {};
-
-          const getLogo = async (key) => {
-            const logo = await getLogoIcon(current.logo[key]);
-
-            newLogos[key] = logo;
-          };
-
-          for (let key in current.logo) {
-            actions.push(getLogo(key));
-          }
-
-          return Promise.all(actions).then(() => {
-            res.current.logo = newLogos;
-
-            resolve(res);
-          });
-        });
-      } else {
-        for (let key in res.current.logo) {
-          res.current.logo[key] = "";
-        }
-      }
-    }
+    res.current.isArchive =
+      !!res.current.roomType &&
+      res.current.rootFolderType === FolderType.Archive;
 
     return res;
   });

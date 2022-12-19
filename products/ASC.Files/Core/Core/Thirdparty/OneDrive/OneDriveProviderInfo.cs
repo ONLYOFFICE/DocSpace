@@ -57,6 +57,7 @@ internal class OneDriveProviderInfo : IProviderInfo
     public FolderType FolderType { get; set; }
     public string FolderId { get; set; }
     public bool Private { get; set; }
+    public bool HasLogo { get; set; }
 
     private readonly OneDriveStorageDisposableWrapper _wrapper;
     private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;

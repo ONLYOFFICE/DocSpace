@@ -19,7 +19,6 @@ const PureSettingsItem = ({
   setExpandSettingsTree,
   setSelectedFolder,
   history,
-  setIsLoading,
   t,
   showText,
   toggleArticleOpen,
@@ -27,10 +26,8 @@ const PureSettingsItem = ({
   const { setting } = match.params;
 
   React.useEffect(() => {
-    setIsLoading(true);
     setSelectedNode([setting]);
-    setIsLoading(false);
-  }, [setting, setIsLoading, setSelectedNode]);
+  }, [setting, setSelectedNode]);
 
   React.useEffect(() => {
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
@@ -73,20 +70,13 @@ const SettingsItem = withTranslation(["FilesSettings", "Common"])(
 );
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { setIsLoading } = filesStore;
+  ({ auth, settingsStore, treeFoldersStore, selectedFolderStore }) => {
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const { expandedSetting, setExpandSettingsTree } = settingsStore;
     return {
       expandedSetting,
-      setIsLoading,
+
       setSelectedFolder,
       setSelectedNode,
       setExpandSettingsTree,

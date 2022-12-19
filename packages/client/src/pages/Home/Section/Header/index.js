@@ -339,12 +339,20 @@ class SectionHeaderContent extends React.Component {
     setIsInfoPanelVisible(!isInfoPanelVisible);
   };
 
+  onCopyLinkAction = () => {
+    const { t, selectedFolder, onCopyLink } = this.props;
+
+    onCopyLink && onCopyLink({ ...selectedFolder, isFolder: true }, t);
+  };
+
   getContextOptionsFolder = () => {
     const {
       t,
       isRoom,
       isRecycleBinFolder,
       isArchiveFolder,
+      isPersonalRoom,
+
       selectedFolder,
 
       onClickEditRoom,
@@ -395,6 +403,14 @@ class SectionHeaderContent extends React.Component {
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: true,
+        icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        id: "header_option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        onClick: this.onCopyLinkAction,
+        disabled: isRecycleBinFolder || isPersonalRoom,
         icon: "/static/images/invitation.link.react.svg",
       },
       {
@@ -765,6 +781,7 @@ export default inject(
       isPrivacyFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isPersonalRoom,
     } = treeFoldersStore;
 
     const {
@@ -797,6 +814,7 @@ export default inject(
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+      onCopyLink,
     } = contextOptionsStore;
 
     const { canCreateFiles } = accessRightsStore;
@@ -812,6 +830,7 @@ export default inject(
       isDesktop: auth.settingsStore.isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
+      isPersonalRoom,
       title,
       isRoom,
       currentFolderId: id,
@@ -880,6 +899,7 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+      onCopyLink,
 
       rootFolderType,
 

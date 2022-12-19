@@ -194,40 +194,11 @@ class SettingsStore {
     this.hideConfirmConvertSave = hideConfirmConvertSave;
   };
 
-  canWebEdit = (extension) => presentInArray(this.extsWebEdited, extension);
-
-  canViewedDocs = (extension) =>
-    presentInArray(this.extsWebPreviewed, extension);
-
   canConvert = (extension) => presentInArray(this.extsMustConvert, extension);
-
-  canWebComment = (extension) =>
-    presentInArray(this.extsWebCommented, extension);
-
-  canWebReview = (extension) => presentInArray(this.extsWebReviewed, extension);
-
-  canFormFillingDocs = (extension) =>
-    presentInArray(this.extsWebRestrictedEditing, extension);
-
-  canWebFilterEditing = (extension) =>
-    presentInArray(this.extsWebCustomFilterEditing, extension);
-
-  isMediaOrImage = (fileExst) => {
-    if (
-      this.extsVideo.includes(fileExst) ||
-      this.extsImage.includes(fileExst) ||
-      this.extsAudio.includes(fileExst)
-    ) {
-      return true;
-    }
-    return false;
-  };
 
   isArchive = (extension) => presentInArray(this.extsArchive, extension);
 
   isImage = (extension) => presentInArray(this.extsImage, extension);
-
-  isVideo = (extension) => presentInArray(this.extsVideo, extension);
 
   isSound = (extension) => presentInArray(this.extsAudio, extension);
 

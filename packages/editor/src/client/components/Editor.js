@@ -22,14 +22,9 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
-import {
-  getArchiveFileRoleActions,
-  getFileRoleActions,
-} from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -103,9 +98,7 @@ function Editor({
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
-    userAccessRights = isArchiveFolderRoot
-      ? getArchiveFileRoleActions(fileInfo.access)
-      : getFileRoleActions(fileInfo.access);
+    userAccessRights = fileInfo.security;
   }
   useEffect(() => {
     if (error && mfReady) {
@@ -131,9 +124,9 @@ function Editor({
     if (
       !view &&
       fileInfo &&
-      fileInfo.canWebRestrictedEditing &&
-      fileInfo.canFillForms &&
-      !fileInfo.canEdit
+      fileInfo.viewAccessability.WebRestrictedEditing &&
+      fileInfo.security.FillForms &&
+      !fileInfo.security.Edit
     ) {
       try {
         initForm();
@@ -166,7 +159,7 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        canConvert(fileInfo.fileExst, filesSettings)
+        fileInfo?.viewAccessability?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -228,7 +221,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (canConvert(fileInfo.fileExst, filesSettings)) {
+      if (fileInfo?.viewAccessability?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -279,9 +272,20 @@ function Editor({
         ),
         history: getDocumentHistory(updateVersions, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -330,9 +334,19 @@ function Editor({
         currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
         history: getDocumentHistory(fileHistory, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -361,9 +375,20 @@ function Editor({
         url: versionDifference.url,
         version,
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.setHistoryData({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
         version,
       });
     }
@@ -551,11 +576,11 @@ function Editor({
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename) {
+      if (userAccessRights.Rename) {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (userAccessRights.viewVersionHistory) {
+      if (userAccessRights.ReadHistory) {
         onRequestHistory = onSDKRequestHistory;
       }
 
@@ -569,7 +594,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory) {
+      if (userAccessRights.EditHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
 

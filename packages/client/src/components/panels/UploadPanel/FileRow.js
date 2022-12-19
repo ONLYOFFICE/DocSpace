@@ -359,12 +359,7 @@ export default inject(
       name = splitted[0];
     }
     const { personal, theme } = auth.settingsStore;
-    const {
-      canViewedDocs,
-      isMediaOrImage,
-      getIconSrc,
-      isArchive,
-    } = settingsStore;
+    const { getIconSrc, isArchive } = settingsStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -382,7 +377,8 @@ export default inject(
       setCurrentItem,
     } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
-    const isMedia = isMediaOrImage(ext);
+    const isMedia =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
     const isMediaActive =
       playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
 
@@ -395,7 +391,8 @@ export default inject(
         ? loadingFile.percent
         : null;
 
-    const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
+    const downloadInCurrentTab =
+      isArchive(ext) || !item.viewAccessability?.WebView;
 
     return {
       isPersonal: personal,
