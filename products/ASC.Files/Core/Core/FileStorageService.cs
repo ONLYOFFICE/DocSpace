@@ -2177,15 +2177,14 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (_configuration.EditorConfig.ModeWrite
             && _fileUtility.CanWebRestrictedEditing(file.Title)
-            && await _fileSecurity.CanFillFormsAsync(file)
-            && !await _fileSecurity.CanEditAsync(file))
+            && await _fileSecurity.CanFillFormsAsync(file))
         {
             if (!file.IsFillFormDraft)
             {
                 await _fileMarker.RemoveMarkAsNewAsync(file);
 
-                Folder<int> folderIfNew;
-                File<int> form;
+                Folder<T> folderIfNew;
+                File<T> form;
                 try
                 {
                     (form, folderIfNew) = await _entryManager.GetFillFormDraftAsync(file);

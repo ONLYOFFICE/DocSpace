@@ -1027,23 +1027,24 @@ public class EntryManager
         return _lockerManager.FileLockedByAsync(fileId, tagDao);
     }
 
-    public async Task<(File<int> file, Folder<int> folderIfNew)> GetFillFormDraftAsync<T>(File<T> sourceFile)
+    public async Task<(File<T> file, Folder<T> folderIfNew)> GetFillFormDraftAsync<T>(File<T> sourceFile)
     {
-        Folder<int> folderIfNew = null;
+        Folder<T> folderIfNew = null;
         if (sourceFile == null)
         {
             return (null, folderIfNew);
         }
 
-        File<int> linkedFile = null;
-        var fileDao = _daoFactory.GetFileDao<int>();
+        File<T> linkedFile = null;
+        var fileDao = _daoFactory.GetFileDao<T>();
         var sourceFileDao = _daoFactory.GetFileDao<T>();
         var linkDao = _daoFactory.GetLinkDao();
 
         var linkedId = await linkDao.GetLinkedAsync(sourceFile.Id.ToString());
+
         if (linkedId != null)
         {
-            linkedFile = await fileDao.GetFileAsync(int.Parse(linkedId));
+            linkedFile = await fileDao.GetFileAsync((T)Convert.ChangeType(linkedId, typeof(T)));
             if (linkedFile == null
                 || !await _fileSecurity.CanFillFormsAsync(linkedFile)
                 || await FileLockedForMeAsync(linkedFile.Id)
@@ -1056,21 +1057,24 @@ public class EntryManager
 
         if (linkedFile == null)
         {
-            var folderId = _globalFolderHelper.FolderMy;
-            var folderDao = _daoFactory.GetFolderDao<int>();
+            var folderId = sourceFile.ParentId;
+            var folderDao = _daoFactory.GetFolderDao<T>();
             folderIfNew = await folderDao.GetFolderAsync(folderId);
             if (folderIfNew == null)
             {
                 throw new Exception(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            if (!await _fileSecurity.CanCreateAsync(folderIfNew))
+            if (!await _fileSecurity.CanFillFormsAsync(folderIfNew))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
             }
 
-            linkedFile = _serviceProvider.GetService<File<int>>();
-            linkedFile.Title = sourceFile.Title;
+            var ext = FileUtility.GetFileExtension(sourceFile.Title);
+            var title = Path.GetFileNameWithoutExtension(sourceFile.Title);
+
+            linkedFile = _serviceProvider.GetService<File<T>>();
+            linkedFile.Title = $"{title}-{DateTime.UtcNow:s}{ext}";
             linkedFile.ParentId = folderIfNew.Id;
             linkedFile.FileStatus = sourceFile.FileStatus;
             linkedFile.ConvertedType = sourceFile.ConvertedType;
