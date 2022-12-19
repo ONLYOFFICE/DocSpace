@@ -236,7 +236,7 @@ public class EntryStatusManager
             {
                 var lockedBy = lockedTag.Owner;
                 file.Locked = lockedBy != Guid.Empty;
-                file.LockedForMe = file.Access != FileShare.None && file.Access != FileShare.RoomAdmin;
+                file.LockedForMe = file.Locked && file.Access != FileShare.None && file.Access != FileShare.RoomAdmin;
                 file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
                     ? _global.GetUserName(lockedBy)
                     : null;
