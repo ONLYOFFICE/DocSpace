@@ -24,19 +24,51 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF.Teamlabsite.Model;
+namespace Migration.Runner;
 
-namespace ASC.Core.Common.EF.Teamlabsite.Context;
-public class TeamlabSiteContext: DbContext, ITeamlabsiteDb
+public class MigrationRunner
 {
-    public DbSet<DbCache> Cache { get; set; }
+    private readonly DbContextActivator _dbContextActivator;
 
-    public TeamlabSiteContext(DbContextOptions<TeamlabSiteContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public MigrationRunner(IServiceProvider serviceProvider)
     {
-        ModelBuilderWrapper
-           .From(modelBuilder, Database)
-           .AddDbCache();
+        _dbContextActivator = new DbContextActivator(serviceProvider);
+    }
+
+    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
+    {
+        var counter = 0;
+
+        foreach (var assembly in GetAssemblies(path))
+        {
+            var ctxTypesFinder = new AssemblyContextFinder(assembly);
+
+            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
+            {
+                DbContext context = null;
+                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
+                {
+                    context = _dbContextActivator.CreateInstance(contextType, teamlabsiteProvider);
+                }
+                else
+                {
+                    context = _dbContextActivator.CreateInstance(contextType, dbProvider);
+                }
+                context.Database.Migrate();
+                counter++;
+            }
+        }
+
+        Console.WriteLine($"Applied {counter} migrations");
+    }
+
+    private static IEnumerable<Assembly> GetAssemblies(string path)
+    {
+        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
+
+        foreach (var assembly in assemblyPaths)
+        {
+            yield return Assembly.LoadFrom(assembly);
+        }
     }
 }

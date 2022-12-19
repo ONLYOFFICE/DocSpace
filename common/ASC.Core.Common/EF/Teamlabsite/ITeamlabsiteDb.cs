@@ -24,45 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Runner;
-
-public class MigrationRunner
+namespace ASC.Core.Common.EF.Teamlabsite;
+public interface ITeamlabsiteDb
 {
-    private readonly DbContextActivator _dbContextActivator;
-
-    public MigrationRunner(IServiceProvider serviceProvider)
-    {
-        _dbContextActivator = new DbContextActivator(serviceProvider);
-    }
-
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider)
-    {
-        var counter = 0;
-
-        foreach (var assembly in GetAssemblies(path))
-        {
-            var ctxTypesFinder = new AssemblyContextFinder(assembly);
-
-            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
-            {
-                var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
-
-                context.Database.Migrate();
-
-                counter++;
-            }
-        }
-
-        Console.WriteLine($"Applied {counter} migrations");
-    }
-
-    private static IEnumerable<Assembly> GetAssemblies(string path)
-    {
-        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
-
-        foreach (var assembly in assemblyPaths)
-        {
-            yield return Assembly.LoadFrom(assembly);
-        }
-    }
 }

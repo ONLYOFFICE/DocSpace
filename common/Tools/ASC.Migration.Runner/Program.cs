@@ -58,6 +58,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<FilesDbContext>();
     services.AddBaseDbContext<NotifyDbContext>();
     services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+    services.AddBaseDbContext<TeamlabSiteContext>();
 });
 
 var app = builder.Build();
@@ -67,5 +68,5 @@ var providersInfo = app.Configuration.GetSection("options").Get<Options>();
 foreach (var providerInfo in providersInfo.Providers)
 {
     var migrationCreator = new MigrationRunner(app.Services);
-    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo);
+    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo, providersInfo.TeamlabsiteProviders.SingleOrDefault(q => q.Provider == providerInfo.Provider));
 }
