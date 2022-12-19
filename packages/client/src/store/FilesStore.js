@@ -2165,7 +2165,7 @@ class FilesStore {
       const isRoom = !!roomType;
 
       const icon =
-        isRoom && !isArchive && logo?.medium
+        isRoom && logo?.medium
           ? logo?.medium
           : getIcon(
               iconSize,
