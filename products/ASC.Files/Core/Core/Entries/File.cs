@@ -125,6 +125,7 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
     public string DownloadUrl => FileHelper.GetDownloadUrl(this);
 
     public bool Locked { get; set; }
+    public bool LockedForMe { get; set; }
     public string LockedBy { get; set; }
 
     [JsonIgnore]
