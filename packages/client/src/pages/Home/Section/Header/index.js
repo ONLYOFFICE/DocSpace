@@ -76,6 +76,14 @@ class SectionHeaderContent extends React.Component {
     this.state = { navigationItems: [] };
   }
 
+  componentDidMount() {
+    window.addEventListener("popstate", this.onBackToParentFolder);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.onBackToParentFolder);
+  }
+
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
