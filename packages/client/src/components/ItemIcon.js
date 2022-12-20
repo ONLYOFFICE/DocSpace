@@ -1,6 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
+import Base from "@docspace/components/themes/base";
 
 const StyledIcon = styled.img`
   /* width: 24px;
@@ -11,8 +12,11 @@ const StyledIcon = styled.img`
     props.isRoom &&
     css`
       border-radius: 6px;
+      outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     `}
 `;
+
+StyledIcon.defaultProps = { theme: Base };
 
 const EncryptedFileIcon = styled.div`
   background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
