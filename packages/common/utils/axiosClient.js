@@ -112,14 +112,16 @@ class AxiosClient {
       //   ? this.getResponseError(error.response)
       //   : error.message;
 
-      if (error?.response?.status === 401 && this.isSSR) errorText = 401;
+      if (error?.response?.status === 401 && this.isSSR) {
+        error.response.data.error.message = 401;
+      }
 
       const loginURL = combineUrl(proxyURL, "/login");
       if (!this.isSSR) {
         switch (error.response?.status) {
           case 401:
             if (options.skipUnauthorized) return Promise.resolve();
-            if (options.skipLogout) return Promise.reject(errorText || error);
+            if (options.skipLogout) return Promise.reject(error);
 
             this.request({
               method: "post",
@@ -148,7 +150,7 @@ class AxiosClient {
             break;
         }
 
-        return Promise.reject(errorText || error);
+        return Promise.reject(error);
       }
     };
     return this.client(options).then(onSuccess).catch(onError);
