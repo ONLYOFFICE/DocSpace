@@ -1320,7 +1320,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
-      if (!canOpenPlayer) {
+      if (!canOpenPlayer || isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
       }
 
@@ -2173,6 +2173,17 @@ class FilesStore {
               isArchive
             );
 
+      const defaultRoomIcon =
+        isRoom &&
+        getIcon(
+          iconSize,
+          fileExst,
+          providerKey,
+          contentLength,
+          roomType,
+          isArchive
+        );
+
       return {
         access,
         //checked,
@@ -2189,10 +2200,10 @@ class FilesStore {
         folderId,
         foldersCount,
         icon,
+        defaultRoomIcon,
         id,
         isFolder,
         logo,
-
         locked,
         new: item.new,
         parentId,

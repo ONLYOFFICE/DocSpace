@@ -72,6 +72,14 @@ class SectionHeaderContent extends React.Component {
     this.state = { navigationItems: [] };
   }
 
+  componentDidMount() {
+    window.addEventListener("popstate", this.onBackToParentFolder);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.onBackToParentFolder);
+  }
+
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
@@ -476,7 +484,7 @@ class SectionHeaderContent extends React.Component {
         key: "archive-room",
         label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => onClickArchive(e, selectedFolder, t),
+        onClick: (e) => onClickArchive(e),
         disabled: !isRoom,
         "data-action": "archive",
         action: "archive",

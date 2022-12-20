@@ -27,10 +27,35 @@ const EncryptedFileIcon = styled.div`
   margin-left: 12px;
 `;
 
-const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom }) => {
+const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
+  let isMount = true;
+
+  const [imgSrc, setImgSrc] = React.useState(defaultRoomIcon);
+
+  const fetchImage = async () => {
+    const res = await fetch(icon);
+    const imageBlob = await res.blob();
+    const imageObjectURL = URL.createObjectURL(imageBlob);
+
+    isMount && setImgSrc(imageObjectURL);
+  };
+
+  React.useEffect(() => {
+    if (!isRoom || icon === defaultRoomIcon) return;
+    fetchImage();
+
+    return () => {
+      isMount = false;
+    };
+  }, []);
+
   return (
     <>
-      <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
+      <StyledIcon
+        className={`react-svg-icon`}
+        isRoom={isRoom}
+        src={!isRoom || icon === defaultRoomIcon ? icon : imgSrc}
+      />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>
   );
