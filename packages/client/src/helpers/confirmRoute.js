@@ -7,7 +7,6 @@ import Section from "@docspace/common/components/Section";
 import { checkConfirmLink } from "@docspace/common/api/user"; //TODO: Move AuthStore
 import { combineUrl, getObjectByLocation } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
@@ -55,17 +54,29 @@ class ConfirmRoute extends React.Component {
             break;
           case ValidationResult.Invalid:
             history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+              combineUrl(
+                window.DocSpaceConfig?.proxy?.url,
+                path,
+                "/error=Invalid link"
+              )
             );
             break;
           case ValidationResult.Expired:
             history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+              combineUrl(
+                window.DocSpaceConfig?.proxy?.url,
+                path,
+                "/error=Expired link"
+              )
             );
             break;
           default:
             history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+              combineUrl(
+                window.DocSpaceConfig?.proxy?.url,
+                path,
+                "/error=Unknown error"
+              )
             );
             break;
         }
@@ -82,7 +93,11 @@ class ConfirmRoute extends React.Component {
           errorMessage = error;
         }
         history.push(
-          combineUrl(AppServerConfig.proxyURL, path, `/error=${errorMessage}`)
+          combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            path,
+            `/error=${errorMessage}`
+          )
         );
       });
   }

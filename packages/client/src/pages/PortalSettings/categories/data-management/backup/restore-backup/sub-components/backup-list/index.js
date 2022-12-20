@@ -15,7 +15,6 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import Checkbox from "@docspace/components/checkbox";
 import HelpButton from "@docspace/components/help-button";
 import config from "PACKAGE_FILE";
@@ -114,7 +113,7 @@ class BackupListModalDialog extends React.Component {
         .then(() =>
           history.push(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               config.homepage,
               "/preparation-portal"
             )

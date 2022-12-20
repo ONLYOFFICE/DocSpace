@@ -7,17 +7,12 @@ import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin, setCookie, getCookie } from "../utils";
+import { isAdmin, setCookie, getCookie } from "../utils";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
-import {
-  AppServerConfig,
-  LANGUAGE,
-  COOKIE_EXPIRATION_YEAR,
-  TenantStatus,
-} from "../constants";
-const { proxyURL } = AppServerConfig;
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR, TenantStatus } from "../constants";
+
 class AuthStore {
   userStore = null;
 
@@ -215,7 +210,7 @@ class AuthStore {
     //     this.reset(true);
     //     this.userStore.setUser(null);
     //     this.init();
-    //     return history.push(combineUrl(proxyURL, "/login"));
+    //     return history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
     //   }
     // } else {
     //   this.reset();

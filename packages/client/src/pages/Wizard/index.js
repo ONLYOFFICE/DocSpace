@@ -24,7 +24,6 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 
 const emailSettings = new EmailSettings();
@@ -103,7 +102,7 @@ class Body extends Component {
     window.addEventListener("keyup", this.onKeyPressHandler);
 
     if (!wizardToken) {
-      history.push(combineUrl(AppServerConfig.proxyURL, "/"));
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     } else {
       await axios
         .all([
@@ -254,7 +253,7 @@ class Body extends Component {
           getPortalSettings();
         })
         .then(() =>
-          history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
+          history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"))
         )
         .catch((error) => {
           let errorMessage = "";

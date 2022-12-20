@@ -6,8 +6,6 @@ import { inject, observer } from "mobx-react";
 import PortalDeactivationSection from "./portalDeactivation";
 import PortalDeletionSection from "./portalDeletion";
 import DeleteDataLoader from "./DeleteDataLoader";
-
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "../../../../../package.json";
 
@@ -40,7 +38,7 @@ const DeleteData = (props) => {
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/delete-data/${e.id}`
       )

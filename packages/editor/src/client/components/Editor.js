@@ -1,18 +1,12 @@
 import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import {
-  AppServerConfig,
-  FolderType,
-  EDITOR_ID,
-} from "@docspace/common/constants";
+import { FolderType, EDITOR_ID } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
 import {
   restoreDocumentsVersion,
-  markAsFavorite,
-  removeFromFavorite,
   getEditDiff,
   getEditHistory,
   updateFile,
@@ -556,7 +550,7 @@ function Editor({
         if (!user.isVisitor)
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
-            AppServerConfig.proxyURL,
+            window.DocSpaceConfig?.proxy?.url,
             `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
               defaultFileName
             )}`

@@ -3,7 +3,6 @@ import { observer, inject } from "mobx-react";
 import Loader from "@docspace/components/loader";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 let loadTimeout = null;
 export default function withLoader(WrappedComponent) {
@@ -48,7 +47,7 @@ export default function withLoader(WrappedComponent) {
             console.error(errorMessage);
             history.push(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 `/login/error?message=${errorMessage}`
               )
             );
@@ -72,7 +71,7 @@ export default function withLoader(WrappedComponent) {
           console.error(errorMessage);
           history.push(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/login/error?message=${errorMessage}`
             )
           );

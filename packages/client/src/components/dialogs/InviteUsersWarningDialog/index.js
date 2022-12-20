@@ -4,12 +4,14 @@ import { withTranslation, Trans } from "react-i18next";
 import { withRouter } from "react-router";
 import moment from "moment";
 import { combineUrl } from "@docspace/common/utils";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
-const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
+const PROXY_BASE_URL = combineUrl(
+  window.DocSpaceConfig?.proxy?.url,
+  "/portal-settings"
+);
 
 const InviteUsersWarningDialog = (props) => {
   const {

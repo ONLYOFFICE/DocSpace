@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
-import { AppServerConfig, RoomsType } from "@docspace/common/constants";
 
 class TagsStore {
   tags = [];

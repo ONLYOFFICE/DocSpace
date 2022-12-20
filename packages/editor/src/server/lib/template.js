@@ -48,6 +48,21 @@ export default function template(
       tempElm.style.backgroundColor =
         localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
       console.log("It's Editor INIT");
+      fetch("/static/scripts/config.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        window.DocSpaceConfig = {
+          ...config,
+        };
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     </script>
     ${editorApiScript} 
 

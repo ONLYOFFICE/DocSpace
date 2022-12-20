@@ -4,9 +4,7 @@ import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
-import { smallTablet } from "@docspace/components/utils/device";
 import toastr from "@docspace/components/toast/toastr";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
 import ButtonContainer from "./sub-components/ButtonContainer";
@@ -103,7 +101,7 @@ const PriceCalculation = ({
 
       await axios
         .put(
-          combineUrl(AppServerConfig.apiPrefix, "/portal/payment/url"),
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal/payment/url"),
           { quantity: { admin: value } },
           {
             cancelToken: source.token,
