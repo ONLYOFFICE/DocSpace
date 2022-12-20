@@ -6,7 +6,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import SimulatePassword from "../../SimulatePassword";
 import StyledComponent from "./StyledConvertPasswordDialog";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { openDocEditor } from "@docspace/client/src/helpers/filesUtils";
 import combineUrl from "@docspace/common/utils/combineUrl";
@@ -58,7 +57,11 @@ const ConvertPasswordDialogComponent = (props) => {
     tab =
       !isDesktop && formCreationInfo.fileInfo.fileExst && formCreationInfo.open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              "/doceditor"
+            ),
             "_blank"
           )
         : null;

@@ -1,12 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
-  AppServerConfig,
   FileType,
   FilterType,
   FolderType,
   FileStatus,
-  RoomSearchArea,
   RoomsType,
   RoomsProviderType,
 } from "@docspace/common/constants";
@@ -758,7 +756,7 @@ class FilesStore {
     // });
 
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
 
@@ -2034,9 +2032,8 @@ class FilesStore {
   }
 
   getItemUrl = (id, isFolder, needConvert, canOpenPlayer) => {
-    const proxyURL = AppServerConfig?.proxyURL?.trim()
-      ? AppServerConfig?.proxyURL
-      : window.location.origin;
+    const proxyURL =
+      window.DocSpaceConfig?.proxy?.url || window.location.origin;
 
     const url = getCategoryUrl(this.categoryType, id);
 

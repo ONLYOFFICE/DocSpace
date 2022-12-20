@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@docspace/components/loader";
 //import Section from "../Section";
@@ -9,8 +9,7 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
-import { AppServerConfig, TenantStatus } from "../../constants";
-import CurrentTariffStatus from "../../store/CurrentTariffStatusStore";
+import { TenantStatus } from "../../constants";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -61,7 +60,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       //   <Redirect
       //     to={{
       //       pathname: combineUrl(
-      //         AppServerConfig.proxyURL,
+      //         window.DocSpaceConfig?.proxy?.url,
       //         wizardCompleted ? "/login" : "/wizard"
       //       ),
       //       state: { from: props.location },
@@ -99,7 +98,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/preparation-portal"
             ),
             state: { from: props.location },
@@ -120,7 +119,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/payments/portal-payments"
             ),
             state: { from: props.location },
@@ -144,7 +143,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-unavailable"
             ),
             state: { from: props.location },

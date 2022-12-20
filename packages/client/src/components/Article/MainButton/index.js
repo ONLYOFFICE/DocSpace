@@ -6,7 +6,6 @@ import MainButton from "@docspace/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import Loaders from "@docspace/common/components/Loaders";
-import { AppServerConfig, FileAction } from "@docspace/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { withRouter } from "react-router";
 
@@ -171,7 +170,7 @@ const ArticleMainButtonContent = (props) => {
   const onShowGallery = () => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/form-gallery/${currentFolderId}/`
       )
