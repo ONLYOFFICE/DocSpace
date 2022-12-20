@@ -2177,7 +2177,8 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (_configuration.EditorConfig.ModeWrite
             && _fileUtility.CanWebRestrictedEditing(file.Title)
-            && await _fileSecurity.CanFillFormsAsync(file))
+            && await _fileSecurity.CanFillFormsAsync(file)
+            && !await _fileSecurity.CanEditAsync(file))
         {
             if (!file.IsFillFormDraft)
             {

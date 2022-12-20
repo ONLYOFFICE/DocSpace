@@ -883,9 +883,19 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Edit:
                 if (e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.FillForms)
                 {
-                    return true;
+                    if (e.Access != FileShare.FillForms)
+                    {
+                        return true;
+                    }
+                    else if (file != null && 
+                             FileUtility.GetFileTypeByFileName(file.Title) == FileType.OForm && 
+                             e.CreateBy == _authContext.CurrentAccount.ID)
+                    {
+                        return true;
+                    }
                 }
                 break;
             case FilesSecurityActions.Delete:
