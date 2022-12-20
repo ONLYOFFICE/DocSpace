@@ -10,8 +10,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
-const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
-const { proxyURL } = AppServerConfig;
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 const baseConfig = require("./webpack.base.js");
 const pkg = require("../package.json");
@@ -77,7 +75,7 @@ const clientConfig = {
       name: "login",
       filename: "remoteEntry.js",
       remotes: {
-        client: `client@${combineUrl(proxyURL, "/remoteEntry.js")}`,
+        client: "client@/remoteEntry.js",
       },
       exposes: {
         "./login": "./src/client/components/Login.tsx",

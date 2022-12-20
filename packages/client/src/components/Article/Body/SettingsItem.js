@@ -5,7 +5,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig } from "@docspace/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
@@ -40,7 +39,11 @@ const PureSettingsItem = ({
     setExpandSettingsTree(["common"]);
     if (isMobile() || isMobileOnly) toggleArticleOpen();
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/settings/common"
+      )
     );
   }, [
     setSelectedFolder,
