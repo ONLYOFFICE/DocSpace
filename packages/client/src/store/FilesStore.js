@@ -1322,7 +1322,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
-      if (!canOpenPlayer) {
+      if (!canOpenPlayer || isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
       }
 
