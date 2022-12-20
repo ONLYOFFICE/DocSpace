@@ -2085,7 +2085,7 @@ const Base = {
     },
 
     details: {
-      customLogoBorderColor: "#eceef1",
+      customLogoBorderColor: grayLightMid,
       commentEditorIconColor: "#333",
     },
 
@@ -3103,6 +3103,10 @@ const Base = {
   accessRightSelect: {
     descriptionColor: gray,
   },
+
+  itemIcon: {
+    borderColor: grayLightMid
+  }
 };
 
 export default Base;
