@@ -24,28 +24,21 @@ const EncryptedFileIcon = styled.div`
 `;
 
 const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
-  if (!isRoom || icon === defaultRoomIcon)
-    return (
-      <>
-        <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
-        {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
-      </>
-    );
-
   let isMount = true;
 
   const [imgSrc, setImgSrc] = React.useState(defaultRoomIcon);
 
+  const fetchImage = async () => {
+    const res = await fetch(icon);
+    const imageBlob = await res.blob();
+    const imageObjectURL = URL.createObjectURL(imageBlob);
+
+    isMount && setImgSrc(imageObjectURL);
+  };
+
   React.useEffect(() => {
-    const img = new Image();
-
-    img.src = icon;
-
-    img.onload = () => {
-      if (isMount) {
-        setImgSrc(icon);
-      }
-    };
+    if (!isRoom || icon === defaultRoomIcon) return;
+    fetchImage();
 
     return () => {
       isMount = false;
@@ -54,7 +47,11 @@ const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
 
   return (
     <>
-      <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={imgSrc} />
+      <StyledIcon
+        className={`react-svg-icon`}
+        isRoom={isRoom}
+        src={!isRoom || icon === defaultRoomIcon ? icon : imgSrc}
+      />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>
   );
