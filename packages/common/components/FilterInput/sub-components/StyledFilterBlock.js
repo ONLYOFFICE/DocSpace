@@ -151,8 +151,8 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
   font-size: 13px;
   line-height: 15px;
   color: ${(props) => props.theme.filterInput.filter.color};
-
   margin-left: 8px;
+  cursor: pointer;
 `;
 
 StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };

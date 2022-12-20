@@ -225,13 +225,13 @@ const SimpleFilesRow = (props) => {
 
   const [isDragOver, setIsDragOver] = React.useState(false);
 
-  const withAccess = isAdmin || item.access === 0;
+  const withAccess = item.security?.Lock;
   const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
+      icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
     />

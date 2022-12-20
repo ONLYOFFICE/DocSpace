@@ -34,6 +34,7 @@ public class FileShareDto
     public object SharedTo { get; set; }
     public bool IsLocked { get; set; }
     public bool IsOwner { get; set; }
+    public bool CanEditAccess { get; set; }
 
     public static FileShareDto GetSample()
     {
@@ -77,7 +78,8 @@ public class FileShareDtoHelper
         var result = new FileShareDto
         {
             IsOwner = aceWrapper.Owner,
-            IsLocked = aceWrapper.LockedRights
+            IsLocked = aceWrapper.LockedRights,
+            CanEditAccess = aceWrapper.CanEditAccess,
         };
 
         if (aceWrapper.SubjectGroup)

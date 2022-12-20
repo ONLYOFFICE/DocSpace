@@ -138,10 +138,20 @@ class Body extends Component {
           });
           setIsWizardLoaded(true);
         })
-        .catch((e) => {
-          console.error(e);
+        .catch((error) => {
+          let errorMessage = "";
+          if (typeof err === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+          console.error(errorMessage);
           this.setState({
-            errorInitWizard: e,
+            errorInitWizard: errorMessage,
           });
         });
     }
@@ -246,13 +256,24 @@ class Body extends Component {
         .then(() =>
           history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
         )
-        .catch((e) =>
+        .catch((error) => {
+          let errorMessage = "";
+          if (typeof err === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+
           this.setState({
             errorLoading: true,
             sending: false,
-            errorMessage: e,
-          })
-        );
+            errorMessage: errorMessage,
+          });
+        });
     } else {
       this.setState({ visibleModal: true });
     }
@@ -382,13 +403,23 @@ class Body extends Component {
     let fd = new FormData();
     fd.append("files", file);
 
-    setLicense(wizardToken, fd).catch((e) =>
+    setLicense(wizardToken, fd).catch((error) => {
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
       this.setState({
         errorLoading: true,
-        errorMessage: e,
+        errorMessage: errorMessage,
         hasErrorLicense: true,
-      })
-    );
+      });
+    });
   };
 
   render() {

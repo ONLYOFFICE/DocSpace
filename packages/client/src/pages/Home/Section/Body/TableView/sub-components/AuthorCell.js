@@ -3,10 +3,16 @@ import { StyledText, StyledAuthorCell } from "./CellStyles";
 import Avatar from "@docspace/components/avatar";
 
 const AuthorCell = ({ fileOwner, sideColor, item }) => {
+  const { avatarSmall, hasAvatar } = item.createdBy;
+
+  const avatarSource = hasAvatar
+    ? avatarSmall
+    : "/images/default_user_photo_size_32-32.png";
+
   return (
     <StyledAuthorCell className="author-cell">
       <Avatar
-        source={item.createdBy.avatarSmall}
+        source={avatarSource}
         className="author-avatar-cell"
         role="user"
       />

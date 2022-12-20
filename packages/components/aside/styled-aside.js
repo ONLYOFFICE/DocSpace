@@ -78,29 +78,37 @@ const StyledAside = styled(Container)`
 StyledAside.defaultProps = { theme: Base };
 
 const StyledControlContainer = styled.div`
-  display: flex;
+  display: none;
 
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
 
-  border-radius: 100px;
   cursor: pointer;
 
   align-items: center;
   justify-content: center;
   z-index: 450;
 
-  top: 14px;
-  left: -34px;
+  @media ${tablet} {
+    display: flex;
+
+    top: 18px;
+    left: -27px;
+  }
 
   ${isMobile &&
   css`
-    top: 14px;
+    display: flex;
+
+    top: 18px;
+    left: -27px;
   `}
 
   @media (max-width: 428px) {
-    top: -34px;
+    display: flex;
+
+    top: -27px;
     right: 10px;
     left: unset;
   }

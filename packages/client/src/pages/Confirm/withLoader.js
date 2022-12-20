@@ -34,11 +34,22 @@ export default function withLoader(WrappedComponent) {
         axios
           .all([getSettings(), getPortalPasswordSettings(confirmHeader)])
           .catch((error) => {
-            console.error(error);
+            let errorMessage = "";
+            if (typeof error === "object") {
+              errorMessage =
+                error?.response?.data?.error?.message ||
+                error?.statusText ||
+                error?.message ||
+                "";
+            } else {
+              errorMessage = error;
+            }
+
+            console.error(errorMessage);
             history.push(
               combineUrl(
                 AppServerConfig.proxyURL,
-                `/login/error?message=${error}`
+                `/login/error?message=${errorMessage}`
               )
             );
           });
@@ -48,11 +59,21 @@ export default function withLoader(WrappedComponent) {
     useEffect(() => {
       if (type === "LinkInvite") {
         axios.all([getAuthProviders(), getCapabilities()]).catch((error) => {
-          console.error(error);
+          let errorMessage = "";
+          if (typeof error === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+          console.error(errorMessage);
           history.push(
             combineUrl(
               AppServerConfig.proxyURL,
-              `/login/error?message=${error}`
+              `/login/error?message=${errorMessage}`
             )
           );
         });

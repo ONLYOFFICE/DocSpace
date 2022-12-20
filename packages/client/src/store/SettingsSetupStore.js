@@ -237,6 +237,7 @@ class SettingsSetupStore {
 
   setLifetimeAuditSettings = async (data) => {
     await api.settings.setLifetimeAuditSettings(data);
+    this.getLifetimeAuditSettings();
   };
 
   setSecurityLifeTime = (lifetime) => {

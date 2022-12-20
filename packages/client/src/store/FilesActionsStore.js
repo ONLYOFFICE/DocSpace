@@ -16,6 +16,7 @@ import {
   ConflictResolveType,
   FileAction,
   FileStatus,
+  FolderType,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { isMobile } from "react-device-detect";
@@ -41,6 +42,10 @@ class FilesActionStore {
   accessRightsStore;
 
   isBulkDownload = false;
+  searchTitleOpenLocation = null;
+  itemOpenLocation = null;
+  isLoadedLocationFiles = false;
+  isLoadedSearchFiles = false;
 
   constructor(
     authStore,
@@ -277,6 +282,7 @@ class FilesActionStore {
       this.isMediaOpen();
 
       try {
+        this.filesStore.setOperationAction(true);
         await removeFiles(folderIds, fileIds, deleteAfter, immediately)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
@@ -330,6 +336,8 @@ class FilesActionStore {
         });
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         return toastr.error(err.message ? err.message : err);
+      } finally {
+        this.filesStore.setOperationAction(false);
       }
     }
   };
@@ -675,24 +683,28 @@ class FilesActionStore {
       label: translations?.deleteOperation,
     };
 
+    this.filesStore.setOperationAction(true);
+
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
-      return deleteFile(itemId).then(async (res) => {
-        if (res[0]?.error) return Promise.reject(res[0].error);
-        const data = res[0] ? res[0] : null;
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFile(itemId)
+        .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
+          const data = res[0] ? res[0] : null;
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (withPaging) {
-          this.updateCurrentFolder([itemId]);
-          toastr.success(translations.successRemoveFile);
-        } else {
-          this.updateFilesAfterDelete();
-          this.filesStore.removeFiles([itemId], null, () =>
-            toastr.success(translations.successRemoveFile)
-          );
-        }
-      });
+          if (withPaging) {
+            this.updateCurrentFolder([itemId]);
+            toastr.success(translations.successRemoveFile);
+          } else {
+            this.updateFilesAfterDelete();
+            this.filesStore.removeFiles([itemId], null, () =>
+              toastr.success(translations.successRemoveFile)
+            );
+          }
+        })
+        .finally(() => this.filesStore.setOperationAction(false));
     } else if (isRoom) {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
@@ -715,23 +727,25 @@ class FilesActionStore {
         );
     } else {
       addActiveItems(null, [itemId]);
-      return deleteFolder(itemId).then(async (res) => {
-        if (res[0]?.error) return Promise.reject(res[0].error);
-        const data = res[0] ? res[0] : null;
-        await this.uploadDataStore.loopFilesOperations(data, pbData);
+      return deleteFolder(itemId)
+        .then(async (res) => {
+          if (res[0]?.error) return Promise.reject(res[0].error);
+          const data = res[0] ? res[0] : null;
+          await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (withPaging) {
-          this.updateCurrentFolder(null, [itemId]);
-          toastr.success(translations.successRemoveFolder);
-        } else {
-          this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles(null, [itemId], () =>
-            toastr.success(translations.successRemoveFolder)
-          );
-        }
+          if (withPaging) {
+            this.updateCurrentFolder(null, [itemId]);
+            toastr.success(translations.successRemoveFolder);
+          } else {
+            this.updateFilesAfterDelete([itemId]);
+            this.filesStore.removeFiles(null, [itemId], () =>
+              toastr.success(translations.successRemoveFolder)
+            );
+          }
 
-        getIsEmptyTrash();
-      });
+          getIsEmptyTrash();
+        })
+        .finally(() => this.filesStore.setOperationAction(false));
     }
   };
 
@@ -1072,17 +1086,49 @@ class FilesActionStore {
     }
   };
 
+  setSearchTitleOpenLocation = (searchTitleOpenLocation) => {
+    this.searchTitleOpenLocation = searchTitleOpenLocation;
+  };
+
+  setItemOpenLocation = (itemOpenLocation) => {
+    this.itemOpenLocation = itemOpenLocation;
+  };
+
+  setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
+    this.isLoadedLocationFiles = isLoadedLocationFiles;
+  };
+
+  setIsLoadedSearchFiles = (isLoadedSearchFiles) => {
+    this.isLoadedSearchFiles = isLoadedSearchFiles;
+  };
+
   openLocationAction = async (locationId) => {
+    this.setIsLoadedLocationFiles(false);
     this.filesStore.setBufferSelection(null);
+
     const files = await this.filesStore.fetchFiles(locationId, null);
+    this.setIsLoadedLocationFiles(true);
     return files;
   };
 
-  checkAndOpenLocationAction = async (locationId) => {
+  checkAndOpenLocationAction = async (item) => {
     const filterData = FilesFilter.getDefault();
+
+    this.setIsLoadedSearchFiles(false);
+
+    if (this.itemOpenLocation?.title !== item.title) {
+      this.setSearchTitleOpenLocation(null);
+    }
+
+    this.setItemOpenLocation(null);
+
     api.files
-      .getFolder(locationId, filterData)
-      .then(() => this.openLocationAction(locationId))
+      .getFolder(item.ExtraLocation, filterData)
+      .then(() => {
+        this.openLocationAction(item.ExtraLocation);
+        this.setSearchTitleOpenLocation(item.title);
+        this.setItemOpenLocation(item);
+      })
       .catch((err) => toastr.error(err));
   };
 
@@ -1266,18 +1312,11 @@ class FilesActionStore {
       selection,
     } = this.filesStore;
 
-    const {
-      canCopyItems,
-      canDeleteItems,
-      canMoveItems,
-      canArchiveRoom,
-      canRemoveRoom,
-    } = this.accessRightsStore;
-    const { access, rootFolderType } = this.selectedFolderStore;
+    const { rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyItems({ access, rootFolderType });
+        const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1286,35 +1325,33 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveItems({
-          access,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
-        return hasSelection && canMove;
+        const canMove = selection.every((s) => s.security?.Move);
+
+        return (
+          hasSelection &&
+          !allFilesIsEditing &&
+          canMove &&
+          rootFolderType !== FolderType.TRASH
+        );
 
       case "archive":
       case "unarchive":
         const canArchive = selection
-          .map((s) => canArchiveRoom(s))
+          .map((s) => s.security?.Move)
           .filter((s) => s);
 
         return canArchive.length > 0;
       case "delete-room":
         const canRemove = selection
-          .map((s) => canRemoveRoom(s))
+          .map((s) => s.security?.Delete)
           .filter((r) => r);
 
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteItems({
-          access,
-          rootFolderType,
-          editing: allFilesIsEditing,
-        });
+        const canDelete = selection.every((s) => s.security?.Delete);
 
-        return canDelete && hasSelection;
+        return !allFilesIsEditing && canDelete && hasSelection;
     }
   };
 
@@ -1769,10 +1806,11 @@ class FilesActionStore {
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
-    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
-    const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
-    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
+    const isMediaOrImage =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
+    const canConvert = item.viewAccessability?.Convert;
+    const canWebEdit = item.viewAccessability?.WebEdit;
+    const canViewedDocs = item.viewAccessability?.WebView;
 
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);

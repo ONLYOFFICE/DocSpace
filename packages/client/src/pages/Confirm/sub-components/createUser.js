@@ -339,8 +339,19 @@ const Confirm = (props) => {
     createConfirmUser(personalData, loginData, headerKey)
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
-        console.error("confirm error", error);
-        setEmailErrorText(error);
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        console.error("confirm error", errorMessage);
+        setEmailErrorText(errorMessage);
         setEmailValid(false);
         setIsLoading(false);
       });

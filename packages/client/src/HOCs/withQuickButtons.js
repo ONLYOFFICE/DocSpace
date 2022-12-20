@@ -10,15 +10,15 @@ export default function withQuickButtons(WrappedComponent) {
 
       this.state = {
         isLoading: false,
-        isCanWebEdit: props.canWebEdit(props.item.fileExst),
+        isCanWebEdit: props.item.viewAccessability?.WebEdit,
       };
     }
 
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, t } = this.props;
-      const { locked, id, access } = item;
+      const { item, lockFileAction, t } = this.props;
+      const { locked, id, security } = item;
 
-      if ((isAdmin || access === 0) && !this.state.isLoading) {
+      if (security?.Lock && !this.state.isLoading) {
         this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .then(() =>
@@ -57,7 +57,7 @@ export default function withQuickButtons(WrappedComponent) {
         isAdmin,
         sectionWidth,
         viewAs,
-        canLockFile,
+        isPersonalRoom,
       } = this.props;
 
       const quickButtonsComponent = (
@@ -72,7 +72,7 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          canLockFile={canLockFile}
+          isPersonalRoom={isPersonalRoom}
         />
       );
 
@@ -90,8 +90,7 @@ export default function withQuickButtons(WrappedComponent) {
       auth,
       filesActionsStore,
       dialogsStore,
-      settingsStore,
-      accessRightsStore,
+
       treeFoldersStore,
     }) => {
       const {
@@ -101,8 +100,6 @@ export default function withQuickButtons(WrappedComponent) {
       } = filesActionsStore;
       const { isPersonalRoom } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
-      const { canWebEdit } = settingsStore;
-      const { canLockFile } = accessRightsStore;
 
       return {
         theme: auth.settingsStore.theme,
@@ -111,8 +108,7 @@ export default function withQuickButtons(WrappedComponent) {
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
-        canWebEdit,
-        canLockFile,
+
         isPersonalRoom,
       };
     }

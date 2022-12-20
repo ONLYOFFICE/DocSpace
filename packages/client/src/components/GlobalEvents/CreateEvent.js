@@ -101,13 +101,13 @@ const CreateEvent = ({
       setStartValue(newValue);
     }
 
-    // let tab =
-    //   !isDesktop && extension && open
-    //     ? window.open(
-    //         combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
-    //         "_blank"
-    //       )
-    //     : null;
+    let tab =
+      !isDesktop && extension && open
+        ? window.open(
+            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
+            "_blank"
+          )
+        : null;
 
     if (!extension) {
       createFolder(parentId, newValue)
@@ -135,12 +135,23 @@ const CreateEvent = ({
             createdFileId = file.id;
             addActiveItems([file.id]);
 
-            open && openDocEditor(file.id, file.providerKey, null);
+            open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((err) => {
-            if (err.indexOf("password") == -1) {
-              toastr.error(err, t("Common:Warning"));
+            let errorMessage = "";
+            if (typeof err === "object") {
+              errorMessage =
+                err?.response?.data?.error?.message ||
+                err?.statusText ||
+                err?.message ||
+                "";
+            } else {
+              errorMessage = err;
+            }
+
+            if (errorMessage.indexOf("password") == -1) {
+              toastr.error(errorMessage, t("Common:Warning"));
               return;
             }
 
@@ -185,7 +196,7 @@ const CreateEvent = ({
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
 
-            return open && openDocEditor(file.id, file.providerKey, null);
+            return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
@@ -216,12 +227,12 @@ const CreateEvent = ({
                   true,
                   false
                 ).then(
-                  () => open && openDocEditor(file.id, file.providerKey, null)
+                  () => open && openDocEditor(file.id, file.providerKey, tab)
                 );
               });
             }
 
-            return open && openDocEditor(file.id, file.providerKey, null);
+            return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
