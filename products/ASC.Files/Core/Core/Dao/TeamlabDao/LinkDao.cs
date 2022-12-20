@@ -83,7 +83,7 @@ internal class LinkDao : AbstractDao, ILinkDao
             .Select(r => r.SourceId)
             .SingleOrDefaultAsync();
 
-        return (await MappingIDAsync(sourceId)).ToString();
+        return (await MappingIDAsync(sourceId))?.ToString();
     }
 
     public async Task<string> GetLinkedAsync(string sourceId)
@@ -97,7 +97,7 @@ internal class LinkDao : AbstractDao, ILinkDao
             .Select(r => r.LinkedId)
             .SingleOrDefaultAsync();
 
-        return (await MappingIDAsync(linkedId)).ToString();
+        return (await MappingIDAsync(linkedId))?.ToString();
     }
 
     public async Task DeleteLinkAsync(string sourceId)
