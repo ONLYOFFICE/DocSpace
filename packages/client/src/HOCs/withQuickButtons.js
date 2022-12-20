@@ -49,7 +49,15 @@ export default function withQuickButtons(WrappedComponent) {
     render() {
       const { isLoading, isCanWebEdit } = this.state;
 
-      const { t, theme, item, isAdmin, sectionWidth, viewAs } = this.props;
+      const {
+        t,
+        theme,
+        item,
+        isAdmin,
+        sectionWidth,
+        viewAs,
+        isPersonalRoom,
+      } = this.props;
 
       const quickButtonsComponent = (
         <QuickButtons
@@ -63,6 +71,7 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
+          isPersonalRoom={isPersonalRoom}
         />
       );
 
