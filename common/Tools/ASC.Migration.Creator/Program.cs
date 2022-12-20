@@ -59,7 +59,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<NotifyDbContext>();
     services.AddBaseDbContext<UrlShortenerFakeDbContext>();
     services.AddBaseDbContext<FirebaseDbContext>();
-    services.AddBaseDbContext<TeamlabSiteContext>(nameConnectionString: "teamlabsite");
+    services.AddBaseDbContext<TeamlabSiteContext>();
 });
 
 var app = builder.Build();
