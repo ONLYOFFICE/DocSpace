@@ -766,6 +766,12 @@ const SectionFilterContent = ({
 
           ...images,
           ...media,
+          {
+            id: "filter_type-all-files",
+            key: FilterType.FilesOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("AllFiles").toLowerCase(),
+          },
         ];
 
     const subjectOptions = [

@@ -28,6 +28,8 @@ export const getFileTypeName = (fileType, t) => {
     case FileType.Presentation:
       return t("Files:Presentation");
     case FileType.Document:
+    case FileType.OFormTemplate:
+    case FileType.OForm:
       return t("Files:Document");
     default:
       return t("Files:Folder");

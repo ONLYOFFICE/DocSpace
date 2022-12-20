@@ -31,8 +31,8 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    rootFolderType,
-    selectionParentRoom,
+    // rootFolderType,
+    // selectionParentRoom,
   } = props;
 
   const isRooms = getIsRooms();
@@ -50,7 +50,7 @@ const InfoPanelHeaderContent = (props) => {
   const setHistory = () => setView("info_history");
   const setDetails = () => setView("info_details");
 
-  const isArchiveRoot = rootFolderType === FolderType.Archive;
+  //const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
@@ -72,15 +72,12 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
-  const selectionRoomRights = selectionParentRoom
-    ? selectionParentRoom.security?.Read
-    : selection?.security?.Read;
+  // const selectionRoomRights = selectionParentRoom
+  //   ? selectionParentRoom.security?.Read
+  //   : selection?.security?.Read;
 
-  const roomsSubmenu = isArchiveRoot
-    ? selectionRoomRights
-      ? [{ ...submenuData[0] }, { ...submenuData[2] }]
-      : [{ ...submenuData[2] }]
-    : [...submenuData];
+  const roomsSubmenu = [...submenuData];
+
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   const isTablet =
@@ -135,7 +132,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
+export default inject(({ auth, selectedFolderStore }) => {
   const {
     selection,
     setIsVisible,
@@ -146,9 +143,12 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
-    selectionParentRoom,
+    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const { isRootFolder, rootFolderType } = selectedFolderStore;
+  const {
+    isRootFolder,
+    // rootFolderType
+  } = selectedFolderStore;
 
   return {
     selection,
@@ -162,9 +162,9 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
 
     isRootFolder,
-    rootFolderType,
+    //  rootFolderType,
 
-    selectionParentRoom,
+    //selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
