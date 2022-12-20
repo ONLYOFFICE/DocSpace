@@ -44,7 +44,8 @@ public class CreatorDbContext
         if (contextOptions == null)
         {
             contextOptions = new DbContextOptionsBuilder<T>();
-            BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region, nameConnectionString);
+            var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
+            installerOptionsAction.OptionsAction(_serviceProvider, contextOptions);
             _cache.Insert($"context {region}", contextOptions, TimeSpan.FromMinutes(15));
         }
         return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);

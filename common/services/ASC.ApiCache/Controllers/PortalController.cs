@@ -51,9 +51,9 @@ public class PortalController : ControllerBase
     }
 
     [HttpGet("find")]
-    public IActionResult FindPortalNameInCache([FromQuery] CacheDto inDto)
+    public async Task<IActionResult> FindPortalNameInCache([FromQuery] CacheDto inDto)
     {
-        if (String.IsNullOrEmpty(inDto.PortalName))
+        if (string.IsNullOrEmpty(inDto.PortalName))
         {
             return BadRequest(new
             {
@@ -64,7 +64,7 @@ public class PortalController : ControllerBase
 
         _log.LogDebug("FindPortalNameInCache method. portalname = {0}", inDto.PortalName);
 
-        var sameAliasTenants = _portalControllerHelper.FindTenantsInCache(inDto.PortalName);
+        var sameAliasTenants = await _portalControllerHelper.FindTenantsInCacheAsync(inDto.PortalName);
         return Ok(new
         {
             variants = sameAliasTenants
@@ -73,7 +73,7 @@ public class PortalController : ControllerBase
 
     [HttpPost("add")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult AddPortalNameToCache(CacheDto inDto)
+    public async Task<IActionResult> AddPortalNameToCacheAsync(CacheDto inDto)
     {
         if (String.IsNullOrEmpty(inDto.PortalName))
         {
@@ -86,7 +86,7 @@ public class PortalController : ControllerBase
 
         try
         {
-            _portalControllerHelper.AddTenantToCache(inDto.PortalName);
+            await _portalControllerHelper.AddTenantToCacheAsync(inDto.PortalName);
         }
         catch (Exception e)
         {
@@ -102,7 +102,7 @@ public class PortalController : ControllerBase
 
     [HttpDelete("remove")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult RemoveFromCache([FromQuery] CacheDto inDto)
+    public async Task<IActionResult> RemoveFromCacheAsync([FromQuery] CacheDto inDto)
     {
         if (String.IsNullOrEmpty(inDto.PortalName))
         {
@@ -115,7 +115,7 @@ public class PortalController : ControllerBase
 
         try
         {
-            _portalControllerHelper.RemoveTenantFromCache(inDto.PortalName);
+            await _portalControllerHelper.RemoveTenantFromCacheAsync(inDto.PortalName);
         }
         catch (Exception e)
         {

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.ApiCache.Helpers;
 
 [Scope]
@@ -31,35 +33,37 @@ public class PortalControllerHelper
 {
     private readonly ILogger<PortalControllerHelper> _log;
     private readonly TenantDomainValidator _tenantDomainValidator;
-    private readonly TeamlabSiteContext _teamlabSiteContext;
+    private readonly IDbContextFactory<TeamlabSiteContext> _teamlabSiteContext;
 
-    public PortalControllerHelper(ILogger<PortalControllerHelper> log, TenantDomainValidator tenantDomainValidator, CreatorDbContext creatorDb)
+    public PortalControllerHelper(ILogger<PortalControllerHelper> log, TenantDomainValidator tenantDomainValidator, IDbContextFactory<TeamlabSiteContext> teamlabSiteContext)
     {
         _log = log;
         _tenantDomainValidator = tenantDomainValidator;
-        _teamlabSiteContext = creatorDb.CreateDbContext<TeamlabSiteContext>(nameConnectionString: "teamlabsite");
+        _teamlabSiteContext = teamlabSiteContext;
     }
 
-    public void AddTenantToCache(string tenant)
+    public async Task AddTenantToCacheAsync(string tenant)
     {
         var cache = new DbCache()
         {
             TenantAlias = tenant.ToLowerInvariant()
         };
-        _teamlabSiteContext.Cache.Add(cache);
-        _teamlabSiteContext.SaveChanges();
+        var context = await _teamlabSiteContext.CreateDbContextAsync();
+        await context.Cache.AddAsync(cache);
+        await context.SaveChangesAsync();
 
     }
 
-    public void RemoveTenantFromCache(string domain)
+    public async Task RemoveTenantFromCacheAsync(string domain)
     {
         domain = domain.ToLowerInvariant();
-        var cache = _teamlabSiteContext.Cache.SingleOrDefault(q => q.TenantAlias == domain);
-        _teamlabSiteContext.Cache.Remove(cache);
-        _teamlabSiteContext.SaveChanges();
+        var context = await _teamlabSiteContext.CreateDbContextAsync();
+        var cache = await context.Cache.SingleOrDefaultAsync(q => q.TenantAlias == domain);
+        context.Cache.Remove(cache);
+        await context.SaveChangesAsync();
     }
 
-    public List<string> FindTenantsInCache(string portalName)
+    public async Task<List<string>> FindTenantsInCacheAsync(string portalName)
     {
         //return tenants starts like current
         _log.LogDebug("FindTenantsInCache method");
@@ -67,7 +71,8 @@ public class PortalControllerHelper
         portalName = (portalName ?? "").Trim().ToLowerInvariant();
 
         // forbidden or exists
-        var exists = _teamlabSiteContext.Cache.Where(q => q.TenantAlias.Equals(portalName)).Any();
+        var context = await _teamlabSiteContext.CreateDbContextAsync();
+        var exists = await context.Cache.Where(q => q.TenantAlias.Equals(portalName)).AnyAsync();
 
         if (exists)
         {
@@ -84,7 +89,7 @@ public class PortalControllerHelper
                 }
             }
 
-            return _teamlabSiteContext.Cache.Select(q => q.TenantAlias).Where(q => q.StartsWith(portalName)).ToList();
+            return await context.Cache.Select(q => q.TenantAlias).Where(q => q.StartsWith(portalName)).ToListAsync();
         }
         return null;
     }
