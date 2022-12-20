@@ -87,6 +87,7 @@ const StyledTitle = styled.div`
     }
     &.is-room {
       border-radius: 6px;
+      outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     }
   }
 
