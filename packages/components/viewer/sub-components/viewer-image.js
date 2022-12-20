@@ -89,11 +89,39 @@ export default function ViewerImage(props) {
           (tp) => tp.identifier === e.targetTouches[1].identifier
         );
 
+        const startPointY1 = tpCache[point1].clientY;
+        const startPointY2 = tpCache[point2].clientY;
+
         if (point1 >= 0 && point2 >= 0) {
           const diffX1 = tpCache[point1].clientX - e.targetTouches[0].clientX;
           const diffX2 = tpCache[point2].clientX - e.targetTouches[1].clientX;
           const diffY1 = tpCache[point1].clientY - e.targetTouches[0].clientY;
           const diffY2 = tpCache[point2].clientY - e.targetTouches[1].clientY;
+
+          const zoom = (Math.abs(diffX1) + Math.abs(diffX2)) / 100;
+          const imgCenterXY = props.getImageCenterXY();
+
+          if (
+            (startPointY1 < startPointY2 && diffX1 > diffX2) ||
+            (startPointY1 > startPointY2 && diffX1 < diffX2)
+          ) {
+            props.handleZoom(
+              imgCenterXY.x,
+              imgCenterXY.y,
+              1,
+              0.01,
+              imgRef.current.clientWidth,
+              imgRef.current.clientHeight
+            );
+          } else {
+            props.handleZoom(
+              imgCenterXY.x,
+              imgCenterXY.y,
+              -1,
+              zoom,
+              imgRef.current.clientWidth
+            );
+          }
         } else {
           tpCache = [];
         }

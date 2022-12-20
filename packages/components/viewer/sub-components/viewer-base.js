@@ -486,7 +486,14 @@ const ViewerBase = (props) => {
     };
   }
 
-  function handleZoom(targetX, targetY, direct, scale) {
+  function handleZoom(
+    targetX,
+    targetY,
+    direct,
+    scale,
+    currentWidth,
+    currentHeight
+  ) {
     let imgCenterXY = getImageCenterXY();
     let diffX = targetX - imgCenterXY.x;
     let diffY = targetY - imgCenterXY.y;
@@ -502,7 +509,10 @@ const ViewerBase = (props) => {
     if (scale === 1) {
       zoomPercent = 100;
     }
-    if (state.width === 0) {
+
+    let nowWidth = currentWidth || state.width;
+
+    if (nowWidth === 0) {
       const [imgWidth, imgHeight] = getImgWidthHeight(
         state.imageWidth,
         state.imageHeight
@@ -533,8 +543,8 @@ const ViewerBase = (props) => {
       }
       top = state.top + ((-direct * diffY) / state.scaleX) * scale * directX;
       left = state.left + ((-direct * diffX) / state.scaleY) * scale * directY;
-      width = state.width;
-      height = state.height;
+      width = nowWidth;
+      height = currentHeight || state.height;
     }
     dispatch(
       createAction(ACTION_TYPES.update, {
@@ -595,7 +605,7 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {isMobileOnly && mobileDetails}
+      {mobileDetails}
       <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
       <ViewerImage
         prefixCls={prefixCls}
@@ -611,6 +621,8 @@ const ViewerBase = (props) => {
         actionType={ACTION_TYPES}
         currentTop={currentTop}
         opacity={state.opacity}
+        getImageCenterXY={getImageCenterXY}
+        handleZoom={handleZoom}
         height={state.height}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
@@ -629,7 +641,7 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter ||
-        (!isMobileOnly && (
+        (isMobileOnly && (
           <div className={`${prefixCls}-container`}>
             <div
               className={`${prefixCls}-footer`}
