@@ -41,7 +41,7 @@ $prerequisites = @(
   @{  
     download_allways = $false; 
     name = "apache-zookeeper-3.7.0-bin.tar.gz"; 
-    link = "https://dlcdn.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz";
+    link = "https://archive.apache.org/dist/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz";
   }
   @{  
     download_allways = $false; 
