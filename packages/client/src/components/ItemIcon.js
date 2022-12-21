@@ -14,6 +14,14 @@ const StyledIcon = styled.img`
       border-radius: 6px;
       outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     `}
+
+  ${(props) =>
+    props.isHidden &&
+    css`
+      display: none;
+      border-radius: none;
+      outline: none;
+    `}
 `;
 
 StyledIcon.defaultProps = { theme: Base };
@@ -28,33 +36,30 @@ const EncryptedFileIcon = styled.div`
 `;
 
 const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
-  let isMount = true;
+  const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
 
-  const [imgSrc, setImgSrc] = React.useState(defaultRoomIcon);
+  const onLoadRoomIcon = () => {
+    if (!isRoom || defaultRoomIcon === icon) return;
 
-  const fetchImage = async () => {
-    const res = await fetch(icon);
-    const imageBlob = await res.blob();
-    const imageObjectURL = URL.createObjectURL(imageBlob);
-
-    isMount && setImgSrc(imageObjectURL);
+    setShowDefaultIcon(false);
   };
-
-  React.useEffect(() => {
-    if (!isRoom || icon === defaultRoomIcon) return;
-    fetchImage();
-
-    return () => {
-      isMount = false;
-    };
-  }, []);
 
   return (
     <>
+      {isRoom && (
+        <StyledIcon
+          className={`react-svg-icon`}
+          isHidden={!showDefaultIcon}
+          isRoom={isRoom}
+          src={defaultRoomIcon}
+        />
+      )}
       <StyledIcon
         className={`react-svg-icon`}
+        isHidden={showDefaultIcon}
         isRoom={isRoom}
-        src={!isRoom || icon === defaultRoomIcon ? icon : imgSrc}
+        src={icon}
+        onLoad={onLoadRoomIcon}
       />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>

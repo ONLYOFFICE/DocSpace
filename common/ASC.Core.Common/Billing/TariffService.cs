@@ -254,7 +254,7 @@ public class TariffService : ITariffService
             }
         }
 
-        if (tariffId.HasValue)
+        if (tariffId.HasValue && tariffId.Value != 0)
         {
             _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId.Value }, CacheNotifyAction.Insert);
         }
