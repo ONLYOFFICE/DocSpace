@@ -97,10 +97,10 @@ public static class BaseDbContextExtension
         services.AddDbContext<T>(OptionsAction);
     }
 
-    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
+    public static T AddOrUpdate<T, TContext>(this TContext b, DbSet<T> dbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
-        var dbSet = expressionDbSet.Compile().Invoke(b);
-        var existingBlog = dbSet.Find(entity.GetKeys());
+        var keys = entity.GetKeys();
+        var existingBlog = dbSet.Find(keys);
         if (existingBlog == null)
         {
             return dbSet.Add(entity).Entity;
