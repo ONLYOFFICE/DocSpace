@@ -14,7 +14,7 @@
 		"alias" : {
 			"min" : 3
 		},
-		"api-cache": "",
+		"api-cache": "http://localhost:5100/",
 		"autotest" : {
 			"secret-email" : ""
 		},
