@@ -65,12 +65,13 @@ public class LockerManager
             return false;
         }
 
-        if (await _fileSecurity.CanLockAsync(file))
+        userId = userId == default ? _authContext.CurrentAccount.ID : userId;
+
+        if (await _fileSecurity.CanLockAsync(file, userId))
         {
             return false;
         }
 
-        userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
         var lockedBy = await FileLockedByAsync(file.Id, tagDao);
 
@@ -237,7 +238,7 @@ public class EntryStatusManager
                 var lockedBy = lockedTag.Owner;
                 file.Locked = lockedBy != Guid.Empty;
                 file.LockedForMe = file.Locked && FileSecurity.CanLockedForMe(file);
-                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
+                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID && FileSecurity.CanLockedForMe(file)
                     ? _global.GetUserName(lockedBy)
                     : null;
 
