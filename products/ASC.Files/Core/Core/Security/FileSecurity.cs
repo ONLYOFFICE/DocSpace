@@ -1545,11 +1545,6 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
-    public static bool CanLockedForMe<T>(File<T> file)
-    {
-        return file.Access != FileShare.None && file.Access != FileShare.RoomAdmin;
-    }
-
     private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom)
     {
         if (!isUser)
