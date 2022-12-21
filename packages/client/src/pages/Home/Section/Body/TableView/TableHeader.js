@@ -86,14 +86,14 @@ class FilesTableHeader extends React.Component {
         resizable: true,
         sortBy: "Author",
 
-        isDisabled: isPersonalRoom,
+        // isDisabled: isPersonalRoom,
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       };
 
-      if (isPersonalRoom) {
-        authorOption.defaultSize = 0;
-      }
+      // if (isPersonalRoom) {
+      //   authorOption.defaultSize = 0;
+      // }
 
       const columns = [
         {
