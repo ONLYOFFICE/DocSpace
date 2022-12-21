@@ -13,8 +13,6 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
-// import Link from "@docspace/components/link";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -34,7 +32,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const params = filter.toUrlParams();
 
     const url = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       homepage,
       `/accounts/filter?${params}`
     );
@@ -56,7 +54,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const { homepage, user } = this.props;
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         homepage,
         `/reassign/${user.userName}`
       )

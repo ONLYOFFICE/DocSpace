@@ -5,7 +5,6 @@ import Box from "@docspace/components/box";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
 import { hugeMobile } from "@docspace/components/utils/device";
 
@@ -74,7 +73,7 @@ const HeaderUnAuth = ({
               <img
                 className="header-logo-icon"
                 src={combineUrl(
-                  AppServerConfig.proxyURL,
+                  window.DocSpaceConfig?.proxy?.url,
                   "/static/images/logo.docspace.react.svg"
                 )}
               />

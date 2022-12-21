@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import toastr from "@docspace/components/toast/toastr";
 
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 import config from "PACKAGE_FILE";
@@ -104,7 +103,11 @@ const CreateEvent = ({
     let tab =
       !isDesktop && extension && open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              `/doceditor`
+            ),
             "_blank"
           )
         : null;

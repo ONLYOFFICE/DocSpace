@@ -26,8 +26,7 @@ export default function withQuickButtons(WrappedComponent) {
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
           )
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .catch((err) => toastr.error(err), this.setState({ isLoading: false }))
       }
       return;
     };

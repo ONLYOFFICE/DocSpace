@@ -1,4 +1,3 @@
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 import { makeAutoObservable } from "mobx";
@@ -471,7 +470,7 @@ class HotkeyStore {
 
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `${url}?${filterParamsStr}`
       )
