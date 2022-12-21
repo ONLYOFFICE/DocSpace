@@ -53,6 +53,7 @@ const SelectionPanelBody = ({
   folderSelectionDisabled,
   isCurrentFolder,
 }) => {
+  const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
       theme={theme}
@@ -71,15 +72,25 @@ const SelectionPanelBody = ({
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
-              <Text
-                fontWeight="700"
-                fontSize="18px"
-                className="selection-panel_folder-title"
-              >
-                {t("Common:Rooms")}
-              </Text>
+              {isLoaded ? (
+                <Text
+                  fontWeight="700"
+                  fontSize="18px"
+                  className="selection-panel_folder-title"
+                >
+                  {t("Common:Rooms")}
+                </Text>
+              ) : (
+                <div className="selection-panel_folder-title">
+                  <Loaders.Rectangle
+                    className="selection-panel_header-loader"
+                    width="83px"
+                    height="24px"
+                  />
+                </div>
+              )}
 
-              {folderId && resultingFolderTree ? (
+              {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   theme={theme}

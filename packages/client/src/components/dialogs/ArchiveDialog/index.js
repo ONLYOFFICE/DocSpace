@@ -132,36 +132,40 @@ const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
   ArchiveDialogComponent
 );
 
-export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { roomsForRestore, selection, bufferSelection } = filesStore;
-  const { setArchiveAction } = filesActionsStore;
+export default inject(
+  ({ filesStore, filesActionsStore, dialogsStore, selectedFolderStore }) => {
+    const { roomsForRestore, selection, bufferSelection } = filesStore;
+    const { setArchiveAction } = filesActionsStore;
 
-  const {
-    archiveDialogVisible: visible,
-    restoreAllArchive: restoreAll,
-    archiveAction: action,
+    const {
+      archiveDialogVisible: visible,
+      restoreAllArchive: restoreAll,
+      archiveAction: action,
 
-    setArchiveDialogVisible,
-    setRestoreAllArchive,
-    setArchiveAction: setArchiveActionType,
-  } = dialogsStore;
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction: setArchiveActionType,
+    } = dialogsStore;
 
-  const items = restoreAll
-    ? roomsForRestore
-    : selection.length > 0
-    ? selection
-    : [bufferSelection];
+    const items = restoreAll
+      ? roomsForRestore
+      : selection.length > 0
+      ? selection
+      : bufferSelection
+      ? [bufferSelection]
+      : [{ id: selectedFolderStore.id }];
 
-  return {
-    visible,
-    restoreAll,
-    action,
+    return {
+      visible,
+      restoreAll,
+      action,
 
-    setArchiveDialogVisible,
-    setRestoreAllArchive,
-    setArchiveActionType,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveActionType,
 
-    setArchiveAction,
-    items,
-  };
-})(withRouter(observer(ArchiveDialog)));
+      setArchiveAction,
+      items,
+    };
+  }
+)(withRouter(observer(ArchiveDialog)));

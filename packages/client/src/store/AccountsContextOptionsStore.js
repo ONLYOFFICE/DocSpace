@@ -2,25 +2,17 @@ import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
 
-import config from "PACKAGE_FILE";
-
 import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
-import {
-  AppServerConfig,
-  EmployeeStatus,
-  FilterSubject,
-} from "@docspace/common/constants";
+import { EmployeeStatus, FilterSubject } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 
-const { proxyURL } = AppServerConfig;
-
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 
@@ -373,7 +365,7 @@ class AccountsContextOptionsStore {
 
     // history.push(
     //   combineUrl(
-    //     AppServerConfig.proxyURL,
+    //     window.DocSpaceConfig?.proxy?.url,
     //     config.homepage,
     //     `/reassign/${userName}`
     //   )

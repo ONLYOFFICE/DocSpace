@@ -3,7 +3,6 @@ import api from "../api";
 import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
-  AppServerConfig,
   ThemeKeys,
   COOKIE_EXPIRATION_YEAR,
   LANGUAGE,
@@ -13,8 +12,6 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
-
-const { proxyURL } = AppServerConfig;
 
 const themes = {
   Dark: Dark,
@@ -124,7 +121,7 @@ class SettingsStore {
   };
   version = "";
   buildVersionInfo = {
-    appServer: version,
+    docspace: version,
     documentServer: "6.4.1",
   };
   debugInfo = false;
@@ -208,7 +205,10 @@ class SettingsStore {
     else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(proxyURL, "/products/files/");
+      const dp = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        "/products/files/"
+      );
       this.setDefaultPage(dp);
     }
 
@@ -217,7 +217,7 @@ class SettingsStore {
         this.setValue(
           key,
           key === "defaultPage"
-            ? combineUrl(proxyURL, newSettings[key])
+            ? combineUrl(window.DocSpaceConfig?.proxy?.url, newSettings[key])
             : newSettings[key]
         );
         if (key === "culture") {
@@ -228,12 +228,6 @@ class SettingsStore {
             });
           }
         }
-        // if (key === "personal") {
-        //   window.AppServer = {
-        //     ...window.AppServer,
-        //     personal: newSettings[key],
-        //   };
-        // }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
       }
@@ -446,7 +440,10 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+    return combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      `/login.ashx?p=${token}&code=${code}`
+    );
   };
 
   setModuleInfo = (homepage, productId) => {
@@ -565,7 +562,7 @@ class SettingsStore {
   setBuildVersionInfo = (versionInfo) => {
     this.buildVersionInfo = {
       ...this.buildVersionInfo,
-      appServer: version,
+      docspace: version,
       ...versionInfo,
     };
 
