@@ -383,11 +383,7 @@ const FilterBlock = ({
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (
-              <Loaders.FilterBlock
-                isPersonalRoom={isPersonalRoom}
-                isRooms={isRooms}
-                isAccounts={isAccounts}
-              />
+              <Loaders.FilterBlock isRooms={isRooms} isAccounts={isAccounts} />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
                 {filterData.map((item, index) => {
