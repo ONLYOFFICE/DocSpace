@@ -8,7 +8,6 @@ const FilterBlockLoader = ({
   id,
   className,
   style,
-  isPersonalRoom,
   isRooms,
   isAccounts,
   ...rest
@@ -46,7 +45,7 @@ const FilterBlockLoader = ({
         </StyledBlock>
       )}
 
-      {!isPersonalRoom && !isAccounts && (
+      {!isAccounts && (
         <StyledBlock>
           <RectangleLoader
             width={"51"}

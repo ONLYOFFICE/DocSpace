@@ -158,7 +158,7 @@ public class DbSubscriptionService : ISubscriptionService
         };
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(r => r.Subscriptions, subs);
+        userDbContext.AddOrUpdate(userDbContext.Subscriptions, subs);
         userDbContext.SaveChanges();
     }
 
@@ -283,7 +283,7 @@ public class DbSubscriptionService : ISubscriptionService
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
-                userDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
+                userDbContext.AddOrUpdate(userDbContext.SubscriptionMethods, sm);
             }
 
             userDbContext.SaveChanges();
