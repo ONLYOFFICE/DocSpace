@@ -72,6 +72,7 @@ const ViewerBase = (props) => {
     percent: 100,
     withTransition: false,
     opacity: 1,
+    tpCache: [],
   };
   function setContainerWidthHeight() {
     let width = window.innerWidth;
@@ -486,14 +487,7 @@ const ViewerBase = (props) => {
     };
   }
 
-  function handleZoom(
-    targetX,
-    targetY,
-    direct,
-    scale,
-    currentWidth,
-    currentHeight
-  ) {
+  function handleZoom(targetX, targetY, direct, scale) {
     let imgCenterXY = getImageCenterXY();
     let diffX = targetX - imgCenterXY.x;
     let diffY = targetY - imgCenterXY.y;
@@ -626,6 +620,7 @@ const ViewerBase = (props) => {
         height={state.height}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
+        tpCache={state.tpCache}
         withTransition={state.withTransition}
         top={state.top}
         left={state.left}
