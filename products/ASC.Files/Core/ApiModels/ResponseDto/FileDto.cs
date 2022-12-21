@@ -43,7 +43,7 @@ public class FileDto<T> : FileEntryDto<T>
     public string ThumbnailUrl { get; set; }
     public Thumbnail ThumbnailStatus { get; set; }
     public bool? Locked { get; set; }
-    public bool? LockedForMe { get; set; }
+    public bool LockedForMe { get; set; }
     public string LockedBy { get; set; }
     public bool DenyDownload { get; set; }
     public bool DenySharing { get; set; }
@@ -158,7 +158,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.Comment = file.Comment;
         result.Encrypted = file.Encrypted.NullIfDefault();
         result.Locked = file.Locked.NullIfDefault();
-        result.LockedForMe= file.LockedForMe.NullIfDefault();
+        result.LockedForMe = file.Security.TryGetValue(FileSecurity.FilesSecurityActions.Lock, out var value) && !value;
         result.LockedBy = file.LockedBy;
         result.DenyDownload = file.DenyDownload;
         result.DenySharing = file.DenySharing;

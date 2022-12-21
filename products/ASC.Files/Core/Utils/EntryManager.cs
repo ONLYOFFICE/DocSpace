@@ -75,7 +75,7 @@ public class LockerManager
         var tagDao = _daoFactory.GetTagDao<T>();
         var lockedBy = await FileLockedByAsync(file.Id, tagDao);
 
-        return lockedBy != Guid.Empty && lockedBy != userId;
+        return lockedBy != Guid.Empty;
     }
 
     public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
@@ -235,11 +235,9 @@ public class EntryStatusManager
         {
             if (tags.TryGetValue(file.Id, out var lockedTag))
             {
-                var lockedBy = lockedTag.Owner;
-                file.Locked = lockedBy != Guid.Empty;
-                file.LockedForMe = file.Locked && FileSecurity.CanLockedForMe(file);
-                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID && FileSecurity.CanLockedForMe(file)
-                    ? _global.GetUserName(lockedBy)
+                file.Locked = lockedTag != null;
+                file.LockedBy = lockedTag.Owner != Guid.Empty && lockedTag.Owner != _authContext.CurrentAccount.ID
+                    ? _global.GetUserName(lockedTag.Owner)
                     : null;
 
                 continue;
