@@ -158,7 +158,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.Comment = file.Comment;
         result.Encrypted = file.Encrypted.NullIfDefault();
         result.Locked = file.Locked.NullIfDefault();
-        result.LockedForMe = file.Security.TryGetValue(FileSecurity.FilesSecurityActions.Lock, out var value) && !value;
+        result.LockedForMe = file.Locked && file.Security.TryGetValue(FileSecurity.FilesSecurityActions.Lock, out var value) && !value;
         result.LockedBy = file.LockedBy;
         result.DenyDownload = file.DenyDownload;
         result.DenySharing = file.DenySharing;
