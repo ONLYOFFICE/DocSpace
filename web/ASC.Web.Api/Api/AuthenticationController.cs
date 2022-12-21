@@ -69,6 +69,7 @@ public class AuthenticationController : ControllerBase
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
+    private readonly ILogger<AuthenticationController> _logger;
 
     public AuthenticationController(
         UserManager userManager,
@@ -104,7 +105,8 @@ public class AuthenticationController : ControllerBase
         DbLoginEventsManager dbLoginEventsManager,
         BruteForceLoginManager bruteForceLoginManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
-        EmailValidationKeyProvider emailValidationKeyProvider)
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        ILogger<AuthenticationController> logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -140,6 +142,7 @@ public class AuthenticationController : ControllerBase
         _bruteForceLoginManager = bruteForceLoginManager;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
+        _logger = logger;
     }
 
     [AllowNotPayment]
@@ -197,12 +200,13 @@ public class AuthenticationController : ControllerBase
 
             return result;
         }
-        catch
+        catch (Exception ex)
         {
             _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), sms
                                                                           ? MessageAction.LoginFailViaApiSms
                                                                           : MessageAction.LoginFailViaApiTfa,
                                 _messageTarget.Create(user.Id));
+            _logger.ErrorWithException(ex);
             throw new AuthenticationException("User authentication failed");
         }
         finally
@@ -279,9 +283,10 @@ public class AuthenticationController : ControllerBase
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
             };
         }
-        catch
+        catch (Exception ex)
         {
             _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), viaEmail ? MessageAction.LoginFailViaApi : MessageAction.LoginFailViaApiSocialAccount);
+            _logger.ErrorWithException(ex);
             throw new AuthenticationException("User authentication failed");
         }
         finally
@@ -437,9 +442,10 @@ public class AuthenticationController : ControllerBase
             _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
             throw new AuthenticationException("Login Fail. Too many attempts");
         }
-        catch
+        catch (Exception ex)
         {
             _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, action);
+            _logger.ErrorWithException(ex);
             throw new AuthenticationException("User authentication failed");
         }
         wrapper.UserInfo = user;
