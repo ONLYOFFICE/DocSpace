@@ -2076,7 +2076,7 @@ const Dark = {
     },
 
     details: {
-      customLogoBorderColor: "#eceef1",
+      customLogoBorderColor: "#474747",
       commentEditorIconColor: "#eee",
     },
 
@@ -3102,6 +3102,10 @@ const Dark = {
   accessRightSelect: {
     descriptionColor: "#858585",
   },
+
+  itemIcon: {
+    borderColor: "#474747"
+  }
 };
 
 export default Dark;

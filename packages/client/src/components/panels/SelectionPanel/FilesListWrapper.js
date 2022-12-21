@@ -4,7 +4,6 @@ import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
 import { combineUrl, getFolderOptions } from "@docspace/common/utils";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 
 class FilesListWrapper extends React.Component {
   constructor(props) {
@@ -72,9 +71,16 @@ class FilesListWrapper extends React.Component {
         const options = getFolderOptions(folderId, this.newFilter);
 
         const response = await axios
-          .get(combineUrl(AppServerConfig.apiPrefix, options.url), {
-            cancelToken: this.source.token,
-          })
+          .get(
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              window.DocSpaceConfig?.api?.prefix,
+              options.url
+            ),
+            {
+              cancelToken: this.source.token,
+            }
+          )
           .catch((thrown) => {
             if (axios.isCancel(thrown)) {
               console.log("Request canceled", thrown.message);

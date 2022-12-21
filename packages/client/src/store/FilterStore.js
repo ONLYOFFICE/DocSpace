@@ -2,7 +2,6 @@ import { action, makeObservable, observable } from "mobx";
 import Filter from "@docspace/common/api/people/filter";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class FilterStore {
   filter = Filter.getDefault();
@@ -23,7 +22,7 @@ class FilterStore {
       "",
       "",
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/accounts/filter?${urlFilter}`
       )

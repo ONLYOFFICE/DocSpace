@@ -33,6 +33,7 @@ public class EmployeeDto
     public string Title { get; set; }
     public string AvatarSmall { get; set; }
     public string ProfileUrl { get; set; }
+    public bool HasAvatar { get; set; }
 
     public static EmployeeDto GetSample()
     {
@@ -100,6 +101,7 @@ public class EmployeeDtoHelper
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
+        result.HasAvatar = await _userPhotoManager.UserHasAvatar(userInfo.Id);
 
         if (!string.IsNullOrEmpty(userInfo.Title))
         {

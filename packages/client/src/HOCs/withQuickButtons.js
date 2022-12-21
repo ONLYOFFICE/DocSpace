@@ -26,8 +26,7 @@ export default function withQuickButtons(WrappedComponent) {
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
           )
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .catch((err) => toastr.error(err), this.setState({ isLoading: false }))
       }
       return;
     };
@@ -50,7 +49,15 @@ export default function withQuickButtons(WrappedComponent) {
     render() {
       const { isLoading, isCanWebEdit } = this.state;
 
-      const { t, theme, item, isAdmin, sectionWidth, viewAs } = this.props;
+      const {
+        t,
+        theme,
+        item,
+        isAdmin,
+        sectionWidth,
+        viewAs,
+        isPersonalRoom,
+      } = this.props;
 
       const quickButtonsComponent = (
         <QuickButtons
@@ -64,6 +71,7 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
+          isPersonalRoom={isPersonalRoom}
         />
       );
 

@@ -12,16 +12,14 @@ import Loaders from "@docspace/common/components/Loaders";
 import PeopleSelector from "../../../../components/PeopleSelector";
 import { GUID_EMPTY } from "../../../../helpers/constants";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
 import CatalogGuestIcon from "PUBLIC_DIR/images/catalog.guest.react.svg";
 import { ID_NO_GROUP_MANAGER } from "../../../../helpers/constants";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { useTranslation } from "react-i18next";
 
 import withLoader from "../../../../HOCs/withLoader";
@@ -189,7 +187,7 @@ const SectionBodyContent = ({
           return selectGroup(group.id);
         } else {
           return history.push(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/")
+            combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, "/")
           );
         }
       })

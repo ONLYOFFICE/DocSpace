@@ -209,7 +209,7 @@ class DropDown extends React.PureComponent {
   getItemHeight = (item) => {
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
 
-    if (item && item.props.disabled) return 0;
+    //if (item && item.props.disabled) return 0;
 
     let height = item?.props.height;
     let heightTablet = item?.props.heightTablet;
@@ -245,19 +245,19 @@ class DropDown extends React.PureComponent {
     const { maxHeight, children, showDisabledItems, theme } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
-    const rowHeights = React.Children.map(children, (child) =>
+    let cleanChildren = children;
+    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+
+    const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
     );
     const getItemSize = (index) => rowHeights[index];
-    const fullHeight = children && rowHeights.reduce((a, b) => a + b, 0);
+    const fullHeight = cleanChildren && rowHeights.reduce((a, b) => a + b, 0);
     const calculatedHeight =
       fullHeight > 0 && fullHeight < maxHeight ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight
       ? { height: calculatedHeight + "px" }
       : {};
-
-    let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
 
     return (
       <StyledDropdown

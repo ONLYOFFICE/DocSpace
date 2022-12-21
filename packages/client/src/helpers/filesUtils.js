@@ -1,9 +1,5 @@
 import authStore from "@docspace/common/store/AuthStore";
-import {
-  AppServerConfig,
-  FileType,
-  RoomsType,
-} from "@docspace/common/constants";
+import { FileType, RoomsType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
 import { addFileToRecentlyViewed } from "@docspace/common/api/files";
@@ -28,6 +24,8 @@ export const getFileTypeName = (fileType, t) => {
     case FileType.Presentation:
       return t("Files:Presentation");
     case FileType.Document:
+    case FileType.OFormTemplate:
+    case FileType.OForm:
       return t("Files:Document");
     default:
       return t("Files:Folder");
@@ -109,7 +107,7 @@ export const openDocEditor = async (
 
   if (!url && id) {
     url = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       `/doceditor?fileId=${encodeURIComponent(id)}`
     );
@@ -127,7 +125,7 @@ export const openDocEditor = async (
 export const getDataSaveAs = async (params) => {
   try {
     const data = await request({
-      baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+      baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage),
       method: "get",
       url: `/products/files/httphandlers/filehandler.ashx?${params}`,
       responseType: "text",
@@ -153,7 +151,7 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
   } else {
     window.open(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `products/files/httphandlers/filehandler.ashx?${params}` //TODO: will change 'products/files' path
       ),

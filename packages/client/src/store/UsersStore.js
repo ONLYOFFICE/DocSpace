@@ -358,6 +358,7 @@ class UsersStore {
       id,
       displayName,
       avatar,
+      hasAvatar,
       email,
       isOwner,
       isAdmin: isAdministrator,
@@ -387,6 +388,10 @@ class UsersStore {
       status
     );
 
+    const currentAvatar = hasAvatar
+      ? avatar
+      : "/images/default_user_photo_size_32-32.png";
+
     return {
       id,
       status,
@@ -397,7 +402,8 @@ class UsersStore {
       isAdmin: isAdministrator,
       isVisitor,
       displayName,
-      avatar,
+      avatar: currentAvatar,
+      hasAvatar,
       email,
       userName,
       mobilePhone,

@@ -18,11 +18,6 @@ export async function login(
 
     setWithCredentialsStatus(true);
 
-    // this.reset();
-
-    // this.init();
-    // const defaultPage = window["AscDesktopEditor"] !== undefined || IS_PERSONAL ? combineUrl(proxyURL, "/products/files/") : "/"
-    // return this.settingsStore.defaultPage;
     return Promise.resolve(response);
   } catch (e) {
     return Promise.reject(e);

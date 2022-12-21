@@ -11,7 +11,6 @@ import Loaders from "@docspace/common/components/Loaders";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import PlusIcon from "@docspace/client/public/images/plus.react.svg";
@@ -113,7 +112,11 @@ const RootFolderContainer = (props) => {
         const pathname = `${url}?${filterParamsStr}`;
 
         history.push(
-          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+          combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            config.homepage,
+            pathname
+          )
         );
       })
       .finally(() => {

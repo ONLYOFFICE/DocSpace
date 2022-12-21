@@ -9,6 +9,7 @@ const StyledText = styled(Text)`
 const StyledAuthorCell = styled.div`
   display: flex;
   width: 100%;
+  overflow: hidden;
 
   .author-avatar-cell {
     width: 16px;

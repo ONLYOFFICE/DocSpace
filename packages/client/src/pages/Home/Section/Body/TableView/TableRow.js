@@ -327,6 +327,7 @@ const FilesTableRow = (props) => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      defaultRoomIcon={item.defaultRoomIcon}
     />
   );
 

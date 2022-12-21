@@ -128,6 +128,7 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
         e.target.closest(".checkbox") ||
+        e.target.closest(".table-container_row-checkbox") ||
         e.button !== 0 ||
         e.target.closest(".expandButton") ||
         e.target.querySelector(".expandButton") ||
