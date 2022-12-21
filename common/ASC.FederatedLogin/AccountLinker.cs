@@ -120,7 +120,7 @@ public class AccountLinker
         };
 
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-        accountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
+        accountLinkContext.AddOrUpdate(accountLinkContext.AccountLinks, accountLink);
         accountLinkContext.SaveChanges();
 
         _accountLinkerStorage.RemoveFromCache(obj);

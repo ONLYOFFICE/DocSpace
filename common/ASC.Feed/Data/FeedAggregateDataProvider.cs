@@ -71,7 +71,7 @@ public class FeedAggregateDataProvider
         };
 
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        feedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
+        feedDbContext.AddOrUpdate(feedDbContext.FeedLast, feedLast);
         feedDbContext.SaveChanges();
 
         var aggregatedDate = DateTime.UtcNow;
@@ -124,7 +124,7 @@ public class FeedAggregateDataProvider
                     }
                 }
 
-                feedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
+                feedDbContext.AddOrUpdate(feedDbContext.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -134,7 +134,7 @@ public class FeedAggregateDataProvider
                         UserId = u
                     };
 
-                    feedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
+                    feedDbContext.AddOrUpdate(feedDbContext.FeedUsers, feedUser);
                 }
             }
 
