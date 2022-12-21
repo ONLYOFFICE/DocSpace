@@ -1198,7 +1198,10 @@ class FilesStore {
       const canViewVersionFileHistory = item.security?.ReadHistory;
       const canFillForm = item.security?.FillForms;
 
-      const canEditFile = item.security.Edit && item.viewAccessability.WebEdit;
+      const canEditFile =
+        item.security.Edit &&
+        item.viewAccessability.WebEdit &&
+        !item.lockedForMe;
       const canOpenPlayer =
         item.viewAccessability.ImageView || item.viewAccessability.MediaView;
       const canViewFile = item.viewAccessability.WebView;
