@@ -42,7 +42,10 @@ class InfoPanelStore {
 
   // Setters
 
-  setIsVisible = (bool) => (this.isVisible = bool);
+  setIsVisible = (bool) => {
+    this.setView("info_details");
+    this.isVisible = bool;
+  };
   setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
