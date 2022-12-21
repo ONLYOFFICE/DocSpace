@@ -24,7 +24,6 @@ import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
@@ -1841,7 +1840,7 @@ class FilesActionStore {
           !this.authStore.settingsStore.isDesktopClient && !isFolder
             ? window.open(
                 combineUrl(
-                  AppServerConfig.proxyURL,
+                  window.DocSpaceConfig?.proxy?.url,
                   config.homepage,
                   `/doceditor?fileId=${id}`
                 ),

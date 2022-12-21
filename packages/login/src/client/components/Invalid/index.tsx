@@ -3,7 +3,6 @@ import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import { useTranslation, Trans } from "react-i18next";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 const homepage = "/login";
@@ -12,8 +11,7 @@ const InvalidError = () => {
   const { t } = useTranslation("Login");
 
   React.useEffect(() => {
-    const { proxyURL } = AppServerConfig;
-    const url = combineUrl(proxyURL, homepage);
+    const url = combineUrl(window.DocSpaceConfig?.proxy?.url, homepage);
     setProxyHomepageUrl(url);
     setTimeout(() => (location.href = url), 10000);
   }, []);

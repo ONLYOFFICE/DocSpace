@@ -79,6 +79,11 @@ const StyledBody = styled.div`
       .selection-panel_folder-title {
         padding: 12px 20px 14px 0px;
       }
+
+      .selection-panel_header-loader {
+        padding-bottom: 3px;
+      }
+
       .selection-panel_tree-folder {
         height: ${(props) => (props.footer ? "343px" : "387px")};
         max-height: 384px;
@@ -211,6 +216,10 @@ const StyledAsideBody = styled.div`
     margin-bottom: 12px;
     div:first-child {
       ${(props) => props.header && " margin-bottom: 12px;"}
+    }
+
+    .selection-panel_header-loader {
+      padding-bottom: 4px;
     }
   }
   .selection-panel_aside-folder-title {

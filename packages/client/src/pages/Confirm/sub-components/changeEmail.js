@@ -6,7 +6,6 @@ import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { combineUrl } from "@docspace/common/utils";
 import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class ChangeEmail extends React.PureComponent {
   componentDidMount() {
@@ -18,7 +17,7 @@ class ChangeEmail extends React.PureComponent {
           console.log("change client email success", res);
           tryRedirectTo(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/accounts/view/@self?email_change=success`
             )
           );
@@ -37,7 +36,10 @@ class ChangeEmail extends React.PureComponent {
 
           console.log("change client email error", e);
           tryRedirectTo(
-            combineUrl(AppServerConfig.proxyURL, `/error=${errorMessage}`)
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              `/error=${errorMessage}`
+            )
           );
         });
     }
@@ -52,7 +54,7 @@ class ChangeEmail extends React.PureComponent {
           console.log("change client email success", res);
           tryRedirectTo(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/accounts/view/@self?email_change=success`
             )
           );

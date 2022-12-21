@@ -6,7 +6,6 @@ import Error520 from "client/Error520";
 //import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Submenu from "@docspace/components/submenu";
 import CommonSettings from "./CommonSettings";
@@ -65,7 +64,11 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
       if (id === setting) return;
 
       history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${id}`)
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          `/settings/${id}`
+        )
       );
     },
     [setting, history]

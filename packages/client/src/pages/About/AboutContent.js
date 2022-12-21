@@ -79,7 +79,7 @@ const AboutContent = (props) => {
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
-  const linkAppServer = "https://github.com/ONLYOFFICE/DocSpace";
+  const linkRepo = "https://github.com/ONLYOFFICE/DocSpace";
   const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
 
   const companyName = previewData
@@ -134,14 +134,14 @@ const AboutContent = (props) => {
             className="row-el"
             fontSize="13px"
             fontWeight="600"
-            href={linkAppServer}
+            href={linkRepo}
             target="_blank"
           >
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
 
           <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.appServer}
+            v.{buildVersionInfo.docspace}
           </Text>
         </div>
 

@@ -6,7 +6,6 @@ import Text from "@docspace/components/text";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import { StyledArticlePaymentAlert } from "../styled-article";
 import styled from "styled-components";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import Loaders from "../../Loaders";
@@ -18,7 +17,10 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
   }
 `;
 
-const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
+const PROXY_BASE_URL = combineUrl(
+  window.DocSpaceConfig?.proxy?.url,
+  "/portal-settings"
+);
 
 const ArticlePaymentAlert = ({
   pricePerManager,

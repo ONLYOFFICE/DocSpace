@@ -6,7 +6,6 @@ import Section from "@docspace/common/components/Section";
 import { combineUrl } from "@docspace/common/utils";
 import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
@@ -21,7 +20,7 @@ class ActivateEmail extends React.PureComponent {
         .then((res) => {
           tryRedirectTo(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/login?confirmedEmail=${email}`
             )
           );
@@ -41,7 +40,7 @@ class ActivateEmail extends React.PureComponent {
 
           tryRedirectTo(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/login/error?message=${errorMessage}`
             )
           );
