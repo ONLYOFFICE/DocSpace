@@ -23,7 +23,7 @@
 // All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
-
+    
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 [Transient]
@@ -270,6 +270,20 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
                 var (isError, message) = await WithErrorAsync(scope, files, checkPermissions);
+
+                if (!isError && 
+                    (toFolder.RootFolderType == FolderType.USER || toFolder.RootFolderType == FolderType.TRASH) &&
+                    folder.RootFolderType == FolderType.VirtualRooms &&
+                    files.Count > 0
+                    )
+                {
+                    var tags = await TagDao.GetTagsAsync(TagType.Locked, files).ToListAsync();
+
+                    if (tags.Count > 0)
+                    {
+                        await TagDao.RemoveTags(tags);
+                    }
+                }
 
                 try
                 {
@@ -583,6 +597,19 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 await fileMarker.RemoveMarkAsNewForAllAsync(file);
 
+                                if ((toFolder.RootFolderType == FolderType.USER || toFolder.RootFolderType == FolderType.TRASH) &&
+                                    file.RootFolderType == FolderType.VirtualRooms
+                                    )
+                                {
+                                    var tags = TagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.Locked);
+                                    var tagLocked = await tags.FirstOrDefaultAsync();
+
+                                    if (tagLocked != null)
+                                    {
+                                        await TagDao.RemoveTags(tagLocked);
+                                    }
+                                }
+
                                 var newFileId = await FileDao.MoveFileAsync(file.Id, toFolderId);
                                 newFile = await fileDao.GetFileAsync(newFileId);
 
@@ -745,12 +772,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             if(checkPermissions && !await FilesSecurity.CanMoveAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-
-                return (true, error);
-            }
-            if (checkPermissions && await entryManager.FileLockedForMeAsync(file))
-            {
-                error = FilesCommonResource.ErrorMassage_LockedFile;
 
                 return (true, error);
             }

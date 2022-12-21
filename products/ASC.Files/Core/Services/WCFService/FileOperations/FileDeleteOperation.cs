@@ -224,6 +224,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             }
                             else
                             {
+                                if (folder.RootFolderType == FolderType.VirtualRooms && files.Count > 0)
+                                {
+                                    var tags = await TagDao.GetTagsAsync(TagType.Locked, files).ToListAsync();
+
+                                    if (tags.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(tags);
+                                    }
+                                }
+
                                 await FolderDao.MoveFolderAsync(folder.Id, _trashId, CancellationToken);
                                 if (isNeedSendActions)
                                 {
@@ -265,6 +275,17 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 await fileMarker.RemoveMarkAsNewForAllAsync(file);
                 if (!_immediately && FileDao.UseTrashForRemove(file))
                 {
+                    if (file.RootFolderType == FolderType.VirtualRooms)
+                    {
+                        var tags = TagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.Locked);
+                        var tagLocked = await tags.FirstOrDefaultAsync();
+
+                        if (tagLocked != null)
+                        {
+                            await TagDao.RemoveTags(tagLocked);
+                        }
+                    }
+
                     await FileDao.MoveFileAsync(file.Id, _trashId);
                     if (isNeedSendActions)
                     {
@@ -329,12 +350,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             if (checkPermissions && !await FilesSecurity.CanDeleteAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
-
-                return (true, error);
-            }
-            if (checkPermissions && await entryManager.FileLockedForMeAsync(file))
-            {
-                error = FilesCommonResource.ErrorMassage_LockedFile;
 
                 return (true, error);
             }
