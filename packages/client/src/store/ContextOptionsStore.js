@@ -843,7 +843,7 @@ class ContextOptionsStore {
         id: "option_link-for-room-members",
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onCopyLink(item, t),
         disabled: false,
       },
