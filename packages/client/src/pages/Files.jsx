@@ -220,19 +220,16 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { showArticle, isFrame, withMainButton } = this.props;
+    const { showMenu, isFrame, withMainButton, history } = this.props;
 
     return (
       <>
         <GlobalEvents />
         <Panels />
         {isFrame ? (
-          showArticle && <FilesArticle history={this.props.history} />
+          showMenu && <FilesArticle history={history} />
         ) : (
-          <FilesArticle
-            history={this.props.history}
-            withMainButton={withMainButton}
-          />
+          <FilesArticle history={history} withMainButton={withMainButton} />
         )}
         <FilesSection />
       </>
@@ -257,7 +254,7 @@ const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: isDesktopClient,
     isFrame,
-    showArticle: frameConfig?.showArticle,
+    showMenu: frameConfig?.showMenu,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: encryptionKeys,

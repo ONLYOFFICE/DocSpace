@@ -412,21 +412,22 @@ export function checkIsSSR() {
   return typeof window === "undefined";
 }
 
-export const frameCallbackData = (data) => {
+export const frameCallbackData = (methodReturnData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onMethodReturn",
-      methodReturnData: data,
+      methodReturnData,
     }),
     "*"
   );
 };
 
-export const frameCallCommand = (command) => {
+export const frameCallCommand = (commandName: string, commandData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onCallCommand",
-      commandName: command,
+      commandName,
+      commandData,
     }),
     "*"
   );
