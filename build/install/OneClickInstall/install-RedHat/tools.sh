@@ -32,3 +32,18 @@ check_hardware () {
 if [ "$SKIP_HARDWARE_CHECK" != "true" ]; then
 	check_hardware
 fi
+
+read_unsupported_installation () {
+	read -p "$RES_CHOICE_INSTALLATION " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y ) yum -y install $DIST*-release
+		;;
+
+		n|N ) exit 0;
+		;;
+
+		* ) echo $RES_CHOICE;
+			read_unsupported_installation
+		;;
+	esac
+}
