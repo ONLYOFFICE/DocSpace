@@ -1,6 +1,6 @@
 (function () {
   const defaultConfig = {
-    src: `${window.location.protocol}//${window.location.hostname}:8092`,
+    src: new URL(document.currentScript.src).origin,
     rootPath: "/rooms/personal/",
     width: "100%",
     height: "100%",
@@ -11,9 +11,10 @@
     fileId: null,
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
-    showArticle: false,
     showTitle: true,
+    showMenu: false,
     showFilter: false,
+    showAction: false,
     destroyText: "Frame container",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
@@ -37,7 +38,12 @@
       "fileId",
       "type",
       "editorType",
+      "mode",
     ],
+    events: {
+      onSelectCallback: (e) => console.log("onCloseCallback", e),
+      onCloseCallback: null,
+    },
   };
 
   const getConfigFromParams = () => {
@@ -168,7 +174,7 @@
             break;
           }
           case "onCallCommand": {
-            this[frameData.commandName].call(this);
+            this[frameData.commandName].call(this, frameData.commandData);
             break;
           }
           default:

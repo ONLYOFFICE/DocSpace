@@ -159,6 +159,7 @@ class Section extends React.Component {
       settingsStudio,
       clearUploadedFilesHistory,
       withPaging,
+      isInfoPanelVisible,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -237,6 +238,7 @@ class Section extends React.Component {
                     maintenanceExist={maintenanceExist}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
                     settingsStudio={settingsStudio}
+                    isInfoPanelVisible={isInfoPanelVisible}
                   >
                     {isSectionHeaderAvailable && !isMobile && (
                       <SubSectionHeader
@@ -470,6 +472,8 @@ export default inject(({ auth }) => {
     showText,
   } = settingsStore;
 
+  const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
+
   return {
     isTabletView,
     isHeaderVisible,
@@ -479,5 +483,7 @@ export default inject(({ auth }) => {
     setMaintenanceExist,
 
     showText,
+
+    isInfoPanelVisible,
   };
 })(observer(Section));

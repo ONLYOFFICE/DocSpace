@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Tenants;
+
 namespace ASC.AuditTrail.Models.Mappings;
 
 [Scope]
@@ -33,15 +35,18 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
     private readonly UserFormatter _userFormatter;
     private readonly AuditActionMapper _auditActionMapper;
     private readonly MessageTarget _messageTarget;
+    private readonly TenantUtil _tenantUtil;
 
     public EventTypeConverter(
         UserFormatter userFormatter,
         AuditActionMapper actionMapper,
-        MessageTarget messageTarget)
+        MessageTarget messageTarget,
+        TenantUtil tenantUtil)
     {
         _userFormatter = userFormatter;
         _auditActionMapper = actionMapper;
         _messageTarget = messageTarget;
+        _tenantUtil = tenantUtil;
     }
 
     public LoginEventDto Convert(LoginEventQuery source, LoginEventDto destination, ResolutionContext context)
@@ -83,6 +88,9 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         }
 
         result.ActionText = _auditActionMapper.GetActionText(_auditActionMapper.GetMessageMaps(result.Action), result);
+
+        result.Date = _tenantUtil.DateTimeFromUtc(result.Date);
+        result.IP = result.IP.Split(':').Length > 1 ? result.IP.Split(':')[0] : result.IP;
 
         return result;
     }
@@ -138,6 +146,10 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
             result.Product = _auditActionMapper.GetProductText(map);
             result.Module = _auditActionMapper.GetModuleText(map);
         }
+
+
+        result.Date =  _tenantUtil.DateTimeFromUtc(result.Date);
+        result.IP = result.IP.Split(':').Length > 1 ? result.IP.Split(':')[0] : result.IP;
 
         return result;
     }

@@ -96,11 +96,12 @@ const VersionRow = (props) => {
       label: t("EditComment"),
       onClick: onEditComment,
     },
-    canChangeVersionFileHistory && {
-      key: "restore",
-      label: t("Common:Restore"),
-      onClick: onRestoreClick,
-    },
+    index !== 0 &&
+      canChangeVersionFileHistory && {
+        key: "restore",
+        label: t("Common:Restore"),
+        onClick: onRestoreClick,
+      },
     {
       key: "download",
       label: `${t("Common:Download")} (${info.contentLength})`,
