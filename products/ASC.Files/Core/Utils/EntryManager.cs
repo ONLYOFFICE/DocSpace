@@ -1074,7 +1074,7 @@ public class EntryManager
             var title = Path.GetFileNameWithoutExtension(sourceFile.Title);
 
             linkedFile = _serviceProvider.GetService<File<T>>();
-            linkedFile.Title = $"{title}-{DateTime.UtcNow:s}{ext}";
+            linkedFile.Title = Global.ReplaceInvalidCharsAndTruncate($"{title}-{DateTime.UtcNow:s}{ext}");
             linkedFile.ParentId = folderIfNew.Id;
             linkedFile.FileStatus = sourceFile.FileStatus;
             linkedFile.ConvertedType = sourceFile.ConvertedType;
@@ -1434,7 +1434,7 @@ public class EntryManager
                 file = await fileDao.SaveFileAsync(file, tmpStream);
             }
             if (!keepLink
-               || file.CreateBy != _authContext.CurrentAccount.ID
+               || (!file.ProviderEntry && file.CreateBy != _authContext.CurrentAccount.ID)
                || !file.IsFillFormDraft)
             {
                 var linkDao = _daoFactory.GetLinkDao();
