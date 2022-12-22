@@ -44,7 +44,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
   try {
     initialState = await getInitialState(query);
 
-    if (initialState.isAuth) {
+    if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
       next();
     }

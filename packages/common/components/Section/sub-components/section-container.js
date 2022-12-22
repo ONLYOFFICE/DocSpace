@@ -74,13 +74,15 @@ const StyledSectionContainer = styled.section`
 
   .layout-progress-bar {
     position: fixed;
-    right: 15px;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
     bottom: 21px;
   }
 
   .layout-progress-second-bar {
     position: fixed;
-    right: 15px;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
     bottom: 83px;
   }
 

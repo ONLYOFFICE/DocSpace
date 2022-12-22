@@ -53,51 +53,37 @@ class ConfirmRoute extends React.Component {
             });
             break;
           case ValidationResult.Invalid:
-            history.push(
-              combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                path,
-                "/error=Invalid link"
-              )
+            console.error("invlid link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
           case ValidationResult.Expired:
-            history.push(
-              combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                path,
-                "/error=Expired link"
-              )
+            console.error("expired link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
           default:
-            history.push(
-              combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                path,
-                "/error=Unknown error"
-              )
+            console.error("unknown link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
         }
       })
       .catch((error) => {
-        let errorMessage = "";
-        if (typeof error === "object") {
-          errorMessage =
-            error?.response?.data?.error?.message ||
-            error?.statusText ||
-            error?.message ||
-            "";
-        } else {
-          errorMessage = error;
-        }
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            path,
-            `/error=${errorMessage}`
-          )
+        console.error(error);
+        window.location.href = combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          path,
+          "/error"
         );
       });
   }
