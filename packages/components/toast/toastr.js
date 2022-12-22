@@ -140,15 +140,28 @@ function fatal(data, title, timeout, withCross, centerPosition) {
 }
 
 function error(data, title, timeout, withCross, centerPosition) {
+  console.log("toast error: ", { data });
   const dataType = typeof data;
-  const message =
-    dataType === "string"
-      ? data
-      : dataType === "object" && data.statusText
-      ? data.statusText
-      : dataType === "object" && data.message
-      ? data.message
-      : "";
+  let message = "";
+
+  if (dataType === "string") {
+    message = data;
+  } else if (dataType === "object") {
+    message =
+      data?.response?.data?.error?.message ||
+      data?.statusText ||
+      data?.message ||
+      "";
+  }
+
+  // const message =
+  //   dataType === "string"
+  //     ? data
+  //     : dataType === "object" && data.statusText
+  //     ? data.statusText
+  //     : dataType === "object" && data.message
+  //     ? data.message
+  //     : "";
 
   return notify(
     "error",

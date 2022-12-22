@@ -47,6 +47,7 @@ public interface IModuleSpecifics
     DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table);
     DbCommand CreateInsertCommand(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row);
     DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset);
+    DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset, Guid id);
     IEnumerable<TableInfo> GetTablesOrdered();
     Stream PrepareData(string key, Stream data, ColumnMapper columnMapper);
     void PrepareData(DataTable data);

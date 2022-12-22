@@ -9,7 +9,6 @@ import {
   getAppearanceTheme,
 } from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig } from "@docspace/common/constants";
 import {
   openEdit,
   getSettingsFiles,
@@ -87,7 +86,7 @@ export const initDocEditor = async (req) => {
       error = {
         unAuthorized: true,
         redirectPath: combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           personal ? "/sign-in" : "/login"
         ),
       };
@@ -108,15 +107,12 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
-    const actionLink = config?.editorConfig?.actionLink || null;
-
     return {
       config,
       personal,
       successAuth,
       user,
       error,
-      actionLink,
       //isSharingAccess,
       url,
       doc,

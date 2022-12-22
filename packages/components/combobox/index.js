@@ -109,7 +109,8 @@ class ComboBox extends React.Component {
       offsetLeft,
       modernView,
       withBackdrop,
-
+      isAside,
+      withBackground,
       advancedOptionsCount,
     } = this.props;
 
@@ -139,7 +140,18 @@ class ComboBox extends React.Component {
     let optionsCount = optionsLength;
 
     if (withAdvancedOptions) {
-      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+      const advancedOptionsWithoutSeparator = advancedOptions.props.children.filter(
+        (option) => option.key !== "s1"
+      );
+
+      const advancedOptionsWithoutSeparatorLength =
+        advancedOptionsWithoutSeparator.length;
+
+      optionsCount = advancedOptionsCount
+        ? advancedOptionsCount
+        : advancedOptionsWithoutSeparatorLength
+        ? advancedOptionsWithoutSeparatorLength
+        : 6;
     }
 
     const disableMobileView = optionsCount < 5;
@@ -196,6 +208,8 @@ class ComboBox extends React.Component {
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
+            isAside={isAside}
+            withBackground={withBackground}
           >
             {advancedOptions
               ? advancedOptions

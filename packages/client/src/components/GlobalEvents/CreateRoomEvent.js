@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
 import { toastr } from "@docspace/components";
+import { isMobile } from "react-device-detect";
 
 const CreateRoomEvent = ({
   visible,
@@ -21,16 +22,30 @@ const CreateRoomEvent = ({
 
   connectDialogVisible,
 
-  currrentFolderId,
+  currentFolderId,
   updateCurrentFolder,
 
   withPaging,
-  addFile,
   setCreateRoomDialogVisible,
+  fetchFiles,
+  setInfoPanelIsVisible,
+  setView,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const openNewRoom = (id) => {
+    setView("info_members");
+    fetchFiles(id)
+      .then(() => {
+        !isMobile && setInfoPanelIsVisible(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onClose();
+      });
+  };
 
   const onCreate = async (roomParams) => {
     const createRoomData = {
@@ -59,6 +74,8 @@ const CreateRoomEvent = ({
           ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
 
+      room.isLogoLoading = true;
+
       // delete thirdparty account if not needed
       if (!isThirdparty && storageFolderId)
         await deleteThirdParty(thirdpartyAccount.providerId);
@@ -68,10 +85,11 @@ const CreateRoomEvent = ({
         await createTag(createTagsData[i]);
 
       // add new tags to room
-      room = await addTagsToRoom(room.id, addTagsData);
+      if (!!addTagsData.length)
+        room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
-      if (roomParams.icon.uploadedFile)
+      if (roomParams.icon.uploadedFile) {
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -82,23 +100,23 @@ const CreateRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && addFile(room, true);
+            !withPaging && openNewRoom(room.id);
 
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      else !withPaging && addFile(room, true);
+      } else !withPaging && openNewRoom(room.id);
     } catch (err) {
       toastr.error(err);
       console.log(err);
-    } finally {
-      if (withPaging) {
-        await updateCurrentFolder(null, currrentFolderId);
-      }
 
       setIsLoading(false);
       onClose();
+    } finally {
+      if (withPaging) {
+        await updateCurrentFolder(null, currentFolderId);
+      }
     }
   };
 
@@ -145,11 +163,12 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
+      fetchFiles,
       addFile,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
-    const { id: currrentFolderId } = selectedFolderStore;
+    const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
     const { connectDialogVisible, setCreateRoomDialogVisible } = dialogsStore;
@@ -159,6 +178,11 @@ export default inject(
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { withPaging } = auth.settingsStore;
+
+    const {
+      setIsVisible: setInfoPanelIsVisible,
+      setView,
+    } = auth.infoPanelStore;
 
     return {
       createRoom,
@@ -173,12 +197,14 @@ export default inject(
       addLogoToRoom,
 
       connectDialogVisible,
-      currrentFolderId,
+      currentFolderId,
       updateCurrentFolder,
 
       withPaging,
-      addFile,
       setCreateRoomDialogVisible,
+      fetchFiles,
+      setInfoPanelIsVisible,
+      setView,
     };
   }
 )(observer(CreateRoomEvent));

@@ -120,7 +120,8 @@ class ContextMenuButton extends React.Component {
     if (
       this.props.opened === nextProps.opened &&
       this.state.isOpen === nextState.isOpen &&
-      this.props.displayType === nextProps.displayType
+      this.props.displayType === nextProps.displayType &&
+      this.props.isDisabled === nextProps.isDisabled
     ) {
       return false;
     }

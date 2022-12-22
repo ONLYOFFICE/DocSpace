@@ -216,7 +216,7 @@ public class EntryStatusManager
 
         var tagDao = _daoFactory.GetTagDao<T>();
 
-        var tagsTask = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+        var tagsTask = tagDao.GetTagsAsync(TagType.Locked, files).ToDictionaryAsync(k => k.EntryId, v => v);
         var tagsNewTask = tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, files).ToListAsync();
 
         var tags = await tagsTask;
@@ -224,34 +224,15 @@ public class EntryStatusManager
 
         foreach (var file in files)
         {
-            foreach (var t in tags)
+            if (tags.TryGetValue(file.Id, out var lockedTag))
             {
-                if (!t.Key.Equals(file.Id))
-                {
-                    continue;
-                }
+                var lockedBy = lockedTag.Owner;
+                file.Locked = lockedBy != Guid.Empty;
+                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
+                    ? _global.GetUserName(lockedBy)
+                    : null;
 
-                if (t.Value.Any(r => r.Type == TagType.Favorite))
-                {
-                    file.IsFavorite = true;
-                }
-
-                if (t.Value.Any(r => r.Type == TagType.Template))
-                {
-                    file.IsTemplate = true;
-                }
-
-                var lockedTag = t.Value.FirstOrDefault(r => r.Type == TagType.Locked);
-                if (lockedTag != null)
-                {
-                    var lockedBy = lockedTag.Owner;
-                    file.Locked = lockedBy != Guid.Empty;
-                    file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
-                        ? _global.GetUserName(lockedBy)
-                        : null;
-
-                    continue;
-                }
+                continue;
             }
 
             if (tagsNew.Any(r => r.EntryId.Equals(file.Id)))
@@ -324,7 +305,6 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
-    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -353,8 +333,7 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings,
-        Global global)
+        ThumbnailSettings thumbnailSettings)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -380,7 +359,6 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
-        _global = global;
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;

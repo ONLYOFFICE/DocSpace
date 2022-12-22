@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using static ASC.Files.Core.Security.FileSecurity;
+
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public abstract class FileEntryDto
@@ -67,7 +69,7 @@ public abstract class FileEntryDto<T> : FileEntryDto
     public T Id { get; set; }
     public T RootFolderId { get; set; }
     public bool CanShare { get; set; }
-    public bool CanEdit { get; set; }
+    public IDictionary<FilesSecurityActions, bool> Security { get; set; }
 
     protected FileEntryDto(FileEntry<T> entry)
         : base(entry)
@@ -82,6 +84,8 @@ public abstract class FileEntryDto<T> : FileEntryDto
 [Scope]
 public class FileEntryDtoHelper
 {
+
+
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly EmployeeDtoHelper _employeeWraperHelper;
     private readonly FileSharingHelper _fileSharingHelper;
@@ -90,7 +94,8 @@ public class FileEntryDtoHelper
     public FileEntryDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeDtoHelper employeeWraperHelper,
-        FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
+        FileSharingHelper fileSharingHelper,
+        FileSecurity fileSecurity
         )
     {
         _apiDateTimeHelper = apiDateTimeHelper;
@@ -101,6 +106,11 @@ public class FileEntryDtoHelper
 
     protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryDto<TId>, new()
     {
+        if (entry.Security == null)
+        {
+            entry = await _fileSecurity.SetSecurity(new[] { entry }.ToAsyncEnumerable()).FirstAsync();
+        }
+
         return new T
         {
             Id = entry.Id,
@@ -117,7 +127,7 @@ public class FileEntryDtoHelper
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),
             CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
-            CanEdit = await _fileSecurity.CanEditAsync(entry)
+            Security = entry.Security
         };
     }
 }

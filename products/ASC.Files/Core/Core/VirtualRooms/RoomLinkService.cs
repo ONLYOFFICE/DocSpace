@@ -44,7 +44,7 @@ public class RoomLinkService
     {
         var key = _docSpaceLinksHelper.MakeKey(linkId);
 
-        return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy);
+        return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy) + "&toRoom=true";
     }
 
     public string GetInvitationLink(string email, FileShare share, Guid createdBy)
@@ -52,7 +52,7 @@ public class RoomLinkService
         var type = DocSpaceHelper.PaidRights.Contains(share) ? EmployeeType.RoomAdmin : EmployeeType.User;
 
         var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
-            + $"&emplType={type:d}";
+            + $"&emplType={type:d}&toRoom=true";
 
         return link;
     }

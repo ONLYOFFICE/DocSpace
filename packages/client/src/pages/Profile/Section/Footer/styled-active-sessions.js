@@ -42,7 +42,7 @@ export const TableHeaderCell = styled.th`
     left: -8px;
     width: 1px;
     height: 10px;
-    background: #d0d5da;
+    background: ${(props) => props.theme.activeSessions.sortHeaderColor};
   }
 `;
 
@@ -57,6 +57,22 @@ export const TableDataCell = styled.td`
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
+
+  .tick-icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.activeSessions.tickIconColor};
+      }
+    }
+  }
+
+  .remove-icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.activeSessions.removeIconColor};
+      }
+    }
+  }
 
   @media ${hugeMobile} {
     .session-browser {
@@ -94,7 +110,7 @@ export const TableDataCell = styled.td`
       right: -8px;
       width: 1px;
       height: 12px;
-      background: #d0d5da;
+      background: ${(props) => props.theme.activeSessions.sortHeaderColor};
     }
   }
 

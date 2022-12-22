@@ -41,6 +41,7 @@ const StyledAddWrapper = styled.div`
   gap: 6px;
   align-items: center;
   cursor: pointer;
+  margin-top: ${(props) => (props.inputsLength > 0 ? "16px" : "0px")};
 `;
 
 const usePrevious = (value) => {
@@ -126,9 +127,9 @@ const UserFields = (props) => {
         <></>
       )}
 
-      <StyledAddWrapper onClick={onClickAdd}>
+      <StyledAddWrapper onClick={onClickAdd} inputsLength={inputs.length}>
         <StyledPlusIcon size="small" />
-        <Link type="action" isHovered={true}>
+        <Link type="action" isHovered={true} fontWeight={600}>
           {buttonLabel}
         </Link>
       </StyledAddWrapper>

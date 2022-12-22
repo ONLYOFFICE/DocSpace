@@ -77,13 +77,11 @@ const FilterBlockItem = ({
     return !item.isSelected ||
       item.selectedKey === "me" ||
       item.selectedKey === "other" ? (
-      <StyledFilterBlockItemSelector key={item.key}>
-        <SelectorAddButton
-          onClick={(event) =>
-            showSelectorAction(event, isAuthor, item.group, [])
-          }
-          id="filter_add-author"
-        />
+      <StyledFilterBlockItemSelector
+        key={item.key}
+        onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
+      >
+        <SelectorAddButton id="filter_add-author" />
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {item.label}
         </StyledFilterBlockItemSelectorText>

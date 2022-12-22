@@ -13,7 +13,7 @@ const SizeCell = ({ t, item, sideColor }) => {
     <StyledText
       color={sideColor}
       fontSize="12px"
-      fontWeight={400}
+      fontWeight={600}
       title=""
       truncate
     >

@@ -137,7 +137,7 @@ const StyledCatalogItemBadgeWrapper = styled.div`
     align-items: center;
     justify-content: center;
 
-    width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
+    //width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     min-width: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
     min-height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
@@ -147,7 +147,6 @@ const StyledCatalogItemBadgeWrapper = styled.div`
       align-items: center;
       justify-content: center;
 
-      width: 6px;
       height: ${(props) => props.theme.catalogItem.badgeWrapper.size};
 
       p {
@@ -261,7 +260,8 @@ const StyledCatalogItemImg = styled.div`
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
-    path {
+    path,
+    circle {
       fill: ${(props) =>
         props.isActive
           ? props.theme.catalogItem.img.svg.isActiveFill
@@ -395,6 +395,14 @@ const StyledCatalogItemContainer = styled.div`
 
   .catalog-item__icon:target {
     display: flex;
+  }
+
+  .catalog-item__icon {
+    svg {
+      path {
+        fill: ${(props) => props.theme.catalogItem.trashIconFill};
+      }
+    }
   }
 
   :hover {

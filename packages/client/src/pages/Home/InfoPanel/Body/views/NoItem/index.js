@@ -18,5 +18,6 @@ const NoItem = ({ t, isAccounts, isGallery, isRooms, isFiles }) => {
 };
 
 export default withTranslation(["InfoPanel", "FormGallery"])(
-  withLoader(NoItem)(<Loaders.InfoPanelViewLoader view="noItem" />)
+  NoItem
+  // withLoader(NoItem)(<Loaders.InfoPanelViewLoader view="noItem" />)
 );

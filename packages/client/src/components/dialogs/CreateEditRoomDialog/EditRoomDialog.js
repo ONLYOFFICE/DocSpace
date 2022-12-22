@@ -18,6 +18,7 @@ const EditRoomDialog = ({
   fetchedImage,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
+  const [isValidTitle, setIsValidTitle] = useState(true);
 
   const [roomParams, setRoomParams] = useState({
     ...fetchedRoomParams,
@@ -34,7 +35,14 @@ const EditRoomDialog = ({
       type: newRoomType,
     }));
 
-  const onEditRoom = () => onSave(roomParams);
+  const onEditRoom = () => {
+    if (!roomParams.title.trim()) {
+      setIsValidTitle(false);
+      return;
+    }
+
+    onSave(roomParams);
+  };
 
   useEffect(async () => {
     if (fetchedImage)
@@ -73,6 +81,8 @@ const EditRoomDialog = ({
           setIsScrollLocked={setIsScrollLocked}
           isEdit
           isDisabled={isLoading}
+          isValidTitle={isValidTitle}
+          setIsValidTitle={setIsValidTitle}
         />
       </ModalDialog.Body>
 

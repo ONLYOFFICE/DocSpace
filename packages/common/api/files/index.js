@@ -57,6 +57,10 @@ export function getFolder(folderId, filter) {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
+    res.current.isArchive =
+      !!res.current.roomType &&
+      res.current.rootFolderType === FolderType.Archive;
+
     return res;
   });
 }

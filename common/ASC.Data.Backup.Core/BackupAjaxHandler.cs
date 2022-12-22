@@ -36,10 +36,8 @@ public class BackupAjaxHandler
     private readonly PermissionContext _permissionContext;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
-    private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
     private readonly BackupService _backupService;
-    private readonly TempPath _tempPath;
     private readonly StorageFactory _storageFactory;
 
     private const string BackupTempModule = "backup_temp";
@@ -56,9 +54,7 @@ public class BackupAjaxHandler
         PermissionContext permissionContext,
         SecurityContext securityContext,
         UserManager userManager,
-        TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        TempPath tempPath,
         StorageFactory storageFactory)
     {
         _tenantManager = tenantManager;
@@ -68,10 +64,8 @@ public class BackupAjaxHandler
         _permissionContext = permissionContext;
         _securityContext = securityContext;
         _userManager = userManager;
-        _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
         _backupService = backupService;
-        _tempPath = tempPath;
         _storageFactory = storageFactory;
     }
 
@@ -388,7 +382,7 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id, BackupTempModule, null) as DiscDataStore;
+        var discStore = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, BackupTempModule, (IQuotaController)null) as DiscDataStore;
         var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))

@@ -8,7 +8,6 @@ import {
   getCookie,
   setCookie,
 } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import initDesktop from "./helpers/initDesktop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import store from "client/store";
@@ -45,7 +44,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
   const onError = () => {
     window.open(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         rest.personal ? "sign-in" : "/login"
       ),
       "_self"

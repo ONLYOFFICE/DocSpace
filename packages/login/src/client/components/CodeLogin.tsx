@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -39,7 +39,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -62,17 +62,12 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
     setInvalidCode(false);
   };
 
-  const loginLogo = Object.values(logoUrls)[1];
-  const isSvgLogo = loginLogo.includes(".svg");
+  const logo = Object.values(logoUrls)[1];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
 
   return (
     <LoginContainer id="code-page" theme={theme}>
-      {isSvgLogo ? (
-        <ReactSVG src={loginLogo} className="logo-wrapper" />
-      ) : (
-        <img src={loginLogo} className="logo-wrapper" />
-      )}
-
+      <img src={logoUrl} className="logo-wrapper" />
       <Text
         id="workspace-title"
         fontSize="23px"

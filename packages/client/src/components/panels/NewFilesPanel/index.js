@@ -7,7 +7,6 @@ import Text from "@docspace/components/text";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import Row from "@docspace/components/row";
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -22,7 +21,6 @@ import {
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
@@ -76,7 +74,7 @@ class NewFilesPanel extends React.Component {
 
     this.props
       .markAsRead(folderIds, fileIds)
-      .then(() => this.setNewBadgeCount())
+      //.then(() => this.setNewBadgeCount())
       .then(() => {
         const { hasNew, refreshFiles } = this.props;
 
@@ -152,7 +150,7 @@ class NewFilesPanel extends React.Component {
           .finally(
             window.open(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 config.homepage,
                 `/doceditor?fileId=${id}`
               ),
@@ -171,33 +169,33 @@ class NewFilesPanel extends React.Component {
     }
   };
 
-  setNewBadgeCount = () => {
-    const {
-      newFilesIds,
-      updateFoldersBadge,
-      updateFilesBadge,
-      updateRootBadge,
-      updateFolderBadge,
-      pathParts,
-      newFiles,
-    } = this.props;
+  // setNewBadgeCount = () => {
+  //   const {
+  //     newFilesIds,
+  //     updateFoldersBadge,
+  //     updateFilesBadge,
+  //     updateRootBadge,
+  //     updateFolderBadge,
+  //     pathParts,
+  //     newFiles,
+  //   } = this.props;
 
-    const { readingFiles } = this.state;
+  //   const { readingFiles } = this.state;
 
-    const filesCount = newFiles.filter(
-      (f) => !readingFiles.includes(f.id.toString())
-    ).length;
-    updateRootBadge(+newFilesIds[0], filesCount);
+  //   const filesCount = newFiles.filter(
+  //     (f) => !readingFiles.includes(f.id.toString())
+  //   ).length;
+  // updateRootBadge(+newFilesIds[0], filesCount);
 
-    if (newFilesIds.length <= 1) {
-      if (pathParts[0] === +newFilesIds[0]) {
-        updateFoldersBadge();
-        updateFilesBadge();
-      }
-    } else {
-      updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
-    }
-  };
+  // if (newFilesIds.length <= 1) {
+  //   if (pathParts[0] === +newFilesIds[0]) {
+  //     updateFoldersBadge();
+  //     updateFilesBadge();
+  //   }
+  // } else {
+  //   updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
+  // }
+  //};
 
   render() {
     //console.log("NewFiles panel render");
@@ -306,13 +304,13 @@ export default inject(
       addFileToRecentlyViewed,
       //setIsLoading,
       isLoading,
-      updateFilesBadge,
-      updateFolderBadge,
-      updateFoldersBadge,
+      //updateFilesBadge,
+      //updateFolderBadge,
+      //updateFoldersBadge,
       hasNew,
       refreshFiles,
     } = filesStore;
-    const { updateRootBadge } = treeFoldersStore;
+    //const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
@@ -341,10 +339,10 @@ export default inject(
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-      updateRootBadge,
-      updateFolderBadge,
-      updateFoldersBadge,
-      updateFilesBadge,
+      // updateRootBadge,
+      // updateFolderBadge,
+      // updateFoldersBadge,
+      // updateFilesBadge,
 
       theme: auth.settingsStore.theme,
       hasNew,

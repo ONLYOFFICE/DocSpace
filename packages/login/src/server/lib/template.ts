@@ -53,6 +53,21 @@ const template: Template = (
     ${clientScripts}
     <script>
       console.log("It's Login INIT");
+      fetch("/static/scripts/config.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        window.DocSpaceConfig = {
+          ...config,
+        };
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     </script>
 `;
 

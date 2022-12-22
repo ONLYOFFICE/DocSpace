@@ -113,7 +113,8 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
+            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && 
+                !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
             {
                 continue;
             }
@@ -161,7 +162,7 @@ public class FileSharingAceHelper<T>
             if (!string.IsNullOrEmpty(w.Email))
             {
                 var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendEmailRoomInvite(w.Email, link);
+                _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
 
@@ -196,9 +197,15 @@ public class FileSharingAceHelper<T>
                                || share == FileShare.Review
                                || share == FileShare.FillForms
                                || share == FileShare.Comment
-                               || share == FileShare.None && entry.RootFolderType == FolderType.COMMON;
-            var removeNew = share == FileShare.None && entry.RootFolderType == FolderType.USER
-                            || share == FileShare.Restrict;
+                               || share == FileShare.RoomAdmin
+                               || share == FileShare.Editing
+                               || (share == FileShare.None && entry.RootFolderType == FolderType.COMMON);
+
+            var removeNew = share == FileShare.Restrict || (share == FileShare.None
+                && (entry.RootFolderType == FolderType.USER ||
+                    entry.RootFolderType == FolderType.VirtualRooms ||
+                    entry.RootFolderType == FolderType.Archive));
+
             listUsersId.ForEach(id =>
             {
                 recipients.Remove(id);
@@ -337,12 +344,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsDocSpaceAdministrator || await _fileSecurity.CanShareAsync(entry)))
-        {
-            return true;
-        }
-
-        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(entry))
+        if (await _fileSecurity.CanEditAccessAsync(entry))
         {
             return true;
         }
@@ -439,6 +441,7 @@ public class FileSharing
         var result = new List<AceWrapper>();
         var shares = await _fileSecurity.GetSharesAsync(entry);
         var isRoom = entry is Folder<T> { Private: false } room && DocSpaceHelper.IsRoom(room.FolderType);
+        var canEditAccess = await _fileSecurity.CanEditAccessAsync(entry);
 
         var records = shares
             .GroupBy(r => r.Subject)
@@ -493,13 +496,16 @@ public class FileSharing
                 Id = r.Subject,
                 SubjectGroup = isgroup,
                 Access = share,
-                FileShareOptions = r.FileShareOptions
+                FileShareOptions = r.FileShareOptions,
             };
+
+            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
 
             if (isRoom && r.IsLink)
             {
                 w.Link = _roomLinkService.GetInvitationLink(r.Subject, r.Owner);
                 w.SubjectGroup = true;
+                w.CanEditAccess = false;
             }
             else
             {
@@ -554,7 +560,8 @@ public class FileSharing
                 SubjectName = _global.GetUserName(ownerId),
                 SubjectGroup = false,
                 Access = FileShare.ReadWrite,
-                Owner = true
+                Owner = true,
+                CanEditAccess = false,
             };
 
             result.Add(w);

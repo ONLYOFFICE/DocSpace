@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { mobile } from "../../utils/device";
 
 const StyledModalBackdrop = styled.div.attrs((props) => ({
   style: {
@@ -26,11 +27,15 @@ const StyledModalBackdrop = styled.div.attrs((props) => ({
   min-height: fill-available;
   max-height: 100vh;
   width: 100vw;
-
+  overflow: hidden;
   position: fixed;
   left: 0;
   top: 0;
   z-index: ${(props) => props.zIndex};
+
+  @media ${mobile} {
+    position: absolute;
+  }
 
   transition: 0.2s;
   opacity: 0;

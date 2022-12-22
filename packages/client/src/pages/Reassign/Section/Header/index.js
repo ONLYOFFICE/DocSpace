@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 const Wrapper = styled.div`
   display: grid;
@@ -30,7 +29,9 @@ const SectionHeaderContent = (props) => {
   const { t } = useTranslation("People");
 
   const onClickBack = useCallback(() => {
-    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
+    history.push(
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage)
+    );
   }, [history]);
 
   return (

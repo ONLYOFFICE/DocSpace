@@ -15,13 +15,14 @@ import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettings
 import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
-import ForbiddenPage from "../../ForbiddenPage";
+import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
-  const { t } = useTranslation("SingleSignOn");
+  const { t } = useTranslation(["SingleSignOn", "Settings"]);
 
-  if (isMobile) return <ForbiddenPage />;
+  if (isMobile)
+    return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
 
   useEffect(() => {
     load();

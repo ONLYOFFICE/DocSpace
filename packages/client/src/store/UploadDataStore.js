@@ -653,6 +653,8 @@ class UploadDataStore {
             }
           }
         }
+
+        this.filesStore.setOperationAction(false);
       };
 
       const isFiltered =
@@ -694,6 +696,7 @@ class UploadDataStore {
     file,
     path
   ) => {
+    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (
@@ -898,7 +901,7 @@ class UploadDataStore {
           path
         );
       })
-      .catch((err) => {
+      .catch((error) => {
         if (this.files[indexOfFile] === undefined) {
           this.primaryProgressDataStore.setPrimaryProgressBarData({
             icon: "upload",
@@ -908,8 +911,18 @@ class UploadDataStore {
           });
           return Promise.resolve();
         }
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
 
-        this.files[indexOfFile].error = err;
+        this.files[indexOfFile].error = errorMessage;
 
         //dispatch(setUploadData(uploadData));
 

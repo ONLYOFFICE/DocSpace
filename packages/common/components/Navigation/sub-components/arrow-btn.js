@@ -5,13 +5,16 @@ const ArrowButton = ({ isRootFolder, onBackToParentFolder }) => {
   return (
     <>
       {!isRootFolder ? (
-        <IconButton
-          iconName="/static/images/arrow.path.react.svg"
-          size="17"
-          isFill={true}
-          onClick={onBackToParentFolder}
-          className="arrow-button"
-        />
+        <div className="navigation-arrow-container">
+          <IconButton
+            iconName="/static/images/arrow.path.react.svg"
+            size="17"
+            isFill={true}
+            onClick={onBackToParentFolder}
+            className="arrow-button"
+          />
+          <div className="navigation-header-separator" />
+        </div>
       ) : (
         <></>
       )}

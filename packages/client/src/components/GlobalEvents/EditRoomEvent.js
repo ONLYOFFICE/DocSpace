@@ -3,8 +3,12 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
+import api from "@docspace/common/api";
 
 const EditRoomEvent = ({
+  addActiveItems,
+  setActiveFolders,
+
   visible,
   onClose,
   item,
@@ -29,6 +33,8 @@ const EditRoomEvent = ({
   setCreateRoomDialogVisible,
 
   withPaging,
+
+  reloadSelection,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -77,6 +83,8 @@ const EditRoomEvent = ({
 
       let room = await editRoom(item.id, editRoomParams);
 
+      room.isLogoLoading = true;
+
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
       room = await addTagsToRoom(room.id, tags);
       room = await removeTagsFromRoom(room.id, removedTags);
@@ -89,6 +97,9 @@ const EditRoomEvent = ({
           ...room,
           logo: { big: item.logo.small },
         });
+
+        addActiveItems(null, [room.id]);
+
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -99,13 +110,26 @@ const EditRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && setFolder(room);
+            if (!withPaging) {
+              setFolder(room);
+            }
+
+            // to update state info panel
+            reloadSelection();
 
             URL.revokeObjectURL(img.src);
+
+            setActiveFolders([]);
           };
           img.src = url;
         });
-      } else !withPaging && setFolder(room);
+      } else {
+        if (!withPaging) {
+          setFolder(room);
+        }
+        // to update state info panel
+        reloadSelection();
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -113,14 +137,18 @@ const EditRoomEvent = ({
         await updateCurrentFolder(null, currentFolderId);
       }
       setIsLoading(false);
+
       onClose();
     }
   };
 
   useEffect(async () => {
-    const imgExst = item.logo.original.slice(".")[1];
-    if (item.logo.original) {
-      const file = await fetch(item.logo.original)
+    const logo = item?.logo?.original ? item.logo.original : "";
+
+    if (logo) {
+      const imgExst = logo.slice(".")[1];
+
+      const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
           (buf) =>
@@ -176,6 +204,8 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
+      addActiveItems,
+      setActiveFolders,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -184,8 +214,11 @@ export default inject(
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-
+    const { reloadSelection } = auth.infoPanelStore;
     return {
+      addActiveItems,
+      setActiveFolders,
+
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
@@ -206,6 +239,8 @@ export default inject(
 
       withPaging,
       setCreateRoomDialogVisible,
+
+      reloadSelection,
     };
   }
 )(observer(EditRoomEvent));

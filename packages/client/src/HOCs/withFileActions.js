@@ -128,6 +128,7 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
         e.target.closest(".checkbox") ||
+        e.target.closest(".table-container_row-checkbox") ||
         e.button !== 0 ||
         e.target.closest(".expandButton") ||
         e.target.querySelector(".expandButton") ||
@@ -156,7 +157,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file") ||
-        !!e.target.closest(".additional-badges") ||
+        // !!e.target.closest(".additional-badges") ||
         e.target.closest(".tag") ||
         isTrashFolder
       )
@@ -201,7 +202,6 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        canWebEdit,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -211,7 +211,11 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : `_${item.providerKey}`;
+      value += draggable
+        ? "_draggable"
+        : item.providerKey
+        ? `_${item.providerKey}`
+        : "";
 
       const isShareable = allowShareIn && item.canShare;
 
@@ -269,7 +273,7 @@ export default function withFileActions(WrappedFileItem) {
         selectTag,
         selectOption,
         onSelectItem,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         openFileAction,
         uploadEmptyFolders,
       } = filesActionsStore;
@@ -356,7 +360,7 @@ export default function withFileActions(WrappedFileItem) {
         isTrashFolder: isRecycleBinFolder,
         getFolderInfo,
         viewAs,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         isActive,
         inProgress,
         setBufferSelection,

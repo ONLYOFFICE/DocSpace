@@ -35,12 +35,7 @@ class TreeFoldersStore {
   getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
-    // this.treeFolders = treeFolders;
-
-    //TODO: remove after api fix
-    this.treeFolders = treeFolders
-      .filter((f) => f.rootFolderType !== FolderType.Recent)
-      .filter((f) => f.rootFolderType !== FolderType.Favorites);
+    this.treeFolders = treeFolders;
   };
 
   setIsLoadingNodes = (isLoadingNodes) => {
@@ -56,20 +51,21 @@ class TreeFoldersStore {
     this.expandedPanelKeys = expandedPanelKeys;
   };
 
-  updateRootBadge = (id, count) => {
-    const index = this.treeFolders.findIndex((x) => x.id === id);
-    if (index < 0) return;
+  // updateRootBadge = (id, count) => {
+  //   const index = this.treeFolders.findIndex((x) => x.id === id);
+  //   if (index < 0) return;
 
-    this.treeFolders = this.treeFolders.map((f, i) => {
-      if (i !== index) return f;
-      f.newItems -= count;
-      return f;
-    });
-  };
+  //   this.treeFolders = this.treeFolders.map((f, i) => {
+  //     if (i !== index) return f;
+  //     f.newItems -= count;
+  //     return f;
+  //   });
+  // };
 
   isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;
   isShare = (shareType) => shareType === FolderType.SHARE;
+  isRoomRoot = (type) => type === FolderType.Rooms;
 
   getRootFolder = (rootFolderType) => {
     return this.treeFolders.find((x) => x.rootFolderType === rootFolderType);
@@ -205,6 +201,10 @@ class TreeFoldersStore {
 
   get isArchiveFolderRoot() {
     return FolderType.Archive === this.selectedFolderStore.rootFolderType;
+  }
+
+  get isPersonalFolderRoot() {
+    return FolderType.USER === this.selectedFolderStore.rootFolderType;
   }
 
   get selectedKeys() {

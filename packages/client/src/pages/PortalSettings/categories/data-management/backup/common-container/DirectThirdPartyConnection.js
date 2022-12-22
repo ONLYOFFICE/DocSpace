@@ -307,7 +307,6 @@ const DirectThirdPartyConnection = (props) => {
     <StyledBackup>
       <div className="backup_connection">
         <ComboBox
-          className="backup_third-party-combo"
           options={accounts}
           selectedOption={{
             key: 0,

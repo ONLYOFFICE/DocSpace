@@ -88,7 +88,7 @@ echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://download.onlyoff
 mkdir -p -m 700 $HOME/.gnupg
 gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/onlyoffice.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys CB2DE8E5
 chmod 644 /usr/share/keyrings/onlyoffice.gpg
-echo "deb http://static.teamlab.info.s3.amazonaws.com/repo/4testing/debian stable main" | sudo tee /etc/apt/sources.list.d/onlyoffice4testing.list
+echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://static.teamlab.info.s3.amazonaws.com/repo/4testing/debian stable main" | sudo tee /etc/apt/sources.list.d/onlyoffice4testing.list
 
 declare -x LANG="en_US.UTF-8"
 declare -x LANGUAGE="en_US:en"

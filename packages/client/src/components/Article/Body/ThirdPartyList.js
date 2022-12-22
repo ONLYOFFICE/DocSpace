@@ -7,9 +7,7 @@ import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl, getOAuthToken } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@docspace/components/icon-button";
 import { connectedCloudsTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
@@ -123,7 +121,11 @@ const PureThirdPartyListContainer = ({
         toggleArticleOpen();
       }
       return history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          thirdPartyUrl
+        )
       );
     }
   }, [setSelectedNode, setSelectedFolder]);

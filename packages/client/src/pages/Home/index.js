@@ -46,7 +46,7 @@ class PureHome extends React.Component {
       setFirstLoad,
       setToPreviewFile,
       playlist,
-      isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
@@ -68,7 +68,9 @@ class PureHome extends React.Component {
       setTimeout(() => {
         getFileInfo(fileId)
           .then((data) => {
-            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const canOpenPlayer =
+              data.viewAccessability.ImageView ||
+              data.viewAccessability.MediaView;
             const file = { ...data, canOpenPlayer };
             setToPreviewFile(file, true);
           })
@@ -465,6 +467,7 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isErrorRoomNotAvailable,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -525,13 +528,15 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <Section.SectionHeader>
-            {isFrame ? (
-              showTitle && <SectionHeaderContent />
-            ) : (
-              <SectionHeaderContent />
-            )}
-          </Section.SectionHeader>
+          {!isErrorRoomNotAvailable && (
+            <Section.SectionHeader>
+              {isFrame ? (
+                showTitle && <SectionHeaderContent />
+              ) : (
+                <SectionHeaderContent />
+              )}
+            </Section.SectionHeader>
+          )}
 
           {!isEmptyPage && (
             <Section.SectionFilter>
@@ -619,6 +624,7 @@ export default inject(
       isEmptyPage,
 
       disableDrag,
+      isErrorRoomNotAvailable,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -721,7 +727,7 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
-
+      isErrorRoomNotAvailable,
       isRoomsFolder,
       isArchiveFolder,
 
@@ -744,7 +750,7 @@ export default inject(
       personal,
       setToPreviewFile,
       playlist,
-      isMediaOrImage: settingsStore.isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,

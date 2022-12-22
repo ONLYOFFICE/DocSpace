@@ -139,9 +139,12 @@ const IconCropper = ({
   };
 
   const handleImageChange = throttle(() => {
-    if (editorRef) {
+    try {
+      if (!editorRef) return;
       const newPreveiwImage = editorRef.getImageScaledToCanvas()?.toDataURL();
       setPreviewIcon(newPreveiwImage);
+    } catch (e) {
+      console.error(e);
     }
   }, 300);
 
@@ -173,6 +176,7 @@ const IconCropper = ({
           onPositionChange={handlePositionChange}
           onImageReady={handleImageChange}
           disableHiDPIScaling
+          crossOrigin="anonymous"
         />
       </div>
 

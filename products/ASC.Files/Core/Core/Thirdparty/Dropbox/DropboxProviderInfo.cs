@@ -56,6 +56,7 @@ internal class DropboxProviderInfo : IProviderInfo
     public FolderType FolderType { get; set; }
     public string FolderId { get; set; }
     public bool Private { get; set; }
+    public bool HasLogo { get; set; }
 
     private readonly DropboxStorageDisposableWrapper _wrapper;
     private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;
@@ -145,14 +146,12 @@ internal class DropboxProviderInfo : IProviderInfo
 internal class DropboxStorageDisposableWrapper : IDisposable
 {
     public DropboxStorage Storage { get; private set; }
-    private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;
     private readonly OAuth20TokenHelper _oAuth20TokenHelper;
     private readonly ConsumerFactory _consumerFactory;
 
-    public DropboxStorageDisposableWrapper(TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper, ConsumerFactory consumerFactory)
+    public DropboxStorageDisposableWrapper(IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper, ConsumerFactory consumerFactory)
     {
-        _tempStream = tempStream;
         _serviceProvider = serviceProvider;
         _oAuth20TokenHelper = oAuth20TokenHelper;
         _consumerFactory = consumerFactory;

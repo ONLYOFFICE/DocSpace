@@ -376,8 +376,13 @@ const Dark = {
 
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
-    background: "#292929",
-    activeBackground: "#292929",
+    background: "#242424",
+    hoverBackground: "#282828",
+    activeBackground: "#242424",
+
+    iconColor: "#858585",
+    iconColorHover: "#FFFFFF",
+    iconColorActive: "#CCCCCC",
 
     border: `none`,
     boxSizing: "border-box",
@@ -426,18 +431,21 @@ const Dark = {
   },
 
   checkbox: {
-    fillColor: "#292929",
+    fillColor: "#282828",
     borderColor: "#474747",
-    arrowColor: grayMaxLight,
-    indeterminateColor: grayMaxLight,
+    arrowColor: white,
+    indeterminateColor: white,
 
     disableArrowColor: "#474747",
-    disableBorderColor: "#646464",
-    disableFillColor: "#646464",
+    disableBorderColor: "#545454",
+    disableFillColor: "#545454",
     disableIndeterminateColor: "#474747",
 
-    hoverBorderColor: "#646464",
-    hoverIndeterminateColor: grayMaxLight,
+    hoverBorderColor: "#858585",
+    hoverIndeterminateColor: white,
+
+    pressedBorderColor: "#474747",
+    pressedFillColor: black,
 
     focusColor: "#858585",
   },
@@ -480,10 +488,10 @@ const Dark = {
     marginRight: "8px",
 
     background: "#292929",
-    disableBackground: "#646464",
+    disableBackground: "#545454",
 
     fillColor: grayMaxLight,
-    disableFillColor: "#646464",
+    disableFillColor: "#474747",
 
     borderColor: "#646464",
     disableBorderColor: "none",
@@ -560,9 +568,9 @@ const Dark = {
   },
 
   scrollbar: {
-    backgroundColorVertical: "rgba(208, 213, 218, 1)",
-    backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
-    hoverBackgroundColorVertical: "rgba(163, 169, 174, 1)",
+    backgroundColorVertical: "rgba(255, 255, 255, 0.1)",
+    backgroundColorHorizontal: "rgba(255, 255, 255, 0.1)",
+    hoverBackgroundColorVertical: "#ADADAD",
   },
 
   modalDialog: {
@@ -862,7 +870,7 @@ const Dark = {
   linkWithDropdown: {
     paddingRight: "20px",
     semiTransparentOpacity: "0.5",
-    textDecoration: "underline dashed",
+    textDecoration: "none",
     disableColor: "#5c5c5c",
 
     svg: {
@@ -877,7 +885,19 @@ const Dark = {
     expander: {
       iconColor: white,
     },
+    color: {
+      default: "#858585",
+      hover: "#ADADAD",
+      active: "#FFFFFF",
+      focus: "#FFFFFF",
+    },
 
+    background: {
+      default: "transparent",
+      hover: "#474747",
+      active: "#282828",
+      focus: "#242424",
+    },
     caret: {
       width: "5px",
       minWidth: "5px",
@@ -985,7 +1005,7 @@ const Dark = {
     },
 
     errorLabel: {
-      color: orangePressed,
+      color: "#E06451",
     },
   },
 
@@ -1365,7 +1385,7 @@ const Dark = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -1578,14 +1598,20 @@ const Dark = {
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "-2px",
-      fillColor: "#9c9c9c",
+      marginLeft: "auto",
     },
 
     button: {
       height: "18px",
       heightWithBorder: "30px",
-      paddingLeft: "8px",
+
+      paddingLeft: "16px",
+      paddingRightNoArrow: "16px",
+      paddingRight: "8px",
+
+      selectPaddingLeft: "8px",
+      selectPaddingRightNoArrow: "14px",
+      selectPaddingRight: "8px",
 
       color: "#858585",
       disabledColor: "#858585",
@@ -1605,9 +1631,10 @@ const Dark = {
       hoverBorderColor: "#858585",
       hoverBorderColorOpen: grayMaxLight,
       hoverDisabledBorderColor: "#474747",
-      hoverBackgroundModernView: "#474747",
 
-      activeBackgroundModernView: "#858585",
+      hoverBackgroundModernView: "#474747",
+      activeBackgroundModernView: "#282828",
+      focusBackgroundModernView: "#242424",
     },
 
     label: {
@@ -1616,7 +1643,7 @@ const Dark = {
 
       disabledColor: "#858585",
       color: "#858585",
-      selectedColor: grayMaxLight,
+      selectedColor: white,
 
       maxWidth: "175px",
 
@@ -1630,10 +1657,10 @@ const Dark = {
       height: "16px",
 
       defaultDisabledColor: "#858585",
-      defaultColor: grayMaxLight,
+      defaultColor: white,
       disabledColor: "#858585",
-      color: "#858585",
-      selectedColor: grayMaxLight,
+      color: white,
+      selectedColor: white,
     },
   },
 
@@ -1950,6 +1977,7 @@ const Dark = {
       size: "8px",
       position: "-4px",
     },
+    trashIconFill: "#858585",
   },
 
   navigation: {
@@ -1994,6 +2022,7 @@ const Dark = {
     catalogItemHeader: "#858585",
     catalogItemText: "rgba(255, 255, 255, 0.6)",
     catalogItemActiveBackground: "#333333",
+    catalogShowText: "#adadad",
   },
 
   section: {
@@ -2047,7 +2076,7 @@ const Dark = {
     },
 
     details: {
-      customLogoBorderColor: "#eceef1",
+      customLogoBorderColor: "#474747",
       commentEditorIconColor: "#eee",
     },
 
@@ -2096,7 +2125,7 @@ const Dark = {
   filterInput: {
     button: {
       border: "1px solid #474747",
-      hoverBorder: "1px solid #a3a9ae",
+      hoverBorder: "1px solid #858585",
 
       openBackground: "#a3a9ae",
 
@@ -2130,7 +2159,8 @@ const Dark = {
     },
 
     selectedItems: {
-      background: "#000000",
+      background: "#242424",
+      hoverBackground: "#3d3d3d",
     },
   },
 
@@ -2245,10 +2275,17 @@ const Dark = {
       tile: {
         draggingColor: "rgba(230, 211, 138, 0.12)",
         draggingHoverColor: "rgba(204, 184, 102, 0.2)",
-        checkedColor: "#3D3D3D",
+        checkedColor: "#3d3d3d",
+        roomsCheckedColor: black,
         border: "1px solid #474747",
-        backgroundColor: black,
-
+        backgroundBadgeColor: black,
+        backgroundColor: "#282828",
+        borderRadius: "6px",
+        roomsBorderRadius: "12px",
+        bottomBorderRadius: "0 0 6px 6px",
+        roomsBottomBorderRadius: "0 0 12px 12px",
+        upperBorderRadius: "6px 6px 0 0",
+        roomsUpperBorderRadius: "12px 12px 0 0",
         backgroundColorTop: "#292929",
       },
 
@@ -2391,7 +2428,8 @@ const Dark = {
     },
 
     tagInput: {
-      tagBackground: "#292929",
+      tagBackground: "#242424",
+      tagHoverBackground: "#3D3D3D",
     },
 
     dropdown: {
@@ -2474,6 +2512,20 @@ const Dark = {
     background: black,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     color: grayMaxLight,
+  },
+
+  emptyContent: {
+    header: {
+      color: "#FFFFFF",
+    },
+
+    description: {
+      color: "#ADADAD",
+    },
+    button: {
+      colorLink: "#ADADAD",
+      colorText: "#ADADAD",
+    },
   },
 
   filesEmptyContainer: {
@@ -2676,13 +2728,13 @@ const Dark = {
 
   filesBadges: {
     iconColor: "#858585",
-    hoverIconColor: "#eeeeee",
+    hoverIconColor: grayMaxLight,
 
-    color: "#FFFFFF",
-    backgroundColor: "#858585",
+    color: white,
+    backgroundColor: black,
 
     badgeColor: black,
-    badgeBackgroundColor: "#F58D31",
+    badgeBackgroundColor: "#858585",
   },
 
   filesEditingWrapper: {
@@ -2893,14 +2945,17 @@ const Dark = {
         tooltipLinkColor: "#e06a1b",
         arrowColor: white,
         descriptionColor: "#858585",
+        brandingDescriptionColor: "#858585",
 
         whiteLabel: {
-          borderImg: "1px solid #d1d1d1",
+          borderImg: "1px solid #474747",
 
-          backgroundColor: "#282828",
-          greenBackgroundColor: "#7e983f",
-          blueBackgroundColor: "#5170b5",
-          orangeBackgroundColor: "#e86e2e",
+          backgroundColorWhite: white,
+          backgroundColorLight: "#F8F9F9",
+          backgroundColorDark: "#282828",
+          greenBackgroundColor: "#40865C",
+          blueBackgroundColor: "#446995",
+          orangeBackgroundColor: "#AA5252",
 
           dataFontColor: white,
           dataFontColorBlack: white,
@@ -2921,11 +2976,12 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
+        warningColor: "#E06451",
+        textColor: "#ADADAD",
       },
 
       payment: {
-        priceColor: "#858585",
-        disabledPriceColor: "#A3A9AE",
+        priceColor: "#ADADAD",
         storageSizeTitle: "#A3A9AE",
 
         backgroundColor: "#282828",
@@ -2934,8 +2990,20 @@ const Dark = {
         border: "1px solid #474747",
         backgroundBenefitsColor: "#3333",
         rectangleColor: "#3D3D3D",
-        backgroundPrice: "#282828",
-        backgroundPriceContainer: "#282828",
+
+        priceContainer: {
+          backgroundText: "#3D3D3D",
+          background: "#282828",
+          border: "1px solid #282828",
+          featureTextColor: "#858585",
+          disableColor: "#858585",
+          trackNumberColor: "#858585",
+          disablePriceColor: "#5C5C5C",
+        },
+
+        benefitsContainer: {
+          iconsColor: "#858585",
+        },
         warningColor: "#E06451",
       },
     },
@@ -2971,7 +3039,8 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
-    textColor: "#FFFFFF",
+    activeTextColor: "#FFFFFF",
+    textColor: "#ADADAD",
     bottomLineColor: "#E06A1B",
   },
 
@@ -2983,10 +3052,10 @@ const Dark = {
 
   tag: {
     color: white,
-    background: "#3D3D3D",
+    background: black,
     hoverBackground: "#333333",
     disabledBackground: "#858585",
-    defaultTagColor: "#858585",
+    defaultTagColor: white,
     newTagBackground: "#333333",
   },
 
@@ -2996,13 +3065,17 @@ const Dark = {
       textColor: white,
     },
     themePreview: {
-      border: "1px solid #858585",
+      descriptionColor: "#ADADAD",
+      border: "1px solid #474747",
     },
   },
 
   activeSessions: {
-    borderColor: "#858585",
     color: "#eeeeee",
+    borderColor: "#474747",
+    tickIconColor: "#3BA420",
+    removeIconColor: "#A3A9AE",
+    sortHeaderColor: "#474747",
   },
 
   formWrapper: {
@@ -3025,6 +3098,14 @@ const Dark = {
     disabledBorder: "1px solid #474747",
     disabledColor: "#858585",
   },
+
+  accessRightSelect: {
+    descriptionColor: "#858585",
+  },
+
+  itemIcon: {
+    borderColor: "#474747"
+  }
 };
 
 export default Dark;

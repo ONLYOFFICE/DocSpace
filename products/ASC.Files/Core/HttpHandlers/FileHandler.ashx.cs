@@ -79,6 +79,7 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -109,7 +110,8 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        RoomLogoManager roomLogoManager)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -139,7 +141,8 @@ public class FileHandlerService
         _userManager = userManager;
         _logger = logger;
         _clientFactory = clientFactory;
-        this._thumbnailSettings = thumbnailSettings;
+        _thumbnailSettings = thumbnailSettings;
+        _roomLogoManager = roomLogoManager;
     }
 
     public Task Invoke(HttpContext context)
