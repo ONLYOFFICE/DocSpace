@@ -34,6 +34,7 @@ public class MigrationRunner
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
     private readonly ILogger<RestoreDbModuleTask> _logger;
+    private readonly CreatorDbContext _creatorDbContext;
 
     private string _backupFile;
     private string _region;
@@ -52,13 +53,15 @@ public class MigrationRunner
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider,
-        ILogger<RestoreDbModuleTask> logger)
+        ILogger<RestoreDbModuleTask> logger,
+        CreatorDbContext creatorDbContext)
     {
         _dbFactory = dbFactory;
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
         _logger = logger;
+        _creatorDbContext = creatorDbContext;
     }
 
     public async Task Run(string backupFile, string region)
@@ -132,7 +135,7 @@ public class MigrationRunner
 
     private void SetTenantActive(int tenantId)
     {
-        using var dbContext = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        using var dbContext = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
 
         var tenant = dbContext.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;

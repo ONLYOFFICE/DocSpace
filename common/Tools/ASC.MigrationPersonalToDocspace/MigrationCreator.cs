@@ -37,6 +37,7 @@ public class MigrationCreator
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
+    private readonly CreatorDbContext _creatorDbContext;
 
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
@@ -61,7 +62,8 @@ public class MigrationCreator
         DbFactory dbFactory,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
-        ModuleProvider moduleProvider)
+        ModuleProvider moduleProvider,
+        CreatorDbContext сreatorDbContext)
     {
         _hostEnvironment = hostEnvironment;
         _configuration = configuration;
@@ -71,6 +73,7 @@ public class MigrationCreator
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
+        _creatorDbContext = сreatorDbContext;
     }
 
 
@@ -104,7 +107,7 @@ public class MigrationCreator
     {
         try
         {
-            var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
+            var userDbContext = _creatorDbContext.CreateDbContext<UserDbContext>();
             return userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
         }
         catch (Exception)
@@ -199,7 +202,7 @@ public class MigrationCreator
 
     private List<string> GetAliases()
     {
-        using var dbContext = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+        using var dbContext = _creatorDbContext.CreateDbContext<TenantDbContext>(_toRegion);
         var tenants = dbContext.Tenants.Select(t => t.Alias).ToList();
         var forbidens = dbContext.TenantForbiden.Select(tf => tf.Address).ToList();
         return tenants.Union(forbidens).ToList();
@@ -246,7 +249,7 @@ public class MigrationCreator
     {
         var files = (await GetFilesToProcess(id)).ToList();
 
-        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>();
+        var backupsContext = _creatorDbContext.CreateDbContext<BackupsContext>();
         var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -274,7 +277,7 @@ public class MigrationCreator
                 .ToListAsync());
         }
 
-        var filesDbContext = _dbFactory.CreateDbContext<FilesDbContext>();
+        var filesDbContext = _creatorDbContext.CreateDbContext<FilesDbContext>();
         files = files.Where(f => UserIsFileOwner(id, f, filesDbContext)).ToList();
         return files.Distinct();
     }
