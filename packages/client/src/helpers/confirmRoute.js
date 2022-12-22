@@ -54,35 +54,37 @@ class ConfirmRoute extends React.Component {
             });
             break;
           case ValidationResult.Invalid:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+            console.error("invlid link");
+            window.location.href = combineUrl(
+              AppServerConfig.proxyURL,
+              path,
+              "/error"
             );
             break;
           case ValidationResult.Expired:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+            console.error("expired link");
+            window.location.href = combineUrl(
+              AppServerConfig.proxyURL,
+              path,
+              "/error"
             );
             break;
           default:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+            console.error("unknown link");
+            window.location.href = combineUrl(
+              AppServerConfig.proxyURL,
+              path,
+              "/error"
             );
             break;
         }
       })
       .catch((error) => {
-        let errorMessage = "";
-        if (typeof error === "object") {
-          errorMessage =
-            error?.response?.data?.error?.message ||
-            error?.statusText ||
-            error?.message ||
-            "";
-        } else {
-          errorMessage = error;
-        }
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, path, `/error=${errorMessage}`)
+        console.error(error);
+        window.location.href = combineUrl(
+          AppServerConfig.proxyURL,
+          path,
+          "/error"
         );
       });
   }
