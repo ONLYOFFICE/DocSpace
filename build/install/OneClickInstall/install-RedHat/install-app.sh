@@ -83,8 +83,6 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	fi
 	
 	${package_manager} -y install ${package_sysname}-documentserver
-
-	systemctl restart supervisord
 	
 expect << EOF
 	
@@ -125,20 +123,6 @@ elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 	${package_manager} -y update ${package_sysname}-documentserver
 fi
 
-NGINX_ROOT_DIR="/etc/nginx"
-
-NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-
-if rpm -q "firewalld"; then
-	firewall-cmd --permanent --zone=public --add-service=http
-	firewall-cmd --permanent --zone=public --add-service=https
-	systemctl restart firewalld.service
-fi
-
 { ${package_manager} check-update ${package_sysname}-${product}; PRODUCT_CHECK_UPDATE=$?; } || true
 if [ "$PRODUCT_INSTALLED" = "false" ]; then
 	${package_manager} install -y ${package_sysname}-${product}
@@ -164,6 +148,22 @@ elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
 fi
+
+NGINX_ROOT_DIR="/etc/nginx"
+
+NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
+NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
+
+sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
+sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
+
+if rpm -q "firewalld"; then
+	firewall-cmd --permanent --zone=public --add-service=http
+	firewall-cmd --permanent --zone=public --add-service=https
+	systemctl restart firewalld.service
+fi
+
+systemctl restart nginx
 
 echo ""
 echo "$RES_INSTALL_SUCCESS"
