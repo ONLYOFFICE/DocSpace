@@ -80,17 +80,3 @@ public partial class Program
     public static string Namespace = typeof(Startup).Namespace;
     public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
 }
-
-public static class ConfigurationManagerExtension
-{
-    public static ConfigurationManager AddApiSystemConfiguration(this ConfigurationManager config, IHostEnvironment env)
-    {
-        config
-          .AddJsonFile($"apisystem.json")
-          .AddJsonFile($"apisystem.{env.EnvironmentName}.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-
-        return config;
-    }
-}

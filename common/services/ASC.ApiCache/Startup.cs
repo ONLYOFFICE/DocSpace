@@ -50,19 +50,9 @@ public class Startup
         services.AddHttpClient();
 
         services.AddScoped<EFLoggerFactory>();
-        services.AddBaseDbContextPool<AccountLinkContext>();
-        services.AddBaseDbContextPool<CoreDbContext>();
         services.AddBaseDbContextPool<TenantDbContext>();
         services.AddBaseDbContextPool<UserDbContext>();
-        services.AddBaseDbContextPool<TelegramDbContext>();
-        services.AddBaseDbContextPool<FirebaseDbContext>();
-        services.AddBaseDbContextPool<CustomDbContext>();
-        services.AddBaseDbContextPool<WebstudioDbContext>();
-        services.AddBaseDbContextPool<InstanceRegistrationContext>();
-        services.AddBaseDbContextPool<IntegrationEventLogContext>();
-        services.AddBaseDbContextPool<FeedDbContext>();
-        services.AddBaseDbContextPool<MessagesContext>();
-        services.AddBaseDbContextPool<WebhooksDbContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
         services.AddBaseDbContextPool<TeamlabSiteContext>(nameConnectionString: "teamlabsite");
 
         services.AddSession();
