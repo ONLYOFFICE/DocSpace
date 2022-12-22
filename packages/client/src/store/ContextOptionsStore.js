@@ -176,14 +176,17 @@ class ContextOptionsStore {
   };
 
   finalizeVersion = async (id) => {
+    let timer = null;
     try {
-      this.filesActionsStore.setIsLoading(true);
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
       await this.filesActionsStore.finalizeVersionAction(id);
-      console.log(id);
     } catch (err) {
       toastr.error(err);
     } finally {
       this.filesActionsStore.setIsLoading(false);
+      clearTimeout(timer);
     }
   };
 
