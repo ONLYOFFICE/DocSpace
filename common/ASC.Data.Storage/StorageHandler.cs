@@ -85,7 +85,9 @@ public class StorageHandler
 
         var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
-        if (storage.IsSupportInternalUri)
+        const int bigSize = 5 * 1024 * 1024;
+
+        if (storage.IsSupportInternalUri && bigSize < await storage.GetFileSizeAsync(_domain, path))
         {
             var uri = await storage.GetInternalUriAsync(_domain, path, TimeSpan.FromMinutes(15), headers);
 
@@ -97,21 +99,24 @@ public class StorageHandler
             return;
         }
 
-        var FileEtagTuple = await storage.TryGetFileEtagAsync(_domain, path);
-        if (FileEtagTuple.success)
+        if (!String.IsNullOrEmpty(context.Request.Query["_"]))
         {
-            var etag = FileEtagTuple.etag;
-
-            if (string.Equals(context.Request.Headers["If-None-Match"], etag))
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.NotModified;
-                return;
-            }
-
-            context.Response.Headers.ETag = etag;
+            context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
         }
 
+        var etag = await storage.GetFileEtagAsync(_domain, path);
+
+        if (string.Equals(context.Request.Headers["If-None-Match"], etag))
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+
+            return;
+        }
+
+        context.Response.Headers.ETag = etag;
+
         string encoding = null;
+
         if (storage is DiscDataStore && await storage.IsFileAsync(_domain, path + ".gz"))
         {
             path += ".gz";

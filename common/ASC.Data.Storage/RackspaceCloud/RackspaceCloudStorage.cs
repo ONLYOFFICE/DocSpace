@@ -69,7 +69,6 @@ public class RackspaceCloudStorage : BaseStorage
         if (moduleConfig != null)
         {
             Modulename = moduleConfig.Name;
-            Cache = moduleConfig.Cache;
             DataList = new DataList(moduleConfig);
             _domains.AddRange(moduleConfig.Domain.Select(x => $"{x.Name}/"));
             DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
@@ -80,7 +79,6 @@ public class RackspaceCloudStorage : BaseStorage
         else
         {
             Modulename = string.Empty;
-            Cache = false;
             DataList = null;
             DomainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
             _domainsAcl = new Dictionary<string, ACL>();
@@ -754,13 +752,17 @@ public class RackspaceCloudStorage : BaseStorage
         return _moduleAcl;
     }
 
-    protected override Task<DateTime> GetLastModificationDateAsync(string domain, string path)
+    public override Task<string> GetFileEtagAsync(string domain, string path)
     {
         var client = GetClient();
         var prefix = MakePath(domain, path);
 
         var obj = client.ListObjects(_private_container, null, null, null, prefix, _region).FirstOrDefault();
 
-        return obj == null ? throw new FileNotFoundException("File not found" + prefix) : Task.FromResult(obj.LastModified.UtcDateTime);
+        var lastModificationDate  =  obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
+
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return Task.FromResult(etag);
     }
 }

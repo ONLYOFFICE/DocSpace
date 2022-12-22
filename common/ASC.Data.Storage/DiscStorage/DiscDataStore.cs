@@ -43,7 +43,6 @@ public class DiscDataStore : BaseStorage
         Tenant = tenant;
         //Fill map path
         Modulename = moduleConfig.Name;
-        Cache = moduleConfig.Cache;
         DataList = new DataList(moduleConfig);
 
         foreach (var domain in moduleConfig.Domain)
@@ -762,14 +761,14 @@ public class DiscDataStore : BaseStorage
         }
     }
 
-    protected override Task<DateTime> GetLastModificationDateAsync(string domain, string path)
+    public override Task<string> GetFileEtagAsync(string domain, string path)
     {
         ArgumentNullException.ThrowIfNull(path);
 
-        var target = GetTarget(domain, path);
+        var target = GetTarget(domain, path);              
+        var lastModificationDate = File.Exists(target) ? File.GetLastWriteTimeUtc(target) : throw new FileNotFoundException("File not found" + target);
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 
-        return File.Exists(target)
-            ? Task.FromResult(File.GetLastWriteTimeUtc(target))
-            : throw new FileNotFoundException("File not found" + target);
+        return Task.FromResult(etag);
     }
 }

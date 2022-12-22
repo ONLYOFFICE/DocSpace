@@ -871,7 +871,6 @@ public class S3Storage : BaseStorage
         if (moduleConfig != null)
         {
             Modulename = moduleConfig.Name;
-            Cache = moduleConfig.Cache;
             DataList = new DataList(moduleConfig);
             _domains.AddRange(moduleConfig.Domain.Select(x => $"{x.Name}/"));
 
@@ -885,7 +884,6 @@ public class S3Storage : BaseStorage
         else
         {
             Modulename = string.Empty;
-            Cache = false;
             DataList = null;
 
             //Make expires
@@ -1445,7 +1443,7 @@ public class S3Storage : BaseStorage
         return method;
     }
 
-    protected override async Task<DateTime> GetLastModificationDateAsync(string domain, string path)
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
     {
         using var client = GetClient();
 
@@ -1457,9 +1455,9 @@ public class S3Storage : BaseStorage
 
         var el = await client.GetObjectMetadataAsync(getObjectMetadataRequest);
 
-        return el.LastModified;
+        return el.ETag;
     }
-
+  
     private enum EncryptionMethod
     {
         None,

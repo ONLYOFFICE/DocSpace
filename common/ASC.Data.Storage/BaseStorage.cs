@@ -348,22 +348,8 @@ public abstract class BaseStorage : IDataStore
         return "/" + str.TrimStart('/');
     }
 
-    protected abstract Task<DateTime> GetLastModificationDateAsync(string domain, string path);
-
-    public async Task<(bool success, string etag)> TryGetFileEtagAsync(string domain, string path)
-    {
-        var etag = "";
-
-        if (Cache)
-        {
-            var lastModificationDate = await GetLastModificationDateAsync(domain, path);
-            etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
-            return (true, etag);
-        }
-
-        return (false, etag);
-    }
-
+    public abstract Task<string> GetFileEtagAsync(string domain, string path);
+    
     internal class MonoUri : Uri
     {
         public MonoUri(Uri baseUri, string relativeUri)

@@ -60,7 +60,6 @@ public class GoogleCloudStorage : BaseStorage
         if (moduleConfig != null)
         {
             Modulename = moduleConfig.Name;
-            Cache = moduleConfig.Cache;
             DataList = new DataList(moduleConfig);
 
             DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
@@ -73,7 +72,6 @@ public class GoogleCloudStorage : BaseStorage
         else
         {
             Modulename = string.Empty;
-            Cache = false;
             DataList = null;
 
             DomainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
@@ -856,13 +854,17 @@ public class GoogleCloudStorage : BaseStorage
         return _moduleAcl;
     }
 
-    protected override async Task<DateTime> GetLastModificationDateAsync(string domain, string path)
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
     {
         var storage = GetStorage();
         var objectName = MakePath(domain, path);
 
         var obj = await storage.GetObjectAsync(_bucket, objectName);
 
-        return obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.Updated ?? obj.TimeCreated ?? DateTime.MinValue;
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.Updated ?? obj.TimeCreated ?? DateTime.MinValue;
+
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return etag;
     }
 }
