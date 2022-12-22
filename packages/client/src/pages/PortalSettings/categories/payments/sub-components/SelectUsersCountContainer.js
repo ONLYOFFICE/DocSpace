@@ -78,24 +78,36 @@ const StyledBody = styled.div`
       cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     }
     .circle {
+      position: relative;
       background: ${(props) =>
         props.theme.client.settings.payment.rectangleColor};
-      display: flex;
       border: 1px solid
         ${(props) => props.theme.client.settings.payment.rectangleColor};
       border-radius: 50%;
       width: 38px;
       height: 38px;
-      justify-content: center;
-      -ms-align-items: center;
-      align-items: center;
+
       svg {
+        position: absolute;
         path {
           fill: ${(props) =>
             props.isDisabled
               ? props.theme.client.settings.payment.priceContainer.disableColor
               : props.theme.text.color};
         }
+      }
+    }
+
+    .minus-icon {
+      svg {
+        top: 44%;
+        left: 28%;
+      }
+    }
+    .plus-icon {
+      svg {
+        top: 30%;
+        left: 27%;
       }
     }
   }
@@ -223,7 +235,11 @@ const SelectUsersCountContainer = ({
       </Text>
       <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />
       <div className="payment-users">
-        <div className="circle" {...onClickProp} data-operation={"minus"}>
+        <div
+          className="circle minus-icon"
+          {...onClickProp}
+          data-operation={"minus"}
+        >
           <MinusIcon {...onClickProp} className="payment-score" />
         </div>
 
@@ -234,7 +250,11 @@ const SelectUsersCountContainer = ({
           value={value}
           {...onchangeNumberProp}
         />
-        <div className="circle" {...onClickProp} data-operation={"plus"}>
+        <div
+          className="circle plus-icon"
+          {...onClickProp}
+          data-operation={"plus"}
+        >
           <PlusIcon {...onClickProp} className="payment-score" />
         </div>
       </div>
