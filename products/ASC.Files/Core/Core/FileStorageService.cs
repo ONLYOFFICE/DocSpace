@@ -2167,7 +2167,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     public async Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
     {
-        var (file, _configuration, locatedInPrivateRoom) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
+        var (file, _configuration, _) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
         var _valideShareLink = !string.IsNullOrEmpty(_fileShareLink.Parse(doc));
 
         if (_valideShareLink)
@@ -2180,7 +2180,7 @@ public class FileStorageService<T> //: IFileStorageService
             && await _fileSecurity.CanFillFormsAsync(file)
             && !await _fileSecurity.CanEditAsync(file))
         {
-            if (!file.IsFillFormDraft)
+            if (!await _entryManager.LinkedForMeAsync(file))
             {
                 await _fileMarker.RemoveMarkAsNewAsync(file);
 

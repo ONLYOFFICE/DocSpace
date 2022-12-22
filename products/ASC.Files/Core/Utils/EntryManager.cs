@@ -1095,6 +1095,19 @@ public class EntryManager
         return (linkedFile, folderIfNew);
     }
 
+    public async Task<bool> LinkedForMeAsync<T>(File<T> file)
+    {
+        if (file == null || file.FilterType != FilterType.OFormOnly)
+        {
+            return false;
+        }
+
+        var linkDao = _daoFactory.GetLinkDao();
+        var sourceId = await linkDao.GetSourceAsync(file.Id.ToString());
+
+        return !string.IsNullOrEmpty(sourceId);
+    }
+
     public async Task<bool> CheckFillFormDraftAsync<T>(File<T> linkedFile)
     {
         if (linkedFile == null)
@@ -1435,7 +1448,7 @@ public class EntryManager
             }
             if (!keepLink
                || (!file.ProviderEntry && file.CreateBy != _authContext.CurrentAccount.ID)
-               || !file.IsFillFormDraft)
+               || !await LinkedForMeAsync(file))
             {
                 var linkDao = _daoFactory.GetLinkDao();
                 await linkDao.DeleteAllLinkAsync(file.Id.ToString());
