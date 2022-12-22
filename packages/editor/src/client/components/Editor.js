@@ -120,7 +120,7 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit
+      !fileInfo.security.Edit && !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
