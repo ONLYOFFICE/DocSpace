@@ -21,7 +21,6 @@ import Settings from "./Settings";
 import PrivateRoomsPage from "./PrivateRoomsPage";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Panels from "../components/FilesPanels";
-//import { AppServerConfig } from "@docspace/common/constants";
 import Article from "@docspace/common/components/Article";
 import {
   ArticleBodyContent,
@@ -32,10 +31,9 @@ import {
 import GlobalEvents from "../components/GlobalEvents";
 import Accounts from "./Accounts";
 
-// const { proxyURL } = AppServerConfig;
 // const homepage = config.homepage;
 
-// const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+// const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, homepage);
 
 // const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/");
 // const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings/:setting");
@@ -222,19 +220,16 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { showArticle, isFrame, withMainButton } = this.props;
+    const { showMenu, isFrame, withMainButton, history } = this.props;
 
     return (
       <>
         <GlobalEvents />
         <Panels />
         {isFrame ? (
-          showArticle && <FilesArticle history={this.props.history} />
+          showMenu && <FilesArticle history={history} />
         ) : (
-          <FilesArticle
-            history={this.props.history}
-            withMainButton={withMainButton}
-          />
+          <FilesArticle history={history} withMainButton={withMainButton} />
         )}
         <FilesSection />
       </>
@@ -259,7 +254,7 @@ const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: isDesktopClient,
     isFrame,
-    showArticle: frameConfig?.showArticle,
+    showMenu: frameConfig?.showMenu,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: encryptionKeys,

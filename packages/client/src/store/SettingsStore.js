@@ -208,6 +208,8 @@ class SettingsStore {
 
   isDocument = (extension) => presentInArray(this.extsDocument, extension);
 
+  isMasterFormExtension = (extension) => this.masterFormExtension === extension;
+
   isPresentation = (extension) =>
     presentInArray(this.extsPresentation, extension);
 

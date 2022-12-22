@@ -1,36 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
 import { isMobileOnly, isMobile } from "react-device-detect";
-import NavItem from "./nav-item";
-import Headline from "@docspace/common/components/Headline";
-import Nav from "./nav";
-import NavLogoItem from "./nav-logo-item";
-import Link from "@docspace/components/link";
 import history from "@docspace/common/history";
 import { useTranslation } from "react-i18next";
-import HeaderNavigationIcon from "./header-navigation-icon";
-import Box from "@docspace/components/box";
-import Text from "@docspace/components/text";
-import {
-  desktop,
-  isDesktop,
-  tablet,
-  mobile,
-} from "@docspace/components/utils/device";
-import i18n from "../i18n";
+import { isDesktop, tablet, mobile } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import { getLink, checkIfModuleOld, onItemClick } from "SRC_DIR/helpers/utils";
-import StyledExternalLinkIcon from "@docspace/client/src/components/StyledExternalLinkIcon";
 import HeaderCatalogBurger from "./header-catalog-burger";
-import { Base, Dark } from "@docspace/components/themes";
-import { ReactSVG } from "react-svg";
-
-const { proxyURL } = AppServerConfig;
+import { Base } from "@docspace/components/themes";
 
 const Header = styled.header`
   display: flex;
@@ -243,7 +223,7 @@ const HeaderComponent = ({
               alt="logo"
               className="header-logo-icon"
               src={combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 "/static/images/personal.logo.react.svg"
               )}
             />
@@ -297,7 +277,7 @@ const HeaderComponent = ({
           <Box className="version-box">
             <Link
               as="a"
-              href={`https://github.com/ONLYOFFICE/AppServer/releases`}
+              href={`https://github.com/ONLYOFFICE/Docspace/releases`}
               target="_blank"
               {...versionBadgeProps}
             >
@@ -309,7 +289,7 @@ const HeaderComponent = ({
             </Text>
             <StyledLink>
               <LinkWithoutRedirect
-                to={combineUrl(proxyURL, "/about")}
+                to={combineUrl(window.DocSpaceConfig?.proxy?.url, "/about")}
                 className="nav-menu-header_link"
               >
                 {t("Common:About")}

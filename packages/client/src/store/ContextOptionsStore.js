@@ -4,7 +4,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -280,7 +280,7 @@ class ContextOptionsStore {
 
     const urlFormation = preview
       ? combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           `/doceditor?fileId=${encodeURIComponent(id)}&action=view`
         )
@@ -289,7 +289,11 @@ class ContextOptionsStore {
     let tab =
       !isDesktopClient && fileExst
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              `/doceditor`
+            ),
             "_blank"
           )
         : null;
@@ -435,6 +439,7 @@ class ContextOptionsStore {
 
   onShowInfoPanel = (item) => {
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
     setSelection(item);
     setIsVisible(true);
   };
@@ -812,7 +817,7 @@ class ContextOptionsStore {
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("Common:Info"),
+        label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,

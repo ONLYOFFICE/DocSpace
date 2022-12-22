@@ -561,7 +561,7 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
+    // return filterValues;
     const currentFilterValues = [];
 
     setSelectedFilterValues((value) => {
@@ -949,38 +949,36 @@ const SectionFilterContent = ({
         filterOptions.push(...contentOptions);
       }
 
-      if (!isPersonalRoom) {
-        const authorOption = [
-          {
-            key: FilterGroups.filterAuthor,
-            group: FilterGroups.filterAuthor,
-            label: t("ByAuthor"),
-            isHeader: true,
-            withMultiItems: true,
-          },
-          {
-            id: "filter_author-me",
-            key: FilterKeys.me,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:MeLabel"),
-          },
-          {
-            id: "filter_author-other",
-            key: FilterKeys.other,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:OtherLabel"),
-          },
-          {
-            id: "filter_author-user",
-            key: FilterKeys.user,
-            group: FilterGroups.filterAuthor,
-            label: t("Translations:AddAuthor"),
-            isSelector: true,
-          },
-        ];
+      const authorOption = [
+        {
+          key: FilterGroups.filterAuthor,
+          group: FilterGroups.filterAuthor,
+          label: t("ByAuthor"),
+          isHeader: true,
+          withMultiItems: true,
+        },
+        {
+          id: "filter_author-me",
+          key: FilterKeys.me,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:MeLabel"),
+        },
+        {
+          id: "filter_author-other",
+          key: FilterKeys.other,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:OtherLabel"),
+        },
+        {
+          id: "filter_author-user",
+          key: FilterKeys.user,
+          group: FilterGroups.filterAuthor,
+          label: t("Translations:ChooseFromList"),
+          isSelector: true,
+        },
+      ];
 
-        filterOptions.push(...authorOption);
-      }
+      filterOptions.push(...authorOption);
 
       filterOptions.push(...typeOptions);
     }

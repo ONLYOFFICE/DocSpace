@@ -7,7 +7,6 @@ import {
   StyledArrowRightIcon,
 } from "../StyledSecurity";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 const MobileCategoryWrapper = (props) => {
   const { title, url, subtitle, onClickLink } = props;
@@ -19,7 +18,7 @@ const MobileCategoryWrapper = (props) => {
           className="inherit-title-link header"
           onClick={onClickLink}
           truncate={true}
-          href={combineUrl(AppServerConfig.proxyURL, url)}
+          href={combineUrl(window.DocSpaceConfig?.proxy?.url, url)}
         >
           {title}
         </Link>

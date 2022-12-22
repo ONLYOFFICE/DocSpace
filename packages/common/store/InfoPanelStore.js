@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
 import { getUserById } from "@docspace/common/api/people";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, FolderType } from "@docspace/common/constants";
+import { FolderType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
 import { getRoomInfo } from "../api/rooms";
@@ -42,7 +42,10 @@ class InfoPanelStore {
 
   // Setters
 
-  setIsVisible = (bool) => (this.isVisible = bool);
+  setIsVisible = (bool) => {
+    this.setView("info_details");
+    this.isVisible = bool;
+  };
   setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
@@ -205,7 +208,7 @@ class InfoPanelStore {
 
   openSelfProfile = (history) => {
     const path = [
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       "/accounts",
       "/view/@self",
@@ -219,7 +222,11 @@ class InfoPanelStore {
     const { getUsersList } = this.peopleStore.usersStore;
     const { setSelection } = this.peopleStore.selectionStore;
 
-    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
+    const path = [
+      window.DocSpaceConfig?.proxy?.url,
+      config.homepage,
+      "/accounts",
+    ];
 
     const newFilter = Filter.getDefault();
     newFilter.page = 0;

@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig, RoomSearchArea } from "@docspace/common/constants";
+import { RoomSearchArea } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
 import FilesFilter from "@docspace/common/api/files/filter";
@@ -99,7 +99,7 @@ const ArticleBodyContent = (props) => {
 
             history.push(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 homepage,
                 `${url}?${filterParamsStr}`
               )
@@ -130,7 +130,11 @@ const ArticleBodyContent = (props) => {
               const pathname = `${url}?${filterParamsStr}`;
 
               history.push(
-                combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+                combineUrl(
+                  window.DocSpaceConfig?.proxy?.url,
+                  config.homepage,
+                  pathname
+                )
               );
             }
           })

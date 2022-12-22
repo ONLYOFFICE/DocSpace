@@ -14,6 +14,14 @@ const StyledIcon = styled.img`
       border-radius: 6px;
       outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     `}
+
+  ${(props) =>
+    props.isHidden &&
+    css`
+      display: none;
+      border-radius: none;
+      outline: none;
+    `}
 `;
 
 StyledIcon.defaultProps = { theme: Base };
@@ -27,10 +35,32 @@ const EncryptedFileIcon = styled.div`
   margin-left: 12px;
 `;
 
-const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom }) => {
+const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
+  const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
+
+  const onLoadRoomIcon = () => {
+    if (!isRoom || defaultRoomIcon === icon) return;
+
+    setShowDefaultIcon(false);
+  };
+
   return (
     <>
-      <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
+      {isRoom && (
+        <StyledIcon
+          className={`react-svg-icon`}
+          isHidden={!showDefaultIcon}
+          isRoom={isRoom}
+          src={defaultRoomIcon}
+        />
+      )}
+      <StyledIcon
+        className={`react-svg-icon`}
+        isHidden={showDefaultIcon}
+        isRoom={isRoom}
+        src={icon}
+        onLoad={onLoadRoomIcon}
+      />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>
   );

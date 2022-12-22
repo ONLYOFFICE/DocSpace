@@ -26,8 +26,7 @@ export default function withQuickButtons(WrappedComponent) {
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
           )
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .catch((err) => toastr.error(err), this.setState({ isLoading: false }))
       }
       return;
     };
@@ -57,7 +56,7 @@ export default function withQuickButtons(WrappedComponent) {
         isAdmin,
         sectionWidth,
         viewAs,
-        isPersonalRoom,
+        folderCategory,
       } = this.props;
 
       const quickButtonsComponent = (
@@ -72,7 +71,7 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          isPersonalRoom={isPersonalRoom}
+          folderCategory={folderCategory}
         />
       );
 
@@ -98,8 +97,15 @@ export default function withQuickButtons(WrappedComponent) {
         setFavoriteAction,
         onSelectItem,
       } = filesActionsStore;
-      const { isPersonalRoom } = treeFoldersStore;
+      const {
+        isPersonalFolderRoot,
+        isArchiveFolderRoot,
+        isTrashFolder,
+      } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
+
+      const folderCategory =
+        isTrashFolder || isArchiveFolderRoot || isPersonalFolderRoot;
 
       return {
         theme: auth.settingsStore.theme,
@@ -108,8 +114,7 @@ export default function withQuickButtons(WrappedComponent) {
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
-
-        isPersonalRoom,
+        folderCategory,
       };
     }
   )(observer(WithQuickButtons));

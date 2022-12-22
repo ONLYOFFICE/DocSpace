@@ -4,7 +4,6 @@ import { useHistory, Link } from "react-router-dom";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import Text from "@docspace/components/text";
 import { useTranslation, Trans } from "react-i18next";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import { Dark, Base } from "@docspace/components/themes";
 
@@ -35,8 +34,7 @@ const InvalidError = ({ theme, setTheme }: InvalidErrorProps) => {
 
 
   React.useEffect(() => {
-    const { proxyURL } = AppServerConfig;
-    const url = combineUrl(proxyURL, homepage);
+    const url = combineUrl(window.DocSpaceConfig?.proxy?.url, homepage);
     setProxyHomepageUrl(url);
     const timeout = setTimeout(() => {
       history.push(url)
