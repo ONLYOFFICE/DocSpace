@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -23,6 +23,8 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
+
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -49,10 +51,10 @@ const Login: React.FC<ILoginProps> = ({
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+        window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
@@ -107,10 +109,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-              url,
-              "login",
-              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-            );
+            url,
+            "login",
+            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+          );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
