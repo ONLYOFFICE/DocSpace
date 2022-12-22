@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import toastr from "@docspace/components/toast/toastr";
 
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 import config from "PACKAGE_FILE";
@@ -104,7 +103,11 @@ const CreateEvent = ({
     let tab =
       !isDesktop && extension && open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, `/doceditor`),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              `/doceditor`
+            ),
             "_blank"
           )
         : null;
@@ -139,8 +142,19 @@ const CreateEvent = ({
           })
           .then(() => editCompleteAction(item, type))
           .catch((err) => {
-            if (err.indexOf("password") == -1) {
-              toastr.error(err, t("Common:Warning"));
+            let errorMessage = "";
+            if (typeof err === "object") {
+              errorMessage =
+                err?.response?.data?.error?.message ||
+                err?.statusText ||
+                err?.message ||
+                "";
+            } else {
+              errorMessage = err;
+            }
+
+            if (errorMessage.indexOf("password") == -1) {
+              toastr.error(errorMessage, t("Common:Warning"));
               return;
             }
 

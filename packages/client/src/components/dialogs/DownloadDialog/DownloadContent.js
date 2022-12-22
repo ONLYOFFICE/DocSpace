@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Text from "@docspace/components/text";
-import { inject, observer } from "mobx-react";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Checkbox from "@docspace/components/checkbox";
 import ArrowIcon from "ASSETS_DIR/images/arrow.react.svg";
@@ -86,6 +85,8 @@ const DownloadContent = (props) => {
         return formats;
       case "presentations":
         return formats;
+      case "masterForms":
+        return formats;
       default:
         return [];
     }
@@ -170,11 +171,4 @@ const DownloadContent = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
-  const { settingsStore } = auth;
-  const { theme } = settingsStore;
-
-  return {
-    theme,
-  };
-})(observer(DownloadContent));
+export default DownloadContent;

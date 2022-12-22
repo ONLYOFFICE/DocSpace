@@ -28,11 +28,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import {
-  AppServerConfig,
-  FolderType,
-  RoomSearchArea,
-} from "@docspace/common/constants";
+import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -100,6 +96,14 @@ class SectionHeaderContent extends React.Component {
     this.state = { navigationItems: [] };
   }
 
+  componentDidMount() {
+    window.addEventListener("popstate", this.onBackToParentFolder);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.onBackToParentFolder);
+  }
+
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
@@ -134,7 +138,7 @@ class SectionHeaderContent extends React.Component {
     const { history, currentFolderId } = this.props;
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/form-gallery/${currentFolderId}/`
       )
@@ -363,12 +367,20 @@ class SectionHeaderContent extends React.Component {
     setIsInfoPanelVisible(!isInfoPanelVisible);
   };
 
+  onCopyLinkAction = () => {
+    const { t, selectedFolder, onCopyLink } = this.props;
+
+    onCopyLink && onCopyLink({ ...selectedFolder, isFolder: true }, t);
+  };
+
   getContextOptionsFolder = () => {
     const {
       t,
       isRoom,
       isRecycleBinFolder,
       isArchiveFolder,
+      isPersonalRoom,
+
       selectedFolder,
 
       onClickEditRoom,
@@ -420,6 +432,14 @@ class SectionHeaderContent extends React.Component {
         onClick: this.createLinkForPortalUsers,
         disabled: true,
         icon: InvitationLinkReactSvgUrl,
+      },
+      {
+        id: "header_option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        onClick: this.onCopyLinkAction,
+        disabled: isRecycleBinFolder || isPersonalRoom,
+        icon: "/static/images/invitation.link.react.svg",
       },
       {
         id: "header_option_empty-trash",
@@ -488,7 +508,7 @@ class SectionHeaderContent extends React.Component {
         key: "archive-room",
         label: t("Archived"),
         icon: RoomArchiveSvgUrl,
-        onClick: (e) => onClickArchive(e, selectedFolder, t),
+        onClick: (e) => onClickArchive(e),
         disabled: !isRoom,
         "data-action": "archive",
         action: "archive",
@@ -789,6 +809,7 @@ export default inject(
       isPrivacyFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isPersonalRoom,
     } = treeFoldersStore;
 
     const {
@@ -821,6 +842,7 @@ export default inject(
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+      onCopyLink,
     } = contextOptionsStore;
 
     const { canCreateFiles } = accessRightsStore;
@@ -836,6 +858,7 @@ export default inject(
       isDesktop: auth.settingsStore.isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
+      isPersonalRoom,
       title,
       isRoom,
       currentFolderId: id,
@@ -904,6 +927,7 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+      onCopyLink,
 
       rootFolderType,
 

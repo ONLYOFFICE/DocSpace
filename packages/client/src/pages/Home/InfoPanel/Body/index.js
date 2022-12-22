@@ -114,13 +114,14 @@ const InfoPanelBodyContent = ({
 
     const currentFolderRoomId =
       selectedFolder?.pathParts &&
-      selectedFolder?.pathParts?.length === 2 &&
+      selectedFolder?.pathParts?.length > 1 &&
       selectedFolder.pathParts[1];
 
     const storeRoomId = selectionParentRoom?.id;
     if (!currentFolderRoomId || currentFolderRoomId === storeRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+
     if (storeRoomId === newSelectionParentRoom.id) return;
 
     setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
@@ -185,6 +186,8 @@ export default inject(({ auth, selectedFolderStore, oformsStore }) => {
     calculateSelection,
     normalizeSelection,
     isItemChanged,
+
+    selectionParentRoom,
     setSelectionParentRoom,
     roomsView,
     fileView,

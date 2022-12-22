@@ -8,7 +8,6 @@ import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -115,8 +114,19 @@ const PortalRenaming = (props) => {
     setPortalRename(portalName)
       .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
       .catch((error) => {
-        setErrorValue(error);
-        saveToSessionStorage("errorValue", error);
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        setErrorValue(errorMessage);
+        saveToSessionStorage("errorValue", errorMessage);
       })
       .finally(() => setIsLoadingPortalNameSave(false));
 
@@ -214,7 +224,7 @@ const PortalRenaming = (props) => {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )

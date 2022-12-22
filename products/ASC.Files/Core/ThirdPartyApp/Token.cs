@@ -105,7 +105,7 @@ public class TokenHelper
         };
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        filesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
+        filesDbContext.AddOrUpdate(filesDbContext.ThirdpartyApp, dbFilesThirdpartyApp);
         filesDbContext.SaveChanges();
     }
 

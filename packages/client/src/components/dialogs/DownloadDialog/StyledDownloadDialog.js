@@ -5,6 +5,7 @@ const StyledDownloadDialog = styled(ModalDialog)`
   .download-dialog-description {
     margin-bottom: 16px;
     line-height: 20px;
+    min-height: 40px;
   }
 
   .download-dialog-convert-message {

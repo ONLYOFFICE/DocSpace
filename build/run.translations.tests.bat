@@ -1,2 +1,4 @@
 PUSHD %~dp0..
-dotnet test common\Tests\Frontend.Translations.Tests\Frontend.Translations.Tests.csproj --filter "TestCategory=FastRunning" -l:html -r TestsResults
+set dir=%~dp0..
+echo %dir%
+dotnet test common\Tests\Frontend.Translations.Tests\Frontend.Translations.Tests.csproj --filter "TestCategory=FastRunning" -l:html --environment "BASE_DIR=%dir%" --results-directory "%dir%/TestsResults"

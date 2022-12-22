@@ -8,13 +8,12 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
-const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
-const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
+const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
 
@@ -252,22 +251,11 @@ module.exports = (env, argv) => {
   }
 
   const remotes = {
-    client: `client@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
-    // people: `people@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/people/remoteEntry.js"
-    // )}`,
-    // files: `files@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/files/remoteEntry.js"
-    // )}`,
+    client: "client@/remoteEntry.js",
   };
 
   if (!env.personal) {
-    remotes.login = `login@${combineUrl(
-      AppServerConfig.proxyURL,
-      "/login/remoteEntry.js"
-    )}`;
+    remotes.login = "login@/login/remoteEntry.js";
   }
 
   config.plugins.push(

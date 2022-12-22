@@ -11,7 +11,6 @@ import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -250,7 +249,7 @@ class WelcomePageSettings extends React.Component {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )

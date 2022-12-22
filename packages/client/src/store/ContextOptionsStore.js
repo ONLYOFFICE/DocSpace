@@ -36,7 +36,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -57,7 +57,6 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
-  filesSettingsStore;
   selectedFolderStore;
 
   constructor(
@@ -196,7 +195,7 @@ class ContextOptionsStore {
     this.dialogsStore.setCopyPanelVisible(true);
   };
 
-  showVersionHistory = (id) => {
+  showVersionHistory = (id, security) => {
     const {
       fetchFileVersions,
       setIsVerHistoryPanel,
@@ -204,14 +203,23 @@ class ContextOptionsStore {
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
-    fetchFileVersions(id + "");
+    fetchFileVersions(id + "", security);
     setIsVerHistoryPanel(true);
   };
 
-  finalizeVersion = (id) => {
-    this.filesActionsStore
-      .finalizeVersionAction(id)
-      .catch((err) => toastr.error(err));
+  finalizeVersion = async (id) => {
+    let timer = null;
+    try {
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
+      await this.filesActionsStore.finalizeVersionAction(id);
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      this.filesActionsStore.setIsLoading(false);
+      clearTimeout(timer);
+    }
   };
 
   onClickFavorite = (e, id, t) => {
@@ -260,19 +268,31 @@ class ContextOptionsStore {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
-  onCopyLinkRoom = (item, t) => {
-    const { folderUrl } = item;
-    const { getFolderUrl } = this.filesStore;
+  onCopyLink = (item, t) => {
+    const { href } = item;
 
-    const newFolderUrl = folderUrl
-      ? folderUrl
-      : getFolderUrl(item.id, item.isRoom || item.isFolder);
+    if (href) {
+      copy(href);
 
-    const url = combineUrl(
-      window.location.origin,
-      config.homepage,
-      newFolderUrl
+      return toastr.success(t("Translations:LinkCopySuccess"));
+    }
+
+    const { canConvert } = this.settingsStore;
+
+    const { getItemUrl } = this.filesStore;
+
+    const needConvert = canConvert(item.fileExst);
+
+    const canOpenPlayer =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
+
+    const url = getItemUrl(
+      item.id,
+      item.isRoom || item.isFolder,
+      needConvert,
+      canOpenPlayer
     );
+
     copy(url);
 
     toastr.success(t("Translations:LinkCopySuccess"));
@@ -280,7 +300,7 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canConvert = item.viewAccessability?.Convert;
 
     if (canConvert) {
       setConvertItem(item);
@@ -295,23 +315,25 @@ class ContextOptionsStore {
   };
 
   gotoDocEditor = (preview = false, item) => {
+    const { isDesktopClient } = this.authStore.settingsStore;
+
     const { id, providerKey, fileExst } = item;
 
     const urlFormation = preview
       ? combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           `/doceditor?fileId=${encodeURIComponent(id)}&action=view`
         )
       : null;
 
     let tab =
-      !this.authStore.isDesktopClient && fileExst
+      !isDesktopClient && fileExst
         ? window.open(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               config.homepage,
-              `/doceditor?fileId=${id}`
+              `/doceditor`
             ),
             "_blank"
           )
@@ -458,6 +480,7 @@ class ContextOptionsStore {
 
   onShowInfoPanel = (item) => {
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
     setSelection(item);
     setIsVisible(true);
   };
@@ -522,8 +545,9 @@ class ContextOptionsStore {
     const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
-    const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
-    const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const isMedia =
+      item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
+    const isCanWebEdit = item.viewAccessability?.WebEdit;
     const hasInfoPanel = contextOptions.includes("show-info");
 
     const emailSendIsDisabled = true;
@@ -560,7 +584,7 @@ class ContextOptionsStore {
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
                 icon: HistoryReactSvgUrl,
-                onClick: () => this.showVersionHistory(item.id, item.access),
+                onClick: () => this.showVersionHistory(item.id, item.security),
                 disabled: false,
               },
             ]
@@ -576,7 +600,7 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: HistoryFinalizedReactSvgUrl,
-                    onClick: () => this.finalizeVersion(item.id, item.access),
+                    onClick: () => this.finalizeVersion(item.id, item.security),
                     disabled: false,
                   },
                   {
@@ -585,7 +609,7 @@ class ContextOptionsStore {
                     label: t("ShowVersionHistory"),
                     icon: HistoryReactSvgUrl,
                     onClick: () =>
-                      this.showVersionHistory(item.id, item.access),
+                      this.showVersionHistory(item.id, item.security),
                     disabled: false,
                   },
                 ],
@@ -605,7 +629,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: HistoryReactSvgUrl,
-              onClick: () => this.showVersionHistory(item.id, item.access),
+              onClick: () => this.showVersionHistory(item.id, item.security),
               disabled: false,
             },
           ]
@@ -820,7 +844,7 @@ class ContextOptionsStore {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         icon: "/static/images/invitation.link.react.svg",
-        onClick: () => this.onCopyLinkRoom(item, t),
+        onClick: () => this.onCopyLink(item, t),
         disabled: false,
       },
       {
@@ -834,7 +858,7 @@ class ContextOptionsStore {
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("Common:Info"),
+        label: t("InfoPanel:ViewDetails"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,

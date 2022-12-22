@@ -24,7 +24,6 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 
 const emailSettings = new EmailSettings();
@@ -103,7 +102,7 @@ class Body extends Component {
     window.addEventListener("keyup", this.onKeyPressHandler);
 
     if (!wizardToken) {
-      history.push(combineUrl(AppServerConfig.proxyURL, "/"));
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     } else {
       await axios
         .all([
@@ -138,10 +137,20 @@ class Body extends Component {
           });
           setIsWizardLoaded(true);
         })
-        .catch((e) => {
-          console.error(e);
+        .catch((error) => {
+          let errorMessage = "";
+          if (typeof err === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+          console.error(errorMessage);
           this.setState({
-            errorInitWizard: e,
+            errorInitWizard: errorMessage,
           });
         });
     }
@@ -244,15 +253,26 @@ class Body extends Component {
           getPortalSettings();
         })
         .then(() =>
-          history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
+          history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"))
         )
-        .catch((e) =>
+        .catch((error) => {
+          let errorMessage = "";
+          if (typeof err === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+
           this.setState({
             errorLoading: true,
             sending: false,
-            errorMessage: e,
-          })
-        );
+            errorMessage: errorMessage,
+          });
+        });
     } else {
       this.setState({ visibleModal: true });
     }
@@ -382,13 +402,23 @@ class Body extends Component {
     let fd = new FormData();
     fd.append("files", file);
 
-    setLicense(wizardToken, fd).catch((e) =>
+    setLicense(wizardToken, fd).catch((error) => {
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
       this.setState({
         errorLoading: true,
-        errorMessage: e,
+        errorMessage: errorMessage,
         hasErrorLicense: true,
-      })
-    );
+      });
+    });
   };
 
   render() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -39,7 +39,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches

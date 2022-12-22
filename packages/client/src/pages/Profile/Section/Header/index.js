@@ -13,7 +13,6 @@ import IconButton from "@docspace/components/icon-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
-import { AppServerConfig } from "@docspace/common/constants";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -77,7 +76,7 @@ const Header = (props) => {
   const onClickBack = () => {
     const url = filter.toUrlParams();
     const backUrl = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       `/accounts/filter?/${url}`
     );

@@ -70,7 +70,7 @@ DATABASE_MIGRATION="true"
 ELK_VERSION=""
 ELK_HOST=""
 
-DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/4testing-documentserver-ee:latest
+DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/4testing-documentserver-ee:latest"
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
@@ -124,7 +124,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ids | --installdocumentserver )
+		-idocs | --installdocumentserver )
 			if [ "$2" != "" ]; then
 				INSTALL_DOCUMENT_SERVER=$2
 				shift
@@ -138,14 +138,14 @@ while [ "$1" != "" ]; do
 			fi
 		;;		
 		
-		-ira | --installrabbitmq )
+		-irb | --installrabbitmq )
 			if [ "$2" != "" ]; then
 				INSTALL_RABBITMQ=$2
 				shift
 			fi
 		;;
 
-		-ire | --installredis )
+		-ird | --installredis )
 			if [ "$2" != "" ]; then
 				INSTALL_REDIS=$2
 				shift
@@ -294,11 +294,11 @@ while [ "$1" != "" ]; do
 			echo "      -p, --password                    dockerhub password"
 			echo "      -ids, --installdocspace           install or update $PRODUCT (true|false)"
 			echo "      -tag, --dockertag                 select the version to install $PRODUCT (latest|develop|version number)"
-			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
+			echo "      -idocs, --installdocumentserver   install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
-			echo "      -ira, --installrabbitmq           install or update rabbitmq (true|false)"	
-			echo "      -ire, --installredis              install or update redis (true|false)"
+			echo "      -irb, --installrabbitmq           install or update rabbitmq (true|false)"	
+			echo "      -ird, --installredis              install or update redis (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
@@ -309,25 +309,26 @@ while [ "$1" != "" ]; do
 			echo "      -env, --environment               $PRODUCT environment"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
 			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
-			echo "      -ep, --externalport               external $PRODUCT port (default value 8092)"
+			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
 			echo "      -ls, --local_scripts              run the installation from local scripts"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
-			echo "      bash $HELP_TARGET -ids false"
+			echo "      bash $HELP_TARGET -idocs false"
 			echo
 			echo "    Install Document Server only. Skip the installation of MYSQL and $PRODUCT:"
-			echo "      bash $HELP_TARGET -ias false -ids true -imysql false -ims false"
+			echo "      bash $HELP_TARGET -ids false -idocs true -imysql false -irb false -ird false"
+			echo
 			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components. The portal data should be picked up automatically:"
 			echo "      bash $HELP_TARGET -u true"
 			echo
-			echo "    Update Document Server only to version 4.4.2.20 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -dv 4.4.2.20 -ias false"
+			echo "    Update Document Server only to version 7.2.1.34 and skip the update for all other components:"
+			echo "      bash $HELP_TARGET -u true -di onlyoffice/documentserver-ee:7.2.1.34 -ids false"
 			echo
-			echo "    Update $PRODUCT only to version 0.1.10 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -av 9.1.0.393 -ids false"
+			echo "    Update $PRODUCT only to version 1.2.0 and skip the update for all other components:"
+			echo "      bash $HELP_TARGET -u true -tag rc-v1.2.0 -idocs false"
 			echo
 			exit 0
 		;;

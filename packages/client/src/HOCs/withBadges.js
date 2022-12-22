@@ -1,10 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import {
-  ShareAccessRights,
-  AppServerConfig,
-  FileStatus,
-} from "@docspace/common/constants";
+import { ShareAccessRights, FileStatus } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 import Badges from "../components/Badges";
@@ -29,7 +25,7 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-      fetchFileVersions(item.id + "", item.access);
+      fetchFileVersions(item.id + "", item.security);
       setIsVerHistoryPanel(true);
     };
 
@@ -82,16 +78,13 @@ export default function withBadges(WrappedComponent) {
         t,
         theme,
         item,
-        canWebEdit,
         isTrashFolder,
         isPrivacyFolder,
-        canConvert,
         onFilesClick,
         isAdmin,
         isDesktopClient,
         sectionWidth,
         viewAs,
-        canViewVersionFileHistory,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -112,8 +105,6 @@ export default function withBadges(WrappedComponent) {
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
-          canWebEdit={canWebEdit}
-          canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
@@ -124,7 +115,6 @@ export default function withBadges(WrappedComponent) {
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
-          canViewVersionFileHistory={canViewVersionFileHistory}
         />
       );
 
@@ -143,8 +133,6 @@ export default function withBadges(WrappedComponent) {
         versionHistoryStore,
         dialogsStore,
         filesStore,
-        settingsStore,
-        accessRightsStore,
       },
       { item }
     ) => {
@@ -159,17 +147,10 @@ export default function withBadges(WrappedComponent) {
       } = dialogsStore;
       const { setIsLoading } = filesStore;
 
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canConvert = settingsStore.canConvert(item.fileExst);
-      const canViewVersionFileHistory = accessRightsStore.canViewVersionFileHistory(
-        item
-      );
-
       return {
         theme,
         isAdmin: auth.isAdmin,
-        canWebEdit,
-        canConvert,
+
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
         homepage: config.homepage,
@@ -183,7 +164,6 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
         setPinAction,
-        canViewVersionFileHistory,
       };
     }
   )(observer(WithBadges));

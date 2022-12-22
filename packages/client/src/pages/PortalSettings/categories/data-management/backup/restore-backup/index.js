@@ -8,7 +8,7 @@ import RadioButton from "@docspace/components/radio-button";
 import toastr from "@docspace/components/toast/toastr";
 import { startRestore } from "@docspace/common/api/portal";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, BackupStorageType } from "@docspace/common/constants";
+import { BackupStorageType } from "@docspace/common/constants";
 import { request } from "@docspace/common/api/client";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
@@ -227,7 +227,10 @@ class RestoreBackup extends React.Component {
     try {
       if (isCheckedLocalFile) {
         checkedFile = await request({
-          baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+          baseURL: combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            config.homepage
+          ),
           method: "post",
           url: `/backupFileUpload.ashx`,
           responseType: "text",
@@ -259,7 +262,7 @@ class RestoreBackup extends React.Component {
       .then(() =>
         history.push(
           combineUrl(
-            AppServerConfig.proxyURL,
+            window.DocSpaceConfig?.proxy?.url,
             config.homepage,
             "/preparation-portal"
           )

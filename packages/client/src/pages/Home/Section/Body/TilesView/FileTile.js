@@ -68,9 +68,10 @@ const FileTile = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
+      icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      defaultRoomIcon={item.defaultRoomIcon}
     />
   );
 

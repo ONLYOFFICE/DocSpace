@@ -4,7 +4,6 @@ import { withTranslation, Trans } from "react-i18next";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
@@ -69,7 +68,7 @@ const Backup = ({
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/backup/${e.id}`
       )

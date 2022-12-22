@@ -63,11 +63,9 @@ const Badges = ({
   newItems,
   sectionWidth,
   item,
-  canWebEdit,
   isTrashFolder,
   isPrivacyFolder,
   isDesktopClient,
-  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -76,7 +74,6 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
-  canViewVersionFileHistory,
 }) => {
   const {
     id,
@@ -148,7 +145,7 @@ const Badges = ({
     "data-id": id,
   };
 
-  const onShowVersionHistoryProp = canViewVersionFileHistory
+  const onShowVersionHistoryProp = item.security?.ReadHistory
     ? { onClick: onShowVersionHistory }
     : {};
 
@@ -166,7 +163,7 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {canConvert && !isTrashFolder && (
+      {item.viewAccessability?.Convert && !isTrashFolder && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}

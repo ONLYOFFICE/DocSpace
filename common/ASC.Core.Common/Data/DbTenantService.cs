@@ -350,7 +350,7 @@ public class DbTenantService : ITenantService
                     LastModified = DateTime.UtcNow
                 };
 
-                tenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
+                tenantDbContext.AddOrUpdate(tenantDbContext.CoreSettings, settings);
             }
 
             tenantDbContext.SaveChanges();

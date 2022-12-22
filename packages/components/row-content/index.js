@@ -61,19 +61,19 @@ const RowContent = (props) => {
       onClick={onClick}
       style={style}
       widthProp={sectionWidth}
-      isMobile={isMobile}
+      isMobile={true}
     >
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={mainContainerWidth}
         widthProp={sectionWidth}
-        isMobile={isMobile}
+        isMobile={true}
         className="row-main-container-wrapper"
       >
         <MainContainer
           className="rowMainContainer"
           widthProp={sectionWidth}
-          isMobile={isMobile}
+          isMobile={true}
         >
           {children[0]}
         </MainContainer>
@@ -90,7 +90,7 @@ const RowContent = (props) => {
                 element.props && element.props.containerMinWidth
               }
               widthProp={sectionWidth}
-              isMobile={isMobile}
+              isMobile={true}
             >
               {element}
             </SideContainerWrapper>
@@ -102,7 +102,7 @@ const RowContent = (props) => {
           className="row-content_tablet-side-info"
           color={sideColor}
           widthProp={sectionWidth}
-          isMobile={isMobile}
+          isMobile={true}
           convertSideInfo={convertSideInfo}
         >
           {sideInfo}
@@ -127,7 +127,6 @@ RowContent.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isMobile: PropTypes.bool,
   convertSideInfo: PropTypes.bool,
 };
 

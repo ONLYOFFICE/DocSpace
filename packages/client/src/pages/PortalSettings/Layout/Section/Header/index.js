@@ -21,7 +21,6 @@ import {
   checkPropertyByLink,
 } from "../../../utils";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 
 const HeaderContainer = styled.div`
@@ -199,7 +198,9 @@ class SectionHeaderContent extends React.Component {
     let newArrayOfParams = this.getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/portal-settings/" + newArrayOfParams.join("/");
-    this.props.history.push(combineUrl(AppServerConfig.proxyURL, newPath));
+    this.props.history.push(
+      combineUrl(window.DocSpaceConfig?.proxy?.url, newPath)
+    );
   };
 
   getArrayOfParams = () => {

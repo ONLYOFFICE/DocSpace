@@ -168,8 +168,17 @@ const SectionFilterContent = ({
   isPersonalRoom,
   setCurrentRoomsFilter,
   providers,
+  searchTitleOpenLocation,
+  isLoadedLocationFiles,
+  setIsLoadedSearchFiles,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
+  React.useEffect(() => {
+    if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
+
+    onSearch(searchTitleOpenLocation);
+  }, [searchTitleOpenLocation, isLoadedLocationFiles, onSearch]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -281,15 +290,17 @@ const SectionFilterContent = ({
           setIsLoading(false)
         );
       } else {
+        setIsLoadedSearchFiles(false);
         const newFilter = filter.clone();
         newFilter.page = 0;
         newFilter.search = data;
 
         setIsLoading(true);
 
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        fetchFiles(selectedFolderId, newFilter).finally(() => {
+          setIsLoading(false);
+          setIsLoadedSearchFiles(true);
+        });
       }
     },
     [
@@ -300,6 +311,7 @@ const SectionFilterContent = ({
       selectedFolderId,
       filter,
       roomsFilter,
+      setIsLoadedSearchFiles,
     ]
   );
 
@@ -356,14 +368,21 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return isRooms
+    return searchTitleOpenLocation
+      ? searchTitleOpenLocation
+      : isRooms
       ? roomsFilter.filterValue
         ? roomsFilter.filterValue
         : ""
       : filter.search
       ? filter.search
       : "";
-  }, [isRooms, roomsFilter.filterValue, filter.search]);
+  }, [
+    isRooms,
+    roomsFilter.filterValue,
+    filter.search,
+    searchTitleOpenLocation,
+  ]);
 
   const getSelectedSortData = React.useCallback(() => {
     const currentFilter = isRooms ? roomsFilter : filter;
@@ -544,7 +563,7 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
+    // return filterValues;
     const currentFilterValues = [];
 
     setSelectedFilterValues((value) => {
@@ -749,6 +768,12 @@ const SectionFilterContent = ({
 
           ...images,
           ...media,
+          {
+            id: "filter_type-all-files",
+            key: FilterType.FilesOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("AllFiles").toLowerCase(),
+          },
         ];
 
     const subjectOptions = [
@@ -926,38 +951,36 @@ const SectionFilterContent = ({
         filterOptions.push(...contentOptions);
       }
 
-      if (!isPersonalRoom) {
-        const authorOption = [
-          {
-            key: FilterGroups.filterAuthor,
-            group: FilterGroups.filterAuthor,
-            label: t("ByAuthor"),
-            isHeader: true,
-            withMultiItems: true,
-          },
-          {
-            id: "filter_author-me",
-            key: FilterKeys.me,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:MeLabel"),
-          },
-          {
-            id: "filter_author-other",
-            key: FilterKeys.other,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:OtherLabel"),
-          },
-          {
-            id: "filter_author-user",
-            key: FilterKeys.user,
-            group: FilterGroups.filterAuthor,
-            label: t("Translations:AddAuthor"),
-            isSelector: true,
-          },
-        ];
+      const authorOption = [
+        {
+          key: FilterGroups.filterAuthor,
+          group: FilterGroups.filterAuthor,
+          label: t("ByAuthor"),
+          isHeader: true,
+          withMultiItems: true,
+        },
+        {
+          id: "filter_author-me",
+          key: FilterKeys.me,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:MeLabel"),
+        },
+        {
+          id: "filter_author-other",
+          key: FilterKeys.other,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:OtherLabel"),
+        },
+        {
+          id: "filter_author-user",
+          key: FilterKeys.user,
+          group: FilterGroups.filterAuthor,
+          label: t("Translations:ChooseFromList"),
+          isSelector: true,
+        },
+      ];
 
-        filterOptions.push(...authorOption);
-      }
+      filterOptions.push(...authorOption);
 
       filterOptions.push(...typeOptions);
     }
@@ -1307,7 +1330,14 @@ const SectionFilterContent = ({
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore, tagsStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    tagsStore,
+    filesActionsStore,
+  }) => {
     const {
       fetchFiles,
       filter,
@@ -1339,6 +1369,13 @@ export default inject(
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
+    const {
+      searchTitleOpenLocation,
+      setSearchTitleOpenLocation,
+      isLoadedLocationFiles,
+      setIsLoadedSearchFiles,
+    } = filesActionsStore;
+
     return {
       customNames,
       user,
@@ -1365,6 +1402,11 @@ export default inject(
       infoPanelVisible,
       setCurrentRoomsFilter,
       providers,
+
+      searchTitleOpenLocation,
+      setSearchTitleOpenLocation,
+      isLoadedLocationFiles,
+      setIsLoadedSearchFiles,
     };
   }
 )(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useLayoutEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -49,7 +49,7 @@ const Login: React.FC<ILoginProps> = ({
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
