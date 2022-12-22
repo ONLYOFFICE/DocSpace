@@ -30,7 +30,7 @@ namespace ASC.Files.Api;
 public class MasterFormControllerInternal : MasterFormController<int>
 {
     public MasterFormControllerInternal(
-        FileStorageService<int> fileStorageServiceString,
+        FileStorageService fileStorageServiceString,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
         : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
@@ -41,7 +41,7 @@ public class MasterFormControllerInternal : MasterFormController<int>
 public class MasterFormControllerThirdparty : MasterFormController<string>
 {
     public MasterFormControllerThirdparty(
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageServiceString,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
     {
@@ -50,9 +50,9 @@ public class MasterFormControllerThirdparty : MasterFormController<string>
 
 public abstract class MasterFormController<T> : ApiControllerBase
 {
-    private readonly FileStorageService<T> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
 
-    public MasterFormController(FileStorageService<T> fileStorageServiceString,
+    public MasterFormController(FileStorageService fileStorageServiceString,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {

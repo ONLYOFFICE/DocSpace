@@ -27,14 +27,14 @@
 namespace ASC.Files.Helpers;
 
 [Scope]
-public abstract class FilesHelperBase<T>
+public abstract class FilesHelperBase
 {
     protected readonly FilesSettingsHelper _filesSettingsHelper;
     protected readonly FileUploader _fileUploader;
     protected readonly SocketManager _socketManager;
     protected readonly FileDtoHelper _fileDtoHelper;
     protected readonly ApiContext _apiContext;
-    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileStorageService _fileStorageService;
     protected readonly FolderContentDtoHelper _folderContentDtoHelper;
     protected readonly IHttpContextAccessor _httpContextAccessor;
     protected readonly FolderDtoHelper _folderDtoHelper;
@@ -45,7 +45,7 @@ public abstract class FilesHelperBase<T>
         SocketManager socketManager,
         FileDtoHelper fileDtoHelper,
         ApiContext apiContext,
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper)
@@ -61,7 +61,7 @@ public abstract class FilesHelperBase<T>
         _folderDtoHelper = folderDtoHelper;
     }
 
-    public async Task<FileDto<T>> InsertFileAsync(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+    public async Task<FileDto<T>> InsertFileAsync<T>(T folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
     {
         try
         {
@@ -92,7 +92,7 @@ public abstract class FilesHelperBase<T>
         return model.File;
     }
 
-    public async Task<FileDto<T>> GetFileInfoAsync(T fileId, int version = -1)
+    public async Task<FileDto<T>> GetFileInfoAsync<T>(T fileId, int version = -1)
     {
         var file = await _fileStorageService.GetFileAsync(fileId, version);
         file = file.NotFoundIfNull("File not found");

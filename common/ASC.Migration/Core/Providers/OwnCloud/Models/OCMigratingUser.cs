@@ -46,7 +46,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly OCUser _user;
@@ -56,7 +56,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         TenantManager tenantManager,
         UserManager userManager,
         string key,
@@ -126,7 +126,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
             ModulesList.Add(new MigrationModules(MigratingCalendar.ModuleName, MigrationResource.OnlyofficeModuleNameCalendar));
         }
 
-        MigratingFiles = new OCMigratingFiles(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, this, _user.Storages, _rootFolder, log);
+        MigratingFiles = new OCMigratingFiles(_globalFolderHelper, _daoFactory, _fileStorageService, this, _user.Storages, _rootFolder, log);
         MigratingFiles.Parse();
         if (MigratingFiles.FoldersCount != 0 || MigratingFiles.FilesCount != 0)
         {

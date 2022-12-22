@@ -28,7 +28,7 @@
 namespace ASC.Web.Files.Utils;
 
 [Scope]
-public class FileSharingAceHelper<T>
+public class FileSharingAceHelper
 {
     private readonly FileSecurity _fileSecurity;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -86,7 +86,7 @@ public class FileSharingAceHelper<T>
         _userManagerWrapper = userManagerWrapper;
     }
 
-    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
+    public async Task<bool> SetAceObjectAsync<T>(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
     {
         if (entry == null)
         {
@@ -249,7 +249,7 @@ public class FileSharingAceHelper<T>
         return changed;
     }
 
-    public async Task RemoveAceAsync(FileEntry<T> entry)
+    public async Task RemoveAceAsync<T>(FileEntry<T> entry)
     {
         if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
                 || Equals(entry.RootId, _globalFolderHelper.FolderMy)

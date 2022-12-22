@@ -33,9 +33,9 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<int> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -73,7 +73,7 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        var room = await _fileStorageService.CreateRoomAsync<int>(inDto.Title, inDto.RoomType, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
 
         return await _folderDtoHelper.GetAsync(room);
     }
@@ -85,9 +85,9 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<string> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<string> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -139,9 +139,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CustomTagsService<T> _customTagsService;
+    private readonly CustomTagsService _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
-    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileStorageService _fileStorageService;
     private readonly FileShareDtoHelper _fileShareDtoHelper;
     private readonly IMapper _mapper;
 
@@ -149,9 +149,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<T> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -566,13 +566,12 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
 public class VirtualRoomsCommonController : ApiControllerBase
 {
-    private readonly FileStorageService<int> _fileStorageServiceInt;
-    private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileStorageService _fileStorageService;
     private readonly FolderContentDtoHelper _folderContentDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
-    private readonly CustomTagsService<int> _customTagsService;
+    private readonly CustomTagsService _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
     private readonly SetupInfo _setupInfo;
     private readonly FileSizeComment _fileSizeComment;
@@ -580,13 +579,12 @@ public class VirtualRoomsCommonController : ApiControllerBase
     private readonly AuthContext _authContext;
 
     public VirtualRoomsCommonController(
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageService,
         FolderContentDtoHelper folderContentDtoHelper,
         GlobalFolderHelper globalFolderHelper,
         CoreBaseSettings coreBaseSettings,
         ApiContext apiContext,
-        CustomTagsService<int> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
         SetupInfo setupInfo,
         FileSizeComment fileSizeComment,
@@ -595,8 +593,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         RoomLinkService roomLinkService,
         AuthContext authContext) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
         _folderContentDtoHelper = folderContentDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _coreBaseSettings = coreBaseSettings;
@@ -683,7 +680,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
             provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
@@ -709,7 +706,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        return await _customTagsService.CreateTagAsync(inDto.Name);
+        return await _customTagsService.CreateTagAsync<int>(inDto.Name);
     }
 
     /// <summary>
@@ -738,7 +735,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var from = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
 
-        await foreach (var tag in _customTagsService.GetTagsInfoAsync(_apiContext.FilterValue, TagType.Custom, from, count))
+        await foreach (var tag in _customTagsService.GetTagsInfoAsync<int>(_apiContext.FilterValue, TagType.Custom, from, count))
         {
             yield return tag;
         }
@@ -758,7 +755,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     {
         ErrorIfNotDocSpace();
 
-        await _customTagsService.DeleteTagsAsync(inDto.Names);
+        await _customTagsService.DeleteTagsAsync<int>(inDto.Names);
     }
 
     /// <summary>
@@ -862,7 +859,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
                 AdvancedSettings = settings
             };
 
-            await _fileStorageServiceInt.SetAceObjectAsync(aceCollection, false);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, false);
         }
         else
         {
@@ -874,7 +871,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
                 AdvancedSettings = settings
             };
 
-            await _fileStorageServiceString.SetAceObjectAsync(aceCollection, false);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, false);
         }
     }
 

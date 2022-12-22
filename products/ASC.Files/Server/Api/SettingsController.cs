@@ -30,12 +30,12 @@ namespace ASC.Files.Api;
 
 public class SettingsController : ApiControllerBase
 {
-    private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileStorageService _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
 
     public SettingsController(
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,

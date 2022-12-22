@@ -37,7 +37,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -46,7 +46,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         SecurityContext securityContext,
         TenantManager tenantManager,
         UserManager userManager,

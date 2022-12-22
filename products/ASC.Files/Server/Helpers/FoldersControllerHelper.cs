@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Helpers;
 
-public class FoldersControllerHelper<T> : FilesHelperBase<T>
+public class FoldersControllerHelper : FilesHelperBase
 {
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -40,7 +40,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         SocketManager socketManager,
         FileDtoHelper fileDtoHelper,
         ApiContext apiContext,
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
@@ -67,21 +67,21 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         _userManager = userManager;
     }
 
-    public async Task<FolderDto<T>> CreateFolderAsync(T folderId, string title)
+    public async Task<FolderDto<T>> CreateFolderAsync<T>(T folderId, string title)
     {
         var folder = await _fileStorageService.CreateNewFolderAsync(folderId, title);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withSubFolders, bool? excludeSubject = false)
+    public async Task<FolderContentDto<T>> GetFolderAsync<T>(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withSubFolders, bool? excludeSubject = false)
     {
         var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId ?? Guid.Empty, filterType ?? FilterType.None, searchInContent ?? false, withSubFolders ?? false, excludeSubject ?? false);
 
         return folderContentWrapper.NotFoundIfNull();
     }
 
-    public async Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
+    public async Task<FolderDto<T>> GetFolderInfoAsync<T>(T folderId)
     {
         var folder = await _fileStorageService.GetFolderAsync(folderId).NotFoundIfNull("Folder not found");
 
@@ -159,14 +159,14 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FolderDto<T>> RenameFolderAsync(T folderId, string title)
+    public async Task<FolderDto<T>> RenameFolderAsync<T>(T folderId, string title)
     {
         var folder = await _fileStorageService.FolderRenameAsync(folderId, title);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders, bool excludeSubject)
+    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync<T>(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders, bool excludeSubject)
     {
         OrderBy orderBy = null;
         if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))

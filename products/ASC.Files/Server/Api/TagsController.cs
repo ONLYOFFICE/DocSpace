@@ -30,11 +30,11 @@ namespace ASC.Files.Api;
 public class TagsControllerInternal : TagsController<int>
 {
     public TagsControllerInternal(
-        FileStorageService<int> fileStorageServiceString,
+        FileStorageService fileStorageService,
         EntryManager entryManager,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
-        : base(fileStorageServiceString, entryManager, folderDtoHelper, fileDtoHelper)
+        : base(fileStorageService, entryManager, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -42,27 +42,27 @@ public class TagsControllerInternal : TagsController<int>
 public class TagsControllerThirdparty : TagsController<string>
 {
     public TagsControllerThirdparty(
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageService,
         EntryManager entryManager,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
-        : base(fileStorageServiceString, entryManager, folderDtoHelper, fileDtoHelper)
+        : base(fileStorageService, entryManager, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public abstract class TagsController<T> : ApiControllerBase
 {
-    private readonly FileStorageService<T> _fileStorageServiceString;
+    private readonly FileStorageService _fileStorageService;
     private readonly EntryManager _entryManager;
 
     public TagsController(
-        FileStorageService<T> fileStorageServiceString,
+        FileStorageService fileStorageService,
         EntryManager entryManager,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
         _entryManager = entryManager;
         _fileDtoHelper = fileDtoHelper;
     }
@@ -70,7 +70,7 @@ public abstract class TagsController<T> : ApiControllerBase
     [HttpPost("file/{fileId}/recent")]
     public async Task<FileDto<T>> AddToRecentAsync(T fileId)
     {
-        var file = await _fileStorageServiceString.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
+        var file = await _fileStorageService.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
 
         await _entryManager.MarkAsRecent(file);
 
@@ -80,23 +80,20 @@ public abstract class TagsController<T> : ApiControllerBase
     [HttpGet("favorites/{fileId}")]
     public Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
     {
-        return _fileStorageServiceString.ToggleFileFavoriteAsync(fileId, favorite);
+        return _fileStorageService.ToggleFileFavoriteAsync(fileId, favorite);
     }
 }
 
 public class TagsControllerCommon : ApiControllerBase
 {
-    private readonly FileStorageService<int> _fileStorageService;
-    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
+    private readonly FileStorageService _fileStorageService;
 
     public TagsControllerCommon(
-        FileStorageService<int> fileStorageService,
-        FileStorageService<string> fileStorageServiceThirdparty,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
-        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
     }
 
     /// <summary>
@@ -114,7 +111,7 @@ public class TagsControllerCommon : ApiControllerBase
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
         await _fileStorageService.AddToFavoritesAsync(folderIntIds, fileIntIds);
-        await _fileStorageServiceThirdparty.AddToFavoritesAsync(folderStringIds, fileStringIds);
+        await _fileStorageService.AddToFavoritesAsync(folderStringIds, fileStringIds);
 
         return true;
     }
@@ -176,7 +173,7 @@ public class TagsControllerCommon : ApiControllerBase
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
         await _fileStorageService.DeleteFavoritesAsync(folderIntIds, fileIntIds);
-        await _fileStorageServiceThirdparty.DeleteFavoritesAsync(folderStringIds, fileStringIds);
+        await _fileStorageService.DeleteFavoritesAsync(folderStringIds, fileStringIds);
 
         return true;
     }
