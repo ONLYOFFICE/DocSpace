@@ -1665,12 +1665,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
-        var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
-        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
-
         return from r in dbFiles
                select new DbFileQuery
                {
@@ -1684,37 +1678,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
                             ).FirstOrDefault()
                            where f.TenantId == r.TenantId
                            select f
-                          ).FirstOrDefault(),
-                   Shared = (from f in filesDbContext.Security
-                             where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
-                             select f
-                             ).Any(),
-                   IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                      select f)
-                             .Any(),
-                   Deny = (from f in filesDbContext.Security
-                           where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                           select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                          ).FirstOrDefault()
                };
     }
 
     protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
-        var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
-        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
-
         return dbFiles
             .Select(r => new DbFileQuery
             {
@@ -1728,23 +1697,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                          ).FirstOrDefault()
                         where f.TenantId == r.TenantId
                         select f
-                          ).FirstOrDefault(),
-                Shared = true,
-                IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                   select f)
-                             .Any(),
-                Deny = (from f in filesDbContext.Security
-                        where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                        select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                          ).FirstOrDefault()
             });
     }
 
@@ -1800,9 +1753,6 @@ public class DbFileQuery
 {
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
-    public bool Shared { get; set; }
-    public bool IsFillFormDraft { get; set; }
-    public DbFileDeny Deny { get; set; }
 }
 
 public class DbFileDeny
