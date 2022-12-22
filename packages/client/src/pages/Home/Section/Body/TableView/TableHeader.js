@@ -4,8 +4,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { Events } from "@docspace/common/constants";
 
-const WITH_AUTHOR = "withAuthorColumn";
-
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -16,13 +14,7 @@ class FilesTableHeader extends React.Component {
   }
 
   getTableColumns = (fromUpdate = false) => {
-    const {
-      t,
-      personal,
-      tableStorageName,
-      isRooms,
-      isPersonalRoom,
-    } = this.props;
+    const { t, isRooms, getColumns } = this.props;
 
     const defaultColumns = [];
 
@@ -32,7 +24,7 @@ class FilesTableHeader extends React.Component {
           key: "Name",
           title: t("Common:Name"),
           resizable: true,
-          enable: true,
+          enable: this.props.roomColumnNameIsEnabled,
           default: true,
           sortBy: "AZ",
           minWidth: 210,
@@ -41,7 +33,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Type",
           title: t("Common:Type"),
-          enable: false,
+          enable: this.props.roomColumnTypeIsEnabled,
           resizable: true,
           sortBy: "roomType",
           onChange: this.onColumnChange,
@@ -50,7 +42,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Tags",
           title: t("Common:Tags"),
-          enable: true,
+          enable: this.props.roomColumnTagsIsEnabled,
           resizable: true,
           sortBy: "Tags",
           withTagRef: true,
@@ -60,7 +52,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Owner",
           title: t("ByOwner"),
-          enable: false,
+          enable: this.props.roomColumnOwnerIsEnabled,
           resizable: true,
           sortBy: "Author",
           onChange: this.onColumnChange,
@@ -69,7 +61,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Activity",
           title: t("ByLastModified"),
-          enable: true,
+          enable: this.props.roomColumnActivityIsEnabled,
           resizable: true,
           sortBy: "DateAndTime",
           onChange: this.onColumnChange,
@@ -79,38 +71,30 @@ class FilesTableHeader extends React.Component {
 
       defaultColumns.push(...columns);
     } else {
-      const authorOption = {
-        key: "Author",
-        title: t("ByAuthor"),
-        enable: false,
-        resizable: true,
-        sortBy: "Author",
-
-        // isDisabled: isPersonalRoom,
-        onClick: this.onFilter,
-        onChange: this.onColumnChange,
-      };
-
-      // if (isPersonalRoom) {
-      //   authorOption.defaultSize = 0;
-      // }
-
       const columns = [
         {
           key: "Name",
           title: t("Common:Name"),
           resizable: true,
-          enable: true,
+          enable: this.props.nameColumnIsEnabled,
           default: true,
           sortBy: "AZ",
           minWidth: 210,
           onClick: this.onFilter,
         },
-        authorOption,
+        {
+          key: "Author",
+          title: t("ByAuthor"),
+          enable: this.props.authorColumnIsEnabled,
+          resizable: true,
+          sortBy: "Author",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
         {
           key: "Created",
           title: t("ByCreation"),
-          enable: true,
+          enable: this.props.createdColumnIsEnabled,
           resizable: true,
           sortBy: "DateAndTimeCreation",
           onClick: this.onFilter,
@@ -119,7 +103,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Modified",
           title: t("ByLastModified"),
-          enable: true,
+          enable: this.props.modifiedColumnIsEnabled,
           resizable: true,
           sortBy: "DateAndTime",
           onClick: this.onFilter,
@@ -128,7 +112,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Size",
           title: t("Common:Size"),
-          enable: true,
+          enable: this.props.sizeColumnIsEnabled,
           resizable: true,
           sortBy: "Size",
           onClick: this.onFilter,
@@ -137,7 +121,7 @@ class FilesTableHeader extends React.Component {
         {
           key: "Type",
           title: t("Common:Type"),
-          enable: true,
+          enable: this.props.typeColumnIsEnabled,
           resizable: true,
           sortBy: "Type",
           onClick: this.onFilter,
@@ -146,20 +130,18 @@ class FilesTableHeader extends React.Component {
         {
           key: "QuickButtons",
           title: "",
-          enable: true,
+          enable: this.props.quickButtonsColumnIsEnabled,
           defaultSize: 75,
           resizable: false,
         },
       ];
 
-      personal && columns.splice(1, 1);
-
       defaultColumns.push(...columns);
     }
 
-    const storageColumns = localStorage.getItem(tableStorageName);
+    const columns = getColumns(defaultColumns);
+    const storageColumns = localStorage.getItem(this.tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
-    const columns = this.getColumns(defaultColumns, splitColumns);
     const resetColumnsSize =
       (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
 
@@ -167,17 +149,15 @@ class FilesTableHeader extends React.Component {
     this.setTableColumns(tableColumns);
     if (fromUpdate) {
       this.setState({
-        columns: columns,
-        resetColumnsSize: resetColumnsSize,
-        isRooms: isRooms,
-        isPersonalRoom: isPersonalRoom,
+        columns,
+        resetColumnsSize,
+        isRooms,
       });
     } else {
       this.state = {
-        columns: columns,
-        resetColumnsSize: resetColumnsSize,
-        isRooms: isRooms,
-        isPersonalRoom: isPersonalRoom,
+        columns,
+        resetColumnsSize,
+        isRooms,
       };
     }
   };
@@ -214,12 +194,9 @@ class FilesTableHeader extends React.Component {
 
     this.isBeginScrolling = true;
   };
+
   componentDidUpdate(prevProps) {
     if (this.props.isRooms !== this.state.isRooms) {
-      return this.getTableColumns(true);
-    }
-
-    if (this.props.isPersonalRoom !== this.state.isPersonalRoom) {
       return this.getTableColumns(true);
     }
 
@@ -244,55 +221,20 @@ class FilesTableHeader extends React.Component {
   componentWillUnmount() {
     this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
   }
-  getColumns = (defaultColumns, splitColumns) => {
-    const { isPersonalRoom, isRooms } = this.props;
 
-    const columns = [];
-
-    if (splitColumns) {
-      for (let col of defaultColumns) {
-        const column = splitColumns.find((key) => key === col.key);
-        column ? (col.enable = true) : (col.enable = false);
-
-        if (!isRooms) {
-          if (column === "Author" && isPersonalRoom) {
-            col.enable = false;
-          }
-
-          if (col.key === "Author" && !isPersonalRoom) {
-            if (!col.enable) {
-              const withAuthor = localStorage.getItem(WITH_AUTHOR);
-
-              if (withAuthor === "true") {
-                col.enable = true;
-              }
-            }
-          }
-        }
-
-        columns.push(col);
-      }
-      return columns;
-    } else {
-      return defaultColumns;
-    }
-  };
-
-  onColumnChange = (key, e) => {
+  onColumnChange = (key) => {
     const { columns } = this.state;
 
     const columnIndex = columns.findIndex((c) => c.key === key);
     if (columnIndex === -1) return;
+
+    this.props.setColumnEnable(key);
 
     columns[columnIndex].enable = !columns[columnIndex].enable;
     this.setState({ columns });
 
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
-
-    if (key === "Author") {
-      localStorage.setItem(WITH_AUTHOR, columns[columnIndex].enable);
-    }
 
     const event = new Event(Events.CHANGE_COLUMN);
 
@@ -356,7 +298,6 @@ class FilesTableHeader extends React.Component {
       setHideColumns,
     } = this.props;
 
-    // const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
 
     const sortBy = isRooms ? roomsFilter.sortBy : filter.sortBy;
@@ -402,7 +343,7 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore, tableStore }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
@@ -416,17 +357,43 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const { isRecentFolder, isPersonalRoom } = treeFoldersStore;
+    const { isRecentFolder } = treeFoldersStore;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
-    const { personal, withPaging } = auth.settingsStore;
+    const { withPaging } = auth.settingsStore;
+
+    const {
+      tableStorageName,
+      columnStorageName,
+      columnInfoPanelStorageName,
+      filesColumnStorageName,
+      roomsColumnStorageName,
+      filesColumnInfoPanelStorageName,
+      roomsColumnInfoPanelStorageName,
+
+      nameColumnIsEnabled,
+      authorColumnIsEnabled,
+      createdColumnIsEnabled,
+      modifiedColumnIsEnabled,
+      sizeColumnIsEnabled,
+      typeColumnIsEnabled,
+      quickButtonsColumnIsEnabled,
+
+      roomColumnNameIsEnabled,
+      roomColumnTypeIsEnabled,
+      roomColumnTagsIsEnabled,
+      roomColumnOwnerIsEnabled,
+      roomColumnActivityIsEnabled,
+
+      getColumns,
+      setColumnEnable,
+    } = tableStore;
 
     return {
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
       withContent,
-      personal,
       sortingVisible,
 
       setIsLoading,
@@ -441,7 +408,30 @@ export default inject(
       infoPanelVisible,
       withPaging,
 
-      isPersonalRoom,
+      tableStorageName,
+      columnStorageName,
+      columnInfoPanelStorageName,
+      filesColumnStorageName,
+      roomsColumnStorageName,
+      filesColumnInfoPanelStorageName,
+      roomsColumnInfoPanelStorageName,
+
+      nameColumnIsEnabled,
+      authorColumnIsEnabled,
+      createdColumnIsEnabled,
+      modifiedColumnIsEnabled,
+      sizeColumnIsEnabled,
+      typeColumnIsEnabled,
+      quickButtonsColumnIsEnabled,
+
+      roomColumnNameIsEnabled,
+      roomColumnTypeIsEnabled,
+      roomColumnTagsIsEnabled,
+      roomColumnOwnerIsEnabled,
+      roomColumnActivityIsEnabled,
+
+      getColumns,
+      setColumnEnable,
     };
   }
 )(
