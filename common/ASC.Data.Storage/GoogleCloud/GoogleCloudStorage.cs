@@ -854,4 +854,17 @@ public class GoogleCloudStorage : BaseStorage
         return _moduleAcl;
     }
 
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        var storage = GetStorage();
+        var objectName = MakePath(domain, path);
+
+        var obj = await storage.GetObjectAsync(_bucket, objectName);
+
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.Updated ?? obj.TimeCreated ?? DateTime.MinValue;
+
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return etag;
+    }
 }
