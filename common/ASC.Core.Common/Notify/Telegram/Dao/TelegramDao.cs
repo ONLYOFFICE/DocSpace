@@ -47,7 +47,7 @@ public class TelegramDao
         };
 
         using var dbContext = _dbContextFactory.CreateDbContext();
-        dbContext.AddOrUpdate(r => r.Users, user);
+        dbContext.AddOrUpdate(dbContext.Users, user);
         dbContext.SaveChanges();
     }
 

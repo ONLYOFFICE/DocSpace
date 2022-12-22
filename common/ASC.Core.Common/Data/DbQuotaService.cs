@@ -59,7 +59,7 @@ class DbQuotaService : IQuotaService
         ArgumentNullException.ThrowIfNull(quota);
 
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        coreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
+        coreDbContext.AddOrUpdate(coreDbContext.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
         coreDbContext.SaveChanges();
 
         return quota;
@@ -123,7 +123,7 @@ class DbQuotaService : IQuotaService
                 dbTenantQuotaRow.Counter = counter + row.Counter;
             }
 
-            coreDbContext.AddOrUpdate(r => r.QuotaRows, dbTenantQuotaRow);
+            coreDbContext.AddOrUpdate(coreDbContext.QuotaRows, dbTenantQuotaRow);
             coreDbContext.SaveChanges();
         }
     }
