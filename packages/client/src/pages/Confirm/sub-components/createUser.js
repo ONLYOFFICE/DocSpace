@@ -126,6 +126,7 @@ const GreetingContainer = styled.div`
     position: absolute;
     padding: 16px;
     width: 100%;
+    white-space: pre-line;
   }
 
   .docspace-logo {
