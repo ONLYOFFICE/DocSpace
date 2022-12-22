@@ -751,4 +751,18 @@ public class RackspaceCloudStorage : BaseStorage
         }
         return _moduleAcl;
     }
+
+    public override Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        var client = GetClient();
+        var prefix = MakePath(domain, path);
+
+        var obj = client.ListObjects(_private_container, null, null, null, prefix, _region).FirstOrDefault();
+
+        var lastModificationDate  =  obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
+
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return Task.FromResult(etag);
+    }
 }
