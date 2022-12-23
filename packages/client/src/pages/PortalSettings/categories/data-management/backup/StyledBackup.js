@@ -173,6 +173,10 @@ const StyledRestoreBackup = styled.div`
   ${commonStyles}
   .restore-backup_third-party-module {
     margin-top: 16px;
+
+    button {
+      margin-bottom: 16px;
+    }
   }
   .restore-description {
     max-width: ${TEXT_LENGTH};
