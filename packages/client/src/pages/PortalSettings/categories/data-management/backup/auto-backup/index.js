@@ -29,6 +29,7 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
 import Badge from "@docspace/components/badge";
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 const {
   DocumentModuleType,

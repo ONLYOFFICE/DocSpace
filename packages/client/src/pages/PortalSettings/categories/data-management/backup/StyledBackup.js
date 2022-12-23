@@ -103,6 +103,9 @@ const StyledAutoBackup = styled.div`
   .auto-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
+    button {
+      margin-bottom: 16px;
+    }
   }
   .automatic-backup_main {
     margin-bottom: 30px;
