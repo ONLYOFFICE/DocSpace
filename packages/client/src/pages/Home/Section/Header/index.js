@@ -439,7 +439,7 @@ class SectionHeaderContent extends React.Component {
         label: t("LinkForRoomMembers"),
         onClick: this.onCopyLinkAction,
         disabled: isRecycleBinFolder || isPersonalRoom,
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
       },
       {
         id: "header_option_empty-trash",
