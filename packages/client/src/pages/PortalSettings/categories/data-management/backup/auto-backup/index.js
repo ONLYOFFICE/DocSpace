@@ -213,7 +213,7 @@ class AutomaticBackup extends React.PureComponent {
 
       defaultFolderId,
     } = this.props;
-    console.log("defaultFolderId", defaultFolderId);
+
     toDefault();
     (isCheckedThirdParty || isCheckedDocuments) &&
       resetNewFolderPath(defaultFolderId);
@@ -504,7 +504,11 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
               {isCheckedThirdParty && (
-                <ThirdPartyModule {...commonProps} isError={isError} />
+                <ThirdPartyModule
+                  {...commonProps}
+                  isError={isError}
+                  buttonSize={buttonSize}
+                />
               )}
             </StyledModules>
             <StyledModules>

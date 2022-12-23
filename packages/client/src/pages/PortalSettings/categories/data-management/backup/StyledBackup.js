@@ -327,7 +327,11 @@ const StyledBackup = styled.div`
     display: flex;
     margin-bottom: 12px;
     display: grid;
-    grid-template-columns: minmax(100px, 310px) 32px;
+
+    ${(props) =>
+      props.isConnectedAccount
+        ? "grid-template-columns:minmax(100px,  310px) 32px"
+        : "grid-template-columns:minmax(100px,  350px) 32px"};
     grid-gap: 8px;
   }
 
