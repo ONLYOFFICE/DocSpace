@@ -74,6 +74,15 @@ class BackupStore {
     this.connectedThirdPartyAccount = account;
   };
 
+  get isTheSameThirdPartyAccount() {
+    if (this.connectedThirdPartyAccount && this.selectedThirdPartyAccount)
+      return (
+        this.connectedThirdPartyAccount.providerKey ===
+        this.selectedThirdPartyAccount.provider_key
+      );
+    return true;
+  }
+
   deleteSchedule = (weekdayArr) => {
     this.backupSchedule = null;
 

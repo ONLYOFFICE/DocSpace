@@ -115,6 +115,7 @@ class ThirdPartyModule extends React.Component {
       t,
       buttonSize,
       connectedThirdPartyAccount,
+      isTheSameThirdPartyAccount,
     } = this.props;
     const {
       isPanelVisible,
@@ -142,7 +143,7 @@ class ThirdPartyModule extends React.Component {
           buttonSize={buttonSize}
         />
 
-        {connectedThirdPartyAccount?.id && (
+        {connectedThirdPartyAccount?.id && isTheSameThirdPartyAccount && (
           <Button
             label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
@@ -156,9 +157,10 @@ class ThirdPartyModule extends React.Component {
   }
 }
 export default inject(({ backup }) => {
-  const { connectedThirdPartyAccount } = backup;
+  const { connectedThirdPartyAccount, isTheSameThirdPartyAccount } = backup;
 
   return {
     connectedThirdPartyAccount,
+    isTheSameThirdPartyAccount,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

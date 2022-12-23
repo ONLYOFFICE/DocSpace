@@ -8,18 +8,15 @@ import {
   saveSettingsThirdParty,
 } from "@docspace/common/api/files";
 import { StyledBackup } from "../StyledBackup";
-import Text from "@docspace/components/text";
 import ComboBox from "@docspace/components/combobox";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
-import ConnectDialog from "../../../../../../components/dialogs/ConnectDialog";
 import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
 import { withTranslation } from "react-i18next";
 import { getOAuthToken } from "@docspace/common/utils";
 
 let accounts = [],
-  connectedAccount,
   capabilities;
 const DirectThirdPartyConnection = (props) => {
   const {
@@ -47,6 +44,7 @@ const DirectThirdPartyConnection = (props) => {
     selectedThirdPartyAccount,
     setConnectedThirdPartyAccount,
     buttonSize,
+    isTheSameThirdPartyAccount,
   } = props;
 
   useEffect(() => {
@@ -71,12 +69,6 @@ const DirectThirdPartyConnection = (props) => {
   };
 
   useEffect(() => {
-    console.log(
-      "selectedThirdPartyAccount",
-      selectedThirdPartyAccount,
-      "isInitialLoading",
-      isInitialLoading
-    );
     selectedThirdPartyAccount === null &&
       !isInitialLoading &&
       updateAccountsInfo();
@@ -321,9 +313,12 @@ const DirectThirdPartyConnection = (props) => {
     />
   );
 
-  console.log("folderList", folderList);
   return (
-    <StyledBackup isConnectedAccount={connectedThirdPartyAccount}>
+    <StyledBackup
+      isConnectedAccount={
+        connectedThirdPartyAccount && isTheSameThirdPartyAccount
+      }
+    >
       <div className="backup_connection">
         <ComboBox
           options={accounts}
@@ -346,7 +341,7 @@ const DirectThirdPartyConnection = (props) => {
           }
         />
 
-        {connectedThirdPartyAccount?.id && (
+        {connectedThirdPartyAccount?.id && isTheSameThirdPartyAccount && (
           <ContextMenuButton
             zIndex={402}
             className="backup_third-party-context"
@@ -364,7 +359,7 @@ const DirectThirdPartyConnection = (props) => {
         )}
       </div>
 
-      {!connectedThirdPartyAccount?.id ? (
+      {!connectedThirdPartyAccount?.id || !isTheSameThirdPartyAccount ? (
         <Button
           primary
           label={t("Common:Connect")}
@@ -392,6 +387,7 @@ export default inject(({ backup, dialogsStore, settingsStore }) => {
     selectedThirdPartyAccount,
     connectedThirdPartyAccount,
     setConnectedThirdPartyAccount,
+    isTheSameThirdPartyAccount,
   } = backup;
   const { openConnectWindow } = settingsStore.thirdPartyStore;
 
@@ -403,6 +399,7 @@ export default inject(({ backup, dialogsStore, settingsStore }) => {
   } = dialogsStore;
 
   return {
+    isTheSameThirdPartyAccount,
     clearLocalStorage,
     openConnectWindow,
     setConnectDialogVisible,
