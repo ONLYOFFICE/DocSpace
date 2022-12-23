@@ -29,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     tenantStatus,
     isNotPaidPeriod,
     withManager,
+    isLogout,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -56,7 +57,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       console.log("PrivateRoute render Redirect to login", rest);
       const redirectPath = wizardCompleted ? "/login" : "/wizard";
 
-      if (wizardCompleted && props.location.pathname !== "/") {
+      const isHomeUrl = props.location.pathname === "/";
+
+      if (wizardCompleted && !isHomeUrl && !isLogout) {
         sessionStorage.setItem("referenceUrl", window.location.href);
       }
 
@@ -226,6 +229,7 @@ export default inject(({ auth }) => {
     isAdmin,
     settingsStore,
     currentTariffStatusStore,
+    isLogout,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -247,5 +251,6 @@ export default inject(({ auth }) => {
     wizardCompleted,
     tenantStatus,
     personal,
+    isLogout,
   };
 })(observer(PrivateRoute));
