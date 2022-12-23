@@ -46,7 +46,8 @@ public class CreatorDbContext
             contextOptions = new DbContextOptionsBuilder<T>();
             var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
             installerOptionsAction.OptionsAction(_serviceProvider, contextOptions);
-            _cache.Insert($"context {region}", contextOptions, TimeSpan.FromMinutes(15));
+            var key = $"context {region}:{nameConnectionString}";
+            _cache.Insert(key, contextOptions, TimeSpan.FromMinutes(15));
         }
         return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);
     }
