@@ -121,7 +121,7 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
-                    Console.WriteLine($"backup table {table}");
+                    Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
                         ActionInvoker.Try(
