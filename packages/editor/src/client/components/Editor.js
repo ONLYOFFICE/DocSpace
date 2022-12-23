@@ -97,7 +97,7 @@ function Editor({
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized) {
-        localStorage.setItem("redirectPath", window.location.href);
+        sessionStorage.setItem("referenceUrl", window.location.href);
         window.open(
           combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"),
           "_self"
