@@ -188,7 +188,7 @@ public class SecurityController : ControllerBase
     }
 
     [HttpPost("audit/login/report")]
-    public object CreateLoginHistoryReport()
+    public async Task<object> CreateLoginHistoryReport()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -203,14 +203,14 @@ public class SecurityController : ControllerBase
         var events = _loginEventsRepository.GetByFilter(fromDate: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
-        var result = _auditReportSaver.UploadCsvReport(stream, reportName);
+        var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
         _messageService.Send(MessageAction.LoginHistoryReportDownloaded);
         return result;
     }
 
     [HttpPost("audit/events/report")]
-    public object CreateAuditTrailReport()
+    public async Task<object> CreateAuditTrailReport()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -228,7 +228,7 @@ public class SecurityController : ControllerBase
         var events = _auditEventsRepository.GetByFilter(from: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
-        var result = _auditReportSaver.UploadCsvReport(stream, reportName);
+        var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
         _messageService.Send(MessageAction.AuditTrailReportDownloaded);
         return result;
