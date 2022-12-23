@@ -82,6 +82,7 @@ class AutomaticBackup extends React.PureComponent {
       //setCommonThirdPartyList,
       getProgress,
       setStorageRegions,
+      setConnectedThirdPartyAccount,
     } = this.props;
 
     try {
@@ -89,16 +90,18 @@ class AutomaticBackup extends React.PureComponent {
 
       const [
         ///thirdPartyList,
+        account,
         backupSchedule,
         backupStorage,
         storageRegions,
       ] = await Promise.all([
         //getThirdPartyCommonFolderTree(),
+        getSettingsThirdParty(),
         getBackupSchedule(),
         getBackupStorage(),
         getStorageRegions(),
       ]);
-
+      setConnectedThirdPartyAccount(account);
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
       setStorageRegions(storageRegions);
@@ -582,8 +585,7 @@ export default inject(
       getStorageParams,
       setSelectedEnableSchedule,
       selectedEnableSchedule,
-      updatePathSettings,
-
+      setConnectedThirdPartyAccount,
       setStorageRegions,
       defaultFolderId,
     } = backup;
@@ -602,6 +604,7 @@ export default inject(
     const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
     return {
+      setConnectedThirdPartyAccount,
       defaultFolderId,
       isEnableAuto: isRestoreAndAutoBackupAvailable,
       fetchTreeFolders,
@@ -643,7 +646,6 @@ export default inject(
       setSelectedEnableSchedule,
       selectedEnableSchedule,
 
-      updatePathSettings,
       resetNewFolderPath,
       setStorageRegions,
       updateBaseFolderPath,
