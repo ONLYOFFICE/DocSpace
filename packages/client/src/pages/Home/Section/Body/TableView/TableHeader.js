@@ -140,7 +140,7 @@ class FilesTableHeader extends React.Component {
     }
 
     const columns = getColumns(defaultColumns);
-    const storageColumns = localStorage.getItem(this.tableStorageName);
+    const storageColumns = localStorage.getItem(this.props.tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
     const resetColumnsSize =
       (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
@@ -151,13 +151,11 @@ class FilesTableHeader extends React.Component {
       this.setState({
         columns,
         resetColumnsSize,
-        isRooms,
       });
     } else {
       this.state = {
         columns,
         resetColumnsSize,
-        isRooms,
       };
     }
   };
@@ -196,7 +194,7 @@ class FilesTableHeader extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.isRooms !== this.state.isRooms) {
+    if (this.props.isRooms !== prevProps.isRooms) {
       return this.getTableColumns(true);
     }
 
@@ -304,20 +302,17 @@ class FilesTableHeader extends React.Component {
     const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
 
     // TODO: make some better
-    let needReset = this.props.isRooms !== this.state.isRooms;
     let currentColumnStorageName = columnStorageName;
     let currentColumnInfoPanelStorageName = columnInfoPanelStorageName;
 
     if (columns.length === 5 && columnStorageName === filesColumnStorageName) {
       currentColumnStorageName = roomsColumnStorageName;
       currentColumnInfoPanelStorageName = roomsColumnInfoPanelStorageName;
-      needReset = true;
     }
 
     if (columns.length === 7 && columnStorageName === roomsColumnStorageName) {
       currentColumnStorageName = filesColumnStorageName;
       currentColumnInfoPanelStorageName = filesColumnInfoPanelStorageName;
-      needReset = true;
     }
 
     return (
@@ -331,7 +326,7 @@ class FilesTableHeader extends React.Component {
         columnStorageName={currentColumnStorageName}
         columnInfoPanelStorageName={currentColumnInfoPanelStorageName}
         sectionWidth={sectionWidth}
-        resetColumnsSize={resetColumnsSize || needReset}
+        resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
         useReactWindow={!withPaging}
@@ -357,7 +352,8 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const { isRecentFolder } = treeFoldersStore;
+    const { isRecentFolder, isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const isRooms = isRoomsFolder || isArchiveFolder;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
     const { withPaging } = auth.settingsStore;
@@ -432,6 +428,7 @@ export default inject(
 
       getColumns,
       setColumnEnable,
+      isRooms,
     };
   }
 )(
