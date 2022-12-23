@@ -13,6 +13,7 @@ const StyledAuthorCell = styled.div`
 
   .author-avatar-cell {
     width: 16px;
+    min-width: 16px;
     height: 16px;
     margin-right: 8px;
   }
