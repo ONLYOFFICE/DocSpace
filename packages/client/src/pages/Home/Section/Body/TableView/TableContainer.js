@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
@@ -8,7 +8,6 @@ import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
-import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const marginCss = css`
   margin-top: -1px;
@@ -99,14 +98,6 @@ const StyledTableContainer = styled(TableContainer)`
 
 StyledTableContainer.defaultProps = { theme: Base };
 
-const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
-const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
-
-const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
-const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
-const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
-
 const elementResizeDetector = elementResizeDetectorMaker({
   strategy: "scroll",
   callOnAdd: false,
@@ -121,12 +112,13 @@ const Table = ({
   setHeaderBorder,
   theme,
   infoPanelVisible,
-  userId,
   fetchMoreFiles,
   hasMoreFiles,
   filterTotal,
   isRooms,
   withPaging,
+  columnStorageName,
+  columnInfoPanelStorageName,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
   const [hideColumns, setHideColumns] = React.useState(false);
@@ -149,7 +141,7 @@ const Table = ({
     }
   }, [sectionWidth]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (!tagRef?.current) return;
 
@@ -157,7 +149,7 @@ const Table = ({
     };
   }, []);
 
-  const onResize = React.useCallback(
+  const onResize = useCallback(
     (node) => {
       const element = tagRef?.current ? tagRef?.current : node;
 
@@ -172,7 +164,7 @@ const Table = ({
     [tagCount]
   );
 
-  const onSetTagRef = React.useCallback((node) => {
+  const onSetTagRef = useCallback((node) => {
     if (node) {
       tagRef.current = node;
       onResize(node);
@@ -181,28 +173,11 @@ const Table = ({
     }
   }, []);
 
-  const tableColumns = isRooms
-    ? `${TABLE_ROOMS_COLUMNS}=${userId}`
-    : `${TABLE_COLUMNS}=${userId}`;
-  const columnStorageName = isRooms
-    ? `${COLUMNS_ROOMS_SIZE}=${userId}`
-    : `${COLUMNS_SIZE}=${userId}`;
-  const columnInfoPanelStorageName = isRooms
-    ? `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`
-    : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
-
   return (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
-        tableStorageName={tableColumns}
-        columnStorageName={columnStorageName}
-        filesColumnStorageName={`${COLUMNS_SIZE}=${userId}`}
-        roomsColumnStorageName={`${COLUMNS_ROOMS_SIZE}=${userId}`}
-        columnInfoPanelStorageName={columnInfoPanelStorageName}
-        filesColumnInfoPanelStorageName={`${COLUMNS_SIZE_INFO_PANEL}=${userId}`}
-        roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
         tagRef={onSetTagRef}
         setHideColumns={setHideColumns}
@@ -228,9 +203,6 @@ const Table = ({
             setFirsElemChecked={setFirsElemChecked}
             setHeaderBorder={setHeaderBorder}
             theme={theme}
-            tableColumns={tableColumns}
-            columnStorageName={columnStorageName}
-            columnInfoPanelStorageName={columnInfoPanelStorageName}
             tagCount={tagCount}
             isRooms={isRooms}
             hideColumns={hideColumns}
@@ -241,12 +213,13 @@ const Table = ({
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore, auth }) => {
+export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
-
   const isRooms = isRoomsFolder || isArchiveFolder;
+
+  const { columnStorageName, columnInfoPanelStorageName } = tableStore;
 
   const {
     filesList,
@@ -276,5 +249,7 @@ export default inject(({ filesStore, treeFoldersStore, auth }) => {
     filterTotal: isRooms ? roomsFilterTotal : filterTotal,
     isRooms,
     withPaging,
+    columnStorageName,
+    columnInfoPanelStorageName,
   };
 })(observer(Table));

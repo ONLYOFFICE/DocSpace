@@ -175,10 +175,19 @@ class ContextOptionsStore {
     setIsVerHistoryPanel(true);
   };
 
-  finalizeVersion = (id) => {
-    this.filesActionsStore
-      .finalizeVersionAction(id)
-      .catch((err) => toastr.error(err));
+  finalizeVersion = async (id) => {
+    let timer = null;
+    try {
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
+      await this.filesActionsStore.finalizeVersionAction(id);
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      this.filesActionsStore.setIsLoading(false);
+      clearTimeout(timer);
+    }
   };
 
   onClickFavorite = (e, id, t) => {

@@ -22,5 +22,5 @@
   "SetAppDescription": "双因素身份验证功能已启用。请配置您的身份验证应用，以便继续使用门户。如果您使用的是<1>Android</1>与<4>iOS</4>系统，则可使用Google Authenticator。<8>Windows Phone</8>可使用Authenticator。",
   "SetAppInstallDescription": "如需连接应用，请扫描二维码或手动输入您的密钥<1>{{ secretKey }}</1>，然后在下方的字段中输入应用中的6位数字码。",
   "SetAppTitle": "配置您的身份验证应用",
-  "WelcomeUser": "欢迎加入我们的门户网站！要开始，请注册或通过社交网络登录。"
+  "WelcomeUser": "欢迎加入我们的门户网站！\n要开始，请注册或通过社交网络登录。"
 }
