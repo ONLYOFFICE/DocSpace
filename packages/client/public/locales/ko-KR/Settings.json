@@ -19,7 +19,6 @@
   "BackupCreatedSuccess": "백업 복사본 생성에 성공했습니다.",
   "BackupList": "백업 목록",
   "BackupListWarningText": "목록에서 항목을 삭제하면 그에 상응하는 파일도 삭제됩니다. 이 작업은 취소할 수 없습니다. 모든 파일을 삭제하려면 다음 링크를 사용하시기 바랍니다:",
-  "BrowserNoCanvasSupport": "고객님의 브라우저가 HTML5 캔버스 태그를 지원하지 않습니다.",
   "ByApp": "인증 앱 이용",
   "BySms": "SMS 이용",
   "ChangeLogoButton": "로고 변경",

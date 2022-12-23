@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Rezerves kopija veiksmīgi izveidota.",
   "BackupList": "Rezerves kopiju saraksts",
   "BackupListWarningText": "Ja jūs dzēsīsit jebkādus elementus no saraksta, tiem atbilstošie faili arī tiks dzēsti. Šo darbību nevar atsaukt. Lai dzēstu visus failus, izmantojiet saiti:",
-  "BrowserNoCanvasSupport": "Jūsu pārlūkprogramma neatbalsta HTML5 pamatnes tagu.",
   "ByApp": "Pēc autentifikācijas lietotnes",
   "BySms": "Pēc SMS",
   "ChangeLogoButton": "Mainīt logotipu",

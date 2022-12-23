@@ -21,7 +21,6 @@
   "BackupCreatedSuccess": "Die Sicherungskopie wurde erfolgreich erstellt.",
   "BackupList": "Backup-Liste",
   "BackupListWarningText": "Falls Sie einige Elemente aus der Liste löschen, werden die entsprechende Dateien auch gelöscht. Dieser Vorgang nicht rückgängig gemacht werden kann. Um alle Dateien zu löschen, verwenden Sie den Link:",
-  "BrowserNoCanvasSupport": "Ihr Browser unterstützt die HTML5 Canvas-Tag nicht.",
   "ByApp": "Über die Authentifizierungs-App",
   "BySms": "Per SMS",
   "ChangeLogoButton": "Logo ändern",

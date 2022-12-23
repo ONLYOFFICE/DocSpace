@@ -19,7 +19,6 @@
   "BackupCreatedSuccess": "A cópia de segurança foi criada com sucesso.",
   "BackupList": "Lista de Cópias de Segurança",
   "BackupListWarningText": "Se eliminar qualquer item desta lista, os ficheiros que lhes correspondem serão também eliminados. Esta ação não pode ser anulada. Para eliminar todos os ficheiros utilize o link:",
-  "BrowserNoCanvasSupport": "O seu browser não suporta a tag HTML5 canvas.",
   "ByApp": "Através da app de autenticação",
   "BySms": "Por SMS",
   "ChangeLogoButton": "Alterar Logótipo",
