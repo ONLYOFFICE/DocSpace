@@ -178,7 +178,6 @@ const Table = ({
       <TableHeader
         sectionWidth={sectionWidth}
         containerRef={ref}
-        isRooms={isRooms}
         tagRef={onSetTagRef}
         setHideColumns={setHideColumns}
       />
