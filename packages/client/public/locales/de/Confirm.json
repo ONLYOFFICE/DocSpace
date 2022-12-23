@@ -22,5 +22,5 @@
   "SetAppDescription": "Zwei-Faktor-Authentifizierung ist aktiv. Konfigurieren Sie Ihre Authentifizierungsanwendung für weitere Arbeit auf dem Portal. Sie können Google Authenticator für <1>Android</1> und <4>iOS</4> oder Authenticator für <8>Windows Phone</8> benutzen.",
   "SetAppInstallDescription": "Verbinden Sie die App, indem Sie den QR-Code einscannen oder den Geheimschlüssel <1>{{ secretKey }}</1> manuell eingeben. Geben Sie dann den sechsstelligen Code aus Ihrer App im unten stehenden Feld ein.",
   "SetAppTitle": "Konfigurieren Sie Ihre Authentifizierungsanwendung",
-  "WelcomeUser": "Willkommen bei unserem Portal! Registrieren Sie sich oder melden Sie sich über soziale Netzwerke an, um fortzusetzen."
+  "WelcomeUser": "Willkommen bei unserem Portal!\nRegistrieren Sie sich oder melden Sie sich über soziale Netzwerke an, um fortzusetzen."
 }

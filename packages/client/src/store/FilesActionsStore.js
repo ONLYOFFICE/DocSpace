@@ -45,6 +45,7 @@ class FilesActionStore {
   itemOpenLocation = null;
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
+  isLoading = false;
 
   constructor(
     authStore,
@@ -1099,6 +1100,10 @@ class FilesActionStore {
 
   setIsLoadedSearchFiles = (isLoadedSearchFiles) => {
     this.isLoadedSearchFiles = isLoadedSearchFiles;
+  };
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
   };
 
   openLocationAction = async (locationId) => {

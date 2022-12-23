@@ -31,6 +31,7 @@ import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
 import AccessRightsStore from "./AccessRightsStore";
+import TableStore from "./TableStore";
 
 const oformsStore = new OformsStore(authStore);
 
@@ -136,6 +137,8 @@ const profileActionsStore = new ProfileActionsStore(
   selectedFolderStore
 );
 
+const tableStore = new TableStore(authStore, treeFoldersStore);
+
 authStore.infoPanelStore.authStore = authStore;
 authStore.infoPanelStore.settingsStore = settingsStore;
 authStore.infoPanelStore.filesStore = filesStore;
@@ -170,6 +173,7 @@ const store = {
   hotkeyStore,
   selectFileDialogStore,
   oformsStore,
+  tableStore,
 
   tagsStore,
 

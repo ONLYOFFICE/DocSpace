@@ -28,5 +28,5 @@
   "SetAppTitle": "Configure your authenticator application",
   "SuccessDeactivate": "Your account has been successfully deactivated. In 10 seconds you will be redirected to the <1>site</1>",
   "SuccessReactivate": "Your account has been successfully reactivated. In 10 seconds you will be redirected to the <1>portal</1>",
-  "WelcomeUser": "Welcome to join our portal! To get started register, or log in via social networking."
+  "WelcomeUser": "Welcome to join our portal!\nTo get started register, or log in via social networking."
 }
