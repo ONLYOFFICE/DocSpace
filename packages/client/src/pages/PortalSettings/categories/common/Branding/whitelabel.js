@@ -19,7 +19,7 @@ import {
   generateLogo,
   getLogoOptions,
   uploadLogo,
-} from "../../../utils/generateLogo";
+} from "../../../utils/whiteLabelHelper";
 import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
@@ -131,7 +131,6 @@ const WhiteLabel = (props) => {
   };
 
   const onSave = async () => {
-    console.log(logoUrlsWhiteLabel);
     let logosArr = [];
 
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
@@ -174,9 +173,7 @@ const WhiteLabel = (props) => {
     <LoaderWhiteLabel />
   ) : (
     <WhiteLabelWrapper>
-      <Text className="subtitle" color="#657077">
-        {t("BrandingSubtitle")}
-      </Text>
+      <Text className="subtitle">{t("BrandingSubtitle")}</Text>
 
       <div className="header-container">
         <Text fontSize="16px" fontWeight="700">
