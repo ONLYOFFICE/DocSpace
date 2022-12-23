@@ -125,7 +125,8 @@ const WhiteLabel = (props) => {
 
       setLogoUrlsWhiteLabel(newArr);
     } else {
-      console.error("Error");
+      console.error(data.Message);
+      toastr.error(data.Message);
     }
   };
 
