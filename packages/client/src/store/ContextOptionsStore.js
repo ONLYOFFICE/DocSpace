@@ -204,21 +204,30 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = (item, t) => {
+  lockFile = async (item, t) => {
+    let timer = null;
     const { id, locked } = item;
     const {
       setSelection: setInfoPanelSelection,
     } = this.authStore.infoPanelStore;
 
-    this.filesActionsStore
-      .lockFileAction(id, !locked)
-      .then(() =>
-        locked
-          ? toastr.success(t("Translations:FileUnlocked"))
-          : toastr.success(t("Translations:FileLocked"))
-      )
-      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
-      .catch((err) => toastr.error(err));
+    try {
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
+      await this.filesActionsStore
+        .lockFileAction(id, !locked)
+        .then(() =>
+          locked
+            ? toastr.success(t("Translations:FileUnlocked"))
+            : toastr.success(t("Translations:FileLocked"))
+        )
+        .then(() => setInfoPanelSelection({ ...item, locked: !locked }));
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      this.filesActionsStore.setIsLoading(false), clearTimeout(timer);
+    }
   };
 
   onClickLinkForPortal = (item, t) => {

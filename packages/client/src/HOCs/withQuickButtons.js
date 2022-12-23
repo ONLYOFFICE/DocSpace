@@ -9,26 +9,31 @@ export default function withQuickButtons(WrappedComponent) {
       super(props);
 
       this.state = {
-        isLoading: false,
         isCanWebEdit: props.item.viewAccessability?.WebEdit,
       };
     }
 
-    onClickLock = () => {
-      const { item, lockFileAction, t } = this.props;
+    onClickLock = async () => {
+      let timer = null;
+      const { item, setIsLoading, isLoading, lockFileAction, t } = this.props;
       const { locked, id, security } = item;
 
-      if (security?.Lock && !this.state.isLoading) {
-        this.setState({ isLoading: true });
-        return lockFileAction(id, !locked)
-          .then(() =>
+      try {
+        timer = setTimeout(() => {
+          setIsLoading(true);
+        }, 200);
+        if (security?.Lock && !isLoading) {
+          await lockFileAction(id, !locked).then(() =>
             locked
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
-          )
-          .catch((err) => toastr.error(err), this.setState({ isLoading: false }))
+          );
+        }
+      } catch (error) {
+        toastr.error(err);
+      } finally {
+        setIsLoading(false), clearTimeout(timer);
       }
-      return;
     };
 
     onClickFavorite = (showFavorite) => {
@@ -47,7 +52,7 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
-      const { isLoading, isCanWebEdit } = this.state;
+      const { isCanWebEdit } = this.state;
 
       const {
         t,
@@ -57,6 +62,7 @@ export default function withQuickButtons(WrappedComponent) {
         sectionWidth,
         viewAs,
         folderCategory,
+        isLoading,
       } = this.props;
 
       const quickButtonsComponent = (
@@ -96,6 +102,8 @@ export default function withQuickButtons(WrappedComponent) {
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
+        setIsLoading,
+        isLoading,
       } = filesActionsStore;
       const {
         isPersonalFolderRoot,
@@ -115,6 +123,8 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
         setSharingPanelVisible,
         folderCategory,
+        setIsLoading,
+        isLoading,
       };
     }
   )(observer(WithQuickButtons));
