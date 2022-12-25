@@ -1209,15 +1209,6 @@ $GreenButton
 
 If you do not want to change your mobile phone or received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
   </data>
-  <data name="pattern_personal_change_password_v115" xml:space="preserve">
-    <value>Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
-
-$GreenButton 
-
-The link is valid for 7 days.
-
-Don’t want to change your password? Just ignore this message.</value>
-  </data>
   <data name="subject_personal_already_exist" xml:space="preserve">
     <value>Log in to your ONLYOFFICE Personal account</value>
   </data>
