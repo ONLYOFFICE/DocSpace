@@ -457,6 +457,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new version cannot be the same as the current one.
+        /// </summary>
+        public static string ErrorMassage_FileUpdateToVersion {
+            get {
+                return ResourceManager.GetString("ErrorMassage_FileUpdateToVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot copy the folder to its subfolder.
         /// </summary>
         public static string ErrorMassage_FolderCopyError {

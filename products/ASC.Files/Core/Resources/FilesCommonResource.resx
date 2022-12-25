@@ -249,6 +249,9 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>File larger than {0} will not be moved</value>
   </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>The new version cannot be the same as the current one</value>
+  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>You cannot copy the folder to its subfolder</value>
   </data>
