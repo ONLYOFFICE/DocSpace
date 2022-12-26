@@ -3,8 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { getFolderOptions, decodeDisplayName } from "../../utils";
-import { Encoder } from "../../utils/encoder";
+import { decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
