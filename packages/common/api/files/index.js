@@ -51,9 +51,9 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter) {
+export function getFolder(folderId, filter, signal) {
   const options = getFolderOptions(folderId, filter);
-  return request(options).then((res) => {
+  return request({ ...options, signal }).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
