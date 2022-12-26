@@ -50,7 +50,7 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter, cancelToken) {
+export function getFolder(folderId, filter, signal) {
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
@@ -63,11 +63,8 @@ export function getFolder(folderId, filter, cancelToken) {
   const options = {
     method: "get",
     url: `/files/${params}`,
+    signal,
   };
-
-  if (cancelToken) {
-    options.cancelToken = cancelToken;
-  }
 
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
