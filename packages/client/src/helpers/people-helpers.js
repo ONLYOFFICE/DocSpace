@@ -3,9 +3,6 @@ import {
   EmployeeActivationStatus,
   EmployeeStatus,
 } from "@docspace/common/constants";
-import { isAdmin } from "@docspace/common/utils";
-import { id } from "PACKAGE_FILE";
-//const { isAdmin } = utils;
 
 export const getUserStatus = (user) => {
   if (
@@ -23,16 +20,6 @@ export const getUserStatus = (user) => {
   } else {
     return "unknown";
   }
-};
-
-export const getUserRole = (user) => {
-  if (user.isOwner) return "owner";
-  else if (isAdmin(user, id))
-    //TODO: Change to People Product Id const
-    return "admin";
-  //TODO: Need refactoring
-  else if (user.isVisitor) return "user";
-  else return "manager";
 };
 
 export const getUserContactsPattern = () => {
