@@ -305,6 +305,7 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -333,7 +334,8 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -362,6 +364,7 @@ public class EntryManager
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
@@ -1071,10 +1074,21 @@ public class EntryManager
             }
 
             var ext = FileUtility.GetFileExtension(sourceFile.Title);
-            var title = Path.GetFileNameWithoutExtension(sourceFile.Title);
+            var sourceTitle = Path.GetFileNameWithoutExtension(sourceFile.Title);
+            var title = $"{sourceTitle}-{DateTime.UtcNow:s}";
+
+            if (sourceFile.ProviderEntry)
+            {
+                var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+                var displayedName = user.DisplayUserName(_displayUserSettingsHelper);
+
+                title += $" ({displayedName})";
+            }
+
+            title += ext;
 
             linkedFile = _serviceProvider.GetService<File<T>>();
-            linkedFile.Title = Global.ReplaceInvalidCharsAndTruncate($"{title}-{DateTime.UtcNow:s}{ext}");
+            linkedFile.Title = Global.ReplaceInvalidCharsAndTruncate(title);
             linkedFile.ParentId = folderIfNew.Id;
             linkedFile.FileStatus = sourceFile.FileStatus;
             linkedFile.ConvertedType = sourceFile.ConvertedType;
