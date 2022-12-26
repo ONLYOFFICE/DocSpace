@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Bản sao lưu đã được tạo thành công.",
   "BackupList": "Danh sách sao lưu",
   "BackupListWarningText": "Nếu bạn xóa bất kỳ mục nào trong danh sách, các file tương ứng của chúng cũng sẽ bị xóa. Tác vụ này không thể được hoàn tác. Để xóa tất cả các file này sử dụng liên kết:",
-  "BrowserNoCanvasSupport": "Trình duyệt của bạn không hỗ trợ HTML5 canvas tag.",
   "ByApp": "Bằng ứng dụng trình xác thực",
   "BySms": "Bằng sms",
   "ChangeLogoButton": "Thay đổi Logo",

@@ -15,7 +15,11 @@ import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 import Logo from "./sub-components/logo";
-import { generateLogo, getLogoOptions } from "../../../utils/generateLogo";
+import {
+  generateLogo,
+  getLogoOptions,
+  uploadLogo,
+} from "../../../utils/generateLogo";
 import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
@@ -100,28 +104,30 @@ const WhiteLabel = (props) => {
     }
   };
 
-  const onChangeLogo = (e) => {
+  const onChangeLogo = async (e) => {
     const id = e.target.id.split("_");
     const index = id[1];
     const theme = id[2];
 
     let file = e.target.files[0];
 
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = e.target.result;
+    const { data } = await uploadLogo(file);
 
+    if (data.Success) {
+      const url = data.Message;
       const newArr = logoUrlsWhiteLabel;
 
       if (theme === "light") {
-        newArr[index - 1].path.light = img;
+        newArr[index - 1].path.light = url;
       } else if (theme === "dark") {
-        newArr[index - 1].path.dark = img;
+        newArr[index - 1].path.dark = url;
       }
 
       setLogoUrlsWhiteLabel(newArr);
-    };
+    } else {
+      console.error(data.Message);
+      toastr.error(data.Message);
+    }
   };
 
   const onSave = async () => {

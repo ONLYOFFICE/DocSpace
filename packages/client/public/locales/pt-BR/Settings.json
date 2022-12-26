@@ -21,7 +21,6 @@
   "BackupCreatedSuccess": "A cópia de backup foi criada com sucesso.",
   "BackupList": "Lista de backup",
   "BackupListWarningText": "Se você excluir qualquer item da lista, seus arquivos correspondentes também serão excluídos. Esta ação não pode ser desfeita. Para excluir todos os arquivos use o link:",
-  "BrowserNoCanvasSupport": "Seu navegador não suporta tag canvas HTML5.",
   "ByApp": "Por aplicativo autenticador",
   "BySms": "Por SMS",
   "ChangeLogoButton": "Alterar Logotipo",

@@ -661,7 +661,8 @@ public class FileUtility
                 ".html", ".htm", ".mht", ".xml",
                 ".pdf", ".djvu", ".fb2", ".epub", ".xps",".oxps",
                 ".doct", ".docy",
-                ".gdoc"
+                ".gdoc",
+                ".docxf", ".oform"
             };
 
     public static readonly List<string> ExtsFormTemplate = new List<string>
