@@ -317,7 +317,7 @@ public class DocumentServiceHelper
             configuration.Document.Title += $" ({file.CreateOnString})";
         }
 
-        if (file.FilterType == FilterType.OFormOnly)
+        if (FileUtility.GetFileExtension(file.Title) == ".oform")
         {
             var linkDao = _daoFactory.GetLinkDao();
             var sourceId = await linkDao.GetSourceAsync(file.Id.ToString());
