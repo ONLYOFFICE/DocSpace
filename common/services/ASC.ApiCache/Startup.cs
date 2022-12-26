@@ -50,9 +50,6 @@ public class Startup
         services.AddHttpClient();
 
         services.AddScoped<EFLoggerFactory>();
-        services.AddBaseDbContextPool<TenantDbContext>();
-        services.AddBaseDbContextPool<UserDbContext>();
-        services.AddBaseDbContextPool<CoreDbContext>();
         services.AddBaseDbContextPool<TeamlabSiteContext>(nameConnectionString: "teamlabsite");
 
         services.AddSession();
@@ -73,7 +70,6 @@ public class Startup
         services.AddSingleton(jsonOptions);
 
         _diHelper.AddControllers();
-        _diHelper.TryAdd<ApiSystemHelper>();
 
         if (!string.IsNullOrEmpty(_corsOrigin))
         {
@@ -95,14 +91,6 @@ public class Startup
         services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
-
-        services.RegisterFeature();
-
-        _diHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
-
-        _diHelper.RegisterProducts(_configuration, _hostEnvironment.ContentRootPath);
-
-        services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
 
         if (!_hostEnvironment.IsDevelopment())
         {
