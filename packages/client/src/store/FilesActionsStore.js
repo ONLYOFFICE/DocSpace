@@ -1,5 +1,4 @@
-﻿import SubtractReactSvgUrl from "ASSETS_DIR/images/subtract.react.svg?url";
-import FavoritesReactSvgUrl from "ASSETS_DIR/images/favorites.react.svg?url";
+﻿import FavoritesReactSvgUrl from "ASSETS_DIR/images/favorites.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
@@ -1575,7 +1574,7 @@ class FilesActionStore {
             id: "menu-unarchive",
             key: "unarchive",
             label: t("Common:Restore"),
-            iconUrl: SubtractReactSvgUrl,
+            iconUrl: MoveReactSvgUrl,
             onClick: () => this.archiveRooms("unarchive"),
             disabled: false,
           };

@@ -9,7 +9,6 @@ import FormGalleryReactSvgUrl from "ASSETS_DIR/images/form.gallery.react.svg?url
 import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
 import ActionsUploadReactSvgUrl from "ASSETS_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "ASSETS_DIR/images/clear.trash.react.svg?url";
-import SubtractReactSvgUrl from "ASSETS_DIR/images/subtract.react.svg?url";
 import ReconnectSvgUrl from "ASSETS_DIR/images/reconnect.svg?url";
 import SettingsReactSvgUrl from "ASSETS_DIR/images/settings.react.svg?url";
 import DownloadReactSvgUrl from "ASSETS_DIR/images/download.react.svg?url";
@@ -411,7 +410,7 @@ class SectionHeaderContent extends React.Component {
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
           disabled: !canRestoreAll,
-          icon: SubtractReactSvgUrl,
+          icon: MoveReactSvgUrl,
         },
       ];
     }
@@ -455,7 +454,7 @@ class SectionHeaderContent extends React.Component {
         label: t("RestoreAll"),
         onClick: this.onRestoreAllAction,
         disabled: !isRecycleBinFolder,
-        icon: SubtractReactSvgUrl,
+        icon: MoveReactSvgUrl,
       },
       {
         id: "header_option_show-info",

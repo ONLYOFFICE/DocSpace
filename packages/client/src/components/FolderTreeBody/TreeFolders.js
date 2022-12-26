@@ -1,6 +1,6 @@
 ﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
-import CatalogShareReactSvgUrl from "PUBLIC_DIR/images/catalog.share.react.svg?url";
+import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
 import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";
 import CatalogFavoritesReactSvgUrl from "PUBLIC_DIR/images/catalog.favorites.react.svg?url";
 import CatalogRecentReactSvgUrl from "PUBLIC_DIR/images/catalog.recent.react.svg?url";
@@ -121,7 +121,7 @@ class TreeFolders extends React.Component {
         iconUrl = CatalogUserReactSvgUrl;
         break;
       case FolderType.SHARE:
-        iconUrl = CatalogShareReactSvgUrl;
+        iconUrl = CatalogSharedReactSvgUrl;
         break;
       case FolderType.COMMON:
         iconUrl = CatalogPortfolioReactSvgUrl;
@@ -142,8 +142,7 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0)
-      iconUrl = CatalogFolderReactSvgUrl;
+    if (item.parentId !== 0) iconUrl = CatalogFolderReactSvgUrl;
 
     switch (item.providerKey) {
       case "GoogleDrive":

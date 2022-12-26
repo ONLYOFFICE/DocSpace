@@ -13,7 +13,6 @@ import DownloadReactSvgUrl from "ASSETS_DIR/images/download.react.svg?url";
 import DownloadAsReactSvgUrl from "ASSETS_DIR/images/download-as.react.svg?url";
 import RenameReactSvgUrl from "ASSETS_DIR/images/rename.react.svg?url";
 import RemoveSvgUrl from "ASSETS_DIR/images/remove.svg?url";
-import SubtractReactSvgUrl from "ASSETS_DIR/images/subtract.react.svg?url";
 import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
 import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
@@ -971,7 +970,7 @@ class ContextOptionsStore {
         id: "option_unarchive-room",
         key: "unarchive-room",
         label: t("Common:Restore"),
-        icon: SubtractReactSvgUrl,
+        icon: MoveReactSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "unarchive",
@@ -1084,7 +1083,7 @@ class ContextOptionsStore {
         archiveOptions = {
           key: "unarchive-room",
           label: t("Common:Restore"),
-          icon: SubtractReactSvgUrl,
+          icon: MoveReactSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
           "data-action": "unarchive",

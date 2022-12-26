@@ -211,25 +211,22 @@ export const getLogoFromPath = (path) => {
   const name = path.split("/").pop();
   switch (name) {
     case "aboutpage.svg":
+    case "loginpage.svg":
       return AboutPageSvgUrl;
     case "dark_loginpage.svg":
       return DarkLoginPageSvgUrl;
     case "leftmenu.svg":
+    case "dark_leftmenu.svg":
       return LeftMenuSvgUrl;
     case "dark_aboutpage.svg":
+    case "dark_lightsmall.svg":
       return DarkAboutPageSvgUrl;
     case "docseditor.svg":
       return DocseditorSvgUrl;
     case "lightsmall.svg":
       return LightSmallSvgUrl;
-    case "dark_leftmenu.svg":
-      return DarkLeftMenuSvgUrl;
     case "docseditorembed.svg":
       return DocsEditoRembedSvgUrl;
-    case "loginpage.svg":
-      return LoginPageSvgUrl;
-    case "dark_lightsmall.svg":
-      return DarkLightSmallSvgUrl;
     default:
       break;
   }

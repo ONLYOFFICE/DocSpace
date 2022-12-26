@@ -1,5 +1,5 @@
 ﻿import UnpinReactSvgUrl from "ASSETS_DIR/images/unpin.react.svg?url";
-import AccessEditFormMediumReactSvgUrl from "PUBLIC_DIR/images/access.edit.form.medium.react.svg?url";
+import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
 import AccessEditFormReactSvgUrl from "PUBLIC_DIR/images/access.edit.form.react.svg?url";
 import FileActionsConvertEditDocReactSvgUrl from "PUBLIC_DIR/images/file.actions.convert.edit.doc.react.svg?url";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
@@ -107,13 +107,9 @@ const Badges = ({
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
   const iconForm =
-    sizeBadge === "medium"
-      ? AccessEditFormMediumReactSvgUrl
-      : AccessEditFormReactSvgUrl;
+    sizeBadge === "medium" ? FormFillRectSvgUrl : AccessEditFormReactSvgUrl;
 
-  const iconEdit = !isForm
-    ? FileActionsConvertEditDocReactSvgUrl
-    : iconForm;
+  const iconEdit = !isForm ? FileActionsConvertEditDocReactSvgUrl : iconForm;
 
   const iconRefresh = RefreshReactSvgUrl;
 
