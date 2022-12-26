@@ -24,9 +24,11 @@ import {
   ConvertDialog,
   CreateRoomDialog,
   InviteUsersWarningDialog,
+  ChangeUserTypeDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
+// import ChangeUserTypeDialog from "./../dialogs/ChangeUserTypeDialog/old_index";
 
 const Panels = (props) => {
   const {
@@ -56,6 +58,7 @@ const Panels = (props) => {
     restoreAllPanelVisible,
     archiveDialogVisible,
     inviteUsersWarningDialogVisible,
+    changeUserTypeDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -99,6 +102,9 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    changeUserTypeDialogVisible && (
+      <ChangeUserTypeDialog key="change-user-type-dialog" />
+    ),
     createRoomDialogVisible && <CreateRoomDialog key="create-room-dialog" />,
     selectFileDialogVisible && (
       <SelectFileDialog
@@ -156,6 +162,7 @@ export default inject(
       setSelectFileDialogVisible,
       invitePanelOptions,
       inviteUsersWarningDialogVisible,
+      changeUserTypeDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -189,6 +196,7 @@ export default inject(
       invitePanelVisible: invitePanelOptions.visible,
       archiveDialogVisible,
       inviteUsersWarningDialogVisible,
+      changeUserTypeDialogVisible,
     };
   }
 )(observer(Panels));

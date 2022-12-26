@@ -13,6 +13,7 @@ const User = ({
   updateRoomMemberRole,
   selectionParentRoom,
   setSelectionParentRoom,
+  changeUserType,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -33,6 +34,14 @@ const User = ({
   );
 
   const onOptionClick = (option) => {
+    const userType =
+      option.key === "owner"
+        ? "admin"
+        : option.key === "roomAdmin"
+        ? "manager"
+        : "user";
+    changeUserType(userType, [user]);
+
     updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
       notify: false,

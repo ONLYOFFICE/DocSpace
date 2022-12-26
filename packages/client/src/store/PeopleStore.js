@@ -26,6 +26,7 @@ import Filter from "@docspace/common/api/people/filter";
 class PeopleStore {
   contextOptionsStore = null;
   authStore = null;
+  dialogsStore = null;
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
@@ -44,7 +45,13 @@ class PeopleStore {
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
 
-  constructor(authStore, infoPanelStore, setupStore, accessRightsStore) {
+  constructor(
+    authStore,
+    infoPanelStore,
+    setupStore,
+    accessRightsStore,
+    dialogsStore
+  ) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -61,6 +68,7 @@ class PeopleStore {
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
+    this.dialogsStore = dialogsStore;
 
     this.contextOptionsStore = new AccountsContextOptionsStore(this);
 
@@ -104,7 +112,8 @@ class PeopleStore {
   };
 
   changeType = (type, users) => {
-    const { setChangeUserTypeDialogVisible, setDialogData } = this.dialogStore;
+    const { setChangeUserTypeDialogVisible } = this.dialogsStore;
+    const { setDialogData } = this.dialogStore;
 
     let fromType =
       users.length === 1 ? [users[0].role] : users.map((u) => u.role);

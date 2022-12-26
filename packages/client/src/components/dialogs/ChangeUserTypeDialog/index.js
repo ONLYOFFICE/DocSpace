@@ -1,155 +1,143 @@
-import React, { memo } from "react";
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
-import PropTypes from "prop-types";
-
+import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
-import Text from "@docspace/components/text";
-
 import { withTranslation, Trans } from "react-i18next";
-
+import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 
-import ModalDialogContainer from "../ModalDialogContainer";
+const ChangeUserTypeDialog = ({
+  t,
+  visible,
+  setVisible,
+  peopleDialogData,
+  peopleFilter,
+  updateUserType,
+  getUsersList,
+}) => {
+  const [isRequestRunning, setIsRequestRunning] = useState(false);
 
-import { inject, observer } from "mobx-react";
+  console.log(peopleDialogData);
+  console.log(peopleFilter);
 
-class ChangeUserTypeDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { userIDs } = props;
-
-    this.state = { isRequestRunning: false, userIDs };
-  }
-
-  onChangeUserType = () => {
-    const {
-      onClose,
-
-      t,
-      toType,
-      fromType,
-      updateUserType,
-      filter,
-    } = this.props;
-    const { userIDs } = this.state;
-    this.setState({ isRequestRunning: true }, () => {
-      updateUserType(toType, userIDs, filter, fromType)
-        .then(() => toastr.success(t("SuccessChangeUserType")))
-        .catch((error) => toastr.error(error))
-        .finally(() => {
-          this.setState({ isRequestRunning: false }, () => {
-            onClose();
-          });
-        });
-    });
+  const onChangeUserType = async () => {
+    setIsRequestRunning(true);
+    updateUserType(toType, userIDs, peopleFilter, fromType)
+      .then(() => toastr.success(t("SuccessChangeUserType")))
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        setIsRequestRunning(false);
+        onClose();
+      });
   };
 
-  onCloseAction = async () => {
-    const { isRequestRunning } = this.state;
-    const { onClose, getUsersList, filter } = this.props;
-    if (!isRequestRunning) {
-      await getUsersList(filter);
+  const onClose = () => {
+    setVisible(false);
+  };
 
+  const onCloseAction = async () => {
+    if (!isRequestRunning) {
+      await getUsersList(peopleFilter);
       onClose();
     }
   };
 
-  getType = (type) => {
-    const { t } = this.props;
-
+  const getType = (type) => {
     switch (type) {
       case "admin":
         return t("Common:DocSpaceAdmin");
-
       case "manager":
         return t("Common:RoomAdmin");
-
       case "user":
       default:
         return t("Common:User");
     }
   };
 
-  render() {
-    const { visible, t, tReady, toType, fromType } = this.props;
-    const { isRequestRunning, userIDs } = this.state;
+  const { toType, fromType, userIDs } = peopleDialogData;
 
-    const firstType = fromType.length === 1 ? this.getType(fromType[0]) : null;
-    const secondType = this.getType(toType);
+  const firstType =
+    fromType.length === 1 && fromType[0] ? getType(fromType[0]) : null;
+  const secondType = getType(toType);
 
-    const changeUserTypeMessage = firstType ? (
-      <Trans i18nKey="ChangeUserTypeMessage" ns="ChangeUserTypeDialog" t={t}>
-        Users with the <b>'{{ firstType }}'</b> type will be moved to{" "}
-        <b>'{{ secondType }}'</b> type.
-      </Trans>
-    ) : (
-      <Trans
-        i18nKey="ChangeUserTypeMessageMulti"
-        ns="ChangeUserTypeDialog"
-        t={t}
-      >
-        The selected users will be moved to <b>'{{ secondType }}'</b> type.
-      </Trans>
-    );
-
-    return (
-      <ModalDialogContainer
-        isLoading={!tReady}
-        visible={visible}
-        onClose={this.onCloseAction}
-        autoMaxHeight
-      >
-        <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text fontWeight={600}>
-            {changeUserTypeMessage} {t("ChangeUserTypeMessageWarning")}
-          </Text>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            id="change-user-type-modal_submit"
-            label={t("ChangeUserTypeButton")}
-            size="normal"
-            scale
-            primary
-            onClick={this.onChangeUserType}
-            isLoading={isRequestRunning}
-            isDisabled={!userIDs.length}
-          />
-          <Button
-            id="change-user-type-modal_cancel"
-            label={t("Common:CancelButton")}
-            size="normal"
-            scale
-            onClick={this.onCloseAction}
-            isDisabled={isRequestRunning}
-          />
-        </ModalDialog.Footer>
-      </ModalDialogContainer>
-    );
-  }
-}
-
-const ChangeUserTypeDialog = withTranslation([
-  "ChangeUserTypeDialog",
-  "People",
-  "Common",
-])(ChangeUserTypeDialogComponent);
-
-ChangeUserTypeDialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  userIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  return (
+    <ModalDialog
+      visible={visible}
+      onClose={onCloseAction}
+      displayType="modal"
+      autoMaxHeight
+    >
+      <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>
+          {firstType ? (
+            <Trans
+              i18nKey="ChangeUserTypeMessage"
+              ns="ChangeUserTypeDialog"
+              t={t}
+            >
+              Users with the <b>'{{ firstType }}'</b> type will be moved to{" "}
+              <b>'{{ secondType }}'</b> type.
+            </Trans>
+          ) : (
+            <Trans
+              i18nKey="ChangeUserTypeMessageMulti"
+              ns="ChangeUserTypeDialog"
+              t={t}
+            >
+              The selected users will be moved to <b>'{{ secondType }}'</b>{" "}
+              type.
+            </Trans>
+          )}{" "}
+          {t("ChangeUserTypeMessageWarning")}
+        </Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          id="change-user-type-modal_submit"
+          label={t("ChangeUserTypeButton")}
+          size="normal"
+          scale
+          primary
+          onClick={onChangeUserType}
+          isLoading={isRequestRunning}
+          isDisabled={!userIDs.length}
+        />
+        <Button
+          id="change-user-type-modal_cancel"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onCloseAction}
+          isDisabled={isRequestRunning}
+        />
+      </ModalDialog.Footer>
+    </ModalDialog>
+  );
 };
 
-export default withRouter(
-  inject(({ peopleStore }) => {
-    return {
-      filter: peopleStore.filterStore.filter,
-      updateUserType: peopleStore.usersStore.updateUserType,
-      getUsersList: peopleStore.usersStore.getUsersList,
-    };
-  })(observer(ChangeUserTypeDialog))
+export default inject(({ dialogsStore, peopleStore }) => {
+  const {
+    changeUserTypeDialogVisible: visible,
+    setChangeUserTypeDialogVisible: setVisible,
+  } = dialogsStore;
+
+  const { data: peopleDialogData } = peopleStore.dialogStore;
+  const { filter: peopleFilter } = peopleStore.filterStore;
+  const { updateUserType, getUsersList } = peopleStore.usersStore;
+
+  return {
+    visible,
+    setVisible,
+    peopleDialogData,
+    peopleFilter,
+    updateUserType,
+    getUsersList,
+  };
+})(
+  withTranslation(["ChangeUserTypeDialog", "People", "Common"])(
+    withRouter(observer(ChangeUserTypeDialog))
+  )
 );
