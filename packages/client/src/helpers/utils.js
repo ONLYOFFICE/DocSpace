@@ -5,15 +5,12 @@ import { useEffect, useState } from "react";
 import { CategoryType } from "./constants";
 import { FolderType } from "@docspace/common/constants";
 
-import AboutPageSvgUrl from "ASSETS_DIR/images/logo/aboutpage.svg?url";
+import LoginPageSvgUrl from "ASSETS_DIR/images/logo/loginpage.svg?url";
 import DarkLoginPageSvgUrl from "ASSETS_DIR/images/logo/dark_loginpage.svg?url";
 import LeftMenuSvgUrl from "ASSETS_DIR/images/logo/leftmenu.svg?url";
-import DarkAboutPageSvgUrl from "ASSETS_DIR/images/logo/dark_aboutpage.svg?url";
 import DocseditorSvgUrl from "ASSETS_DIR/images/logo/docseditor.svg?url";
 import LightSmallSvgUrl from "ASSETS_DIR/images/logo/lightsmall.svg?url";
-import DarkLeftMenuSvgUrl from "ASSETS_DIR/images/logo/dark_leftmenu.svg?url";
 import DocsEditoRembedSvgUrl from "ASSETS_DIR/images/logo/docseditorembed.svg?url";
-import LoginPageSvgUrl from "ASSETS_DIR/images/logo/loginpage.svg?url";
 import DarkLightSmallSvgUrl from "ASSETS_DIR/images/logo/dark_lightsmall.svg?url";
 
 export const setDocumentTitle = (subTitle = null) => {
@@ -212,7 +209,7 @@ export const getLogoFromPath = (path) => {
   switch (name) {
     case "aboutpage.svg":
     case "loginpage.svg":
-      return AboutPageSvgUrl;
+      return LoginPageSvgUrl;
     case "dark_loginpage.svg":
       return DarkLoginPageSvgUrl;
     case "leftmenu.svg":
@@ -220,7 +217,7 @@ export const getLogoFromPath = (path) => {
       return LeftMenuSvgUrl;
     case "dark_aboutpage.svg":
     case "dark_lightsmall.svg":
-      return DarkAboutPageSvgUrl;
+      return DarkLightSmallSvgUrl;
     case "docseditor.svg":
       return DocseditorSvgUrl;
     case "lightsmall.svg":
