@@ -21,7 +21,6 @@
   "BackupCreatedSuccess": "备份副本已成功创建。",
   "BackupList": "备份列表",
   "BackupListWarningText": "若您从列表中删除任何项目，其相应的文件也将被删除。此操作无法撤消。若想删除所有文件，请使用以下链接：",
-  "BrowserNoCanvasSupport": "您的浏览器不支持HTML5 canvas标记。",
   "ByApp": "通过身份验证应用",
   "BySms": "通过短信",
   "ChangeLogoButton": "更改Logo",

@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Yedekleme kopyası başarıyla oluşturuldu.",
   "BackupList": "Yedekleme listesi",
   "BackupListWarningText": "Listeden herhangi bir öğe silerseniz bu öğe ile ilgili dosyalar da silinir. Bu işlem geri alınamaz. Tüm dosyaları silmek için linke tıklayın:",
-  "BrowserNoCanvasSupport": "Tarayıcınız HTML5 canvas etiketini desteklemiyor.",
   "ByApp": "Kimlik doğrulama uygulaması ile",
   "BySms": "Sms ile",
   "ChangeLogoButton": "Logo Değiştir",

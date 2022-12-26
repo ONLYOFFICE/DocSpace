@@ -1495,7 +1495,7 @@ public class EntryManager
         }
     }
 
-    public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true)
+    public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true, bool finalize = false)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         if (version < 1)
@@ -1518,6 +1518,13 @@ public class EntryManager
         if (fromFile.Version != version)
         {
             fromFile = await fileDao.GetFileAsync(fromFile.Id, Math.Min(fromFile.Version, version));
+        }
+        else
+        {
+            if (!finalize)
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_FileUpdateToVersion);
+            }
         }
 
         if (fromFile == null)
@@ -1684,7 +1691,7 @@ public class EntryManager
             {
                 if (fileVersion.Version == lastVersionFile.Version)
                 {
-                    lastVersionFile = await UpdateToVersionFileAsync(fileVersion.Id, fileVersion.Version, null, checkRight);
+                    lastVersionFile = await UpdateToVersionFileAsync(fileVersion.Id, fileVersion.Version, null, checkRight, true);
                 }
 
                 await fileDao.CompleteVersionAsync(fileVersion.Id, fileVersion.Version);

@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Turvatallenteen kopio on luotu onnistuneesti.",
   "BackupList": "Varmuuskopiolista",
   "BackupListWarningText": "Jos poistat luettelosta kohteita, myös vastaavat tiedostot poistetaan. Tätä toimintoa ei voi kumota. Jos haluat poistaa kaikki tiedostot, käytä linkkiä:",
-  "BrowserNoCanvasSupport": "Selaimesi ei tue HTML5 esityalueen tagia.",
   "ByApp": "Autentikointisovelluksella",
   "BySms": "Tekstiviestillä",
   "ChangeLogoButton": "Vaihda logo",

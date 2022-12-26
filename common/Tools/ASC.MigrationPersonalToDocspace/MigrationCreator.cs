@@ -73,8 +73,6 @@ public class MigrationCreator
         _moduleProvider = moduleProvider;
     }
 
-
-
     public async Task<string> Create(int tenant, string userName, string toRegion)
     {
         Init(tenant, userName, toRegion);
@@ -123,6 +121,7 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
+                    Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
                         ActionInvoker.Try(
@@ -212,9 +211,11 @@ public class MigrationCreator
 
     private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
+        Console.WriteLine($"start backup storage");
         var fileGroups = await GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
+            Console.WriteLine($"start backup fileGroup: {group}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(_tenant, group.Key);
@@ -225,8 +226,8 @@ public class MigrationCreator
                     using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5);
-
             }
+            Console.WriteLine($"end backup fileGroup: {group}");
         }
 
         var restoreInfoXml = new XElement(
@@ -240,6 +241,7 @@ public class MigrationCreator
             restoreInfoXml.WriteTo(tmpFile);
             writer.WriteEntry(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
         }
+        Console.WriteLine($"end backup storage");
     }
 
     private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)

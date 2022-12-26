@@ -16,7 +16,6 @@ const QuickButtons = (props) => {
     item,
     theme,
     sectionWidth,
-
     onClickLock,
     isDisabled,
     onClickFavorite,
@@ -67,7 +66,6 @@ const QuickButtons = (props) => {
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconLock}
-          locked={locked}
           className="badge lock-file icons-group"
           size={sizeQuickButton}
           data-id={id}

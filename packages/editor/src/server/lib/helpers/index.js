@@ -80,15 +80,16 @@ export const initDocEditor = async (req) => {
     ]);
 
     const successAuth = !!user;
+
     personal = settings?.personal;
 
     if (!successAuth && !doc) {
       error = {
         unAuthorized: true,
-        redirectPath: combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          personal ? "/sign-in" : "/login"
-        ),
+        // redirectPath: combineUrl(
+        //   window?.DocSpaceConfig?.proxy?.url,
+        //   personal ? "/sign-in" : "/login"
+        // ),
       };
       return { error };
     }

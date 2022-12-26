@@ -6,6 +6,7 @@ import Text from "@docspace/components/text";
 import { useTranslation, Trans } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import { Dark, Base } from "@docspace/components/themes";
+import useIsomorphicLayoutEffect from "../../hooks/useIsomorphicLayoutEffect";
 
 const homepage = "/login";
 
@@ -22,7 +23,7 @@ const InvalidError = ({ theme, setTheme }: InvalidErrorProps) => {
   const { t } = useTranslation("Login");
   const history = useHistory();
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const themeCurrent =
       window.matchMedia &&
         window.matchMedia("(prefers-color-scheme: dark)").matches
