@@ -51,8 +51,22 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter, signal) {
-  const options = getFolderOptions(folderId, filter);
-  return request({ ...options, signal }).then((res) => {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
+  const params =
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toApiUrlParams()}`
+      : folderId;
+
+  const options = {
+    method: "get",
+    url: `/files/${params}`,
+    signal,
+  };
+
+  return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
