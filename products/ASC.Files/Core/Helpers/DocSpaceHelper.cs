@@ -30,14 +30,14 @@ public static class DocSpaceHelper
 {
     public static HashSet<FileShare> PaidRights { get; } = new HashSet<FileShare> { FileShare.RoomAdmin };
 
-    private static readonly HashSet<FileShare> _fillingFormRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.FillForms, FileShare.Read, FileShare.None };
-    private static readonly HashSet<FileShare> _collaborationRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.Read, FileShare.None };
-    private static readonly HashSet<FileShare> _reviewRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None };
-    private static readonly HashSet<FileShare> _viewOnlyRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Read, FileShare.None };
+    private static readonly List<FileShare> _fillingFormRoomRoles
+        = new List<FileShare> { FileShare.RoomAdmin, FileShare.FillForms, FileShare.Read, FileShare.None };
+    private static readonly List<FileShare> _collaborationRoomRoles
+        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.Read, FileShare.None };
+    private static readonly List<FileShare> _reviewRoomRoles
+        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None };
+    private static readonly List<FileShare> _viewOnlyRoomRoles
+        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Read, FileShare.None };
 
     public static bool IsRoom(FolderType folderType)
     {
@@ -54,21 +54,29 @@ public static class DocSpaceHelper
         return room != null && room.Private;
     }
 
-    public static bool ValidateShare(FolderType folderType, FileShare fileShare, bool isUser)
+    public static bool ValidateShare(FolderType folderType, FileShare fileShare)
     {
-        if (isUser && PaidRights.Contains(fileShare))
-        {
-            return false;
-        }
-
         return folderType switch
         {
             FolderType.CustomRoom => true,
-            FolderType.FillingFormsRoom => _fillingFormRoomConstraints.Contains(fileShare),
-            FolderType.EditingRoom => _collaborationRoomConstraints.Contains(fileShare),
-            FolderType.ReviewRoom => _reviewRoomConstraints.Contains(fileShare),
-            FolderType.ReadOnlyRoom => _viewOnlyRoomConstraints.Contains(fileShare),
+            FolderType.FillingFormsRoom => _fillingFormRoomRoles.Contains(fileShare),
+            FolderType.EditingRoom => _collaborationRoomRoles.Contains(fileShare),
+            FolderType.ReviewRoom => _reviewRoomRoles.Contains(fileShare),
+            FolderType.ReadOnlyRoom => _viewOnlyRoomRoles.Contains(fileShare),
             _ => false
+        };
+    }
+
+    public static FileShare GetHighFreeRole(FolderType folderType)
+    {
+        return folderType switch
+        {
+            FolderType.CustomRoom => FileShare.Editing,
+            FolderType.FillingFormsRoom => _fillingFormRoomRoles[1],
+            FolderType.EditingRoom => _collaborationRoomRoles[1],
+            FolderType.ReviewRoom => _reviewRoomRoles[1],
+            FolderType.ReadOnlyRoom => _viewOnlyRoomRoles[1],
+            _ => FileShare.None
         };
     }
 }
