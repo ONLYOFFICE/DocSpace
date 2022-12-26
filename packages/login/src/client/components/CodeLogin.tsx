@@ -6,13 +6,13 @@ import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
+import { LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { getBgPattern } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-
+import LoginContainer from '@docspace/common/components/LoginContainer'
 
 interface IBarProp {
   t: TFuncType;

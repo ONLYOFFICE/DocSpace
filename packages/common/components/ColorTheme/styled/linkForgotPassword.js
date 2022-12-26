@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { LoginContainer } from "@docspace/login/src/client/components/StyledLogin";
+import LoginContainer from "../../LoginContainer";
 
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
