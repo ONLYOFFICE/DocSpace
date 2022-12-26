@@ -89,7 +89,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 var app = builder.Build();
 Console.WriteLine("backup start");
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = await migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion);
+var fileName = migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion);
 Console.WriteLine("backup was success");
 Console.WriteLine("restore start");
 var migrationRunner = app.Services.GetService<MigrationRunner>();
