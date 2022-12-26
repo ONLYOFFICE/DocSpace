@@ -110,7 +110,13 @@ class ThirdPartyModule extends React.Component {
   };
 
   render() {
-    const { isMaxProgress, t, buttonSize } = this.props;
+    const {
+      isMaxProgress,
+      t,
+      buttonSize,
+      connectedThirdPartyAccount,
+      isTheSameThirdPartyAccount,
+    } = this.props;
     const {
       isPanelVisible,
       isLoadingData,
@@ -134,23 +140,27 @@ class ThirdPartyModule extends React.Component {
           {...(selectedFolder && { id: selectedFolder })}
           withoutBasicSelection={selectedFolder ? false : true}
           isError={isError}
+          buttonSize={buttonSize}
         />
 
-        <Button
-          label={t("Common:Duplicate")}
-          onClick={this.onMakeCopy}
-          primary
-          isDisabled={isModuleDisabled || selectedFolder === ""}
-          size={buttonSize}
-        />
+        {connectedThirdPartyAccount?.id && isTheSameThirdPartyAccount && (
+          <Button
+            label={t("Common:Duplicate")}
+            onClick={this.onMakeCopy}
+            primary
+            isDisabled={isModuleDisabled || selectedFolder === ""}
+            size={buttonSize}
+          />
+        )}
       </div>
     );
   }
 }
 export default inject(({ backup }) => {
-  const { commonThirdPartyList } = backup;
+  const { connectedThirdPartyAccount, isTheSameThirdPartyAccount } = backup;
 
   return {
-    commonThirdPartyList,
+    connectedThirdPartyAccount,
+    isTheSameThirdPartyAccount,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

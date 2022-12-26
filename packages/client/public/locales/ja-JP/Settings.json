@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "バックアップ・コピーは正常に作成されました。",
   "BackupList": "バックアップリスト",
   "BackupListWarningText": "リストからアイテムを削除すると、対応するファイルも削除されます。この操作を元に戻すことができません。すべてのファイルを削除するために次のリンクをクリックしてください：",
-  "BrowserNoCanvasSupport": "お使いのブラウザは、HTML5のcanvasタグをサポートしていません。",
   "ByApp": "認証アプリで",
   "BySms": "smsで",
   "ChangeLogoButton": "ロゴの変更",

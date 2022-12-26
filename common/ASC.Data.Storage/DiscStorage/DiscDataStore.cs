@@ -760,4 +760,15 @@ public class DiscDataStore : BaseStorage
             throw new FileNotFoundException("file not found", target);
         }
     }
+
+    public override Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        var target = GetTarget(domain, path);              
+        var lastModificationDate = File.Exists(target) ? File.GetLastWriteTimeUtc(target) : throw new FileNotFoundException("File not found" + target);
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return Task.FromResult(etag);
+    }
 }

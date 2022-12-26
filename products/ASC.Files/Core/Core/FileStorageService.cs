@@ -2481,12 +2481,13 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
-    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
+    public async Task<string> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
 
         var entries = new List<FileEntry<T>>();
+        string warning = null;
 
         foreach (var fileId in aceCollection.Files)
         {
@@ -2502,7 +2503,9 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
+                var (changed, warningMessage) = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
+                warning ??= warningMessage;
+
                 if (changed)
                 {
                     foreach (var ace in aceCollection.Aces)
@@ -2528,6 +2531,8 @@ public class FileStorageService<T> //: IFileStorageService
                 throw GenerateException(e);
             }
         }
+
+        return warning;
     }
 
     public async Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
@@ -2597,7 +2602,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         try
         {
-            var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
+            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
                 _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
@@ -2628,7 +2633,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         try
         {
-            var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
+            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
             if (changed)
             {
                 _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileExternalLinkAccessUpdated, file.Title, GetAccessString(share));
@@ -2762,16 +2767,18 @@ public class FileStorageService<T> //: IFileStorageService
                 try
                 {
                     var aces = new List<AceWrapper>
+                    {
+                        new AceWrapper
                         {
-                            new AceWrapper
-                            {
-                                Access = FileShare.Read,
-                                Id = recipient.Id,
-                                SubjectGroup = false,
-                            }
-                        };
+                            Access = FileShare.Read,
+                            Id = recipient.Id,
+                            SubjectGroup = false,
+                        }
+                    };
 
-                    showSharingSettings |= await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
+                    var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
+
+                    showSharingSettings |= changed;
                     if (showSharingSettings)
                     {
                         foreach (var ace in aces)

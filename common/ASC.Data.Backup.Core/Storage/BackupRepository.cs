@@ -39,7 +39,7 @@ public class BackupRepository : IBackupRepository
     public void SaveBackupRecord(BackupRecord backup)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        backupContext.AddOrUpdate(r => r.Backups, backup);
+        backupContext.AddOrUpdate(backupContext.Backups, backup);
         backupContext.SaveChanges();
     }
 
@@ -88,7 +88,7 @@ public class BackupRepository : IBackupRepository
     public void SaveBackupSchedule(BackupSchedule schedule)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        backupContext.AddOrUpdate(r => r.Schedules, schedule);
+        backupContext.AddOrUpdate(backupContext.Schedules, schedule);
         backupContext.SaveChanges();
     }
 

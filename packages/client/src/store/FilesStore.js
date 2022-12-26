@@ -2393,12 +2393,14 @@ class FilesStore {
       isSpreadsheet,
       isPresentation,
       isDocument,
+      isMasterFormExtension,
     } = this.filesSettingsStore;
 
     let sortedFiles = {
       documents: [],
       spreadsheets: [],
       presentations: [],
+      masterForms: [],
       other: [],
     };
 
@@ -2423,6 +2425,8 @@ class FilesStore {
           sortedFiles.presentations.push(item);
         } else if (isDocument(item.fileExst)) {
           sortedFiles.documents.push(item);
+        } else if (isMasterFormExtension(item.fileExst)) {
+          sortedFiles.masterForms.push(item);
         } else {
           sortedFiles.other.push(item);
         }

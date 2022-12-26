@@ -203,6 +203,10 @@ class TreeFoldersStore {
     return FolderType.Archive === this.selectedFolderStore.rootFolderType;
   }
 
+  get isPersonalFolderRoot() {
+    return FolderType.USER === this.selectedFolderStore.rootFolderType;
+  }
+
   get selectedKeys() {
     const selectedKeys =
       this.selectedTreeNode.length > 0 &&

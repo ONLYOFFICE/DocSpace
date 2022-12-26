@@ -6,6 +6,9 @@ import { Encoder } from "@docspace/common/utils/encoder";
 import api from "@docspace/common/api";
 
 const EditRoomEvent = ({
+  addActiveItems,
+  setActiveFolders,
+
   visible,
   onClose,
   item,
@@ -95,6 +98,8 @@ const EditRoomEvent = ({
           logo: { big: item.logo.small },
         });
 
+        addActiveItems(null, [room.id]);
+
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -113,6 +118,8 @@ const EditRoomEvent = ({
             reloadSelection();
 
             URL.revokeObjectURL(img.src);
+
+            setActiveFolders([]);
           };
           img.src = url;
         });
@@ -197,6 +204,8 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
+      addActiveItems,
+      setActiveFolders,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -207,6 +216,9 @@ export default inject(
     const { withPaging } = auth.settingsStore;
     const { reloadSelection } = auth.infoPanelStore;
     return {
+      addActiveItems,
+      setActiveFolders,
+
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,

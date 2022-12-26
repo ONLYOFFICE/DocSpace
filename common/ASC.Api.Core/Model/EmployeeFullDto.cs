@@ -239,21 +239,21 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         FillConacts(result, userInfo);
         FillGroups(result, userInfo);
 
-        var userInfoLM = userInfo.LastModified.GetHashCode();
+//        var userInfoLM = userInfo.LastModified.GetHashCode();
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id);// + $"?_={userInfoLM}";
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id);// + $"?_={userInfoLM}";
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id);// + $"?_={userInfoLM}";
         }
 
         if (_context.Check("listAdminModules"))

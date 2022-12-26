@@ -67,13 +67,16 @@ public class MigrationRunner
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
         var columnMapper = new ColumnMapper();
+
         using (var dataReader = new ZipReadOperator(_backupFile))
         {
             foreach (var module in _modules)
             {
+                Console.WriteLine($"start restore module: {module}");
                 var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, columnMapper, _dbFactory, false, false, _region, _storageFactory, _storageFactoryConfig, _moduleProvider);
 
                 await restoreTask.RunJob();
+                Console.WriteLine($"end restore module: {module}");
             }
 
             await DoRestoreStorage(dataReader, columnMapper);
@@ -88,6 +91,7 @@ public class MigrationRunner
 
         foreach (var group in fileGroups)
         {
+            Console.WriteLine($"start restore fileGroup: {group}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
@@ -113,6 +117,7 @@ public class MigrationRunner
                         storage.SetQuotaController(quotaController);
                     }
                 }
+                Console.WriteLine($"end restore fileGroup: {group}");
             }
         }
     }

@@ -457,6 +457,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new version cannot be the same as the current one.
+        /// </summary>
+        public static string ErrorMassage_FileUpdateToVersion {
+            get {
+                return ResourceManager.GetString("ErrorMassage_FileUpdateToVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot copy the folder to its subfolder.
         /// </summary>
         public static string ErrorMassage_FolderCopyError {
@@ -768,6 +777,15 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMessage_InvintationLink {
             get {
                 return ResourceManager.GetString("ErrorMessage_InvintationLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role is only available to a paid user.
+        /// </summary>
+        public static string ErrorMessage_PaidRole {
+            get {
+                return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
             }
         }
         

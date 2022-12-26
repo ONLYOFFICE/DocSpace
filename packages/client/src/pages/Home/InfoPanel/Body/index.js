@@ -114,20 +114,17 @@ const InfoPanelBodyContent = ({
 
     const currentFolderRoomId =
       selectedFolder?.pathParts &&
-      selectedFolder?.pathParts?.length === 2 &&
+      selectedFolder?.pathParts?.length > 1 &&
       selectedFolder.pathParts[1];
 
     const storeRoomId = selectionParentRoom?.id;
     if (!currentFolderRoomId || currentFolderRoomId === storeRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+
     if (storeRoomId === newSelectionParentRoom.id) return;
 
-    if (
-      newSelectionParentRoom.parentId === newSelectionParentRoom.rootFolderId
-    ) {
-      setSelectionParentRoom(null);
-    } else setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
+    setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
   }, [selectedFolder]);
 
   //////////////////////////////////////////////////////////
@@ -189,6 +186,8 @@ export default inject(({ auth, selectedFolderStore, oformsStore }) => {
     calculateSelection,
     normalizeSelection,
     isItemChanged,
+
+    selectionParentRoom,
     setSelectionParentRoom,
     roomsView,
     fileView,

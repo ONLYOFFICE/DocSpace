@@ -175,10 +175,19 @@ class ContextOptionsStore {
     setIsVerHistoryPanel(true);
   };
 
-  finalizeVersion = (id) => {
-    this.filesActionsStore
-      .finalizeVersionAction(id)
-      .catch((err) => toastr.error(err));
+  finalizeVersion = async (id) => {
+    let timer = null;
+    try {
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
+      await this.filesActionsStore.finalizeVersionAction(id);
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      this.filesActionsStore.setIsLoading(false);
+      clearTimeout(timer);
+    }
   };
 
   onClickFavorite = (e, id, t) => {
@@ -195,21 +204,30 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = (item, t) => {
+  lockFile = async (item, t) => {
+    let timer = null;
     const { id, locked } = item;
     const {
       setSelection: setInfoPanelSelection,
     } = this.authStore.infoPanelStore;
 
-    this.filesActionsStore
-      .lockFileAction(id, !locked)
-      .then(() =>
-        locked
-          ? toastr.success(t("Translations:FileUnlocked"))
-          : toastr.success(t("Translations:FileLocked"))
-      )
-      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
-      .catch((err) => toastr.error(err));
+    try {
+      timer = setTimeout(() => {
+        this.filesActionsStore.setIsLoading(true);
+      }, 200);
+      await this.filesActionsStore
+        .lockFileAction(id, !locked)
+        .then(() =>
+          locked
+            ? toastr.success(t("Translations:FileUnlocked"))
+            : toastr.success(t("Translations:FileLocked"))
+        )
+        .then(() => setInfoPanelSelection({ ...item, locked: !locked }));
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      this.filesActionsStore.setIsLoading(false), clearTimeout(timer);
+    }
   };
 
   onClickLinkForPortal = (item, t) => {
@@ -439,6 +457,7 @@ class ContextOptionsStore {
 
   onShowInfoPanel = (item) => {
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
     setSelection(item);
     setIsVisible(true);
   };
@@ -816,7 +835,7 @@ class ContextOptionsStore {
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("Common:Info"),
+        label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,

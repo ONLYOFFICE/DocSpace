@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import Link from "@docspace/components/link";
 import Checkbox from "@docspace/components/checkbox";
 import TableCell from "@docspace/components/table-container/TableCell";
@@ -14,6 +15,7 @@ const FileNameCell = ({
   theme,
   t,
   inProgress,
+  isLoading,
 }) => {
   const { title } = item;
 
@@ -23,7 +25,7 @@ const FileNameCell = ({
 
   return (
     <>
-      {inProgress ? (
+      {inProgress || isLoading ? (
         <Loader
           className="table-container_row-loader"
           type="oval"
@@ -63,4 +65,8 @@ const FileNameCell = ({
   );
 };
 
-export default FileNameCell;
+export default inject(({ filesActionsStore }) => {
+  return {
+    isLoading: filesActionsStore.isLoading,
+  };
+})(observer(FileNameCell));
