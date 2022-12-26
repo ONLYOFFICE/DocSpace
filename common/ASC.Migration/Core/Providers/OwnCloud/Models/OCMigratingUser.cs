@@ -45,7 +45,6 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
     private UserInfo _userInfo;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
-    private readonly FileSecurity _fileSecurity;
     private readonly FileStorageService _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -55,7 +54,6 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
     public OCMigratingUser(
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
-        FileSecurity fileSecurity,
         FileStorageService fileStorageService,
         TenantManager tenantManager,
         UserManager userManager,
@@ -67,7 +65,6 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
         Key = key;
         _globalFolderHelper = globalFolderHelper;
         _daoFactory = daoFactory;
-        _fileSecurity = fileSecurity;
         _fileStorageService = fileStorageService;
         _tenantManager = tenantManager;
         _userManager = userManager;

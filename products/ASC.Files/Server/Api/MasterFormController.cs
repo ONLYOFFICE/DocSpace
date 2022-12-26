@@ -41,9 +41,9 @@ public class MasterFormControllerInternal : MasterFormController<int>
 public class MasterFormControllerThirdparty : MasterFormController<string>
 {
     public MasterFormControllerThirdparty(
-        FileStorageService fileStorageServiceString,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper) : base(fileStorageService, folderDtoHelper, fileDtoHelper)
     {
     }
 }
@@ -52,11 +52,11 @@ public abstract class MasterFormController<T> : ApiControllerBase
 {
     private readonly FileStorageService _fileStorageService;
 
-    public MasterFormController(FileStorageService fileStorageServiceString,
+    public MasterFormController(FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageService = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
     }
 
     [HttpPost("masterform/{fileId}/checkfillformdraft")]

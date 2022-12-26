@@ -30,18 +30,18 @@ namespace ASC.Files.Api;
 
 public class SettingsController : ApiControllerBase
 {
-    private readonly FileStorageService _fileStorageServiceString;
+    private readonly FileStorageService _fileStorageService;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
 
     public SettingsController(
-        FileStorageService fileStorageServiceString,
+        FileStorageService fileStorageService,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
     }
@@ -54,7 +54,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("thirdparty")]
     public bool ChangeAccessToThirdparty(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeAccessToThirdparty(inDto.Set);
+        return _fileStorageService.ChangeAccessToThirdparty(inDto.Set);
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("changedeleteconfrim")]
     public bool ChangeDeleteConfrim(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeDeleteConfrim(inDto.Set);
+        return _fileStorageService.ChangeDeleteConfrim(inDto.Set);
     }
 
     /// <summary>
@@ -77,13 +77,13 @@ public class SettingsController : ApiControllerBase
     [HttpPut("settings/downloadtargz")]
     public ICompress ChangeDownloadZipFromBody([FromBody] DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeDownloadTarGz(inDto.Set);
+        return _fileStorageService.ChangeDownloadTarGz(inDto.Set);
     }
 
     [HttpPut("settings/downloadtargz")]
     public ICompress ChangeDownloadZipFromForm([FromForm] DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeDownloadTarGz(inDto.Set);
+        return _fileStorageService.ChangeDownloadTarGz(inDto.Set);
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("settings/favorites")]
     public bool DisplayFavorite(DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.DisplayFavorite(inDto.Set);
+        return _fileStorageService.DisplayFavorite(inDto.Set);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("displayRecent")]
     public bool DisplayRecent(DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.DisplayRecent(inDto.Set);
+        return _fileStorageService.DisplayRecent(inDto.Set);
     }
 
     /// <summary>
@@ -119,19 +119,19 @@ public class SettingsController : ApiControllerBase
     [HttpPut("settings/templates")]
     public bool DisplayTemplates(DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.DisplayTemplates(inDto.Set);
+        return _fileStorageService.DisplayTemplates(inDto.Set);
     }
 
     [HttpPut("settings/external")]
     public bool ExternalShare(DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeExternalShareSettings(inDto.Set);
+        return _fileStorageService.ChangeExternalShareSettings(inDto.Set);
     }
 
     [HttpPut("settings/externalsocialmedia")]
     public bool ExternalShareSocialMedia(DisplayRequestDto inDto)
     {
-        return _fileStorageServiceString.ChangeExternalShareSocialMediaSettings(inDto.Set);
+        return _fileStorageService.ChangeExternalShareSocialMediaSettings(inDto.Set);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("forcesave")]
     public bool Forcesave(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.Forcesave(inDto.Set);
+        return _fileStorageService.Forcesave(inDto.Set);
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("hideconfirmconvert")]
     public bool HideConfirmConvert(HideConfirmConvertRequestDto inDto)
     {
-        return _fileStorageServiceString.HideConfirmConvert(inDto.Save);
+        return _fileStorageService.HideConfirmConvert(inDto.Save);
     }
 
     [HttpGet("@privacy/available")]
@@ -188,7 +188,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("storeforcesave")]
     public bool StoreForcesave(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.StoreForcesave(inDto.Set);
+        return _fileStorageService.StoreForcesave(inDto.Set);
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("storeoriginal")]
     public bool StoreOriginal(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.StoreOriginal(inDto.Set);
+        return _fileStorageService.StoreOriginal(inDto.Set);
     }
 
     /// <summary>
@@ -210,18 +210,18 @@ public class SettingsController : ApiControllerBase
     [HttpPut("updateifexist")]
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.UpdateIfExist(inDto.Set);
+        return _fileStorageService.UpdateIfExist(inDto.Set);
     }
 
     [HttpPut("settings/autocleanup")]
     public AutoCleanUpData ChangeAutomaticallyCleanUp(bool set, DateToAutoCleanUp gap)
     {
-        return _fileStorageServiceString.ChangeAutomaticallyCleanUp(set, gap);
+        return _fileStorageService.ChangeAutomaticallyCleanUp(set, gap);
     }
 
     [HttpPut("settings/dafaultaccessrights")]
     public List<FileShare> ChangeDafaultAccessRights(List<FileShare> value)
     {
-        return _fileStorageServiceString.ChangeDafaultAccessRights(value);
+        return _fileStorageService.ChangeDafaultAccessRights(value);
     }
 }
