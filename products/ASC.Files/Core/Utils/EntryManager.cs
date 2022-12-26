@@ -1111,7 +1111,7 @@ public class EntryManager
 
     public async Task<bool> LinkedForMeAsync<T>(File<T> file)
     {
-        if (file == null || file.FilterType != FilterType.OFormOnly)
+        if (file == null || FileUtility.GetFileExtension(file.Title) != ".oform")
         {
             return false;
         }
