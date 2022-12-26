@@ -322,6 +322,7 @@ export const Events = Object.freeze({
   ROOM_CREATE: "create_room",
   ROOM_EDIT: "edit_room",
   CHANGE_COLUMN: "change_column",
+  CHANGE_USER_TYPE: "change_user_type",
 });
 
 /**

@@ -20,7 +20,7 @@ import {
 import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
-import { EmployeeStatus } from "@docspace/common/constants";
+import { EmployeeStatus, Events } from "@docspace/common/constants";
 import Filter from "@docspace/common/api/people/filter";
 
 class PeopleStore {
@@ -112,8 +112,8 @@ class PeopleStore {
   };
 
   changeType = (type, users) => {
-    const { setChangeUserTypeDialogVisible } = this.dialogsStore;
     const { setDialogData } = this.dialogStore;
+    const event = new Event(Events.CHANGE_USER_TYPE);
 
     let fromType =
       users.length === 1 ? [users[0].role] : users.map((u) => u.role);
@@ -136,7 +136,7 @@ class PeopleStore {
 
     setDialogData({ toType: type, fromType, userIDs });
 
-    setChangeUserTypeDialogVisible(true);
+    window.dispatchEvent(event);
   };
 
   onChangeStatus = (status) => {

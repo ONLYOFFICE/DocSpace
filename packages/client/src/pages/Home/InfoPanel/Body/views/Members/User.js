@@ -40,7 +40,10 @@ const User = ({
         : option.key === "roomAdmin"
         ? "manager"
         : "user";
+
     changeUserType(userType, [user]);
+
+    /*
 
     updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
@@ -71,7 +74,7 @@ const User = ({
           ),
         },
       });
-    }
+    } */
   };
 
   return (
