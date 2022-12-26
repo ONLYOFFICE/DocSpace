@@ -125,7 +125,7 @@ public class FileSharingAceHelper<T>
 
             if (_userManager.IsUser(w.Id) && DocSpaceHelper.PaidRights.Contains(w.Access))
             {
-                throw new InvalidOperationException("The role is only available to a paid user");
+                throw new InvalidOperationException(FilesCommonResource.ErrorMessage_PaidRole);
             };
 
             var (success, msg) = await ProcessEmailAceAsync(w, entry);
