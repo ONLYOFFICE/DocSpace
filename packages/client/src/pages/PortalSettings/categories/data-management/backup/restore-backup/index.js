@@ -23,6 +23,7 @@ import {
 } from "@docspace/common/api/settings";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 const {
   DocumentModuleType,
@@ -66,23 +67,20 @@ class RestoreBackup extends React.Component {
       t,
       setThirdPartyStorage,
       setStorageRegions,
+      setConnectedThirdPartyAccount,
     } = this.props;
 
     try {
       getProgress(t);
-      const [
-        //commonThirdPartyList,
-        backupStorage,
-        storageRegions,
-      ] = await Promise.all([
-        //   getThirdPartyCommonFolderTree(),
+      const [account, backupStorage, storageRegions] = await Promise.all([
+        getSettingsThirdParty(),
         getBackupStorage(),
         getStorageRegions(),
       ]);
 
+      setConnectedThirdPartyAccount(account);
       setThirdPartyStorage(backupStorage);
       setStorageRegions(storageRegions);
-      // commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
 
       this.setState({
         isInitialLoading: false,
@@ -285,7 +283,6 @@ class RestoreBackup extends React.Component {
       t,
       history,
       downloadingProgress,
-      organizationName,
       buttonSize,
       theme,
       isEnableRestore,
@@ -315,8 +312,6 @@ class RestoreBackup extends React.Component {
     const onClickVersionListProp = isEnableRestore
       ? { onClick: this.onClickBackupList }
       : {};
-
-    // const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const isMaxProgress = downloadingProgress === 100;
 
@@ -385,6 +380,7 @@ class RestoreBackup extends React.Component {
               onClickInput={this.onClickInput}
               onSelectFile={this.onSelectFile}
               isError={isFileSelectedError}
+              buttonSize={buttonSize}
             />
           )}
           {isCheckedThirdPartyStorage && (
@@ -484,7 +480,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { socketHelper, theme, isTabletView, organizationName } = settingsStore;
+  const { socketHelper, theme, isTabletView } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -493,6 +489,7 @@ export default inject(({ auth, backup }) => {
     setThirdPartyStorage,
     isFormReady,
     getStorageParams,
+    setConnectedThirdPartyAccount,
   } = backup;
 
   const buttonSize = isTabletView ? "normal" : "small";
@@ -502,7 +499,7 @@ export default inject(({ auth, backup }) => {
     setStorageRegions,
     setThirdPartyStorage,
     buttonSize,
-
+    setConnectedThirdPartyAccount,
     theme,
     clearProgressInterval,
     downloadingProgress,
@@ -511,6 +508,5 @@ export default inject(({ auth, backup }) => {
 
     getProgress,
     getStorageParams,
-    organizationName,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

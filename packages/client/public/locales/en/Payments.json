@@ -37,8 +37,8 @@
   "StripeCustomerPortal": "go to the Stripe customer portal",
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/month</3>",
   "UpgradeNow": "Upgrade now",
-  "UserNotFound": "User <1>{{email}}</1> is not found",
-  "YourPrice": "Your price",
   "UpgradePlan": "Upgrade plan",
-  "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan."
+  "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan.",
+  "UserNotFound": "User <1>{{email}}</1> is not found",
+  "YourPrice": "Your price"
 }

@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Kopia zapasowa została pomyślnie utworzona.",
   "BackupList": "Lista kopii zapasowych",
   "BackupListWarningText": "Jeśli usuniesz wszystkie elementy z listy, odpowiadające im pliki zostaną również usunięte. Ta czynność nie może zostać cofnięta. Aby usunąć wszystkie pliki, użyj linku:",
-  "BrowserNoCanvasSupport": "Twoja przeglądarka nie obsługuje znacznika canvas HTML5.",
   "ByApp": "Za pośrednictwem aplikacji uwierzytelniającej",
   "BySms": "Za pośrednictwem wiadomości SMS",
   "ChangeLogoButton": "Zmień logo",

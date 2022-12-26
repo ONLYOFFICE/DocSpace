@@ -34,6 +34,7 @@ class AuthStore {
   pricePerManager = null;
   currencies = [];
 
+  isLogout = false;
   constructor() {
     this.userStore = new UserStore();
 
@@ -188,6 +189,7 @@ class AuthStore {
   logout = async () => {
     await api.user.logout();
 
+    this.isLogout = true;
     //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);

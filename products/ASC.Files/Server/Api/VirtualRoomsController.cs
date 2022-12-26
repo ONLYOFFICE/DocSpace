@@ -317,9 +317,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Room security info
     /// </returns>
     [HttpPut("rooms/{id}/share")]
-    public async Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
+    public async Task<RoomSecurityDto> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
     {
         ErrorIfNotDocSpace();
+
+        var result = new RoomSecurityDto();
 
         if (inDto.Invitations != null && inDto.Invitations.Any())
         {
@@ -333,10 +335,12 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
                 Message = inDto.Message
             };
 
-            await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
+            result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
         }
 
-        return await GetRoomSecurityInfoAsync(id).ToListAsync();
+        result.Members = await GetRoomSecurityInfoAsync(id).ToListAsync();
+
+        return result;
     }
 
     /// <summary>

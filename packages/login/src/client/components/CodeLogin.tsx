@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -6,11 +6,13 @@ import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
+import { LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { getBgPattern } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
+import LoginContainer from '@docspace/common/components/LoginContainer'
 
 interface IBarProp {
   t: TFuncType;
@@ -39,10 +41,10 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+        window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);

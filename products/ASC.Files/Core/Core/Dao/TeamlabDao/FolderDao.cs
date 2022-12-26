@@ -944,7 +944,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             tmp = _coreConfiguration.PersonalMaxSpace(_settingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
         }
 
-        return Math.Min(tmp, chunkedUpload ? _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic) : _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
+        return Math.Min(tmp, chunkedUpload ?
+            await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic) :
+            await _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
     }
 
     private async Task RecalculateFoldersCountAsync(int id)

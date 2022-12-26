@@ -96,9 +96,12 @@ function Editor({
   }
   useEffect(() => {
     if (error && mfReady) {
-      if (error?.unAuthorized && error?.redirectPath) {
-        localStorage.setItem("redirectPath", window.location.href);
-        window.location.href = error?.redirectPath;
+      if (error?.unAuthorized) {
+        sessionStorage.setItem("referenceUrl", window.location.href);
+        window.open(
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"),
+          "_self"
+        );
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
       toastr.error(errorText);

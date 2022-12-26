@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { StyledInfoPanelToggleWrapper } from "@docspace/client/src/pages/Home/InfoPanel/Header/styles/common";
+import StyledInfoPanelToggleWrapper from "../../StyledInfoPanelToggleWrapper";
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme }) =>

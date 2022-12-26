@@ -1,8 +1,7 @@
 import React from "react";
 import Text from "@docspace/components/text";
-import { StyledVersionSvg } from "@docspace/client/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
+import VersionMarkIcon from "@docspace/common/components/VersionMarkIcon";
 const VersionBadge = ({
   className,
   isVersion,
@@ -22,7 +21,7 @@ const VersionBadge = ({
     index={index}
     {...rest}
   >
-    <StyledVersionSvg $isVersion={isVersion} theme={theme} index={index} />
+    <VersionMarkIcon $isVersion={isVersion} theme={theme} index={index} />
 
     <Text
       className="version_badge-text"

@@ -5,6 +5,7 @@ const WhiteLabelWrapper = styled.div`
   .subtitle {
     margin-top: 5px;
     margin-bottom: 20px;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
   .header-container {
