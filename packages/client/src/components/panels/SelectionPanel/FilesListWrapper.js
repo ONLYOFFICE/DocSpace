@@ -71,7 +71,7 @@ class FilesListWrapper extends React.Component {
         const data = await getFolder(
           folderId,
           this.newFilter,
-          this.abortController
+          this.abortController.signal
         ).catch((err) => {
           if (axios.isCancel(err)) {
             console.log("Request canceled", err.message);
