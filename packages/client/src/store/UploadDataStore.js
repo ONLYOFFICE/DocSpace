@@ -4,7 +4,6 @@ import uniqueid from "lodash/uniqueId";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@docspace/common/constants";
 import {
-  getFolder,
   getFileInfo,
   getFolderInfo,
   getProgress,

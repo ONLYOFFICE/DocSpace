@@ -30,7 +30,7 @@ class FilesListWrapper extends React.Component {
 
     if (folderId !== prevProps.folderId) {
       if (isNextPageLoading) {
-        this.source.cancel();
+        this.abortController.abort();
 
         this._isLoadNextPage = false;
         this.setState({
@@ -66,13 +66,12 @@ class FilesListWrapper extends React.Component {
     this._isLoadNextPage = true;
     this.setState({ isNextPageLoading: true }, async () => {
       try {
-        this.CancelToken = axios.CancelToken;
-        this.source = this.CancelToken.source();
+        this.abortController = new AbortController();
 
         const data = await getFolder(
           folderId,
           this.newFilter,
-          this.source.token
+          this.abortController.signal
         ).catch((err) => {
           if (axios.isCancel(err)) {
             console.log("Request canceled", err.message);
