@@ -1,6 +1,5 @@
 {
   "AddAccount": "Подключить",
-  "AddAuthor": "Добавить автора",
   "ArchivingData": "Архивирование данных",
   "ConnectingAccount": "Подключение аккаунта",
   "Copy": "Копировать",
@@ -27,6 +26,7 @@
   "FolderTitleYandex": "Каталог Яндекса",
   "FolderTitlekDrive": "Каталог kDrive",
   "Folders": "Папки",
+  "FormTemplates": "Шаблоны форм",
   "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
   "MediaLoadError": "Медиа файл не может быть загружен",
   "MobileAndroid": "Скачать ONLYOFFICE Документы в Google Play",
@@ -40,7 +40,6 @@
   "Other": "Другой",
   "OwnerChange": "Сменить владельца",
   "Presentations": "Презентации",
-  "FormTemplates": "Шаблоны форм",
   "Spreadsheets": "Таблицы",
   "SubNewForm": "Пустая",
   "SubNewFormFile": " Из текстового файла",

@@ -2,10 +2,7 @@ import React from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
-import {
-  StyledPreparationPortal,
-  StyledBodyPreparationPortal,
-} from "./StyledPreparationPortal";
+import { StyledPreparationPortal } from "./StyledPreparationPortal";
 import Text from "@docspace/components/text";
 import { getRestoreProgress } from "@docspace/common/api/portal";
 import { observer, inject } from "mobx-react";

@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
-import { combineUrl, getFolderOptions } from "@docspace/common/utils";
+import { getFolder } from "@docspace/common/api/files";
 
 class FilesListWrapper extends React.Component {
   constructor(props) {
@@ -68,34 +68,25 @@ class FilesListWrapper extends React.Component {
       try {
         this.CancelToken = axios.CancelToken;
         this.source = this.CancelToken.source();
-        const options = getFolderOptions(folderId, this.newFilter);
 
-        const response = await axios
-          .get(
-            combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              window.DocSpaceConfig?.api?.prefix,
-              options.url
-            ),
-            {
-              cancelToken: this.source.token,
+        const data = await getFolder(
+          folderId,
+          this.newFilter,
+          this.source.token
+        ).catch((err) => {
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            const errorBody = err.response;
+
+            if (errorBody.data && errorBody.data.error) {
+              toastr.error(errorBody.data.error.message);
             }
-          )
-          .catch((thrown) => {
-            if (axios.isCancel(thrown)) {
-              console.log("Request canceled", thrown.message);
-            } else {
-              const errorBody = thrown.response;
+          }
+          return;
+        });
 
-              if (errorBody.data && errorBody.data.error) {
-                toastr.error(errorBody.data.error.message);
-              }
-            }
-            return;
-          });
-
-        if (!response) return;
-        const data = response.data.response;
+        if (!data) return;
 
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);

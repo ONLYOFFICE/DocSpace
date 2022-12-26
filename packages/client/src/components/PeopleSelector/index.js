@@ -9,7 +9,7 @@ import Filter from "@docspace/common/api/people/filter";
 
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
-import { getUserRole } from "SRC_DIR/helpers/people-helpers";
+import { getUserRole } from "@docspace/common/utils";
 
 let timer = null;
 
