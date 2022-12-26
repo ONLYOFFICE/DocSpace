@@ -45,6 +45,10 @@ const ArticleProfile = (props) => {
   const model = getActions(t);
   const username = user.displayName.split(" ");
 
+  const userAvatar = user.hasAvatar
+    ? user.avatar
+    : "/images/default_user_photo_size_82-82.png";
+
   return (
     <StyledProfileWrapper showText={showText}>
       <StyledArticleProfile showText={showText} tablet={isTabletView}>
@@ -54,7 +58,7 @@ const ArticleProfile = (props) => {
             id="user-avatar"
             size={avatarSize}
             role={"user"}
-            source={user.avatar}
+            source={userAvatar}
             userName={user.displayName}
             onClick={onAvatarClick}
           />
