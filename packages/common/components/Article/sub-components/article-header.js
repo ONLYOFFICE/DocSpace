@@ -11,6 +11,7 @@ import {
   StyledHeading,
   StyledIconBox,
 } from "../styled-article";
+import { getLogoFromPath } from "../../../utils";
 
 const ArticleHeader = ({
   showText,
@@ -28,12 +29,12 @@ const ArticleHeader = ({
 
   const burgerLogo =
     userTheme === "Dark"
-      ? whiteLabelLogoUrls[5].path.dark
-      : whiteLabelLogoUrls[5].path.light;
+      ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
+      : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
   const logo =
     userTheme === "Dark"
-      ? whiteLabelLogoUrls[0].path.dark
-      : whiteLabelLogoUrls[0].path.light;
+      ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
+      : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
   if (isMobileOnly) return <></>;
   return (

@@ -1,3 +1,12 @@
+//TODO: fix routes
+import LoginPageSvgUrl from "../../client/public/images/logo/loginpage.svg?url";
+import DarkLoginPageSvgUrl from "../../client/public/images/logo/dark_loginpage.svg?url";
+import LeftMenuSvgUrl from "../../client/public/images/logo/leftmenu.svg?url";
+import DocseditorSvgUrl from "../../client/public/images/logo/docseditor.svg?url";
+import LightSmallSvgUrl from "../../client/public/images/logo/lightsmall.svg?url";
+import DocsEditoRembedSvgUrl from "../../client/public/images/logo/docseditorembed.svg?url";
+import DarkLightSmallSvgUrl from "../../client/public/images/logo/dark_lightsmall.svg?url";
+
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
@@ -467,6 +476,7 @@ export const getConvertedSize = (t, size) => {
   );
 };
 
+//TODO: add for url use
 export const getBgPattern = (colorSchemeId: number) => {
   switch (colorSchemeId) {
     case 1:
@@ -486,4 +496,34 @@ export const getBgPattern = (colorSchemeId: number) => {
     default:
       return "url('/static/images/background.pattern.react.svg')";
   }
+};
+
+//TODO: check for custom logo
+export const getLogoFromPath = (path) => {
+  if (!path || path.indexOf("images/logo/") === -1) return path;
+
+  const name = path.split("/").pop();
+  switch (name) {
+    case "aboutpage.svg":
+    case "loginpage.svg":
+      return LoginPageSvgUrl;
+    case "dark_loginpage.svg":
+      return DarkLoginPageSvgUrl;
+    case "leftmenu.svg":
+    case "dark_leftmenu.svg":
+      return LeftMenuSvgUrl;
+    case "dark_aboutpage.svg":
+    case "dark_lightsmall.svg":
+      return DarkLightSmallSvgUrl;
+    case "docseditor.svg":
+      return DocseditorSvgUrl;
+    case "lightsmall.svg":
+      return LightSmallSvgUrl;
+    case "docseditorembed.svg":
+      return DocsEditoRembedSvgUrl;
+    default:
+      break;
+  }
+
+  return path;
 };

@@ -12,7 +12,7 @@ import { combineUrl } from "@docspace/common/utils";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@docspace/components/themes";
-import { getLogoFromPath } from "SRC_DIR/helpers/utils";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const Header = styled.header`
   display: flex;

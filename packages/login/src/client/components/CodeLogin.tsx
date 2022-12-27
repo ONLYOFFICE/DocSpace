@@ -9,10 +9,9 @@ import { ReactSVG } from "react-svg";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
-import { getBgPattern } from "@docspace/common/utils";
+import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-
 
 interface IBarProp {
   t: TFuncType;
@@ -44,7 +43,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
@@ -65,7 +64,9 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   };
 
   const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+  const logoUrl = !theme?.isBase
+    ? getLogoFromPath(logo?.path?.dark)
+    : getLogoFromPath(logo?.path?.light);
 
   return (
     <LoginContainer id="code-page" theme={theme}>

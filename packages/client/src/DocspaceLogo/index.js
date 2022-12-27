@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { hugeMobile } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
-import { getLogoFromPath } from "SRC_DIR/helpers/utils";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledWrapper = styled.div`
   .logo-wrapper {
