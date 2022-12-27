@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Kópia zálohy bola úspešne vytvorená.",
   "BackupList": "Zoznam záloh",
   "BackupListWarningText": "Ak odstránite niektoré položky zo zoznamu, odstránia sa aj ich príslušné súbory. Táto akcia sa nedá vrátiť späť. Ak chcete odstrániť všetky súbory, použite odkaz:",
-  "BrowserNoCanvasSupport": "Váš prehliadač nepodporuje HTML5 canvas tag.",
   "ByApp": "Aplikáciou na overenie totožnosti",
   "BySms": "Prostredníctvom SMS",
   "ChangeLogoButton": "Zmeniť logo",

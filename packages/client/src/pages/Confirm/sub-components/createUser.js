@@ -14,10 +14,6 @@ import PasswordInput from "@docspace/components/password-input";
 import FieldContainer from "@docspace/components/field-container";
 import toastr from "@docspace/components/toast/toastr";
 import SocialButton from "@docspace/components/social-button";
-import {
-  getAuthProviders,
-  getCapabilities,
-} from "@docspace/common/api/settings";
 import { getUserFromConfirm } from "@docspace/common/api/people";
 import Section from "@docspace/common/components/Section";
 import {
@@ -29,12 +25,12 @@ import {
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
 import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
-import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
+import Box from "@docspace/components/box";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -47,13 +43,13 @@ export const ButtonsWrapper = styled.div`
   }
 `;
 
-const ConfirmContainer = styled.div`
+const ConfirmContainer = styled(Box)`
+  margin-top: 80px;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
   flex-direction: row;
   justify-content: center;
-  margin-top: 80px;
 
   @media ${tablet} {
     margin: 100px auto 0 auto;
@@ -79,9 +75,11 @@ const GreetingContainer = styled.div`
   flex-direction: column;
   align-items: left;
   height: 100%;
+  width: 496px;
   padding-bottom: 32px;
 
-  @media (max-width: 768px) {
+  @media ${tablet} {
+    width: 480px;
     display: ${(props) => !props.isGreetingMode && "none"};
   }
 
@@ -128,6 +126,7 @@ const GreetingContainer = styled.div`
     position: absolute;
     padding: 16px;
     width: 100%;
+    white-space: pre-line;
   }
 
   .docspace-logo {
@@ -154,6 +153,7 @@ const RegisterContainer = styled.div`
   width: 100%;
 
   .or-label {
+    text-transform: uppercase;
     margin: 0 8px;
   }
 
@@ -167,6 +167,7 @@ const RegisterContainer = styled.div`
     align-items: center;
     color: #eceef1;
     padding-top: 35px;
+    margin-bottom: 32px;
   }
 
   .line:before,
@@ -181,7 +182,7 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-container {
-    margin-top: 32px;
+    //margin-top: 32px;
     width: 100%;
 
     @media (max-width: 768px) {
@@ -195,7 +196,7 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-fields {
-    @media (max-width: 768px) {
+    @media ${hugeMobile} {
       display: ${(props) => props.isGreetingMode && "none"};
     }
   }
@@ -240,18 +241,10 @@ const Confirm = (props) => {
 
   const [user, setUser] = useState("");
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
   const [isGreetingMode, setIsGreetingMode] = useState(true);
 
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
-
-  const getSso = async () => {
-    const data = await getCapabilities();
-    setSsoLabel(data.ssoLabel);
-    setSsoUrl(data.ssoUrl);
-  };
 
   const focusInput = () => {
     if (inputRef) {
@@ -260,26 +253,27 @@ const Confirm = (props) => {
   };
 
   useEffect(() => {
-    const { isAuthenticated, logout } = props;
+    const { isAuthenticated, logout, linkData, capabilities } = props;
+
     if (isAuthenticated) {
       const path = window.location;
       logout().then(() => window.location.replace(path));
     }
-  }, []);
 
-  useEffect(async () => {
-    const { linkData } = props;
-    const uid = linkData.uid;
-    const confirmKey = linkData.confirmHeader;
-    const user = await getUserFromConfirm(uid, confirmKey);
-    setUser(user);
+    const fetchData = async () => {
+      const uid = linkData.uid;
+      const confirmKey = linkData.confirmHeader;
+      const user = await getUserFromConfirm(uid, confirmKey);
+      setUser(user);
 
-    window.authCallback = authCallback;
+      window.authCallback = authCallback;
 
-    Promise.all([setProviders(), getSso()]).then(() => {
-      setIsLoaded(true);
+      setSsoLabel(capabilities?.ssoLabel);
+      setSsoUrl(capabilities?.ssoUrl);
       focusInput();
-    });
+    };
+
+    fetchData();
   }, []);
 
   const onSubmit = () => {
@@ -346,8 +340,19 @@ const Confirm = (props) => {
     createConfirmUser(personalData, loginData, headerKey)
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
-        console.error("confirm error", error);
-        setEmailErrorText(error);
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        console.error("confirm error", errorMessage);
+        setEmailErrorText(errorMessage);
         setEmailValid(false);
         setIsLoading(false);
       });
@@ -373,18 +378,6 @@ const Confirm = (props) => {
       .catch((e) => {
         toastr.error(e);
       });
-  };
-
-  const setProviders = async () => {
-    const { setProviders } = props;
-
-    try {
-      await getAuthProviders().then((providers) => {
-        setProviders(providers);
-      });
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const createConfirmUser = async (registerData, loginData, key) => {
@@ -553,7 +546,6 @@ const Confirm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
       <GreetingContainer isGreetingMode={isGreetingMode}>
@@ -739,7 +731,6 @@ const Confirm = (props) => {
               </FieldContainer>
 
               <Button
-                id="submit"
                 className="login-button"
                 primary
                 size="medium"
@@ -757,7 +748,6 @@ const Confirm = (props) => {
             </div>
 
             <Button
-              id="submit"
               className="login-button is-greeting-mode-button"
               primary
               size="medium"
@@ -807,9 +797,9 @@ export default inject(({ auth }) => {
     logout,
     isAuthenticated,
     settingsStore,
-    setProviders,
     providers,
     thirdPartyLogin,
+    capabilities,
   } = auth;
   const {
     passwordSettings,
@@ -831,8 +821,8 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
     thirdPartyLogin,
-    setProviders,
     providers,
+    capabilities,
   };
 })(
   withRouter(

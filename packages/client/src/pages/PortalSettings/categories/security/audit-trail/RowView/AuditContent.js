@@ -53,7 +53,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
         fontWeight={600}
         className="settings_unavailable"
       >
-        {`${item.room} | ${item.action}`}
+        {`${item.room ? item.room && "|" : ""} ${item.action}`}
       </Text>
     </StyledRowContent>
   );

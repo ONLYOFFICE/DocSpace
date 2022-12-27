@@ -39,6 +39,7 @@ const SelectFolderDialogAsideView = ({
   selectionFiles,
   folderSelectionDisabled,
 }) => {
+  const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
       theme={theme}
@@ -68,13 +69,21 @@ const SelectFolderDialogAsideView = ({
           <div className="selection-panel_aside-body">
             <div className="selection-panel_aside-header">
               <div>{header}</div>
-              <Text fontWeight="700" fontSize="18px">
-                {t("Common:Documents")}
-              </Text>
+              {isLoaded ? (
+                <Text fontWeight="700" fontSize="18px">
+                  {t("Common:Rooms")}
+                </Text>
+              ) : (
+                <Loaders.Rectangle
+                  className="selection-panel_header-loader"
+                  width="83px"
+                  height="24px"
+                />
+              )}
             </div>
 
             <div className="selection-panel_aside-tree">
-              {folderId && resultingFolderTree ? (
+              {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   parentId={parentId}

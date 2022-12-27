@@ -309,4 +309,6 @@ public interface IDataStore
 
     string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
                          string contentDisposition);
+
+    Task<string> GetFileEtagAsync(string domain, string path);
 }

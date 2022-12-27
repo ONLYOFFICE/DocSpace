@@ -264,10 +264,6 @@ export const AutoBackupPeriod = Object.freeze({
   EveryMonthType: 2,
 });
 
-import config from "./AppServerConfig";
-
-export const AppServerConfig = config;
-
 /**
  * Enum for Tenant trusted domains on registration.
  * @readonly
@@ -348,6 +344,7 @@ export const FeedItemTypes = Object.freeze({
   File: "file",
   Folder: "folder",
   Room: "room",
+  Tag: "tag",
   User: "sharedRoom",
 });
 

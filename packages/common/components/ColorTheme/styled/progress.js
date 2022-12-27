@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { StyledBodyPreparationPortal } from "@docspace/client/src/pages/PreparationPortal/StyledPreparationPortal";
+import StyledBodyPreparationPortal from "../../StyledBodyPreparationPortal";
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, theme }) =>

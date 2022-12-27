@@ -12,7 +12,10 @@ export default function template(
   const { title } = pkg;
   const { error } = initialEditorState;
   const editorUrl = initialEditorState?.config?.editorUrl;
-  const faviconHref = getFavicon(initialEditorState?.config?.documentType);
+  const faviconHref = getFavicon(
+    initialEditorState?.config?.documentType,
+    initialEditorState?.logoUrls
+  );
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
@@ -48,6 +51,21 @@ export default function template(
       tempElm.style.backgroundColor =
         localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
       console.log("It's Editor INIT");
+      fetch("/static/scripts/config.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        window.DocSpaceConfig = {
+          ...config,
+        };
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     </script>
     ${editorApiScript} 
 

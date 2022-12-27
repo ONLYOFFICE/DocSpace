@@ -65,6 +65,10 @@ public static class ISetupBuilderExtension
             {
                 awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
             }
+            else
+            {
+                conf.RemoveTarget(targetName);
+            }
         }
 
         return loggingBuilder.LoadConfiguration(conf);

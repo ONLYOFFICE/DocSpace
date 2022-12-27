@@ -24,10 +24,12 @@ class SelectedFolderStore {
   roomType = null;
   pinned = null;
   isRoom = null;
+  isArchive = null;
   logo = null;
   tags = null;
-
+  rootFolderId = null;
   settingsStore = null;
+  security = null;
 
   constructor(settingsStore) {
     makeAutoObservable(this);
@@ -64,6 +66,8 @@ class SelectedFolderStore {
     this.isRoom = null;
     this.logo = null;
     this.tags = null;
+    this.rootFolderId = null;
+    this.security = null;
   };
 
   setParentId = (parentId) => {

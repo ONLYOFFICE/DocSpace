@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@docspace/components/backdrop";
@@ -11,6 +11,7 @@ import { withTranslation } from "react-i18next";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import toastr from "@docspace/components/toast/toastr";
+import Filter from "@docspace/common/api/people/filter";
 
 const AddUsersPanel = ({
   isEncrypted,
@@ -34,6 +35,10 @@ const AddUsersPanel = ({
     : ShareAccessRights.ReadOnly;
 
   const onBackClick = () => onClose();
+  const getFilterWithOutDisabledUser = useCallback(
+    () => Filter.getFilterWithOutDisabledUser(),
+    []
+  );
 
   const onKeyPress = (e) => {
     if (e.key === "Esc" || e.key === "Escape") onClose();
@@ -115,6 +120,7 @@ const AddUsersPanel = ({
           withCancelButton={!isMultiSelect}
           withAccessRights={isMultiSelect}
           withSelectAll={isMultiSelect}
+          filter={getFilterWithOutDisabledUser}
         />
       </Aside>
     </>

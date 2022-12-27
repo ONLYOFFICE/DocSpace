@@ -3,8 +3,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
-import { combineUrl, getFolderOptions } from "@docspace/common/utils";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
+import { getFolder } from "@docspace/common/api/files";
 
 class FilesListWrapper extends React.Component {
   constructor(props) {
@@ -31,7 +30,7 @@ class FilesListWrapper extends React.Component {
 
     if (folderId !== prevProps.folderId) {
       if (isNextPageLoading) {
-        this.source.cancel();
+        this.abortController.abort();
 
         this._isLoadNextPage = false;
         this.setState({
@@ -67,29 +66,26 @@ class FilesListWrapper extends React.Component {
     this._isLoadNextPage = true;
     this.setState({ isNextPageLoading: true }, async () => {
       try {
-        this.CancelToken = axios.CancelToken;
-        this.source = this.CancelToken.source();
-        const options = getFolderOptions(folderId, this.newFilter);
+        this.abortController = new AbortController();
 
-        const response = await axios
-          .get(combineUrl(AppServerConfig.apiPrefix, options.url), {
-            cancelToken: this.source.token,
-          })
-          .catch((thrown) => {
-            if (axios.isCancel(thrown)) {
-              console.log("Request canceled", thrown.message);
-            } else {
-              const errorBody = thrown.response;
+        const data = await getFolder(
+          folderId,
+          this.newFilter,
+          this.abortController.signal
+        ).catch((err) => {
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            const errorBody = err.response;
 
-              if (errorBody.data && errorBody.data.error) {
-                toastr.error(errorBody.data.error.message);
-              }
+            if (errorBody.data && errorBody.data.error) {
+              toastr.error(errorBody.data.error.message);
             }
-            return;
-          });
+          }
+          return;
+        });
 
-        if (!response) return;
-        const data = response.data.response;
+        if (!data) return;
 
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);

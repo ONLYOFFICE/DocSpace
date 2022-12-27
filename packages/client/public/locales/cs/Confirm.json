@@ -22,5 +22,5 @@
   "SetAppDescription": "Dvoufázové ověřování je povoleno. Nakonfigurujte aplikaci autentizátoru, abyste mohli pokračovat v práci na portálu. Můžete použít aplikaci Google Authenticator pro <1>Android</1> a <4>iOS</4> nebo Authenticator pro <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Chcete-li aplikaci připojit, naskenujte kód QR nebo ručně zadejte svůj tajný klíč <1>{{{ secretKey }}</1> a poté zadejte šestimístný kód z aplikace do pole níže.",
   "SetAppTitle": "Nastavení aplikace autentizačního zařízení",
-  "WelcomeUser": "Vítejte na našem portálu! Chcete-li začít, zaregistrujte se nebo se přihlaste prostřednictvím sociálních sítí."
+  "WelcomeUser": "Vítejte na našem portálu!\nChcete-li začít, zaregistrujte se nebo se přihlaste prostřednictvím sociálních sítí."
 }

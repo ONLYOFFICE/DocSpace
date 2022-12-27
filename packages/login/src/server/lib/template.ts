@@ -27,6 +27,7 @@ const template: Template = (
     ? `${t("Authorization")} – ${organizationName}`
     : title;
 
+  const favicon = initLoginState.logoUrls[2]?.path?.light;
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
@@ -53,6 +54,21 @@ const template: Template = (
     ${clientScripts}
     <script>
       console.log("It's Login INIT");
+      fetch("/static/scripts/config.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        window.DocSpaceConfig = {
+          ...config,
+        };
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     </script>
 `;
 
@@ -75,7 +91,7 @@ const template: Template = (
         <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/MTP_ySUJH_bn48VBG8sNSpX5f-9o1vgP2EXwfjgl7AY.woff2" />
         <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/k3k702ZOKiLJc3WVjuplzJX5f-9o1vgP2EXwfjgl7AY.woff2" />
 
-        <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
+        <link id="favicon" rel="shortcut icon" href=${favicon} />
         <link rel="manifest" href="/manifest.json" />
         <!-- Tell the browser it's a PWA -->
         <!-- <meta name="mobile-web-app-capable" content="yes" /> -->

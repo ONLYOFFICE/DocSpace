@@ -30,12 +30,14 @@ const FilesItemTitle = ({
       </StyledTitle>
     );
 
+  const icon = selection.icon;
+
   return (
     <StyledTitle ref={itemTitleRef}>
       <div className="item-icon">
         <img
           className={`icon ${selection.isRoom && "is-room"}`}
-          src={selection.icon}
+          src={icon}
           alt="thumbnail-icon"
         />
       </div>

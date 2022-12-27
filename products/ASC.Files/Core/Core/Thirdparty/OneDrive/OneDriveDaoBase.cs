@@ -127,6 +127,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
         folder.Private = ProviderInfo.Private;
+        folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
 
         folder.Title = MakeItemTitle(onedriveFolder);

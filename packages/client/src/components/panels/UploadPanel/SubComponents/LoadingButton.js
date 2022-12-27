@@ -3,7 +3,7 @@ import {
   StyledCircle,
   StyledCircleWrap,
   StyledLoadingButton,
-} from "./StyledLoadingButton";
+} from "@docspace/common/components/StyledLoadingButton";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 

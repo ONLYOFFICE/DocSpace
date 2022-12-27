@@ -5,11 +5,12 @@
   "GetShortenLink": "Get shortened link",
   "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
   "IndividualInvitation": "Individual invitation",
+  "InviteAccountSearchPlaceholder": "Invite people by email",
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
+  "InviteRoomSearchPlaceholder": "Invite people by name or email",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
   "InviteUsersToRoom": "Invite users to room",
   "Invited": "Invited",
   "LinkCopySuccess": "Link has been copied",
-  "SearchPlaceholder": "Invite people by name or email",
   "SendInvitation": "Send invitation"
 }

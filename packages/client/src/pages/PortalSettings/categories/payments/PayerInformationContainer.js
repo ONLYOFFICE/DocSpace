@@ -14,7 +14,7 @@ const StyledContainer = styled.div`
   padding: 16px;
   box-sizing: border-box;
   margin-top: 16px;
-
+  border-radius: 6px;
   .change-payer,
   .payer-info {
     margin-left: 3px;
@@ -92,6 +92,7 @@ const PayerInformationContainer = ({
           className="change-payer"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("ChangePayer")}
         </ColorTheme>
@@ -114,6 +115,7 @@ const PayerInformationContainer = ({
           className="payer-info_account-link"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("StripeCustomerPortal")}
         </ColorTheme>

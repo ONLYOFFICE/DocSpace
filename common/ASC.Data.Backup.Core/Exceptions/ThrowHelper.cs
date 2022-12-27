@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Backup.Exceptions;
 
-internal static class ThrowHelper
+public static class ThrowHelper
 {
     public static DbBackupException CantDetectTenant(string tableName)
     {

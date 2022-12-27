@@ -12,6 +12,7 @@
   "Convert": "Конвертация",
   "CopyItem": "<strong>{{title}}</strong> скопирован",
   "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>",
+  "CreateRoom": "Создание комнаты",
   "CustomRooms": "Пользовательская",
   "Document": "Документ",
   "EditRoom": "Изменить комнату",
@@ -80,6 +81,5 @@
   "VersionHistory": "История версий",
   "ViewList": "Список",
   "ViewOnlyRooms": "Просмотр",
-  "ViewTiles": "Плитки",
-  "CreateRoom": "Создание комнаты"
+  "ViewTiles": "Плитки"
 }

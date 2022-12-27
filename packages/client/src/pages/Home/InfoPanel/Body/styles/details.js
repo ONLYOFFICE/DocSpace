@@ -30,9 +30,7 @@ const StyledNoThumbnail = styled.div`
     border-radius: 16px;
   }
   .custom-logo {
-    border: ${(props) =>
-      `solid 1px ${props.theme.infoPanel.details.customLogoBorderColor}`};
-  }
+    outline: 1px solid ${(props) => props.theme.infoPanel.details.customLogoBorderColor};
 `;
 
 const StyledAccess = styled.div`

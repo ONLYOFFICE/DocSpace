@@ -6,7 +6,6 @@ import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import history from "@docspace/common/history";
 import { Base } from "@docspace/components/themes";
@@ -91,7 +90,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             truncate={true}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/language-and-time-zone"
             )}
           >
@@ -121,7 +120,7 @@ const CustomizationNavbar = ({
             className="inherit-title-link header"
             onClick={onClickLink}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/welcome-page-settings"
             )}
           >
@@ -142,7 +141,7 @@ const CustomizationNavbar = ({
               className="inherit-title-link header"
               onClick={onClickLink}
               href={combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 "/portal-settings/common/customization/dns-settings"
               )}
             >
@@ -180,7 +179,7 @@ const CustomizationNavbar = ({
             className="inherit-title-link header"
             onClick={onClickLink}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/portal-renaming"
             )}
           >

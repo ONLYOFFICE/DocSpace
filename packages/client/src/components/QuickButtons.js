@@ -16,17 +16,16 @@ const QuickButtons = (props) => {
     item,
     theme,
     sectionWidth,
-    isTrashFolder,
     onClickLock,
     isDisabled,
     onClickFavorite,
     viewAs,
     isCanWebEdit,
-    canLockFile,
+
+    folderCategory,
   } = props;
 
-  const { id, locked, fileStatus, title, fileExst, access, folderType } = item;
-  const canLockFileAbility = canLockFile(item);
+  const { id, locked, fileStatus, title, fileExst } = item;
 
   const isFavorite =
     (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
@@ -59,7 +58,7 @@ const QuickButtons = (props) => {
   const setFavorite = () => onClickFavorite(isFavorite);
 
   const isAvailableLockFile =
-    canLockFileAbility && fileExst && displayBadges && isCanWebEdit;
+    !folderCategory && fileExst && displayBadges && isCanWebEdit;
 
   return (
     <div className="badges additional-badges">
@@ -67,7 +66,6 @@ const QuickButtons = (props) => {
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconLock}
-          locked={locked}
           className="badge lock-file icons-group"
           size={sizeQuickButton}
           data-id={id}

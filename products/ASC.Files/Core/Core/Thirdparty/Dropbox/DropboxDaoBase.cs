@@ -128,6 +128,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
         folder.Title = MakeFolderTitle(dropboxFolder);
         folder.Private = ProviderInfo.Private;
+        folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)

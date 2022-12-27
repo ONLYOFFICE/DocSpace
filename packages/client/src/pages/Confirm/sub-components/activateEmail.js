@@ -6,7 +6,6 @@ import Section from "@docspace/common/components/Section";
 import { combineUrl } from "@docspace/common/utils";
 import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
@@ -21,15 +20,29 @@ class ActivateEmail extends React.PureComponent {
         .then((res) => {
           tryRedirectTo(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               `/login?confirmedEmail=${email}`
             )
           );
         })
-        .catch((e) => {
+        .catch((error) => {
           // console.log('activate email error', e);
+          let errorMessage = "";
+          if (typeof error === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+
           tryRedirectTo(
-            combineUrl(AppServerConfig.proxyURL, `/login/error?message=${e}`)
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              `/login/error?message=${errorMessage}`
+            )
           );
         })
     );

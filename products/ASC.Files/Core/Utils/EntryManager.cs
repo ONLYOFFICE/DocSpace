@@ -216,7 +216,7 @@ public class EntryStatusManager
 
         var tagDao = _daoFactory.GetTagDao<T>();
 
-        var tagsTask = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+        var tagsTask = tagDao.GetTagsAsync(TagType.Locked, files).ToDictionaryAsync(k => k.EntryId, v => v);
         var tagsNewTask = tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, files).ToListAsync();
 
         var tags = await tagsTask;
@@ -224,34 +224,15 @@ public class EntryStatusManager
 
         foreach (var file in files)
         {
-            foreach (var t in tags)
+            if (tags.TryGetValue(file.Id, out var lockedTag))
             {
-                if (!t.Key.Equals(file.Id))
-                {
-                    continue;
-                }
+                var lockedBy = lockedTag.Owner;
+                file.Locked = lockedBy != Guid.Empty;
+                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
+                    ? _global.GetUserName(lockedBy)
+                    : null;
 
-                if (t.Value.Any(r => r.Type == TagType.Favorite))
-                {
-                    file.IsFavorite = true;
-                }
-
-                if (t.Value.Any(r => r.Type == TagType.Template))
-                {
-                    file.IsTemplate = true;
-                }
-
-                var lockedTag = t.Value.FirstOrDefault(r => r.Type == TagType.Locked);
-                if (lockedTag != null)
-                {
-                    var lockedBy = lockedTag.Owner;
-                    file.Locked = lockedBy != Guid.Empty;
-                    file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
-                        ? _global.GetUserName(lockedBy)
-                        : null;
-
-                    continue;
-                }
+                continue;
             }
 
             if (tagsNew.Any(r => r.EntryId.Equals(file.Id)))
@@ -1514,7 +1495,7 @@ public class EntryManager
         }
     }
 
-    public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true)
+    public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true, bool finalize = false)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         if (version < 1)
@@ -1537,6 +1518,13 @@ public class EntryManager
         if (fromFile.Version != version)
         {
             fromFile = await fileDao.GetFileAsync(fromFile.Id, Math.Min(fromFile.Version, version));
+        }
+        else
+        {
+            if (!finalize)
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_FileUpdateToVersion);
+            }
         }
 
         if (fromFile == null)
@@ -1703,7 +1691,7 @@ public class EntryManager
             {
                 if (fileVersion.Version == lastVersionFile.Version)
                 {
-                    lastVersionFile = await UpdateToVersionFileAsync(fileVersion.Id, fileVersion.Version, null, checkRight);
+                    lastVersionFile = await UpdateToVersionFileAsync(fileVersion.Id, fileVersion.Version, null, checkRight, true);
                 }
 
                 await fileDao.CompleteVersionAsync(fileVersion.Id, fileVersion.Version);

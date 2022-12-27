@@ -5,8 +5,8 @@ import Box from "@docspace/components/box";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
+import { hugeMobile } from "@docspace/components/utils/device";
 
 const Header = styled.header`
   align-items: left;
@@ -22,7 +22,7 @@ const Header = styled.header`
     @media (max-width: 768px) {
       width: 475px;
     }
-    @media (max-width: 375px) {
+    @media ${hugeMobile} {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -73,7 +73,7 @@ const HeaderUnAuth = ({
               <img
                 className="header-logo-icon"
                 src={combineUrl(
-                  AppServerConfig.proxyURL,
+                  window.DocSpaceConfig?.proxy?.url,
                   "/static/images/logo.docspace.react.svg"
                 )}
               />

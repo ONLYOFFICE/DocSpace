@@ -38,19 +38,19 @@ public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 
     public void Publish(T obj, CacheNotifyAction action)
     {
-        Task.Run(() => _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }))
+        Task.Run(async () => await _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }))
             .GetAwaiter()
             .GetResult();
     }
 
     public async Task PublishAsync(T obj, CacheNotifyAction action)
     {
-        await Task.Run(() => _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }));
+        await Task.Run(async () => await _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }));
     }
 
     public void Subscribe(Action<T> onchange, CacheNotifyAction action)
     {
-        Task.Run(() => _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
+        Task.Run(async () => await _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
             onchange(i.Object);
 
@@ -61,7 +61,7 @@ public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 
     public void Unsubscribe(CacheNotifyAction action)
     {
-        Task.Run(() => _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
+        Task.Run(async () => await _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
             return Task.FromResult(true);
         })).GetAwaiter()

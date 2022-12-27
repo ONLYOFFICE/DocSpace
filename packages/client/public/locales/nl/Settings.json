@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "De back-up kopie is succesvol aangemaakt.",
   "BackupList": "Back-up lijst",
   "BackupListWarningText": "Als u items uit de lijst verwijdert, worden hun bijbehorende bestanden ook verwijderd. Deze actie kan niet ongedaan gemaakt worden. Om alle bestanden te verwijderen, gebruik de link:",
-  "BrowserNoCanvasSupport": "Uw browser ondersteunt de HTML5 canvas tag niet.",
   "ByApp": "Via authenticator app",
   "BySms": "Per sms",
   "ChangeLogoButton": "Verander Logo",

@@ -3,8 +3,12 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
+import api from "@docspace/common/api";
 
 const EditRoomEvent = ({
+  addActiveItems,
+  setActiveFolders,
+
   visible,
   onClose,
   item,
@@ -29,7 +33,8 @@ const EditRoomEvent = ({
   setCreateRoomDialogVisible,
 
   withPaging,
-  getRoomLogo,
+
+  reloadSelection,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -93,6 +98,8 @@ const EditRoomEvent = ({
           logo: { big: item.logo.small },
         });
 
+        addActiveItems(null, [room.id]);
+
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
           const img = new Image();
@@ -104,29 +111,24 @@ const EditRoomEvent = ({
             });
 
             if (!withPaging) {
-              const newLogo = await getRoomLogo(room.logo);
-
-              room.logoHandlers = room.logo;
-              room.logo = newLogo;
-              room.isLogoLoading = false;
-
               setFolder(room);
             }
 
+            // to update state info panel
+            reloadSelection();
+
             URL.revokeObjectURL(img.src);
+
+            setActiveFolders([]);
           };
           img.src = url;
         });
       } else {
         if (!withPaging) {
-          const newLogo = await getRoomLogo(room.logo);
-
-          room.logoHandlers = room.logo;
-          room.logo = newLogo;
-          room.isLogoLoading = false;
-
           setFolder(room);
         }
+        // to update state info panel
+        reloadSelection();
       }
     } catch (err) {
       console.log(err);
@@ -141,9 +143,12 @@ const EditRoomEvent = ({
   };
 
   useEffect(async () => {
-    const imgExst = item.logo.original.slice(".")[1];
-    if (item.logo.original) {
-      const file = await fetch(item.logo.original)
+    const logo = item?.logo?.original ? item.logo.original : "";
+
+    if (logo) {
+      const imgExst = logo.slice(".")[1];
+
+      const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
           (buf) =>
@@ -199,7 +204,8 @@ export default inject(
       setFolder,
       addLogoToRoom,
       removeLogoFromRoom,
-      getRoomLogo,
+      addActiveItems,
+      setActiveFolders,
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
@@ -208,12 +214,14 @@ export default inject(
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-
+    const { reloadSelection } = auth.infoPanelStore;
     return {
+      addActiveItems,
+      setActiveFolders,
+
       editRoom,
       addTagsToRoom,
       removeTagsFromRoom,
-      getRoomLogo,
 
       createTag,
       fetchTags,
@@ -231,6 +239,8 @@ export default inject(
 
       withPaging,
       setCreateRoomDialogVisible,
+
+      reloadSelection,
     };
   }
 )(observer(EditRoomEvent));

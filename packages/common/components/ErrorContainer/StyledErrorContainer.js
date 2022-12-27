@@ -15,6 +15,12 @@ const StyledErrorContainer = styled.div`
   border: 0;
   box-sizing: border-box;
 
+  .error_description_link {
+    color: #2da7db;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   #container {
     position: relative;
     margin: 12px 0 60px 0;

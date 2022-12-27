@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { inject, observer } from "mobx-react";
@@ -63,7 +62,7 @@ const SubmenuCommon = (props) => {
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/common/${e.id}`
       )

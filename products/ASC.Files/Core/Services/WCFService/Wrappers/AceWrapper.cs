@@ -41,6 +41,7 @@ public class AceWrapper : IMapFrom<RoomInvitation>
     public string Email { get; set; }
     public SubjectType SubjectType { get; set; }
     public FileShareOptions FileShareOptions { get; set; }
+    public bool CanEditAccess { get; set; }
 
     [JsonPropertyName("title")]
     public string SubjectName { get; set; }

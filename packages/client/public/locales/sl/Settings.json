@@ -20,7 +20,6 @@
   "BackupCreatedSuccess": "Varnostna kopija je bila uspešno ustvarjena.",
   "BackupList": "Seznam varnostnih kopij",
   "BackupListWarningText": "Če izbrišete kateri koli predmet iz seznama, bodo izbrisane tudi ustrezne datoteke. Tega dejanja ni mogoče razveljaviti. Če želite izbrisati vse datoteke, uporabite povezavo:",
-  "BrowserNoCanvasSupport": "Vaš brskalnik ne podpira canvas oznake HTML5.",
   "ByApp": "Z aplikacijo za avtentikacijo",
   "BySms": "Preko sms",
   "ChangeLogoButton": "Spremeni Logo",
