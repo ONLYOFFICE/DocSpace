@@ -1035,14 +1035,14 @@ class ContextOptionsStore {
             key: "pin-room",
             label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
-            onClick: pinRooms,
+            onClick: () => pinRooms(t),
             disabled: false,
           }
         : {
             key: "unpin-room",
             label: t("Unpin"),
             icon: "/static/images/unpin.react.svg",
-            onClick: unpinRooms,
+            onClick: () => unpinRooms(t),
             disabled: false,
           };
 
