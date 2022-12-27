@@ -178,23 +178,6 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
         }
     }
 
-    [JsonIgnore]
-    public bool IsFillFormDraft
-    {
-        get => (_status & FileStatus.IsFillFormDraft) == FileStatus.IsFillFormDraft;
-        set
-        {
-            if (value)
-            {
-                _status |= FileStatus.IsFillFormDraft;
-            }
-            else
-            {
-                _status &= ~FileStatus.IsFillFormDraft;
-            }
-        }
-    }
-
     public bool Encrypted { get; set; }
     public Thumbnail ThumbnailStatus { get; set; }
     public ForcesaveType Forcesave { get; set; }
