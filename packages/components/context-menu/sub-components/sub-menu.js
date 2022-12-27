@@ -126,9 +126,12 @@ const SubMenu = (props) => {
       "p-disabled": item.disabled,
     });
     const subMenuIconClassName = "p-submenu-icon";
+
+    console.log("call");
+
     const icon =
       item.icon &&
-      (item.icon.includes("https://") || item.icon.includes("http://") ? (
+      (!item.icon.includes("images/") ? (
         <img src={item.icon} className={iconClassName} />
       ) : (
         <ReactSVG wrapper="span" className={iconClassName} src={item.icon} />
