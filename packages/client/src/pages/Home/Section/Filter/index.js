@@ -1132,7 +1132,7 @@ const SectionFilterContent = ({
           ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
-        if (availableSort?.includes("Author") && !isPersonalRoom) {
+        if (availableSort?.includes("Author")) {
           const idx = availableSort.findIndex((x) => x === "Author");
           const hide =
             infoPanelVisible &&
