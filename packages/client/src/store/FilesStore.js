@@ -106,6 +106,9 @@ class FilesStore {
 
   isErrorRoomNotAvailable = false;
 
+  roomsController = null;
+  filesController = null;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -125,6 +128,9 @@ class FilesStore {
     this.filesSettingsStore = filesSettingsStore;
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
+
+    this.roomsController = new AbortController();
+    this.filesController = new AbortController();
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -805,6 +811,11 @@ class FilesStore {
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
 
+    if (this.isLoading) {
+      this.roomsController.abort();
+      this.roomsController = new AbortController();
+    }
+
     this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
@@ -836,7 +847,7 @@ class FilesStore {
     setSelectedNode([folderId + ""]);
 
     return api.files
-      .getFolder(folderId, filterData)
+      .getFolder(folderId, filterData, this.filesController.signal)
       .then(async (data) => {
         filterData.total = data.total;
 
@@ -988,6 +999,11 @@ class FilesStore {
   ) => {
     const { setSelectedNode, roomsFolderId } = this.treeFoldersStore;
 
+    if (this.isLoading) {
+      this.filesController.abort();
+      this.filesController = new AbortController();
+    }
+
     const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
     const filterStorageItem = localStorage.getItem(
@@ -1011,7 +1027,7 @@ class FilesStore {
 
     const request = () =>
       api.rooms
-        .getRooms(filterData)
+        .getRooms(filterData, this.roomsController.signal)
         .then(async (data) => {
           if (!folderId) setSelectedNode([data.current.id + ""]);
 

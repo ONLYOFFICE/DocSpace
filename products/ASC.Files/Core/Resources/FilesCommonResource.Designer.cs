@@ -781,6 +781,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The role is only available to a paid user.
+        /// </summary>
+        public static string ErrorMessage_PaidRole {
+            get {
+                return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have permission to copy to this folder.
         /// </summary>
         public static string ErrorMessage_SecurityException_CopyToFolder {

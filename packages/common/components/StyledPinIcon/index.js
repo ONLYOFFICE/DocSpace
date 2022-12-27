@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import IconButton from "@docspace/components/icon-button";
 

@@ -3,8 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { getFolderOptions, decodeDisplayName } from "../../utils";
-import { Encoder } from "../../utils/encoder";
+import { decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
@@ -51,8 +50,22 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter) {
-  const options = getFolderOptions(folderId, filter);
+export function getFolder(folderId, filter, signal) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
+  const params =
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toApiUrlParams()}`
+      : folderId;
+
+  const options = {
+    method: "get",
+    url: `/files/${params}`,
+    signal,
+  };
+
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
