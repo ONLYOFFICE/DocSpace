@@ -341,6 +341,10 @@ class FilesStore {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
 
+  setIsErrorRoomNotAvailable = (state) => {
+    this.isErrorRoomNotAvailable = state;
+  };
+
   setTempActionFilesIds = (tempActionFilesIds) => {
     this.tempActionFilesIds = tempActionFilesIds;
   };
@@ -824,7 +828,7 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
-    this.isErrorRoomNotAvailable = false;
+    this.setIsErrorRoomNotAvailable(false);
     this.isLoadedFetchFiles = false;
 
     const filterStorageItem =
@@ -979,8 +983,10 @@ class FilesStore {
         ].includes(err?.response?.status);
 
         if (isUserError) {
-          this.isErrorRoomNotAvailable = true;
-          this.isEmptyPage = true;
+          runInAction(() => {
+            this.isErrorRoomNotAvailable = true;
+            this.isEmptyPage = true;
+          });
         } else {
           toastr.error(err);
         }
@@ -1092,7 +1098,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-          this.isErrorRoomNotAvailable = false;
+          this.setIsErrorRoomNotAvailable(false);
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
