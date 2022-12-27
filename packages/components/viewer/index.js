@@ -92,7 +92,7 @@ export const Viewer = (props) => {
   };
 
   let detailsStyle = {
-    "z-index": "307",
+    zIndex: "307",
     position: "fixed",
     top: "0",
     left: "0",
@@ -100,8 +100,8 @@ export const Viewer = (props) => {
     height: "53px",
     background: "#333",
     display: "flex",
-    "justify-content": "space-around",
-    "align-items": "center",
+    justifyContent: "space-around",
+    alignItems: "center",
   };
 
   const mobileDetails = (
@@ -121,7 +121,7 @@ export const Viewer = (props) => {
     </div>
   );
 
-  const displayUI = isImage || panelVisible;
+  const displayUI = isImage || isAudio || panelVisible;
 
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
@@ -136,6 +136,7 @@ export const Viewer = (props) => {
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
+      {...props}
       onNextClick={onNextClick}
       onPrevClick={onPrevClick}
       isAudio={isAudio}
