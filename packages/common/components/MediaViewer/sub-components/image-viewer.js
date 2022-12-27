@@ -302,15 +302,15 @@ class ImageViewer extends React.Component {
           </div>
         ),
       },
-      {
-        key: "share",
-        actionType: 101,
-        render: (
-          <div className="iconContainer share" style={{ height: "16px" }}>
-            <MediaShare size="scale" />
-          </div>
-        ),
-      },
+      // {
+      //   key: "share",
+      //   actionType: 101,
+      //   render: (
+      //     <div className="iconContainer share" style={{ height: "16px" }}>
+      //       <MediaShare size="scale" />
+      //     </div>
+      //   ),
+      // },
       {
         key: "download",
         actionType: 102,
