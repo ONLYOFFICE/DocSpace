@@ -457,7 +457,13 @@ public class UserPhotoManager
         if (!string.IsNullOrEmpty(fileName))
         {
             var store = GetDataStore();
-            return (await store.GetUriAsync(fileName)).ToString();
+
+            var uri = await store.GetUriAsync(fileName);
+
+            var etag = await store.GetFileEtagAsync(string.Empty, fileName);
+            var version = etag.Replace("\"", "");
+
+            return uri.ToString() + $"?v={version}";
         }
 
         return null;

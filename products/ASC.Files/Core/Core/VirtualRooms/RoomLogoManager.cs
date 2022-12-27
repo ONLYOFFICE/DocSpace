@@ -281,9 +281,11 @@ public class RoomLogoManager
     private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size)
     {
         var fileName = string.Format(LogosPath, ProcessFolderId(id), size.ToStringLowerFast());
+        var etag = await DataStore.GetFileEtagAsync(string.Empty, fileName);
         var uri = await DataStore.GetUriAsync(fileName);
+        var version = etag.Replace("\"", "");
 
-        return uri.ToString();
+        return uri.ToString() + $"?v={version}";
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)
