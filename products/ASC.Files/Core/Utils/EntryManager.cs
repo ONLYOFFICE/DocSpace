@@ -1111,7 +1111,7 @@ public class EntryManager
 
     public async Task<bool> LinkedForMeAsync<T>(File<T> file)
     {
-        if (file == null || FileUtility.GetFileExtension(file.Title) != ".oform")
+        if (file == null || !_fileUtility.CanWebRestrictedEditing(file.Title))
         {
             return false;
         }
