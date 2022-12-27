@@ -43,6 +43,7 @@ public class MigrationCreator
     private string _userName;
     private string _toRegion;
     private int _tenant;
+    private readonly object _locker = new object();
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -287,10 +288,14 @@ public class MigrationCreator
     private async Task FindFiles(List<BackupFileInfo> list, IDataStore store, DbFile dbFile, string module)
     {
         var files = await store.ListFilesRelativeAsync(string.Empty, $"\\{GetUniqFileDirectory(dbFile.Id)}", "*.*", true)
-                 .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant))
+                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _tenant))
                  .ToListAsync();
 
-        list.AddRange(files);
+        lock (_locker)
+        {
+            list.AddRange(files);
+        }
+
         if (files.Any()) 
         {
             Console.WriteLine($"file {dbFile.Id} found");
