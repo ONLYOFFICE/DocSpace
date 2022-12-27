@@ -1306,7 +1306,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected IQueryable<DbFolderQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFiles)
     {
-        var folderType = FileEntryType.Folder;
         var e = from r in dbFiles
                 select new DbFolderQuery
                 {
@@ -1320,11 +1319,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                              ).FirstOrDefault()
                             where f.TenantId == r.TenantId
                             select f
-                           ).FirstOrDefault(),
-                    Shared = (from f in filesDbContext.Security
-                              where f.EntryType == folderType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
-                              select f
-                              ).Any()
+                           ).FirstOrDefault()
                 };
 
         return e;
@@ -1348,7 +1343,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         where f.TenantId == r.TenantId
                         select f
                           ).FirstOrDefault(),
-                Shared = true
             });
     }
 
