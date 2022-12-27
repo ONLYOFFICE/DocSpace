@@ -306,6 +306,7 @@ public class EntryManager
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly SocketManager _socketManager;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -335,7 +336,8 @@ public class EntryManager
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
         ThumbnailSettings thumbnailSettings,
-        DisplayUserSettingsHelper displayUserSettingsHelper)
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SocketManager socketManager)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -365,6 +367,7 @@ public class EntryManager
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _socketManager = socketManager;
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
@@ -1102,6 +1105,8 @@ public class EntryManager
             }
 
             await _fileMarker.MarkAsNewAsync(linkedFile);
+
+            await _socketManager.CreateFileAsync(linkedFile);
 
             await linkDao.AddLinkAsync(sourceFile.Id.ToString(), linkedFile.Id.ToString());
         }
