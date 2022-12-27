@@ -91,7 +91,7 @@ public class MigrationRunner
 
         foreach (var group in fileGroups)
         {
-            Console.WriteLine($"start restore fileGroup: {group}");
+            Console.WriteLine($"start restore fileGroup: {group.Key}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
@@ -117,8 +117,8 @@ public class MigrationRunner
                         storage.SetQuotaController(quotaController);
                     }
                 }
-                Console.WriteLine($"end restore fileGroup: {group}");
             }
+            Console.WriteLine($"end restore fileGroup: {group.Key}");
         }
     }
 
