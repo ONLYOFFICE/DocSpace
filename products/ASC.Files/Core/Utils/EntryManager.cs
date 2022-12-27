@@ -235,9 +235,10 @@ public class EntryStatusManager
         {
             if (tags.TryGetValue(file.Id, out var lockedTag))
             {
-                file.Locked = lockedTag != null;
-                file.LockedBy = lockedTag.Owner != Guid.Empty && lockedTag.Owner != _authContext.CurrentAccount.ID
-                    ? _global.GetUserName(lockedTag.Owner)
+                var lockedBy = lockedTag.Owner;
+                file.Locked = lockedBy != Guid.Empty;
+                file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
+                    ? _global.GetUserName(lockedBy)
                     : null;
 
                 continue;
