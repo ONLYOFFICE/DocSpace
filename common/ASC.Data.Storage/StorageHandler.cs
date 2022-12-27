@@ -99,10 +99,10 @@ public class StorageHandler
             return;
         }
 
-        if (!String.IsNullOrEmpty(context.Request.Query["_"]))
-        {
-            context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
-        }
+        //if (!String.IsNullOrEmpty(context.Request.Query["v"]))
+        //{
+        //    context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
+        //}
 
         var etag = await storage.GetFileEtagAsync(_domain, path);
 
