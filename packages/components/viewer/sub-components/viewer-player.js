@@ -20,8 +20,8 @@ import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
 import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
 
 import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
-import { useSwipeable } from "react-swipeable";
 import { isMatchWith } from "lodash";
+import { useSwipeable } from "../../react-swipeable";
 
 let iconWidth = 80;
 let iconHeight = 60;
@@ -311,6 +311,8 @@ export default function ViewerPlayer(props) {
     displayUI,
     isAudio,
     audioIcon,
+    playlist,
+    playlistPos,
   } = props;
 
   const initialState = {
@@ -369,7 +371,13 @@ export default function ViewerPlayer(props) {
 
       return dispatch(
         createAction(ACTION_TYPES.update, {
-          left: direction === "horizontal" ? e.deltaX : 0,
+          left:
+            direction === "horizontal"
+              ? (playlistPos === 0 && e.deltaX > 0) ||
+                (playlistPos === playlist.length - 1 && e.deltaX < 0)
+                ? 0
+                : e.deltaX
+              : 0,
           top:
             direction === "vertical"
               ? e.deltaY >= 0

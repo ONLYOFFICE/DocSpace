@@ -598,7 +598,7 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {mobileDetails}
+      {isMobileOnly && mobileDetails}
       <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
       <ViewerImage
         prefixCls={prefixCls}
@@ -612,6 +612,8 @@ const ViewerBase = (props) => {
         dispatch={dispatch}
         createAction={createAction}
         actionType={ACTION_TYPES}
+        playlist={props.playlist}
+        playlistPos={props.playlistPos}
         currentTop={currentTop}
         opacity={state.opacity}
         getImageCenterXY={getImageCenterXY}
@@ -636,7 +638,7 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter ||
-        (isMobileOnly && (
+        (!isMobileOnly && (
           <div className={`${prefixCls}-container`}>
             <div
               className={`${prefixCls}-footer`}

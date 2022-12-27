@@ -4,13 +4,8 @@ import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "../../react-swipeable";
 
 export default function ViewerImage(props) {
-  const {
-    dispatch,
-    createAction,
-    actionType,
-    tpCache,
-    needUpdatePoint,
-  } = props;
+  const { dispatch, createAction, actionType, playlist, playlistPos } = props;
+
   const isMouseDown = React.useRef(false);
 
   const imgRef = React.useRef(null);
@@ -35,7 +30,13 @@ export default function ViewerImage(props) {
 
       return dispatch(
         createAction(actionType.update, {
-          left: direction === "horizontal" ? e.deltaX : 0,
+          left:
+            direction === "horizontal"
+              ? (playlistPos === 0 && e.deltaX > 0) ||
+                (playlistPos === playlist.length - 1 && e.deltaX < 0)
+                ? 0
+                : e.deltaX
+              : 0,
           opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
           top:
             direction === "vertical"
