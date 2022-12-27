@@ -537,7 +537,7 @@ const ViewerBase = (props) => {
       top = state.top + ((-direct * diffY) / state.scaleX) * scale * directX;
       left = state.left + ((-direct * diffX) / state.scaleY) * scale * directY;
       width = nowWidth;
-      height = currentHeight || state.height;
+      height = state.height;
     }
     dispatch(
       createAction(ACTION_TYPES.update, {
