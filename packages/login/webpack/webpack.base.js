@@ -40,7 +40,18 @@ module.exports = {
         type: "asset",
       },
       {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
+      },
+      {
         test: /\.react.svg$/,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",

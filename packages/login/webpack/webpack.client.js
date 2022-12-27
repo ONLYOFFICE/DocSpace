@@ -30,6 +30,20 @@ const clientConfig = {
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/login/",
     chunkFilename: "static/js/[id].[contenthash].js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      return `${folder}/[name].[contenthash][ext]`; //`${folder}/[name][ext]?hash=[contenthash]`;
+    },
   },
 
   performance: {
