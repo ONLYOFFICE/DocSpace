@@ -985,7 +985,6 @@ class FilesStore {
         if (isUserError) {
           runInAction(() => {
             this.isErrorRoomNotAvailable = true;
-            this.isEmptyPage = true;
           });
         } else {
           toastr.error(err);
