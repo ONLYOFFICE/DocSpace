@@ -17,6 +17,20 @@ const serverConfig = {
     filename: "[name].js",
     libraryTarget: "commonjs2",
     chunkFilename: "chunks/[name].js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      return `/login/${folder}/[name].[contenthash][ext]`; //`${folder}/[name][ext]?hash=[contenthash]`;
+    },
   },
 
   plugins: [
