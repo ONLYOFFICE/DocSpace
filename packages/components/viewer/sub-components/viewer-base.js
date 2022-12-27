@@ -72,7 +72,6 @@ const ViewerBase = (props) => {
     percent: 100,
     withTransition: false,
     opacity: 1,
-    tpCache: [],
   };
   function setContainerWidthHeight() {
     let width = window.innerWidth;
@@ -504,7 +503,7 @@ const ViewerBase = (props) => {
       zoomPercent = 100;
     }
 
-    let nowWidth = currentWidth || state.width;
+    let nowWidth = state.width;
 
     if (nowWidth === 0) {
       const [imgWidth, imgHeight] = getImgWidthHeight(
@@ -626,6 +625,7 @@ const ViewerBase = (props) => {
         left={state.left}
         rotate={state.rotate}
         onMaskClick={onMaskClick}
+        needUpdatePoint={state.needUpdatePoint}
         onChangeImgState={handleChangeImgState}
         onResize={handleResize}
         zIndex={zIndex + 5}
