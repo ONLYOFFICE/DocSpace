@@ -31,7 +31,11 @@ class UserStore {
 
     this.setIsLoading(true);
 
-    await this.loadCurrentUser();
+    try {
+      await this.loadCurrentUser();
+    } catch (e) {
+      console.error(e);
+    }
 
     this.setIsLoading(false);
     this.setIsLoaded(true);

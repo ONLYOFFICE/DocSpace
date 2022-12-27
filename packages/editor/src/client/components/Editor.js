@@ -104,7 +104,8 @@ function Editor({
         );
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      toastr.error(errorText);
+
+      errorText && toastr.error(errorText);
     }
   }, [mfReady, error]);
 
