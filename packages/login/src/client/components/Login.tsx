@@ -24,7 +24,7 @@ import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-
+import { getLogoFromPath } from "@docspace/common/utils";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -54,7 +54,7 @@ const Login: React.FC<ILoginProps> = ({
   useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
@@ -109,10 +109,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-            url,
-            "login",
-            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-          );
+              url,
+              "login",
+              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+            );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
@@ -177,7 +177,9 @@ const Login: React.FC<ILoginProps> = ({
   const bgPattern = getBgPattern(currentColorScheme.id);
 
   const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+  const logoUrl = !theme.isBase
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   if (!mounted) return <></>;
 

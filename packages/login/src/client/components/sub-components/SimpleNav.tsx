@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { hugeMobile } from "@docspace/components/utils/device";
+import { getLogoFromPath } from "@docspace/common/utils";
 import { Dark } from "@docspace/components/themes";
 
 const StyledNav = styled.div`
@@ -23,7 +24,10 @@ const StyledNav = styled.div`
 
 const SimpleNav = ({ theme, logoUrls }) => {
   const logo = Object.values(logoUrls)[0];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+
+  const logoUrl = !theme.isBase
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   return (
     <StyledNav id="login-header" theme={theme}>
