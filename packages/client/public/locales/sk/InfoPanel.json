@@ -1,12 +1,9 @@
 {
-  "FilesEmptyScreenText": "Podrobnosti o súboroch a priečinkoch nájdete tu",
   "FileExtension": "Rozšírenie súboru",
+  "FilesEmptyScreenText": "Podrobnosti o súboroch a priečinkoch nájdete tu",
   "ItemsSelected": "Vybraté položky",
   "LastModifiedBy": "Naposledy upravené",
-  "Members": "členovia",
-  "OpenSharingSettings": "Otvoriť nastavenia zdieľania",
   "SystemProperties": "Vlastnosti systému",
   "Versions": "Verzie",
-  "ViewDetails": "Zobraziť podrobnosti",
-  "WhoHasAccess": "Kto má prístup"
+  "ViewDetails": "Zobraziť podrobnosti"
 }

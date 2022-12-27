@@ -40,12 +40,10 @@ public sealed class UserManagerWrapper
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
-    private readonly MessageService _messageService;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
     private readonly CountRoomAdminChecker _countManagerChecker;
@@ -54,12 +52,10 @@ public sealed class UserManagerWrapper
         StudioNotifyService studioNotifyService,
         UserManager userManager,
         SecurityContext securityContext,
-        MessageService messageService,
         CustomNamingPeople customNamingPeople,
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         IPSecurity.IPSecurity iPSecurity,
-        DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
         UserFormatter userFormatter,
         CountRoomAdminChecker countManagerChecker)
@@ -67,12 +63,10 @@ public sealed class UserManagerWrapper
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
         _securityContext = securityContext;
-        _messageService = messageService;
         _customNamingPeople = customNamingPeople;
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _iPSecurity = iPSecurity;
-        _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
         _countManagerChecker = countManagerChecker;

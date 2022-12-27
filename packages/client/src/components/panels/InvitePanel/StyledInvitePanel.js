@@ -101,9 +101,11 @@ const StyledComboBox = styled(ComboBox)`
     text-decoration: none;
   }
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   .combo-buttons_arrow-icon {
-    margin-top: 6px;
-    margin-right: 8px;
     margin-left: 2px;
   }
 
@@ -111,6 +113,7 @@ const StyledComboBox = styled(ComboBox)`
 
   .combo-button {
     border-radius: 3px;
+    height: auto;
   }
 `;
 

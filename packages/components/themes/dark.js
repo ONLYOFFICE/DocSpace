@@ -2390,6 +2390,10 @@ const Dark = {
       descriptionColor: "#a3a9ae",
     },
 
+    tagInput: {
+      tagBackground: "#292929",
+    },
+
     dropdown: {
       background: "#333333",
       borderColor: "#474747",
@@ -2889,14 +2893,17 @@ const Dark = {
         tooltipLinkColor: "#e06a1b",
         arrowColor: white,
         descriptionColor: "#858585",
+        brandingDescriptionColor: "#858585",
 
         whiteLabel: {
-          borderImg: "1px solid #d1d1d1",
+          borderImg: "1px solid #474747",
 
-          backgroundColor: "#282828",
-          greenBackgroundColor: "#7e983f",
-          blueBackgroundColor: "#5170b5",
-          orangeBackgroundColor: "#e86e2e",
+          backgroundColorWhite: white,
+          backgroundColorLight: "#F8F9F9",
+          backgroundColorDark: "#282828",
+          greenBackgroundColor: "#40865C",
+          blueBackgroundColor: "#446995",
+          orangeBackgroundColor: "#AA5252",
 
           dataFontColor: white,
           dataFontColorBlack: white,

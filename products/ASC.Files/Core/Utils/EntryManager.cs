@@ -324,7 +324,6 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
-    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -353,8 +352,7 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings,
-        Global global)
+        ThumbnailSettings thumbnailSettings)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -380,7 +378,6 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
-        _global = global;
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
@@ -388,7 +385,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var total = 0;
 
@@ -471,7 +468,7 @@ public class EntryManager
         }
         else if ((parent.FolderType == FolderType.VirtualRooms || parent.FolderType == FolderType.Archive) && !parent.ProviderEntry)
         {
-            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider);
+            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider, subjectFilter);
 
             CalculateTotal();
         }

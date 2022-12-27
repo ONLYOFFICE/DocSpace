@@ -1,12 +1,9 @@
 {
-  "FilesEmptyScreenText": "Fayl və qovluq detallarına burada baxın",
   "FileExtension": "Fayl uzantısı",
+  "FilesEmptyScreenText": "Fayl və qovluq detallarına burada baxın",
   "ItemsSelected": "Seçilmiş elementlər",
   "LastModifiedBy": "tərəfindən Son Dəyişiklik",
-  "Members": "üzvlər",
-  "OpenSharingSettings": "Paylaşma ayarlarını açın",
   "SystemProperties": "Sistem xüsusiyyətləri",
   "Versions": "Versiyalar",
-  "ViewDetails": "Detallara baxın",
-  "WhoHasAccess": "Giriş icazəsi olanlar"
+  "ViewDetails": "Detallara baxın"
 }

@@ -38,7 +38,8 @@ const StyledComponent = styled.div`
   }
 
   .section-description {
-    color: #657077;
+    color: ${(props) =>
+      props.theme.client.settings.common.brandingDescriptionColor};
     line-height: 20px;
     padding-bottom: 20px;
   }
@@ -46,7 +47,7 @@ const StyledComponent = styled.div`
   hr {
     margin: 24px 0;
     border: none;
-    border-top: 1px solid #eceef1;
+    border-top: ${(props) => props.theme.client.settings.separatorBorder};
   }
 
   ${(props) => !props.isSettingPaid && UnavailableStyles}

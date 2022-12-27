@@ -77,6 +77,7 @@ const EmptyTrashDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="empty-archive_delete-submit"
           key="OkButton"
           label={t("DeleteForeverButton")}
           size="normal"
@@ -86,6 +87,7 @@ const EmptyTrashDialogComponent = (props) => {
           scale
         />
         <Button
+          id="empty-archive_delete-cancel"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"

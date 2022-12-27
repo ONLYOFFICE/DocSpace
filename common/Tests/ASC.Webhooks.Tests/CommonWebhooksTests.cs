@@ -27,6 +27,7 @@
 using System;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,90 +60,67 @@ namespace ASC.Webhooks.Tests
     [TestFixture]
     public class CommonWebhooksTests : BaseSetUp
     {
-        private readonly string EventName = "testEvent";
-        private readonly string secretKey = "testSecretKey";
-        private readonly string content = JsonSerializer.Serialize("testContent");
-        private readonly string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost") });
-        private readonly string URI = $"http://localhost:{port}/api/2.0/Test/";
-        private readonly DateTime creationTime = DateTime.Now;
-        private readonly CacheNotifyAction testCacheNotifyAction = CacheNotifyAction.Update;
+        private readonly string _eventName = "testEvent";
+        private readonly string _secretKey = "testSecretKey";
+        private readonly string _content = "testContent";
+        private readonly string _contentSerialize = JsonSerializer.Serialize("testContent");
+        private readonly string _uri = $"http://localhost:{_port}/api/2.0/Test/";
+        private readonly DateTime _creationTime = DateTime.Now;
+        private readonly CacheNotifyAction _testCacheNotifyAction = CacheNotifyAction.Update;
 
         [Order(1)]
         [Test]
-        public void Publisher()
+        public async Task Publisher()
         {
-            var scope = host.Services.CreateScope();
+            var scope = _host.Services.CreateScope();
             var dbWorker = scope.ServiceProvider.GetService<DbWorker>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
             var id = 1;
             var testWebhookRequest = new WebhookRequest { Id = id };
             var testTenant = new Tenant(1, "testWebhooksPublisher");
-            var testWebhookConfig = new WebhooksConfig()
-            {
-                SecretKey = secretKey,
-                TenantId = testTenant.Id,
-                Uri = URI
-            };
-            var testWebhooksEntry = new WebhookEntry()
-            {
-                Id = id,
-                Payload = content,
-                SecretKey = secretKey,
-                Uri = URI
-            };
-
             try
             {
                 tenantManager.SetCurrentTenant(testTenant);
 
-                dbWorker.AddWebhookConfig(testWebhookConfig);
+                await dbWorker.AddWebhookConfig(_eventName, _uri, _secretKey);
 
                 var mockedKafkaCaches = new Mock<ICacheNotify<WebhookRequest>>();
-                mockedKafkaCaches.Setup(a => a.Publish(testWebhookRequest, testCacheNotifyAction)).Verifiable();
+                mockedKafkaCaches.Setup(a => a.Publish(testWebhookRequest, _testCacheNotifyAction)).Verifiable();
 
-                var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedKafkaCaches.Object);
-                publisher.Publish(EventName, content);
+                var publisher = new WebhookPublisher(dbWorker, mockedKafkaCaches.Object);
+                await publisher.PublishAsync(_eventName, "", _contentSerialize);
 
-                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);
+                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, _testCacheNotifyAction), Times.Once);
             }
             catch (Exception ex)
             {
                 Assert.Fail(ex.ToString());
             }
-            Assert.AreEqual(dbWorker.ReadFromJournal(id), testWebhooksEntry);
+            Assert.AreEqual((await dbWorker.ReadJournal(id)).RequestPayload, _contentSerialize);
         }
-
+        
         [Order(2)]
         [Test]
         public async Task Sender()
         {
-            var scope = host.Services.CreateScope();
+            var scope = _host.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
             var dbWorker = serviceProvider.GetService<DbWorker>();
             var tenantManager = serviceProvider.GetService<TenantManager>();
 
-            var successedId = dbWorker.ConfigsNumber() + 1;
-            var failedId = successedId + 1;
             var testTenant = new Tenant(2, "testWebhooksSender");
 
             tenantManager.SetCurrentTenant(testTenant);
 
-            var successWebhookConfig = new WebhooksConfig { ConfigId = successedId, SecretKey = secretKey, Uri = $"{URI}SuccessRequest/" };
-            var failedWebhookConfig = new WebhooksConfig { ConfigId = failedId, SecretKey = secretKey, Uri = $"{URI}FailedRequest/" };
-            dbWorker.AddWebhookConfig(successWebhookConfig);
-            dbWorker.AddWebhookConfig(failedWebhookConfig);
 
-            var successWebhookPayload = new WebhooksLog { ConfigId = successedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, RequestPayload = content };
-            var failedWebhookPayload = new WebhooksLog { ConfigId = failedId, Status = ProcessStatus.InProcess, CreationTime = creationTime, RequestPayload = content };
-            var successWebhookPayloadId = dbWorker.WriteToJournal(successWebhookPayload);
-            var failedWebhookPayloadId = dbWorker.WriteToJournal(failedWebhookPayload);
+            var successedId = (await dbWorker.AddWebhookConfig(_eventName, $"{_uri}SuccessRequest/", _secretKey)).Id;
+            var failedId = (await dbWorker.AddWebhookConfig(_eventName, $"{_uri}FailedRequest/", _secretKey)).Id;
 
-            var mockedLog = new Mock<ILoggerProvider>();
-            //mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
-
-            //var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
-            //mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
+            var successWebhookPayload = new WebhooksLog { ConfigId = successedId, Status = 200, CreationTime = _creationTime, RequestPayload = _contentSerialize };
+            var failedWebhookPayload = new WebhooksLog { ConfigId = failedId, Status = 400, CreationTime = _creationTime, RequestPayload = _contentSerialize };
+            var successWebhookPayloadId = (await dbWorker.WriteToJournal(successWebhookPayload)).Id;
+            var failedWebhookPayloadId = (await dbWorker.WriteToJournal(failedWebhookPayload)).Id;
 
             var source = new CancellationTokenSource();
             var token = source.Token;
@@ -150,29 +128,25 @@ namespace ASC.Webhooks.Tests
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
-            var sender = new WebhookSender(mockedLog.Object, serviceProvider.GetRequiredService<IServiceScopeFactory>(), settings, httpClientFactory);
+            var sender = new WebhookSender(serviceProvider.GetService<ILoggerProvider>(), serviceProvider.GetRequiredService<IServiceScopeFactory>(), _httpClientFactory);
             await sender.Send(SuccessedWebhookRequest, token);
             await sender.Send(FailedWebhookRequest, token);
 
-            var asd = requestHistory.SuccessCounter;
-
-            Assert.IsTrue(requestHistory.SuccessCounter == 1, "Problem with successed request");
-            Assert.IsTrue(requestHistory.FailedCounter == webhookSender.RepeatCount, "Problem with failed request");
-            Assert.IsTrue(requestHistory.СorrectSignature, "Problem with signature");
+            Assert.IsTrue(_requestHistory.SuccessCounter == 1, "Problem with successed request");
+            Assert.IsTrue(_requestHistory.FailedCounter == 1, "Problem with failed request");
+            Assert.IsTrue(_requestHistory.СorrectSignature, "Problem with signature");
         }
-
+        
         [Test]
         public async Task GlobalFilter()
         {
             try
             {
                 var controllerAddress = "api/2.0/Test/testMethod";
-                var getEventName = $"method: GET, route: {controllerAddress}";
-                var postEventName = $"method: POST, route: {controllerAddress}";
 
                 var mockedWebhookPubslisher = new Mock<IWebhookPublisher>();
-                mockedWebhookPubslisher.Setup(a => a.Publish(getEventName, content)).Verifiable();
-                mockedWebhookPubslisher.Setup(a => a.Publish(postEventName, content)).Verifiable();
+                mockedWebhookPubslisher.Setup(a => a.PublishAsync("GET", controllerAddress, _content)).Verifiable();
+                mockedWebhookPubslisher.Setup(a => a.PublishAsync("POST", controllerAddress, _content)).Verifiable();
 
 
                 using var host = await new HostBuilder()
@@ -185,7 +159,7 @@ namespace ASC.Webhooks.Tests
                             services.AddSingleton(mockedWebhookPubslisher.Object);
                             services.AddControllers();
 
-                            services.AddSingleton(new Action<JsonOptions>(opt => opt.JsonSerializerOptions.IgnoreNullValues = false));
+                            services.AddSingleton(new Action<JsonOptions>(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never));
 
                             var dIHelper = new DIHelper();
                             dIHelper.Configure(services);
@@ -211,12 +185,12 @@ namespace ASC.Webhooks.Tests
                     .StartAsync();
 
                 var getResponse = await host.GetTestClient().GetAsync(controllerAddress);
-                mockedWebhookPubslisher.Verify(a => a.Publish(getEventName, content), Times.Never);
+                mockedWebhookPubslisher.Verify(a => a.PublishAsync("GET", controllerAddress, _content), Times.Never);
 
-                StringContent stringContent = new StringContent(content);
+                var stringContent = new StringContent(_content);
 
                 var postResponse = await host.GetTestClient().PostAsync(controllerAddress, stringContent);
-                mockedWebhookPubslisher.Verify(a => a.Publish(postEventName, content), Times.Once);
+                mockedWebhookPubslisher.Verify(a => a.PublishAsync("POST", controllerAddress, _content), Times.Once);
             }
             catch (Exception ex)
             {

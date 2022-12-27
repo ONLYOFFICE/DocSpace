@@ -33,7 +33,6 @@ public class RoomsModule : FeedModule
     public const string RoomItem = Constants.RoomItem;
     public const string SharedRoomItem = Constants.SharedRoomItem;
 
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
@@ -42,13 +41,11 @@ public class RoomsModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
     }

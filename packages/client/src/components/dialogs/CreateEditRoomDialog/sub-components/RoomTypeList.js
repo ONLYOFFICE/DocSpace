@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { roomTypes } from "../data";
 import { withTranslation } from "react-i18next";
 
 import RoomType from "./RoomType";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
+import { RoomsType } from "./../../../../../../common/constants/index";
 
 const StyledRoomTypeList = styled.div`
   width: 100%;
@@ -19,13 +19,14 @@ const StyledRoomTypeList = styled.div`
 const RoomTypeList = ({ t, setRoomType }) => {
   return (
     <StyledRoomTypeList>
-      {roomTypes.map((room) => (
+      {Object.values(RoomsType).map((roomType) => (
         <RoomType
+          id={roomType}
           t={t}
-          key={room.type}
-          room={room}
+          key={roomType}
+          roomType={roomType}
           type={"listItem"}
-          onClick={() => setRoomType(room.type)}
+          onClick={() => setRoomType(roomType)}
         />
       ))}
     </StyledRoomTypeList>

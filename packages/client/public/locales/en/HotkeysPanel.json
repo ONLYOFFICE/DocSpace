@@ -1,5 +1,4 @@
 {
-  "Hotkeys": "",
   "HotkeysActions": "Taking action on selected items",
   "HotkeysActionsInPreview": "Other actions",
   "HotkeysApplicationActions": "Application actions",
@@ -26,7 +25,6 @@
   "HotkeysMoveUp": "Move up without changing selection",
   "HotkeysNavigation": "Navigation",
   "HotkeysOpen": "Open selected item/Confirm action",
-  "HotkeysOr": "or",
   "HotkeysPlayPause": "Play/Pause",
   "HotkeysRedoLastUndoneAction": "Redo the last undone action",
   "HotkeysRemove": "Remove selected items",

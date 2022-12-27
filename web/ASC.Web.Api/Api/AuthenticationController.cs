@@ -42,7 +42,7 @@ public class AuthenticationController : ControllerBase
     private readonly CookiesManager _cookiesManager;
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
-    private readonly ICache _cache;
+    private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
     private readonly AccountLinker _accountLinker;
@@ -67,6 +67,7 @@ public class AuthenticationController : ControllerBase
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
 
     public AuthenticationController(
@@ -77,7 +78,6 @@ public class AuthenticationController : ControllerBase
         CookiesManager cookiesManager,
         PasswordHasher passwordHasher,
         EmailValidationKeyModelHelper emailValidationKeyModelHelper,
-        ICache cache,
         SetupInfo setupInfo,
         MessageService messageService,
         ProviderManager providerManager,
@@ -103,7 +103,8 @@ public class AuthenticationController : ControllerBase
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
         BruteForceLoginManager bruteForceLoginManager,
-        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
+        EmailValidationKeyProvider emailValidationKeyProvider)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -112,7 +113,7 @@ public class AuthenticationController : ControllerBase
         _cookiesManager = cookiesManager;
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
-        _cache = cache;
+        _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;
         _accountLinker = accountLinker;
@@ -138,6 +139,7 @@ public class AuthenticationController : ControllerBase
         _userManagerWrapper = userManagerWrapper;
         _bruteForceLoginManager = bruteForceLoginManager;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
     }
 
     [AllowNotPayment]
@@ -216,6 +218,11 @@ public class AuthenticationController : ControllerBase
         var wrapper = await GetUser(inDto);
         var viaEmail = wrapper.ViaEmail;
         var user = wrapper.UserInfo;
+
+        if (user == null || Equals(user, Constants.LostUser))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
 
         if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
@@ -348,11 +355,33 @@ public class AuthenticationController : ControllerBase
         {
             ViaEmail = true
         };
+
         var action = MessageAction.LoginFailViaApi;
-        UserInfo user;
+        UserInfo user = null;
+
         try
         {
-            if ((string.IsNullOrEmpty(inDto.Provider) && string.IsNullOrEmpty(inDto.SerializedProfile)) || inDto.Provider == "email")
+            if (inDto.ConfirmData != null)
+            {
+                var email = inDto.ConfirmData.Email;
+
+                var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.Auth + inDto.ConfirmData.First + inDto.ConfirmData.Module + inDto.ConfirmData.Sms, inDto.ConfirmData.Key, _setupInfo.ValidAuthKeyInterval);
+
+                if (checkKeyResult == ValidationResult.Ok)
+                {
+                    user = email.Contains("@")
+                                   ? _userManager.GetUserByEmail(email)
+                                   : _userManager.GetUsers(new Guid(email));
+
+                    if (_securityContext.IsAuthenticated && _securityContext.CurrentAccount.ID != user.Id)
+                    {
+                        _securityContext.Logout();
+                        _cookiesManager.ClearCookies(CookiesType.AuthKey);
+                        _cookiesManager.ClearCookies(CookiesType.SocketIO);
+                    }
+                }
+            }
+            else if ((string.IsNullOrEmpty(inDto.Provider) && string.IsNullOrEmpty(inDto.SerializedProfile)) || inDto.Provider == "email")
             {
                 inDto.UserName.ThrowIfNull(new ArgumentException(@"userName empty", "userName"));
                 if (!string.IsNullOrEmpty(inDto.Password))

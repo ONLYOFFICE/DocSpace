@@ -13,7 +13,7 @@ const NoRoomItem = ({ t }) => {
         />
       </div>
       <Text className="no-item-text" textAlign="center">
-        {t("See rooms details here")}
+        {t("RoomsEmptyScreenTent")}
       </Text>
     </StyledNoItemContainer>
   );

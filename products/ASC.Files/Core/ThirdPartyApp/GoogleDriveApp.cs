@@ -49,7 +49,6 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly UserManager _userManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly CookiesManager _cookiesManager;
-    private readonly MessageService _messageService;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
@@ -82,7 +81,6 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         UserManager userManager,
         UserManagerWrapper userManagerWrapper,
         CookiesManager cookiesManager,
-        MessageService messageService,
         Global global,
         GlobalStore globalStore,
         EmailValidationKeyProvider emailValidationKeyProvider,
@@ -121,7 +119,6 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _userManager = userManager;
         _userManagerWrapper = userManagerWrapper;
         _cookiesManager = cookiesManager;
-        _messageService = messageService;
         _global = global;
         _globalStore = globalStore;
         _emailValidationKeyProvider = emailValidationKeyProvider;

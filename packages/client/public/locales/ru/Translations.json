@@ -2,7 +2,6 @@
   "AddAccount": "Подключить",
   "AddAuthor": "Добавить автора",
   "ArchivingData": "Архивирование данных",
-  "ButtonShareAccess": "Настройка доступа",
   "ConnectingAccount": "Подключение аккаунта",
   "Copy": "Копировать",
   "CopyHere": "Копировать сюда",
@@ -38,7 +37,7 @@
   "MoveHere": "Переместить сюда",
   "MoveToOperation": "Перемещение",
   "NewForm": "Шаблон формы",
-  "NewFormFile": "Форма из текстового файла",
+  "Other": "Другой",
   "OwnerChange": "Сменить владельца",
   "Presentations": "Презентации",
   "Spreadsheets": "Таблицы",
@@ -55,6 +54,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Яндекс.Диск",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Другой"
+  "TypeTitlekDrive": "kDrive"
 }
