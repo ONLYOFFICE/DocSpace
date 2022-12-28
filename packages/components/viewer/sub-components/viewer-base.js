@@ -84,27 +84,27 @@ const ViewerBase = (props) => {
   const containerSize = React.useRef(setContainerWidthHeight());
   const [isOpen, setIsOpen] = React.useState(false);
   const footerHeight = 0;
-  function reducer(s, action) {
+  function reducer(state, action) {
     switch (action.type) {
       case ACTION_TYPES.setVisible:
         return {
-          ...s,
+          ...state,
           visible: action.payload.visible,
         };
       case ACTION_TYPES.setActiveIndex:
         return {
-          ...s,
+          ...state,
           activeIndex: action.payload.index,
           startLoading: true,
         };
       case ACTION_TYPES.update:
         return {
-          ...s,
+          ...state,
           ...action.payload,
         };
       case ACTION_TYPES.clear:
         return {
-          ...s,
+          ...state,
           width: 0,
           height: 0,
           scaleX: defaultScale,
@@ -120,7 +120,7 @@ const ViewerBase = (props) => {
       default:
         break;
     }
-    return s;
+    return state;
   }
 
   const viewerCore = React.useRef(null);
@@ -632,6 +632,7 @@ const ViewerBase = (props) => {
         onResize={handleResize}
         zIndex={zIndex + 5}
         scaleX={state.scaleX}
+        containerSize={containerSize}
         scaleY={state.scaleY}
         loading={state.loading}
         drag={drag}

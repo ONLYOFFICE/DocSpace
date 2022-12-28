@@ -4,7 +4,14 @@ import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "../../react-swipeable";
 
 export default function ViewerImage(props) {
-  const { dispatch, createAction, actionType, playlist, playlistPos } = props;
+  const {
+    dispatch,
+    createAction,
+    actionType,
+    playlist,
+    playlistPos,
+    containerSize,
+  } = props;
 
   const isMouseDown = React.useRef(false);
 
@@ -28,15 +35,29 @@ export default function ViewerImage(props) {
       const direction =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
 
+      let swipeLeft = 0;
+
+      const isEdgeImage =
+        (playlistPos === 0 && e.deltaX > 0) ||
+        (playlistPos === playlist.length - 1 && e.deltaX < 0);
+
+      if (props.width < window.innerWidth) {
+        swipeLeft =
+          direction === "horizontal"
+            ? isEdgeImage
+              ? props.left
+              : e.deltaX > 0
+              ? props.left + 2
+              : props.left - 2
+            : props.left;
+      } else {
+        swipeLeft =
+          direction === "horizontal" ? (isEdgeImage ? 0 : e.deltaX) : 0;
+      }
+
       return dispatch(
         createAction(actionType.update, {
-          left:
-            direction === "horizontal"
-              ? (playlistPos === 0 && e.deltaX > 0) ||
-                (playlistPos === playlist.length - 1 && e.deltaX < 0)
-                ? 0
-                : e.deltaX
-              : 0,
+          left: swipeLeft,
           opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
           top:
             direction === "vertical"
@@ -63,9 +84,10 @@ export default function ViewerImage(props) {
     },
     onSwiped: (e) => {
       if (Math.abs(e.deltaX) < 100) {
+        const initialLeft = (containerSize.current.width - props.width) / 2;
         return dispatch(
           createAction(actionType.update, {
-            left: 0,
+            left: props.width < window.innerWidth ? initialLeft : 0,
             top: props.currentTop,
             deltaY: 0,
             deltaX: 0,
