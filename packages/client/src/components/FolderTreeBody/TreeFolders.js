@@ -87,13 +87,10 @@ class TreeFolders extends React.Component {
     selectedFolder && setItemSecurity(selectedFolder.security);
   };
   componentDidMount() {
-    const { selectionFiles, expandedPanelKeys, data } = this.props;
+    const { selectionFiles, expandedPanelKeys = [], data } = this.props;
     this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
 
-    const isOpenInEditor = !expandedPanelKeys;
-    const isRootFolder = isOpenInEditor
-      ? true
-      : expandedPanelKeys?.length === 0;
+    const isRootFolder = expandedPanelKeys.length === 0;
 
     isRootFolder && this.setItemSecurityRights(data);
 
