@@ -485,7 +485,7 @@ class MediaViewer extends React.Component {
     const ext = this.getFileExtension(title);
 
     const getContextModel = () => {
-      return [
+      const model = [
         {
           key: "download",
           label: t("Common:Download"),
@@ -515,6 +515,8 @@ class MediaViewer extends React.Component {
           disabled: false,
         },
       ];
+
+      return isImage ? model.filter((el) => el.key !== "download") : model;
     };
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
