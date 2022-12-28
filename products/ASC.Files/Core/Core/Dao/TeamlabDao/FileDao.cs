@@ -115,7 +115,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -127,7 +127,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -147,7 +147,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -166,7 +166,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         query = query.OrderByDescending(r => r.Version);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -176,7 +176,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -192,7 +192,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => fileIds.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -255,7 +255,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in (checkShared ? FromQueryWithShared(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
+        await foreach (var e in (checkShared ? FromQuery(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -358,7 +358,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1302,7 +1302,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1316,7 +1316,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = GetFileQuery(filesDbContext, r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
 
-            return FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable()
+            return FromQuery(filesDbContext, query).AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(
                     f =>
@@ -1329,7 +1329,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = BuildSearch(GetFileQuery(filesDbContext, r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
 
-            return FromQueryWithShared(filesDbContext, query)
+            return FromQuery(filesDbContext, query)
                 .AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(f =>
@@ -1661,10 +1661,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
         var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
         var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
 
         return from r in dbFiles
                select new DbFileQuery
@@ -1683,33 +1680,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    Shared = (from f in filesDbContext.Security
                              where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
                              select f
-                             ).Any(),
-                   IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                      select f)
-                             .Any(),
-                   Deny = (from f in filesDbContext.Security
-                           where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                           select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                             ).Any()
                };
     }
 
     protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
-        var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
-        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
-
         return dbFiles
             .Select(r => new DbFileQuery
             {
@@ -1723,23 +1699,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                          ).FirstOrDefault()
                         where f.TenantId == r.TenantId
                         select f
-                          ).FirstOrDefault(),
-                Shared = true,
-                IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                   select f)
-                             .Any(),
-                Deny = (from f in filesDbContext.Security
-                        where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                        select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                          ).FirstOrDefault()
             });
     }
 
@@ -1796,8 +1756,6 @@ public class DbFileQuery
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
-    public bool IsFillFormDraft { get; set; }
-    public DbFileDeny Deny { get; set; }
 }
 
 public class DbFileDeny

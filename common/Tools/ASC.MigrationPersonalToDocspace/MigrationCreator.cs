@@ -43,6 +43,7 @@ public class MigrationCreator
     private string _userName;
     private string _toRegion;
     private int _tenant;
+    private readonly object _locker = new object();
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -248,10 +249,6 @@ public class MigrationCreator
     {
         var files =   GetFilesToProcess(id).ToList();
 
-        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>();
-        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
-
         return files.GroupBy(file => file.Module).ToList();
     }
 
@@ -287,10 +284,14 @@ public class MigrationCreator
     private async Task FindFiles(List<BackupFileInfo> list, IDataStore store, DbFile dbFile, string module)
     {
         var files = await store.ListFilesRelativeAsync(string.Empty, $"\\{GetUniqFileDirectory(dbFile.Id)}", "*.*", true)
-                 .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant))
+                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _tenant))
                  .ToListAsync();
 
-        list.AddRange(files);
+        lock (_locker)
+        {
+            list.AddRange(files);
+        }
+
         if (files.Any()) 
         {
             Console.WriteLine($"file {dbFile.Id} found");

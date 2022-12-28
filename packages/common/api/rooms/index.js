@@ -2,10 +2,11 @@ import { request } from "../client";
 import { decodeDisplayName } from "../../utils";
 import { FolderType } from "../../constants";
 
-export function getRooms(filter) {
+export function getRooms(filter, signal) {
   const options = {
     method: "get",
     url: `/files/rooms?${filter.toApiUrlParams()}`,
+    signal,
   };
 
   return request(options).then((res) => {

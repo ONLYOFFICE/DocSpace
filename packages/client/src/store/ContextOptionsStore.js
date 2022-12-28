@@ -175,19 +175,10 @@ class ContextOptionsStore {
     setIsVerHistoryPanel(true);
   };
 
-  finalizeVersion = async (id) => {
-    let timer = null;
-    try {
-      timer = setTimeout(() => {
-        this.filesActionsStore.setIsLoading(true);
-      }, 200);
-      await this.filesActionsStore.finalizeVersionAction(id);
-    } catch (err) {
-      toastr.error(err);
-    } finally {
-      this.filesActionsStore.setIsLoading(false);
-      clearTimeout(timer);
-    }
+  finalizeVersion = (id) => {
+    this.filesActionsStore
+      .finalizeVersionAction(id)
+      .catch((err) => toastr.error(err));
   };
 
   onClickFavorite = (e, id, t) => {
@@ -204,30 +195,21 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  lockFile = async (item, t) => {
-    let timer = null;
+  lockFile = (item, t) => {
     const { id, locked } = item;
     const {
       setSelection: setInfoPanelSelection,
     } = this.authStore.infoPanelStore;
 
-    try {
-      timer = setTimeout(() => {
-        this.filesActionsStore.setIsLoading(true);
-      }, 200);
-      await this.filesActionsStore
-        .lockFileAction(id, !locked)
-        .then(() =>
-          locked
-            ? toastr.success(t("Translations:FileUnlocked"))
-            : toastr.success(t("Translations:FileLocked"))
-        )
-        .then(() => setInfoPanelSelection({ ...item, locked: !locked }));
-    } catch (err) {
-      toastr.error(err);
-    } finally {
-      this.filesActionsStore.setIsLoading(false), clearTimeout(timer);
-    }
+    this.filesActionsStore
+      .lockFileAction(id, !locked)
+      .then(() =>
+        locked
+          ? toastr.success(t("Translations:FileUnlocked"))
+          : toastr.success(t("Translations:FileLocked"))
+      )
+      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
+      .catch((err) => toastr.error(err));
   };
 
   onClickLinkForPortal = (item, t) => {
@@ -1035,14 +1017,14 @@ class ContextOptionsStore {
             key: "pin-room",
             label: t("PinToTop"),
             icon: "/static/images/pin.react.svg",
-            onClick: pinRooms,
+            onClick: () => pinRooms(t),
             disabled: false,
           }
         : {
             key: "unpin-room",
             label: t("Unpin"),
             icon: "/static/images/unpin.react.svg",
-            onClick: unpinRooms,
+            onClick: () => unpinRooms(t),
             disabled: false,
           };
 

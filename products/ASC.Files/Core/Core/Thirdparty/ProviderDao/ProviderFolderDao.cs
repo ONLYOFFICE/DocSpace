@@ -59,11 +59,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var folderDao = selector.GetFolderDao(folderId);
         var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
-        if (result != null)
-        {
-            await SetSharedPropertyAsync(new[] { result });
-        }
-
         return result;
     }
 
@@ -97,8 +92,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, subjectId, searchText, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntriesIds);
 
         var result = await FilterByProvider(rooms.Where(r => r != null), provider).ToListAsync();
-
-        await SetSharedPropertyAsync(result);
 
         foreach (var r in result)
         {
@@ -151,8 +144,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var folderDao = selector.GetFolderDao(parentId);
         var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders, excludeSubject);
         var result = await folders.Where(r => r != null).ToListAsync();
-
-        await SetSharedPropertyAsync(result);
 
         foreach (var r in result)
         {

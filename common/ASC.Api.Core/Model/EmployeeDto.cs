@@ -108,11 +108,9 @@ public class EmployeeDtoHelper
             result.Title = userInfo.Title;
         }
 
-       // var userInfoLM = userInfo.LastModified.GetHashCode();
-
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = (await _userPhotoManager.GetSmallPhotoURL(userInfo.Id));// + $"?_={userInfoLM}";
+            result.AvatarSmall = (await _userPhotoManager.GetSmallPhotoURL(userInfo.Id));
         }
 
         if (result.Id != Guid.Empty)

@@ -1,8 +1,15 @@
 import styled, { css, keyframes } from "styled-components";
-import globalColors from "@docspace/components/utils/globalColors";
 import { Base } from "@docspace/components/themes";
 
 const backgroundColor = "none";
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 const StyledCircleWrap = styled.div`
   width: 16px;
@@ -12,14 +19,24 @@ const StyledCircleWrap = styled.div`
   cursor: pointer;
 `;
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+StyledCircleWrap.defaultProps = { theme: Base };
+
+const StyledLoadingButton = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 12px;
+  background: ${(props) =>
+    props.theme.filesPanels.upload.loadingButton.background};
+  position: absolute;
+  margin: 2px;
+  color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
+  font-size: 16px;
+  font-weight: bold;
 `;
+
+StyledLoadingButton.defaultProps = { theme: Base };
 
 const StyledCircle = styled.div`
   .circle__mask,
@@ -70,23 +87,4 @@ const StyledCircle = styled.div`
   }
 `;
 
-StyledCircleWrap.defaultProps = { theme: Base };
-
-const StyledLoadingButton = styled.div`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 12px;
-  background: ${(props) =>
-    props.theme.filesPanels.upload.loadingButton.background};
-  position: absolute;
-  margin: 2px;
-  color: ${(props) => props.theme.filesPanels.upload.loadingButton.color};
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-StyledLoadingButton.defaultProps = { theme: Base };
-
-export { StyledCircle, StyledCircleWrap, StyledLoadingButton };
+export { StyledCircle, StyledLoadingButton, StyledCircleWrap };

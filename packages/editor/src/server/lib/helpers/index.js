@@ -7,6 +7,7 @@ import {
   getBuildVersion,
   getCurrentCustomSchema,
   getAppearanceTheme,
+  getLogoUrls,
 } from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
@@ -16,7 +17,7 @@ import {
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
-export const getFavicon = (documentType) => {
+export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;
   let icon = null;
 
@@ -34,7 +35,9 @@ export const getFavicon = (documentType) => {
       break;
   }
 
-  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
+  const favicon = icon
+    ? `${homepage}/images/${icon}`
+    : logoUrls[2]?.path?.light;
   return favicon;
 };
 
@@ -70,6 +73,7 @@ export const initDocEditor = async (req) => {
       versionInfo,
       customNames,
       appearanceTheme,
+      logoUrls,
     ] = await Promise.all([
       getUser(),
       getSettings(),
@@ -77,6 +81,7 @@ export const initDocEditor = async (req) => {
       getBuildVersion(),
       getCurrentCustomSchema("Common"),
       getAppearanceTheme(),
+      getLogoUrls(),
     ]);
 
     const successAuth = !!user;
@@ -125,6 +130,7 @@ export const initDocEditor = async (req) => {
       versionInfo,
       customNames,
       appearanceTheme,
+      logoUrls,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };

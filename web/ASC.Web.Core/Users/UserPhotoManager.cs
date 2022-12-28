@@ -457,7 +457,13 @@ public class UserPhotoManager
         if (!string.IsNullOrEmpty(fileName))
         {
             var store = GetDataStore();
-            return (await store.GetUriAsync(fileName)).ToString();
+
+            var uri = await store.GetUriAsync(fileName);
+
+            var etag = await store.GetFileEtagAsync(string.Empty, fileName);
+            var version = etag.Replace("\"", "");
+
+            return uri.ToString() + $"?v={version}";
         }
 
         return null;
@@ -768,7 +774,7 @@ public class UserPhotoManager
         return (await store.SaveAsync(_tempDomainName, fileName, stream)).ToString();
     }
 
-    public async Task<string> SaveTempSvg(byte[] data, long maxFileSize)
+    public async Task<string> SaveTempPhoto(byte[] data, long maxFileSize, string ext)
     {
         if (maxFileSize != -1 && data.Length > maxFileSize)
         {
@@ -776,7 +782,7 @@ public class UserPhotoManager
         }
 
         using var stream = new MemoryStream(data);
-        var fileName = Guid.NewGuid() + ".svg";
+        var fileName = Guid.NewGuid() + $".{ext}";
         var store = GetDataStore();
         return (await store.SaveAsync(_tempDomainName, fileName, stream)).ToString();
     }

@@ -104,7 +104,8 @@ function Editor({
         );
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      toastr.error(errorText);
+
+      errorText && toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -123,7 +124,7 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit
+      !fileInfo.security.Edit && !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
