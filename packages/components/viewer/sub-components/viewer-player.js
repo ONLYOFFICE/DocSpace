@@ -20,7 +20,6 @@ import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
 import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
 
 import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
-import { isMatchWith } from "lodash";
 import { useSwipeable } from "../../react-swipeable";
 
 let iconWidth = 80;
@@ -369,15 +368,17 @@ export default function ViewerPlayer(props) {
       const direction =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
 
+      const xSwipe =
+        direction === "horizontal"
+          ? (playlistPos === 0 && e.deltaX > 0) ||
+            (playlistPos === playlist.length - 1 && e.deltaX < 0)
+            ? 0
+            : e.deltaX
+          : 0;
+
       return dispatch(
         createAction(ACTION_TYPES.update, {
-          left:
-            direction === "horizontal"
-              ? (playlistPos === 0 && e.deltaX > 0) ||
-                (playlistPos === playlist.length - 1 && e.deltaX < 0)
-                ? 0
-                : e.deltaX
-              : 0,
+          left: xSwipe,
           top:
             direction === "vertical"
               ? e.deltaY >= 0
@@ -386,7 +387,7 @@ export default function ViewerPlayer(props) {
               : top,
           opacity: direction === "vertical" && e.deltaY > 0 ? opacity : 1,
           deltaY: direction === "vertical" ? (e.deltaY > 0 ? e.deltaY : 0) : 0,
-          deltaX: direction === "horizontal" ? e.deltaX : 0,
+          deltaX: xSwipe,
         })
       );
     },
@@ -684,6 +685,7 @@ export default function ViewerPlayer(props) {
         opacity: 1,
         deltaY: 0,
         deltaX: 0,
+        speedState: 1,
       })
     );
   }
