@@ -51,7 +51,6 @@
   "ClearBackupList": "Удалить все резервные копии",
   "CompanyInfoSettings": "Настройки информации о компании",
   "CompanyInfoSettingsDescription": "Эта информация будет отображаться в окне <1>{{link}}</1> .",
-  "CompanyNameForCanvasLogo": "Название компании",
   "ConfirmEmailSended": "Письмо с подтверждением отправлено {{ownerName}}",
   "Custom": "Пользовательский",
   "CustomDomains": "Пользовательские домены",

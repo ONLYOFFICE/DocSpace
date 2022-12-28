@@ -197,7 +197,7 @@ const RoomSelector = ({
         searchEmptyScreenImage || "images/empty_screen_corporate.png"
       }
       searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
+        searchEmptyScreenHeader || t("Common:NotFoundTitle")
       }
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")

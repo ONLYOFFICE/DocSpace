@@ -49,7 +49,7 @@ const RootFolderContainer = (props) => {
     isVisitor,
     sectionWidth,
   } = props;
-  const personalDescription = t("PersonalEmptyContainerDescription");
+  const personalDescription = t("EmptyFolderDecription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const emptyScreenHeader = t("EmptyScreenFolder");
@@ -303,7 +303,7 @@ const RootFolderContainer = (props) => {
         alt="folder_icon"
       />
       <Link onClick={onGoToShared} {...linkStyles}>
-        {t("GoToShared")}
+        {t("GoToMyRooms")}
       </Link>
     </div>
   );
