@@ -16,7 +16,6 @@
   "Hide": "Скрыть",
   "HideAdditionalParameters": "Скрыть дополнительные параметры",
   "HideAuthPage": "Скрыть страницу аутентификации",
-  "LastName": "Фамилия",
   "LogoutEndpointUrl": "URL-адрес конечной точки единого выхода IdP:",
   "LogoutEndpointUrlTooltip": "URL-адрес, используемый для единого выхода на стороне поставщика сервиса",
   "NameIDFormat": "Формат NameID:",
