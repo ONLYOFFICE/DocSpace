@@ -694,6 +694,10 @@ class FilesStore {
     this.bufferSelection = bufferSelection;
   };
 
+  setIsLoadedFetchFiles = (isLoadedFetchFiles) => {
+    this.isLoadedFetchFiles = isLoadedFetchFiles;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
     const key = `UserFilter=${this.authStore.userStore.user.id}`;
@@ -825,7 +829,7 @@ class FilesStore {
       return this.fetchRooms();
 
     this.isErrorRoomNotAvailable = false;
-    this.isLoadedFetchFiles = false;
+    this.setIsLoadedFetchFiles(false);
 
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
@@ -986,7 +990,7 @@ class FilesStore {
         }
       })
       .finally(() => {
-        this.isLoadedFetchFiles = true;
+        this.setIsLoadedFetchFiles(true);
       });
   };
 
