@@ -249,10 +249,6 @@ public class MigrationCreator
     {
         var files =   GetFilesToProcess(id).ToList();
 
-        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>();
-        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
-
         return files.GroupBy(file => file.Module).ToList();
     }
 
