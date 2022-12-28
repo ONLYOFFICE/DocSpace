@@ -1252,11 +1252,6 @@ public class FileStorageService<T> //: IFileStorageService
         var tags = tagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.Locked);
         var tagLocked = await tags.FirstOrDefaultAsync();
 
-        ErrorIf(tagLocked != null
-                && tagLocked.Owner != _authContext.CurrentAccount.ID
-                && !_global.IsDocSpaceAdministrator
-                && (file.RootFolderType != FolderType.USER || file.RootCreateBy != _authContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_LockedFile);
-
         if (lockfile)
         {
             if (tagLocked == null)
