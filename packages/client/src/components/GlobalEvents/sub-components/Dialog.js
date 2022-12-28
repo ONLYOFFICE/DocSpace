@@ -25,7 +25,7 @@ const Dialog = ({
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
-    input && input.select();
+    if (input && value === startValue) input.select();
   }, [visible, value]);
 
   useEffect(() => {
