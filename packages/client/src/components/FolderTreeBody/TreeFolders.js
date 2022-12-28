@@ -271,7 +271,7 @@ class TreeFolders extends React.Component {
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
             path={path}
-            securityItem={item.security}
+            security={item.security}
           >
             {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
@@ -307,7 +307,7 @@ class TreeFolders extends React.Component {
           providerKey={item.providerKey}
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
-          securityItem={item.security}
+          security={item.security}
         />
       );
     });
@@ -442,8 +442,14 @@ class TreeFolders extends React.Component {
         ) {
           const roomsIndex = treeData.findIndex((f) => f.id == roomsFolderId);
           const firstRoomsNodeId = treeData[roomsIndex]?.folders[0]?.id;
+
           this.selectedRootRoom = false;
-          this.props.onSelect([firstRoomsNodeId], treeNode);
+
+          treeData[roomsIndex]?.folders[0] &&
+            this.props.onSelect(
+              [firstRoomsNodeId],
+              treeData[roomsIndex]?.folders[0]
+            );
         }
       })
       .catch((err) => console.log("err", err))

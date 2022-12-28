@@ -135,7 +135,7 @@ class SelectFolderDialog extends React.Component {
 
     setResultingFolderId(folder[0]);
 
-    setItemSecurity(treeNode.securityItem);
+    setItemSecurity(treeNode.security);
   };
 
   onClose = () => {
