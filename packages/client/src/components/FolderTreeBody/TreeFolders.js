@@ -432,9 +432,8 @@ class TreeFolders extends React.Component {
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         !certainFolders && this.props.setTreeFolders(treeData);
-       
+
         const isLastFoldersLevel =
-          expandedPanelKeys &&
           expandedPanelKeys[expandedPanelKeys.length - 1] === data.listIds[0];
 
         isLastFoldersLevel && this.setItemSecurityRights(data.folders);
