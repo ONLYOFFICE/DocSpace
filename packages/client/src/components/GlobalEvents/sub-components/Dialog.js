@@ -24,6 +24,11 @@ const Dialog = ({
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+    let input = document?.getElementById("create-text-input");
+    input && input.select();
+  }, [visible, value]);
+
+  useEffect(() => {
     if (startValue) setValue(startValue);
   }, [startValue]);
 
@@ -34,6 +39,7 @@ const Dialog = ({
     },
     [value]
   );
+
   useEffect(() => {
     document.addEventListener("keyup", onKeyUpHandler, false);
 
@@ -89,8 +95,9 @@ const Dialog = ({
       <ModalDialog.Header>{title}</ModalDialog.Header>
       <ModalDialog.Body>
         <TextInput
-          name={"create"}
-          type={"text"}
+          id="create-text-input"
+          name="create"
+          type="text"
           scale={true}
           value={value}
           isAutoFocussed={true}
