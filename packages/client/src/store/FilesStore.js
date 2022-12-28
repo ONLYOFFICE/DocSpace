@@ -2436,10 +2436,10 @@ class FilesStore {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {
           sortedFiles.presentations.push(item);
-        } else if (isDocument(item.fileExst)) {
-          sortedFiles.documents.push(item);
         } else if (isMasterFormExtension(item.fileExst)) {
           sortedFiles.masterForms.push(item);
+        } else if (isDocument(item.fileExst)) {
+          sortedFiles.documents.push(item);
         } else {
           sortedFiles.other.push(item);
         }
