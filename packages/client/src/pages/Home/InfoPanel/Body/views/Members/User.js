@@ -43,7 +43,7 @@ const User = ({
 
     changeUserType(userType, [user]);
 
-    /*
+    //TODO: add loader
 
     updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
@@ -74,7 +74,7 @@ const User = ({
           ),
         },
       });
-    } */
+    }
   };
 
   return (
