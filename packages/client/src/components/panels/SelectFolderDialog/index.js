@@ -233,7 +233,6 @@ class SelectFolderDialog extends React.Component {
       isDisableButton ||
       (selectionFiles && selectionFiles[0])?.parentId === +resultingFolderId;
 
-    console.log(securityItem.CopyTo, operationsType);
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
         selectionFiles={selectionFiles}
