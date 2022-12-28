@@ -24770,7 +24770,7 @@
 					<language>de-DE</language>
 				</translation_url>
 				<translation_url>
-					<path>../public/locales/el</path>
+					<path>../public/locales/el-GR</path>
 					<language>el-GR</language>
 				</translation_url>
 				<translation_url>
@@ -24794,15 +24794,15 @@
 					<language>it-IT</language>
 				</translation_url>
 				<translation_url>
-					<path>../public/locales/ja</path>
+					<path>../public/locales/ja-JP</path>
 					<language>ja-JP</language>
 				</translation_url>
 				<translation_url>
-					<path>../public/locales/ko</path>
+					<path>../public/locales/ko-KR</path>
 					<language>ko-KR</language>
 				</translation_url>
 				<translation_url>
-					<path>../public/locales/lo</path>
+					<path>../public/locales/lo-LA</path>
 					<language>lo-LA</language>
 				</translation_url>
 				<translation_url>
@@ -24846,7 +24846,7 @@
 					<language>tr-TR</language>
 				</translation_url>
 				<translation_url>
-					<path>../public/locales/uk</path>
+					<path>../public/locales/uk-UA</path>
 					<language>uk-UA</language>
 				</translation_url>
 				<translation_url>
