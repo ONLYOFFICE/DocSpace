@@ -203,8 +203,6 @@ const ConflictResolveDialog = (props) => {
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="message">
-          {console.log(filesCount, folderTitle)}
-
           {singleFile ? (
             <Trans
               t={t}
