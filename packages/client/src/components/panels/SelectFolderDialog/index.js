@@ -202,10 +202,8 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
-      isRecycleBin,
       currentFolderId,
       selectionFiles,
-      sharedRoomId,
       resultingFolderTree,
     } = this.props;
     const { displayType, isLoadingData, isAvailable } = this.state;
@@ -217,20 +215,19 @@ class SelectFolderDialog extends React.Component {
 
     // console.log("Render Folder Component?", this.state);
 
-    const folderSelectionDisabled =
-      resultingFolderId === sharedRoomId ||
-      resultingFolderId === sharedRoomId?.toString();
+    const isCurrentFolder = currentFolderId === resultingFolderId;
+
+    const isUnavailableTree = isDisableTree || !isAvailable;
 
     const buttonIsDisabled =
+      isLoadingData ||
+      isUnavailableTree ||
+      isCurrentFolder ||
       isDisableButton ||
-      (isRecycleBin && currentFolderId === resultingFolderId) ||
       (selectionFiles && selectionFiles[0])?.parentId === +resultingFolderId;
-
-    const isCurrentFolder = +currentFolderId === +resultingFolderId;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
-        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
         theme={theme}
         t={t}
@@ -259,7 +256,6 @@ class SelectFolderDialog extends React.Component {
       />
     ) : (
       <SelectionPanel
-        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
         t={t}
         theme={theme}
@@ -282,7 +278,6 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={buttonIsDisabled}
-        isCurrentFolder={isCurrentFolder}
       />
     );
   }
@@ -323,11 +318,7 @@ export default inject(
     },
     { selectedId }
   ) => {
-    const {
-      setExpandedPanelKeys,
-      sharedRoomId,
-      fetchTreeFolders,
-    } = treeFoldersStore;
+    const { setExpandedPanelKeys, fetchTreeFolders } = treeFoldersStore;
 
     const { filter } = filesStore;
     const { setSelectedItems } = filesActionsStore;
@@ -362,7 +353,6 @@ export default inject(
       setProviderKey,
       filter,
       setSelectedItems,
-      sharedRoomId,
       fetchTreeFolders,
       setIsLoading,
       resultingFolderTree,
