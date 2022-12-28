@@ -202,6 +202,7 @@ export function getFoldersTree() {
             ? data.current.foldersCount || data.folders.length
             : null,
           newItems: data.new,
+          security: data.current.security,
         };
       });
     }

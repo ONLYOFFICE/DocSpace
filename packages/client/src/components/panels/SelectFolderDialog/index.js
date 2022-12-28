@@ -127,12 +127,15 @@ class SelectFolderDialog extends React.Component {
       setResultingFolderId,
       resultingFolderId,
       onSelectTreeNode,
+      setItemSecurity,
     } = this.props;
 
     if (+resultingFolderId === +folder[0]) return;
-    if (!!onSelectTreeNode) selectedTreeNode = treeNode.node;
+    if (!!onSelectTreeNode) selectedTreeNode = treeNode;
 
     setResultingFolderId(folder[0]);
+
+    setItemSecurity(treeNode.securityItem);
   };
 
   onClose = () => {
@@ -205,6 +208,8 @@ class SelectFolderDialog extends React.Component {
       currentFolderId,
       selectionFiles,
       resultingFolderTree,
+      operationsType,
+      securityItem,
     } = this.props;
     const { displayType, isLoadingData, isAvailable } = this.state;
 
@@ -213,19 +218,22 @@ class SelectFolderDialog extends React.Component {
       : t("Common:SaveHereButton");
     const name = dialogName ? dialogName : t("Common:SaveButton");
 
-    // console.log("Render Folder Component?", this.state);
-
-    const isCurrentFolder = currentFolderId === resultingFolderId;
-
     const isUnavailableTree = isDisableTree || !isAvailable;
+    const isDisableMoving =
+      currentFolderId?.toString() === resultingFolderId?.toString() ||
+      !securityItem.MoveTo;
+
+    const isDisabledOperations =
+      operationsType === "move" ? isDisableMoving : !securityItem.CopyTo;
 
     const buttonIsDisabled =
+      isDisabledOperations ||
       isLoadingData ||
       isUnavailableTree ||
-      isCurrentFolder ||
       isDisableButton ||
       (selectionFiles && selectionFiles[0])?.parentId === +resultingFolderId;
 
+    console.log(securityItem.CopyTo, operationsType);
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
         selectionFiles={selectionFiles}
@@ -297,6 +305,7 @@ SelectFolderDialog.propTypes = {
   withoutProvider: PropTypes.bool,
   withoutImmediatelyClose: PropTypes.bool,
   isDisableTree: PropTypes.bool,
+  operationsType: PropTypes.oneOf(["copy", "move"]),
 };
 SelectFolderDialog.defaultProps = {
   id: "",
@@ -335,6 +344,8 @@ export default inject(
       resultingFolderTree,
       setResultingFoldersTree,
       toDefault,
+      setItemSecurity,
+      securityItem,
     } = selectFolderDialogStore;
 
     const { settingsStore } = auth;
@@ -358,6 +369,8 @@ export default inject(
       resultingFolderTree,
       toDefault,
       setResultingFoldersTree,
+      setItemSecurity,
+      securityItem,
     };
   }
 )(
