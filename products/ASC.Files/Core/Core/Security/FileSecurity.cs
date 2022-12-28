@@ -1545,6 +1545,24 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
+    public static void CorrectSecurityByLockedStatus<T>(FileEntry<T> entry)
+    {
+        if (entry is not File<T> file || file.Security == null || file.LockedBy == null)
+        {
+            return;
+        }
+
+        foreach (var action in _securityEntries[FileEntryType.File])
+        {
+            if (action != FilesSecurityActions.Read &&
+                action != FilesSecurityActions.ReadHistory &&
+                action != FilesSecurityActions.Lock)
+            {
+                file.Security[action] = false;
+            }
+        }
+    }
+
     private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom)
     {
         if (!isUser)
