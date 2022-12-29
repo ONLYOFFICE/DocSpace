@@ -122,6 +122,11 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
+                    if (table.Name == "files_thirdparty_account" || table.Name == "files_bunch_objects" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
+                    {
+                        continue;
+                    }
+
                     Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
