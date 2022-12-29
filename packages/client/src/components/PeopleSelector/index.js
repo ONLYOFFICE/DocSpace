@@ -181,9 +181,7 @@ const PeopleSelector = ({
       emptyScreenHeader={emptyScreenHeader || t("EmptyHeader")}
       emptyScreenDescription={emptyScreenDescription || t("EmptyDescription")}
       searchEmptyScreenImage={searchEmptyScreenImage}
-      searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyHeader")
-      }
+      searchEmptyScreenHeader={searchEmptyScreenHeader || t("NotFoundUsers")}
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyDescription")
       }

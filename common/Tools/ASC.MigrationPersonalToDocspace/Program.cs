@@ -36,8 +36,8 @@ var param = Parser.Default.ParseArguments<Options>(args).Value;
 /*var param = new Options()
 {
     FromRegion = "personal",
-    ToRegion = "docSpace",
-    Tenant = 69,
+    ToRegion = "personal",
+    Tenant = 1,
     UserName = "administrator"
 };*/
 
@@ -91,19 +91,19 @@ Console.WriteLine("backup start");
 var migrationCreator = app.Services.GetService<MigrationCreator>();
 var fileName = migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion);
 Console.WriteLine("backup was success");
-//Console.WriteLine("restore start");
-//var migrationRunner = app.Services.GetService<MigrationRunner>();
-//await migrationRunner.Run(fileName, param.ToRegion);
-//Console.WriteLine("restore was success");
+Console.WriteLine("restore start");
+var migrationRunner = app.Services.GetService<MigrationRunner>();
+await migrationRunner.Run(fileName, param.ToRegion);
+Console.WriteLine("restore was success");
 
-/*Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Equals(fileName)).ToList().ForEach(File.Delete);
+Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Equals(fileName)).ToList().ForEach(File.Delete);
 
 if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 {
     Directory.Delete(AppContext.BaseDirectory + "\\temp");
-}*/
+}
 
-//Console.WriteLine("migration was success");
+Console.WriteLine("migration was success");
 
 public sealed class Options
 {
