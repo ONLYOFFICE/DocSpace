@@ -221,7 +221,7 @@ const StyledBadgesContainer = styled.div`
       padding: 0 3.3px 0 4px;
       p {
         letter-spacing: 0.5px;
-        font-size: 8px;
+        font-size: 9px;
         font-weight: 800;
       }
     }
