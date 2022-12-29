@@ -25,6 +25,7 @@ const ButtonKeys = Object.freeze({
   rightArrow: 39,
   upArrow: 38,
   downArrow: 40,
+  space: 32,
   esc: 27,
   ctr: 17,
   one: 49,
@@ -386,6 +387,10 @@ class MediaViewer extends React.Component {
                   .click()
               : this.nextMedia()
             : null;
+          break;
+        case ButtonKeys.space:
+          document.getElementsByClassName("volume-container").length > 0 &&
+            document.getElementsByClassName("volume-container")[0].click();
           break;
         case ButtonKeys.esc:
           if (!this.props.deleteDialogVisible) this.props.onClose();
