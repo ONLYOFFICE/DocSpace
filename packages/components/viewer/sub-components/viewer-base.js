@@ -639,7 +639,7 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter ||
-        (!isMobileOnly && (
+        (!isMobileOnly && props.displayUI && (
           <div className={`${prefixCls}-container`}>
             <div
               className={`${prefixCls}-footer`}

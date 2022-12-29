@@ -279,6 +279,7 @@ const StyledVideoControls = styled.div`
 
 const getDuration = (time) => {
   const timestamp = Math.floor(time);
+  if (isNaN(timestamp)) return "00:00";
 
   const hours = Math.floor(timestamp / 60 / 60);
   const minutes = Math.floor(timestamp / 60) - hours * 60;
@@ -512,6 +513,7 @@ export default function ViewerPlayer(props) {
     const speed = ["X0.5", "X1", "X1.5", "X2"];
     const items = speed.map((speed, index) => (
       <div
+        key={index}
         className="dropdown-item"
         onClick={() => {
           dispatch(
@@ -789,7 +791,9 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                   {!state.isPlaying ? <IconPlay /> : <IconStop />}
                 </div>
 
-                <StyledDuration>{state.duration}</StyledDuration>
+                <StyledDuration>
+                  {state.duration && state.duration}
+                </StyledDuration>
 
                 {!isMobileOnly && (
                   <div className="volume-container">
