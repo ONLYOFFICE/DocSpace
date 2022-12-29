@@ -8,8 +8,7 @@ import VideoViewer from "./sub-components/video-viewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import { isDesktop } from "react-device-detect";
-
+import { isMobileOnly } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
 const StyledVideoViewer = styled(VideoViewer)`
@@ -521,7 +520,9 @@ class MediaViewer extends React.Component {
         },
       ];
 
-      return isImage ? model.filter((el) => el.key !== "download") : model;
+      return isImage && !isMobileOnly
+        ? model.filter((el) => el.key !== "download")
+        : model;
     };
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {

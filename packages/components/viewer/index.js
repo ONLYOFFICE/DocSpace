@@ -121,11 +121,12 @@ export const Viewer = (props) => {
     </div>
   );
 
-  const displayUI = isImage || isAudio || panelVisible;
+  const displayUI = isAudio || panelVisible;
 
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
       {...props}
+      displayUI={displayUI}
       mobileDetails={mobileDetails}
       container={container}
       onMaskClick={onMaskClick}
