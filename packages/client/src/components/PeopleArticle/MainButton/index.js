@@ -1,6 +1,7 @@
 ﻿import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
 import PlaneReactSvgUrl from "PUBLIC_DIR/images/plane.react.svg?url";
 import ImportReactSvgUrl from "PUBLIC_DIR/images/import.react.svg?url";
+import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -99,7 +100,7 @@ class ArticleMainButtonContent extends React.Component {
         icon: combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           homepage,
-          "/images/add.employee.react.svg"
+          AddEmployeeReactSvgUrl
         ),
         label: userCaption,
         onClick: this.goToEmployeeCreate,

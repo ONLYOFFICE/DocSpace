@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
@@ -71,7 +71,7 @@ const User = ({
         role="user"
         className="avatar"
         size="min"
-        source={isExpect ? "/static/images/@.react.svg" : user.avatar || ""}
+        source={isExpect ? AtReactSvgUrl : user.avatar || ""}
         userName={isExpect ? "" : user.displayName}
       />
 

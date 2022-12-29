@@ -1,5 +1,5 @@
 import React from "react";
-
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg";
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import HistoryBlockMessage from "./HistoryBlockMessage";
@@ -39,9 +39,7 @@ const HistoryBlock = ({
         size="min"
         source={
           initiator.avatarSmall ||
-          (initiator.displayName
-            ? ""
-            : initiator.email && "/static/images/@.react.svg")
+          (initiator.displayName ? "" : initiator.email && AtReactSvgUrl)
         }
         userName={initiator.displayName}
       />
