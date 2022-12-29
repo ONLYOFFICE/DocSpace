@@ -207,8 +207,8 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 PeopleSelector.defaultProps = {
   excludeItems: [],
   selectAllIcon: "/static/images/catalog.accounts.react.svg",
-  emptyScreenImage: "/static/images/empty_screen_persons.png",
-  searchEmptyScreenImage: "/static/images/empty_screen_persons.png",
+  emptyScreenImage: "images/empty_screen_persons.svg",
+  searchEmptyScreenImage: "images/empty_screen_persons.svg",
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
