@@ -122,7 +122,7 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
-                    if (table.Name == "files_thirdparty_account" || table.Name == "files_bunch_objects" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
+                    if (table.Name == "files_thirdparty_account" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
                     {
                         continue;
                     }
@@ -163,6 +163,11 @@ public class MigrationCreator
                             ChangeName(data);
                         }
 
+                        if (data.TableName == "files_bunch_objects")
+                        {
+                            RemoveGeneralBunchObjects(data);
+                        }
+
                         using (var file = _tempStream.Create())
                         {
                             data.WriteXml(file, XmlWriteMode.WriteSchema);
@@ -199,7 +204,20 @@ public class MigrationCreator
                 newAlias = Console.ReadLine();
             }
         }
+        var q = data.Rows[0];
         data.Rows[0]["alias"] = newAlias;
+    }
+
+    private void RemoveGeneralBunchObjects(DataTable data)
+    {
+        for(var i = 0; i < data.Rows.Count; i++)
+        {
+            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
+            {
+                data.Rows.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     private List<string> GetAliases()
