@@ -1,4 +1,3 @@
-//TODO: fix routes
 import LoginPageSvgUrl from "../../client/public/images/logo/loginpage.svg?url";
 import DarkLoginPageSvgUrl from "../../client/public/images/logo/dark_loginpage.svg?url";
 import LeftMenuSvgUrl from "../../client/public/images/logo/leftmenu.svg?url";
@@ -6,6 +5,14 @@ import DocseditorSvgUrl from "../../client/public/images/logo/docseditor.svg?url
 import LightSmallSvgUrl from "../../client/public/images/logo/lightsmall.svg?url";
 import DocsEditoRembedSvgUrl from "../../client/public/images/logo/docseditorembed.svg?url";
 import DarkLightSmallSvgUrl from "../../client/public/images/logo/dark_lightsmall.svg?url";
+
+import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
+import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
+import BackgroundPatternGreenReactSvgUrl from "../../../public/images/background.pattern.green.react.svg?url";
+import BackgroundPatternRedReactSvgUrl from "../../../public/images/background.pattern.red.react.svg?url";
+import BackgroundPatternPurpleReactSvgUrl from "../../../public/images/background.pattern.purple.react.svg?url";
+import BackgroundPatternLightBlueReactSvgUrl from "../../../public/images/background.pattern.lightBlue.react.svg?url";
+import BackgroundPatternBlackReactSvgUrl from "../../../public/images/background.pattern.black.react.svg?url";
 
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
@@ -476,29 +483,27 @@ export const getConvertedSize = (t, size) => {
   );
 };
 
-//TODO: add for url use
 export const getBgPattern = (colorSchemeId: number) => {
   switch (colorSchemeId) {
     case 1:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
     case 2:
-      return "url('/static/images/background.pattern.orange.react.svg')";
+      return `url('${BackgroundPatternOrangeReactSvgUrl}')`;
     case 3:
-      return "url('/static/images/background.pattern.green.react.svg')";
+      return `url('${BackgroundPatternGreenReactSvgUrl}')`;
     case 4:
-      return "url('/static/images/background.pattern.red.react.svg')";
+      return `url('${BackgroundPatternRedReactSvgUrl}')`;
     case 5:
-      return "url('/static/images/background.pattern.purple.react.svg')";
+      return `url('${BackgroundPatternPurpleReactSvgUrl}')`;
     case 6:
-      return "url('/static/images/background.pattern.lightBlue.react.svg')";
+      return `url('${BackgroundPatternLightBlueReactSvgUrl}')`;
     case 7:
-      return "url('/static/images/background.pattern.black.react.svg')";
+      return `url('${BackgroundPatternBlackReactSvgUrl}')`;
     default:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
   }
 };
 
-//TODO: check for custom logo
 export const getLogoFromPath = (path) => {
   if (!path || path.indexOf("images/logo/") === -1) return path;
 
