@@ -459,6 +459,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/settings",
                   "/settings/common",
                   "/settings/admin",
+                  "/products/files",
                   //"/settings/connected-clouds",
                 ]}
                 component={FilesRoute}
