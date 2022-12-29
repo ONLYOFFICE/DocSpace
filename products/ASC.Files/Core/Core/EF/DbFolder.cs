@@ -130,7 +130,9 @@ public static class DbFolderExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Private).HasColumnName("private");
+            entity.Property(e => e.Private)
+                .HasColumnName("private")
+                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.HasLogo).HasColumnName("has_logo");
         });

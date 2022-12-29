@@ -30,6 +30,7 @@ const ArticlePaymentAlert = ({
   setPortalPaymentQuotas,
   currentTariffPlanTitle,
   toggleArticleOpen,
+  tariffPlanTitle,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -69,7 +70,7 @@ const ArticlePaymentAlert = ({
         </Text>
         <Text fontWeight={600}>
           {isFreeTariff
-            ? t("ActivateBusinessPlan", { planName: currentTariffPlanTitle })
+            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
             : t("GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
@@ -100,7 +101,11 @@ export default withRouter(
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
     const { theme } = auth;
-    const { setPortalPaymentQuotas, planCost } = paymentQuotasStore;
+    const {
+      setPortalPaymentQuotas,
+      planCost,
+      tariffPlanTitle,
+    } = paymentQuotasStore;
 
     return {
       setPortalPaymentQuotas,
@@ -108,6 +113,7 @@ export default withRouter(
       theme,
       currencySymbol: planCost.currencySymbol,
       currentTariffPlanTitle,
+      tariffPlanTitle,
     };
   })(observer(ArticlePaymentAlert))
 );

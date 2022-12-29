@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System;
+
 using Image = SixLabors.ImageSharp.Image;
 
 namespace ASC.Files.Core.VirtualRooms;
@@ -173,12 +175,14 @@ public class RoomLogoManager
 
         var id = GetId(room);
 
+        var cacheKey = Math.Abs(room.ModifiedOn.GetHashCode());
+
         return new Logo()
         {
-            Original = await GetLogoPathAsync(id, SizeName.Original),
-            Large = await GetLogoPathAsync(id, SizeName.Large),
-            Medium = await GetLogoPathAsync(id, SizeName.Medium),
-            Small = await GetLogoPathAsync(id, SizeName.Small),
+            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?_={cacheKey}",
+            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?_={cacheKey}",
+            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?_={cacheKey}",
+            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?_={cacheKey}"
         };
     }
 
@@ -281,11 +285,9 @@ public class RoomLogoManager
     private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size)
     {
         var fileName = string.Format(LogosPath, ProcessFolderId(id), size.ToStringLowerFast());
-        var etag = await DataStore.GetFileEtagAsync(string.Empty, fileName);
         var uri = await DataStore.GetUriAsync(fileName);
-        var version = etag.Replace("\"", "");
 
-        return uri.ToString() + $"?v={version}";
+        return uri.ToString();
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)
