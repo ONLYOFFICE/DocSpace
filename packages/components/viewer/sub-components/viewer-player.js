@@ -315,6 +315,10 @@ export default function ViewerPlayer(props) {
     playlistPos,
   } = props;
 
+  const localStorageVolume = localStorage.getItem("player-volume");
+  const stateVolume =
+    localStorageVolume !== null ? Number(localStorageVolume) : 100;
+
   const initialState = {
     width: 0,
     height: 0,
@@ -330,7 +334,7 @@ export default function ViewerPlayer(props) {
     volumeSelection: false,
     speedState: 1,
     isOpenContext: false,
-    volume: 100,
+    volume: stateVolume,
     size: "0%",
     opacity: 1,
     deltaY: 0,
@@ -357,9 +361,11 @@ export default function ViewerPlayer(props) {
 
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
+  const actionRef = React.useRef(null);
+  const mobileProgressRef = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const [currentVolume, setCurrentVolume] = React.useState(100);
+  const [currentVolume, setCurrentVolume] = React.useState(stateVolume);
   const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
   const handlers = useSwipeable({
     onSwiping: (e) => {
@@ -438,6 +444,8 @@ export default function ViewerPlayer(props) {
 
     setCurrentVolume(e.target.value);
 
+    localStorage.setItem("player-volume", e.target.value);
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         isMuted: volume ? false : true,
@@ -447,10 +455,22 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleVolumeMute = () => {
+    let volume = null;
+
+    if (!state.isMuted) {
+      localStorage.setItem("player-volume", 0);
+    }
+
+    if (state.isMuted) {
+      volume = currentVolume === 0 ? 100 : currentVolume;
+      videoRef.current.volume = volume / 100;
+      localStorage.setItem("player-volume", volume);
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         isMuted: !state.isMuted,
-        volume: state.volume ? 0 : currentVolume,
+        volume: state.volume ? 0 : volume,
       })
     );
   };
@@ -681,14 +701,13 @@ export default function ViewerPlayer(props) {
         duration: lasting,
         progress: 0,
         isPlaying: false,
-        isMuted: false,
         isFullScreen: state.isFullScreen,
         speedSelection: false,
-        volume: state.volume,
         opacity: 1,
         deltaY: 0,
         deltaX: 0,
         speedState: 1,
+        isLoaded: true,
       })
     );
   }
@@ -721,28 +740,49 @@ export default function ViewerPlayer(props) {
     opacity: `${state.opacity}`,
     width: `${state.width}px`,
     height: `${state.height}px`,
+    top: 0,
+    position: "fixed",
     transform: `
 translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       state.top
     }px)`,
   };
   return (
-    <StyledVideoPlayer
-      id="video-playerId"
-      isFullScreen={state.isFullScreen}
-      {...handlers}
-    >
+    <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {isMobileOnly && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
-        <video
-          onClick={togglePlay}
-          id="videoPlayer"
-          ref={videoRef}
-          src={props.video.src}
-          style={imgStyle}
-          onTimeUpdate={handleOnTimeUpdate}
-        ></video>
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "80px",
+            top: "53px",
+          }}
+          {...handlers}
+        >
+          <video
+            onClick={togglePlay}
+            id="videoPlayer"
+            ref={videoRef}
+            onLoadStart={() => {
+              const volumeNow =
+                localStorageVolume !== null
+                  ? Number(localStorage.getItem("player-volume") / 100)
+                  : 1;
+              videoRef.current.volume = volumeNow;
+              dispatch(
+                createAction(ACTION_TYPES.update, {
+                  isMuted: volumeNow === 0,
+                })
+              );
+            }}
+            src={props.video.src}
+            style={imgStyle}
+            onTimeUpdate={handleOnTimeUpdate}
+          ></video>
+        </div>
         {!state.isPlaying && !isAudio && (
           <div
             className="bg-play"
@@ -763,6 +803,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               top: `${(window.innerHeight - 190) / 2 + state.deltaY}px`,
               position: "fixed",
               opacity: `${state.opacity}`,
+              zIndex: "-1",
             }}
           >
             <img src={audioIcon} />
@@ -772,7 +813,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
 
       {displayUI && (
         <StyledVideoControls>
-          <div className="mobile-video-progress">
+          <div className="mobile-video-progress" ref={mobileProgressRef}>
             <input
               ref={inputRef}
               type="range"
@@ -783,7 +824,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             />
           </div>
           <StyledVideoActions>
-            <div className="actions-container">
+            <div className="actions-container" ref={actionRef}>
               <div className="controll-box">
                 <div
                   className="controller volume-container video-play"
