@@ -443,16 +443,6 @@ public class FileSecurity : IFileSecurity
                         EntryId = entry.Id,
                         EntryType = entry.FileEntryType,
                         Share = FileShare.Read,
-                        Subject = WebItemManager.DocumentsProductID,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
-                        Owner = entry.RootCreateBy
-                    },
-                    new FileShareRecord
-                    {
-                        Level = int.MaxValue,
-                        EntryId = entry.Id,
-                        EntryType = entry.FileEntryType,
-                        Share = FileShare.Read,
                         Subject = Constants.GroupAdmin.ID,
                         TenantId = _tenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootCreateBy
@@ -1543,6 +1533,24 @@ public class FileSecurity : IFileSecurity
         result.Add(Constants.GroupEveryone.ID);
 
         return result;
+    }
+
+    public static void CorrectSecurityByLockedStatus<T>(FileEntry<T> entry)
+    {
+        if (entry is not File<T> file || file.Security == null || file.LockedBy == null)
+        {
+            return;
+        }
+
+        foreach (var action in _securityEntries[FileEntryType.File])
+        {
+            if (action != FilesSecurityActions.Read &&
+                action != FilesSecurityActions.ReadHistory &&
+                action != FilesSecurityActions.Lock)
+            {
+                file.Security[action] = false;
+            }
+        }
     }
 
     private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom)

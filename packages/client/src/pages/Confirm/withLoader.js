@@ -3,6 +3,7 @@ import { observer, inject } from "mobx-react";
 import Loader from "@docspace/components/loader";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
+import ConfirmWrapper from "./ConfirmWrapper";
 
 let loadTimeout = null;
 export default function withLoader(WrappedComponent) {
@@ -112,7 +113,9 @@ export default function withLoader(WrappedComponent) {
     return !isLoaded || !tReady ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <WrappedComponent {...props} />
+      <ConfirmWrapper>
+        <WrappedComponent {...props} />
+      </ConfirmWrapper>
     );
   };
 

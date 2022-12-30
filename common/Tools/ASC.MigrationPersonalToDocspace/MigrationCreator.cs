@@ -122,6 +122,11 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
+                    if (table.Name == "files_thirdparty_account" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
+                    {
+                        continue;
+                    }
+
                     Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
@@ -156,6 +161,11 @@ public class MigrationCreator
                         {
                             ChangeAlias(data);
                             ChangeName(data);
+                        }
+
+                        if (data.TableName == "files_bunch_objects")
+                        {
+                            RemoveGeneralBunchObjects(data);
                         }
 
                         using (var file = _tempStream.Create())
@@ -194,7 +204,20 @@ public class MigrationCreator
                 newAlias = Console.ReadLine();
             }
         }
+        var q = data.Rows[0];
         data.Rows[0]["alias"] = newAlias;
+    }
+
+    private void RemoveGeneralBunchObjects(DataTable data)
+    {
+        for(var i = 0; i < data.Rows.Count; i++)
+        {
+            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
+            {
+                data.Rows.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     private List<string> GetAliases()
@@ -248,10 +271,6 @@ public class MigrationCreator
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
     {
         var files =   GetFilesToProcess(id).ToList();
-
-        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>();
-        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }

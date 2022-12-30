@@ -269,7 +269,7 @@ const InviteInput = ({
                 onClick={addEmail}
                 height={48}
               >
-                {t("Add")} «{inputValue}»
+                {t("Common:AddButton")} «{inputValue}»
               </DropDownItem>
             )}
           </StyledDropDown>

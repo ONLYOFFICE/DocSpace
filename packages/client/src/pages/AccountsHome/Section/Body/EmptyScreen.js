@@ -22,7 +22,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   return (
     <>
       <EmptyScreenContainer
-        imageSrc="/static/images/empty_screen_persons.png"
+        imageSrc="images/empty_screen_persons.svg"
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}

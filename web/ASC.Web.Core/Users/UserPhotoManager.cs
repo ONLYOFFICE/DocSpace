@@ -457,7 +457,9 @@ public class UserPhotoManager
         if (!string.IsNullOrEmpty(fileName))
         {
             var store = GetDataStore();
-            return (await store.GetUriAsync(fileName)).ToString();
+            var uri = await store.GetUriAsync(fileName);
+
+            return uri.ToString();
         }
 
         return null;

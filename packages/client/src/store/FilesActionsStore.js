@@ -1339,7 +1339,7 @@ class FilesActionStore {
       case "copy":
         const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
 
-        return hasSelection && canCopy;
+        return hasSelection && canCopy.length > 0;
       case "showInfo":
       case "download":
         return hasSelection;

@@ -20,8 +20,6 @@ const QuickButtons = (props) => {
     isDisabled,
     onClickFavorite,
     viewAs,
-    isCanWebEdit,
-
     folderCategory,
   } = props;
 
@@ -57,8 +55,7 @@ const QuickButtons = (props) => {
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
-  const isAvailableLockFile =
-    !folderCategory && fileExst && displayBadges && isCanWebEdit;
+  const isAvailableLockFile = !folderCategory && fileExst && displayBadges;
 
   return (
     <div className="badges additional-badges">

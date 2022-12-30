@@ -1,7 +1,6 @@
 {
   "LblInviteAgain": "Kutsu uudelleen",
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",
-  "NotFoundTitle": "Ryhmänjäseniä ei löytynyt",
   "ReassignmentData": "Tietojen uudelleenmääritys",
   "UserStatus": "Tila"
 }
