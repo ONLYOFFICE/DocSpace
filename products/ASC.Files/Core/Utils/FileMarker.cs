@@ -869,6 +869,10 @@ public class FileMarker
                     {
                         cacheFolderId = rootFolderId = shareFolder;
                     }
+                    else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
+                    {
+                        rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<T>(_daoFactory);
+                    }
 
                     if (rootFolderId != null)
                     {
