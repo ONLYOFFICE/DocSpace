@@ -188,13 +188,13 @@ const RoomSelector = ({
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.png"}
+      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.svg"}
       emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
       emptyScreenDescription={
         emptyScreenDescription || t("EmptyRoomsDescription")
       }
       searchEmptyScreenImage={
-        searchEmptyScreenImage || "images/empty_screen_corporate.png"
+        searchEmptyScreenImage || "images/empty_screen_corporate.svg"
       }
       searchEmptyScreenHeader={
         searchEmptyScreenHeader || t("Common:NotFoundTitle")

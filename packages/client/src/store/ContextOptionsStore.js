@@ -506,7 +506,7 @@ class ContextOptionsStore {
 
     const isMedia =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const isCanWebEdit = item.viewAccessability?.WebEdit;
+
     const hasInfoPanel = contextOptions.includes("show-info");
 
     const emailSendIsDisabled = true;
@@ -519,23 +519,12 @@ class ContextOptionsStore {
         }
       : false;
 
-    const blockAction = isCanWebEdit
-      ? {
-          id: "option_block-unblock-version",
-          key: "block-unblock-version",
-          label: t("UnblockVersion"),
-          icon: "/static/images/locked.react.svg",
-          onClick: () => this.lockFile(item, t),
-          disabled: false,
-        }
-      : false;
-
     const onlyShowVersionHistory =
       !contextOptions.includes("finalize-version") &&
       contextOptions.includes("show-version-history");
 
-    const versionActions = !isMedia
-      ? !isMobile && !isMobileUtils() && !isTabletUtils()
+    const versionActions =
+      !isMobile && !isMobileUtils() && !isTabletUtils()
         ? onlyShowVersionHistory
           ? [
               {
@@ -591,9 +580,7 @@ class ContextOptionsStore {
               onClick: () => this.showVersionHistory(item.id, item.security),
               disabled: false,
             },
-          ]
-      : [];
-
+          ];
     const moveActions =
       !isMobile && !isMobileUtils() && !isTabletUtils()
         ? [
@@ -822,7 +809,14 @@ class ContextOptionsStore {
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
-      blockAction,
+      {
+        id: "option_block-unblock-version",
+        key: "block-unblock-version",
+        label: t("UnblockVersion"),
+        icon: "/static/images/locked.react.svg",
+        onClick: () => this.lockFile(item, t),
+        disabled: false,
+      },
       {
         key: "separator1",
         isSeparator: true,

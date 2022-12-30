@@ -141,7 +141,7 @@ const RootFolderContainer = (props) => {
       case FolderType.COMMON:
         return {
           descriptionText: commonDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: "images/empty_screen_corporate.svg",
           buttons: commonButtons,
         };
       case FolderType.Favorites:
@@ -170,15 +170,15 @@ const RootFolderContainer = (props) => {
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
           imageSrc: theme.isBase
-            ? "images/empty_screen_trash_alt.png"
-            : "images/empty_screen_trash_alt.png",
+            ? "images/empty_screen_trash.svg"
+            : "images/empty_screen_trash.svg",
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: "images/empty_screen_corporate.svg",
           buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
