@@ -7,6 +7,8 @@ import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg"
 const ToolbarItem = styled.li`
   height: 48px;
   width: 48px;
+
+  ${(props) => (props.isSeparator ? "width: 33px;" : "width: 48px;")}
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,6 +129,7 @@ export default function ViewerToolbar(props) {
         percent={config.percent ? props.percent : 100}
         noHover={config.noHover}
         key={config.key}
+        isSeparator={config.actionType === -1}
         className={`${props.prefixCls}-btn`}
         onClick={() => {
           handleAction(config);
