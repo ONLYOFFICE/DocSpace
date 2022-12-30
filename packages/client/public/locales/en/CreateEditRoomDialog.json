@@ -25,5 +25,6 @@
   "ThirdPartyStorageRememberChoice": "Remember this choice for new rooms",
   "ThirdPartyStorageTitle": "Third party storage",
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
-  "ViewOnlyRoomTitle": "View-only room"
+  "ViewOnlyRoomTitle": "View-only room",
+  "SizeImageLarge": "The image size is too large, please select another image."
 }
