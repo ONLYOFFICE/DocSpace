@@ -585,6 +585,7 @@ export default function ViewerPlayer(props) {
       createAction(ACTION_TYPES.update, {
         duration: lasting,
         progress: progress,
+        isPlaying: progress === 100 ? false : state.isPlaying,
       })
     );
   };
@@ -777,7 +778,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               type="range"
               min="0"
               max="100"
-              value={state.progress}
+              value={state.progress ? state.progress : "0"}
               onChange={(e) => handleVideoProgress(e)}
             />
           </div>
