@@ -1299,6 +1299,8 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
+        await _socketManager.UpdateFileAsync(file);
+
         return file;
     }
 
