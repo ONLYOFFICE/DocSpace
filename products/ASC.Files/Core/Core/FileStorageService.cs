@@ -1236,6 +1236,8 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
+        await _socketManager.UpdateFileAsync(file);
+
         return new KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>(file, GetFileHistoryAsync(fileId));
     }
 
