@@ -493,7 +493,7 @@ class ContextOptionsStore {
     onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
-  getFilesContextOptions = (item, t) => {
+  getFilesContextOptions = (item, t, isInfoPanel) => {
     const { contextOptions } = item;
     const { id, rootFolderId } = this.selectedFolderStore;
     const { enablePlugins } = this.authStore.settingsStore;
@@ -582,7 +582,7 @@ class ContextOptionsStore {
             },
           ];
     const moveActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+      !isMobile && !isMobileUtils() && !isTabletUtils() && !isInfoPanel
         ? [
             {
               id: "option_move-or-copy",
