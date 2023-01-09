@@ -10,6 +10,7 @@ class PaymentQuotasStore {
   portalPaymentQuotas = {};
   portalPaymentQuotasFeatures = [];
   isLoaded = false;
+  isInit = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -83,6 +84,8 @@ class PaymentQuotasStore {
       if (!res) return;
 
       runInAction(() => {
+        this.isInit = true;
+
         this.portalPaymentQuotas = res[0];
 
         this.portalPaymentQuotasFeatures = res[0].features;
