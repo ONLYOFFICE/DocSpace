@@ -206,8 +206,11 @@ class ImageViewer extends React.Component {
       playlistPos,
       isImage,
       isAudio,
+      isVideo,
       contextModel,
       audioIcon,
+      headerIcon,
+      onSetSelectionFile,
     } = this.props;
 
     const generateContextMenu = (isOpen, right, bottom) => {
@@ -391,8 +394,11 @@ class ImageViewer extends React.Component {
           contextModel={contextModel}
           generateContextMenu={generateContextMenu}
           isImage={isImage}
+          headerIcon={headerIcon}
           isAudio={isAudio}
+          isVideo={isVideo}
           audioIcon={audioIcon}
+          onSetSelectionFile={onSetSelectionFile}
           onMaskClick={onClose}
           onNextClick={onNextClick}
           onPrevClick={onPrevClick}
