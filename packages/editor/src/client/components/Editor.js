@@ -555,7 +555,7 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
-            `/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
               defaultFileName
             )}`
           );
