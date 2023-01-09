@@ -329,9 +329,9 @@ class FilesStore {
         this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
       );
 
-      if (typeof id == "string") {
-        this.getFileInfo(id);
-      } else {
+      this.getFileInfo(id);
+
+      if (typeof id !== "string") {
         this.createThumbnail(id);
       }
     });
