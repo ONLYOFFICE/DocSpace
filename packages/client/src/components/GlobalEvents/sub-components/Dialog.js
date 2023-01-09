@@ -6,6 +6,8 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import ComboBox from "@docspace/components/combobox";
+import Checkbox from "@docspace/components/checkbox";
+import Box from "@docspace/components/box";
 
 const Dialog = ({
   t,
@@ -22,6 +24,9 @@ const Dialog = ({
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(
+    localStorage.getItem("checked") === "false"
+  );
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -85,6 +90,11 @@ const Dialog = ({
     [isDisabled]
   );
 
+  const onChangeCheckbox = () => {
+    setIsChecked((prev) => !prev);
+    localStorage.setItem("checked", `${isChecked}`);
+  };
+
   return (
     <ModalDialog
       visible={visible}
@@ -104,8 +114,12 @@ const Dialog = ({
           tabIndex={1}
           onChange={onChange}
           onFocus={onFocus}
-          isDisabled={isDisabled}
+          isDisabled={isChecked}
         />
+        <Box displayProp="flex" alignItems="center" paddingProp="15px 0 5px">
+          <Checkbox isChecked={isChecked} onChange={onChangeCheckbox} />
+          {t("Common:DontAskAgain")}
+        </Box>
         {options && (
           <ComboBox
             style={{ marginTop: "16px" }}
@@ -118,7 +132,7 @@ const Dialog = ({
       <ModalDialog.Footer>
         <Button
           key="GlobalSendBtn"
-          label={t("Common:SaveButton")}
+          label={t("Common:Create")}
           size="normal"
           scale
           primary
