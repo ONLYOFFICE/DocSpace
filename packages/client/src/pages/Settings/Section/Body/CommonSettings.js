@@ -31,6 +31,14 @@ const CommonSettings = ({
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
+  const [isChecked, setIsChecked] = React.useState(
+    localStorage.getItem("checked") === "false"
+  );
+
+  const onChangeCheckbox = () => {
+    setIsChecked((prev) => !prev);
+    localStorage.setItem("checked", `${isChecked}`);
+  };
 
   const onChangeOriginalCopy = React.useCallback(() => {
     setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
@@ -87,6 +95,12 @@ const CommonSettings = ({
           label={t("DisplayNotification")}
           onChange={onChangeDeleteConfirm}
           isChecked={confirmDelete}
+        />
+        <ToggleButton
+          className="toggle-btn"
+          label={t("Common:DontAskAgain")}
+          onChange={onChangeCheckbox}
+          isChecked={isChecked}
         />
       </Box>
 
