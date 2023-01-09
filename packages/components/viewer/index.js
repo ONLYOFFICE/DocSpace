@@ -34,6 +34,8 @@ export const Viewer = (props) => {
     audioIcon,
     contextModel,
     generateContextMenu,
+    headerIcon,
+    onSetSelectionFile,
   } = props;
 
   let timer;
@@ -88,6 +90,7 @@ export const Viewer = (props) => {
     return null;
   }
   const onContextMenu = (e) => {
+    onSetSelectionFile();
     cm.current.show(e);
   };
 
@@ -98,10 +101,14 @@ export const Viewer = (props) => {
     left: "0",
     right: "0",
     height: "53px",
-    background: "#333",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
+  };
+
+  const contextMenuHeader = {
+    icon: headerIcon,
+    title: title,
   };
 
   const mobileDetails = (
@@ -112,10 +119,12 @@ export const Viewer = (props) => {
       </Text>
       <div className="details-context">
         <MediaContextMenu onClick={onContextMenu} />
+
         <ContextMenu
           getContextModel={contextModel}
           ref={cm}
           withBackdrop={true}
+          header={contextMenuHeader}
         />
       </div>
     </div>

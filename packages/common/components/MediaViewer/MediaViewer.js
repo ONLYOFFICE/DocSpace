@@ -283,11 +283,19 @@ class MediaViewer extends React.Component {
 
   prevMedia = () => {
     const { playlistPos, playlist } = this.state;
+    const { setBufferSelection } = this.props;
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos--;
     if (currentPlaylistPos === -1) return;
     if (currentPlaylistPos < 0) currentPlaylistPos = playlist.length - 1;
+
+    const currentFileId = playlist[currentPlaylistPos].fileId;
+
+    const targetFile = this.props.files.find(
+      (item) => item.id === currentFileId
+    );
+    setBufferSelection(targetFile);
 
     this.setState({
       playlistPos: currentPlaylistPos,
@@ -299,10 +307,18 @@ class MediaViewer extends React.Component {
 
   nextMedia = () => {
     const { playlistPos, playlist } = this.state;
+    const { setBufferSelection } = this.props;
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos = (currentPlaylistPos + 1) % playlist.length;
     if (currentPlaylistPos === 0) return;
+
+    const currentFileId = playlist[currentPlaylistPos].fileId;
+
+    const targetFile = this.props.files.find(
+      (item) => item.id === currentFileId
+    );
+    setBufferSelection(targetFile);
 
     this.setState({
       playlistPos: currentPlaylistPos,
@@ -459,6 +475,9 @@ class MediaViewer extends React.Component {
       onClickFavorite,
       onShowInfoPanel,
       onClickDownload,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
       onClickDownloadAs,
       getIcon,
       onClickRename,
@@ -488,8 +507,16 @@ class MediaViewer extends React.Component {
 
     const ext = this.getFileExtension(title);
 
+    const onSetSelectionFile = () => {
+      setBufferSelection(targetFile);
+    };
+
     const getContextModel = () => {
-      const model = [
+      const onOpenContext = (contextFunction, file, t) => {
+        contextFunction();
+      };
+
+      const desktopModel = [
         {
           key: "download",
           label: t("Common:Download"),
@@ -497,19 +524,17 @@ class MediaViewer extends React.Component {
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
-        // {
-        //   key: "download-as",
-        //   label: t("Translations:DownloadAs"),
-        //   icon: "images/download-as.react.svg", // TODO: uncomment when we can download media by changing the format
-        //   onClick: onClickDownloadAs,
-        //   disabled: false,
-        // },
         {
           key: "rename",
           label: t("Rename"),
           icon: "images/rename.react.svg",
           onClick: () => onClickRename(targetFile),
           disabled: false,
+        },
+
+        {
+          key: "separator0",
+          isSeparator: true,
         },
         {
           key: "delete",
@@ -520,9 +545,79 @@ class MediaViewer extends React.Component {
         },
       ];
 
-      return isImage && !isMobileOnly
-        ? model.filter((el) => el.key !== "download")
-        : model;
+      const model = [
+        {
+          id: "option_room-info",
+          key: "room-info",
+          label: t("Common:Info"),
+          icon: "/static/images/info.outline.react.svg",
+          onClick: () => {
+            return onShowInfoPanel(targetFile);
+          },
+          disabled: false,
+        },
+        {
+          key: "download",
+          label: t("Common:Download"),
+          icon: "images/download.react.svg",
+          onClick: () => onClickDownload(targetFile, t),
+          disabled: false,
+        },
+        {
+          key: "move-to",
+          label: t("MoveTo"),
+          icon: "images/move.react.svg",
+          onClick: onMoveAction,
+        },
+        // {
+        //   key: "download-as",
+        //   label: t("Translations:DownloadAs"),
+        //   icon: "images/download-as.react.svg", // TODO: uncomment when we can download media by changing the format
+        //   onClick: onClickDownloadAs,
+        //   disabled: false,
+        // },
+        {
+          id: "option_copy-to",
+          key: "copy-to",
+          label: t("Translations:Copy"),
+          icon: "/static/images/copy.react.svg",
+          onClick: onCopyAction,
+          disabled: false,
+        },
+        {
+          id: "option_create-copy",
+          key: "copy",
+          label: t("Common:Duplicate"),
+          icon: "/static/images/duplicate.react.svg",
+          onClick: () => onDuplicate(targetFile, t),
+          disabled: false,
+        },
+        {
+          key: "rename",
+          label: t("Rename"),
+          icon: "images/rename.react.svg",
+          onClick: () => onClickRename(targetFile),
+          disabled: false,
+        },
+
+        {
+          key: "separator0",
+          isSeparator: true,
+        },
+        {
+          key: "delete",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: () => onClickDelete(targetFile, t),
+          disabled: false,
+        },
+      ];
+
+      return isMobileOnly
+        ? model
+        : isImage && !isMobileOnly
+        ? desktopModel.filter((el) => el.key !== "download")
+        : desktopModel;
     };
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
@@ -543,6 +638,8 @@ class MediaViewer extends React.Component {
     }
 
     let audioIcon = getIcon(96, ext);
+    let headerIcon = getIcon(24, ext);
+
     // TODO: rewrite with fileURL
     /*if (this.mapSupplied[ext])
       if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
@@ -561,12 +658,15 @@ class MediaViewer extends React.Component {
             playlist={playlist}
             playlistPos={playlistPos}
             onNextClick={this.nextMedia}
+            onSetSelectionFile={onSetSelectionFile}
             contextModel={getContextModel}
             onPrevClick={this.prevMedia}
             onDeleteClick={this.onDelete}
             isFavorite={isFavorite}
+            headerIcon={headerIcon}
             isImage={isImage}
             isAudio={isAudio}
+            isVideo={isVideo}
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}

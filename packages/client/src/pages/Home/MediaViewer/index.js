@@ -37,7 +37,10 @@ const FilesMediaViewer = (props) => {
     onClickDownloadAs,
     onClickRename,
     onClickDelete,
+    onMoveAction,
+    onCopyAction,
     getIcon,
+    onDuplicate,
   } = props;
 
   useEffect(() => {
@@ -171,6 +174,9 @@ const FilesMediaViewer = (props) => {
         onClickDownloadAs={onClickDownloadAs}
         onClickDelete={onClickDelete}
         onClickRename={onClickRename}
+        onMoveAction={onMoveAction}
+        onCopyAction={onCopyAction}
+        onDuplicate={onDuplicate}
         onClose={onMediaViewerClose}
         getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
@@ -225,6 +231,9 @@ export default inject(
       onClickDownload,
       onClickRename,
       onClickDelete,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
     } = contextOptionsStore;
 
     return {
@@ -255,7 +264,10 @@ export default inject(
       onClickDownload,
       onShowInfoPanel,
       onClickRename,
+      onMoveAction,
       getIcon,
+      onCopyAction,
+      onDuplicate,
     };
   }
 )(
