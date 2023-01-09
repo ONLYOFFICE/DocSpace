@@ -844,7 +844,7 @@ class ContextOptionsStore {
         id: "option_block-unblock-version",
         key: "block-unblock-version",
         label: t("UnblockVersion"),
-        icon: "/static/images/locked.react.svg",
+        icon: LockedReactSvgUrl,
         onClick: () => this.lockFile(item, t),
         disabled: false,
       },
