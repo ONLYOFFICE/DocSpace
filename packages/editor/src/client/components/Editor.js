@@ -46,8 +46,6 @@ const onSDKError = (event) => {
   );
 };
 
-const text = "text";
-const presentation = "presentation";
 let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
@@ -124,7 +122,8 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit && !config?.document?.isLinkedForMe
+      !fileInfo.security.Edit &&
+      !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
@@ -542,10 +541,11 @@ function Editor({
 
       if (successAuth) {
         const documentType = config.documentType;
+
         const fileExt =
-          documentType === text
+          documentType === "word"
             ? "docx"
-            : documentType === presentation
+            : documentType === "slide"
             ? "pptx"
             : "xlsx";
 
@@ -555,7 +555,7 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
-            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
               defaultFileName
             )}`
           );
