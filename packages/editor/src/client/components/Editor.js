@@ -501,11 +501,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        // if (fileInfo.rootFolderType === FolderType.Rooms) {
-        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        // } else {
-        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        //}
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
