@@ -34,14 +34,13 @@ const StyledContainer = styled.div`
     grid-gap: 4px;
 
     .payer-info_description {
-
-
       p {
         margin-right: 3px;
       }
       div {
         display: inline-block;
         margin: auto 0;
+        height: 14px;
       }
     }
     .payer-info_account-link {

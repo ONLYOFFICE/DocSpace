@@ -111,6 +111,8 @@ public class FileEntryDtoHelper
             entry = await _fileSecurity.SetSecurity(new[] { entry }.ToAsyncEnumerable()).FirstAsync();
         }
 
+        CorrectSecurityByLockedStatus(entry);
+
         return new T
         {
             Id = entry.Id,

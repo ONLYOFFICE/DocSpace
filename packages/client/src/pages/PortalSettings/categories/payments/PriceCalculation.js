@@ -74,7 +74,8 @@ const PriceCalculation = ({
 }) => {
   useEffect(() => {
     initializeInfo();
-    !isAlreadyPaid && setStartPaymentLink();
+
+    !isAlreadyPaid && setStartPaymentLink(t);
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -111,7 +112,7 @@ const PriceCalculation = ({
             console.log("Request canceled", thrown.message);
           } else {
             console.error(thrown);
-            toastr.error(thrown);
+            toastr.error(t("ErrorNotification"));
           }
           return;
         });

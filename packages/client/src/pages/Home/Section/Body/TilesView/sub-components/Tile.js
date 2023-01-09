@@ -441,7 +441,7 @@ class Tile extends React.PureComponent {
 
     if (
       e.detail === 1 &&
-      !e.target.closest(".badge") &&
+      !e.target.closest(".badges") &&
       !e.target.closest(".item-file-name") &&
       !e.target.closest(".tag")
     ) {

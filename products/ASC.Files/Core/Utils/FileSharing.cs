@@ -117,23 +117,67 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && 
-                !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access))
-            {
-                continue;
-            }
+            var room = entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) ? folder : null;
+            var emailInvite = !string.IsNullOrEmpty(w.Email);
+            var employeeType = EmployeeType.User;
+            var isUser = _userManager.IsUser(w.Id);
 
-            if (_userManager.IsUser(w.Id) && DocSpaceHelper.PaidRights.Contains(w.Access))
+            if (room != null)
             {
-                throw new InvalidOperationException(FilesCommonResource.ErrorMessage_PaidRole);
-            };
+                if (shares.Any(r => r.Subject == w.Id))
+                {
+                    if (DocSpaceHelper.PaidRights.Contains(w.Access) && isUser)
+                    {
+                        throw new InvalidOperationException(FilesCommonResource.ErrorMessage_PaidRole);
+                    }
+                }
+                else
+                {
+                    _usersInRoomChecker.CheckAdd(shares.Count + (i++));
+                }
 
-            var (success, msg) = await ProcessEmailAceAsync(w, entry);
-            warning ??= msg;
+                if (!DocSpaceHelper.ValidateShare(room.FolderType, w.Access))
+                {
+                    continue;
+                }
 
-            if (!success)
-            {
-                continue;
+                try
+                {
+                    if (DocSpaceHelper.PaidRights.Contains(w.Access) && (isUser || emailInvite))
+                    {
+                        await _countRoomAdminChecker.CheckAppend();
+                        employeeType = EmployeeType.RoomAdmin;
+
+                        if (isUser)
+                        {
+                            _userManager.RemoveUserFromGroup(w.Id, Constants.GroupUser.ID);
+                        }
+                    }
+                }
+                catch (TenantQuotaException e)
+                {
+                    warning ??= e.Message;
+                    w.Access = DocSpaceHelper.GetHighFreeRole(room.FolderType);
+                }
+                catch (Exception e)
+                {
+                    warning ??= e.Message;
+                    continue;
+                }
+
+                if (emailInvite)
+                {
+                    try
+                    {
+                        var user = await _userManagerWrapper.AddInvitedUserAsync(w.Email, employeeType);
+                        w.Id = user.Id;
+                    }
+                    catch (Exception e)
+                    {
+                        warning ??= e.Message;
+                        continue;
+                    }
+                }
             }
 
             var subjects = _fileSecurity.GetUserSubjects(w.Id);
@@ -163,15 +207,10 @@ public class FileSharingAceHelper<T>
                     : w.Access;
             }
 
-            if (entry.RootFolderType == FolderType.VirtualRooms && !shares.Any(r => r.Subject == w.Id))
-            {
-                _usersInRoomChecker.CheckAdd(shares.Count + (i++));
-            }
-
             await _fileSecurity.ShareAsync(entry.Id, entryType, w.Id, share, w.SubjectType, w.FileShareOptions);
             changed = true;
 
-            if (!string.IsNullOrEmpty(w.Email))
+            if (emailInvite)
             {
                 var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
                 _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
@@ -289,51 +328,6 @@ public class FileSharingAceHelper<T>
         }
 
         await _fileMarker.RemoveMarkAsNewAsync(entry);
-    }
-
-    private async Task<(bool, string)> ProcessEmailAceAsync(AceWrapper ace, FileEntry<T> entry)
-    {
-        if (string.IsNullOrEmpty(ace.Email))
-        {
-            return (true, null);
-        }
-
-        var room = entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) ? folder : null;
-
-        if (room == null)
-        {
-            return (false, null);
-        }
-
-        UserInfo user;
-        try
-        {
-            if (DocSpaceHelper.PaidRights.Contains(ace.Access))
-            {
-                await _countRoomAdminChecker.CheckAppend();
-                user = await _userManagerWrapper.AddInvitedUserAsync(ace.Email, EmployeeType.RoomAdmin);
-            }
-            else
-            {
-                user = await _userManagerWrapper.AddInvitedUserAsync(ace.Email, EmployeeType.User);
-            }
-        }
-        catch(TenantQuotaException e)
-        {
-            ace.Access = DocSpaceHelper.GetHighFreeRole(room.FolderType);
-            user = await _userManagerWrapper.AddInvitedUserAsync(ace.Email, EmployeeType.User);
-            ace.Id = user.Id;
-
-            return (true, e.Message);
-        }
-        catch(Exception e)
-        {
-            return (false, e.Message);
-        }
-
-        ace.Id = user.Id;
-
-        return (true, null);
     }
 }
 

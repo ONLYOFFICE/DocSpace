@@ -51,7 +51,6 @@
   "ClearBackupList": "Delete all backups",
   "CompanyInfoSettings": "Company info settings",
   "CompanyInfoSettingsDescription": "This information will be displayed in the <1>{{link}}</1> window.",
-  "CompanyNameForCanvasLogo": "Company name",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
   "Custom": "Custom",
   "CustomDomains": "Custom domains",

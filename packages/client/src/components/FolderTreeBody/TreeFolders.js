@@ -475,7 +475,8 @@ class TreeFolders extends React.Component {
   };
 
   onSelect = (folder, treeNode) => {
-    const { onSelect, expandedPanelKeys, roomsFolderId } = this.props;
+    const { onSelect, expandedPanelKeys = [], roomsFolderId } = this.props;
+
     const newExpandedPanelKeys = JSON.parse(JSON.stringify(expandedPanelKeys));
     newExpandedPanelKeys.push(folder[0]);
 

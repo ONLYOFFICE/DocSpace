@@ -125,9 +125,9 @@ export const openDocEditor = async (
 export const getDataSaveAs = async (params) => {
   try {
     const data = await request({
-      baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage),
+      baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url),
       method: "get",
-      url: `/products/files/httphandlers/filehandler.ashx?${params}`,
+      url: `/filehandler.ashx?${params}`,
       responseType: "text",
     });
 
@@ -153,7 +153,7 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `products/files/httphandlers/filehandler.ashx?${params}` //TODO: will change 'products/files' path
+        `/filehandler.ashx?${params}`
       ),
       "_blank"
     );
