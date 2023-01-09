@@ -99,21 +99,21 @@ public class StorageHandler
             return;
         }
 
-        if (!String.IsNullOrEmpty(context.Request.Query["_"]))
-        {
-            context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
-        }
+        //if (!String.IsNullOrEmpty(context.Request.Query["_"]))
+        //{
+        //    context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
+        //}
 
-        var etag = await storage.GetFileEtagAsync(_domain, path);
+        //var etag = await storage.GetFileEtagAsync(_domain, path);
 
-        if (string.Equals(context.Request.Headers["If-None-Match"], etag))
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+        //if (string.Equals(context.Request.Headers["If-None-Match"], etag))
+        //{
+        //    context.Response.StatusCode = (int)HttpStatusCode.NotModified;
 
-            return;
-        }
+        //    return;
+        //}
 
-        context.Response.Headers.ETag = etag;
+        //context.Response.Headers.ETag = etag;
 
         string encoding = null;
 

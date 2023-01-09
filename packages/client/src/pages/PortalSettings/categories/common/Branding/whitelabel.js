@@ -199,7 +199,7 @@ const WhiteLabel = (props) => {
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerCompanyName"
-          labelText={t("CompanyNameForCanvasLogo")}
+          labelText={t("Common:CompanyName")}
           isVertical={true}
           className="settings_unavailable"
         >

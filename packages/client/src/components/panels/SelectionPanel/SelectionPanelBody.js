@@ -41,7 +41,6 @@ const SelectionPanelBody = ({
   folderSelection = false,
   folderTitle,
   fileId,
-  canCreate = true,
   isLoadingData,
   expandedKeys,
   isDisableTree,
@@ -50,8 +49,6 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
-  folderSelectionDisabled,
-  isCurrentFolder,
 }) => {
   const isLoaded = folderId && resultingFolderTree;
   return (
@@ -153,14 +150,9 @@ const SelectionPanelBody = ({
             label={primaryButtonName}
             onClick={onButtonClick}
             isDisabled={
-              folderSelectionDisabled ||
               isDisableButton ||
-              isDisableTree ||
-              isLoadingData ||
               (!fileId && !folderSelection) ||
-              !canCreate ||
-              !(folderId && resultingFolderTree) ||
-              isCurrentFolder
+              !(folderId && resultingFolderTree)
             }
             isLoading={isDisableTree}
           />

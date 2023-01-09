@@ -10,7 +10,6 @@ export default function withQuickButtons(WrappedComponent) {
 
       this.state = {
         isLoading: false,
-        isCanWebEdit: props.item.viewAccessability?.WebEdit,
       };
     }
 
@@ -50,7 +49,7 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
-      const { isLoading, isCanWebEdit } = this.state;
+      const { isLoading } = this.state;
 
       const {
         t,
@@ -71,7 +70,6 @@ export default function withQuickButtons(WrappedComponent) {
           isAdmin={isAdmin}
           viewAs={viewAs}
           isDisabled={isLoading}
-          isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
           folderCategory={folderCategory}

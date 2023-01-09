@@ -341,6 +341,10 @@ class FilesStore {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
 
+  setIsErrorRoomNotAvailable = (state) => {
+    this.isErrorRoomNotAvailable = state;
+  };
+
   setTempActionFilesIds = (tempActionFilesIds) => {
     this.tempActionFilesIds = tempActionFilesIds;
   };
@@ -694,6 +698,10 @@ class FilesStore {
     this.bufferSelection = bufferSelection;
   };
 
+  setIsLoadedFetchFiles = (isLoadedFetchFiles) => {
+    this.isLoadedFetchFiles = isLoadedFetchFiles;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
     const key = `UserFilter=${this.authStore.userStore.user.id}`;
@@ -824,8 +832,8 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
-    this.isErrorRoomNotAvailable = false;
-    this.isLoadedFetchFiles = false;
+    this.setIsErrorRoomNotAvailable(false);
+    this.setIsLoadedFetchFiles(false);
 
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
@@ -979,14 +987,15 @@ class FilesStore {
         ].includes(err?.response?.status);
 
         if (isUserError) {
-          this.isErrorRoomNotAvailable = true;
-          this.isEmptyPage = true;
+          runInAction(() => {
+            this.isErrorRoomNotAvailable = true;
+          });
         } else {
           toastr.error(err);
         }
       })
       .finally(() => {
-        this.isLoadedFetchFiles = true;
+        this.setIsLoadedFetchFiles(true);
       });
   };
 
@@ -1092,7 +1101,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-          this.isErrorRoomNotAvailable = false;
+          this.setIsErrorRoomNotAvailable(false);
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {

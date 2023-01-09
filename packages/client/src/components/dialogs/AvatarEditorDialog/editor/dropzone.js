@@ -1,116 +1,128 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 
+import { useTranslation } from "react-i18next";
 import { useDropzone } from "react-dropzone";
+
+import StyledDropzone from "./StyledDropzone";
+import Loader from "@docspace/components/loader";
+
+import { toastr } from "@docspace/components";
 import resizeImage from "resize-image";
 
-import { Base } from "@docspace/components/themes";
-
-import { hugeMobile } from "@docspace/components/utils/device";
-
-const StyledDropzone = styled.div`
-  cursor: pointer;
-  box-sizing: border-box;
-  width: 100%;
-  height: 150px;
-  border: 2px dashed
-    ${(props) => props.theme.createEditRoomDialog.dropzone.borderColor};
-  border-radius: 6px;
-
-  .dropzone {
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-
-    user-select: none;
-
-    &-link {
-      display: flex;
-      flex-direction: row;
-      gap: 4px;
-
-      font-size: 13px;
-      line-height: 20px;
-      &-main {
-        color: ${(props) =>
-          props.theme.createEditRoomDialog.dropzone.linkMainColor};
-        font-weight: 600;
-        text-decoration: underline;
-        text-decoration-style: dashed;
-        text-underline-offset: 1px;
-      }
-      &-secondary {
-        font-weight: 400;
-        color: ${(props) =>
-          props.theme.createEditRoomDialog.dropzone.linkSecondaryColor};
-      }
-
-      @media ${hugeMobile} {
-        &-secondary {
-          display: none;
-        }
-      }
-    }
-
-    &-exsts {
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 16px;
-      color: ${(props) => props.theme.createEditRoomDialog.dropzone.exstsColor};
-    }
-  }
-`;
-
-StyledDropzone.defaultProps = { theme: Base };
+const ONE_MEGABYTE = 1024 * 1024;
+const COMPRESSION_RATIO = 2;
+const NO_COMPRESSION_RATIO = 1;
 
 const Dropzone = ({ setUploadedFile }) => {
+  const [loadingFile, setLoadingFile] = useState(false);
   const { t } = useTranslation("CreateEditRoomDialog");
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const mount = useRef(false);
+
+  const timer = useRef(null);
+
+  useEffect(() => {
+    mount.current = true;
+    return () => {
+      mount.current = false;
+      timer.current && clearTimeout(timer.current);
+    };
+  }, []);
+
+  async function resizeRecursiveAsync(
+    img,
+    canvas,
+    compressionRatio = COMPRESSION_RATIO,
+    depth = 0
+  ) {
+    const data = resizeImage.resize(
+      canvas,
+      img.width / compressionRatio,
+      img.height / compressionRatio,
+      resizeImage.JPEG
+    );
+
+    const file = await fetch(data)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], "File name", {
+          type: "image/jpg",
+        });
+        return file;
+      });
+
+    const stepMessage = `Step ${depth + 1}`;
+    const sizeMessage = `size = ${file.size} bytes`;
+    const compressionRatioMessage = `compressionRatio = ${compressionRatio}`;
+
+    console.log(`${stepMessage} ${sizeMessage} ${compressionRatioMessage}`);
+
+    if (file.size < ONE_MEGABYTE) {
+      return file;
+    }
+
+    if (depth > 5) {
+      console.log("start");
+      throw new Error("recursion depth exceeded");
+    }
+
+    return await resizeRecursiveAsync(
+      img,
+      canvas,
+      compressionRatio + 1,
+      depth + 1
+    );
+  }
+
+  const onDrop = async ([file]) => {
+    timer.current = setTimeout(() => {
+      setLoadingFile(true);
+    }, 50);
+    const imageBitMap = await createImageBitmap(file);
+
+    const width = imageBitMap.width;
+    const height = imageBitMap.height;
+    const canvas = resizeImage.resize2Canvas(imageBitMap, width, height);
+
+    resizeRecursiveAsync(
+      { width, height },
+      canvas,
+      file.size > ONE_MEGABYTE ? COMPRESSION_RATIO : NO_COMPRESSION_RATIO
+    )
+      .then((file) => {
+        if (mount.current) {
+          setUploadedFile(file);
+        }
+      })
+      .catch((error) => {
+        if (
+          error instanceof Error &&
+          error.message === "recursion depth exceeded"
+        ) {
+          toastr.error(t("SizeImageLarge"));
+        }
+        console.error(error);
+      })
+      .finally(() => {
+        timer.current && clearTimeout(timer.current);
+        if (mount.current) {
+          setLoadingFile(false);
+        }
+      });
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     // maxSize: 1000000,
     accept: ["image/png", "image/jpeg"],
+    onDrop,
   });
 
-  useEffect(() => {
-    if (acceptedFiles.length) {
-      const fr = new FileReader();
-      fr.readAsDataURL(acceptedFiles[0]);
-
-      fr.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = resizeImage.resize2Canvas(img, img.width, img.height);
-
-          const data = resizeImage.resize(
-            canvas,
-            img.width / 4,
-            img.height / 4,
-            resizeImage.JPEG
-          );
-
-          fetch(data)
-            .then((res) => res.blob())
-            .then((blob) => {
-              const file = new File([blob], "File name", {
-                type: "image/jpg",
-              });
-              setUploadedFile(file);
-            });
-        };
-        img.src = fr.result;
-      };
-    }
-  }, [acceptedFiles]);
-
   return (
-    <StyledDropzone>
+    <StyledDropzone $isLoading={loadingFile}>
+      {loadingFile && (
+        <Loader className="dropzone_loader" size="30px" type="track" />
+      )}
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
         <div className="dropzone-link">

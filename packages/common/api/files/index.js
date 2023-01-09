@@ -168,44 +168,46 @@ const sortInDisplayOrder = (folders) => {
 };
 
 export function getFoldersTree() {
-  return request({ method: "get", url: "/files/@root?filterType=2" }).then(
-    (response) => {
-      const folders = sortInDisplayOrder(response);
+  return request({
+    method: "get",
+    url: "/files/@root?filterType=2&count=1",
+  }).then((response) => {
+    const folders = sortInDisplayOrder(response);
 
-      return folders.map((data, index) => {
-        const type = +data.current.rootFolderType;
-        const name = getFolderClassNameByType(type);
-        const isRecycleBinFolder = type === FolderType.TRASH;
-        return {
-          id: data.current.id,
-          key: `0-${index}`,
-          parentId: data.current.parentId,
-          title: data.current.title,
-          rootFolderType: type,
-          folderClassName: name,
-          // folders: !isRecycleBinFolder
-          //   ? data.folders.map((folder) => {
-          //       return {
-          //         id: folder.id,
-          //         title: folder.title,
-          //         access: folder.access,
-          //         foldersCount: folder.foldersCount,
-          //         rootFolderType: folder.rootFolderType,
-          //         providerKey: folder.providerKey,
-          //         newItems: folder.new,
-          //       };
-          //     })
-          //   : null,
-          folders: null,
-          pathParts: data.pathParts,
-          foldersCount: !isRecycleBinFolder
-            ? data.current.foldersCount || data.folders.length
-            : null,
-          newItems: data.new,
-        };
-      });
-    }
-  );
+    return folders.map((data, index) => {
+      const type = +data.current.rootFolderType;
+      const name = getFolderClassNameByType(type);
+      const isRecycleBinFolder = type === FolderType.TRASH;
+      return {
+        id: data.current.id,
+        key: `0-${index}`,
+        parentId: data.current.parentId,
+        title: data.current.title,
+        rootFolderType: type,
+        folderClassName: name,
+        // folders: !isRecycleBinFolder
+        //   ? data.folders.map((folder) => {
+        //       return {
+        //         id: folder.id,
+        //         title: folder.title,
+        //         access: folder.access,
+        //         foldersCount: folder.foldersCount,
+        //         rootFolderType: folder.rootFolderType,
+        //         providerKey: folder.providerKey,
+        //         newItems: folder.new,
+        //       };
+        //     })
+        //   : null,
+        folders: null,
+        pathParts: data.pathParts,
+        foldersCount: !isRecycleBinFolder
+          ? data.current.foldersCount || data.folders.length
+          : null,
+        newItems: data.new,
+        security: data.current.security,
+      };
+    });
+  });
 }
 
 export function getCommonFoldersTree() {

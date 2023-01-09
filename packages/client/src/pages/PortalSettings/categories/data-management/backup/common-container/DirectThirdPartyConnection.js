@@ -255,7 +255,7 @@ const DirectThirdPartyConnection = (props) => {
     return [
       {
         key: "connection-settings",
-        label: t("Common:Reconnect"),
+        label: t("Reconnect"),
         onClick: onConnect,
         disabled: false,
         icon: "/static/images/refresh.react.svg",
@@ -412,7 +412,7 @@ export default inject(({ backup, dialogsStore, settingsStore }) => {
     setConnectedThirdPartyAccount,
   };
 })(
-  withTranslation(["Settings", "Common", "Translations"])(
+  withTranslation(["ConnectDialog", "Settings", "Common", "Translations"])(
     observer(DirectThirdPartyConnection)
   )
 );
