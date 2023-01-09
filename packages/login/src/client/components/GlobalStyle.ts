@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import BackgroundPatternReactSvgUrl from "../../../../../public/images/background.pattern.react.svg?url";
 
 interface IGlobalStyleProps {
   fonts?: string;
@@ -31,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .with-background-pattern {
-    background-image: url("/static/images/background.pattern.react.svg");
+    background-image: url("${BackgroundPatternReactSvgUrl}");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
