@@ -13,6 +13,8 @@ class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  logoutVisible = false;
+  logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
 
   security = {
@@ -216,18 +218,12 @@ class SettingsSetupStore {
     return Promise.resolve(response);
   };
 
-  restoreWhiteLabelSettings = async (isDefault) => {
-    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
-  };
-
   setLanguageAndTime = async (lng, timeZoneID) => {
-    const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
-    //console.log("setLanguageAndTime", res);
-    //if (res) this.setPortalLanguageAndTime({ lng, timeZoneID });
+    return api.settings.setLanguageAndTime(lng, timeZoneID);
   };
 
   setPortalRename = async (alias) => {
-    const res = await api.portal.setPortalRename(alias);
+    return api.portal.setPortalRename(alias);
   };
 
   setDNSSettings = async (dnsName, enable) => {
@@ -278,9 +274,7 @@ class SettingsSetupStore {
   };
 
   setGreetingTitle = async (greetingTitle) => {
-    const res = await api.settings.setGreetingSettings(greetingTitle);
-
-    //if (res) this.setGreetingSettings(greetingTitle);
+    return api.settings.setGreetingSettings(greetingTitle);
   };
 
   setAuditTrailReport = (report) => {
@@ -316,8 +310,7 @@ class SettingsSetupStore {
   };
 
   restoreGreetingTitle = async () => {
-    const res = await api.settings.restoreGreetingSettings();
-    //if (res) this.setGreetingSettings(res.Content);
+    return api.settings.restoreGreetingSettings();
   };
 
   getConsumers = async () => {
@@ -344,6 +337,26 @@ class SettingsSetupStore {
 
     this.setCommonThirdPartyList(res);
   };
+
+  getAllSessions = () => {
+    return api.settings.getAllActiveSessions();
+  };
+
+  removeAllSessions = () => {
+    return api.settings.removeAllActiveSessions();
+  };
+
+  removeAllExecptThis = () => {
+    return api.settings.removeAllExceptThisSession();
+  };
+
+  removeSession = (id) => {
+    return api.settings.removeActiveSession(id);
+  };
+
+  setLogoutVisible = (visible) => (this.logoutVisible = visible);
+
+  setLogoutAllVisible = (visible) => (this.logoutAllVisible = visible);
 }
 
 export default SettingsSetupStore;

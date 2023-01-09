@@ -36,6 +36,7 @@ Default.args = {
   source: "",
   userName: "",
   editing: false,
+  hideRoleIcon: false,
 };
 
 Picture.args = {
@@ -45,6 +46,7 @@ Picture.args = {
     "https://images.unsplash.com/photo-1623949444573-4811dfc64771?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
   userName: "",
   editing: false,
+  hideRoleIcon: false,
 };
 
 Initials.args = {
@@ -53,6 +55,7 @@ Initials.args = {
   source: "",
   userName: "John Doe",
   editing: false,
+  hideRoleIcon: false,
 };
 
 Icon.args = {
@@ -61,4 +64,5 @@ Icon.args = {
   source: "/static/images/@.react.svg",
   userName: "",
   editing: false,
+  hideRoleIcon: false,
 };

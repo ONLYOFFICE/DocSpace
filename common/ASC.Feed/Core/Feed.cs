@@ -36,8 +36,8 @@ public class Feed
     public DateTime ModifiedDate { get; set; }
     public string Product { get; set; }
     public string Module { get; set; }
+    public string ExtraLocationTitle { get; set; }
     public string ExtraLocation { get; set; }
-    public string ExtraLocationUrl { get; set; }
     public FeedAction Action { get; set; }
     public string Title { get; set; }
     public string ItemUrl { get; set; }
@@ -55,6 +55,7 @@ public class Feed
     public string Keywords { get; set; }
     public string Id => $"{Item}_{ItemId}";
     public string ContextId { get; set; }
+    public bool IsAllDayEvent { get; set; }
 
     // это значит, что новость может обновляться (пр. добавление комментариев);
     // следовательно и права доступа могут устаревать

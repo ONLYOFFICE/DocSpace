@@ -91,10 +91,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Неправильна адреса електронної пошти</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Неправильний промокод
-</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Недостатньо прав для виконання данної операції</value>
   </data>
@@ -148,10 +144,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Пароль повинен містити</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Повинен містити
-</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифри</value>

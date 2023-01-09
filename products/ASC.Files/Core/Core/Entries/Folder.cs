@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Profile = AutoMapper.Profile;
-
 namespace ASC.Files.Core;
 
 public enum FolderType
@@ -93,9 +91,8 @@ public class Folder<T> : FileEntry<T>, IFolder
         FileHelper fileHelper,
         Global global,
         GlobalFolderHelper globalFolderHelper,
-        SettingsManager settingsManager,
         FilesSettingsHelper filesSettingsHelper,
-        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, filesSettingsHelper, fileDateTime)
     {
         Title = string.Empty;
         FileEntryType = FileEntryType.Folder;

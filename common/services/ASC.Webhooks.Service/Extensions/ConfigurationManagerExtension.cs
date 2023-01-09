@@ -31,7 +31,7 @@ public static class ConfigurationManagerExtension
     public static ConfigurationManager AddWebhookConfiguration(
     this ConfigurationManager config)
     {
-        config.AddJsonFile($"appsettings.services.json", true);
+        config.AddJsonFile($"appsettings.services.json", optional: false, reloadOnChange: true);
 
         return config;
     }

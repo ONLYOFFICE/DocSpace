@@ -106,23 +106,37 @@ const IconCropper = ({
   uploadedFile,
   setUploadedFile,
   setPreviewIcon,
+  isDisabled,
 }) => {
   let editorRef = null;
   const setEditorRef = (editor) => (editorRef = editor);
 
-  const handlePositionChange = (position) =>
+  const handlePositionChange = (position) => {
+    if (isDisabled) return;
+
     onChangeIcon({ ...icon, x: position.x, y: position.y });
+  };
 
-  const handleSliderChange = (e, newZoom = null) =>
+  const handleSliderChange = (e, newZoom = null) => {
+    if (isDisabled) return;
+
     onChangeIcon({ ...icon, zoom: newZoom ? newZoom : +e.target.value });
+  };
 
-  const handleZoomInClick = () =>
+  const handleZoomInClick = () => {
+    if (isDisabled) return;
+
     handleSliderChange({}, icon.zoom <= 4.5 ? icon.zoom + 0.5 : 5);
+  };
+  const handleZoomOutClick = () => {
+    if (isDisabled) return;
 
-  const handleZoomOutClick = () =>
     handleSliderChange({}, icon.zoom >= 1.5 ? icon.zoom - 0.5 : 1);
-
-  const handleDeleteImage = () => setUploadedFile(null);
+  };
+  const handleDeleteImage = () => {
+    if (isDisabled) return;
+    setUploadedFile(null);
+  };
 
   const handleImageChange = throttle(() => {
     if (editorRef) {
@@ -181,6 +195,7 @@ const IconCropper = ({
           iconName={"/static/images/zoom-minus.react.svg"}
           isFill={true}
           isClickable={false}
+          isDisabled={isDisabled}
         />
         <Slider
           className="icon_cropper-zoom-container-slider"
@@ -189,6 +204,7 @@ const IconCropper = ({
           onChange={handleSliderChange}
           step={0.01}
           value={icon.zoom}
+          isDisabled={isDisabled}
         />
         <IconButton
           className="icon_cropper-zoom-container-button"
@@ -197,6 +213,7 @@ const IconCropper = ({
           iconName={"/static/images/zoom-plus.react.svg"}
           isFill={true}
           isClickable={false}
+          isDisabled={isDisabled}
         />
       </div>
     </StyledIconCropper>

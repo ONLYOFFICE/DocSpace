@@ -26,8 +26,8 @@
 
 namespace ASC.Web.Files;
 
-[Scope]
-public class FilesSpaceUsageStatManager : SpaceUsageStatManager
+[Scope(Additional = typeof(FilesSpaceUsageStatExtension))]
+public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
 {
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
@@ -37,6 +37,9 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly PathProvider _pathProvider;
+    private readonly IDaoFactory _daoFactory;
+    private readonly GlobalFolder _globalFolder;
+    private readonly FileMarker _fileMarker;
 
     public FilesSpaceUsageStatManager(
         IDbContextFactory<FilesDbContext> dbContextFactory,
@@ -46,7 +49,10 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         CommonLinkUtility commonLinkUtility,
         GlobalFolderHelper globalFolderHelper,
-        PathProvider pathProvider)
+        PathProvider pathProvider,
+        IDaoFactory daoFactory,
+        GlobalFolder globalFolder,
+        FileMarker fileMarker)
     {
         _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
@@ -56,6 +62,9 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
         _commonLinkUtility = commonLinkUtility;
         _globalFolderHelper = globalFolderHelper;
         _pathProvider = pathProvider;
+        _daoFactory = daoFactory;
+        _globalFolder = globalFolder;
+        _fileMarker = fileMarker;
     }
 
     public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
@@ -107,30 +116,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
             .ToListAsync();
 
     }
-}
 
-[Scope]
-public class FilesUserSpaceUsage : IUserSpaceUsage
-{
-    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
-    private readonly TenantManager _tenantManager;
-    private readonly GlobalFolder _globalFolder;
-    private readonly FileMarker _fileMarker;
-    private readonly IDaoFactory _daoFactory;
-
-    public FilesUserSpaceUsage(
-        IDbContextFactory<FilesDbContext> dbContextFactory,
-        TenantManager tenantManager,
-        GlobalFolder globalFolder,
-        FileMarker fileMarker,
-        IDaoFactory daoFactory)
-    {
-        _dbContextFactory = dbContextFactory;
-        _tenantManager = tenantManager;
-        _globalFolder = globalFolder;
-        _fileMarker = fileMarker;
-        _daoFactory = daoFactory;
-    }
 
     public async Task<long> GetUserSpaceUsageAsync(Guid userId)
     {
@@ -140,7 +126,25 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         return await filesDbContext.Files
-            .Where(r => r.TenantId == tenantId && (r.ParentId == my || r.ParentId == trash))
+            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
             .SumAsync(r => r.ContentLength);
+    }
+
+    public async Task RecalculateUserQuota(int TenantId, Guid userId)
+    {
+        _tenantManager.SetCurrentTenant(TenantId);
+        var size = await GetUserSpaceUsageAsync(userId);
+
+        _tenantManager.SetTenantQuotaRow(
+           new TenantQuotaRow { Tenant = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
+           false);
+    }
+}
+
+public static class FilesSpaceUsageStatExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.ServiceCollection.AddBaseDbContextPool<FilesDbContext>();
     }
 }

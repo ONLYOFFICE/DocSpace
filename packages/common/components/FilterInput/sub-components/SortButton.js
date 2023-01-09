@@ -14,6 +14,7 @@ import { Base } from "@docspace/components/themes";
 
 import SortDesc from "../../../../../public/images/sort.desc.react.svg";
 import Backdrop from "@docspace/components/backdrop";
+import { Events } from "@docspace/common/constants";
 
 const selectedViewIcon = css`
   svg {
@@ -29,16 +30,6 @@ const notSelectedViewIcon = css`
       fill: ${(props) => props.theme.filterInput.sort.viewIcon};
     }
   }
-`;
-
-const mobileView = css`
-  position: fixed;
-  top: auto;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-
-  z-index: 999;
 `;
 
 const StyledSortButton = styled.div`
@@ -62,10 +53,6 @@ const StyledSortButton = styled.div`
       bottom: auto;
       min-width: 200px;
       margin-top: 3px;
-
-      @media (max-width: 428px) {
-        ${mobileView}
-      }
 
       .view-selector-item {
         display: flex;
@@ -171,6 +158,7 @@ const StyledSortButton = styled.div`
 StyledSortButton.defaultProps = { theme: Base };
 
 const SortButton = ({
+  id,
   getSortData,
   getSelectedSortData,
 
@@ -180,7 +168,6 @@ const SortButton = ({
   viewSettings,
 
   onSort,
-
   viewSelectorVisible,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -191,7 +178,7 @@ const SortButton = ({
     sortId: null,
   });
 
-  React.useEffect(() => {
+  const getSortDataAction = React.useCallback(() => {
     const value = getSortData && getSortData();
     const selectedValue = getSelectedSortData && getSelectedSortData();
 
@@ -212,7 +199,15 @@ const SortButton = ({
       sortDirection: selectedValue.sortDirection,
       sortId: selectedValue.sortId,
     });
-  }, []);
+  }, [getSortData, getSelectedSortData, viewAs]);
+
+  React.useEffect(() => {
+    window.addEventListener(Events.CHANGE_COLUMN, getSortDataAction);
+    getSortDataAction();
+
+    return () =>
+      window.removeEventListener(Events.CHANGE_COLUMN, getSortDataAction);
+  }, [getSortDataAction]);
 
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);
@@ -274,6 +269,7 @@ const SortButton = ({
       )}
       {sortData?.map((item) => (
         <DropDownItem
+          id={item.id}
           onClick={onOptionClick}
           className={item.className}
           key={item.key}
@@ -290,6 +286,12 @@ const SortButton = ({
     </>
   );
 
+  let advancedOptionsCount = sortData.length;
+
+  if (viewSelectorVisible) {
+    advancedOptionsCount++;
+  }
+
   return (
     <>
       <Backdrop
@@ -302,6 +304,7 @@ const SortButton = ({
         viewAs={viewAs}
         isDesc={selectedSortData.sortDirection === "desc"}
         onClick={toggleCombobox}
+        id={id}
       >
         <ComboBox
           opened={isOpen}
@@ -318,6 +321,7 @@ const SortButton = ({
           disableItemClick={true}
           isDefaultMode={false}
           manualY={"102%"}
+          advancedOptionsCount={advancedOptionsCount}
         >
           <IconButton iconName="/static/images/sort.react.svg" size={16} />
         </ComboBox>

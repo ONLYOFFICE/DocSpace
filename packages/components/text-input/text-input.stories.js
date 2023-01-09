@@ -45,7 +45,7 @@ Default.args = {
   isReadOnly: false,
   hasError: false,
   hasWarning: false,
-  scale: false,
+  scaled: false,
   autoComplete: "off",
   tabIndex: 1,
   withBorder: true,

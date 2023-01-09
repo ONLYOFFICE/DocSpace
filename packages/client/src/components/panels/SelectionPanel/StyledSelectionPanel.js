@@ -16,11 +16,19 @@ const commonStyles = css`
       margin: auto;
     }
   }
+
+  .select-file-dialog_empty-container {
+    .empty-folder_container {
+      margin: 0 auto;
+    }
+  }
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
   #modal-dialog {
     max-height: 560px;
+    display: flex;
+    flex-direction: column;
   }
 
   .select-panel-modal-header {
@@ -42,7 +50,7 @@ const StyledModalDialog = styled(ModalDialog)`
 
 const StyledBody = styled.div`
   .selection-panel_body {
-    height: 434px;
+    height: ${(props) => (props.footer ? "395px" : "434px")};
     display: grid;
     grid-template-columns: 245px 1fr;
     grid-template-areas: "tree files" "footer footer";
@@ -56,9 +64,10 @@ const StyledBody = styled.div`
       display: grid;
       grid-template-rows: max-content auto;
     }
-    .selection-panel_files-list-body {
+    /* .selection-panel_files-list-body {
       height: 384px;
-    }
+    } */
+
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;
@@ -71,7 +80,7 @@ const StyledBody = styled.div`
         padding: 12px 20px 14px 0px;
       }
       .selection-panel_tree-folder {
-        height: 387px;
+        height: ${(props) => (props.footer ? "343px" : "387px")};
         max-height: 384px;
         margin-left: -17px;
       }

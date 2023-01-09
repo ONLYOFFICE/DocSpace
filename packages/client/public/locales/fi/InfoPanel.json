@@ -1,12 +1,9 @@
 {
-  "EmptyScreenText": "Katso tiedostojen ja kansioiden tiedot täältä",
   "FileExtension": "Tiedostotunniste",
+  "FilesEmptyScreenText": "Katso tiedostojen ja kansioiden tiedot täältä",
   "ItemsSelected": "Valitut kohteet",
   "LastModifiedBy": "Viimeksi muokannut",
-  "Members": "jäsenet",
-  "OpenSharingSettings": "Avaa jakamisasetukset",
   "SystemProperties": "Järjestelmän ominaisuudet",
   "Versions": "Versiot",
-  "ViewDetails": "Näytä tiedot",
-  "WhoHasAccess": "Kenellä on pääsy"
+  "ViewDetails": "Näytä tiedot"
 }

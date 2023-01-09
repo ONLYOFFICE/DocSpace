@@ -47,7 +47,6 @@ dotnet build ASC.Migrations.sln -o ${SRC_PATH}/ASC.Migration.Runner/service/
 
 # Array of names backend services in directory common (Nodejs)
 services_name_backend_nodejs=() 
-services_name_backend_nodejs+=(ASC.UrlShortener)
 services_name_backend_nodejs+=(ASC.Socket.IO)
 services_name_backend_nodejs+=(ASC.SsoAuth)
 

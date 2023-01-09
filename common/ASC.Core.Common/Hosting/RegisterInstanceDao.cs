@@ -49,6 +49,10 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         {
             await _instanceRegistrationContext.AddAsync(obj);
         }
+        else
+        {
+            _instanceRegistrationContext.Entry(inst).CurrentValues.SetValues(obj);
+        }
 
         bool saveFailed;
 

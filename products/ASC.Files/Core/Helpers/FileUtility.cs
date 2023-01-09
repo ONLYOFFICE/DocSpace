@@ -253,6 +253,16 @@ public class FileUtility
             return FileType.Document;
         }
 
+        if (ExtsFormTemplate.Contains(extension))
+        {
+            return FileType.OFormTemplate;
+        }
+
+        if (ExtsOForm.Contains(extension))
+        {
+            return FileType.OForm;
+        }
+
         if (ExtsSpreadsheet.Contains(extension))
         {
             return FileType.Spreadsheet;
@@ -582,8 +592,17 @@ public class FileUtility
                 ".html", ".htm", ".mht", ".xml",
                 ".pdf", ".djvu", ".fb2", ".epub", ".xps",".oxps",
                 ".doct", ".docy",
-                ".gdoc",
-                ".docxf", ".oform"
+                ".gdoc"
+            };
+
+    public static readonly List<string> ExtsFormTemplate = new List<string>
+            {
+                ".docxf"
+            };
+
+    public static readonly List<string> ExtsOForm = new List<string>
+            {
+                ".oform"
             };
 
     public static readonly List<string> ExtsTemplate = new List<string>

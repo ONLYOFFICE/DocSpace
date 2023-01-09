@@ -1,36 +1,32 @@
 import React from "react";
-import {
-  StyledInfoPanelHeader,
-  StyledInfoPanelToggleWrapper,
-} from "./StyledInfoPanelHeaderLoader";
+import { StyledInfoPanelHeader } from "./StyledInfoPanelHeaderLoader";
 import RectangleLoader from "../RectangleLoader";
 
+import { isMobile as isMobileRDD } from "react-device-detect";
 import {
-  isTablet,
+  isDesktop as isDesktopUtils,
   isMobile as isMobileUtils,
-  isDesktop,
+  isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
-import { isMobile } from "react-device-detect";
 
 const InfoPanelHeaderLoader = () => {
-  const customRectangleLoader = (width, height, rounded) => (
-    <RectangleLoader
-      width={"" + width}
-      height={"" + height}
-      borderRadius={"" + rounded}
-    />
-  );
+  const isTablet =
+    isTabletUtils() || isMobileUtils() || isMobileRDD || !isDesktopUtils();
 
   return (
-    <StyledInfoPanelHeader>
-      <div className="header-text">{customRectangleLoader(200, 28, 3)}</div>
-      <StyledInfoPanelToggleWrapper
-        isRootFolder={true}
-        isInfoPanelVisible={true}
-      >
-        {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) &&
-          customRectangleLoader(32, 32, "50%")}
-      </StyledInfoPanelToggleWrapper>
+    <StyledInfoPanelHeader isTablet={isTablet} withSubmenu={false}>
+      <div className="main">
+        <RectangleLoader width={"120px"} height={"24px"} borderRadius={"3px"} />
+        {!isTablet && (
+          <div className="info-panel-toggle-bg">
+            <RectangleLoader
+              width={"32px"}
+              height={"32px"}
+              borderRadius={"50%"}
+            />
+          </div>
+        )}
+      </div>
     </StyledInfoPanelHeader>
   );
 };

@@ -29,6 +29,7 @@ namespace ASC.Files.Core.ApiModels;
 public class FileShareParams
 {
     public Guid ShareTo { get; set; }
+    public string Email { get; set; }
     public FileShare Access { get; set; }
 }
 
@@ -46,9 +47,10 @@ public class FileShareParamsHelper
     {
         return new AceWrapper
         {
-            Share = fileShareParams.Access,
-            SubjectId = fileShareParams.ShareTo,
-            SubjectGroup = !_userManager.UserExists(fileShareParams.ShareTo)
+            Access = fileShareParams.Access,
+            Id = fileShareParams.ShareTo,
+            Email = fileShareParams.Email,
+            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !_userManager.UserExists(fileShareParams.ShareTo)
         };
     }
 }

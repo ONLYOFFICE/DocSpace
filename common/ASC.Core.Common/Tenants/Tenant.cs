@@ -74,7 +74,6 @@ public class Tenant : IMapFrom<DbTenant>
     public string MappedDomain { get; set; }
     public string Name { get; set; }
     public Guid OwnerId { get; set; }
-    public string PartnerId { get; set; }
     public string PaymentId { get; set; }
     public bool Spam { get; set; }
     public TenantStatus Status { get; internal set; }

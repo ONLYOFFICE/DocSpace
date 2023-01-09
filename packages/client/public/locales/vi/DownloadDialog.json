@@ -3,6 +3,5 @@
   "ConvertMessage": "Nếu bạn chọn chuyển đổi tệp sang định dạng khác với định dạng gốc, một số dữ liệu có thể bị mất.",
   "ConvertToZip": "Các tệp sẽ được nén thành tệp .zip",
   "CustomFormat": "Định dạng tùy chỉnh",
-  "OriginalFormat": "Định dạng ban đầu",
-  "Other": "Khác"
+  "OriginalFormat": "Định dạng ban đầu"
 }

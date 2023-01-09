@@ -11,8 +11,10 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import history from "@docspace/common/history";
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
-import { StyledArrowRightIcon } from "../common/settingsCustomization/StyledSettings";
+import { StyledArrowRightIcon } from "./Customization/StyledSettings";
 import { withRouter } from "react-router";
+import Badge from "@docspace/components/badge";
+
 const StyledComponent = styled.div`
   padding-top: 13px;
 
@@ -27,6 +29,12 @@ const StyledComponent = styled.div`
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
+      }
+      .category-item_paid {
+        display: flex;
+        svg {
+          margin-top: auto;
+        }
       }
     }
 
@@ -59,6 +67,8 @@ const CustomizationNavbar = ({
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
+  isSettingPaid,
+  currentColorScheme,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -95,7 +105,7 @@ const CustomizationNavbar = ({
         <Box paddingProp="10px 0 3px 0">
           <Link
             className="link-learn-more"
-            color={theme.client.settings.common.linkColorHelp}
+            color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
             href={helpUrlCommonSettings}
@@ -126,25 +136,34 @@ const CustomizationNavbar = ({
 
       <div className="category-item-wrapper">
         <div className="category-item-heading">
-          <Link
-            truncate={true}
-            className="inherit-title-link header"
-            onClick={onClickLink}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/portal-settings/common/customization/dns-settings"
+          <div className="category-item_paid">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/portal-settings/common/customization/dns-settings"
+              )}
+            >
+              {t("DNSSettings")}
+            </Link>
+            {!isSettingPaid && (
+              <Badge
+                backgroundColor="#EDC409"
+                label={t("Common:Paid")}
+                isPaidBadge={true}
+              />
             )}
-          >
-            {t("DNSSettings")}
-          </Link>
-          <StyledArrowRightIcon size="small" color="#333333" />
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
         </div>
         <Text className="category-item-description">
           {t("DNSSettingsDescription")}
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
-            color={theme.client.settings.common.linkColorHelp}
+            color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
             href={helpUrlCommonSettings}
@@ -178,13 +197,18 @@ const CustomizationNavbar = ({
 };
 
 export default inject(({ auth, common }) => {
-  const { helpUrlCommonSettings, theme } = auth.settingsStore;
+  const {
+    helpUrlCommonSettings,
+    theme,
+    currentColorScheme,
+  } = auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
     helpUrlCommonSettings,
     isLoaded,
     setIsLoadedCustomizationNavbar,
+    currentColorScheme,
   };
 })(
   withRouter(

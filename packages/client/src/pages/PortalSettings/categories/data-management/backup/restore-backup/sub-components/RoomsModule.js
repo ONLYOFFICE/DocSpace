@@ -7,13 +7,12 @@ class RoomsModule extends React.Component {
     return (
       <SelectFileInputWrapper
         {...this.props}
-        foldersType="exceptSortedByTags"
+        filteredType="exceptSortedByTags"
         withoutProvider
         isArchiveOnly
         searchParam=".gz"
         filesListTitle={t("SelectFileInGZFormat")}
-        withoutResetFolderTree
-        ignoreSelectedFolderTree
+        withSubfolders={false}
         maxFolderInputWidth="446px"
         withoutBasicSelection
       />

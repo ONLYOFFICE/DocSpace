@@ -1,7 +1,44 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
+import {
+  tablet,
+  smallTablet,
+  desktop,
+  size,
+} from "@docspace/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
+
+const EmptyPageStyles = css`
+  padding: 44px 0px 64px 0px;
+
+  grid-column-gap: 40px;
+  grid-template-columns: 100px 1fr;
+
+  .empty-folder_link:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .empty-folder_link {
+    margin-right: 9px;
+  }
+
+  @media ${desktop} {
+    .empty-folder_link:not(:last-child) {
+      margin-bottom: 2px;
+    }
+  }
+
+  @media ${tablet} {
+    padding: 44px 0px 64px 0px;
+    grid-column-gap: 33px;
+  }
+
+  @media ${smallTablet} {
+    padding-right: 44px;
+  }
+`;
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -16,9 +53,23 @@ const EmptyFolderWrapper = styled.div`
       grid-column-gap: 8px;
     }
 
+    .second-description {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      margin: 32px 0 26px !important;
+    }
+
     .flex-wrapper_container {
       display: flex;
       flex-wrap: wrap;
+
+      row-gap: 16px;
+    }
+
+    .empty-folder_container-image {
+      margin-top: 3px;
+      cursor: pointer;
     }
 
     .empty-folder_container_up-image,
@@ -30,6 +81,9 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_plus-image {
       display: flex;
       line-height: unset;
+      ${NoUserSelect}
+    }
+    .empty-folder_container_up-image {
       ${NoUserSelect}
     }
 
@@ -44,6 +98,27 @@ const EmptyFolderWrapper = styled.div`
       position: relative;
       bottom: 16px;
     }
+
+    ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
+
+    ${(props) =>
+      props.isEmptyPage &&
+      isMobileOnly &&
+      css`
+        padding: 20px 42px 64px 11px !important;
+      `}
+
+    ${(props) =>
+      (props.isEmptyPage || props.isEmptyFolderContainer) &&
+      props.sectionWidth <= size.smallTablet &&
+      !isMobileOnly &&
+      css`
+        padding-left: 12px !important;
+
+        .empty-folder_link {
+          margin-bottom: 0 !important;
+        }
+      `}
   }
 `;
 
@@ -58,11 +133,19 @@ const EmptyFoldersContainer = (props) => {
     style,
     imageStyle,
     buttonStyle,
+    isEmptyPage,
+    sectionWidth,
+    isEmptyFolderContainer,
   } = props;
 
   return (
-    <EmptyFolderWrapper>
+    <EmptyFolderWrapper
+      sectionWidth={sectionWidth}
+      isEmptyPage={isEmptyPage}
+      isEmptyFolderContainer={isEmptyFolderContainer}
+    >
       <EmptyScreenContainer
+        sectionWidth={sectionWidth}
         className="empty-folder_container"
         style={style}
         imageStyle={imageStyle}
@@ -73,6 +156,8 @@ const EmptyFoldersContainer = (props) => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
+        isEmptyPage={isEmptyPage}
+        isEmptyFolderContainer={isEmptyFolderContainer}
       />
     </EmptyFolderWrapper>
   );

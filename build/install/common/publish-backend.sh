@@ -74,14 +74,11 @@ services_name_backend+=(ASC.Data.Backup)
 services_name_backend+=(ASC.Files.Service)
 services_name_backend+=(ASC.Notify)
 services_name_backend+=(ASC.Studio.Notify)
-services_name_backend+=(ASC.TelegramService)
-services_name_backend+=(ASC.UrlShortener.Svc)
 services_name_backend+=(ASC.Web.Api)
 services_name_backend+=(ASC.Web.Studio)
 services_name_backend+=(ASC.Data.Backup.BackgroundTasks)
 services_name_backend+=(ASC.ClearEvents)
-services_name_backend+=(ASC.Migration)
-services_name_backend+=(ASC.Webhooks.Service)
+services_name_backend+=(ASC.ApiSystem)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
@@ -93,7 +90,6 @@ done
 
 # Array of names backend services in directory common (Nodejs)
 services_name_backend_nodejs=()  
-services_name_backend_nodejs+=(ASC.UrlShortener)
 services_name_backend_nodejs+=(ASC.Socket.IO)
 services_name_backend_nodejs+=(ASC.SsoAuth)
 

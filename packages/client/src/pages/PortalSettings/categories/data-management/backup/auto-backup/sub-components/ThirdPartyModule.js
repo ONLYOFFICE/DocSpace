@@ -55,39 +55,16 @@ class ThirdPartyModule extends React.PureComponent {
       isError,
       isLoadingData,
       isReset,
-      isSuccessSave,
+
       passedId,
       //commonThirdPartyList,
       isResourcesDefault,
-      isResetProcess,
-      isSavingProcess,
       t,
       ...rest
     } = this.props;
 
     return (
       <>
-        {/* {!isDocSpace ? (
-          <div className="auto-backup_folder-input">
-            <SelectFolderInput
-              onSelectFolder={this.onSelectFolder}
-              onClose={this.onClose}
-              onClickInput={this.onClickInput}
-              isPanelVisible={isPanelVisible}
-              isError={isError}
-              foldersType="third-party"
-              isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
-              id={passedId}
-              isReset={isResetProcess}
-              isSuccessSave={isSavingProcess}
-              foldersList={commonThirdPartyList}
-              withoutBasicSelection={isResourcesDefault ? false : true}
-            />
-          </div>
-        ) : ( */}
-
-        {/* )} */}
-
         <div className="auto-backup_third-party-module">
           <DirectThirdPartyConnection
             t={t}
@@ -98,8 +75,6 @@ class ThirdPartyModule extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             withoutBasicSelection={isResourcesDefault ? false : true}
             isError={isError}
-            isReset={isResetProcess}
-            isSuccessSave={isSavingProcess}
             id={passedId}
           />
         </div>
@@ -115,8 +90,6 @@ export default inject(({ backup }) => {
     defaultStorageType,
     commonThirdPartyList,
     defaultFolderId,
-    isResetProcess,
-    isSavingProcess,
   } = backup;
 
   const isResourcesDefault =
@@ -124,8 +97,6 @@ export default inject(({ backup }) => {
   const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {
-    isResetProcess,
-    isSavingProcess,
     setSelectedFolder,
     passedId,
     commonThirdPartyList,

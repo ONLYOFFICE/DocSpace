@@ -22,7 +22,7 @@ const SelectFolderDialogAsideView = ({
   isPanelVisible,
   onClose,
   withoutProvider,
-  isNeedArrowIcon,
+  withFileSelectDialog,
   isAvailable,
   folderId,
   isLoadingData,
@@ -47,10 +47,11 @@ const SelectFolderDialogAsideView = ({
       withoutBodyScroll
       withFooterBorder
       displayType="aside"
+      isDoubleFooterLine
     >
       <ModalDialog.Header theme={theme}>
         <StyledAsideHeader>
-          {isNeedArrowIcon && (
+          {withFileSelectDialog && (
             <IconButton
               theme={theme}
               className="selection-panel_aside-header-icon"
@@ -97,29 +98,32 @@ const SelectFolderDialogAsideView = ({
         </StyledAsideBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-folder-dialog-buttons-save"
-          primary
-          scale
-          size="normalTouchscreen"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            !isAvailable
-          }
-        />
-        <Button
-          size="normalTouchscreen"
-          scale
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+        <div>
+          <Button
+            theme={theme}
+            className="select-folder-dialog-buttons-save"
+            primary
+            scale
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={
+              folderSelectionDisabled ||
+              isDisableButton ||
+              isDisableTree ||
+              isLoadingData ||
+              !isAvailable
+            }
+          />
+          <Button
+            size="normal"
+            scale
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

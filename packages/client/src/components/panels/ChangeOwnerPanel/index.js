@@ -7,8 +7,8 @@ import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
-import OwnerSelector from "./OwnerSelector";
+import toastr from "@docspace/components/toast/toastr";
+// import OwnerSelector from "./OwnerSelector";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -135,7 +135,7 @@ class ChangeOwnerComponent extends React.Component {
             </StyledFooter>
           </StyledContent>
         </Aside>
-        {showPeopleSelector && (
+        {/* {showPeopleSelector && (
           <OwnerSelector
             theme={theme}
             ownerLabel={t("ChangeOwner")}
@@ -145,7 +145,7 @@ class ChangeOwnerComponent extends React.Component {
             onClose={this.onClose}
             onClosePanel={this.onShowPeopleSelector}
           />
-        )}
+        )} */}
       </StyledAsidePanel>
     );
   }

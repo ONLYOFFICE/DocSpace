@@ -25,20 +25,8 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
       <StyledBox1>
         <RectangleLoader
           title={title}
-          width="17"
-          height="17"
-          borderRadius={borderRadius}
-          backgroundColor={backgroundColor}
-          foregroundColor={foregroundColor}
-          backgroundOpacity={backgroundOpacity}
-          foregroundOpacity={foregroundOpacity}
-          speed={speed}
-          animate={animate}
-        />
-        <RectangleLoader
-          title={title}
-          width="67"
-          height="17"
+          width="100%"
+          height="100%"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -50,18 +38,6 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
       </StyledBox1>
       <StyledSpacer />
       <StyledBox2>
-        <RectangleLoader
-          title={title}
-          width="17"
-          height="17"
-          borderRadius={borderRadius}
-          backgroundColor={backgroundColor}
-          foregroundColor={foregroundColor}
-          backgroundOpacity={backgroundOpacity}
-          foregroundOpacity={foregroundOpacity}
-          speed={speed}
-          animate={animate}
-        />
         <RectangleLoader
           title={title}
           width="17"

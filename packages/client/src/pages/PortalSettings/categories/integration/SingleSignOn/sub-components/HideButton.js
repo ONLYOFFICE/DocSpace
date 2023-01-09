@@ -8,12 +8,21 @@ import Text from "@docspace/components/text";
 
 const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
-  const { text, label, isAdditionalParameters, value, setHideLabel } = props;
+  const {
+    text,
+    label,
+    isAdditionalParameters,
+    value,
+    setHideLabel,
+    isDisabled,
+  } = props;
   const marginProp = isAdditionalParameters ? null : "24px 0";
 
   const onClick = () => {
     setHideLabel(label);
   };
+
+  const onClickProp = isDisabled ? {} : { onClick: onClick };
 
   return (
     <Box
@@ -23,12 +32,23 @@ const HideButton = (props) => {
       marginProp={marginProp}
     >
       {!isAdditionalParameters && (
-        <Text as="h2" fontSize="16px" fontWeight={700} noSelect>
+        <Text
+          as="h2"
+          fontSize="16px"
+          fontWeight={700}
+          className="settings_unavailable"
+          noSelect
+        >
           {text}
         </Text>
       )}
 
-      <Link className="hide-button" isHovered onClick={onClick} type="action">
+      <Link
+        className="hide-button settings_unavailable"
+        isHovered
+        {...onClickProp}
+        type="action"
+      >
         {value
           ? isAdditionalParameters
             ? t("HideAdditionalParameters")

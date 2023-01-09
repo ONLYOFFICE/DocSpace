@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package ASC.Web.CRM.Classes;
-
-message ContactPhotoManagerCacheItem {
-    int32 id = 1;
-}
- 

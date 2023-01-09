@@ -28,7 +28,7 @@ import {
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
-import MoreLoginModal from "login/moreLogin";
+import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
@@ -184,10 +184,6 @@ const RegisterContainer = styled.div`
     margin-top: 32px;
     width: 100%;
 
-    .form-field {
-      height: 48px;
-    }
-
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
       width: 100%;
@@ -218,13 +214,15 @@ const RegisterContainer = styled.div`
 `;
 
 const Confirm = (props) => {
-  const { settings, t, greetingTitle, providers, isDesktop } = props;
+  const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
   const inputRef = React.useRef(null);
+
+  const emailFromLink = linkData.email ? linkData.email : "";
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
   const [ssoUrl, setSsoUrl] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailFromLink);
   const [emailValid, setEmailValid] = useState(true);
   const [emailErrorText, setEmailErrorText] = useState("");
 
@@ -286,7 +284,7 @@ const Confirm = (props) => {
 
   const onSubmit = () => {
     const { defaultPage, linkData, hashSettings } = props;
-    const isVisitor = parseInt(linkData.emplType) === 2;
+    const type = parseInt(linkData.emplType);
 
     setIsLoading(true);
 
@@ -335,13 +333,17 @@ const Confirm = (props) => {
       email: email,
     };
 
-    const registerData = Object.assign(personalData, {
-      isVisitor: isVisitor,
-    });
+    if (!!type) {
+      personalData.type = type;
+    }
 
-    const key = props.linkData.confirmHeader;
+    if (!!linkData.key) {
+      personalData.key = linkData.key;
+    }
 
-    createConfirmUser(registerData, loginData, key)
+    const headerKey = linkData.confirmHeader;
+
+    createConfirmUser(personalData, loginData, headerKey)
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
         console.error("confirm error", error);
@@ -608,7 +610,7 @@ const Confirm = (props) => {
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
               <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
+                {t("Common:Or")}
               </Text>
             </div>
           )}
@@ -637,7 +639,7 @@ const Confirm = (props) => {
                   scale={true}
                   isAutoFocussed={true}
                   tabIndex={1}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || !!emailFromLink}
                   autoComplete="username"
                   onChange={onChangeEmail}
                   onBlur={onBlurEmail}
@@ -659,7 +661,7 @@ const Confirm = (props) => {
                   type="text"
                   hasError={!fnameValid}
                   value={fname}
-                  placeholder={t("FirstName")}
+                  placeholder={t("Common:FirstName")}
                   size="large"
                   scale={true}
                   tabIndex={1}

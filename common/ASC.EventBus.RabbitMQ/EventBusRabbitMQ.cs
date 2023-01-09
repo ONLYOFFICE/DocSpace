@@ -65,7 +65,6 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         _serializer = serializer;
         _rejectedEvents = new ConcurrentQueue<Guid>();
-
     }
 
     private void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -158,6 +157,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private void DoInternalSubscription(string eventName)
     {
         var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
+
         if (!containsKey)
         {
             if (!_persistentConnection.IsConnected)
@@ -234,6 +234,17 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         var eventName = eventArgs.RoutingKey;
 
+        // TODO: Need will remove after test
+        if (!_subsManager.HasSubscriptionsForEvent(eventName))
+        {
+            _logger.WarningNoSubscription(eventName);
+
+            // anti-pattern https://github.com/LeanKit-Labs/wascally/issues/36
+            _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
+
+            return;
+        }
+
         var @event = GetEvent(eventName, eventArgs.Body.Span.ToArray());
         var message = @event.ToString();
 
@@ -252,20 +263,14 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         {
             _logger.WarningProcessingMessage(message, ex);
 
-            if (eventArgs.Redelivered)
+            if (_rejectedEvents.TryPeek(out var result) && result.Equals(ex.EventId))
             {
-                if (_rejectedEvents.TryPeek(out var result) && result.Equals(ex.EventId))
-                {
-                    _rejectedEvents.TryDequeue(out var _);
-                    _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
-                }
-                else
-                {
-                    _rejectedEvents.Enqueue(ex.EventId);
-                }
+                _rejectedEvents.TryDequeue(out var _);
+                _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
             }
             else
             {
+                _rejectedEvents.Enqueue(ex.EventId);
                 _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
             }
         }
@@ -301,9 +306,10 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                         arguments: null);
 
 
-        var arguments = new Dictionary<string, object>();
-
-        arguments.Add("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE_NAME);
+        var arguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", DEAD_LETTER_EXCHANGE_NAME }
+        };
 
         channel.QueueDeclare(queue: _queueName,
                                 durable: true,
@@ -353,46 +359,39 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         PreProcessEvent(@event);
 
-        if (_subsManager.HasSubscriptionsForEvent(eventName))
+        using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
         {
-            using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
+            var subscriptions = _subsManager.GetHandlersForEvent(eventName);
+
+            foreach (var subscription in subscriptions)
             {
-                var subscriptions = _subsManager.GetHandlersForEvent(eventName);
-
-                foreach (var subscription in subscriptions)
+                if (subscription.IsDynamic)
                 {
-                    if (subscription.IsDynamic)
+                    var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
+                    if (handler == null)
                     {
-                        var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
-                        if (handler == null)
-                        {
-                            continue;
-                        }
-
-                        using dynamic eventData = @event;
-                        await Task.Yield();
-                        await handler.Handle(eventData);
+                        continue;
                     }
-                    else
+
+                    using dynamic eventData = @event;
+                    await Task.Yield();
+                    await handler.Handle(eventData);
+                }
+                else
+                {
+                    var handler = scope.ResolveOptional(subscription.HandlerType);
+                    if (handler == null)
                     {
-                        var handler = scope.ResolveOptional(subscription.HandlerType);
-                        if (handler == null)
-                        {
-                            continue;
-                        }
-
-                        var eventType = _subsManager.GetEventTypeByName(eventName);
-                        var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-
-                        await Task.Yield();
-                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { @event });
+                        continue;
                     }
+
+                    var eventType = _subsManager.GetEventTypeByName(eventName);
+                    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+
+                    await Task.Yield();
+                    await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { @event });
                 }
             }
-        }
-        else
-        {
-            _logger.WarningNoSubscription(eventName);
         }
     }
 }

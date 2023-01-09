@@ -31,9 +31,6 @@ internal static partial class FirstTimeTenantSettingsLogger
     [LoggerMessage(Level = LogLevel.Error, Message = "{tenantId}: owner id is empty.")]
     public static partial void ErrorOwnerEmpty(this ILogger<FirstTimeTenantSettings> logger, int tenantId);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Incorrect Promo: {promoCode}")]
-    public static partial void ErrorIncorrectPromo(this ILogger<FirstTimeTenantSettings> logger, string promoCode, Exception exception);
-
     [LoggerMessage(Level = LogLevel.Error, Message = "FirstTimeTenantSettings")]
     public static partial void ErrorFirstTimeTenantSettings(this ILogger<FirstTimeTenantSettings> logger, Exception exception);
 

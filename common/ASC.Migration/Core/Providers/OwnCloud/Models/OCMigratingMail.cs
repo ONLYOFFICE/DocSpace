@@ -32,15 +32,15 @@ public class OCMigratingMail : MigratingMail
 
     public override int MessagesCount => messagesCount;
     public override string ModuleName => MigrationResource.ModuleNameMail;
-    public override void Migrate()
+    public override Task Migrate()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public override void Parse()
     {
         messagesCount++;
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public OCMigratingMail(Action<string, Exception> log) : base(log) { }

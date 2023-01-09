@@ -126,9 +126,14 @@ public class FeedController : ControllerBase
             filter.To = to != null ? to.UtcTime : DateTime.MaxValue;
         }
 
-        var lastTimeReaded = _feedReadedDataProvider.GetTimeReaded();
+        var lastTimeReaded = DateTime.UtcNow;
+        var readedDate = lastTimeReaded;
 
-        var readedDate = timeReaded != null ? timeReaded.UtcTime : lastTimeReaded;
+        if (string.IsNullOrEmpty(id))
+        {
+            lastTimeReaded = _feedReadedDataProvider.GetTimeReaded();
+            readedDate = timeReaded != null ? timeReaded.UtcTime : lastTimeReaded;
+        }
 
         if (filter.OnlyNew)
         {

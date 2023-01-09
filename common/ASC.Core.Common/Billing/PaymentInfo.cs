@@ -42,6 +42,6 @@ public class PaymentInfo
     public string PaymentCurrency { get; set; }
     public string PaymentMethod { get; set; }
     public int QuotaId { get; set; }
-    public string ProductRef { get; set; }
+    public int ProductRef { get; set; }
     public string CustomerId { get; set; }
 }

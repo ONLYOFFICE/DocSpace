@@ -43,15 +43,18 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
     public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
-        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
-
-        foreach (var fileId in @event.FileIds)
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
-            var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            FileDataQueue.Queue.TryAdd(fileId, fileData);
+            foreach (var fileId in @event.FileIds)
+            {
+                var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
+
+                FileDataQueue.Queue.TryAdd(fileId, fileData);
+            }
+
+            await Task.CompletedTask;
         }
-
-        await Task.CompletedTask;
     }
 }

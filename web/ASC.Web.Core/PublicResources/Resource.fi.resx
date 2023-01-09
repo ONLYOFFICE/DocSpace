@@ -82,9 +82,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Virheellinen sähköpostiosoite</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Väärä promokoodi</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Ei käyttöoikeuksia tämän toiminnon suorittamiseen. </value>
   </data>
@@ -135,9 +132,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Uusi salasana on virheellinen. Sen on sisällettävä</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Sen on sisällettävä</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>numerot</value>

@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig, FolderType } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FolderType,
+  EDITOR_ID,
+} from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
@@ -20,6 +24,12 @@ import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
 import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
+import toastr from "@docspace/components/toast/toastr";
+import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import {
+  getArchiveFileRoleActions,
+  getFileRoleActions,
+} from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -53,20 +63,25 @@ let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
 let docEditor;
+let newConfig;
+let documentserverUrl =
+  typeof window !== "undefined" && window?.location?.origin;
+let userAccessRights = {};
+let isArchiveFolderRoot = true;
 
 function Editor({
   config,
-  personal,
+  //personal,
   successAuth,
-  isSharingAccess,
+  // isSharingAccess,
   user,
   doc,
   actionLink,
   error,
-  sharingDialog,
-  onSDKRequestSharingSettings,
-  loadUsersRightsList,
-  isVisible,
+  // sharingDialog,
+  // onSDKRequestSharingSettings,
+  // loadUsersRightsList,
+  // isVisible,
   selectFileDialog,
   onSDKRequestInsertImage,
   onSDKRequestMailMergeRecipients,
@@ -82,8 +97,17 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
+
+  isArchiveFolderRoot =
+    fileInfo && fileInfo.rootFolderType === FolderType.Archive;
+
   const { t } = useTranslation(["Editor", "Common"]);
 
+  if (fileInfo) {
+    userAccessRights = isArchiveFolderRoot
+      ? getArchiveFileRoleActions(fileInfo.access)
+      : getFileRoleActions(fileInfo.access);
+  }
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized && error?.redirectPath) {
@@ -91,38 +115,39 @@ function Editor({
         window.location.href = error?.redirectPath;
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      window.toastr.error(errorText);
+      toastr.error(errorText);
     }
   }, [mfReady, error]);
 
   useEffect(() => {
-    if (config) {
-      document.getElementById("scripDocServiceAddress").onload = onLoad();
-      setDocumentTitle(config?.document?.title);
+    if (!config) return;
 
-      if (isIOS && deviceType === "tablet") {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-      }
+    setDocumentTitle(config?.document?.title);
 
-      if (
-        !view &&
-        fileInfo &&
-        fileInfo.canWebRestrictedEditing &&
-        fileInfo.canFillForms &&
-        !fileInfo.canEdit
-      ) {
-        try {
-          initForm();
-        } catch (err) {
-          console.error(err);
-        }
-      }
+    if (isIOS && deviceType === "tablet") {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
 
-      if (view) {
-        config.editorConfig.mode = "view";
+    if (
+      !view &&
+      fileInfo &&
+      fileInfo.canWebRestrictedEditing &&
+      fileInfo.canFillForms &&
+      !fileInfo.canEdit
+    ) {
+      try {
+        initForm();
+      } catch (err) {
+        console.error(err);
       }
     }
+
+    if (view) {
+      config.editorConfig.mode = "view";
+    }
+
+    init();
   }, []);
 
   useEffect(() => {
@@ -197,6 +222,8 @@ function Editor({
 
   const onSDKRequestEditRights = async () => {
     console.log("ONLYOFFICE Document Editor requests editing rights");
+    const url = window.location.href;
+
     const index = url.indexOf("&action=view");
 
     if (index) {
@@ -214,6 +241,8 @@ function Editor({
   };
 
   const onMakeActionLink = (event) => {
+    const url = window.location.href;
+
     const actionData = event.data;
 
     const link = generateLink(actionData);
@@ -341,40 +370,43 @@ function Editor({
   };
 
   const onDocumentReady = () => {
+    console.log("onDocumentReady", arguments);
     documentIsReady = true;
 
-    if (isSharingAccess) {
-      loadUsersRightsList(docEditor);
-    }
+    // if (isSharingAccess) {
+    //   loadUsersRightsList(docEditor);
+    // }
+
+    assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
-  const updateFavorite = (favorite) => {
-    docEditor.setFavorite(favorite);
-  };
+  // const updateFavorite = (favorite) => {
+  //   docEditor.setFavorite(favorite);
+  // };
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
-    const favorite = event.data.favorite;
+    //const favorite = event.data.favorite;
 
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
 
-    if (!newTitle) {
-      const onlyNumbers = new RegExp("^[0-9]+$");
-      const isFileWithoutProvider = onlyNumbers.test(fileId);
+    // if (!newTitle) {
+    //   const onlyNumbers = new RegExp("^[0-9]+$");
+    //   const isFileWithoutProvider = onlyNumbers.test(fileId);
 
-      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+    //   const convertFileId = isFileWithoutProvider ? +fileId : fileId;
 
-      favorite
-        ? markAsFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error))
-        : removeFromFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error));
-    }
+    //   favorite
+    //     ? markAsFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error))
+    //     : removeFromFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error));
+    // }
   };
 
   const setDocumentTitle = (subTitle = null) => {
@@ -395,6 +427,10 @@ function Editor({
     } else {
       title = organizationName;
     }
+
+    if (!documentIsReady) {
+      docTitle = title;
+    }
     document.title = title;
   };
 
@@ -410,15 +446,19 @@ function Editor({
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready");
+    docEditor = window.DocEditor.instances[EDITOR_ID];
+
+    console.log("ONLYOFFICE Document Editor is ready", docEditor);
     const url = window.location.href;
 
     const index = url.indexOf("#message/");
 
     if (index > -1) {
       const splitUrl = url.split("#message/");
+
       if (splitUrl.length === 2) {
-        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        const message = decodeURIComponent(splitUrl[1]).replace(/\+/g, " ");
+
         docEditor.showMessage(message);
         history.pushState({}, null, url.substring(0, index));
       } else {
@@ -427,10 +467,8 @@ function Editor({
     }
   };
 
-  const onLoad = () => {
+  const init = () => {
     try {
-      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
-
       if (isMobile) {
         config.type = "mobile";
       }
@@ -441,11 +479,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        if (fileInfo.rootFolderType === FolderType.Rooms) {
-          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        } else {
-          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        }
+        // if (fileInfo.rootFolderType === FolderType.Rooms) {
+        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        // } else {
+        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        //}
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
@@ -462,10 +500,12 @@ function Editor({
         goback: goBack,
       };
 
-      if (personal && !fileInfo) {
-        //TODO: add conditions for SaaS
-        config.document.info.favorite = null;
-      }
+      config.document.info.favorite = null;
+
+      // if (personal && !fileInfo) {
+      //   //TODO: add conditions for SaaS
+      //   config.document.info.favorite = null;
+      // }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -492,39 +532,47 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             AppServerConfig.proxyURL,
-            "products/files/",
-            `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
               defaultFileName
             )}`
           );
       }
 
-      let onRequestSharingSettings,
+      let //onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
         onRequestInsertImage,
         onRequestMailMergeRecipients,
         onRequestCompareFile,
-        onRequestRestore;
+        onRequestRestore,
+        onRequestHistory;
 
-      if (isSharingAccess) {
-        onRequestSharingSettings = onSDKRequestSharingSettings;
-      }
+      // if (isSharingAccess) {
+      //   onRequestSharingSettings = onSDKRequestSharingSettings;
+      // }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (userAccessRights.rename) {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (successAuth) {
+      if (userAccessRights.viewVersionHistory) {
+        onRequestHistory = onSDKRequestHistory;
+      }
+
+      if (successAuth && !user.isVisitor) {
         onRequestSaveAs = onSDKRequestSaveAs;
+      }
+
+      if (successAuth) {
         onRequestInsertImage = onSDKRequestInsertImage;
         onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (!!config.document.permissions.changeHistory) {
+      if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
+
       const events = {
         events: {
           onAppReady: onSDKAppReady,
@@ -534,7 +582,7 @@ function Editor({
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
-          onRequestSharingSettings,
+          // onRequestSharingSettings,
           onRequestRename,
           onMakeActionLink: onMakeActionLink,
           onRequestInsertImage,
@@ -542,30 +590,35 @@ function Editor({
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
-          onRequestHistory: onSDKRequestHistory,
+          onRequestHistory: onRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
           onRequestRestore,
         },
       };
 
-      const newConfig = Object.assign(config, events);
-
-      docEditor = window.docEditor = window.DocsAPI.DocEditor(
-        "editor",
-        newConfig
-      );
-
-      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
+      newConfig = Object.assign(config, events);
     } catch (error) {
-      window.toastr.error(error.message, null, 0, true);
+      toastr.error(error.message, null, 0, true);
     }
   };
 
   return (
-    <EditorWrapper isVisibleSharingDialog={isVisible}>
-      <div id="editor"></div>
-      {sharingDialog}
+    <EditorWrapper
+    // isVisibleSharingDialog={isVisible}
+    >
+      {newConfig && (
+        <DocumentEditor
+          id={EDITOR_ID}
+          documentServerUrl={documentserverUrl}
+          config={newConfig}
+          height="100%"
+          width="100%"
+          events_onDocumentReady={onDocumentReady}
+        ></DocumentEditor>
+      )}
+
+      {/* {sharingDialog} */}
       {selectFileDialog}
       {selectFolderDialog}
       <Toast />

@@ -54,7 +54,6 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class BackupProgressItem : BaseBackupProgressItem
 {
-    public bool BackupMail { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
@@ -94,7 +93,6 @@ public class BackupProgressItem : BaseBackupProgressItem
         TenantId = schedule.TenantId;
         _storageType = schedule.StorageType;
         _storageBasePath = schedule.StorageBasePath;
-        BackupMail = schedule.BackupMail;
         StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams);
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
@@ -109,7 +107,6 @@ public class BackupProgressItem : BaseBackupProgressItem
         TenantId = request.TenantId;
         _storageType = request.StorageType;
         _storageBasePath = request.StorageBasePath;
-        BackupMail = request.BackupMail;
         StorageParams = request.StorageParams.ToDictionary(r => r.Key, r => r.Value);
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
@@ -118,7 +115,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _configPaths = configPaths;
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
         {
@@ -143,10 +140,6 @@ public class BackupProgressItem : BaseBackupProgressItem
             var backupTask = _backupPortalTask;
 
             backupTask.Init(TenantId, _configPaths[_currentRegion], tempFile, _limit);
-            if (!BackupMail)
-            {
-                backupTask.IgnoreModule(ModuleName.Mail);
-            }
 
             backupTask.ProgressChanged += (sender, args) =>
             {
@@ -154,13 +147,13 @@ public class BackupProgressItem : BaseBackupProgressItem
                 PublishChanges();
             };
 
-            backupTask.RunJob();
+            await backupTask.RunJob();
 
             var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
             if (backupStorage != null)
             {
-                storagePath = backupStorage.Upload(_storageBasePath, tempFile, _userId);
-                Link = backupStorage.GetPublicLink(storagePath);
+                storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
+                Link = await backupStorage.GetPublicLink(storagePath);
             }
 
             var repo = _backupRepository;

@@ -57,7 +57,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   .SlideIn {
-    animation: SlideIn 0.7s ease-out both;
+    animation: SlideIn 0.7s ease-out;
   }
 
   @keyframes SlideOut {

@@ -9,7 +9,7 @@ import Text from "@docspace/components/text";
 import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import withLoader from "../withLoader";
 import {
   hugeMobile,

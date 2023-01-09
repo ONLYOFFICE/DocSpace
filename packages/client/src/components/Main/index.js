@@ -7,8 +7,17 @@ const StyledMain = styled.main`
   width: 100vw;
   z-index: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   box-sizing: border-box;
+
+  .main-container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+  }
 
   ${isMobileOnly &&
   css`
@@ -19,29 +28,10 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  // const orientationChanged = React.useCallback(() => {
-  //   if (isIOS && !isFirefox) {
-  //     let vh = (window.innerHeight - 48) * 0.01;
-  //     document.documentElement.style.setProperty("--vh", `${vh}px`);
-  //   }
-  // }, []);
-
-  // React.useEffect(() => {
-  //   orientationChanged();
-  //   if (isIOS && !isFirefox) {
-  //     window.addEventListener("resize", orientationChanged);
-  //   }
-  //   return () => window.removeEventListener("resize", orientationChanged);
-  // }, []);
-
   //console.log("Main render");
 
   return <StyledMain className="main" {...props} />;
 });
-
-/*Main.defaultProps = {
-  fullscreen: false
-};*/
 
 Main.displayName = "Main";
 

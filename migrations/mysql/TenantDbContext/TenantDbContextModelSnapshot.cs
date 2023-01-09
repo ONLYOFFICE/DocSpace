@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbCoreSettings", b =>
@@ -246,38 +246,6 @@ namespace ASC.Migrations.MySql.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
-                {
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int")
-                        .HasColumnName("tenant_id");
-
-                    b.Property<string>("AffiliateId")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("affiliate_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Campaign")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("campaign")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("PartnerId")
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("partner_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.HasKey("TenantId")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("tenants_partners", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantVersion", b =>
                 {
                     b.Property<int>("Id")
@@ -323,6 +291,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    b.Property<bool>("ForAdmin")
+                        .HasColumnType("TINYINT(1)")
+                        .HasColumnName("for_admin");
 
                     b.Property<string>("Ip")
                         .IsRequired()

@@ -21,6 +21,8 @@ const TypeCell = ({ t, item, sideColor }) => {
       case FileType.Presentation:
         return t("Presentation");
       case FileType.Document:
+      case FileType.OForm:
+      case FileType.OFormTemplate:
         return t("Document");
 
       default:

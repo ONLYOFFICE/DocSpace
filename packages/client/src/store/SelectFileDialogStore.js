@@ -1,17 +1,11 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class SelectFileDialogStore {
   folderId = null;
-  fileInfo = null;
+  fileInfo = {};
 
   constructor() {
-    makeObservable(this, {
-      fileInfo: observable,
-      folderId: observable,
-
-      setFolderId: action,
-      setFile: action,
-    });
+    makeAutoObservable(this);
   }
 
   setFolderId = (id) => {

@@ -34,7 +34,7 @@ public class AdditionalWhiteLabelSettingsWrapper
 [Serializable]
 public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
 {
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    public AdditionalWhiteLabelSettingsHelperInit AdditionalWhiteLabelSettingsHelper;
 
     public bool StartDocsEnabled { get; set; }
 
@@ -60,51 +60,33 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
 
     public string LicenseAgreementsUrl { get; set; }
 
-    public bool IsDefault()
-    {
-        var defaultSettings = GetDefault();
-
-        return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
-                HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
-                FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
-                FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
-                UserForumEnabled == defaultSettings.UserForumEnabled &&
-                UserForumUrl == defaultSettings.UserForumUrl &&
-                VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
-                VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
-                SalesEmail == defaultSettings.SalesEmail &&
-                BuyUrl == defaultSettings.BuyUrl &&
-                LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
-                LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
-    }
-
     [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
     }
 
-    public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
+    public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper)
     {
-        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        this.AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     public AdditionalWhiteLabelSettings() { }
 
     public AdditionalWhiteLabelSettings GetDefault()
     {
-        return new AdditionalWhiteLabelSettings(_additionalWhiteLabelSettingsHelper)
+        return new AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper)
         {
             StartDocsEnabled = true,
-            HelpCenterEnabled = _additionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
-            FeedbackAndSupportEnabled = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
-            FeedbackAndSupportUrl = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
-            UserForumEnabled = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
-            UserForumUrl = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl,
-            VideoGuidesEnabled = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl != null,
-            VideoGuidesUrl = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl,
-            SalesEmail = _additionalWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
-            BuyUrl = _additionalWhiteLabelSettingsHelper?.DefaultBuyUrl,
+            HelpCenterEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
+            FeedbackAndSupportEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
+            FeedbackAndSupportUrl = AdditionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
+            UserForumEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
+            UserForumUrl = AdditionalWhiteLabelSettingsHelper?.DefaultUserForumUrl,
+            VideoGuidesEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl != null,
+            VideoGuidesUrl = AdditionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl,
+            SalesEmail = AdditionalWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
+            BuyUrl = AdditionalWhiteLabelSettingsHelper?.DefaultBuyUrl,
             LicenseAgreementsEnabled = true,
             LicenseAgreementsUrl = DefaultLicenseAgreements
         };
@@ -119,12 +101,45 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
     }
 }
 
-[Singletone]
+[Scope]
 public class AdditionalWhiteLabelSettingsHelper
+{
+    private readonly AdditionalWhiteLabelSettingsHelperInit _additionalWhiteLabelSettingsHelperInit;
+
+    public AdditionalWhiteLabelSettingsHelper(AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelperInit)
+    {
+        _additionalWhiteLabelSettingsHelperInit = additionalWhiteLabelSettingsHelperInit;
+    }
+
+    public bool IsDefault(AdditionalWhiteLabelSettings settings)
+    {
+        if (settings.AdditionalWhiteLabelSettingsHelper == null)
+        {
+            settings.AdditionalWhiteLabelSettingsHelper = _additionalWhiteLabelSettingsHelperInit;
+        }
+        var defaultSettings = settings.GetDefault();
+
+        return settings.StartDocsEnabled == defaultSettings.StartDocsEnabled &&
+                settings.HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
+                settings.FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
+                settings.FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
+                settings.UserForumEnabled == defaultSettings.UserForumEnabled &&
+                settings.UserForumUrl == defaultSettings.UserForumUrl &&
+                settings.VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
+                settings.VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
+                settings.SalesEmail == defaultSettings.SalesEmail &&
+                settings.BuyUrl == defaultSettings.BuyUrl &&
+                settings.LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
+                settings.LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
+    }
+}
+
+[Singletone]
+public class AdditionalWhiteLabelSettingsHelperInit 
 {
     private readonly IConfiguration _configuration;
 
-    public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
+    public AdditionalWhiteLabelSettingsHelperInit(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -169,7 +184,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var email = _configuration["web:payment:email"];
+            var email = _configuration["core:payment:email"];
             return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
         }
     }

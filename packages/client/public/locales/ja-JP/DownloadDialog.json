@@ -3,6 +3,5 @@
   "ConvertMessage": "元のファイルとは異なる形式に変換した場合、一部のデータが失われる可能性があります。",
   "ConvertToZip": "ファイルは.zipファイルに圧縮されます。",
   "CustomFormat": "カスタム形式",
-  "OriginalFormat": "オリジナル形式",
-  "Other": "その他"
+  "OriginalFormat": "オリジナル形式"
 }

@@ -17,6 +17,7 @@ db_input medium {{product}}/redis-port || true
 
 db_input medium {{product}}/rabbitmq-host || true
 db_input medium {{product}}/rabbitmq-user || true
+db_input medium {{product}}/rabbitmq-port || true
 db_input medium {{product}}/rabbitmq-password || true
 
 db_input medium {{product}}/db-host || true

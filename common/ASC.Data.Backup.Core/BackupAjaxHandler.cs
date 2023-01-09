@@ -36,12 +36,11 @@ public class BackupAjaxHandler
     private readonly PermissionContext _permissionContext;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
-    private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
     private readonly BackupService _backupService;
-    private readonly TempPath _tempPath;
+    private readonly StorageFactory _storageFactory;
 
-    private const string BackupTempFolder = "backup";
+    private const string BackupTempModule = "backup_temp";
     private const string BackupFileName = "backup.tmp";
 
     #region backup
@@ -55,9 +54,8 @@ public class BackupAjaxHandler
         PermissionContext permissionContext,
         SecurityContext securityContext,
         UserManager userManager,
-        TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        TempPath tempPath)
+        StorageFactory storageFactory)
     {
         _tenantManager = tenantManager;
         _messageService = messageService;
@@ -66,13 +64,12 @@ public class BackupAjaxHandler
         _permissionContext = permissionContext;
         _securityContext = securityContext;
         _userManager = userManager;
-        _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
         _backupService = backupService;
-        _tempPath = tempPath;
+        _storageFactory = storageFactory;
     }
 
-    public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
+    public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams)
     {
         DemandPermissionsBackup();
 
@@ -80,7 +77,6 @@ public class BackupAjaxHandler
         {
             TenantId = GetCurrentTenantId(),
             UserId = _securityContext.CurrentAccount.ID,
-            BackupMail = backupMail,
             StorageType = storageType,
             StorageParams = storageParams
         };
@@ -120,28 +116,28 @@ public class BackupAjaxHandler
         return _backupService.GetBackupProgress(tenantId);
     }
 
-    public void DeleteBackup(Guid id)
+    public async Task DeleteBackup(Guid id)
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteBackup(id);
+        await _backupService.DeleteBackup(id);
     }
 
-    public void DeleteAllBackups()
+    public async Task DeleteAllBackups()
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteAllBackups(GetCurrentTenantId());
+        await _backupService.DeleteAllBackups(GetCurrentTenantId());
     }
 
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
         DemandPermissionsBackup();
 
-        return _backupService.GetBackupHistory(GetCurrentTenantId());
+        return await _backupService.GetBackupHistory(GetCurrentTenantId());
     }
 
-    public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
+    public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
     {
         DemandPermissionsBackup();
 
@@ -155,7 +151,6 @@ public class BackupAjaxHandler
         var scheduleRequest = new CreateScheduleRequest
         {
             TenantId = _tenantManager.GetCurrentTenant().Id,
-            BackupMail = backupMail,
             Cron = cronParams.ToString(),
             NumberOfBackupsStored = backupsStored,
             StorageType = storageType,
@@ -198,7 +193,6 @@ public class BackupAjaxHandler
             StorageType = response.StorageType,
             StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
             CronParams = new CronParams(response.Cron),
-            BackupMail = response.BackupMail.NullIfDefault(),
             BackupsStored = response.NumberOfBackupsStored.NullIfDefault(),
             LastBackupTime = response.LastBackupTime
         };
@@ -224,7 +218,6 @@ public class BackupAjaxHandler
             var Schedule = new CreateScheduleRequest
             {
                 TenantId = _tenantManager.GetCurrentTenant().Id,
-                BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                 Cron = schedule.CronParams.ToString(),
                 NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                 StorageType = schedule.StorageType,
@@ -308,7 +301,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("Restore") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -316,7 +309,7 @@ public class BackupAjaxHandler
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings("Restore")
-                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -327,7 +320,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackup))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
@@ -337,7 +330,7 @@ public class BackupAjaxHandler
 
     #region transfer
 
-    public void StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
+    public void StartTransfer(string targetRegion, bool notifyUsers)
     {
         DemandPermissionsTransfer();
 
@@ -347,7 +340,6 @@ public class BackupAjaxHandler
             {
                 TenantId = GetCurrentTenantId(),
                 TargetRegion = targetRegion,
-                BackupMail = transferMail,
                 NotifyUsers = notifyUsers
             });
 
@@ -365,7 +357,7 @@ public class BackupAjaxHandler
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
         || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
-        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
+        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantManager.GetCurrentTenantQuota().AutoBackupRestore)
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
@@ -390,7 +382,8 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id, BackupTempModule, null) as DiscDataStore;
+        var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))
         {
@@ -405,7 +398,6 @@ public class BackupAjaxHandler
         public BackupStorageType StorageType { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
         public CronParams CronParams { get; set; }
-        public bool? BackupMail { get; set; }
         public int? BackupsStored { get; set; }
         public DateTime LastBackupTime { get; set; }
     }

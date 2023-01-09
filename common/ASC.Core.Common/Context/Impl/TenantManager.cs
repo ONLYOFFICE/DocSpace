@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.Net.Http.Headers;
+
 namespace ASC.Core;
 
 
@@ -192,6 +194,19 @@ public class TenantManager
                 tenant = GetTenant(context.Request.GetUrlRewriter().Host);
                 context.Items[CurrentTenant] = tenant;
             }
+
+            if (tenant == null && context.Request != null)
+            {
+                var origin = context.Request.Headers[HeaderNames.Origin].FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    var originUri = new Uri(origin);
+
+                    tenant = GetTenant(originUri.Host);
+                    context.Items[CurrentTenant] = tenant;
+                }
+            }
         }
 
         if (tenant == null && throwIfNotFound)
@@ -266,40 +281,47 @@ public class TenantManager
         return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
+    public TenantQuota GetCurrentTenantQuota()
+    {
+        return GetTenantQuota(GetCurrentTenant().Id);
+    }
+
     public TenantQuota GetTenantQuota(int tenant)
     {
         var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
         if (defaultQuota.Tenant != tenant && TariffService != null)
         {
             var tariff = TariffService.GetTariff(tenant);
-            var currentQuota = QuotaService.GetTenantQuota(tariff.QuotaId);
-            if (currentQuota != null)
+
+            TenantQuota currentQuota = null;
+            foreach (var tariffRow in tariff.Quotas)
             {
-                currentQuota = (TenantQuota)currentQuota.Clone();
+                var qty = tariffRow.Quantity;
 
-                if (currentQuota.ActiveUsers == -1)
-                {
-                    currentQuota.ActiveUsers = tariff.Quantity;
-                    currentQuota.MaxTotalSize *= currentQuota.ActiveUsers;
-                    currentQuota.Price *= currentQuota.ActiveUsers;
-                }
+                var quota = QuotaService.GetTenantQuota(tariffRow.Id);
 
-                return currentQuota;
+                quota *= qty;
+                currentQuota += quota;
             }
+
+            return currentQuota;
         }
 
         return defaultQuota;
     }
 
-    public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(bool all = true)
+    public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo()
     {
-        var productIds = GetTenantQuotas(all)
-            .Select(p => p.AvangateId)
+        var quotas = GetTenantQuotas(false);
+        var productIds = quotas
+            .Select(p => p.ProductId)
             .Where(id => !string.IsNullOrEmpty(id))
             .Distinct()
             .ToArray();
 
-        return TariffService.GetProductPriceInfo(productIds);
+        var prices = TariffService.GetProductPriceInfo(productIds);
+        var result = prices.ToDictionary(price => quotas.First(quota => quota.ProductId == price.Key).Name, price => price.Value);
+        return result;
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)

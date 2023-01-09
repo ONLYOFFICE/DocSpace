@@ -70,6 +70,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             scaledOptions
             dropDownMaxHeight={300}
             className="backup_combo"
+            showDisabledItems
           />
 
           {selectedStorageId === GoogleId && (

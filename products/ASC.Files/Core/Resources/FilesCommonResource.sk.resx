@@ -178,9 +178,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Súbor je momentálne uzamknutý iným používateľom</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Na odoslanie správy nie sú k dispozícii žiadne účty. Prejdite na položku Pošta a pripojte poštovú schránku.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Nie je možné odoslať minimálne {0} e-mailové správy. Navštívte prosím modul Mail, aby ste zistili, prečo došlo k poruche.</value>
   </data>
@@ -282,30 +279,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Vytvárajte a upravujte vlastné dokumenty, rovnako ako zdieľané dokumenty s príslušnými prístupovými právami|Udeľte práva na čítanie/úpravu ostatným používateľom na dokumenty a priečinky|Prepojte Dropbox, Box a iné kontá v sekcii 'Moje dokumenty'</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} odstránený</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Hľadať</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Oznámiť, keď je priečinok zdieľaný</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Oznámiť, keď je dokument podpísaný cez DocuSign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Oznámiť, keď dokument v DocuSign zmení status</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Oznámiť, keď bude dokument zdieľaný</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Oznámiť, keď bude odoslanie e-mailov hotové</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Dokumenty používateľa {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Krstné meno</value>

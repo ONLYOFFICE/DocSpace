@@ -11,6 +11,7 @@ const Input = ({
   scale,
   withBorder,
   keepCharPositions,
+  guide,
   fontWeight,
   isBold,
   forwardedRef,
@@ -27,7 +28,8 @@ const Input = ({
   return props.mask != null ? (
     <MaskedInput
       className={`${className} not-selectable`}
-      keepCharPositions
+      keepCharPositions={true}
+      guide={false}
       {...props}
     />
   ) : (

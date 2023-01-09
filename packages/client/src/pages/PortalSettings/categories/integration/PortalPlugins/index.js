@@ -8,7 +8,7 @@ import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import api from "@docspace/common/api";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import EmptyFolderContainer from "SRC_DIR/components/EmptyContainer/EmptyContainer";
 import { initPlugin } from "SRC_DIR/helpers/plugins";
@@ -164,7 +164,7 @@ const PortalPlugins = ({
       ) : (
         <EmptyFolderContainer
           headerText={t("FilesSettings:ConnectEmpty")}
-          descriptionText={t("Upload plugins here")}
+          descriptionText={t("UploadPluginsHere")}
           style={{ gridColumnGap: "39px" }}
           buttonStyle={{ marginTop: "16px" }}
           imageSrc="/static/images/empty_screen_alt.svg"

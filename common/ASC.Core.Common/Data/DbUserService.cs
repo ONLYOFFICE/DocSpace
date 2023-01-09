@@ -208,20 +208,31 @@ public class EFUserService : IUserService
             .ToList();
     }
 
-    public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
+    public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
         var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
 
         var q = GetUserQuery(userDbContext, tenant);
 
-        q = GetUserQueryForFilter(userDbContext, q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
         if (!string.IsNullOrEmpty(sortBy))
         {
-            q = q.OrderBy(sortBy, sortOrderAsc);
+            if (sortBy == "type")
+            {
+                var q1 = from user in q join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID)) 
+                         on user.Id equals userGroup.Userid into joinedGroup from @group in joinedGroup.DefaultIfEmpty() select new { user, @group };
+
+                q = sortOrderAsc ? q1.OrderBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user)
+                    : q1.OrderByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+            }
+            else
+            {
+                q = q.OrderBy(sortBy, sortOrderAsc);
+            }
         }
 
         if (offset != 0)
@@ -582,7 +593,7 @@ public class EFUserService : IUserService
     private IQueryable<User> GetUserQueryForFilter(
         UserDbContext userDbContext,
         IQueryable<User> q,
-        bool isAdmin,
+        bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
@@ -607,7 +618,7 @@ public class EFUserService : IUserService
             }
         }
 
-        if (!isAdmin && employeeStatus == null)
+        if (!isDocSpaceAdmin && employeeStatus == null)
         {
             q = q.Where(r => r.Status != EmployeeStatus.Terminated);
         }
@@ -618,7 +629,7 @@ public class EFUserService : IUserService
             {
                 case EmployeeStatus.LeaveOfAbsence:
                 case EmployeeStatus.Terminated:
-                    if (isAdmin)
+                    if (isDocSpaceAdmin)
                     {
                         q = q.Where(u => u.Status == EmployeeStatus.Terminated);
                     }
@@ -628,7 +639,7 @@ public class EFUserService : IUserService
                     }
                     break;
                 case EmployeeStatus.All:
-                    if (!isAdmin)
+                    if (!isDocSpaceAdmin)
                     {
                         q = q.Where(r => r.Status != EmployeeStatus.Terminated);
                     }

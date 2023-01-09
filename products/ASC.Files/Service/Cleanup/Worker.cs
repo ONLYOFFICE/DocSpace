@@ -85,7 +85,7 @@ public class Worker
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();
                 var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
                 var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
-                var fileStorageService = scope.ServiceProvider.GetRequiredService<ASC.Web.Files.Services.WCFService.FileStorageService<int>>();
+                var fileStorageService = scope.ServiceProvider.GetRequiredService<Web.Files.Services.WCFService.FileStorageService<int>>();
                 var fileDateTime = scope.ServiceProvider.GetRequiredService<FileDateTime>();
 
                 tenantManager.SetCurrentTenant(tenantUser.TenantId);

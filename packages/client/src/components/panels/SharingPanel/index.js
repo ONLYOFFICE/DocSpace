@@ -5,7 +5,7 @@ import Button from "@docspace/components/button";
 import Aside from "@docspace/components/aside";
 import SaveCancelButton from "@docspace/components/save-cancel-buttons";
 import { withTranslation, Trans } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { ShareAccessRights } from "@docspace/common/constants";
 import { StyledAsidePanel } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
@@ -773,7 +773,7 @@ class SharingPanelComponent extends React.Component {
 
             {showAddUsersPanel && (
               <AddUsersPanel
-                onSharingPanelClose={this.onClose}
+                onParentPanelClose={this.onClose}
                 onClose={this.onShowUsersPanel}
                 visible={showAddUsersPanel}
                 shareDataItems={filteredShareDataItems}
@@ -799,7 +799,7 @@ class SharingPanelComponent extends React.Component {
 
             {showChangeOwnerPanel && (
               <AddUsersPanel
-                onSharingPanelClose={this.onClose}
+                onParentPanelClose={this.onClose}
                 onClose={this.onShowChangeOwnerPanel}
                 visible={showChangeOwnerPanel}
                 shareDataItems={filteredShareDataItems}

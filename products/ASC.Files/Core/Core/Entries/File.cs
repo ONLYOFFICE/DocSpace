@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Profile = AutoMapper.Profile;
-
 namespace ASC.Files.Core;
 
 [Flags]
@@ -60,9 +58,8 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
         FileHelper fileHelper,
         Global global,
         GlobalFolderHelper globalFolderHelper,
-        SettingsManager settingsManager,
         FilesSettingsHelper filesSettingsHelper,
-        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, settingsManager, filesSettingsHelper, fileDateTime)
+        FileDateTime fileDateTime) : base(fileHelper, global, globalFolderHelper, filesSettingsHelper, fileDateTime)
     {
         Version = 1;
         VersionGroup = 1;
@@ -93,6 +90,10 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
                     return FilterType.ImagesOnly;
                 case FileType.Document:
                     return FilterType.DocumentsOnly;
+                case FileType.OForm:
+                    return FilterType.OFormOnly;
+                case FileType.OFormTemplate:
+                    return FilterType.OFormTemplateOnly;
                 case FileType.Presentation:
                     return FilterType.PresentationsOnly;
                 case FileType.Spreadsheet:

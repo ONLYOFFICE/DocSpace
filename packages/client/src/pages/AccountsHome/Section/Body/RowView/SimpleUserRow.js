@@ -82,7 +82,13 @@ const StyledSimpleUserRow = styled(Row)`
 
   .styled-element {
     height: 32px;
-    margin-right: 7px;
+    margin-right: 12px;
+  }
+  .checkbox {
+    padding-right: 5px !important;
+    :hover {
+      padding-right: 5px !important;
+    }
   }
 `;
 

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Core.Data;
 
 [Singletone]
@@ -254,6 +252,11 @@ public class DbSettingsManager
         return LoadSettingsFor<T>(TenantID, userId);
     }
 
+    public T LoadForUser<T>(UserInfo user) where T : class, ISettings<T>
+    {
+        return LoadSettingsFor<T>(TenantID, user.Id);
+    }
+
     public T LoadForDefaultTenant<T>() where T : class, ISettings<T>
     {
         return LoadForTenant<T>(Tenant.DefaultTenant);
@@ -277,6 +280,11 @@ public class DbSettingsManager
     public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings<T>
     {
         return SaveSettingsFor(data, TenantID, userId);
+    }
+
+    public bool SaveForUser<T>(T data, UserInfo user) where T : class, ISettings<T>
+    {
+        return SaveSettingsFor(data, TenantID, user.Id);
     }
 
     public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings<T>

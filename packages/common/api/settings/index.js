@@ -157,6 +157,13 @@ export function setGreetingSettings(title) {
   });
 }
 
+export function getGreetingSettingsIsDefault() {
+  return request({
+    method: "get",
+    url: `/settings/greetingsettings/isDefault.json`,
+  });
+}
+
 export function restoreGreetingSettings() {
   return request({
     method: "post",
@@ -179,16 +186,17 @@ export function sendAppearanceTheme(data) {
   });
 }
 
+export function deleteAppearanceTheme(id) {
+  return request({
+    method: "delete",
+    url: `/settings/colortheme?id=${id}`,
+  });
+}
+
 export function getLogoText() {
   return request({
     method: "get",
     url: `/settings/whitelabel/logotext.json`,
-  });
-}
-export function getLogoSizes() {
-  return request({
-    method: "get",
-    url: `/settings/whitelabel/sizes.json`,
   });
 }
 
@@ -217,10 +225,76 @@ export function restoreWhiteLabelSettings(isDefault) {
   });
 }
 
+export function setCompanyInfoSettings(
+  address,
+  companyName,
+  email,
+  phone,
+  site
+) {
+  const data = {
+    settings: { address, companyName, email, phone, site },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/company.json`,
+    data,
+  });
+}
+
+export function getCompanyInfoSettings() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/company.json`,
+  });
+}
+
+export function restoreCompanyInfoSettings() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/company.json`,
+  });
+}
+
 export function getCustomSchemaList() {
   return request({
     method: "get",
     url: `settings/customschemas`,
+  });
+}
+
+export function setAdditionalResources(
+  feedbackAndSupportEnabled,
+  videoGuidesEnabled,
+  helpCenterEnabled
+) {
+  const data = {
+    settings: {
+      helpCenterEnabled,
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+    },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/additional.json`,
+    data,
+  });
+}
+
+export function getAdditionalResources() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/additional.json`,
+  });
+}
+
+export function restoreAdditionalResources() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/additional.json`,
   });
 }
 
@@ -583,4 +657,40 @@ export function getStorageRegions() {
     url: "/settings/storage/s3/regions",
   };
   return request(options);
+}
+
+export function getPortalQuota() {
+  return request({
+    method: "get",
+    url: `/settings/quota`,
+  });
+}
+
+export function getAllActiveSessions() {
+  return request({
+    method: "get",
+    url: "/security/activeconnections",
+  });
+}
+
+export function removeAllActiveSessions() {
+  return request({
+    method: "put",
+    url: "/security/activeconnections/logoutallchangepassword",
+  });
+}
+
+export function removeAllExceptThisSession() {
+  return request({
+    method: "put",
+    url: "/security/activeconnections/logoutallexceptthis",
+  });
+}
+
+export function removeActiveSession(eventId) {
+  return request({
+    method: "put",
+    url: `/security/activeconnections/logout/${eventId}`,
+    data: { eventId },
+  });
 }

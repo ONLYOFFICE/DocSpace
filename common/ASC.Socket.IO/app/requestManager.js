@@ -1,6 +1,9 @@
 const axios = require("axios");
+const dns  = require("dns");
 const apiPrefixURL = "/api/2.0";
 const apiTimeout = 30000;
+
+dns.setDefaultResultOrder("ipv4first");
 
 module.exports = (options) => {
   const basePath = options.basePath;

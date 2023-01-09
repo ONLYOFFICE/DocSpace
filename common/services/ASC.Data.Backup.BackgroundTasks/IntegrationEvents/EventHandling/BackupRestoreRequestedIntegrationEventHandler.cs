@@ -54,24 +54,27 @@ public class BackupRestoreRequestedIntegrationEventHandler : IIntegrationEventHa
 
     public async Task Handle(BackupRestoreRequestIntegrationEvent @event)
     {
-        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
-
-        if (!@event.Redelivered)
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
-            if (_backupWorker.IsInstanceTooBusy())
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+            if (!@event.Redelivered)
             {
-                throw new IntegrationEventRejectExeption(@event.Id);
+                if (_backupWorker.IsInstanceTooBusy())
+                {
+                    throw new IntegrationEventRejectExeption(@event.Id);
+                }
             }
+
+            _tenantManager.SetCurrentTenant(@event.TenantId);
+            _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
+
+            _backupAjaxHandler.StartRestore(@event.BackupId,
+                                            @event.StorageType,
+                                            @event.StorageParams,
+                                            @event.Notify);
+
+            await Task.CompletedTask;
         }
-
-        _tenantManager.SetCurrentTenant(@event.TenantId);
-        _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
-
-        _backupAjaxHandler.StartRestore(@event.BackupId,
-                                        @event.StorageType,
-                                        @event.StorageParams,
-                                        @event.Notify);
-
-        await Task.CompletedTask;
     }
 }

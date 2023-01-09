@@ -128,10 +128,4 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Tento e-mail je generovaný automaticky a nemusíte na to odpovedať.
-&lt;br /&gt;Tento e-mail dostanete pretože ste registrovaným používateľom &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
-&lt;br /&gt;Ak si viac neprajete dostávať tieto e-maily, kliknite na nasledujúci link: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Unsubscribe&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

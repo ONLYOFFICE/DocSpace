@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 import Base from "../themes/base";
 import { tablet } from "../utils/device";
 
@@ -30,7 +31,8 @@ const StyledDropdownItem = styled.div`
   border: ${(props) => props.theme.dropDownItem.border};
   cursor: pointer;
   margin: ${(props) => props.theme.dropDownItem.margin};
-  padding: ${(props) => props.theme.dropDownItem.padding};
+  padding: ${(props) =>
+    props.isModern ? "0 8px" : props.theme.dropDownItem.padding};
   line-height: ${(props) => props.theme.dropDownItem.lineHeight};
   box-sizing: border-box;
   text-align: left;
@@ -51,6 +53,20 @@ const StyledDropdownItem = styled.div`
 
       path[stroke] {
         stroke: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
+
+      circle[fill] {
+        fill: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
+
+      rect[fill] {
+        fill: ${(props) =>
           props.disabled
             ? props.theme.dropDownItem.icon.disableColor
             : props.theme.dropDownItem.icon.color};
@@ -102,6 +118,7 @@ const StyledDropdownItem = styled.div`
 
     @media ${tablet} {
     line-height: ${(props) => props.theme.dropDownItem.tabletLineHeight};
+    padding: ${(props) => props.theme.dropDownItem.tabletPadding};
   }
 
   ${(props) => props.disabled && disabledAndHeaderStyle}
@@ -121,6 +138,10 @@ const StyledDropdownItem = styled.div`
       background-color: ${(props) =>
         props.theme.dropDownItem.hoverBackgroundColor} !important;
     `}
+
+  @media (max-width: 500px) {
+    max-width: 100vw;
+  }
 `;
 StyledDropdownItem.defaultProps = { theme: Base };
 
@@ -129,7 +150,13 @@ const IconWrapper = styled.div`
   align-items: center;
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
-  line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+  //line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+
+  height: 20px;
+
+  div {
+    height: 16px;
+  }
   svg {
     &:not(:root) {
       width: 100%;

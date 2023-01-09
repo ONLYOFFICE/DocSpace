@@ -29,7 +29,7 @@ import fileFilter from "src/utils/file-filter";
 @Controller("/api/2.0/plugins")
 @UseGuards(PluginGuard)
 export class PluginsController {
-  constructor(private pluginsService: PluginsService) {}
+  constructor(private pluginsService: PluginsService) { }
 
   @Get()
   async findAll(): Promise<{ response: Plugin[] }> {

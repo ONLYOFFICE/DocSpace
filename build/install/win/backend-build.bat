@@ -4,14 +4,12 @@ echo #####################
 echo #   build backend   #
 echo #####################
 
+set SRC_PATH=%~s2
+
 pushd %~1
 
-  call dotnet build ASC.Web.sln
-
-  echo "== Build ASC.Thumbnails =="
-  pushd common\ASC.Thumbnails
-    call yarn install --frozen-lockfile
-  popd
+  call dotnet build ASC.Web.slnf
+  call dotnet build ASC.Migrations.sln -o %SRC_PATH%\services\ASC.Migration.Runner\service
 
   echo "== Build ASC.UrlShortener =="
   pushd common\ASC.UrlShortener

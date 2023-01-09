@@ -155,7 +155,6 @@ export default inject(
     selectedFolderStore,
   }) => {
     const {
-      setTreeFolders,
       rootFoldersTitles,
       isRecentFolder,
       isFavoritesFolder,
@@ -179,7 +178,6 @@ export default inject(
       folderId,
       convertFile,
       convertItem,
-      setTreeFolders,
       setStoreOriginal,
       hideConfirmConvert,
       storeOriginalFiles,

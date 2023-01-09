@@ -63,7 +63,7 @@ public static class UserPhotoThumbnailManager
             resultBitmaps.Add(thumbnail);
         }
 
-        thumbnailsData.Save(resultBitmaps);
+        await thumbnailsData.Save(resultBitmaps);
 
         settingsManager.SaveForUser(thumbnailSettings, userId);
 
@@ -186,7 +186,7 @@ public static class UserPhotoThumbnailManager
         }
         catch (ArgumentException error)
         {
-            throw new Users.UnknownImageFormatException(error);
+            throw new UnknownImageFormatException(error);
         }
     }
 }
@@ -248,12 +248,12 @@ public class ThumbnailsData
             };
     }
 
-    public void Save(List<ThumbnailItem> bitmaps)
+    public async Task Save(List<ThumbnailItem> bitmaps)
     {
         foreach (var item in bitmaps)
         {
             using var mainImgBitmap = MainImgBitmap(out var format);
-            _userPhotoManager.SaveThumbnail(_userId, item.Image, format);
+            await _userPhotoManager.SaveThumbnail(_userId, item.Image, format);
         }
     }
 }

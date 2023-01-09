@@ -5,9 +5,10 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "backup",
+        "log__name": "backup.backgoundtasks",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
+        "core__eventBus__subscriptionClientName": "asc_event_bus_backup_queue",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5032"
       }
@@ -17,9 +18,10 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
-        "log__name": "backup",
+        "log__name": "backup.backgoundtasks",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
+        "core__eventBus__subscriptionClientName": "asc_event_bus_backup_queue",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:5032"
       },

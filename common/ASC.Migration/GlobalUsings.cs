@@ -43,6 +43,7 @@ global using ASC.Core.Users;
 global using ASC.Files.Core;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
+global using ASC.Migration;
 global using ASC.Migration.ApiModels.ResponseDto;
 global using ASC.Migration.Core;
 global using ASC.Migration.Core.Models;
@@ -68,3 +69,5 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using MimeKit;
 
 global using Newtonsoft.Json;
+
+global using NLog;

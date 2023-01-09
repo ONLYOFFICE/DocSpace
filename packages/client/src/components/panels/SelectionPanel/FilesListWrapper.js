@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
 import { combineUrl, getFolderOptions } from "@docspace/common/utils";
@@ -55,7 +55,7 @@ class FilesListWrapper extends React.Component {
       folderId,
       setFolderTitle,
       setProviderKey,
-      setFolderId,
+      setResultingFolderId,
       folderSelection,
     } = this.props;
 
@@ -72,24 +72,29 @@ class FilesListWrapper extends React.Component {
         const options = getFolderOptions(folderId, this.newFilter);
 
         const response = await axios
-          .get(combineUrl(AppServerConfig.apiPrefixURL, options.url), {
+          .get(combineUrl(AppServerConfig.apiPrefix, options.url), {
             cancelToken: this.source.token,
           })
           .catch((thrown) => {
             if (axios.isCancel(thrown)) {
               console.log("Request canceled", thrown.message);
             } else {
-              console.error(thrown);
+              const errorBody = thrown.response;
+
+              if (errorBody.data && errorBody.data.error) {
+                toastr.error(errorBody.data.error.message);
+              }
             }
             return;
           });
+
         if (!response) return;
         const data = response.data.response;
 
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);
           setProviderKey(data.current.providerKey);
-          setFolderId(folderId);
+          setResultingFolderId(folderId);
         }
 
         const finalData = [...data.files];
@@ -117,6 +122,7 @@ class FilesListWrapper extends React.Component {
       folderSelection = false,
       fileId,
       folderId,
+      maxHeight,
     } = this.props;
     const { hasNextPage, isNextPageLoading, files, page } = this.state;
 
@@ -133,6 +139,7 @@ class FilesListWrapper extends React.Component {
         folderSelection={folderSelection}
         fileId={fileId}
         page={page}
+        maxHeight={maxHeight}
       />
     );
   }
@@ -142,7 +149,7 @@ export default inject(
   ({ selectedFolderStore, selectFolderDialogStore, auth }) => {
     const { id } = selectedFolderStore;
     const {
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     } = selectFolderDialogStore;
@@ -153,7 +160,7 @@ export default inject(
     return {
       theme: theme,
       storeFolderId: id,
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     };

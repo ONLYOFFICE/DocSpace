@@ -154,9 +154,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Аннулирован</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Оповещать при упоминании в документе</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Неверный запрос.</value>
   </data>
@@ -165,9 +162,6 @@
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Конвертация занимает слишком много времени.</value>
-  </data>
-  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>Запрещено создавать папки в корзине</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Произошла ошибка сервиса документов</value>
@@ -196,9 +190,6 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>Файл более {0} не будет перемещен</value>
   </data>
-  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>Файл более {0} не будет архивирован</value>
-  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Нельзя скопировать папку в свою дочернюю папку</value>
   </data>
@@ -211,9 +202,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Файл заблокирован другим пользователем</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Нет доступных учетных записей, чтобы отправить письмо. Перейдите в Почту и подключите почтовый ящик.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Как минимум {0} писем не удалось отправить. Перейдите в модуль "Почта", чтобы выяснить возможную причину ошибки.</value>
   </data>
@@ -222,9 +210,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>К сожалению, этот формат файла не поддерживается</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Операция отменена</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Автор сохранения неизвестен</value>
@@ -339,30 +324,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Создавать и редактировать свои документы, а также те, к которым предоставлен доступ с соответствующими правами|Предоставлять другим пользователям доступ к документам и папкам с правами на чтение/редактирование|Подключать аккаунты Dropbox, Box и другие в разделе 'Мои документы'</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} удален</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Поиск</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Оповещать при предоставлении доступа к папке</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Оповещать о подписании документа с помощью DocuSign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Оповещать об изменении статуса документа в DocuSign</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Оповещать при предоставлении доступа к документу</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Оповещать о завершении рассылки</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Документы пользователя {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Имя</value>

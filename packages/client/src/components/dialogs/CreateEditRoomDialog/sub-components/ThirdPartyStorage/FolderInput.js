@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import { IconButton, TextInput } from "@docspace/components";
+import { IconButton } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
+import SelectFolderDialog from "@docspace/client/src/components/panels/SelectFolderDialog";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 const StyledFolderInput = styled.div`
   box-sizing: border-box;
@@ -14,34 +16,36 @@ const StyledFolderInput = styled.div`
 
   border-radius: 3px;
   transition: all 0.2s ease;
+  cursor: pointer;
+  user-select: none;
 
   &,
   .icon-wrapper {
     border: 1px solid
       ${(props) =>
-        props.isFocused
-          ? props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
-              .focusBorderColor
-          : props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
-              .borderColor};
+        props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
+          .borderColor};
   }
 
   &:hover,
   &:hover > .icon-wrapper {
     border: 1px solid
       ${(props) =>
-        props.isFocused
-          ? props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
-              .focusBorderColor
-          : props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
-              .hoverBorderColor};
+        props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
+          .hoverBorderColor};
   }
 
-  .root_label {
-    padding: 5px 2px 5px 7px;
+  .root_label,
+  .path,
+  .room_title {
+    padding: 5px 0px 5px 0px;
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
+  }
+
+  .root_label {
+    padding-left: 8px;
     background-color: ${(props) =>
       props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
         .background};
@@ -50,23 +54,26 @@ const StyledFolderInput = styled.div`
         .rootLabelColor};
   }
 
-  .text_input {
-    padding-left: 0;
-    border: none;
-    border-radius: 0px;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 20px;
+  .path {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .room_title {
+    padding-right: 8px;
+    white-space: nowrap;
   }
 
   .icon-wrapper {
-    cursor: pointer;
+    margin-left: auto;
     background-color: ${(props) =>
       props.theme.createEditRoomDialog.thirdpartyStorage.folderInput
         .background};
     height: 100%;
     box-sizing: border-box;
     width: 31px;
+    min-width: 31px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,31 +93,79 @@ const StyledFolderInput = styled.div`
 `;
 StyledFolderInput.defaultProps = { theme: Base };
 
-const FolderInput = ({ value, onChangeFolderPath }) => {
-  const [isFocused, setIsFocused] = useState();
+const FolderInput = ({
+  t,
+  roomTitle,
+  thirdpartyAccount,
+  onChangeStorageFolderId,
+  isDisabled,
+}) => {
+  const [treeNode, setTreeNode] = useState(null);
 
-  const onFocus = () => setIsFocused(true);
-  const onBlur = () => setIsFocused(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const onOpen = () => {
+    if (isDisabled) return;
+    setIsDialogOpen(true);
+  };
+  const onClose = () => setIsDialogOpen(false);
 
+  const [path, setPath] = useState("");
+  const getPathValue = () => {
+    if (!treeNode) return;
+
+    let path = treeNode.path;
+    path = path.slice(1);
+    path = [...path, treeNode];
+
+    let result = "";
+    path.map(
+      (node, i) => (result += node.title + (i !== path.length - 1 ? "/" : ""))
+    );
+
+    setPath(result);
+  };
+
+  useEffect(() => {
+    if (!treeNode) return;
+    onChangeStorageFolderId(treeNode.id);
+    getPathValue();
+  }, [treeNode]);
+
+  if (!thirdpartyAccount.id) return null;
   return (
-    <StyledFolderInput isFocused={isFocused}>
-      <span className="root_label">ROOT/</span>
-      <TextInput
-        className="text_input"
-        value={value}
-        onChange={onChangeFolderPath}
-        onFocus={onFocus}
-        onBlur={onBlur}
+    <>
+      <StyledFolderInput noRoomTitle={!roomTitle} onClick={onOpen}>
+        <span className="root_label">{t("RootLabel")}/</span>
+        <span className="path">{path}</span>
+        <span className="room_title">
+          {(path ? "/" : "") + (roomTitle || t("Files:NewRoom"))}
+        </span>
+        <div className="icon-wrapper">
+          <IconButton
+            size={16}
+            iconName="images/folder.react.svg"
+            isClickable
+          />
+        </div>
+      </StyledFolderInput>
+
+      <SelectFolderDialog
+        t={t}
+        isPanelVisible={isDialogOpen}
+        onClose={onClose}
+        treeNode={treeNode}
+        onSelectTreeNode={setTreeNode}
+        filter={FilesFilter.getDefault()}
+        selectedId={thirdpartyAccount.id}
+        selectFolderInputExist={true}
+        passedFoldersTree={[thirdpartyAccount]}
+        filteredType={""}
+        displayType={"modal"}
+        withoutProvider={false}
+        withoutImmediatelyClose={false}
+        isDisableTree={false}
       />
-      <div className="icon-wrapper">
-        <IconButton
-          size={16}
-          iconName="images/folder.react.svg"
-          isClickable
-          onClick={() => {}}
-        />
-      </div>
-    </StyledFolderInput>
+    </>
   );
 };
 

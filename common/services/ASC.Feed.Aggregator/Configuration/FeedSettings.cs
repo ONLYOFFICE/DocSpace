@@ -50,10 +50,17 @@ public class FeedSettings
         set => _removePeriod = value;
     }
 
+    public int PortionSize
+    {
+        get => _portionSize == default ? 1000 : _portionSize;
+        set => _portionSize = value;
+    }
+
     private string _serverRoot;
     private TimeSpan _aggregatePeriod;
     private TimeSpan _aggregateInterval;
     private TimeSpan _removePeriod;
+    private int _portionSize;
 
     public FeedSettings(ConfigurationExtension configuration)
     {

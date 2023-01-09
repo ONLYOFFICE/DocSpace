@@ -216,12 +216,13 @@ class ContextMenuButton extends React.Component {
             zIndex={zIndex}
             isDefaultMode={usePortal}
           >
-            {this.state.data.map(
+            {this.state.data?.map(
               (item, index) =>
                 item &&
                 (item.label || item.icon || item.key) && (
                   <DropDownItem
                     {...item}
+                    id={item.id}
                     key={item.key || index}
                     onClick={this.onDropDownItemClick.bind(this, item)}
                   />

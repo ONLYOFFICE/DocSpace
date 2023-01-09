@@ -1,6 +1,6 @@
 import { css } from "styled-components";
 
-const commonSettingsStyles = css`
+export const commonSettingsStyles = css`
   .category-item-wrapper {
     margin-bottom: 40px;
 
@@ -33,5 +33,14 @@ const commonSettingsStyles = css`
     }
   }
 `;
+export const UnavailableStyles = css`
+  .settings_unavailable {
+    color: ${(props) => props.theme.text.disableColor};
+    pointer-events: none;
+    cursor: default;
 
-export default commonSettingsStyles;
+    label {
+      color: ${(props) => props.theme.text.disableColor};
+    }
+  }
+`;

@@ -72,34 +72,6 @@ public static class StorageFactoryExtenstion
         var pathUtils = builder.ServiceProvider.GetService<PathUtils>();
         if (section != null)
         {
-            //old scheme
-            var discHandler = section.GetHandler("disc");
-            if (discHandler != null && section.Module != null)
-            {
-                var props = discHandler.Property != null ? discHandler.Property.ToDictionary(r => r.Name, r => r.Value) : new Dictionary<string, string>();
-                foreach (var m in section.Module.Where(m => m.Type == "disc"))
-                {
-                    if (m.Path.Contains(Constants.StorageRootParam))
-                    {
-                        builder.RegisterDiscDataHandler(
-                            pathUtils.ResolveVirtualPath(m.VirtualPath),
-                            pathUtils.ResolvePhysicalPath(m.Path, props),
-                            m.Public);
-                    }
-
-                    if (m.Domain != null)
-                    {
-                        foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.StorageRootParam)))
-                        {
-                            builder.RegisterDiscDataHandler(
-                                pathUtils.ResolveVirtualPath(d.VirtualPath),
-                                pathUtils.ResolvePhysicalPath(d.Path, props));
-                        }
-                    }
-                }
-            }
-
-            //new scheme
             if (section.Module != null)
             {
                 foreach (var m in section.Module)
@@ -138,7 +110,6 @@ public class StorageFactory
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
-    private readonly TenantManager _tenantManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IServiceProvider _serviceProvider;
 
@@ -147,43 +118,33 @@ public class StorageFactory
         StorageFactoryConfig storageFactoryConfig,
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
-        TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings)
     {
         _serviceProvider = serviceProvider;
         _storageFactoryConfig = storageFactoryConfig;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
     }
 
-    public IDataStore GetStorage(string tenant, string module)
+    public IDataStore GetStorage(int? tenant, string module)
     {
         return GetStorage(string.Empty, tenant, module);
     }
 
-    public IDataStore GetStorage(string configpath, string tenant, string module)
+    public IDataStore GetStorage(string configpath, int? tenant, string module)
     {
-        int.TryParse(tenant, out var tenantId);
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager));
+        return GetStorage(configpath, tenant, module, tenantQuotaController);
     }
 
-    public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
+    public IDataStore GetStorage(string configpath, int? tenant, string module, IQuotaController controller)
     {
-        var tenantId = -2;
-        if (string.IsNullOrEmpty(tenant))
-        {
-            tenant = DefaultTenantName;
-        }
-        else
-        {
-            tenantId = Convert.ToInt32(tenant);
-        }
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        tenant = tenant ?? -2;
 
         var section = _storageFactoryConfig.Section;
         if (section == null)
@@ -191,20 +152,14 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenantId);
+        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
-        return GetDataStore(tenant, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
+        return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
     }
 
-    public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
+    public IDataStore GetStorageFromConsumer(string configpath, int? tenant, string module, DataStoreConsumer consumer)
     {
-        if (tenant == null)
-        {
-            tenant = DefaultTenantName;
-        }
-
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
         var section = _storageFactoryConfig.Section;
         if (section == null)
@@ -212,12 +167,13 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        int.TryParse(tenant, out var tenantId);
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager));
+        return GetDataStore(tenantPath, module, consumer, tenantQuotaController);
     }
 
-    private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
+    private IDataStore GetDataStore(string tenantPath, string module, DataStoreConsumer consumer, IQuotaController controller)
     {
         var storage = _storageFactoryConfig.Section;
         var moduleElement = storage.GetModuleElement(module);
@@ -245,7 +201,7 @@ public class StorageFactory
 
 
         return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
-            .Configure(tenant, handler, moduleElement, props)
+            .Configure(tenantPath, handler, moduleElement, props)
             .SetQuotaController(moduleElement.Count ? controller : null
             /*don't count quota if specified on module*/);
     }
@@ -259,5 +215,6 @@ public static class StorageFactoryExtension
         services.TryAdd<GoogleCloudStorage>();
         services.TryAdd<RackspaceCloudStorage>();
         services.TryAdd<S3Storage>();
+        services.TryAdd<TenantQuotaController>();
     }
 }

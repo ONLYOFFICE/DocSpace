@@ -22,7 +22,7 @@ export default function template(
   const editorApiScript =
     error || !editorUrl
       ? ""
-      : `<script type='text/javascript' id='scripDocServiceAddress' src="${editorUrl}" async></script>`;
+      : `<script type='text/javascript' id='onlyoffice-api-script' src="${editorUrl}" async></script>`;
 
   if (!IS_DEVELOPMENT) {
     const productionBundleKeys = getScripts(assets);

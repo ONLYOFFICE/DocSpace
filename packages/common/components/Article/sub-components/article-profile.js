@@ -15,7 +15,7 @@ import {
 } from "../styled-article";
 
 const ArticleProfile = (props) => {
-  const { user, showText, getUserRole, getActions } = props;
+  const { user, showText, getUserRole, getActions, onProfileClick } = props;
   const { t } = useTranslation("Common");
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
@@ -31,7 +31,11 @@ const ArticleProfile = (props) => {
   };
 
   const onAvatarClick = (e) => {
-    if (isTabletView && !showText) toggle(e, !isOpen);
+    if (isTabletView && !showText) {
+      toggle(e, !isOpen);
+    } else {
+      onProfileClick();
+    }
   };
 
   const onHide = () => {
@@ -46,8 +50,10 @@ const ArticleProfile = (props) => {
       <StyledArticleProfile showText={showText} tablet={isTabletView}>
         <div ref={ref}>
           <Avatar
+            className={"profile-avatar"}
+            id="user-avatar"
             size={avatarSize}
-            role={userRole}
+            role={"user"}
             source={user.avatar}
             userName={user.displayName}
             onClick={onAvatarClick}
@@ -73,6 +79,7 @@ const ArticleProfile = (props) => {
               </Text>
             </StyledUserName>
             <ContextMenuButton
+              id="user-option-button"
               className="option-button"
               iconClassName="option-button-icon"
               zIndex={402}
@@ -94,9 +101,10 @@ const ArticleProfile = (props) => {
 
 export default withRouter(
   inject(({ auth, profileActionsStore }) => {
-    const { getActions, getUserRole } = profileActionsStore;
+    const { getActions, getUserRole, onProfileClick } = profileActionsStore;
 
     return {
+      onProfileClick,
       user: auth.userStore.user,
       getUserRole,
       getActions,

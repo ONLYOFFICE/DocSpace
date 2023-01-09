@@ -1,9 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import {
+  SectionHeaderContent,
+  SectionBodyContent,
+  SectionFooterContent,
+} from "./Section";
+
 import { withRouter } from "react-router";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
@@ -12,7 +17,6 @@ import { withTranslation } from "react-i18next";
 class Profile extends React.Component {
   componentDidMount() {
     const {
-      match,
       fetchProfile,
       profile,
       location,
@@ -22,13 +26,18 @@ class Profile extends React.Component {
       setIsLoading,
       setIsEditTargetUser,
       setLoadedProfile,
+      isVisitor,
+      selectedTreeNode,
+      setSelectedNode,
     } = this.props;
-    let { userId } = match.params;
+    const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
 
-    if (!userId) userId = "@self";
+    isVisitor
+      ? !selectedTreeNode.length && setSelectedNode(["@rooms"])
+      : setSelectedNode(["accounts"]);
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -75,20 +84,13 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    const { isEditTargetUser } = this.props;
-    if (!isEditTargetUser) {
-      this.props.resetProfile();
-    }
-  }
-
   render() {
-    //console.log("Profile render");
+    // console.log("Profile render");
 
-    const { profile, showCatalog, isAdmin } = this.props;
+    const { profile, showCatalog } = this.props;
 
     return (
-      <Section withBodyAutoFocus>
+      <Section withBodyAutoFocus viewAs="profile">
         <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
         </Section.SectionHeader>
@@ -96,6 +98,10 @@ class Profile extends React.Component {
         <Section.SectionBody>
           <SectionBodyContent profile={profile} />
         </Section.SectionBody>
+
+        <Section.SectionFooter>
+          <SectionFooterContent profile={profile} />
+        </Section.SectionFooter>
       </Section>
     );
   }
@@ -106,27 +112,24 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
   language: PropTypes.string,
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const { setDocumentTitle, isAdmin, language } = auth;
+  inject(({ auth, peopleStore, treeFoldersStore }) => {
+    const { setDocumentTitle, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
-      resetTargetUser: resetProfile,
       getTargetUser: fetchProfile,
       targetUser: profile,
       isEditTargetUser,
       setIsEditTargetUser,
     } = targetUserStore;
     const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     return {
       setDocumentTitle,
-      isAdmin,
       language,
-      resetProfile,
       fetchProfile,
       profile,
       setFirstLoad,
@@ -135,6 +138,9 @@ export default withRouter(
       setIsEditTargetUser,
       setLoadedProfile,
       showCatalog: auth.settingsStore.showCatalog,
+      selectedTreeNode,
+      setSelectedNode,
+      isVisitor: auth.userStore.user.isVisitor,
     };
   })(
     observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))

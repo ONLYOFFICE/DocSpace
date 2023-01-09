@@ -20,6 +20,7 @@ import { tablet } from "@docspace/components/utils/device";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
+import StyledSettings from "./StyledSettings";
 
 const linkStyles = {
   isHovered: true,
@@ -198,7 +199,7 @@ class ConnectClouds extends React.Component {
     linkStyles.color = theme.filesSettings.color;
 
     return (
-      <>
+      <StyledSettings>
         {!!providers.length ? (
           <>
             <Button
@@ -305,7 +306,7 @@ class ConnectClouds extends React.Component {
             }
           />
         )}
-      </>
+      </StyledSettings>
     );
   }
 }

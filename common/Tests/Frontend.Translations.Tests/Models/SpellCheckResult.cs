@@ -35,17 +35,17 @@ namespace Frontend.Translations.Tests.Models;
 
 public class SpellCheckResult
 {
-    private static Regex wordRegex = new Regex(@"[\p{L}-]+", RegexOptions.Multiline | RegexOptions.Compiled);
-    private static Regex regVariables = new Regex("\\{\\{([^\\{].?[^\\}]+)\\}\\}", RegexOptions.Compiled | RegexOptions.Multiline);
-    private static Regex htmlTags = new Regex("<[^>]*>", RegexOptions.Compiled | RegexOptions.Multiline);
-    private static List<string> trademarks = new List<string>()
+    private static readonly Regex wordRegex = new Regex(@"[\p{L}-]+", RegexOptions.Multiline | RegexOptions.Compiled);
+    private static readonly Regex regVariables = new Regex("\\{\\{([^\\{].?[^\\}]+)\\}\\}", RegexOptions.Compiled | RegexOptions.Multiline);
+    private static readonly Regex htmlTags = new Regex("<[^>]*>", RegexOptions.Compiled | RegexOptions.Multiline);
+    private static readonly List<string> trademarks = new List<string>()
     {
         "onlyoffice.com", "onlyoffice.eu", "Office Open XML", "ONLYOFFICE Desktop Editors",
         "ONLYOFFICE Desktop", "ONLYOFFICE Documents", "Google Drive", "Twitter", "Facebook", "LinkedIn", "Google",
         "Yandex", "Yandex.Disk", "Dropbox","OneDrive","ONLYOFFICE", "DocuSign", "e-mail",
         "SharePoint", "Windows Phone", "Enterprise Edition", "AES-256"
     };
-    private static List<string> exclusions = new List<string>()
+    private static readonly List<string> exclusions = new List<string>()
     {
         "ok","doc","docx","xls","xlsx","ppt","pptx","xml","ooxml","jpg","png","mb","ip",
         "canvas","tag","Disk","Box","Dcs","zip","Android","Authenticator","iOS","Windows",
@@ -53,7 +53,7 @@ public class SpellCheckResult
         "Portal","Favicon","URL","QR", "email", "app", "api"
     };
 
-    private static List<SpellCheckExclude> excludes = File.Exists("../../../spellcheck-excludes.json")
+    private static readonly List<SpellCheckExclude> excludes = File.Exists("../../../spellcheck-excludes.json")
         ? JsonConvert.DeserializeObject<List<SpellCheckExclude>>(File.ReadAllText("../../../spellcheck-excludes.json"))
         : new List<SpellCheckExclude>();
 

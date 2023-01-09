@@ -1,12 +1,22 @@
 {
-  "EmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+  "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
+  "AndMoreLabel": "и <strong>еще {{count}}</strong>",
+  "CreationDate": "Дата создания",
+  "ExpectPeople": "Приглашенные люди",
+  "Data": "Данные",
+  "DateModified": "Дата изменения",
+  "FeedLocationLabel": "Папка «{{folderTitle}}»",
   "FileExtension": "Расширение файла",
+  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
   "ItemsSelected": "Выбрано элементов",
   "LastModifiedBy": "Автор последнего корректива",
-  "Members": "участников",
-  "OpenSharingSettings": "Открыть настройки общего доступа",
-  "SystemProperties": "Системные свойства",
+  "Properties": "Cвойства",
+  "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
+  "SelectedUsers": "Выбрано пользователей",
+  "StorageType": "Тип хранилища",
+  "SubmenuDetails": "Детали",
+  "SubmenuHistory": "История",
+  "UsersInRoom": "Пользователей в комнате",
   "Versions": "Версии",
-  "ViewDetails": "Просмотреть подробную информацию",
-  "WhoHasAccess": "У кого есть доступ"
+  "ViewDetails": "Просмотреть подробную информацию"
 }

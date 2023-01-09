@@ -163,3 +163,11 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    migration-runner
+
+%package        login
+Summary:        login
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       nodejs >= 14.0
+AutoReqProv:    no
+%description    login

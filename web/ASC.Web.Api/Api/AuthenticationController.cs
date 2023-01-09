@@ -42,7 +42,6 @@ public class AuthenticationController : ControllerBase
     private readonly CookiesManager _cookiesManager;
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
-    private readonly ICache _cache;
     private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
@@ -67,6 +66,9 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly BruteForceLoginManager _bruteForceLoginManager;
 
     public AuthenticationController(
         UserManager userManager,
@@ -76,7 +78,6 @@ public class AuthenticationController : ControllerBase
         CookiesManager cookiesManager,
         PasswordHasher passwordHasher,
         EmailValidationKeyModelHelper emailValidationKeyModelHelper,
-        ICache cache,
         SetupInfo setupInfo,
         MessageService messageService,
         ProviderManager providerManager,
@@ -100,7 +101,10 @@ public class AuthenticationController : ControllerBase
         ApiContext apiContext,
         AuthContext authContext,
         CookieStorage cookieStorage,
-        DbLoginEventsManager dbLoginEventsManager)
+        DbLoginEventsManager dbLoginEventsManager,
+        BruteForceLoginManager bruteForceLoginManager,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
+        EmailValidationKeyProvider emailValidationKeyProvider)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -109,7 +113,6 @@ public class AuthenticationController : ControllerBase
         _cookiesManager = cookiesManager;
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
-        _cache = cache;
         _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;
@@ -134,9 +137,12 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _bruteForceLoginManager = bruteForceLoginManager;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
     }
 
-
+    [AllowNotPayment]
     [HttpGet]
     public bool GetIsAuthentificated()
     {
@@ -145,20 +151,20 @@ public class AuthenticationController : ControllerBase
 
     [AllowNotPayment]
     [HttpPost("{code}", Order = 1)]
-    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
+    public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
-        var user = GetUser(inDto, out _);
-
+        var user = (await GetUser(inDto)).UserInfo;
         var sms = false;
+
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
                 _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
-            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
@@ -209,17 +215,23 @@ public class AuthenticationController : ControllerBase
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
     {
-        bool viaEmail;
-        var user = GetUser(inDto, out viaEmail);
+        var wrapper = await GetUser(inDto);
+        var viaEmail = wrapper.ViaEmail;
+        var user = wrapper.UserInfo;
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        if (user == null || Equals(user, Constants.LostUser))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
                 return new AuthenticationTokenDto
                 {
                     Sms = true,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation)
                 };
             }
 
@@ -230,11 +242,11 @@ public class AuthenticationController : ControllerBase
                 Sms = true,
                 PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval)),
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneAuth)
             };
         }
 
-        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
@@ -242,14 +254,14 @@ public class AuthenticationController : ControllerBase
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation)
                 };
             }
 
             return new AuthenticationTokenDto
             {
                 Tfa = true,
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaAuth)
             };
         }
 
@@ -278,6 +290,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
     public async Task Logout()
@@ -296,7 +309,7 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
-    [AllowNotPayment]
+    [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {
@@ -325,7 +338,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
     {
-        var user = GetUser(inDto, out _);
+        var user = (await GetUser(inDto)).UserInfo;
         await _smsManager.PutAuthCodeAsync(user, true);
 
         return new AuthenticationTokenDto
@@ -336,14 +349,39 @@ public class AuthenticationController : ControllerBase
         };
     }
 
-    private UserInfo GetUser(AuthRequestsDto inDto, out bool viaEmail)
+    private async Task<UserInfoWrapper> GetUser(AuthRequestsDto inDto)
     {
-        viaEmail = true;
+        var wrapper = new UserInfoWrapper
+        {
+            ViaEmail = true
+        };
+
         var action = MessageAction.LoginFailViaApi;
-        UserInfo user;
+        UserInfo user = null;
+
         try
         {
-            if ((string.IsNullOrEmpty(inDto.Provider) && string.IsNullOrEmpty(inDto.SerializedProfile)) || inDto.Provider == "email")
+            if (inDto.ConfirmData != null)
+            {
+                var email = inDto.ConfirmData.Email;
+
+                var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.Auth + inDto.ConfirmData.First + inDto.ConfirmData.Module + inDto.ConfirmData.Sms, inDto.ConfirmData.Key, _setupInfo.ValidAuthKeyInterval);
+
+                if (checkKeyResult == ValidationResult.Ok)
+                {
+                    user = email.Contains("@")
+                                   ? _userManager.GetUserByEmail(email)
+                                   : _userManager.GetUsers(new Guid(email));
+
+                    if (_securityContext.IsAuthenticated && _securityContext.CurrentAccount.ID != user.Id)
+                    {
+                        _securityContext.Logout();
+                        _cookiesManager.ClearCookies(CookiesType.AuthKey);
+                        _cookiesManager.ClearCookies(CookiesType.SocketIO);
+                    }
+                }
+            }
+            else if ((string.IsNullOrEmpty(inDto.Provider) && string.IsNullOrEmpty(inDto.SerializedProfile)) || inDto.Provider == "email")
             {
                 inDto.UserName.ThrowIfNull(new ArgumentException(@"userName empty", "userName"));
                 if (!string.IsNullOrEmpty(inDto.Password))
@@ -354,14 +392,6 @@ public class AuthenticationController : ControllerBase
                 {
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
-                int counter;
-                int.TryParse(_cache.Get<string>("loginsec/" + inDto.UserName), out counter);
-                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(inDto.UserName))
-                {
-                    throw new BruteForceCredentialException();
-                }
-                _cache.Insert("loginsec/" + inDto.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-
 
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
@@ -375,17 +405,9 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                user = _userManager.GetUsersByPasswordHash(
-                    _tenantManager.GetCurrentTenant().Id,
-                    inDto.UserName,
-                    inDto.PasswordHash);
+                var requestIp = MessageSettings.GetIP(Request);
 
-                if (user == null || !_userManager.UserExists(user))
-                {
-                    throw new Exception("user not found");
-                }
-
-                _cache.Insert("loginsec/" + inDto.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
             }
             else
             {
@@ -393,7 +415,7 @@ public class AuthenticationController : ControllerBase
                 {
                     throw new Exception(Resource.ErrorNotAllowedOption);
                 }
-                viaEmail = false;
+                wrapper.ViaEmail = false;
                 action = MessageAction.LoginFailViaApiSocialAccount;
                 LoginProfile thirdPartyProfile;
                 if (!string.IsNullOrEmpty(inDto.SerializedProfile))
@@ -407,7 +429,7 @@ public class AuthenticationController : ControllerBase
 
                 inDto.UserName = thirdPartyProfile.EMail;
 
-                user = GetUserByThirdParty(thirdPartyProfile);
+                user = await GetUserByThirdParty(thirdPartyProfile);
             }
         }
         catch (BruteForceCredentialException)
@@ -420,11 +442,11 @@ public class AuthenticationController : ControllerBase
             _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, action);
             throw new AuthenticationException("User authentication failed");
         }
-
-        return user;
+        wrapper.UserInfo = user;
+        return wrapper;
     }
 
-    private UserInfo GetUserByThirdParty(LoginProfile loginProfile)
+    private async Task<UserInfo> GetUserByThirdParty(LoginProfile loginProfile)
     {
         try
         {
@@ -454,7 +476,7 @@ public class AuthenticationController : ControllerBase
                     try
                     {
                         _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                        _userManager.DeleteUser(userInfo.Id);
+                        await _userManager.DeleteUser(userInfo.Id);
                         userInfo = Constants.LostUser;
                     }
                     finally
@@ -465,7 +487,7 @@ public class AuthenticationController : ControllerBase
 
                 if (!_userManager.UserExists(userInfo.Id))
                 {
-                    userInfo = JoinByThirdPartyAccount(loginProfile);
+                    userInfo = await JoinByThirdPartyAccount(loginProfile);
 
                     isNew = true;
                 }
@@ -511,7 +533,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private UserInfo JoinByThirdPartyAccount(LoginProfile loginProfile)
+    private async Task<UserInfo> JoinByThirdPartyAccount(LoginProfile loginProfile)
     {
         if (string.IsNullOrEmpty(loginProfile.EMail))
         {
@@ -526,7 +548,7 @@ public class AuthenticationController : ControllerBase
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword());
+                userInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {
@@ -589,4 +611,10 @@ public class AuthenticationController : ControllerBase
 
         return true;
     }
+}
+
+class UserInfoWrapper
+{
+    public UserInfo UserInfo { get; set; }
+    public bool ViaEmail { get; set; }
 }

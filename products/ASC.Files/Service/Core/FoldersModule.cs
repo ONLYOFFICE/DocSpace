@@ -39,7 +39,6 @@ public class FoldersModule : FeedModule
     private const string SharedFolderItem = Constants.SharedFolderItem;
 
     private readonly FileSecurity _fileSecurity;
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
 
@@ -47,13 +46,11 @@ public class FoldersModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
     }
@@ -94,26 +91,26 @@ public class FoldersModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
     }
 
-    public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
+        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
     }
 
-    public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var folders = _folderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To)
+        var folders = await _folderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To)
                     .Where(f => f.Folder.RootFolderType != FolderType.TRASH && f.Folder.RootFolderType != FolderType.BUNCH)
-                    .ToListAsync().Result;
+                    .ToListAsync();
 
         var parentFolderIDs = folders.Select(r => r.Folder.ParentId).ToList();
-        var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
-        var roomsIds = _folderDao.GetParentRoomsAsync(parentFolderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
+        var parentFolders = await _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync();
+        var roomsIds = await _folderDao.GetParentRoomsAsync(parentFolderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
-        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)), 
+        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)),
             roomsIds.GetValueOrDefault(f.Folder.ParentId)), f));
     }
 
-    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder, int roomId)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> parentFolder, int roomId)
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
@@ -125,15 +122,12 @@ public class FoldersModule : FeedModule
             {
                 Item = SharedFolderItem,
                 ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+                ExtraLocationTitle = parentFolder.Title,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
                 ContextId = contextId
@@ -146,16 +140,12 @@ public class FoldersModule : FeedModule
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+            ExtraLocationTitle = parentFolder.Title,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
             GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
             ContextId = contextId
         };

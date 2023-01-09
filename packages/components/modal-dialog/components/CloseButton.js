@@ -20,15 +20,16 @@ const StyledCloseButtonWrapper = styled.div`
   ${(props) =>
     props.currentDisplayType === "modal"
       ? css`
-          top: 0;
-          right: -34px;
+          top: 18px;
+          right: -30px;
+
           @media ${smallTablet} {
             right: 10px;
             top: -27px;
           }
         `
       : css`
-          top: 10px;
+          top: 18px;
           left: -27px;
           @media ${smallTablet} {
             top: -27px;
@@ -47,12 +48,13 @@ const StyledCloseButtonWrapper = styled.div`
 
 StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
-const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
+const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
   return (
     <StyledCloseButtonWrapper
       zIndex={zIndex}
       onClick={onClick}
       currentDisplayType={currentDisplayType}
+      className="modal-close"
     >
       <IconButton
         size="17px"

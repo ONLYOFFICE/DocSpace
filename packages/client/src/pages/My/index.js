@@ -4,7 +4,7 @@ import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { withRouter } from "react-router";
 
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
@@ -13,7 +13,6 @@ import {
   SectionBodyContent as ViewBodyContent,
   SectionHeaderContent as ViewHeaderContent,
 } from "../Profile/Section";
-import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
 import EditBodyContent from "../ProfileAction/Section/Body";
 import Link from "@docspace/components/link";
 import { Trans } from "react-i18next";
@@ -106,7 +105,7 @@ class My extends React.Component {
       <Section withBodyAutoFocus>
         <Section.SectionHeader>
           {isEdit ? (
-            <EditHeaderContent isMy={true} tReady={tReady} />
+            <SectionHeaderContent isMy={true} tReady={tReady} />
           ) : (
             <ViewHeaderContent isMy={true} tReady={tReady} />
           )}

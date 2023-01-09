@@ -18,6 +18,11 @@ const {
   blueDisabled,
   blueCharcoal,
 
+  blueDenim,
+  blueDenimTransparent,
+  blueMaya,
+  blueSky,
+
   orangeMain,
   orangeHover,
   orangePressed,
@@ -99,32 +104,28 @@ const Base = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normalDesktop: "36px",
-      normalTouchscreen: "40px",
+      normal: "40px",
       medium: "44px",
     },
 
     lineHeight: {
       extraSmall: "15px",
       small: "20px",
-      normalDesktop: "16px",
-      normalTouchscreen: "16px",
+      normal: "16px",
       medium: "22px",
     },
 
     fontSize: {
       extraSmall: "12px",
       small: "13px",
-      normalDesktop: "14px",
-      normalTouchscreen: "14px",
+      normal: "14px",
       medium: "16px",
     },
 
     padding: {
-      extraSmall: "0 12px",
+      extraSmall: "0 11.5px",
       small: "0 28px",
-      normalDesktop: "0 28px",
-      normalTouchscreen: "0 28px",
+      normal: "0 28px",
       medium: "0 32px",
     },
 
@@ -132,7 +133,7 @@ const Base = {
       base: black,
       baseHover: black,
       baseActive: black,
-      baseDisabled: grayLightMid,
+      baseDisabled: grayMid,
       primary: white,
       primaryHover: white,
       primaryActive: white,
@@ -144,25 +145,27 @@ const Base = {
       baseHover: white,
       baseActive: grayLightMid,
       baseDisabled: grayLight,
-      primary: blueMain,
-      primaryHover: blueHover,
-      primaryActive: blueActive,
-      primaryDisabled: blueDisabled,
+
+      primary: blueDenim,
+      primaryHover: blueDenimTransparent,
+      primaryActive: blueMaya,
+      primaryDisabled: blueSky,
     },
 
     border: {
       base: `1px solid ${globalColors.grayMid}`,
-      baseHover: `1px solid ${globalColors.blueMain}`,
-      baseActive: `1px solid ${globalColors.blueMain}`,
+      baseHover: `1px solid ${blueDenim}`,
+      baseActive: `1px solid ${globalColors.grayMid}`,
       baseDisabled: `1px solid ${globalColors.grayLightMid}`,
-      primary: `1px solid ${globalColors.blueMain}`,
-      primaryHover: `1px solid ${globalColors.blueHover}`,
-      primaryActive: `1px solid ${globalColors.blueActive}`,
-      primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
+
+      primary: `1px solid ${blueDenim}`,
+      primaryHover: `1px solid ${blueDenimTransparent}`,
+      primaryActive: `1px solid ${blueMaya}`,
+      primaryDisabled: `1px solid ${blueSky}`,
     },
 
     loader: {
-      base: black,
+      base: blueDenim,
       primary: white,
     },
   },
@@ -190,7 +193,6 @@ const Base = {
     mobileProgressBarBackground: "rgb(48%, 58%, 69%, 0.4)",
 
     bar: {
-      background: "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)",
       errorBackground: orangePressed,
 
       icon: "#A3A9AE",
@@ -259,14 +261,6 @@ const Base = {
       fill: white,
     },
 
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
-    },
-
     dropDown: {
       top: "100%",
     },
@@ -285,11 +279,12 @@ const Base = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -297,7 +292,9 @@ const Base = {
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: white,
+    hoverConnectBackground: "#265A8F",
     activeBackground: "grayMaxLight",
     hoverBorder: "#1877f2",
 
@@ -319,8 +316,9 @@ const Base = {
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
-      color: "#757575",
-      hoverColor: "#1877f2",
+      color: "#A3A9AE",
+      hoverColor: black,
+      connectColor: white,
     },
 
     svg: {
@@ -329,6 +327,7 @@ const Base = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -383,7 +382,7 @@ const Base = {
     hoverColor: grayMain,
   },
   selectorAddButton: {
-    background: grayLight,
+    background: grayLightMid,
     activeBackground: grayLightMid,
 
     border: `none`,
@@ -391,9 +390,9 @@ const Base = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
-    color: black,
-    hoverColor: darkBlack,
+    padding: "10px",
+    color: grayMain,
+    hoverColor: black,
   },
 
   saveCancelButtons: {
@@ -445,6 +444,8 @@ const Base = {
 
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
+
+    focusColor: "#A3A9AE",
   },
 
   // slider: {
@@ -764,6 +765,19 @@ const Base = {
     hoverIconColor: grayMid,
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#d0d5da",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#fff",
+    color: "#33333",
+    scrollBackground: "#a3a9ae",
+    placeholderColor: "#a3a9ae",
+    dialCodeColor: "#a3a9ae",
+    width: "320px",
+    height: "44px",
+  },
+
   textInput: {
     fontWeight: "normal",
     placeholderColor: gray,
@@ -786,7 +800,7 @@ const Base = {
     },
 
     fontSize: {
-      base: "14px",
+      base: "13px",
       middle: "14px",
       big: "16px",
       huge: "18px",
@@ -1003,31 +1017,31 @@ const Base = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1077,7 +1091,7 @@ const Base = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1091,8 +1105,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1100,8 +1114,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1138,7 +1152,10 @@ const Base = {
         width: "24px",
         height: "24px",
         background: blueMain,
-        border: `6px solid ${white}`,
+        disabledBackground: "#A6DCF2",
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${white}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1177,6 +1194,10 @@ const Base = {
         color: "transparent",
         width: "100%",
         height: "8px",
+      },
+
+      trackNumber: {
+        color: "#A3A9AE",
       },
 
       fillLower: {
@@ -1352,7 +1373,8 @@ const Base = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
+    tabletPadding: "0px 16px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -1475,6 +1497,26 @@ const Base = {
     borderRadius: "50%",
   },
 
+  rombsLoader: {
+    blue: {
+      colorStep_1: "#F2CBBF",
+      colorStep_2: "#fff",
+      colorStep_3: "#E6E4E4",
+      colorStep_4: "#D2D2D2",
+    },
+    red: {
+      colorStep_1: "#BFE8F8",
+      colorStep_2: "#fff",
+      colorStep_3: "#EFEFEF",
+    },
+    green: {
+      colorStep_1: "#CBE0AC",
+      colorStep_2: "#fff",
+      colorStep_3: "#EFEFEF",
+      colorStep_4: "#E6E4E4",
+    },
+  },
+
   dialogLoader: {
     borderBottom: "1px solid rgb(222, 226, 230)",
   },
@@ -1531,6 +1573,7 @@ const Base = {
 
   comboBox: {
     padding: "6px 0px",
+    background: lightGrayishStrongBlue,
 
     width: {
       base: "173px",
@@ -1540,12 +1583,12 @@ const Base = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: grayMain,
     },
 
@@ -1618,23 +1661,10 @@ const Base = {
   },
 
   toggleButton: {
-    fillColor: blueMain,
-    fillColorOff: gray,
-
-    disableFillColor: grayLightMid,
-    disableFillColorOff: grayLightMid,
-
-    borderColor: "unset",
-    borderColorOff: "unset",
-
-    disableBorderColor: grayLightMid,
-    disableBorderColorOff: grayLightMid,
-
+    fillColorOff: "#D0D5DA",
+    hoverFillColorOff: "#A3A9AE",
     fillCircleColor: white,
     fillCircleColorOff: white,
-
-    disableFillCircleColor: white,
-    disableFillCircleColorOff: white,
   },
 
   contextMenuButton: {
@@ -1837,9 +1867,18 @@ const Base = {
 
     headerBurgerColor: "#657077",
 
+    verticalLine: "1px solid #eceef1",
+
     profile: {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
+    },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#F21C0E",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #F21C0E",
     },
   },
 
@@ -1886,7 +1925,7 @@ const Base = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "15px",
         fontWeight: "600",
       },
@@ -1960,6 +1999,9 @@ const Base = {
   article: {
     background: grayLight,
     pinBorderColor: grayLightMid,
+    catalogItemHeader: "#A3A9AE",
+    catalogItemText: "#555F65",
+    catalogItemActiveBackground: "#DFE2E3",
   },
 
   section: {
@@ -1992,11 +2034,34 @@ const Base = {
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
-    accessGroupBg: grayLightMid,
-    accessGroupText: black,
+    members: {
+      iconColor: "#A3A9AE",
+      iconHoverColor: "#657077",
+      isExpectName: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
+    },
 
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#3b72a7",
+    history: {
+      subtitleColor: "#a3a9ae",
+      fileBlockBg: "#f8f9f9",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#333",
+    },
+
+    gallery: {
+      borderColor: "#d0d5da",
+    },
   },
 
   filesArticleBody: {
@@ -2207,6 +2272,19 @@ const Base = {
     },
   },
 
+  selector: {
+    border: `1px solid ${grayLightMid}`,
+
+    item: {
+      hoverBackground: grayLight,
+      selectedBackground: lightHover,
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
+    },
+  },
+
   floatingButton: {
     backgroundColor: "#3B72A7",
     color: white,
@@ -2310,6 +2388,10 @@ const Base = {
       background: "#f8f9f9",
       isPrivateIcon: "#35ad17",
       descriptionColor: "#555f65",
+    },
+
+    tagInput: {
+      tagBackground: "#ECEEF1",
     },
 
     dropdown: {
@@ -2554,7 +2636,7 @@ const Base = {
     background: "none",
     svgFill: black,
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid ${grayLightMid}`,
       marginBottom: "6px",
     },
@@ -2564,7 +2646,7 @@ const Base = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {
@@ -2667,6 +2749,12 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
+    headerColor: black,
+    helpButton: "#A3A9AE",
+    orLineColor: "#ECEEF1",
+    orTextColor: "#A3A9AE",
+    titleColor: black,
 
     register: {
       backgroundColor: grayLight,
@@ -2740,7 +2828,13 @@ const Base = {
     },
 
     home: {
+      logoColor: black,
       textColorError: red,
+    },
+
+    payments: {
+      linkColor: link,
+      delayColor: "#F21C0E",
     },
 
     paymentsEnterprise: {
@@ -2759,6 +2853,8 @@ const Base = {
         fillIcon: "dimgray",
         expanderColor: "dimgray",
       },
+
+      separatorBorder: `1px solid ${grayLightMid}`,
 
       security: {
         arrowFill: black,
@@ -2795,14 +2891,17 @@ const Base = {
         tooltipLinkColor: black,
         arrowColor: black,
         descriptionColor: cyanBlueDarkShade,
+        brandingDescriptionColor: "#657077",
 
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColor: "#0f4071",
-          greenBackgroundColor: "#7e983f",
-          blueBackgroundColor: "#5170b5",
-          orangeBackgroundColor: "#e86e2e",
+          backgroundColorWhite: white,
+          backgroundColorLight: "#F8F9F9",
+          backgroundColorDark: "#282828",
+          greenBackgroundColor: "#40865C",
+          blueBackgroundColor: "#446995",
+          orangeBackgroundColor: "#AA5252",
 
           dataFontColor: white,
           dataFontColorBlack: black,
@@ -2810,7 +2909,7 @@ const Base = {
       },
 
       integration: {
-        separatorBorder: `1px solid ${grayLightMid}`,
+        separatorBorder: `1px solid ${grayMid}`,
         linkColor: link,
 
         sso: {
@@ -2823,7 +2922,23 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
-        contextBorder: "1px solid #D0D5DA",
+      },
+
+      payment: {
+        priceColor: "#555F65",
+        disabledPriceColor: "#A3A9AE",
+        storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#f8f9f9",
+        linkColor: "#316DAA",
+        tariffText: "#555F65",
+        border: "1px solid #f8f9f9",
+        backgroundBenefitsColor: "#f8f9f9",
+        rectangleColor: "#f3f4f4",
+
+        backgroundPrice: "#f3f4f4",
+        backgroundPriceContainer: "transparent",
+        warningColor: "#F21C0E",
       },
     },
 
@@ -2875,6 +2990,42 @@ const Base = {
     disabledBackground: "#f8f9f9",
     defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
+  },
+
+  profile: {
+    main: {
+      background: "#F8F9F9",
+      textColor: black,
+    },
+    themePreview: {
+      border: "1px solid #eceef1",
+    },
+  },
+
+  activeSessions: {
+    color: "#333",
+    borderColor: "#eceef1",
+  },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
+  },
+
+  preparationPortalProgress: {
+    backgroundColor: "#F3F4F4",
+    colorPercentSmall: "#333333",
+    colorPercentBig: "#FFFFFF",
+  },
+
+  codeInput: {
+    background: white,
+    border: "1px solid #d0d5da",
+    color: black,
+    lineColor: "#C4C4C4",
+    disabledBackground: "#F8F9F9",
+    disabledBorder: "1px solid #ECEEF1",
+    disabledColor: "#A3A9AE",
   },
 };
 

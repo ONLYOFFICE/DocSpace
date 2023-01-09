@@ -5,7 +5,7 @@ import { Switch, withRouter, Redirect } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   //combineUrl,
   updateTempContent,
@@ -51,19 +51,21 @@ import Accounts from "./Accounts";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 
-const FilesArticle = React.memo(({ history }) => {
+const FilesArticle = React.memo(({ history, withMainButton }) => {
   const isFormGallery = history.location.pathname
     .split("/")
     .includes("form-gallery");
 
   return !isFormGallery ? (
-    <Article>
+    <Article withMainButton={withMainButton}>
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>
+
       <Article.MainButton>
         <ArticleMainButtonContent />
       </Article.MainButton>
+
       <Article.Body>
         <ArticleBodyContent />
       </Article.Body>
@@ -78,17 +80,31 @@ const FilesSection = React.memo(() => {
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
-
+      <PrivateRoute
+        exact
+        path={"/settings"}
+        component={() => <Redirect to="/settings/common" />}
+      />
       <PrivateRoute
         exact
         path={["/", "/rooms"]}
-        component={() => <Redirect to="/rooms/personal" />}
+        component={() => <Redirect to="/rooms/shared" />}
       />
       <PrivateRoute
+        restricted
+        withManager
         path={[
           "/rooms/personal",
           "/rooms/personal/filter",
 
+          "/files/trash",
+          "/files/trash/filter",
+        ]}
+        component={Home}
+      />
+
+      <PrivateRoute
+        path={[
           "/rooms/shared",
           "/rooms/shared/filter",
           "/rooms/shared/:room",
@@ -104,9 +120,6 @@ const FilesSection = React.memo(() => {
 
           "/files/recent",
           "/files/recent/filter",
-
-          "/files/trash",
-          "/files/trash/filter",
         ]}
         component={Home}
       />
@@ -114,23 +127,29 @@ const FilesSection = React.memo(() => {
       {/* <PrivateRoute path={"/#preview"} component={Home} /> */}
       {/* <PrivateRoute path={"/rooms"} component={Home} /> */}
       {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
+
       <PrivateRoute
         exact
-        path={[
-          "/accounts",
-          "/accounts/filter",
-          "/accounts/create/:type",
-          "/accounts/edit/:userId",
-          "/accounts/view/:userId",
-          "/accounts/view/@self",
-        ]}
+        restricted
+        withManager
+        path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
         component={Accounts}
       />
+
       <PrivateRoute
         exact
-        path={["/setiings", "/settings/:setting"]}
+        path={["/accounts/view/@self"]}
+        component={Accounts}
+      />
+
+      <PrivateRoute
+        exact
+        restricted
+        withManager
+        path={"/settings/admin"}
         component={Settings}
       />
+      <PrivateRoute exact path={"/settings/common"} component={Settings} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
@@ -203,7 +222,7 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { showArticle, isFrame } = this.props;
+    const { showArticle, isFrame, withMainButton } = this.props;
 
     return (
       <>
@@ -212,7 +231,10 @@ class FilesContent extends React.Component {
         {isFrame ? (
           showArticle && <FilesArticle history={this.props.history} />
         ) : (
-          <FilesArticle history={this.props.history} />
+          <FilesArticle
+            history={this.props.history}
+            withMainButton={withMainButton}
+          />
         )}
         <FilesSection />
       </>
@@ -229,6 +251,11 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys,
     isEncryptionSupport,
   } = auth.settingsStore;
+
+  const { isVisitor } = auth.userStore.user;
+
+  const withMainButton = !isVisitor;
+
   return {
     isDesktop: isDesktopClient,
     isFrame,
@@ -239,6 +266,7 @@ const Files = inject(({ auth, filesStore }) => {
     isEncryption: isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
+    withMainButton,
 
     setEncryptionKeys: setEncryptionKeys,
     loadFilesInfo: async () => {

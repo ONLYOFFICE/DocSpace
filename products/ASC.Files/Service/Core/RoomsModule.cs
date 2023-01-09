@@ -33,7 +33,6 @@ public class RoomsModule : FeedModule
     public const string RoomItem = Constants.RoomItem;
     public const string SharedRoomItem = Constants.SharedRoomItem;
 
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
@@ -42,13 +41,11 @@ public class RoomsModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
     }
@@ -94,16 +91,16 @@ public class RoomsModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
     }
 
-    public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var rooms = _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync().Result;
+        var rooms = await _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync();
 
         return rooms.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f), f));
     }
 
-    public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
+        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)
@@ -113,21 +110,20 @@ public class RoomsModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedRoomItem,
-                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
+                ItemId = string.Format("{0}_{1}_{2}", folder.Id, shareRecord.Subject, shareRecord.TimeStamp.Ticks),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = FilesUCResource.VirtualRooms,
-                ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+                ExtraLocationTitle = FilesUCResource.VirtualRooms,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
-                AdditionalInfo = Enum.GetName(folder.FolderType),
-                AdditionalInfo2 = folder.Private ? "private" : null,
-                HasPreview = false,
-                CanComment = false,
+                AdditionalInfo = ((int)folder.FolderType).ToString(),
+                AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
+                AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
+                AdditionalInfo4 = folder.Private ? "private" : null,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, folder.ParentId.ToString())
             };
@@ -139,18 +135,14 @@ public class RoomsModule : FeedModule
         {
             Item = RoomItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = FilesUCResource.VirtualRooms,
-            ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+            ExtraLocationTitle = FilesUCResource.VirtualRooms,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            AdditionalInfo = Enum.GetName(folder.FolderType),
-            AdditionalInfo2 = folder.Private ? "private" : null,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
+            AdditionalInfo = ((int)folder.FolderType).ToString(),
+            AdditionalInfo4 = folder.Private ? "private" : null,
             GroupId = GetGroupId(RoomItem, folder.CreateBy, folder.ParentId.ToString())
         };
     }

@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
-import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
@@ -14,14 +14,15 @@ import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
-import MoreLoginModal from "./sub-components/more-login";
-import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
+import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
+import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
-
-const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
+import { Dark, Base } from "@docspace/components/themes";
+import { useMounted } from "../helpers/useMounted";
+import { getBgPattern } from "@docspace/common/utils";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -33,15 +34,29 @@ const Login: React.FC<ILoginProps> = ({
   capabilities,
   isDesktopEditor,
   match,
+  currentColorScheme,
+  theme,
+  setTheme,
+  logoUrls,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin } = portalSettings;
+  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
+  const mounted = useMounted();
+
+  useEffect(() => {
+    const theme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? Dark
+        : Base;
+    setTheme(theme);
+  }, []);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -157,23 +172,32 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
+  const bgPattern = getBgPattern(currentColorScheme.id);
+
+  const logo = Object.values(logoUrls)[1];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+
+  if (!mounted) return <></>;
+
   return (
     <LoginFormWrapper
+      id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      className="with-background-pattern"
+      //className="with-background-pattern"
+      bgPattern={bgPattern}
     >
-      <ColorTheme themeId={ThemeType.LinkForgotPassword}>
-        <Logo className="logo-wrapper" />
+      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
+        <img src={logoUrl} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}
           textAlign="center"
           className="greeting-title"
         >
-          {greetingTitle}
+          {greetingSettings}
         </Text>
-        <FormWrapper>
+        <FormWrapper id="login-form" theme={theme}>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
           {oauthDataExists() && (
             <>
@@ -195,9 +219,7 @@ const Login: React.FC<ILoginProps> = ({
           )}
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
-              <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
-              </Text>
+              <Text className="or-label">{t("Or")}</Text>
             </div>
           )}
           <LoginForm
@@ -207,6 +229,7 @@ const Login: React.FC<ILoginProps> = ({
             setIsLoading={setIsLoading}
             onRecoverDialogVisible={onRecoverDialogVisible}
             match={match}
+            enableAdmMess={enableAdmMess}
           />
         </FormWrapper>
         <Toast />
@@ -223,11 +246,25 @@ const Login: React.FC<ILoginProps> = ({
         <RecoverAccessModalDialog
           visible={recoverDialogVisible}
           onClose={onRecoverDialogVisible}
+          textBody={t("RecoverTextBody")}
+          emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
+          id="recover-access-modal"
         />
       </ColorTheme>
-      {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}
+      {!checkIsSSR() && enabledJoin && (
+        <Register
+          id="login_register"
+          enabledJoin={enabledJoin}
+          currentColorScheme={currentColorScheme}
+        />
+      )}
     </LoginFormWrapper>
   );
 };
 
-export default Login;
+export default inject(({ loginStore }) => {
+  return {
+    theme: loginStore.theme,
+    setTheme: loginStore.setTheme,
+  };
+})(observer(Login));

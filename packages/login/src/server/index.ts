@@ -13,8 +13,11 @@ import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { initSSR } from "@docspace/common/api/client";
+import dns from "dns";
 
 let port = PORT;
+
+dns.setDefaultResultOrder("ipv4first");
 
 const config = fs.readFileSync(path.join(__dirname, "config.json"), "utf-8");
 const parsedConfig: IParsedConfig = JSON.parse(config);
@@ -31,7 +34,7 @@ app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 
 app.use(logger("dev", { stream: stream }));
 
-app.get("*", async (req: ILoginRequest, res: Response) => {
+app.get("*", async (req: ILoginRequest, res: Response, next) => {
   const { i18n, cookies, headers, query, t, url } = req;
   let initialState: IInitialState;
   let assets: assetsType;
@@ -40,6 +43,11 @@ app.get("*", async (req: ILoginRequest, res: Response) => {
 
   try {
     initialState = await getInitialState(query);
+
+    if (initialState.isAuth) {
+      res.redirect("/");
+      next();
+    }
 
     let currentLanguage = initialState.portalSettings.culture;
 

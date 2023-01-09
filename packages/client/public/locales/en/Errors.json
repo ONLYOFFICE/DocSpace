@@ -3,5 +3,6 @@
   "Error403Text": "Sorry, access denied.",
   "Error404Text": "Sorry, the resource cannot be found.",
   "ErrorEmptyResponse": "Empty response",
-  "ErrorOfflineText": "No internet connection found."
+  "ErrorOfflineText": "No internet connection found.",
+  "ErrorUnavailableText": "Portal unavailable"
 }

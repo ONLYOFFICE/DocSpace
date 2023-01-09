@@ -15,12 +15,6 @@ StyledArrowRightIcon.defaultProps = { theme: Base };
 export const MainContainer = styled.div`
   width: 100%;
 
-  hr {
-    margin: 24px 0;
-    border: none;
-    border-top: 1px solid #eceef1;
-  }
-
   .subtitle {
     margin-bottom: 20px;
   }

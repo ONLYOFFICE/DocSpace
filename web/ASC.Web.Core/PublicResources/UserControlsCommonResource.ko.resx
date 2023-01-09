@@ -64,7 +64,4 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>월</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>년</value>
-  </data>
 </root>

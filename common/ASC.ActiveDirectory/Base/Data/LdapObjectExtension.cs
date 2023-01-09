@@ -34,10 +34,13 @@ namespace ASC.ActiveDirectory.Base.Data;
 public class LdapObjectExtension
 {
     private readonly TenantUtil _tenantUtil;
+    private readonly SettingsManager _settingsManager;
     private readonly ILogger<LdapObjectExtension> _logger;
-    public LdapObjectExtension(TenantUtil tenantUtil, ILogger<LdapObjectExtension> logger)
+
+    public LdapObjectExtension(TenantUtil tenantUtil, SettingsManager settingsManager, ILogger<LdapObjectExtension> logger)
     {
         _tenantUtil = tenantUtil;
+        _settingsManager = settingsManager;
         _logger = logger;
     }
     public string GetAttribute(LdapObject ldapObject, string attribute)
@@ -145,6 +148,8 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? ByteConverter.ConvertSizeToBytes(GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit])) : quotaSettings.DefaultUserQuota;
 
         if (string.IsNullOrEmpty(userName))
         {
@@ -168,7 +173,8 @@ public class LdapObjectExtension
             Title = !string.IsNullOrEmpty(title) ? title : string.Empty,
             Location = !string.IsNullOrEmpty(location) ? location : string.Empty,
             WorkFromDate = _tenantUtil.DateTimeNow(),
-            ContactsList = contacts
+            ContactsList = contacts,
+            LdapQouta = quota
         };
 
         if (!string.IsNullOrEmpty(firstName))

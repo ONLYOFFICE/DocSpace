@@ -10,6 +10,7 @@ import {
   NewFilesPanel,
   SelectFileDialog,
   HotkeyPanel,
+  InvitePanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -22,8 +23,10 @@ import {
   ConflictResolveDialog,
   ConvertDialog,
   CreateRoomDialog,
+  InviteUsersWarningDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
+import ArchiveDialog from "../dialogs/ArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -47,11 +50,15 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
+    invitePanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
+    restoreAllPanelVisible,
+    archiveDialogVisible,
+    inviteUsersWarningDialogVisible,
   } = props;
 
-  const { t } = useTranslation(["Translations", "SelectFile"]);
+  const { t } = useTranslation(["Translations", "Common"]);
 
   const onClose = () => {
     setSelectFileDialogVisible(false);
@@ -66,8 +73,12 @@ const Panels = (props) => {
       />
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
-    (moveToPanelVisible || copyPanelVisible) && (
-      <OperationsPanel key="operation-panel" isCopy={copyPanelVisible} />
+    (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
+      <OperationsPanel
+        key="operation-panel"
+        isCopy={copyPanelVisible}
+        isRestore={restoreAllPanelVisible}
+      />
     ),
     thirdPartyMoveDialogVisible && (
       <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
@@ -96,18 +107,23 @@ const Panels = (props) => {
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
-        foldersType="exceptPrivacyTrashFolders"
+        filteredType="exceptPrivacyTrashArchiveFolders"
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("SelectFile:SelectDOCXFormat")}
+        filesListTitle={t("Common:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />
     ),
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
+    ),
+    archiveDialogVisible && <ArchiveDialog key="archive-dialog" />,
+    inviteUsersWarningDialogVisible && (
+      <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
   ];
 };
@@ -132,10 +148,14 @@ export default inject(
       createRoomDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
+      restoreAllPanelVisible,
+      archiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      invitePanelOptions,
+      inviteUsersWarningDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -165,6 +185,10 @@ export default inject(
       createMasterForm,
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
+      restoreAllPanelVisible,
+      invitePanelVisible: invitePanelOptions.visible,
+      archiveDialogVisible,
+      inviteUsersWarningDialogVisible,
     };
   }
 )(observer(Panels));

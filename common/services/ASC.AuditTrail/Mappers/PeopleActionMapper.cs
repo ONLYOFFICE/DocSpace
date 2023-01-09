@@ -56,7 +56,8 @@ internal class UsersActionMapper : IModuleActionMapper
         Actions = new MessageMapsDictionary(ProductType.People, Module)
         {
             {
-                EntryType.User, new Dictionary<ActionType, MessageAction[]>()
+                EntryType.User,
+                new Dictionary<ActionType, MessageAction[]>()
                 {
                     { ActionType.Create,  new[] { MessageAction.UserCreated, MessageAction.GuestCreated, MessageAction.UserCreatedViaInvite, MessageAction.GuestCreatedViaInvite }  },
                     {
@@ -80,15 +81,15 @@ internal class UsersActionMapper : IModuleActionMapper
             { MessageAction.UserLinkedSocialAccount, ActionType.Link },
             { MessageAction.UserUnlinkedSocialAccount, ActionType.Unlink },
             {
-                ActionType.Send, new[] { MessageAction.UserSentActivationInstructions, MessageAction.UserSentDeleteInstructions, MessageAction.SentInviteInstructions }
+                ActionType.Send,
+                new[] { MessageAction.UserSentActivationInstructions, MessageAction.UserSentDeleteInstructions, MessageAction.SentInviteInstructions }
             },
-            { MessageAction.UserUpdatedPassword, ActionType.Update }
+            { MessageAction.UserUpdatedPassword, ActionType.Update },
+            { MessageAction.UserSentEmailChangeInstructions, new MessageMaps("UserSentEmailInstructions", ActionType.Send, ProductType.People, Module, EntryType.User) },
+            { MessageAction.UserSentPasswordChangeInstructions, new MessageMaps("UserSentPasswordInstructions", ActionType.Send, ProductType.People, Module, EntryType.User) },
+            { MessageAction.UserConnectedTfaApp, new MessageMaps("UserTfaGenerateCodes", ActionType.Link, ProductType.People, Module, EntryType.User) },
+            { MessageAction.UserDisconnectedTfaApp, new MessageMaps("UserTfaDisconnected", ActionType.Delete, ProductType.People, Module, EntryType.User) }
         };
-
-        Actions.Add(MessageAction.UserSentEmailChangeInstructions, new MessageMaps("UserSentEmailInstructions", ActionType.Send, ProductType.People, Module, EntryType.User));
-        Actions.Add(MessageAction.UserSentPasswordChangeInstructions, new MessageMaps("UserSentPasswordInstructions", ActionType.Send, ProductType.People, Module, EntryType.User));
-        Actions.Add(MessageAction.UserConnectedTfaApp, new MessageMaps("UserTfaGenerateCodes", ActionType.Link, ProductType.People, Module, EntryType.User));
-        Actions.Add(MessageAction.UserDisconnectedTfaApp, new MessageMaps("UserTfaDisconnected", ActionType.Delete, ProductType.People, Module, EntryType.User));
     }
 }
 

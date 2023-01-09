@@ -100,9 +100,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>正しくないメールアドレス</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>プロモーションコードが間違っているようです</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>この操作を実行するアクセス許可がありません</value>
   </data>
@@ -155,9 +152,6 @@
     <value>{0}～{1}文字</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
-    <value>パスワードが含まれている必要な記号</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
     <value>パスワードが含まれている必要な記号</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">

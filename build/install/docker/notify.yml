@@ -31,7 +31,7 @@ x-service:
 services:
   onlyoffice-notify:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-notify:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-notify:${DOCKER_TAG}"
     container_name: ${NOTIFY_HOST}
 
 networks:

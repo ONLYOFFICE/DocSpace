@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Files.Helpers;
 
 public class SecurityControllerHelper<T> : FilesHelperBase<T>
@@ -65,17 +63,17 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         var file = await GetFileInfoAsync(fileId);
 
         var tmpInfo = await _fileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
-        var sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
+        var sharedInfo = tmpInfo.Find(r => r.Id == FileConstant.ShareLinkId);
 
-        if (sharedInfo == null || sharedInfo.Share != share)
+        if (sharedInfo == null || sharedInfo.Access != share)
         {
             var list = new List<AceWrapper>
             {
                 new AceWrapper
                 {
-                    SubjectId = FileConstant.ShareLinkId,
+                    Id = FileConstant.ShareLinkId,
                     SubjectGroup = true,
-                    Share = share
+                    Access = share
                 }
             };
 
@@ -89,7 +87,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
             await _fileStorageService.SetAceObjectAsync(aceCollection, false);
 
             tmpInfo = await _fileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
-            sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            sharedInfo = tmpInfo.Find(r => r.Id == FileConstant.ShareLinkId);
         }
 
         return sharedInfo.Link;
@@ -105,9 +103,9 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return GetSecurityInfoAsync(new List<T> { }, new List<T> { folderId });
     }
 
-    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
+    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
-        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds, invite);
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds);
 
         foreach (var fileShareDto in fileShares)
         {
@@ -122,12 +120,12 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return true;
     }
 
-    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
+    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
-        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage, invite);
+        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
     }
 
-    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
+    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         if (share != null && share.Any())
         {
@@ -141,10 +139,10 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
                 Message = sharingMessage
             };
 
-            await _fileStorageService.SetAceObjectAsync(aceCollection, notify, invite);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, notify);
         }
 
-        await foreach (var s in GetSecurityInfoAsync(fileIds, folderIds, invite))
+        await foreach (var s in GetSecurityInfoAsync(fileIds, folderIds))
         {
             yield return s;
         }

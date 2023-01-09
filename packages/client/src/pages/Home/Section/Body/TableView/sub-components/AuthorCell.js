@@ -4,7 +4,7 @@ import Avatar from "@docspace/components/avatar";
 
 const AuthorCell = ({ fileOwner, sideColor, item }) => {
   return (
-    <StyledAuthorCell>
+    <StyledAuthorCell className="author-cell">
       <Avatar
         source={item.createdBy.avatarSmall}
         className="author-avatar-cell"

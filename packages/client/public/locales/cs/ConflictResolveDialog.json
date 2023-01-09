@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Prosím, vyberte akci:",
   "ConflictResolveTitle": "Potvrzení o přepsání",
   "CreateDescription": "Ve složce budou dva různé soubory.",
-  "CreateTitle": "Vytvořit kopii souboru",
   "OverwriteDescription": "Soubor bude přidán do souboru se stejným názvem jako verze.",
   "OverwriteTitle": "Přepsat aktualizací verze",
   "SkipDescription": "Žádný soubor nebude zkopírován. Původní soubor bude zachován v cílové složce.",

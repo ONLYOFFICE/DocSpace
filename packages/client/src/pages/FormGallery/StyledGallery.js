@@ -18,7 +18,6 @@ const StyledHeadline = styled(Headline)`
 const StyledContainer = styled.div`
   width: 100%;
   height: 32px;
-  padding: 10px 0 0px;
   display: grid;
 
   grid-template-columns: ${(props) =>

@@ -3,6 +3,5 @@
   "ConvertMessage": "Ak sa rozhodnete konvertovať súbor do formátu odlišného od pôvodného, niektoré údaje sa môžu stratiť.",
   "ConvertToZip": "Súbory budú komprimované do súboru .zip",
   "CustomFormat": "Vlastný formát",
-  "OriginalFormat": "Pôvodný formát",
-  "Other": "Iný"
+  "OriginalFormat": "Pôvodný formát"
 }

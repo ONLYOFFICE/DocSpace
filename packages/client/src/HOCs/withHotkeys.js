@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
-import toastr from "client/toastr";
+import { Events } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
 
 const withHotkeys = (Component) => {
@@ -52,6 +52,10 @@ const withHotkeys = (Component) => {
       selection,
       setFavoriteAction,
       filesIsLoading,
+
+      isVisitor,
+      deleteRooms,
+      archiveRooms,
     } = props;
 
     const hotkeysFilter = {
@@ -75,7 +79,8 @@ const withHotkeys = (Component) => {
       isRecentFolder ||
       isTrashFolder ||
       isArchiveFolder ||
-      isRoomsFolder;
+      isRoomsFolder ||
+      isVisitor;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
@@ -89,6 +94,13 @@ const withHotkeys = (Component) => {
       event.payload = payload;
 
       window.dispatchEvent(event);
+    };
+
+    const onCreateRoom = () => {
+      if (!isVisitor && isRoomsFolder) {
+        const event = new Event(Events.ROOM_CREATE);
+        window.dispatchEvent(event);
+      }
     };
 
     useEffect(() => {
@@ -232,10 +244,26 @@ const withHotkeys = (Component) => {
       ...{ keyup: true },
     });
 
+    //Crete room
+    useHotkeys("Shift+r", () => onCreateRoom(), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
+
     //Delete selection
     useHotkeys(
       "delete, shift+3, command+delete, command+Backspace",
       () => {
+        if (isArchiveFolder) {
+          isAvailableOption("unarchive") && deleteRooms(t);
+          return;
+        }
+
+        if (isRoomsFolder) {
+          isAvailableOption("archive") && archiveRooms("archive");
+          return;
+        }
+
         if (isAvailableOption("delete")) {
           if (isRecentFolder) return;
 
@@ -256,8 +284,8 @@ const withHotkeys = (Component) => {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
               deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-              FileRemoved: t("Home:FileRemoved"),
-              FolderRemoved: t("Home:FolderRemoved"),
+              FileRemoved: t("Files:FileRemoved"),
+              FolderRemoved: t("Files:FolderRemoved"),
             };
             deleteAction(translations).catch((err) => toastr.error(err));
           }
@@ -365,10 +393,13 @@ const withHotkeys = (Component) => {
         deleteAction,
         backToParentFolder,
         setFavoriteAction,
+        deleteRooms,
+        archiveRooms,
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
+      const { isVisitor } = auth.userStore.user;
 
       const {
         isFavoritesFolder,
@@ -422,6 +453,10 @@ const withHotkeys = (Component) => {
         selection,
         setFavoriteAction,
         filesIsLoading,
+
+        isVisitor,
+        deleteRooms,
+        archiveRooms,
       };
     }
   )(observer(WithHotkeys));

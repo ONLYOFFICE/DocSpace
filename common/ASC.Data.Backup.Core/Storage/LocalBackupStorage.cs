@@ -29,7 +29,7 @@ namespace ASC.Data.Backup.Storage;
 [Scope]
 public class LocalBackupStorage : IBackupStorage
 {
-    public string Upload(string storageBasePath, string localPath, Guid userId)
+    public Task<string> Upload(string storageBasePath, string localPath, Guid userId)
     {
         if (!Directory.Exists(storageBasePath))
         {
@@ -42,26 +42,28 @@ public class LocalBackupStorage : IBackupStorage
             File.Copy(localPath, storagePath, true);
         }
 
-        return storagePath;
+        return Task.FromResult(storagePath);
     }
 
-    public void Download(string storagePath, string targetLocalPath)
+    public Task Download(string storagePath, string targetLocalPath)
     {
         File.Copy(storagePath, targetLocalPath, true);
+        return Task.CompletedTask;
     }
 
-    public void Delete(string storagePath)
+    public Task Delete(string storagePath)
     {
         File.Delete(storagePath);
+        return Task.CompletedTask;
     }
 
-    public bool IsExists(string storagePath)
+    public Task<bool> IsExists(string storagePath)
     {
-        return File.Exists(storagePath);
+        return Task.FromResult(File.Exists(storagePath));
     }
 
-    public string GetPublicLink(string storagePath)
+    public Task<string> GetPublicLink(string storagePath)
     {
-        return string.Empty;
+        return Task.FromResult(string.Empty);
     }
 }

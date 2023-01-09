@@ -27,6 +27,27 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  Admin: 3,
+  UserString: "user",
+  RoomAdmin: "manager",
+  DocSpaceAdmin: "admin",
+  Owner: "Owner",
+});
+/**
+ * Enum for user payments type.
+ * @readonly
+ */
+export const PaymentsType = Object.freeze({
+  Paid: "0",
+  Free: "1",
+});
+/**
+ * Enum for filter subject.
+ * @readonly
+ */
+export const FilterSubject = Object.freeze({
+  Owner: "0",
+  Member: "1",
 });
 /**
  * Enum for filter type.
@@ -45,7 +66,10 @@ export const FilterType = Object.freeze({
   ArchiveOnly: 10,
   ByExtension: 11,
   MediaOnly: 12,
+  OFormTemplateOnly: 18,
+  OFormOnly: 19,
 });
+
 /**
  * Enum for file type.
  * @readonly
@@ -59,6 +83,8 @@ export const FileType = Object.freeze({
   Spreadsheet: 5,
   Presentation: 6,
   Document: 7,
+  OFormTemplate: 8,
+  OForm: 9,
 });
 /**
  * Enum for room type.
@@ -75,9 +101,34 @@ export const RoomsType = Object.freeze({
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
   2: "Files:CollaborationRooms",
-  3: "Files:ReviewRooms",
+  3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
+});
+/**
+ * Enum for room provider type.
+ * @readonly
+ */
+export const RoomsProviderType = Object.freeze({
+  Box: 1,
+  DropBox: 2,
+  GoogleDrive: 3,
+  kDrive: 4,
+  OneDrive: 5,
+  SharePoint: 6,
+  WebDav: 7,
+  Yandex: 8,
+});
+
+export const RoomsProviderTypeName = Object.freeze({
+  1: "Box",
+  2: "DropBox",
+  3: "Google Drive",
+  4: "kDrive",
+  5: "OneDrive",
+  6: "SharePoint",
+  7: "WebDav",
+  8: "Yandex",
 });
 
 /**
@@ -116,6 +167,24 @@ export const FolderType = Object.freeze({
   Rooms: 14,
   Archive: 20,
 });
+
+// extends FolderType keys
+export const FolderNames = Object.freeze({
+  0: "default",
+  1: "common",
+  2: "bunch",
+  3: "trash",
+  5: "personal",
+  6: "share",
+  8: "projects",
+  10: "favorites",
+  11: "recent",
+  12: "templates",
+  13: "privacy",
+  14: "shared",
+  20: "archive",
+});
+
 export const ShareAccessRights = Object.freeze({
   None: 0,
   FullAccess: 1,
@@ -126,6 +195,8 @@ export const ShareAccessRights = Object.freeze({
   Comment: 6,
   FormFilling: 7,
   CustomFilter: 8,
+  RoomManager: 9,
+  Editing: 10,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,
@@ -244,3 +315,60 @@ export const ThemeKeys = Object.freeze({
   System: "2",
   SystemStr: "System",
 });
+
+/**
+ * Enum for global events.
+ * @readonly
+ */
+export const Events = Object.freeze({
+  CREATE: "create",
+  RENAME: "rename",
+  ROOM_CREATE: "create_room",
+  ROOM_EDIT: "edit_room",
+  CHANGE_COLUMN: "change_column",
+});
+
+/**
+ * Enum for feed action types.
+ * @readonly
+ */
+export const FeedActionTypes = Object.freeze({
+  Create: 0,
+  Update: 1,
+  Rename: 2,
+  Move: 3,
+  Delete: 4,
+});
+
+/**
+ * Enum for feed item types.
+ * @readonly
+ */
+export const FeedItemTypes = Object.freeze({
+  File: "file",
+  Folder: "folder",
+  Room: "room",
+  User: "sharedRoom",
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const TariffState = Object.freeze({
+  Trial: 0,
+  Paid: 1,
+  Delay: 2,
+  NotPaid: 3,
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const PortalFeaturesLimitations = Object.freeze({
+  Limitless: -1,
+  Unavailable: 0,
+});
+
+export const EDITOR_ID = "docspace_editor";

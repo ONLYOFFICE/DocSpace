@@ -5,15 +5,16 @@
   "homepage": "/doceditor",
   "scripts": {
     "build": "yarn clean && yarn build:client && yarn build:server",
-    "build:server": "webpack --mode production --config webpack/webpack.server.js",
-    "build:client": "webpack --mode production --config webpack/webpack.client.js",
-    "build:dev-server": "webpack --config webpack/webpack.server.js",
-    "build:dev-client": "webpack --config webpack/webpack.client.js",
+    "build:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production --config webpack/webpack.server.js",
+    "build:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production --config webpack/webpack.client.js",
+    "build:dev-server": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.server.js",
+    "build:dev-client": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.client.js",
     "clean": "shx rm -rf dist",
     "start": "yarn clean && npm-run-all --parallel start:client start:server start:common",
-    "start:client": "webpack --config webpack/webpack.client.js --watch --no-cache",
-    "start:server": "webpack --config webpack/webpack.server.js --watch --no-cache",
-    "start:common": "yarn build:dev-client && yarn build:dev-server && nodemon --watch dist/server.js dist/server.js",
+    "start:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.client.js --watch --no-cache",
+    "start:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.server.js --watch --no-cache",
+    "start:common": "yarn build:dev-client && yarn build:dev-server && NODE_OPTIONS=--openssl-legacy-provider nodemon --watch dist/server.js dist/server.js",
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider node dist/server.js",
     "deploy": "shx --silent mkdir -p ../../build/deploy/editor && shx cp -r dist/* ../../build/deploy/editor"
   },
   "devDependencies": {
@@ -63,15 +64,20 @@
   "title": "ONLYOFFICE",
   "socketPath": "/doceditor/ws",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.199.0",
+    "@onlyoffice/document-editor-react": "1.0.1",
+    "aws-crt": "^1.14.7",
     "bufferutil": "^4.0.6",
     "compression": "^1.7.4",
+    "date-and-time": "^2.4.1",
     "express": "^4.18.1",
     "i18next-express-middleware": "^2.0.0",
     "i18next-fs-backend": "^1.1.4",
     "morgan": "^1.10.0",
     "nconf": "^0.12.0",
     "utf-8-validate": "^5.0.9",
-    "winston": "^3.8.1",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston": "^3.8.2",
+    "winston-cloudwatch": "^6.1.1",
+    "winston-daily-rotate-file": "^4.5.5"
   }
 }

@@ -13,7 +13,7 @@ import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
 
@@ -41,16 +41,15 @@ const VersionRow = (props) => {
     versionsListLength,
     isEditing,
     theme,
+    canChangeVersionFileHistory,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
-
   const title = `${new Date(info.updated).toLocaleString(
     culture
-  )} ${Encoder.htmlDecode(info.updatedBy.displayName)}`;
+  )} ${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
@@ -92,8 +91,12 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
-    canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && {
+    canChangeVersionFileHistory && {
+      key: "edit",
+      label: t("EditComment"),
+      onClick: onEditComment,
+    },
+    canChangeVersionFileHistory && {
       key: "restore",
       label: t("Common:Restore"),
       onClick: onRestoreClick,
@@ -105,7 +108,9 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+  const onClickProp = canChangeVersionFileHistory
+    ? { onClick: onVersionClick }
+    : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -119,7 +124,7 @@ const VersionRow = (props) => {
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
-      canEdit={canEdit}
+      canEdit={canChangeVersionFileHistory}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
@@ -215,29 +220,44 @@ const VersionRow = (props) => {
   );
 };
 
-export default inject(({ auth, versionHistoryStore }) => {
-  const { user } = auth.userStore;
-  const { culture, isTabletView } = auth.settingsStore;
-  const language = (user && user.cultureName) || culture || "en";
+export default inject(
+  ({ auth, versionHistoryStore, accessRightsStore, selectedFolderStore }) => {
+    const { user } = auth.userStore;
+    const { culture, isTabletView } = auth.settingsStore;
+    const language = (user && user.cultureName) || culture || "en";
 
-  const {
-    markAsVersion,
-    restoreVersion,
-    updateCommentVersion,
-    isEditing,
-    isEditingVersion,
-  } = versionHistoryStore;
+    const {
+      markAsVersion,
+      restoreVersion,
+      updateCommentVersion,
+      isEditing,
+      isEditingVersion,
+      fileAccess,
+    } = versionHistoryStore;
 
-  return {
-    theme: auth.settingsStore.theme,
-    culture: language,
-    isTabletView,
-    markAsVersion,
-    restoreVersion,
-    updateCommentVersion,
-    isEditing: isEditingVersion || isEditing,
-  };
-})(
+    const { rootFolderType } = selectedFolderStore;
+
+    const isEdit = isEditingVersion || isEditing;
+    const canChangeVersionFileHistory = accessRightsStore.canChangeVersionFileHistory(
+      {
+        access: fileAccess,
+        rootFolderType,
+        editing: isEdit,
+      }
+    );
+
+    return {
+      theme: auth.settingsStore.theme,
+      culture: language,
+      isTabletView,
+      markAsVersion,
+      restoreVersion,
+      updateCommentVersion,
+      isEditing: isEdit,
+      canChangeVersionFileHistory,
+    };
+  }
+)(
   withRouter(
     withTranslation(["VersionHistory", "Common", "Translations"])(
       observer(VersionRow)

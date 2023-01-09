@@ -58,7 +58,9 @@ public class BaseEvent : IMapFrom<LoginEvent>
     public virtual void Mapping(Profile profile)
     {
         profile.CreateMap<LoginEvent, BaseEvent>()
-            .ConvertUsing<BaseEventTypeConverter>();
+            .ForMember(r => r.IP, opt => opt.MapFrom<BaseEventTypeIpResolver>())
+            .ForMember(r => r.Date, opt => opt.MapFrom<BaseEventTypeDateResolver>())
+            ;
     }
 }
 

@@ -83,6 +83,119 @@ const template: Template = (
         <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
         <link rel="apple-touch-icon" href="/appIcon-180.png" />
         ${styleTags}   
+
+        <style>
+        @media (prefers-color-scheme: light) {
+          body {
+            background-color: #fff;
+          }
+
+          #login-header{
+            background-color: #f8f9f9;
+          }
+
+          #login-page > div > svg > path:last-child {
+            fill: #333;
+          }
+
+          #login-page > div > p {
+            color: #333;
+          }
+
+          #login-form {
+            background-color: #fff;
+            box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
+          }
+
+          #login, #password > div, #password > div > input {
+            background: #fff;
+            border-color: #D0D5DA;
+          }
+
+          #login-checkbox > svg > rect {
+            fill: #fff;
+            stroke: #D0D5DA;
+          }
+
+          #login-checkbox > div > span {
+            color: #333;
+          }
+
+          #code-page > div > svg > path:last-child {
+            fill: #333;
+          }
+
+          #workspace-title {
+            color: #333;
+          }
+
+          #code-page > div > div > input {
+            background: #fff;
+            border-color: #d0d5da;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #F8F9F9;
+            border-color: #ECEEF1;
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          body {
+            background-color: #333;
+          }
+
+          #login-header{
+            background-color: #282828;
+          }
+
+          #login-page > div > svg > path:last-child {
+            fill: #fff;
+          }
+
+          #login-page > div > p {
+            color: #fff;
+          }
+
+          #login-form {
+            background-color: #333;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.16);
+          }
+
+          #login, #password > div, #password > div > input {
+            background: #282828;
+            border-color: #474747;
+          }
+
+          #login-checkbox > svg > rect {
+            fill: #282828;
+            stroke: #474747;
+          }
+
+          #login-checkbox > div > span {
+            color: #fff;
+          }
+
+          #code-page > div > svg > path:last-child {
+            fill: #fff;
+          }
+
+          #workspace-title {
+            color: #fff;
+          }
+
+          #code-page > div > div > input {
+            background: #282828;
+            border-color: #474747;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #474747;
+            border-color: #474747;
+          }
+        }        
+        </style>
+
       </head>
       <body>
         <noscript> You need to enable JavaScript to run this app. </noscript>

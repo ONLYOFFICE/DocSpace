@@ -1,18 +1,14 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
 class CommonStore {
-  whiteLabel = {
-    logoSizes: [],
-    logoText: null,
-    logoUrls: [],
-  };
+  whiteLabelLogoUrls = [];
+  whiteLabelLogoText = null;
 
   isInit = false;
   isLoaded = false;
   isLoadedArticleBody = false;
-  isLoadedArticleHeader = false;
   isLoadedSectionHeader = false;
   isLoadedSubmenu = false;
   isLoadedLngTZSettings = false;
@@ -21,6 +17,10 @@ class CommonStore {
   isLoadedCustomization = false;
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
+  isLoadedAdditionalResources = false;
+  isLoadedCompanyInfoSettingsData = false;
+
+  greetingSettingsIsDefault = true;
 
   constructor() {
     this.authStore = authStore;
@@ -35,34 +35,29 @@ class CommonStore {
     requests.push(
       authStore.settingsStore.getPortalTimezones(),
       authStore.settingsStore.getPortalCultures(),
+      this.getWhiteLabelLogoUrls(),
       this.getWhiteLabelLogoText(),
-      this.getWhiteLabelLogoSizes(),
-      this.getWhiteLabelLogoUrls()
+      this.getGreetingSettingsIsDefault()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
   };
 
-  setLogoText = (text) => {
-    this.whiteLabel.logoText = text;
-  };
-
-  setLogoSizes = (sizes) => {
-    this.whiteLabel.logoSizes = sizes;
-  };
-
   setLogoUrls = (urls) => {
-    this.whiteLabel.logoUrls = urls;
+    this.whiteLabelLogoUrls = urls;
   };
 
-  getWhiteLabelLogoText = async () => {
-    const res = await api.settings.getLogoText();
-    this.setLogoText(res);
+  setLogoText = (text) => {
+    this.whiteLabelLogoText = text;
   };
 
-  getWhiteLabelLogoSizes = async () => {
-    const res = await api.settings.getLogoSizes();
-    this.setLogoSizes(res);
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+    this.getWhiteLabelLogoUrls();
+  };
+
+  getGreetingSettingsIsDefault = async () => {
+    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
   };
 
   getWhiteLabelLogoUrls = async () => {
@@ -70,64 +65,53 @@ class CommonStore {
     this.setLogoUrls(Object.values(res));
   };
 
-  setIsLoadedArticleBody = (isLoadedArticleBody) => {
-    runInAction(() => {
-      this.isLoadedArticleBody = isLoadedArticleBody;
-    });
+  getWhiteLabelLogoText = async () => {
+    const res = await api.settings.getLogoText();
+    this.setLogoText(res);
   };
 
-  setIsLoadedArticleHeader = (isLoadedArticleHeader) => {
-    runInAction(() => {
-      this.isLoadedArticleHeader = isLoadedArticleHeader;
-    });
+  setIsLoadedArticleBody = (isLoadedArticleBody) => {
+    this.isLoadedArticleBody = isLoadedArticleBody;
   };
 
   setIsLoadedSectionHeader = (isLoadedSectionHeader) => {
-    runInAction(() => {
-      this.isLoadedSectionHeader = isLoadedSectionHeader;
-    });
+    this.isLoadedSectionHeader = isLoadedSectionHeader;
   };
 
   setIsLoadedSubmenu = (isLoadedSubmenu) => {
-    runInAction(() => {
-      this.isLoadedSubmenu = isLoadedSubmenu;
-    });
+    this.isLoadedSubmenu = isLoadedSubmenu;
   };
 
   setIsLoadedLngTZSettings = (isLoadedLngTZSettings) => {
-    runInAction(() => {
-      this.isLoadedLngTZSettings = isLoadedLngTZSettings;
-    });
+    this.isLoadedLngTZSettings = isLoadedLngTZSettings;
   };
 
   setIsLoadedWelcomePageSettings = (isLoadedWelcomePageSettings) => {
-    runInAction(() => {
-      this.isLoadedWelcomePageSettings = isLoadedWelcomePageSettings;
-    });
+    this.isLoadedWelcomePageSettings = isLoadedWelcomePageSettings;
   };
 
   setIsLoadedPortalRenaming = (isLoadedPortalRenaming) => {
-    runInAction(() => {
-      this.isLoadedPortalRenaming = isLoadedPortalRenaming;
-    });
+    this.isLoadedPortalRenaming = isLoadedPortalRenaming;
   };
 
   setIsLoadedDNSSettings = (isLoadedDNSSettings) => {
-    runInAction(() => {
-      this.isLoadedDNSSettings = isLoadedDNSSettings;
-    });
+    this.isLoadedDNSSettings = isLoadedDNSSettings;
   };
 
   setIsLoadedCustomization = (isLoadedCustomization) => {
-    runInAction(() => {
-      this.isLoadedCustomization = isLoadedCustomization;
-    });
+    this.isLoadedCustomization = isLoadedCustomization;
   };
 
   setIsLoadedCustomizationNavbar = (isLoadedCustomizationNavbar) => {
-    runInAction(() => {
-      this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
-    });
+    this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
+  };
+
+  setIsLoadedAdditionalResources = (isLoadedAdditionalResources) => {
+    this.isLoadedAdditionalResources = isLoadedAdditionalResources;
+  };
+
+  setIsLoadedCompanyInfoSettingsData = (isLoadedCompanyInfoSettingsData) => {
+    this.isLoadedCompanyInfoSettingsData = isLoadedCompanyInfoSettingsData;
   };
 
   setIsLoaded = (isLoaded) => {

@@ -8,6 +8,7 @@
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -18,6 +19,25 @@
     <ItemGroup>
 	    <Compile Remove="Api\LdapController.cs" />
 	    <Compile Remove="Api\SsoSettingsV2Controller.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="img\audit.svg" />
+      <None Remove="img\backup.svg" />
+      <None Remove="img\restore.svg" />
+      <None Remove="img\room.svg" />
+      <None Remove="img\sso.svg" />
+      <None Remove="img\total_size.svg" />
+      <None Remove="img\users.svg" />
+      <None Remove="img\whitelabel.svg" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="img\audit.svg" />
+      <EmbeddedResource Include="img\restore.svg" />
+      <EmbeddedResource Include="img\room.svg" />
+      <EmbeddedResource Include="img\sso.svg" />
+      <EmbeddedResource Include="img\total_size.svg" />
+      <EmbeddedResource Include="img\users.svg" />
+      <EmbeddedResource Include="img\whitelabel.svg" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />

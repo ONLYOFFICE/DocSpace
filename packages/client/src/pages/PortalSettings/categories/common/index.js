@@ -10,19 +10,18 @@ import Customization from "./customization";
 import Branding from "./branding";
 import Appearance from "./appearance";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import LoaderSubmenu from "./sub-components/loaderSubmenu";
 
 const SubmenuCommon = (props) => {
   const {
     t,
     history,
-    isLoaded,
     tReady,
     setIsLoadedSubmenu,
-    isLoadedPage,
+    loadBaseInfo,
+    isLoadedSubmenu,
   } = props;
   const [currentTab, setCurrentTab] = useState(0);
-
-  const isLoadedSetting = isLoaded && tReady;
 
   useEffect(() => {
     const path = location.pathname;
@@ -33,8 +32,15 @@ const SubmenuCommon = (props) => {
   }, []);
 
   useEffect(() => {
-    if (isLoadedSetting) setIsLoadedSubmenu(isLoadedSetting);
-  }, [isLoadedSetting]);
+    if (tReady) setIsLoadedSubmenu(true);
+    if (isLoadedSubmenu) {
+      load();
+    }
+  }, [tReady, isLoadedSubmenu]);
+
+  const load = async () => {
+    await loadBaseInfo();
+  };
 
   const data = [
     {
@@ -64,21 +70,31 @@ const SubmenuCommon = (props) => {
     );
   };
 
+  if (!isLoadedSubmenu) return <LoaderSubmenu />;
+
   return (
     <Submenu
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
-      isLoading={!isLoadedPage}
     />
   );
 };
 
 export default inject(({ common }) => {
-  const { isLoaded, setIsLoadedSubmenu } = common;
-  return {
+  const {
     isLoaded,
     setIsLoadedSubmenu,
+    initSettings,
+    isLoadedSubmenu,
+  } = common;
+  return {
+    loadBaseInfo: async () => {
+      await initSettings();
+    },
+    isLoaded,
+    setIsLoadedSubmenu,
+    isLoadedSubmenu,
   };
 })(
   withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))

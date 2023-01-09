@@ -75,31 +75,17 @@ public static class ServiceCollectionExtension
         services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
 
         var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
+        var activeMQConfiguration = configuration.GetSection("ActiveMQ").Get<ActiveMQSettings>();
 
         if (rabbitMQConfiguration != null)
         {
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
                 var cfg = sp.GetRequiredService<IConfiguration>();
-                var settings = cfg.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                var factory = new ConnectionFactory()
-                {
-                    HostName = settings.HostName,
-                    DispatchConsumersAsync = true
-                };
-
-                if (!string.IsNullOrEmpty(settings.UserName))
-                {
-                    factory.UserName = settings.UserName;
-                }
-
-                if (!string.IsNullOrEmpty(settings.Password))
-                {
-                    factory.Password = settings.Password;
-                }
+                var connectionFactory = rabbitMQConfiguration.GetConnectionFactory();
 
                 var retryCount = 5;
 
@@ -108,7 +94,7 @@ public static class ServiceCollectionExtension
                     retryCount = int.Parse(cfg["core:eventBus:connectRetryCount"]);
                 }
 
-                return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
+                return new DefaultRabbitMQPersistentConnection(connectionFactory, logger, retryCount);
             });
 
             services.AddSingleton<IEventBus, EventBusRabbitMQ>(sp =>
@@ -137,6 +123,54 @@ public static class ServiceCollectionExtension
                 }
 
                 return new EventBusRabbitMQ(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, serializer, subscriptionClientName, retryCount);
+            });
+        }
+        else if (activeMQConfiguration != null)
+        {
+            services.AddSingleton<IActiveMQPersistentConnection>(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+
+                var logger = sp.GetRequiredService<ILogger<DefaultActiveMQPersistentConnection>>();
+
+                var factory = new Apache.NMS.NMSConnectionFactory(activeMQConfiguration.Uri);
+             
+                var retryCount = 5;
+
+                if (!string.IsNullOrEmpty(cfg["core:eventBus:connectRetryCount"]))
+                {
+                    retryCount = int.Parse(cfg["core:eventBus:connectRetryCount"]);
+                }
+
+                return new DefaultActiveMQPersistentConnection(factory, logger, retryCount);
+            });
+
+            services.AddSingleton<IEventBus, EventBusActiveMQ>(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+
+                var activeMQPersistentConnection = sp.GetRequiredService<IActiveMQPersistentConnection>();
+                var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
+                var logger = sp.GetRequiredService<ILogger<EventBusActiveMQ>>();
+                var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
+
+                var serializer = new EventBus.Serializers.ProtobufSerializer();
+
+                var subscriptionClientName = "asc_event_bus_default_queue";
+
+                if (!string.IsNullOrEmpty(cfg["core:eventBus:subscriptionClientName"]))
+                {
+                    subscriptionClientName = cfg["core:eventBus:subscriptionClientName"];
+                }
+
+                var retryCount = 5;
+
+                if (!string.IsNullOrEmpty(cfg["core:eventBus:connectRetryCount"]))
+                {
+                    retryCount = int.Parse(cfg["core:eventBus:connectRetryCount"]);
+                }
+
+                return new EventBusActiveMQ(activeMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, serializer, subscriptionClientName, retryCount);
             });
         }
         else

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.People.Api;
 
 public class PhotoController : PeopleControllerBase
@@ -78,21 +76,21 @@ public class PhotoController : PeopleControllerBase
         if (!string.IsNullOrEmpty(inDto.TmpFile))
         {
             var fileName = Path.GetFileName(inDto.TmpFile);
-            var data = _userPhotoManager.GetTempPhotoData(fileName);
+            var data = await _userPhotoManager.GetTempPhotoData(fileName);
 
             var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
             _settingsManager.SaveForUser(settings, user.Id);
-            _userPhotoManager.RemovePhoto(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhoto(fileName);
         }
         else
         {
             await UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
         }
 
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
@@ -109,8 +107,8 @@ public class PhotoController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-        _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userPhotoManager.RemovePhoto(user.Id);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
@@ -144,14 +142,14 @@ public class PhotoController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpPost("{userid}/photo")]
-    public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection formCollection)
+    public async Task<FileUploadResultDto> UploadMemberPhoto(string userid, IFormCollection formCollection)
     {
         var result = new FileUploadResultDto();
         var autosave = bool.Parse(formCollection["Autosave"]);
@@ -213,7 +211,7 @@ public class PhotoController : PeopleControllerBase
                 }
                 else
                 {
-                    result.Data = _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                    result.Data = await _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
                 }
 
                 result.Success = true;

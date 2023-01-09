@@ -58,32 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>Здравствуйте, $UserName,
-
-Ваш пользовательский профиль успешно добавлен на портал "${__VirtualRootPath}":"${__VirtualRootPath}". Начните работать с ним прямо сейчас!
-
-h3.Начните работу с документами:
-
-# Создавайте и редактируйте текстовые документы, электронные таблицы и презентации.
-# Подключите облачные хранилища, которые Вы используете, чтобы создать единое рабочее пространство для всех своих документов.
-# Делитесь документами с участниками команды.
-# Познакомьтесь с различными способами совместной работы над документами: два режима совместного редактирования, рецензирование, комментарии, чат.
-
-h3.Попробуйте дополнительные инструменты ${LetterLogoText}:
-
-# Добавьте свою учетную запись электронной почты в "Почту ${LetterLogoText}":"${__VirtualRootPath}/addons/mail/".
-# Создавайте "Проекты":"${__VirtualRootPath}/products/projects/" и управляйте рабочим процессом, добавляя вехи и ставя задачи.
-# Управляйте взаимоотношениями с клиентами, используя модуль "CRM":"${__VirtualRootPath}/products/crm/", определяйте приоритетные контакты, следите за историей взаимодействия и эффективностью продаж.
-# Используйте "Сообщество":"${__VirtualRootPath}/products/community/", чтобы вести блоги, общаться на форумах, добавлять события, делиться закладками.
-# Планируйте рабочий график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
-# Запустите "Чат":"${__VirtualRootPath}/addons/talk/", чтобы общаться со своей командой онлайн.
-
-$GreenButton
-
-С уважением,
-команда ${LetterLogoText}</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.Добро пожаловать в тестовое облако для совместной работы Р7-Офис
 
@@ -107,37 +81,6 @@ h3.Возможности тестового облака Р7-Офис:
 
 С уважением,
 Команда Р7-Офис</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
-
-Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы поделиться с вами некоторыми рекомендациями и полезной информацией о том, как сделать вашу работу еще более эффективной.
-
-*Соберите все документы в едином пространстве*
-
-Подключите Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive или Yandex.Disk к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами.
-"Узнать больше":"https://helpcenter.onlyoffice.com/ru/tipstricks/add-resource.aspx"
-
-*Редактируйте документы в Google Drive*
-
-Вы также можете интегрировать редакторы ONLYOFFICE в Google Drive с помощью нашего "коннектора":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-*Используйте инструменты для продуктивной работы*
-
-h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/ru/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/ru/workspace-enterprise.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
-
-- Управление проектной документацией;
-
-- Интеграция с CRM и электронной почтой;
-
-- Индивидуальные и групповые права доступа;
-
-- Оптимизация рабочего процесса с помощью инструментов для взаимодействия с командой.
-
-Вы можете выбрать абсолютно бесплатный тариф для команд, объединяющих до 5 пользователей. "Зарегистрируйтесь":"https://www.onlyoffice.com/ru/registration.aspx"
-
-С уважением,
-команда ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>Хотите изменить адрес электронной почты в своем аккаунте?

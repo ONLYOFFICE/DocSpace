@@ -11,7 +11,10 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const PAYMENTS_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/portal-settings/payments/portal-payments"
+);
 const HELP_URL = "https://onlyoffice.com/";
 const SUPPORT_URL = "https://onlyoffice.com/";
 const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
@@ -20,13 +23,23 @@ class ProfileActionsStore {
   authStore = null;
   filesStore = null;
   peopleStore = null;
+  treeFoldersStore = null;
+  selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor(authStore, filesStore, peopleStore) {
+  constructor(
+    authStore,
+    filesStore,
+    peopleStore,
+    treeFoldersStore,
+    selectedFolderStore
+  ) {
     this.authStore = authStore;
     this.filesStore = filesStore;
     this.peopleStore = peopleStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.selectedFolderStore = selectedFolderStore;
 
     makeAutoObservable(this);
   }
@@ -45,11 +58,19 @@ class ProfileActionsStore {
 
     if (user.isOwner) return "owner";
     if (user.isAdmin || isModuleAdmin) return "admin";
-    if (user.isVisitor) return "guest";
-    return "user";
+    if (user.isVisitor) return "user";
+    return "manager";
   };
 
   onProfileClick = () => {
+    //TODO: add check manager
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    if (isAdmin || isOwner) {
+      this.selectedFolderStore.setSelectedFolder(null);
+      this.treeFoldersStore.setSelectedNode(["accounts"]);
+    }
+
     history.push(PROFILE_SELF_URL);
   };
 
@@ -100,6 +121,7 @@ class ProfileActionsStore {
   getActions = (t) => {
     const { enablePlugins } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
     const settingsUrl = "/portal-settings";
@@ -113,11 +135,10 @@ class ProfileActionsStore {
 
     const settings = isAdmin
       ? {
-          key: "SettingsBtn",
+          key: "user-menu-settings",
           icon: "/static/images/catalog.settings.react.svg",
           label: t("Common:Settings"),
           onClick: () => this.onSettingsClick(settingsUrl),
-          url: settingsUrl,
         }
       : null;
 
@@ -131,7 +152,7 @@ class ProfileActionsStore {
       !isMobile
     ) {
       hotkeys = {
-        key: "HotkeysBtn",
+        key: "user-menu-hotkeys",
         icon: "/static/images/hotkeys.react.svg",
         label: t("Common:Hotkeys"),
         onClick: this.onHotkeysClick,
@@ -140,45 +161,40 @@ class ProfileActionsStore {
     // }
     const actions = [
       {
-        key: "ProfileBtn",
+        key: "user-menu-profile",
         icon: "/static/images/profile.react.svg",
         label: t("Common:Profile"),
         onClick: this.onProfileClick,
-        url: PROFILE_SELF_URL,
       },
       settings,
-      {
-        key: "PaymentsBtn",
+      isAdmin && {
+        key: "user-menu-payments",
         icon: "/static/images/payments.react.svg",
         label: t("Common:PaymentsTitle"),
         onClick: this.onPaymentsClick,
-        url: PAYMENTS_URL,
       },
       {
-        key: "HelpCenterBtn",
+        key: "user-menu-help-center",
         icon: "/static/images/help.center.react.svg",
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
-        url: HELP_URL,
       },
       {
-        key: "SupportBtn",
+        key: "user-menu-support",
         icon: "/static/images/support.react.svg",
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
-        url: SUPPORT_URL,
       },
       {
-        key: "VideoBtn",
+        key: "user-menu-video",
         icon: "/static/images/video.guides.react.svg",
         label: t("Common:VideoGuides"),
         onClick: this.onVideoGuidesClick,
-        url: VIDEO_GUIDES_URL,
       },
       hotkeys,
       {
-        key: "AboutBtn",
-        icon: "/static/images/info.react.svg",
+        key: "user-menu-about",
+        icon: "/static/images/info.outline.react.svg",
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
@@ -187,7 +203,7 @@ class ProfileActionsStore {
         key: "separator",
       },
       {
-        key: "LogoutBtn",
+        key: "user-menu-logout",
         icon: "/static/images/logout.react.svg",
         label: t("Common:LogoutButton"),
         onClick: this.onLogoutClick,
@@ -197,8 +213,8 @@ class ProfileActionsStore {
 
     if (debugInfo) {
       actions.splice(3, 0, {
-        key: "DebugBtn",
-        icon: "/static/images/info.react.svg",
+        key: "user-menu-debug",
+        icon: "/static/images/info.outline.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
       });
@@ -217,7 +233,48 @@ class ProfileActionsStore {
       }
     }
 
-    return actions;
+    return this.checkEnabledActions(actions);
+  };
+
+  checkEnabledActions = (actions) => {
+    const actionsArray = actions;
+
+    if (!this.authStore.settingsStore.additionalResourcesData) {
+      return actionsArray;
+    }
+
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
+
+    if (!feedbackAndSupportEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "user-menu-support"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!videoGuidesEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "user-menu-video"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!helpCenterEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "user-menu-help-center"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    return actionsArray;
   };
 }
 

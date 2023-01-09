@@ -10,14 +10,16 @@ import {
   getSharedRoomsTree,
   getThirdPartyCommonFolderTree,
 } from "@docspace/common/api/files";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
-  exceptPrivacyTrashFolders,
+  exceptPrivacyTrashArchiveFolders,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
+import { FolderType } from "@docspace/common/constants";
+
 const SelectionPanelBody = ({
   t,
   isPanelVisible,
@@ -49,6 +51,7 @@ const SelectionPanelBody = ({
   parentId,
   selectionFiles,
   folderSelectionDisabled,
+  isCurrentFolder,
 }) => {
   return (
     <StyledModalDialog
@@ -58,6 +61,7 @@ const SelectionPanelBody = ({
       displayType="modal"
       isLoading={isLoading}
       withFooterBorder
+      isDoubleFooterLine
       autoMaxWidth
     >
       <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>
@@ -72,7 +76,7 @@ const SelectionPanelBody = ({
                 fontSize="18px"
                 className="selection-panel_folder-title"
               >
-                {t("Common:Documents")}
+                {t("Common:Rooms")}
               </Text>
 
               {folderId && resultingFolderTree ? (
@@ -118,6 +122,7 @@ const SelectionPanelBody = ({
                   folderSelection={folderSelection}
                   newFilter={newFilter}
                   fileId={fileId}
+                  maxHeight={!header ? 384 : 269}
                 />
               </>
             </div>
@@ -125,31 +130,39 @@ const SelectionPanelBody = ({
         </StyledBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-file-modal-dialog-buttons-save"
-          primary
-          size="normalTouchscreen"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            (!fileId && !folderSelection) ||
-            !canCreate
-          }
-          isLoading={isDisableTree}
-        />
-        <Button
-          theme={theme}
-          className="modal-dialog-button"
-          size="normalTouchscreen"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+
+        <div>
+          <Button
+            id="select-file-modal-submit"
+            theme={theme}
+            className="select-file-modal-dialog-buttons-save"
+            primary
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={
+              folderSelectionDisabled ||
+              isDisableButton ||
+              isDisableTree ||
+              isLoadingData ||
+              (!fileId && !folderSelection) ||
+              !canCreate ||
+              !(folderId && resultingFolderTree) ||
+              isCurrentFolder
+            }
+            isLoading={isDisableTree}
+          />
+          <Button
+            id="select-file-modal-cancel"
+            theme={theme}
+            className="modal-dialog-button"
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );
@@ -171,53 +184,20 @@ class SelectionPanel extends React.Component {
   };
   static getBasicFolderInfo = async (
     treeFolders,
-    foldersType,
+    filteredType,
     id,
-    onSetBaseFolderPath,
-    onSelectFolder,
-    foldersList,
-    withoutBasicSelection = false
+    passedFoldersTree = [],
+    hasSharedFolder
   ) => {
-    const getRequestFolderTree = () => {
-      switch (foldersType) {
-        case "exceptSortedByTags":
-        case "exceptPrivacyTrashFolders":
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-        case "common":
-          try {
-            return getCommonFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        case "third-party":
-          try {
-            return getThirdPartyCommonFolderTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        default:
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-      }
-    };
-
     const filterFoldersTree = (folders, arrayOfExceptions) => {
+      const arr = !hasSharedFolder
+        ? [...arrayOfExceptions, FolderType.Rooms]
+        : arrayOfExceptions;
+
       let newArray = [];
 
       for (let i = 0; i < folders.length; i++) {
-        if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
+        if (!arr.includes(folders[i].rootFolderType)) {
           newArray.push(folders[i]);
         }
       }
@@ -226,43 +206,27 @@ class SelectionPanel extends React.Component {
     };
 
     const getExceptionsFolders = (treeFolders) => {
-      switch (foldersType) {
+      switch (filteredType) {
         case "exceptSortedByTags":
           return filterFoldersTree(treeFolders, exceptSortedByTagsFolders);
-        case "exceptPrivacyTrashFolders":
-          return filterFoldersTree(treeFolders, exceptPrivacyTrashFolders);
+        case "exceptPrivacyTrashArchiveFolders":
+          return filterFoldersTree(
+            treeFolders,
+            exceptPrivacyTrashArchiveFolders
+          );
       }
     };
 
-    let requestedTreeFolders, filteredTreeFolders;
-
-    const treeFoldersLength = treeFolders?.length;
-
-    if (treeFoldersLength === 0 || !treeFoldersLength) {
-      try {
-        requestedTreeFolders = foldersList
-          ? foldersList
-          : await getRequestFolderTree();
-      } catch (e) {
-        toastr.error(e);
-        return;
-      }
-    }
+    let filteredTreeFolders;
 
     const foldersTree =
-      treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
+      passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0]?.id;
-
-    !withoutBasicSelection &&
-      onSetBaseFolderPath &&
-      onSetBaseFolderPath(passedId);
-
-    !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
+    const passedId = id ? id : foldersTree[0].id;
 
     if (
-      foldersType === "exceptSortedByTags" ||
-      foldersType === "exceptPrivacyTrashFolders"
+      filteredType === "exceptSortedByTags" ||
+      filteredType === "exceptPrivacyTrashArchiveFolders"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }

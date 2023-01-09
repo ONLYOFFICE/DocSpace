@@ -39,7 +39,7 @@ public class LockerManager
         _thirdPartySelector = thirdPartySelector;
     }
 
-    public bool FileLockedForMe<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMe<T>(T fileId, Guid userId = default)
     {
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
@@ -49,7 +49,7 @@ public class LockerManager
 
         userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
-        var lockedBy = FileLockedBy(fileId, tagDao);
+        var lockedBy = await FileLockedBy(fileId, tagDao);
 
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
@@ -69,9 +69,9 @@ public class LockerManager
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
 
-    public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
+    public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
     {
-        var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+        var tagLock = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).FirstOrDefaultAsync();
 
         return tagLock != null ? tagLock.Owner : Guid.Empty;
     }
@@ -154,6 +154,20 @@ public class BreadCrumbsManager
 
                 case FolderType.BUNCH:
                     rootId = await _globalFolderHelper.FolderProjectsAsync;
+                    break;
+                case FolderType.VirtualRooms:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderVirtualRoomsAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
+                case FolderType.Archive:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderArchiveAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
                     break;
             }
         }
@@ -310,7 +324,6 @@ public class EntryManager
     private readonly ILogger<EntryManager> _logger;
     private readonly IHttpClientFactory _clientFactory;
     private readonly FilesMessageService _filesMessageService;
-    private readonly Global _global;
 
     public EntryManager(
         IDaoFactory daoFactory,
@@ -339,8 +352,7 @@ public class EntryManager
         ThirdPartySelector thirdPartySelector,
         IHttpClientFactory clientFactory,
         FilesMessageService filesMessageService,
-        ThumbnailSettings thumbnailSettings,
-        Global global)
+        ThumbnailSettings thumbnailSettings)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -366,7 +378,6 @@ public class EntryManager
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _clientFactory = clientFactory;
-        _global = global;
         _filesMessageService = filesMessageService;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
@@ -374,7 +385,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool withoutMe = false)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var total = 0;
 
@@ -457,7 +468,7 @@ public class EntryManager
         }
         else if ((parent.FolderType == FolderType.VirtualRooms || parent.FolderType == FolderType.Archive) && !parent.ProviderEntry)
         {
-            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, withoutMe);
+            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider, subjectFilter);
 
             CalculateTotal();
         }
@@ -468,8 +479,8 @@ public class EntryManager
                 withSubfolders = false;
             }
 
-            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders);
-            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
+            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject);
 
             var task1 = _fileSecurity.FilterReadAsync(folders).ToListAsync();
             var task2 = _fileSecurity.FilterReadAsync(files).ToListAsync();
@@ -722,10 +733,10 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite);
 
-        var fileIdsInt = Enumerable.Empty<int>();
-        var fileIdsString = Enumerable.Empty<string>();
-        var folderIdsInt = Enumerable.Empty<int>();
-        var folderIdsString = Enumerable.Empty<string>();
+        var fileIdsInt = new List<int>();
+        var fileIdsString = new List<string>();
+        var folderIdsInt = new List<int>();
+        var folderIdsString = new List<string>();
 
         await foreach (var tag in tags)
         {
@@ -733,22 +744,22 @@ public class EntryManager
             {
                 if (tag.EntryId is int)
                 {
-                    fileIdsInt.Append((int)tag.EntryId);
+                    fileIdsInt.Add((int)tag.EntryId);
                 }
                 else if (tag.EntryId is string)
                 {
-                    fileIdsString.Append((string)tag.EntryId);
+                    fileIdsString.Add((string)tag.EntryId);
                 }
             }
             else
             {
                 if (tag.EntryId is int)
                 {
-                    folderIdsInt.Append((int)tag.EntryId);
+                    folderIdsInt.Add((int)tag.EntryId);
                 }
                 else if (tag.EntryId is string)
                 {
-                    folderIdsString.Append((string)tag.EntryId);
+                    folderIdsString.Add((string)tag.EntryId);
                 }
             }
         }
@@ -820,6 +831,8 @@ public class EntryManager
             case FilterType.PresentationsOnly:
             case FilterType.ImagesOnly:
             case FilterType.DocumentsOnly:
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.ArchiveOnly:
             case FilterType.FilesOnly:
             case FilterType.MediaOnly:
@@ -1298,7 +1311,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1480,8 +1493,7 @@ public class EntryManager
                 && !await _fileSecurity.CanCustomFilterEditAsync(file, userId)
                 && !await _fileSecurity.CanReviewAsync(file, userId)
                 && !await _fileSecurity.CanFillFormsAsync(file, userId)
-                && !await _fileSecurity.CanCommentAsync(file, userId)
-                || _userManager.GetUsers(userId).IsVisitor(_userManager)))
+                && !await _fileSecurity.CanCommentAsync(file, userId)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1532,7 +1544,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1624,7 +1636,8 @@ public class EntryManager
             {
                 var tagTemplate = Tag.Template(_authContext.CurrentAccount.ID, newFile);
                 var tagDao = _daoFactory.GetTagDao<T>();
-                tagDao.RemoveTags(tagTemplate);
+
+                await tagDao.RemoveTags(tagTemplate);
 
                 newFile.IsTemplate = false;
             }
@@ -1654,7 +1667,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1717,7 +1730,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
 
-        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
@@ -1769,7 +1782,7 @@ public class EntryManager
         };
     }
 
-    public void MarkAsRecent<T>(File<T> file)
+    public async Task MarkAsRecent<T>(File<T> file)
     {
         if (file.Encrypted || file.ProviderEntry)
         {
@@ -1780,7 +1793,8 @@ public class EntryManager
         var userID = _authContext.CurrentAccount.ID;
 
         var tag = Tag.Recent(userID, file);
-        tagDao.SaveTags(tag);
+
+        await tagDao.SaveTags(tag);
     }
 
 

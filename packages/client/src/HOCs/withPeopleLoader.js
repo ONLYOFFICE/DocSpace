@@ -38,12 +38,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
     }, [isLoading]);
 
     useEffect(() => {
-      if (firstLoad || !isLoaded || inLoad || !profileLoaded) {
+      if (!isLoaded) {
         setIsBurgerLoading(true);
       } else {
         setIsBurgerLoading(false);
       }
-    }, [firstLoad, isLoaded, inLoad, profileLoaded]);
+    }, [isLoaded]);
 
     return firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded ? (
       Loader

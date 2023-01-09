@@ -26,16 +26,21 @@
 
 namespace ASC.Core.Common.EF;
 
-public class DbTariff
+public class DbTariff : BaseEntity
 {
     public int Id { get; set; }
     public int Tenant { get; set; }
-    public int Tariff { get; set; }
     public DateTime Stamp { get; set; }
-    public int Quantity { get; set; }
+    public string CustomerId { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { Id };
+    }
 }
+
 public static class DbTariffExtension
 {
     public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
@@ -68,16 +73,16 @@ public static class DbTariffExtension
                 .HasColumnName("create_on")
                 .HasColumnType("timestamp");
 
-            entity.Property(e => e.Quantity)
-                .HasColumnName("quantity")
-                .HasColumnType("int")
-                .HasDefaultValueSql("'1'");
-
             entity.Property(e => e.Stamp)
                 .HasColumnName("stamp")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.Tariff).HasColumnName("tariff");
+            entity.Property(e => e.CustomerId)
+                .IsRequired()
+                .HasColumnName("customer_id")
+                .HasColumnType("varchar(255)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
         });
@@ -104,9 +109,11 @@ public static class DbTariffExtension
 
             entity.Property(e => e.Stamp).HasColumnName("stamp");
 
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-            entity.Property(e => e.Tariff).HasColumnName("tariff");
+            entity.Property(e => e.CustomerId)
+                .IsRequired()
+                .HasColumnName("customer_id")
+                .HasMaxLength(255)
+                .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
         });

@@ -40,12 +40,15 @@ const MobileView = ({
   primaryProgressDataPercent,
   primaryProgressDataLoadingFile,
   primaryProgressDataAlert,
+  primaryProgressDataErrors,
   clearPrimaryProgressData,
   secondaryProgressDataStoreVisible,
   secondaryProgressDataStorePercent,
   secondaryProgressDataStoreCurrentFile,
   secondaryProgressDataStoreCurrentFilesCount,
   clearSecondaryProgressData,
+  onMainButtonClick,
+  isRoomsFolder,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
   const [percentProgress, setPercentProgress] = React.useState(0);
@@ -97,7 +100,7 @@ const MobileView = ({
         icon: "/static/images/cross.sidebar.react.svg",
         percent: primaryProgressDataPercent,
         status:
-          primaryProgressDataPercent === 100
+          primaryProgressDataPercent === 100 && !primaryProgressDataErrors
             ? t("FilesUploaded")
             : `${currentPrimaryNumEl}/${files.length}`,
         onClick: showUploadPanel,
@@ -141,6 +144,7 @@ const MobileView = ({
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
+    primaryProgressDataErrors,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,
     secondaryProgressDataStoreCurrentFile,
@@ -159,11 +163,16 @@ const MobileView = ({
       title={titleProp}
       withoutButton={isRooms}
       alert={primaryProgressDataAlert}
+      withMenu={!isRooms}
+      onClick={onMainButtonClick}
+      onAlertClick={showUploadPanel}
+      withAlertClick={isRoomsFolder}
     />
   );
 };
 
-export default inject(({ uploadDataStore }) => {
+export default inject(({ uploadDataStore, treeFoldersStore }) => {
+  const { isRoomsFolder } = treeFoldersStore;
   const {
     files,
     setUploadPanelVisible,
@@ -177,6 +186,7 @@ export default inject(({ uploadDataStore }) => {
     percent: primaryProgressDataPercent,
     loadingFile: primaryProgressDataLoadingFile,
     alert: primaryProgressDataAlert,
+    errors: primaryProgressDataErrors,
     clearPrimaryProgressData,
   } = primaryProgressDataStore;
 
@@ -196,11 +206,13 @@ export default inject(({ uploadDataStore }) => {
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
     primaryProgressDataAlert,
+    primaryProgressDataErrors,
     clearPrimaryProgressData,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,
     secondaryProgressDataStoreCurrentFile,
     secondaryProgressDataStoreCurrentFilesCount,
     clearSecondaryProgressData,
+    isRoomsFolder,
   };
 })(observer(MobileView));

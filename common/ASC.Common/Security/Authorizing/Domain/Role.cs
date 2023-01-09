@@ -30,9 +30,9 @@ namespace ASC.Common.Security.Authorizing;
 public sealed class Role : IRole
 {
     public const string Everyone = "Everyone";
-    public const string Visitors = "Visitors";
-    public const string Users = "Users";
-    public const string Administrators = "Administrators";
+    public const string Users = "Visitors";
+    public const string RoomAdministrators = "Users";
+    public const string DocSpaceAdministrators = "Administrators";
     public const string System = "System";
 
     public Guid ID { get; internal set; }

@@ -11,6 +11,8 @@ const StyledTagList = styled.div`
   width: 100%;
 
   .set_room_params-tag_input-tag {
+    background: ${(props) =>
+      props.theme.createEditRoomDialog.tagInput.tagBackground};
     padding: 6px 8px;
     border-radius: 3px;
     margin: 0;
@@ -21,12 +23,29 @@ const StyledTagList = styled.div`
   }
 `;
 
-const TagList = ({ defaultTagLabel, tagHandler }) => {
+const TagList = ({ defaultTagLabel, tagHandler, isDisabled }) => {
   const { tags } = tagHandler;
+
+  const onDeleteAction = (id) => {
+    if (isDisabled) return;
+    tagHandler.deleteTag(id);
+  };
 
   return (
     <StyledTagList className="set_room_params-tag_input-tag_list">
-      {tags.length ? (
+      {tags.map((tag) => (
+        <Tag
+          key={tag.id}
+          className="set_room_params-tag_input-tag"
+          tag="script"
+          label={tag.name}
+          isNewTag
+          onDelete={() => {
+            onDeleteAction(tag.id);
+          }}
+        />
+      ))}
+      {/* {tags.length ? (
         tags.map((tag) => (
           <Tag
             key={tag.id}
@@ -35,7 +54,7 @@ const TagList = ({ defaultTagLabel, tagHandler }) => {
             label={tag.name}
             isNewTag
             onDelete={() => {
-              tagHandler.deleteTag(tag.id);
+              onDeleteAction(tag.id);
             }}
           />
         ))
@@ -46,7 +65,7 @@ const TagList = ({ defaultTagLabel, tagHandler }) => {
           label={defaultTagLabel}
           isDefault
         />
-      )}
+      )} */}
     </StyledTagList>
   );
 };

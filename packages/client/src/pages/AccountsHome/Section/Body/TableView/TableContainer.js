@@ -11,10 +11,10 @@ import EmptyScreen from "../EmptyScreen";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import { Base } from "@docspace/components/themes";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
-const TABLE_VERSION = "2";
-const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
-const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `peopleColumnsSize_ver-${TableVersions.Accounts}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TableVersions.Accounts}`;
 
 const marginCss = css`
   margin-top: -1px;
@@ -107,6 +107,7 @@ const Table = ({
   hasMoreAccounts,
   filterTotal,
   withPaging,
+  canChangeUserType,
 }) => {
   const ref = useRef(null);
 
@@ -144,7 +145,7 @@ const Table = ({
         hasMoreFiles={hasMoreAccounts}
         itemCount={filterTotal}
         filesLength={peopleList.length}
-        itemHeight={47}
+        itemHeight={49}
         useReactWindow={!withPaging}
       >
         {peopleList.map((item) => (
@@ -156,6 +157,7 @@ const Table = ({
             isOwner={isOwner}
             changeUserType={changeType}
             userId={userId}
+            canChangeUserType={canChangeUserType}
           />
         ))}
       </TableBody>
@@ -165,7 +167,7 @@ const Table = ({
   );
 };
 
-export default inject(({ peopleStore, auth }) => {
+export default inject(({ peopleStore, auth, accessRightsStore }) => {
   const {
     usersStore,
     filterStore,
@@ -179,6 +181,8 @@ export default inject(({ peopleStore, auth }) => {
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
+
+  const { canChangeUserType } = accessRightsStore;
 
   return {
     peopleList,
@@ -195,5 +199,6 @@ export default inject(({ peopleStore, auth }) => {
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,
+    canChangeUserType,
   };
 })(observer(Table));

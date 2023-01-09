@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import InfiniteLoaderComponent from "@docspace/components/infinite-loader";
 import { StyledCard, StyledItem } from "../StyledTileView";
 import Loaders from "@docspace/common/components/Loaders";
 import uniqueid from "lodash/uniqueId";
 
-const Card = ({ children, ...rest }) => {
+const Card = ({ children, countTilesInRow, ...rest }) => {
   const horizontalGap = 16;
   const fileHeight = 220 + horizontalGap;
   const cardHeight = fileHeight;
@@ -37,7 +37,7 @@ const InfiniteGrid = (props) => {
     ...rest
   } = props;
 
-  const countTilesInRow = getCountTilesInRow();
+  const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
 
   let cards = [];
   const list = [];
@@ -51,6 +51,24 @@ const InfiniteGrid = (props) => {
     if (clear) cards = [];
   };
 
+  const setTilesCount = () => {
+    const newCount = getCountTilesInRow();
+    if (countTilesInRow !== newCount) setCountTilesInRow(newCount);
+  };
+
+  const onResize = () => {
+    setTilesCount();
+  };
+
+  useEffect(() => {
+    setTilesCount();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  });
+
   React.Children.map(children, (child) => {
     if (child) {
       if (cards.length && cards.length === countTilesInRow) {
@@ -59,7 +77,11 @@ const InfiniteGrid = (props) => {
       }
 
       const cardKey = uniqueid("card-item_");
-      cards.push(<Card key={cardKey}>{child}</Card>);
+      cards.push(
+        <Card countTilesInRow={countTilesInRow} key={cardKey}>
+          {child}
+        </Card>
+      );
     }
   });
 

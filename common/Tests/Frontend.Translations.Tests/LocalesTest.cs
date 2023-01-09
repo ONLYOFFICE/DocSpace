@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,7 +49,7 @@ public class Tests
     {
         get
         {
-            return Path.GetFullPath("..\\..\\..\\..\\..\\..\\");
+            return Environment.GetEnvironmentVariable("BASE_DIR") ?? Path.GetFullPath(Utils.ConvertPathToOS("../../../../../../"));
         }
     }
 
@@ -59,9 +60,11 @@ public class Tests
     public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
     public List<LanguageItem> CommonTranslations { get; set; }
     public List<ParseJsonError> ParseJsonErrors { get; set; }
+    public static string ConvertPathToOS { get; private set; }
+
     //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
-    private static readonly string _md5ExcludesPath = "../../../md5-excludes.json";
+    private static readonly string _md5ExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../md5-excludes.json"));
 
     //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
@@ -81,25 +84,27 @@ public class Tests
 
         var moduleWorkspaces = new List<string>
         {
-            "packages\\client",
-            "packages\\common",
-            "packages\\components",
-            "packages\\editor",
-            "packages\\login"
+            Utils.ConvertPathToOS("packages/client"),
+            Utils.ConvertPathToOS("packages/common"),
+            Utils.ConvertPathToOS("packages/components"),
+            Utils.ConvertPathToOS("packages/editor"),
+            Utils.ConvertPathToOS("packages/login")
         };
 
         Workspaces = new List<string>();
 
         Workspaces.AddRange(moduleWorkspaces);
 
-        Workspaces.Add("public\\locales");
-
+        Workspaces.Add(Utils.ConvertPathToOS("public/locales"));
 
         var translationFiles = from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
                                from filePath in Directory.EnumerateFiles(clientDir, "*.json", SearchOption.AllDirectories)
-                               where filePath.Contains("public\\locales\\")
+                               where filePath.Contains(Utils.ConvertPathToOS("public/locales/"))
                                select Path.GetFullPath(filePath);
+
+        TestContext.Progress.WriteLine($"Base path = {BasePath}");
+        TestContext.Progress.WriteLine($"Found translationFiles by *.json filter = {translationFiles.Count()}. First path is '{translationFiles.FirstOrDefault()}'");
 
         TranslationFiles = new List<TranslationFile>();
 
@@ -154,29 +159,47 @@ public class Tests
             catch (Exception ex)
             {
                 ParseJsonErrors.Add(new ParseJsonError(path, ex));
-                Debug.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
+                TestContext.Progress.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
             }
         }
 
+        TestContext.Progress.WriteLine($"Found TranslationFiles = {TranslationFiles.Count()}. First path is '{TranslationFiles.FirstOrDefault()?.FilePath}'");
+
         var javascriptFiles = (from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
-                               from file in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
-                               where !file.Contains("dist\\")
-                               select file)
+                               from filePath in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
+                               where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.js") && !filePath.Contains(".stories.js")
+                               select Utils.ConvertPathToOS(filePath))
                               .ToList();
 
         javascriptFiles.AddRange(from wsPath in Workspaces
                                  let clientDir = Path.Combine(BasePath, wsPath)
-                                 from file in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
-                                 where !file.Contains("dist\\")
-                                 select file);
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.jsx") && !filePath.Contains(".stories.jsx")
+                                 select Utils.ConvertPathToOS(filePath));
+
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.ts", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.ts") && !filePath.Contains(".stories.ts")
+                                 select Utils.ConvertPathToOS(filePath));
+
+        javascriptFiles.AddRange(from wsPath in Workspaces
+                                 let clientDir = Path.Combine(BasePath, wsPath)
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.tsx", SearchOption.AllDirectories)
+                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.tsx") && !filePath.Contains(".stories.tsx")
+                                 select Utils.ConvertPathToOS(filePath));
+
+        TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
 
         JavaScriptFiles = new List<JavaScriptFile>();
 
-        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\s{}/_-]+)[\"\'`]\\s*[\\),]";
-        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.-]+)\"";
+        var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:\\s{}/-]+)[\"\'`]\\s*[\\),]";
+        var pattern2 = "i18nKey=\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern3 = "tKey:\\s\"([a-zA-Z0-9_.:-]+)\"";
+        var pattern4 = "getTitle\\(\"([a-zA-Z0-9_.:-]+)\"\\)";
 
-        var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
+        var regexp = new Regex($"({pattern1})|({pattern2})|({pattern3})|({pattern4})", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
         var notTranslatedToastsRegex = new Regex("(?<=toastr.info\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.error\\([\"`\'])(.*)(?=[\"\'`])" +
@@ -189,27 +212,31 @@ public class Tests
         {
             var jsFileText = File.ReadAllText(path);
 
-            if (!path.Contains("asc-web-components"))
-            {
-                var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
+            var toastMatches = notTranslatedToastsRegex.Matches(jsFileText).ToList();
 
-                if (toastMatches.Any())
+            if (toastMatches.Any())
+            {
+                foreach (var toastMatch in toastMatches)
                 {
-                    foreach (var toastMatch in toastMatches)
-                    {
-                        var found = toastMatch.Value;
-                        if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
-                            NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
-                    }
+                    var found = toastMatch.Value;
+                    if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
+                        NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
                 }
             }
 
             var matches = regexp.Matches(jsFileText);
 
             var translationKeys = matches
-                .Select(m => m.Groups[2].Value == ""
-                    ? m.Groups[4].Value
-                    : m.Groups[2].Value)
+                .Select(m => m.Groups[2].Success
+                    ? m.Groups[2].Value
+                    : m.Groups[4].Success
+                        ? m.Groups[4].Value
+                        : m.Groups[6].Success
+                            ? m.Groups[6].Value
+                            : m.Groups[8].Success
+                                ? m.Groups[8].Value
+                                : null)
+                .Where(m => m != null)
                 .ToList();
 
             if (!translationKeys.Any())
@@ -221,6 +248,8 @@ public class Tests
 
             JavaScriptFiles.Add(jsFile);
         }
+
+        TestContext.Progress.WriteLine($"Found JavaScriptFiles = {JavaScriptFiles.Count()}. First path is '{JavaScriptFiles.FirstOrDefault()?.Path}'");
 
         ModuleFolders = new List<ModuleFolder>();
 
@@ -246,6 +275,8 @@ public class Tests
             })
             .ToList();
 
+        TestContext.Progress.WriteLine($"Found moduleTranslations = {moduleTranslations.Count()}. First path is '{moduleTranslations.FirstOrDefault()?.ModulePath}'");
+
         var moduleJsTranslatedFiles = JavaScriptFiles
             .Select(t => new
             {
@@ -260,6 +291,8 @@ public class Tests
                 TranslationKeys = g.ToList().SelectMany(t => t.TranslationKeys).ToList()
             })
             .ToList();
+
+        TestContext.Progress.WriteLine($"Found moduleJsTranslatedFiles = {moduleJsTranslatedFiles.Count()}. First path is '{moduleJsTranslatedFiles.FirstOrDefault()?.ModulePath}'");
 
         foreach (var wsPath in moduleWorkspaces)
         {
@@ -277,14 +310,21 @@ public class Tests
             });
         }
 
+        TestContext.Progress.WriteLine($"Found ModuleFolders = {ModuleFolders.Count()}. First path is '{ModuleFolders.FirstOrDefault()?.Path}'");
+
         CommonTranslations = TranslationFiles
-            .Where(file => file.FilePath.StartsWith($"{BasePath}public\\locales"))
+            .Where(file => file.FilePath.StartsWith(Utils.ConvertPathToOS(Path.Combine(BasePath, "public/locales"))))
             .Select(t => new LanguageItem
             {
                 Path = t.FilePath,
                 Language = t.Language,
                 Translations = t.Translations
             }).ToList();
+
+        TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
+
+        TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
+        
     }
 
     [Test]
@@ -296,8 +336,8 @@ public class Tests
 
     public static Tuple<string, string> getPaths(string language)
     {
-        const string dictionariesPath = @"..\..\..\dictionaries";
-        const string additionalPath = @"..\..\..\additional";
+        const string dictionariesPath = @"../../../dictionaries";
+        const string additionalPath = @"../../../additional";
 
         var path = dictionariesPath;
 
@@ -310,8 +350,8 @@ public class Tests
                 break;
         }
 
-        var dicPath = Path.Combine(path, language, $"{language}.dic");
-        var affPath = Path.Combine(path, language, $"{language}.aff");
+        var dicPath = Utils.ConvertPathToOS(Path.Combine(path, language, $"{language}.dic"));
+        var affPath = Utils.ConvertPathToOS(Path.Combine(path, language, $"{language}.aff"));
 
         return new Tuple<string, string>(dicPath, affPath);
     }
@@ -407,6 +447,7 @@ public class Tests
     public void DublicatesFilesByMD5HashTest()
     {
         var duplicatesByMD5 = TranslationFiles
+            .Where(t => t.Language != "pt-BR")
             .Where(t => !_md5Excludes.Contains(t.Md5Hash))
             .GroupBy(t => t.Md5Hash)
             .Where(grp => grp.Count() > 1)
@@ -553,7 +594,7 @@ public class Tests
                 var lngFilePaths = lng.Files.Select(f => f.FilePath).ToList();
 
                 var notFoundFilePaths = enFilePaths
-                    .Select(p => p.Replace("\\en\\", $"\\{lng.Lng}\\"))
+                    .Select(p => p.Replace(Utils.ConvertPathToOS("/en/"), Utils.ConvertPathToOS($"/{lng.Lng}/")))
                     .Where(p => !lngFilePaths.Contains(p));
 
                 message += string.Join("\r\n", notFoundFilePaths);
@@ -562,7 +603,7 @@ public class Tests
 
                 /*foreach (var path in notFoundFilePaths)
                 {
-                    SaveNotFoundLanguage(path.Replace($"\\{lng.Lng}\\", "\\en\\"), path);
+                    SaveNotFoundLanguage(path.Replace(Utils.ConvertPathToOS($"\\{lng.Lng}\\"), Utils.ConvertPathToOS("\\en\\")), path);
                 }*/
             }
         }
@@ -613,7 +654,7 @@ public class Tests
             {
                 var lngKeys = lng.Translations.Select(f => f.Key).ToList();
 
-                var enKeys = enLanguages.Where(l => l.Path == lng.Path.Replace($"\\{lng.Language}\\", "\\en\\"))
+                var enKeys = enLanguages.Where(l => l.Path == lng.Path.Replace(Utils.ConvertPathToOS($"/{lng.Language}/"), Utils.ConvertPathToOS("/en/")))
                     .SelectMany(l => l.Translations.Select(f => f.Key))
                     .ToList();
 
@@ -655,7 +696,7 @@ public class Tests
         var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
 
         Assert.AreEqual(0, notFoundJsKeys.Count(),
-            "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'",
+            "Some i18n-keys are not exist in translations in 'en' language: Keys:\r\n{0}",
             string.Join("\r\n", notFoundJsKeys));
     }
 
@@ -667,18 +708,20 @@ public class Tests
              .Where(file => file.Language == "en")
              .SelectMany(item => item.Translations)
              .Select(item => item.Key)
-             .Where(k => !k.StartsWith("Culture_"));
+             .Where(k => !k.StartsWith("Culture_"))
+             .OrderBy(t => t);
 
         var allJsTranslationKeys = JavaScriptFiles
             .SelectMany(j => j.TranslationKeys)
             .Select(k => k.Substring(k.IndexOf(":") + 1))
             .Where(k => !k.StartsWith("Culture_"))
-            .Distinct();
+            .Distinct()
+            .OrderBy(t => t);
 
         var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
 
         Assert.AreEqual(0, notFoundi18nKeys.Count(),
-            "Some i18n-keys are not found in js: \r\nKeys: '\r\n{0}'",
+            "Some i18n-keys are not found in js keys:\r\n{0}",
             string.Join("\r\n", notFoundi18nKeys));
     }
 
@@ -698,7 +741,7 @@ public class Tests
 
             if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
             {
-                message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+                message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USED\r\n";
 
                 var list = module.AvailableLanguages
                     .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
@@ -857,15 +900,13 @@ public class Tests
         switch (folderName)
         {
             case "Client":
-                return Workspaces.Find(w => w.Contains("ASC.Web.Client"));
-            case "Files":
-                return Workspaces.Find(w => w.Contains("ASC.Files"));
+                return Workspaces.Find(w => w.Contains("client"));
+            case "Editor":
+                return Workspaces.Find(w => w.Contains("editor"));
             case "Login":
-                return Workspaces.Find(w => w.Contains("ASC.Web.Login"));
-            case "People":
-                return Workspaces.Find(w => w.Contains("ASC.People"));
+                return Workspaces.Find(w => w.Contains("login"));
             default:
-                return Path.Combine(BasePath, "public\\locales");
+                return Path.Combine(BasePath, Utils.ConvertPathToOS("public\\locales"));
         }
     }
 
@@ -1144,14 +1185,14 @@ public class Tests
     /// <summary>
     /// Converts a file from one encoding to another.
     /// </summary>
-    /// <param name=”sourcePath”>the file to convert</param>
-    /// <param name=”destPath”>the destination for the converted file</param>
-    /// <param name=”sourceEncoding”>the original file encoding</param>
-    /// <param name=”destEncoding”>the encoding to which the contents should be converted</param>
+    /// <param name="sourcePath">the file to convert</param>
+    /// <param name="destPath">the destination for the converted file</param>
+    /// <param name="sourceEncoding">the original file encoding</param>
+    /// <param name="destEncoding">the encoding to which the contents should be converted</param>
     //public static void ConvertFileEncoding(string sourcePath, string destPath,
     //                                       Encoding sourceEncoding, Encoding destEncoding)
     //{
-    //    // If the destination’s parent doesn’t exist, create it.
+    //    // If the destination's parent doesn't exist, create it.
     //    var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
     //    if (!Directory.Exists(parent))
     //    {

@@ -49,6 +49,10 @@ export const LoginContainer = styled.div`
     min-height: 18px;
   }
 
+  .login-or-access-text{
+    text-transform: lowercase;
+  }
+
   .recover-link {
     min-height: 19px;
   }
@@ -57,6 +61,7 @@ export const LoginContainer = styled.div`
     width: 100%;
     padding-bottom: 32px;
     min-height: 32px;
+    color: ${(props) => props.theme.login.headerColor};
 
     @media ${hugeMobile} {
       padding-top: 32px;
@@ -68,15 +73,16 @@ export const LoginContainer = styled.div`
   }
 
   .or-label {
-    margin: 0 8px;
+    color: ${(props) => props.theme.login.orTextColor};
+    margin: 0 32px;
   }
 
   .line {
     display: flex;
     width: 320px;
     align-items: center;
-    color: #eceef1;
-    padding-top: 35px;
+    color: ${(props) => props.theme.login.orLineColor};
+    padding: 32px 0;
 
     @media ${tablet} {
       width: 480px;
@@ -91,7 +97,7 @@ export const LoginContainer = styled.div`
   .line:after {
     content: "";
     flex-grow: 1;
-    background: #eceef1;
+    background: ${(props) => props.theme.login.orLineColor};
     height: 1px;
     font-size: 0px;
     line-height: 0px;
@@ -118,6 +124,7 @@ export const LoginContainer = styled.div`
     font-weight: 600;
     font-size: 11px;
     line-height: 12px;
+    color: #333;
     svg {
       margin: 8px;
     }
@@ -133,16 +140,23 @@ export const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 213px 0 213px;
     width: 320px;
 
     @media ${tablet} {
-      margin: 32px 0 0 0;
       width: 100%;
     }
     @media ${hugeMobile} {
       margin: 32px 0 0 0;
       width: 100%;
+    }
+
+    .field-body{
+      height: 48px;
+      input, .password-input > div {
+        background: ${(props) => props.theme.input.backgroundColor};
+        color: ${(props) => props.theme.input.color};
+        border-color: ${(props) => props.theme.input.borderColor};
+      }
     }
 
     .login-forgot-wrapper {
@@ -154,6 +168,30 @@ export const LoginContainer = styled.div`
         .login-checkbox {
           display: flex;
           align-items: flex-start;
+
+          svg{
+            margin-right: 8px !important;
+            rect{
+              fill: ${(props) => props.theme.checkbox.fillColor};
+              stroke: ${(props) => props.theme.checkbox.borderColor};
+            }
+
+            path{
+              fill: ${(props) => props.theme.checkbox.arrowColor};
+            }
+          }
+
+          .help-button{
+            svg {
+              path {
+                fill: ${(props) => props.theme.login.helpButton};
+              }
+            }
+          }
+
+          .checkbox-text{
+            color: ${(props) => props.theme.checkbox.arrowColor};
+          }
 
           label {
             justify-content: center;
@@ -195,7 +233,10 @@ export const LoginContainer = styled.div`
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      margin-top: 24px;
+      
+      & > :first-child {
+        margin-top: 24px;
+      }
     }
   }
 
@@ -207,15 +248,35 @@ export const LoginContainer = styled.div`
     height: 46px;
     padding-bottom: 64px;
 
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
+    
     @media ${hugeMobile} {
       display: none;
     }
+  }
+
+  .workspace-title{
+    color: ${(props) => props.theme.login.titleColor};
+    margin-bottom: 16px;
+
+    @media ${hugeMobile} {
+      margin-top: 32px;
+    }
+  }
+
+  .code-description{
+    color: ${(props) => props.theme.login.textColor};
   }
 `;
 
 interface ILoginFormWrapperProps {
   enabledJoin?: boolean;
   isDesktop?: boolean;
+  bgPattern?: string;
 }
 
 export const LoginFormWrapper = styled.div`
@@ -228,4 +289,19 @@ export const LoginFormWrapper = styled.div`
       : css`1fr`};
   width: 100%;
   height: 100vh;
+
+  background-image: ${props => props.bgPattern};
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+  @media (max-width: 1024px) {
+    background-size: cover;
+  }
+
+  @media (max-width: 428px) {
+    background-image: none;
+    height: calc(100vh - 48px);
+  }
+
 `;

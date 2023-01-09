@@ -29,6 +29,7 @@ namespace ASC.Files.Core.VirtualRooms;
 public class Logo
 {
     public string Original { get; set; }
-    public string Big { get; set; }
+    public string Large { get; set; }
+    public string Medium { get; set; }
     public string Small { get; set; }
 }

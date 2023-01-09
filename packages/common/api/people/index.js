@@ -43,6 +43,17 @@ export function getUser(userName = null) {
   });
 }
 
+export function getUserByEmail(userEmail) {
+  return request({
+    method: "get",
+    url: `/people/email?email=${userEmail}`,
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
+  });
+}
 export function getUserFromConfirm(userId, confirmKey = null) {
   const options = {
     method: "get",
@@ -184,6 +195,18 @@ export function getUserById(userId) {
   });
 }
 
+export const inviteUsers = async (data) => {
+  const options = {
+    method: "post",
+    url: "/people/invite",
+    data,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
 export function resendUserInvites(userIds) {
   return request({
     method: "put",
@@ -311,5 +334,12 @@ export function changeTheme(key) {
     method: "put",
     url: `/people/theme.json`,
     data,
+  });
+}
+
+export function getUsersByQuery(query) {
+  return request({
+    method: "get",
+    url: `/people/search?query=${query}`,
   });
 }

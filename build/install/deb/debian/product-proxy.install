@@ -3,4 +3,3 @@
 ../../../config/nginx/includes/onlyoffice*.conf       etc/nginx/includes
 ../../../build/deploy/public/*                        var/www/{{product}}/public
 ../../../build/deploy/client/*                        var/www/{{product}}/client
-../../../build/deploy/login/*                         var/www/{{product}}/login

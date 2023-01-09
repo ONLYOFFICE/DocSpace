@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<babeledit_project be_version="3.0.0" version="1.2">
+<babeledit_project be_version="3.0.1" version="1.2">
     <!--
 
     BabelEdit project file
@@ -12,7 +12,7 @@
     <preset_collections/>
     <framework>i18next</framework>
     <filename>editor.babel</filename>
-    <source_root_dir>../web/ASC.Web.Editor</source_root_dir>
+    <source_root_dir>../packages/editor</source_root_dir>
     <folder_node>
         <name/>
         <children>
@@ -27,11 +27,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -63,6 +63,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -91,6 +95,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -107,7 +115,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -120,11 +144,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -156,6 +180,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -184,6 +212,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -200,7 +232,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -213,11 +261,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -249,6 +297,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -277,6 +329,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -293,7 +349,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -306,11 +378,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -342,6 +414,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -370,6 +446,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -386,7 +466,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -399,11 +495,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -435,6 +531,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -463,6 +563,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -479,7 +583,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -492,11 +612,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -528,6 +648,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -556,6 +680,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -572,7 +700,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -585,11 +729,11 @@
                         <default_text/>
                         <translations>
                             <translation>
-                                <language>bg-BG</language>
+                                <language>az-Latn-AZ</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
-                                <language>br-FR</language>
+                                <language>bg-BG</language>
                                 <approved>false</approved>
                             </translation>
                             <translation>
@@ -621,6 +765,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>hy-AM</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>it-IT</language>
                                 <approved>false</approved>
                             </translation>
@@ -649,6 +797,10 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>pt-BR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>pt-PT</language>
                                 <approved>false</approved>
                             </translation>
@@ -665,7 +817,23 @@
                                 <approved>false</approved>
                             </translation>
                             <translation>
+                                <language>sl-SL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>tr-TR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>uk-UA</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
                                 <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CN</language>
                                 <approved>false</approved>
                             </translation>
                         </translations>
@@ -678,174 +846,222 @@
     <isTemplateProject>false</isTemplateProject>
     <languages>
         <language>
-            <code>bg-BG</code>
+            <code>az-Latn-AZ</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/bg</source_file>
+            <source_file>../packages/editor/public/locales/az</source_file>
         </language>
         <language>
-            <code>br-FR</code>
+            <code>bg-BG</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/pt-BR</source_file>
+            <source_file>../packages/editor/public/locales/bg</source_file>
         </language>
         <language>
             <code>cs-CZ</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/cs</source_file>
+            <source_file>../packages/editor/public/locales/cs</source_file>
         </language>
         <language>
             <code>de-DE</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/de</source_file>
+            <source_file>../packages/editor/public/locales/de</source_file>
         </language>
         <language>
             <code>el-GR</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/el</source_file>
+            <source_file>../packages/editor/public/locales/el-GR</source_file>
         </language>
         <language>
             <code>en-US</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/en</source_file>
+            <source_file>../packages/editor/public/locales/en</source_file>
         </language>
         <language>
             <code>es-ES</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/es</source_file>
+            <source_file>../packages/editor/public/locales/es</source_file>
         </language>
         <language>
             <code>fi-FI</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/fi</source_file>
+            <source_file>../packages/editor/public/locales/fi</source_file>
         </language>
         <language>
             <code>fr-FR</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/fr</source_file>
+            <source_file>../packages/editor/public/locales/fr</source_file>
+        </language>
+        <language>
+            <code>hy-AM</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/hy-AM</source_file>
         </language>
         <language>
             <code>it-IT</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/it</source_file>
+            <source_file>../packages/editor/public/locales/it</source_file>
         </language>
         <language>
             <code>ja-JP</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/ja</source_file>
+            <source_file>../packages/editor/public/locales/ja-JP</source_file>
         </language>
         <language>
             <code>ko-KR</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/ko</source_file>
+            <source_file>../packages/editor/public/locales/ko-KR</source_file>
         </language>
         <language>
             <code>lo-LA</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/lo</source_file>
+            <source_file>../packages/editor/public/locales/lo-LA</source_file>
         </language>
         <language>
             <code>lv-LV</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/lv</source_file>
+            <source_file>../packages/editor/public/locales/lv</source_file>
         </language>
         <language>
             <code>nl-NL</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/nl</source_file>
+            <source_file>../packages/editor/public/locales/nl</source_file>
         </language>
         <language>
             <code>pl-PL</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/pl</source_file>
+            <source_file>../packages/editor/public/locales/pl</source_file>
+        </language>
+        <language>
+            <code>pt-BR</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/pt-BR</source_file>
         </language>
         <language>
             <code>pt-PT</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/pt</source_file>
+            <source_file>../packages/editor/public/locales/pt</source_file>
         </language>
         <language>
             <code>ro-RO</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/ro</source_file>
+            <source_file>../packages/editor/public/locales/ro</source_file>
         </language>
         <language>
             <code>ru-RU</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/ru</source_file>
+            <source_file>../packages/editor/public/locales/ru</source_file>
         </language>
         <language>
             <code>sk-SK</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/sk</source_file>
+            <source_file>../packages/editor/public/locales/sk</source_file>
+        </language>
+        <language>
+            <code>sl-SL</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/sl</source_file>
+        </language>
+        <language>
+            <code>tr-TR</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/tr</source_file>
+        </language>
+        <language>
+            <code>uk-UA</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/uk-UA</source_file>
         </language>
         <language>
             <code>vi-VN</code>
             <source_id/>
-            <source_file>../web/ASC.Web.Editor/public/locales/vi</source_file>
+            <source_file>../packages/editor/public/locales/vi</source_file>
+        </language>
+        <language>
+            <code>zh-CN</code>
+            <source_id/>
+            <source_file>../packages/editor/public/locales/zh-CN</source_file>
         </language>
     </languages>
     <translation_files>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/bg</file>
+            <file>../packages/editor/public/locales/az</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/cs</file>
+            <file>../packages/editor/public/locales/bg</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/de</file>
+            <file>../packages/editor/public/locales/cs</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/el</file>
+            <file>../packages/editor/public/locales/de</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/en</file>
+            <file>../packages/editor/public/locales/el-GR</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/es</file>
+            <file>../packages/editor/public/locales/en</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/fi</file>
+            <file>../packages/editor/public/locales/es</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/fr</file>
+            <file>../packages/editor/public/locales/fi</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/it</file>
+            <file>../packages/editor/public/locales/fr</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/ja</file>
+            <file>../packages/editor/public/locales/hy-AM</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/ko</file>
+            <file>../packages/editor/public/locales/it</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/lo</file>
+            <file>../packages/editor/public/locales/ja-JP</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/lv</file>
+            <file>../packages/editor/public/locales/ko-KR</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/nl</file>
+            <file>../packages/editor/public/locales/lo-LA</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/pl</file>
+            <file>../packages/editor/public/locales/lv</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/pt-BR</file>
+            <file>../packages/editor/public/locales/nl</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/pt</file>
+            <file>../packages/editor/public/locales/pl</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/ro</file>
+            <file>../packages/editor/public/locales/pt-BR</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/ru</file>
+            <file>../packages/editor/public/locales/pt</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/sk</file>
+            <file>../packages/editor/public/locales/ro</file>
         </translation_file>
         <translation_file>
-            <file>../web/ASC.Web.Editor/public/locales/vi</file>
+            <file>../packages/editor/public/locales/ru</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/sk</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/sl</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/tr</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/uk-UA</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/vi</file>
+        </translation_file>
+        <translation_file>
+            <file>../packages/editor/public/locales/zh-CN</file>
         </translation_file>
     </translation_files>
     <editor_configuration>

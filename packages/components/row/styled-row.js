@@ -77,6 +77,8 @@ const StyledCheckbox = styled.div`
   justify-content: center;
   align-items: center;
 
+  min-width: 41px;
+  width: 41px;
   ${(props) =>
     props.mode == "modern" &&
     !isMobile &&

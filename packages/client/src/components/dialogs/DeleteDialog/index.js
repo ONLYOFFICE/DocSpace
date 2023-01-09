@@ -5,7 +5,7 @@ import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 
 const DeleteDialogComponent = (props) => {
@@ -23,7 +23,9 @@ const DeleteDialogComponent = (props) => {
     unsubscribe,
     isPrivacyFolder,
     isRecycleBinFolder,
-    isRootFolder,
+    isRoomDelete,
+    setIsRoomDelete,
+    deleteRoomsAction,
   } = props;
 
   const selection = [];
@@ -31,7 +33,8 @@ const DeleteDialogComponent = (props) => {
 
   while (props.selection.length !== i) {
     const item = props.selection[i];
-    if (!((isRootFolder && item?.providerKey) || item?.isEditing)) {
+
+    if (!item?.isEditing) {
       if (item?.access === 0 || item?.access === 1 || unsubscribe) {
         selection.push(item);
       }
@@ -59,8 +62,8 @@ const DeleteDialogComponent = (props) => {
       deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
       deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-      FileRemoved: t("Home:FileRemoved"),
-      FolderRemoved: t("Home:FolderRemoved"),
+      FileRemoved: t("Files:FileRemoved"),
+      FolderRemoved: t("Files:FolderRemoved"),
     };
 
     if (!selection.length) return;
@@ -83,9 +86,26 @@ const DeleteDialogComponent = (props) => {
     unsubscribeAction(filesId, foldersId).catch((err) => toastr.error(err));
   };
 
+  const onDeleteRoom = async () => {
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
+    };
+
+    const itemId = selection.map((s) => s.id);
+
+    await deleteRoomsAction(itemId, translations);
+
+    onClose();
+  };
+
   const onClose = () => {
     setBufferSelection(null);
     setRemoveMediaItem(null);
+    setIsRoomDelete(false);
     setDeleteDialogVisible(false);
   };
 
@@ -95,10 +115,17 @@ const DeleteDialogComponent = (props) => {
   };
 
   const moveToTrashNoteText = () => {
+    const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
+
     if (selection.length > 1) {
+      if (isRoomDelete)
+        return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
       return t("MoveToTrashItems");
     } else {
-      return !selection[0]?.isFolder
+      if (isRoomDelete)
+        return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
+
+      return !isFolder
         ? t("MoveToTrashFile")
         : personal
         ? ""
@@ -106,19 +133,21 @@ const DeleteDialogComponent = (props) => {
     }
   };
 
-  const title =
-    isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-      ? t("Common:Confirmation")
-      : moveToTrashTitle();
+  const title = isRoomDelete
+    ? t("EmptyTrashDialog:DeleteForeverTitle")
+    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
+    ? t("Common:Confirmation")
+    : moveToTrashTitle();
 
   const noteText = unsubscribe ? t("UnsubscribeNote") : moveToTrashNoteText();
 
-  const accessButtonLabel =
-    isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-      ? t("Common:OKButton")
-      : unsubscribe
-      ? t("UnsubscribeButton")
-      : t("MoveToTrashButton");
+  const accessButtonLabel = isRoomDelete
+    ? t("EmptyTrashDialog:DeleteForeverButton")
+    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
+    ? t("Common:OKButton")
+    : unsubscribe
+    ? t("UnsubscribeButton")
+    : t("MoveToTrashButton");
 
   return (
     <StyledDeleteDialog isLoading={!tReady} visible={visible} onClose={onClose}>
@@ -130,16 +159,20 @@ const DeleteDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="delete-file-modal_submit"
           key="OkButton"
           label={accessButtonLabel}
           size="normal"
           primary
           scale
-          onClick={unsubscribe ? onUnsubscribe : onDelete}
+          onClick={
+            isRoomDelete ? onDeleteRoom : unsubscribe ? onUnsubscribe : onDelete
+          }
           isLoading={isLoading}
           isDisabled={!selection.length}
         />
         <Button
+          id="delete-file-modal_cancel"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"
@@ -156,24 +189,23 @@ const DeleteDialog = withTranslation([
   "DeleteDialog",
   "Common",
   "Translations",
+  "Files",
+  "EmptyTrashDialog",
 ])(DeleteDialogComponent);
 
 export default inject(
-  ({
-    filesStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-    treeFoldersStore,
-    auth,
-  }) => {
+  ({ filesStore, dialogsStore, filesActionsStore, treeFoldersStore, auth }) => {
     const {
       selection,
       isLoading,
       bufferSelection,
       setBufferSelection,
     } = filesStore;
-    const { deleteAction, unsubscribeAction } = filesActionsStore;
+    const {
+      deleteAction,
+      unsubscribeAction,
+      deleteRoomsAction,
+    } = filesActionsStore;
     const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
 
     const {
@@ -182,6 +214,8 @@ export default inject(
       removeMediaItem,
       setRemoveMediaItem,
       unsubscribe,
+      isRoomDelete,
+      setIsRoomDelete,
     } = dialogsStore;
 
     const { personal } = auth.settingsStore;
@@ -193,7 +227,6 @@ export default inject(
         ? selection
         : [bufferSelection],
       isLoading,
-      isRootFolder: selectedFolderStore.isRootFolder,
       visible,
       isPrivacyFolder,
       isRecycleBinFolder,
@@ -207,6 +240,10 @@ export default inject(
 
       personal,
       setBufferSelection,
+
+      isRoomDelete,
+      setIsRoomDelete,
+      deleteRoomsAction,
     };
   }
 )(withRouter(observer(DeleteDialog)));

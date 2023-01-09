@@ -59,7 +59,7 @@ public class FileConverterQueue<T>
 
             var queueResult = new FileConverterOperationResult
             {
-                Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+                Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
                 OperationType = FileOperationType.Convert,
                 Error = string.Empty,
                 Progress = 0,
@@ -185,7 +185,10 @@ public class FileConverterQueue<T>
 
     private bool Contains(FileConverterOperationResult val)
     {
-        if (val == null) return false;
+        if (val == null)
+        {
+            return false;
+        }
 
         var queueTasks = LoadFromCache();
 
@@ -470,7 +473,7 @@ public class FileConverter
 
         var operationResult = new FileConverterOperationResult
         {
-            Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+            Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
             OperationType = FileOperationType.Convert,
             Error = string.Empty,
             Progress = 0,
@@ -645,12 +648,12 @@ public class FileConverter
         if (tags.Count > 0)
         {
             tags.ForEach(r => r.EntryId = newFile.Id);
-            tagDao.SaveTags(tags);
+            await tagDao.SaveTags(tags);
         }
 
         if (markAsTemplate)
         {
-            tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
+            await tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
         }
 
         return newFile;

@@ -4,5 +4,6 @@
   "ConnectMakeShared": "Share and put into 'Common' folder",
   "ConnectionUrl": "Connection url",
   "Login": "Login",
-  "Reconnect": "Reconnect"
+  "Reconnect": "Reconnect",
+  "SuccessfulConnectionOfAThirdParty": "Connection of a third-party resource was successful."
 }

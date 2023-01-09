@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "client/Layout/context";
-import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@docspace/components/scrollbar";
@@ -35,29 +35,20 @@ const settingsStudioStyles = css`
         `
       : css`
           @media ${tablet} {
-            padding: ${({ viewAs, withPaging }) =>
-              viewAs === "tile"
-                ? "19px 0 16px 24px"
-                : withPaging
-                ? "19px 0 16px 24px"
-                : "19px 0 16px 8px"};
+            padding: 19px 0 16px 24px;
           }
         `}
 `;
 
 const paddingStyles = css`
-  padding: ${({ viewAs, withPaging }) =>
-    viewAs === "row"
-      ? withPaging
-        ? "19px 3px 16px 16px"
-        : "19px 3px 16px 0px"
-      : "19px 3px 16px 20px"};
+  padding: 19px 3px 16px 20px;
+  outline: none;
 
   ${settingsStudioStyles};
 
   ${isMobile &&
   css`
-    padding: 0 0 16px 24px !important;
+    padding: 0 0 16px 23px !important;
   `};
 
   ${isMobileOnly &&
@@ -99,17 +90,31 @@ const commonStyles = css`
         padding-left: 20px;
       `}
 
+    ${(props) =>
+      (props.viewAs == "settings" || props.viewAs == "profile") &&
+      css`
+        padding-top: 0;
+
+        @media ${tablet} {
+          padding-top: 0;
+        }
+      `}
+
     .section-wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100%;
     }
 
+    .files-tile-container {
+      margin-top: ${isMobile ? "-12px" : "0px"};
+    }
+
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
 
-      ${isDesktop &&
+      ${!isMobile &&
       css`
         margin-top: -17px;
       `}
@@ -127,66 +132,65 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   max-width: 100vw !important;
-  ${commonStyles}
+
+  ${commonStyles};
+
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
-      css`
+      @media ${tablet} {
         margin-left: -24px;
-      `
-    }
+      }
+    `}
+
+  ${isMobile &&
+  css`
+    margin-left: -24px;
   `}
+
     .additional-scroll-height {
-    ${(props) =>
-      !props.withScroll &&
-      !props.pinned &&
-      `  height: 64px;
-  
-`}
+    ${({ withScroll }) =>
+      !withScroll &&
+      css`
+        height: 64px;
+      `}
   }
 `;
 
 const StyledDropZoneBody = styled(DragAndDrop)`
   max-width: 100vw !important;
 
-  ${commonStyles} .drag-and-drop {
+  ${commonStyles};
+
+  .drag-and-drop {
     user-select: none;
     height: 100%;
   }
 
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
+      @media ${tablet} {
+        margin-left: -24px;
+      }
+
+      ${isMobile &&
       css`
         margin-left: -24px;
-      `
-    }
-  `}
+      `}
+    `}
 `;
 
 const StyledSpacer = styled.div`
-  display: none;
+  display: ${isMobile ? "block" : "none"};
   min-height: 64px;
 
   @media ${tablet} {
-    display: ${(props) =>
-      props.isHomepage || props.pinned ? "none" : "block"};
+    display: block;
   }
 `;
 
@@ -217,15 +221,12 @@ class SectionBody extends React.Component {
       autoFocus,
       children,
       onDrop,
-      pinned,
       uploadFiles,
       viewAs,
       withScroll,
       isLoaded,
       isDesktop,
-      isHomepage,
       settingsStudio,
-      withPaging,
     } = this.props;
 
     const focusProps = autoFocus
@@ -241,11 +242,9 @@ class SectionBody extends React.Component {
         onDrop={onDrop}
         withScroll={withScroll}
         viewAs={viewAs}
-        pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        withPaging={withPaging}
         className="section-body"
       >
         {withScroll ? (
@@ -258,7 +257,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} />
+                  <StyledSpacer />
                 </div>
               </div>
             </Scrollbar>
@@ -266,14 +265,14 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer pinned={pinned} />
+                <StyledSpacer />
               </div>
             </div>
           )
         ) : (
           <div className="section-wrapper">
             {children}
-            <StyledSpacer pinned={pinned} />
+            <StyledSpacer />
           </div>
         )}
       </StyledDropZoneBody>
@@ -281,11 +280,9 @@ class SectionBody extends React.Component {
       <StyledSectionBody
         viewAs={viewAs}
         withScroll={withScroll}
-        pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        withPaging={withPaging}
       >
         {withScroll ? (
           !isMobileOnly ? (
@@ -293,7 +290,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} className="settings-mobile" />
+                  <StyledSpacer className="settings-mobile" />
                 </div>
               </div>
             </Scrollbar>
@@ -301,11 +298,7 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer
-                  pinned={pinned}
-                  isHomepage={isHomepage}
-                  className="settings-mobile"
-                />
+                <StyledSpacer className="settings-mobile" />
               </div>
             </div>
           )
@@ -322,7 +315,6 @@ SectionBody.displayName = "SectionBody";
 SectionBody.propTypes = {
   withScroll: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  pinned: PropTypes.bool,
   onDrop: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
@@ -332,16 +324,13 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
-  isHomepage: PropTypes.bool,
   settingsStudio: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
   autoFocus: false,
-  pinned: false,
   uploadFiles: false,
   withScroll: true,
-  isHomepage: false,
   settingsStudio: false,
 };
 

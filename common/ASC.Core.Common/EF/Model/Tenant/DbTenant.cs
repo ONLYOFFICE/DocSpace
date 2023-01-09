@@ -69,7 +69,7 @@ public class DbTenant : IMapFrom<Tenant>
             .ForMember(dest => dest.TrustedDomainsRaw, opt => opt.MapFrom(dest => dest.GetTrustedDomains()))
             .ForMember(dest => dest.Alias, opt => opt.MapFrom(dest => dest.Alias.ToLowerInvariant()))
             .ForMember(dest => dest.LastModified, opt => opt.MapFrom(dest => DateTime.UtcNow))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? dest.Alias))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? ""))
             .ForMember(dest => dest.MappedDomain, opt => opt.MapFrom(dest =>
                 !string.IsNullOrEmpty(dest.MappedDomain) ? dest.MappedDomain.ToLowerInvariant() : null));
     }

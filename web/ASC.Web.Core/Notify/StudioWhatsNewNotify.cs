@@ -32,7 +32,7 @@ public class StudioWhatsNewNotify
     private readonly ILogger _log;
     private readonly WebItemManager _webItemManager;
     private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
     private readonly TenantUtil _tenantUtil;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly UserManager _userManager;
@@ -49,7 +49,7 @@ public class StudioWhatsNewNotify
 
     public StudioWhatsNewNotify(
         TenantManager tenantManager,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         TenantUtil tenantUtil,
         StudioNotifyHelper studioNotifyHelper,
         UserManager userManager,
@@ -68,7 +68,7 @@ public class StudioWhatsNewNotify
     {
         _webItemManager = webItemManager;
         _tenantManager = tenantManager;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _tenantUtil = tenantUtil;
         _studioNotifyHelper = studioNotifyHelper;
         _userManager = userManager;
@@ -117,7 +117,7 @@ public class StudioWhatsNewNotify
             if (tenant == null ||
                 tenant.Status != TenantStatus.Active ||
                 !TimeToSendWhatsNew(_tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                TariffState.NotPaid <= _paymentManager.GetTariff(tenantid).State)
+                TariffState.NotPaid <= _tariffService.GetTariff(tenantid).State)
             {
                 return;
             }

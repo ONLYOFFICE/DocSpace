@@ -22,7 +22,7 @@ const SelectorAddButton = (props) => {
       {...props}
     >
       <IconButton
-        size={14}
+        size={12}
         iconName={iconName}
         isFill={true}
         isDisabled={isDisabled}

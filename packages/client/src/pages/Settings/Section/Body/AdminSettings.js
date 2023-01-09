@@ -1,10 +1,8 @@
 import React from "react";
-
 import { inject, observer } from "mobx-react";
-import { runInAction } from "mobx";
-
 import ToggleButton from "@docspace/components/toggle-button";
-
+import Heading from "@docspace/components/heading";
+import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
 const AdminSettings = ({
@@ -12,10 +10,6 @@ const AdminSettings = ({
   setStoreForceSave,
   enableThirdParty,
   setEnableThirdParty,
-  treeFolders,
-  myFolderId,
-  commonFolderId,
-  getSubfolders,
   t,
 }) => {
   const onChangeStoreForceSave = React.useCallback(() => {
@@ -23,47 +17,38 @@ const AdminSettings = ({
   }, [setStoreForceSave, storeForceSave]);
 
   const onChangeThirdParty = React.useCallback(() => {
-    setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(
-      async () => {
-        const myFolders = await getSubfolders(myFolderId);
-        const commonFolders = await getSubfolders(commonFolderId);
-        const myNode = treeFolders.find((x) => x.id === myFolderId);
-        const commonNode = treeFolders.find((x) => x.id === commonFolderId);
-
-        runInAction(() => {
-          myNode.folders = myFolders;
-          commonNode.folders = commonFolders;
-        });
-      }
-    );
-  }, [
-    setEnableThirdParty,
-    enableThirdParty,
-    getSubfolders,
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-  ]);
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty");
+  }, [setEnableThirdParty, enableThirdParty]);
 
   return (
     <StyledSettings>
-      <ToggleButton
-        className="toggle-btn"
-        label={t("IntermediateVersion")}
-        onChange={onChangeStoreForceSave}
-        isChecked={storeForceSave}
-      />
-      <ToggleButton
-        className="toggle-btn"
-        label={t("ThirdPartyBtn")}
-        onChange={onChangeThirdParty}
-        isChecked={enableThirdParty}
-      />
+      <Box className="settings-section">
+        <Heading className="heading" level={2} size="xsmall">
+          {t("StoringFileVersion")}
+        </Heading>
+        <ToggleButton
+          className="toggle-btn"
+          label={t("IntermediateVersion")}
+          onChange={onChangeStoreForceSave}
+          isChecked={storeForceSave}
+        />
+      </Box>
+      <Box className="settings-section">
+        <Heading className="heading" level={2} size="xsmall">
+          {t("ThirdPartyAccounts")}
+        </Heading>
+        <ToggleButton
+          className="toggle-btn"
+          label={t("ThirdPartyBtn")}
+          onChange={onChangeThirdParty}
+          isChecked={enableThirdParty}
+        />
+      </Box>
     </StyledSettings>
   );
 };
 
-export default inject(({ settingsStore, treeFoldersStore }) => {
+export default inject(({ settingsStore }) => {
   const {
     enableThirdParty,
     setEnableThirdParty,
@@ -71,21 +56,10 @@ export default inject(({ settingsStore, treeFoldersStore }) => {
     setStoreForceSave,
   } = settingsStore;
 
-  const {
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-    getSubfolders,
-  } = treeFoldersStore;
-
   return {
     storeForceSave: storeForcesave,
     setStoreForceSave,
     enableThirdParty,
     setEnableThirdParty,
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-    getSubfolders,
   };
 })(observer(AdminSettings));

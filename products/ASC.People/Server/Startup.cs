@@ -39,5 +39,10 @@ public class Startup : BaseStartup
         base.ConfigureServices(services);
 
         services.AddBaseDbContextPool<FilesDbContext>();
+
+        services.AddScoped<UsersInRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
+        services.AddScoped<UsersInRoomStatistic>();
     }
 }

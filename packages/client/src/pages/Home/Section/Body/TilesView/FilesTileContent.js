@@ -9,7 +9,7 @@ import Link from "@docspace/components/link";
 import TileContent from "./sub-components/TileContent";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .row-main-container {
@@ -79,7 +79,7 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
           type="page"
           title={title}
           fontWeight="600"
-          fontSize={isDesktop ? "13px" : "14px"}
+          fontSize={!isMobile ? "13px" : "14px"}
           target="_blank"
           {...linkStyles}
           color={theme.filesSection.tilesView.color}

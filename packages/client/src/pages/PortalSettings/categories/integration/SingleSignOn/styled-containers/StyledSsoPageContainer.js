@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
@@ -20,6 +21,13 @@ const StyledSsoPage = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4px;
+    .toggle-caption_title {
+      display: flex;
+      .toggle-caption_title_badge {
+        margin-left: 4px;
+        margin-top: -3px;
+      }
+    }
   }
 
   .tooltip-button,
@@ -106,13 +114,6 @@ const StyledSsoPage = styled.div`
     }
   }
 
-  .separator {
-    margin: 24px 0;
-    height: 1px;
-    border: none;
-    background-color: #eceef1;
-  }
-
   .service-provider-settings {
     display: ${(props) => (!props.hideSettings ? "none" : "block")};
   }
@@ -146,6 +147,8 @@ const StyledSsoPage = styled.div`
       margin-left: 4px;
     }
   }
+
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export default StyledSsoPage;

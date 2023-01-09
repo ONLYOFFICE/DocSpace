@@ -91,7 +91,7 @@ public class AuditEventsRepository
         var tenant = _tenantManager.GetCurrentTenant().Id;
         using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
-          (from q in auditTrailContext.AuditEvents
+           from q in auditTrailContext.AuditEvents
            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
            where q.TenantId == tenant
            orderby q.Date descending
@@ -101,16 +101,7 @@ public class AuditEventsRepository
                FirstName = p.FirstName,
                LastName = p.LastName,
                UserName = p.UserName
-           });
-
-        if (startIndex > 0)
-        {
-            query = query.Skip(startIndex);
-        }
-        if (limit > 0)
-        {
-            query = query.Take(limit);
-        }
+           };
 
         if (userId.HasValue && userId.Value != Guid.Empty)
         {
@@ -197,6 +188,14 @@ public class AuditEventsRepository
             }
         }
 
+        if (startIndex > 0)
+        {
+            query = query.Skip(startIndex);
+        }
+        if (limit > 0)
+        {
+            query = query.Take(limit);
+        }
         return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
     }
 
@@ -245,7 +244,7 @@ internal static class PredicateBuilder
     }
 }
 
-internal class SubstExpressionVisitor : System.Linq.Expressions.ExpressionVisitor
+internal class SubstExpressionVisitor : ExpressionVisitor
 {
     internal Dictionary<Expression, Expression> Subst = new Dictionary<Expression, Expression>();
 

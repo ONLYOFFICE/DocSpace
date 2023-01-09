@@ -3,6 +3,5 @@
   "ConvertMessage": "Če se odločite za pretvorbo datoteke v obliko, ki je drugačna od izvirne, se lahko nekateri podatki izgubijo.",
   "ConvertToZip": "Datoteke bodo kompresirane v .zip datoteko",
   "CustomFormat": "Poljuben format",
-  "OriginalFormat": "Izvirni format",
-  "Other": "Drugo"
+  "OriginalFormat": "Izvirni format"
 }

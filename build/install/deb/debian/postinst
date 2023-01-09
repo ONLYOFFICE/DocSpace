@@ -31,6 +31,8 @@ case "$1" in
         RABBITMQ_HOST="$RET"
         db_get {{product}}/rabbitmq-user || true
         RABBITMQ_USER="$RET"
+        db_get {{product}}/rabbitmq-port || true
+        RABBITMQ_PORT="$RET"
         db_get {{product}}/rabbitmq-password || true
         RABBITMQ_PASSWORD="$RET"
 
@@ -46,8 +48,8 @@ case "$1" in
         db_get onlyoffice/ds-port || true  
         DOCUMENT_SERVER_PORT="$RET"
 
-        bash /usr/bin/{{product}}-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT \
-        -dsh $DOCUMENT_SERVER_HOST -dsp $DOCUMENT_SERVER_PORT -rdh $REDIS_HOST -rdp $REDIS_PORT -rbh $RABBITMQ_HOST -rbu $RABBITMQ_USER -rbp $RABBITMQ_PASSWORD -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
+        bash /usr/bin/{{product}}-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT -dsh $DOCUMENT_SERVER_HOST \
+        -dsp $DOCUMENT_SERVER_PORT -rdh $REDIS_HOST -rdp $REDIS_PORT -rbh $RABBITMQ_HOST -rbp $RABBITMQ_PORT -rbu $RABBITMQ_USER -rbpw $RABBITMQ_PASSWORD -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

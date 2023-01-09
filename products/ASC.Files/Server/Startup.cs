@@ -58,20 +58,24 @@ public class Startup : BaseStartup
 
         services.AddBaseDbContextPool<FilesDbContext>();
 
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+        services.AddScoped<CountRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
+
+        services.AddScoped<UsersInRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
+        services.AddScoped<UsersInRoomStatistic>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors(builder =>
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
-
         base.Configure(app, env);
 
         app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx", StringComparison.OrdinalIgnoreCase),
+                context => context.Request.Path.ToString().EndsWith("filehandler.ashx", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseFileHandler();
@@ -92,7 +96,7 @@ public class Startup : BaseStartup
             });
 
         app.MapWhen(
-                context => context.Request.Path.ToString().EndsWith("httphandlers/DocuSignHandler.ashx", StringComparison.OrdinalIgnoreCase),
+                context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx", StringComparison.OrdinalIgnoreCase),
             appBranch =>
             {
                 appBranch.UseDocuSignHandler();

@@ -124,13 +124,14 @@ class SnackBar extends React.Component {
                 }}
               />
             ) : (
-              <>
-                {showIcon && (
-                  <Box className="logo">
-                    <StyledLogoIcon size="medium" color={textColor} />
-                  </Box>
-                )}
-                <Box className="text-container" textalign={textAlign}>
+              <div className="text-container">
+                <div className="header-body" textalign={textAlign}>
+                  {showIcon && (
+                    <Box className="logo">
+                      <StyledLogoIcon size="medium" color={textColor} />
+                    </Box>
+                  )}
+
                   <Heading
                     size="xsmall"
                     isInline={true}
@@ -140,40 +141,42 @@ class SnackBar extends React.Component {
                   >
                     {headerText}
                   </Heading>
-                  <div className="text-body" textalign={textAlign}>
+                </div>
+                <div className="text-body">
+                  <Text
+                    as="p"
+                    className={"text"}
+                    color={textColor}
+                    fontSize={fontSize}
+                    fontWeight={fontWeight}
+                    noSelect
+                  >
+                    {text}
+                  </Text>
+
+                  {btnText && (
                     <Text
-                      as="p"
                       color={textColor}
-                      fontSize={fontSize}
-                      fontWeight={fontWeight}
+                      className="button"
+                      onClick={this.onActionClick}
                     >
-                      {text}
+                      {btnText}
                     </Text>
+                  )}
 
-                    {btnText && (
-                      <Text
-                        color={textColor}
-                        className="button"
-                        onClick={this.onActionClick}
-                      >
-                        {btnText}
-                      </Text>
-                    )}
-
-                    {countDownTime > -1 && (
-                      <Countdown
-                        date={Date.now() + countDownTime}
-                        renderer={this.countDownRenderer}
-                        onComplete={this.onActionClick}
-                      />
-                    )}
-                  </div>
-                </Box>
-              </>
+                  {countDownTime > -1 && (
+                    <Countdown
+                      date={Date.now() + countDownTime}
+                      renderer={this.countDownRenderer}
+                      onComplete={this.onActionClick}
+                    />
+                  )}
+                </div>
+              </div>
             )}
             {!btnText && (
               <button className="action" onClick={this.onActionClick}>
-                <StyledCrossIcon size="medium" />
+                <StyledCrossIcon size="small" />
               </button>
             )}
           </StyledSnackBar>
@@ -184,18 +187,18 @@ class SnackBar extends React.Component {
 }
 
 SnackBar.propTypes = {
-  text: PropType.string,
-  headerText: PropType.string,
-  btnText: PropType.string,
-  backgroundImg: PropType.string,
-  backgroundColor: PropType.string,
-  textColor: PropType.string,
-  showIcon: PropType.bool,
-  clickAction: PropType.func,
-  fontSize: PropType.string,
-  fontWeight: PropType.string,
-  textAlign: PropType.string,
-  htmlContent: PropType.string,
+  text: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  headerText: PropTypes.string,
+  btnText: PropTypes.string,
+  backgroundImg: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  textColor: PropTypes.string,
+  showIcon: PropTypes.bool,
+  clickAction: PropTypes.func,
+  fontSize: PropTypes.string,
+  fontWeight: PropTypes.string,
+  textAlign: PropTypes.string,
+  htmlContent: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   countDownTime: PropType.number,
   sectionWidth: PropTypes.number,

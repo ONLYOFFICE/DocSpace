@@ -33,8 +33,10 @@ public static class HostBuilderExtension
         hostBuilder.UseSystemd();
         hostBuilder.UseWindowsService();
         hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-        hostBuilder.ConfigureNLogLogging();
+        hostBuilder.UseNLog();
 
         return hostBuilder;
     }
+
+
 }

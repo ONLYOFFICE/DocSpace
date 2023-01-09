@@ -51,12 +51,12 @@ const AddIdpCertificateModal = (props) => {
           scale
           isLoading={isCertificateLoading}
           isDisabled={!idpCertificate}
-          size="normalTouchscreen"
+          size="normal"
         />
         <Button
           label={t("Common:CancelButton")}
           onClick={closeIdpModal}
-          size="normalTouchscreen"
+          size="normal"
           scale
           isDisabled={isCertificateLoading}
         />

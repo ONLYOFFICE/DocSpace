@@ -7,7 +7,7 @@ import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import { withTranslation, Trans } from "react-i18next";
 import { sendInstructionsToChangePassword } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {
@@ -46,16 +46,32 @@ class ChangePasswordDialogComponent extends React.Component {
     removeEventListener("keydown", this.keyPress, false);
   }
 
+  onClose = () => {
+    const { onClose } = this.props;
+    const { isRequestRunning } = this.state;
+
+    if (!isRequestRunning) {
+      onClose();
+    }
+  };
+
   render() {
     // console.log("ChangePasswordDialog render");
-    const { t, tReady, visible, email, onClose, theme } = this.props;
+    const {
+      t,
+      tReady,
+      visible,
+      email,
+      onClose,
+      currentColorScheme,
+    } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
       <ModalDialog
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onClose}
         displayType="modal"
       >
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
@@ -71,7 +87,7 @@ class ChangePasswordDialogComponent extends React.Component {
                 type="page"
                 href={`mailto:${email}`}
                 noHover
-                color={theme.peopleDialogs.changePassword.linkColor}
+                color={currentColorScheme.main.accent}
                 title={email}
               >
                 {{ email }}
@@ -96,7 +112,7 @@ class ChangePasswordDialogComponent extends React.Component {
             size="normal"
             scale
             onClick={onClose}
-            isLoading={isRequestRunning}
+            isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
       </ModalDialog>
@@ -105,7 +121,7 @@ class ChangePasswordDialogComponent extends React.Component {
 }
 
 const ChangePasswordDialog = inject(({ auth }) => ({
-  theme: auth.settingsStore.theme,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(
   observer(
     withTranslation(["ChangePasswordDialog", "Common"])(

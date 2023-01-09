@@ -13,7 +13,7 @@ const USER_INVITE_LINK = "userInvitationLink";
 const INVITE_LINK_TTL = "localStorageLinkTtl";
 const LINKS_TTL = 6 * 3600 * 1000;
 
-export function getInvitationLink(isGuest) {
+export function getInvitationLink(type) {
   const curLinksTtl = localStorage.getItem(INVITE_LINK_TTL);
   const now = +new Date();
 
@@ -26,30 +26,40 @@ export function getInvitationLink(isGuest) {
   }
 
   const link = localStorage.getItem(
-    isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK
+    type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK
   );
 
-  return link
+  return link && type !== 3
     ? Promise.resolve(link)
     : request({
         method: "get",
-        url: `/portal/users/invite/${isGuest ? 2 : 1}.json`,
+        url: `/portal/users/invite/${type}.json`,
       }).then((link) => {
-        localStorage.setItem(
-          isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK,
-          link
-        );
+        if (type !== 3) {
+          localStorage.setItem(
+            type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK,
+            link
+          );
+        }
         return Promise.resolve(link);
       });
 }
 
 export function getInvitationLinks() {
-  const isGuest = true;
-  return Promise.all([getInvitationLink(), getInvitationLink(isGuest)]).then(
-    ([userInvitationLinkResp, guestInvitationLinkResp]) => {
+  return Promise.all([
+    getInvitationLink(1),
+    getInvitationLink(2),
+    getInvitationLink(3),
+  ]).then(
+    ([
+      userInvitationLinkResp,
+      guestInvitationLinkResp,
+      adminInvitationLinkResp,
+    ]) => {
       return Promise.resolve({
         userLink: userInvitationLinkResp,
         guestLink: guestInvitationLinkResp,
+        adminLink: adminInvitationLinkResp,
       });
     }
   );
@@ -163,5 +173,108 @@ export function setPortalRename(alias) {
     method: "put",
     url: "/portal/portalrename.json",
     data: { alias },
+  });
+}
+
+export function sendSuspendPortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/suspend.json",
+  });
+}
+
+export function sendDeletePortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/delete.json",
+  });
+}
+
+export function suspendPortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/suspend.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function continuePortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/continue.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function deletePortal(confirmKey = null) {
+  const options = {
+    method: "delete",
+    url: "/portal/delete.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function getPortalPaymentQuotas() {
+  return request({ method: "get", url: "/portal/payment/quotas" });
+}
+
+export function getPortalQuota() {
+  return request({ method: "get", url: "/portal/payment/quota" });
+}
+
+export function getPortalTariff() {
+  return request({ method: "get", url: "/portal/tariff" });
+}
+
+export function getPaymentAccount() {
+  return request({ method: "get", url: "/portal/payment/account" });
+}
+
+export function getPaymentLink(adminCount, currency) {
+  return request({
+    method: "put",
+    url: `/portal/payment/url`,
+    data: {
+      quantity: { admin: adminCount },
+    },
+  });
+}
+
+export function updatePayment(adminCount) {
+  return request({
+    method: "put",
+    url: `/portal/payment/update`,
+    data: {
+      quantity: { admin: adminCount },
+    },
+  });
+}
+
+export function getCurrencies() {
+  return request({ method: "get", url: "/portal/payment/currencies" });
+}
+
+export function getPaymentTariff() {
+  return request({ method: "get", url: "/portal/payment/tariff" });
+}
+
+export function sendPaymentRequest(email, userName, message) {
+  return request({
+    method: "post",
+    url: `/portal/payment/request `,
+    data: {
+      email,
+      userName,
+      message,
+    },
   });
 }

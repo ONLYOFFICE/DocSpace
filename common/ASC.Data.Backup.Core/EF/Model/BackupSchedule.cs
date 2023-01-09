@@ -30,8 +30,6 @@ public class BackupSchedule : BaseEntity
 {
     public int TenantId { get; set; }
 
-    public bool BackupMail { get; set; }
-
     public string Cron { get; set; }
 
     public int BackupsStored { get; set; }
@@ -75,11 +73,6 @@ public static class BackupScheduleExtension
                 .HasColumnName("tenant_id")
                 .HasColumnType("int(10)")
                 .ValueGeneratedNever();
-
-            entity.Property(e => e.BackupMail)
-                .HasColumnName("backup_mail")
-                .HasColumnType("tinyint(1)")
-                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Cron)
                 .IsRequired()
@@ -131,11 +124,6 @@ public static class BackupScheduleExtension
                 .IsRequired()
                 .HasColumnName("tenant_id")
                 .HasMaxLength(10);
-
-            entity.Property(e => e.BackupMail)
-                .HasColumnName("backup_mail")
-                .HasMaxLength(10)
-                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Cron)
                 .IsRequired()

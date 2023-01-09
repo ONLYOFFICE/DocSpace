@@ -13,7 +13,7 @@ import { FixedSizeList as List, areEqual } from "react-window";
 // import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import { resendUserInvites } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 
@@ -129,6 +129,7 @@ class SendInviteDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            id="send-inite-again-modal_submit"
             label={t("Common:SendButton")}
             size="normal"
             scale
@@ -138,6 +139,7 @@ class SendInviteDialogComponent extends React.Component {
             isDisabled={!userIds.length}
           />
           <Button
+            id="send-inite-again-modal_cancel"
             label={t("Common:CancelButton")}
             size="normal"
             scale

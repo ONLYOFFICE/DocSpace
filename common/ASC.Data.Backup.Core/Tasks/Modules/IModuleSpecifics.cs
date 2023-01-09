@@ -29,16 +29,9 @@ namespace ASC.Data.Backup.Tasks.Modules;
 public enum ModuleName
 {
     Audit,
-    Calendar,
-    Community,
     Core,
-    Crm,
-    Crm2,
-    CrmInvoice,
     Files,
     Files2,
-    Mail,
-    Projects,
     Tenants,
     WebStudio
 }

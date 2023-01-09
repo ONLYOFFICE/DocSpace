@@ -59,7 +59,7 @@ class HotkeyStore {
   activateHotkeys = (e) => {
     if (
       this.dialogsStore.someDialogIsOpen ||
-      e.target?.tagName === "INPUT" ||
+      (e.target?.tagName === "INPUT" && e.target.type !== "checkbox") ||
       e.target?.tagName === "TEXTAREA"
     )
       return e;
@@ -528,10 +528,14 @@ class HotkeyStore {
 
   get caretIndex() {
     const { filesList, hotkeyCaret, selection } = this.filesStore;
-    const item =
-      selection.length && selection.length === 1 && !hotkeyCaret
+
+    const item = hotkeyCaret
+      ? hotkeyCaret
+      : selection.length
+      ? selection.length === 1
         ? selection[0]
-        : hotkeyCaret;
+        : selection[selection.length - 1]
+      : null;
 
     const caretIndex = filesList.findIndex(
       (f) => f.id === item?.id && f.isFolder === item?.isFolder
@@ -580,6 +584,10 @@ class HotkeyStore {
       // }
     }
 
+    if (nextForTileDown.isFolder === undefined) {
+      nextForTileDown.isFolder = !!nextForTileDown.parentId;
+    }
+
     return nextForTileDown;
   }
 
@@ -611,6 +619,11 @@ class HotkeyStore {
     } else if (!prevTileFile) {
       prevForTileUp = hotkeyCaret;
     }
+
+    if (prevForTileUp.isFolder === undefined) {
+      prevForTileUp.isFolder = !!prevForTileUp.parentId;
+    }
+
     return prevForTileUp;
   }
 

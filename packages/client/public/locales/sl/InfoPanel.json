@@ -1,12 +1,9 @@
 {
-  "EmptyScreenText": "Tukaj si oglejte podrobnosti o datotekah in mapah",
   "FileExtension": "Končnica datoteke",
+  "FilesEmptyScreenText": "Tukaj si oglejte podrobnosti o datotekah in mapah",
   "ItemsSelected": "Predmeti izbrani",
   "LastModifiedBy": "Nazadnje spremenjeno",
-  "Members": "člani",
-  "OpenSharingSettings": "Odpri nastavitve skupne rabe",
   "SystemProperties": "Lastnosti sistema",
   "Versions": "Verzije",
-  "ViewDetails": "Ogled podrobnosti",
-  "WhoHasAccess": "Kdo ima dostop"
+  "ViewDetails": "Ogled podrobnosti"
 }

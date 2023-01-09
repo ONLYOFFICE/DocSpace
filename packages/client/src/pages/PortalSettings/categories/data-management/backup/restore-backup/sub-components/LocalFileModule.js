@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FileInput from "@docspace/components/file-input";
 
 const LocalFile = ({ onSelectLocalFile, hasError }) => {
@@ -8,6 +8,12 @@ const LocalFile = ({ onSelectLocalFile, hasError }) => {
 
     onSelectLocalFile(data);
   };
+
+  useEffect(() => {
+    return () => {
+      onSelectLocalFile("");
+    };
+  }, []);
   return (
     <FileInput
       hasError={hasError}

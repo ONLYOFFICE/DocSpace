@@ -15,7 +15,6 @@ const TableBody = (props) => {
     useReactWindow,
     onScroll,
     infoPanelVisible,
-    selectedFolderId,
   } = props;
 
   return useReactWindow ? (
@@ -35,7 +34,6 @@ const TableBody = (props) => {
         itemSize={itemHeight}
         onScroll={onScroll}
         infoPanelVisible={infoPanelVisible}
-        selectedFolderId={selectedFolderId}
       >
         {children}
       </InfiniteLoaderComponent>

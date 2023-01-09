@@ -140,6 +140,7 @@ const GroupMenuItem = ({ item }) => {
     title,
     withDropDown,
     options,
+    id,
   } = item;
   return (
     <>
@@ -148,6 +149,7 @@ const GroupMenuItem = ({ item }) => {
       ) : (
         <>
           <StyledButton
+            id={id}
             label={label}
             title={title || label}
             isDisabled={disabled}
@@ -162,6 +164,7 @@ const GroupMenuItem = ({ item }) => {
               open={open}
               clickOutsideAction={onClickOutside}
               forwardedRef={buttonRef}
+              zIndex={250}
             >
               {options.map((option) => (
                 <DropDownItem {...option} />

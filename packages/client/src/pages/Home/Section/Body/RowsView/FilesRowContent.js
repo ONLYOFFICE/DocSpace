@@ -13,6 +13,7 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
+import { desktop } from "@docspace/components/utils/device";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -20,6 +21,10 @@ const SimpleFilesRowContent = styled(RowContent)`
     max-width: min-content;
     min-width: inherit;
     margin-right: 0px;
+
+    @media ${desktop} {
+      margin-top: 0px;
+    }
   }
 
   .row_update-text {
@@ -71,7 +76,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 
     .new-items {
       min-width: 16px;
-      margin: 7px 22px 0 0;
+      margin: 5px 24px 0 0;
     }
   `}
 `;
@@ -100,16 +105,6 @@ const FilesRowContent = ({
     isRoom,
   } = item;
 
-  let tags = null;
-
-  if (isRoom) {
-    if (item.tags.length > 0) {
-      tags = item?.tags.join(" | ");
-    } else {
-      tags = t(RoomsTypeTranslations[item.roomType]);
-    }
-  }
-
   return (
     <>
       <SimpleFilesRowContent
@@ -134,18 +129,18 @@ const FilesRowContent = ({
           {badgesComponent}
           {!isRoom && !isRooms && quickButtons}
         </div>
-        {!isRoom && (
-          <Text
-            containerMinWidth="200px"
-            containerWidth="15%"
-            fontSize="12px"
-            fontWeight={400}
-            // color={sideColor}
-            className="row_update-text"
-          >
-            {updatedDate && updatedDate}
-          </Text>
-        )}
+
+        <Text
+          containerMinWidth="200px"
+          containerWidth="15%"
+          fontSize="12px"
+          fontWeight={400}
+          // color={sideColor}
+          className="row_update-text"
+        >
+          {updatedDate && updatedDate}
+        </Text>
+
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
@@ -157,9 +152,11 @@ const FilesRowContent = ({
           truncate={true}
         >
           {isRooms
-            ? tags
+            ? t(RoomsTypeTranslations[item.roomType])
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
-            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            ? `${foldersCount} ${t("Translations:Folders")} | ${filesCount} ${t(
+                "Translations:Files"
+              )}`
             : fileExst
             ? `${fileExst.toUpperCase().replace(/^\./, "")}`
             : ""}

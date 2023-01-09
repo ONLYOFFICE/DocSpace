@@ -4,12 +4,19 @@ import { Trans } from "react-i18next";
 
 import config from "PACKAGE_FILE";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, EmployeeStatus } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  EmployeeStatus,
+  FilterSubject,
+} from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 const { proxyURL } = AppServerConfig;
 
@@ -39,6 +46,7 @@ class AccountsContextOptionsStore {
 
         case "profile":
           return {
+            id: "option_profile",
             key: option,
             icon: "/static/images/profile.react.svg",
             label: t("Common:Profile"),
@@ -47,13 +55,15 @@ class AccountsContextOptionsStore {
 
         case "change-name":
           return {
+            id: "option_change-name",
             key: option,
             icon: "images/pencil.react.svg",
             label: t("PeopleTranslations:NameChangeButton"),
-            onClick: () => this.toggleChangeNameDialog(item),
+            onClick: this.toggleChangeNameDialog,
           };
         case "change-email":
           return {
+            id: "option_change-email",
             key: option,
             icon: "images/change.mail.react.svg",
             label: t("PeopleTranslations:EmailChangeButton"),
@@ -61,6 +71,7 @@ class AccountsContextOptionsStore {
           };
         case "change-password":
           return {
+            id: "option_change-password",
             key: option,
             icon: "images/change.security.react.svg",
             label: t("PeopleTranslations:PasswordChangeButton"),
@@ -68,14 +79,22 @@ class AccountsContextOptionsStore {
           };
         case "change-owner":
           return {
+            id: "option_change-owner",
             key: option,
             icon: "/static/images/refresh.react.svg",
             label: t("Translations:OwnerChange"),
             onClick: () => this.toggleChangeOwnerDialog(item),
           };
-
+        case "room-list":
+          return {
+            key: option,
+            icon: "images/folder.react.svg",
+            label: "Room list",
+            onClick: () => this.openUserRoomList(item),
+          };
         case "enable":
           return {
+            id: "option_enable",
             key: option,
             icon: "images/enable.react.svg",
             label: t("PeopleTranslations:EnableUserButton"),
@@ -83,6 +102,7 @@ class AccountsContextOptionsStore {
           };
         case "disable":
           return {
+            id: "option_disable",
             key: option,
             icon: "images/remove.react.svg",
             label: t("PeopleTranslations:DisableUserButton"),
@@ -91,6 +111,7 @@ class AccountsContextOptionsStore {
 
         case "reassign-data":
           return {
+            id: "option_reassign-data",
             key: option,
             icon: "images/ressing_data.react.svg",
             label: t("PeopleTranslations:ReassignData"),
@@ -98,6 +119,7 @@ class AccountsContextOptionsStore {
           };
         case "delete-personal-data":
           return {
+            id: "option_delete-personal-data",
             key: option,
             icon: "images/del_data.react.svg",
             label: t("PeopleTranslations:RemoveData"),
@@ -105,6 +127,7 @@ class AccountsContextOptionsStore {
           };
         case "delete-user":
           return {
+            id: "option_delete-user",
             key: option,
             icon: "images/trash.react.svg",
             label: t("DeleteProfileEverDialog:DeleteUser"),
@@ -113,6 +136,7 @@ class AccountsContextOptionsStore {
 
         case "details":
           return {
+            id: "option_details",
             key: option,
             icon: "images/info.react.svg",
             label: t("Common:Info"),
@@ -121,6 +145,7 @@ class AccountsContextOptionsStore {
 
         case "invite-again":
           return {
+            id: "option_invite-again",
             key: option,
             icon: "/static/images/invite.again.react.svg",
             label: t("LblInviteAgain"),
@@ -128,6 +153,7 @@ class AccountsContextOptionsStore {
           };
         case "reset-auth":
           return {
+            id: "option_reset-auth",
             key: option,
             icon: "images/restore.auth.react.svg",
             label: t("PeopleTranslations:ResetAuth"),
@@ -144,7 +170,7 @@ class AccountsContextOptionsStore {
   };
 
   getUserGroupContextOptions = (t) => {
-    const { onChangeType } = this.peopleStore;
+    const { onChangeType, onChangeStatus } = this.peopleStore;
 
     const {
       hasUsersToMakeEmployees,
@@ -152,25 +178,24 @@ class AccountsContextOptionsStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasFreeUsers,
     } = this.peopleStore.selectionStore;
     const {
-      setActiveDialogVisible,
-      setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.peopleStore.dialogStore;
 
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
 
     const options = [];
 
     const adminOption = {
       id: "context-menu_administrator",
       className: "context-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "admin",
       key: "cm-administrator",
@@ -178,8 +203,8 @@ class AccountsContextOptionsStore {
     const managerOption = {
       id: "context-menu_manager",
       className: "context-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "manager",
       key: "cm-manager",
@@ -196,15 +221,15 @@ class AccountsContextOptionsStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         icon: "/static/images/change.to.employee.react.svg",
         items: options,
       },
@@ -212,7 +237,7 @@ class AccountsContextOptionsStore {
         key: "cm-info",
         label: t("Common:Info"),
         disabled: isVisible,
-        onClick: setVisible,
+        onClick: () => setIsVisible(true),
         icon: "images/info.react.svg",
       },
       {
@@ -226,14 +251,14 @@ class AccountsContextOptionsStore {
         key: "cm-enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
+        onClick: () => onChangeStatus(EmployeeStatus.Active),
         icon: "images/enable.react.svg",
       },
       {
         key: "cm-disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
+        onClick: () => onChangeStatus(EmployeeStatus.Disabled),
         icon: "images/disable.react.svg",
       },
       {
@@ -263,21 +288,29 @@ class AccountsContextOptionsStore {
     return contextOptionsProps;
   };
 
+  openUserRoomList = (user) => {
+    const filter = RoomsFilter.getDefault();
+
+    filter.subjectId = user.id;
+    filter.subjectFilter = FilterSubject.Member;
+
+    const filterParamsStr = filter.toUrlParams();
+    const url = getCategoryUrl(CategoryType.Shared);
+
+    window.open(
+      combineUrl(PROXY_HOMEPAGE_URL, `${url}?${filterParamsStr}`),
+      "_blank"
+    );
+  };
+
   onProfileClick = () => {
     history.push(PROFILE_SELF_URL);
   };
 
-  toggleChangeNameDialog = (item) => {
-    const {
-      setDialogData,
-      setChangeNameDialogVisible,
-    } = this.peopleStore.dialogStore;
-    const { id, firstName, lastName } = item;
+  toggleChangeNameDialog = () => {
+    const { setChangeNameVisible } = this.peopleStore.targetUserStore;
 
-    setDialogData({ id, firstName, lastName });
-
-    setChangeNameDialogVisible(true);
-    toastr.warning("Work at progress");
+    setChangeNameVisible(true);
   };
 
   toggleChangeEmailDialog = (item) => {
@@ -312,29 +345,22 @@ class AccountsContextOptionsStore {
     const { setChangeOwnerDialogVisible } = this.peopleStore.dialogStore;
 
     setChangeOwnerDialogVisible(true);
-    toastr.warning("Work at progress");
   };
 
   onEnableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Active, [id])
-      .then(() =>
-        toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-      )
-      .catch((error) => toastr.error(error));
+    const { changeStatus } = this.peopleStore;
+
+    changeStatus(EmployeeStatus.Active, [id]);
   };
 
   onDisableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Disabled, [id])
-      .then(() =>
-        toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-      )
-      .catch((error) => toastr.error(error));
+    const { changeStatus } = this.peopleStore;
+
+    changeStatus(EmployeeStatus.Disabled, [id]);
   };
 
   onReassignDataClick = (item) => {
@@ -375,9 +401,8 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = () => {
-    const { setVisible } = this.peopleStore.infoPanelStore;
-
-    setVisible();
+    const { setIsVisible } = this.peopleStore.infoPanelStore;
+    setIsVisible(true);
   };
 
   onInviteAgainClick = (t, item) => {

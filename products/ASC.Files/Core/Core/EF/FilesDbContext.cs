@@ -40,8 +40,6 @@ public class FilesDbContext : DbContext
     public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
     public DbSet<DbFilesLink> FilesLink { get; set; }
     public DbSet<DbFilesProperties> FilesProperties { get; set; }
-    public DbSet<DbTariff> Tariffs { get; set; }
-    public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
 
@@ -63,8 +61,6 @@ public class FilesDbContext : DbContext
             .AddDbDbFilesThirdpartyApp()
             .AddDbFilesLink()
             .AddDbFilesProperties()
-            .AddDbTariff()
-            .AddDbQuota()
             .AddDbTenant()
             .AddFilesConverts();
     }

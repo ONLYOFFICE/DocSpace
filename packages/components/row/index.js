@@ -85,7 +85,10 @@ class Row extends React.Component {
     if (children.props.item) {
       contextMenuHeader = {
         icon: children.props.item.icon,
-        title: children.props.item.title,
+        avatar: children.props.item.avatar,
+        title: children.props.item.title
+          ? children.props.item.title
+          : children.props.item.displayName,
       };
     }
 

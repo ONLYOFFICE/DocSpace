@@ -48,6 +48,7 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<JabberSender>();
         DIHelper.TryAdd<SmtpSender>();
         DIHelper.TryAdd<AWSSender>(); // fix private
+        DIHelper.TryAdd<StudioNotifyService>();
 
         DIHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
         DIHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();

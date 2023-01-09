@@ -159,6 +159,7 @@ const StyledTableGroupMenu = styled.div`
     height: 24px;
     width: 16px;
     margin: 3px 0px 0px 3px;
+    background: transparent;
 
     .combo-button {
       .combo-buttons_arrow-icon {
@@ -340,8 +341,8 @@ const StyledTableRow = styled.div`
 
 const StyledTableCell = styled.div`
   /* padding-right: 8px; */
-  height: 40px;
-  max-height: 40px;
+  height: 48px;
+  max-height: 48px;
   border-bottom: ${(props) => props.theme.tableContainer.tableCell.border};
   overflow: hidden;
 

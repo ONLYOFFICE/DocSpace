@@ -2,11 +2,10 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import {
   AppServerConfig,
-  FileAction,
   FolderType,
   RoomSearchArea,
 } from "@docspace/common/constants";
@@ -18,7 +17,7 @@ import { Consumer } from "@docspace/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import Navigation from "@docspace/common/components/Navigation";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
@@ -27,25 +26,7 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: 69px;
-
-  @media ${tablet} {
-    height: 61px;
-  }
-
-  ${isMobile &&
-  css`
-    height: 61px;
-  `}
-
-  @media ${mobile} {
-    height: 53px;
-  }
-
-  ${isMobileOnly &&
-  css`
-    height: 53px;
-  `}
+  min-height: 33px;
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
@@ -82,7 +63,11 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
-    height: 100%;
+    min-height: 33px;
+
+    @media ${tablet} {
+      height: 60px;
+    }
   }
 `;
 
@@ -119,8 +104,7 @@ class SectionHeaderContent extends React.Component {
   createForm = () => this.onCreate("docxf");
 
   createFormFromFile = () => {
-    const { setSelectFileDialogVisible } = this.props;
-    setSelectFileDialogVisible(true);
+    this.props.setSelectFileDialogVisible(true);
   };
 
   onShowGallery = () => {
@@ -152,35 +136,41 @@ class SectionHeaderContent extends React.Component {
         ]
       : [
           {
+            id: "personal_new-documnet",
             key: "new-document",
             label: t("NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
+            id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
             label: t("NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
+            id: "personal_new-presentation",
             key: "new-presentation",
             label: t("NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
           {
+            id: "personal_form-template",
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             key: "new-form-base",
             items: [
               {
+                id: "personal_template_black",
                 key: "new-form",
                 label: t("Translations:SubNewForm"),
                 icon: "images/form.blank.react.svg",
                 onClick: this.createForm,
               },
               {
+                id: "personal_template_new-form-file",
                 key: "new-form-file",
                 label: t("Translations:SubNewFormFile"),
                 icon: "images/form.file.react.svg",
@@ -188,6 +178,7 @@ class SectionHeaderContent extends React.Component {
                 disabled: isPrivacyFolder,
               },
               {
+                id: "personal_template_oforms-gallery",
                 key: "oforms-gallery",
                 label: t("Common:OFORMsGallery"),
                 icon: "images/form.gallery.react.svg",
@@ -197,6 +188,7 @@ class SectionHeaderContent extends React.Component {
             ],
           },
           {
+            id: "personal_new-folder",
             key: "new-folder",
             label: t("NewFolder"),
             onClick: this.createFolder,
@@ -241,7 +233,7 @@ class SectionHeaderContent extends React.Component {
 
   onMoveAction = () => {
     this.props.setIsFolderActions(true);
-    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setBufferSelection(this.props.selectedFolder);
     return this.props.setMoveToPanelVisible(true);
   };
   onCopyAction = () => {
@@ -259,7 +251,16 @@ class SectionHeaderContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
-  renameAction = () => console.log("renameAction click");
+  renameAction = () => {
+    const { selectedFolder } = this.props;
+
+    const event = new Event(Events.RENAME);
+
+    event.item = selectedFolder;
+
+    window.dispatchEvent(event);
+  };
+
   onOpenSharingPanel = () => {
     this.props.setBufferSelection(this.props.currentFolderId);
     this.props.setIsFolderActions(true);
@@ -290,6 +291,7 @@ class SectionHeaderContent extends React.Component {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+        FolderRemoved: t("Files:FolderRemoved"),
       };
 
       deleteAction(translations, [currentFolderId], true).catch((err) =>
@@ -300,6 +302,7 @@ class SectionHeaderContent extends React.Component {
 
   onEmptyTrashAction = () => {
     const { activeFiles, activeFolders } = this.props;
+
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
     if (isExistActiveItems) return;
@@ -307,65 +310,210 @@ class SectionHeaderContent extends React.Component {
     this.props.setEmptyTrashDialogVisible(true);
   };
 
+  onRestoreAllAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setRestoreAllPanelVisible(true);
+  };
+
+  onRestoreAllArchiveAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setArchiveAction("unarchive");
+    this.props.setRestoreAllArchive(true);
+    this.props.setArchiveDialogVisible(true);
+  };
+
+  onShowInfo = () => {
+    const { setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(true);
+  };
+
+  onToggleInfoPanel = () => {
+    const { isInfoPanelVisible, setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(!isInfoPanelVisible);
+  };
+
   getContextOptionsFolder = () => {
-    const { t, toggleInfoPanel, personal } = this.props;
+    const {
+      t,
+      isRoom,
+      isRecycleBinFolder,
+      isArchiveFolder,
+      selectedFolder,
+
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
+      onClickReconnectStorage,
+
+      canRestoreAll,
+      canDeleteAll,
+    } = this.props;
+
+    const isDisabled = isRecycleBinFolder || isRoom;
+
+    if (isArchiveFolder) {
+      return [
+        {
+          id: "header_option_empty-archive",
+          key: "empty-archive",
+          label: t("ArchiveAction"),
+          onClick: this.onEmptyTrashAction,
+          disabled: !canDeleteAll,
+          icon: "images/clear.trash.react.svg",
+        },
+        {
+          id: "header_option_restore-all",
+          key: "restore-all",
+          label: t("RestoreAll"),
+          onClick: this.onRestoreAllArchiveAction,
+          disabled: !canRestoreAll,
+          icon: "images/subtract.react.svg",
+        },
+      ];
+    }
 
     return [
       {
+        id: "header_option_sharing-settings",
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/share.react.svg",
       },
       {
+        id: "header_option_link-portal-users",
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/invitation.link.react.svg",
       },
       {
+        id: "header_option_empty-trash",
+        key: "empty-trash",
+        label: t("RecycleBinAction"),
+        onClick: this.onEmptyTrashAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/clear.trash.react.svg",
+      },
+      {
+        id: "header_option_restore-all",
+        key: "restore-all",
+        label: t("RestoreAll"),
+        onClick: this.onRestoreAllAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/subtract.react.svg",
+      },
+      {
+        id: "header_option_show-info",
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
-        onClick: toggleInfoPanel,
-        disabled: false,
-        icon: "/static/images/info.react.svg",
-      },
-      { key: "separator-2", isSeparator: true },
-      {
-        key: "move-to",
-        label: t("MoveTo"),
-        onClick: this.onMoveAction,
-        disabled: false,
-        icon: "images/move.react.svg",
+        onClick: this.onShowInfo,
+        disabled: isDisabled,
+        icon: "/static/images/info.outline.react.svg",
       },
       {
-        key: "copy",
-        label: t("Translations:Copy"),
-        onClick: this.onCopyAction,
-        disabled: false,
-        icon: "/static/images/copy.react.svg",
+        id: "header_option_reconnect-storage",
+        key: "reconnect-storage",
+        label: t("Common:ReconnectStorage"),
+        icon: "images/reconnect.svg",
+        onClick: () => onClickReconnectStorage(selectedFolder, t),
+        disabled: !selectedFolder.providerKey || !isRoom,
       },
       {
+        id: "header_option_edit-room",
+        key: "edit-room",
+        label: t("EditRoom"),
+        icon: "images/settings.react.svg",
+        onClick: () => onClickEditRoom(selectedFolder),
+        disabled: !isRoom,
+      },
+      {
+        id: "header_option_invite-users-to-room",
+        key: "invite-users-to-room",
+        label: t("Common:InviteUsers"),
+        icon: "/static/images/person.react.svg",
+        onClick: () => onClickInviteUsers(selectedFolder.id),
+        disabled: !isRoom,
+      },
+      {
+        id: "header_option_room-info",
+        key: "room-info",
+        label: t("Common:Info"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onToggleInfoPanel,
+        disabled: !isRoom,
+      },
+      {
+        id: "header_option_separator-2",
+        key: "separator-2",
+        isSeparator: true,
+        disabled: isRecycleBinFolder,
+      },
+      {
+        id: "header_option_archive-room",
+        key: "archive-room",
+        label: t("Archived"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => onClickArchive(e, selectedFolder, t),
+        disabled: !isRoom,
+        "data-action": "archive",
+        action: "archive",
+      },
+      {
+        id: "header_option_download",
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: false,
+        disabled: isDisabled,
         icon: "images/download.react.svg",
       },
       {
+        id: "header_option_move-to",
+        key: "move-to",
+        label: t("MoveTo"),
+        onClick: this.onMoveAction,
+        disabled: isDisabled,
+        icon: "images/move.react.svg",
+      },
+      {
+        id: "header_option_copy",
+        key: "copy",
+        label: t("Translations:Copy"),
+        onClick: this.onCopyAction,
+        disabled: isDisabled,
+        icon: "/static/images/copy.react.svg",
+      },
+      {
+        id: "header_option_rename",
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
-        disabled: true,
+        disabled: isDisabled,
         icon: "images/rename.react.svg",
       },
       {
+        id: "header_option_separator-3",
+        key: "separator-3",
+        isSeparator: true,
+        disabled: isDisabled,
+      },
+      {
+        id: "header_option_delete",
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: false,
+        disabled: isDisabled,
         icon: "/static/images/catalog.trash.react.svg",
       },
     ];
@@ -389,14 +537,20 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
-
+    const {
+      t,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      getCheckboxItemId,
+    } = this.props;
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
+          const id = getCheckboxItemId(key);
           return (
             <DropDownItem
+              id={id}
               key={key}
               label={label}
               data-key={key}
@@ -438,16 +592,22 @@ class SectionHeaderContent extends React.Component {
       setAlreadyFetchingRooms,
 
       categoryType,
+
+      rootFolderType,
     } = this.props;
 
     setIsLoading(true);
 
     setAlreadyFetchingRooms(true);
 
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const filter = RoomsFilter.getDefault();
 
+    if (rootFolderType === FolderType.Archive) {
+      filter.searchArea = RoomSearchArea.Archive;
+    }
+
+    fetchRooms(null, filter)
+      .then(() => {
         const filterParamsStr = filter.toUrlParams();
 
         const url = getCategoryUrl(categoryType, filter.folder);
@@ -478,15 +638,19 @@ class SectionHeaderContent extends React.Component {
       personal,
       navigationPath,
       getHeaderMenu,
-      viewAs,
       isRecycleBinFolder,
+      isArchiveFolder,
       isEmptyFilesList,
       isHeaderVisible,
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
-      toggleInfoPanel,
+      isRoomsFolder,
+      isEmptyPage,
+      canCreateFiles,
+      isEmptyArchive,
     } = this.props;
+
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -494,18 +658,8 @@ class SectionHeaderContent extends React.Component {
     return (
       <Consumer>
         {(context) => (
-          <StyledContainer
-            width={context.sectionWidth}
-            isRootFolder={isRootFolder}
-            canCreate={canCreate}
-            isRecycleBinFolder={isRecycleBinFolder}
-            isTitle={title}
-            isDesktop={isDesktop}
-            isTabletView={isTabletView}
-            isLoading={isLoading}
-            viewAs={viewAs}
-          >
-            {isHeaderVisible ? (
+          <StyledContainer>
+            {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
                 onChange={this.onChange}
@@ -513,7 +667,7 @@ class SectionHeaderContent extends React.Component {
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
-                toggleInfoPanel={toggleInfoPanel}
+                toggleInfoPanel={this.onToggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -524,7 +678,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate}
+                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -536,15 +690,20 @@ class SectionHeaderContent extends React.Component {
                     getContextOptionsFolder={this.getContextOptionsFolder}
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
-                    isRecycleBinFolder={isRecycleBinFolder}
-                    isEmptyFilesList={isEmptyFilesList}
+                    isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
+                    isEmptyFilesList={
+                      isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                    }
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    toggleInfoPanel={toggleInfoPanel}
+                    toggleInfoPanel={this.onToggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
                       trash: t("EmptyRecycleBin"),
                     }}
+                    withMenu={!isRoomsFolder}
+                    onPlusClick={this.onCreateRoom}
+                    isEmptyPage={isEmptyPage}
                   />
                 )}
               </div>
@@ -566,11 +725,11 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
+    accessRightsStore,
+    contextOptionsStore,
   }) => {
     const {
       setSelected,
-      setSelection,
-
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -578,10 +737,10 @@ export default inject(
       isThirdPartySelection,
       cbMenuItems,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
-      viewAs,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -590,7 +749,11 @@ export default inject(
 
       setAlreadyFetchingRooms,
 
+      roomsForRestore,
+      roomsForDelete,
+
       categoryType,
+      isEmptyPage,
     } = filesStore;
 
     const {
@@ -601,7 +764,10 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
-      setCreateRoomDialogVisible,
+      setRestoreAllPanelVisible,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
     } = dialogsStore;
 
     const {
@@ -610,6 +776,7 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
     } = treeFoldersStore;
+
     const {
       deleteAction,
       downloadAction,
@@ -617,33 +784,52 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+    const { setIsVisible, isVisible } = auth.infoPanelStore;
 
     const {
       title,
       id,
       roomType,
-      rootFolderType,
       pathParts,
       navigationPath,
+      rootFolderType,
     } = selectedFolderStore;
+
+    const selectedFolder = { ...selectedFolderStore };
 
     const { enablePlugins } = auth.settingsStore;
 
     const isRoom = !!roomType;
 
+    const {
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
+      onClickReconnectStorage,
+    } = contextOptionsStore;
+
+    const { canCreateFiles } = accessRightsStore;
+
+    const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
+
+    const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
+
+    const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
       title,
       isRoom,
-      rootFolderType,
       currentFolderId: id,
       pathParts: pathParts,
       navigationPath: navigationPath,
       canCreate,
-      toggleInfoPanel: toggleIsVisible,
+      canCreateFiles,
+      setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -657,7 +843,6 @@ export default inject(
       getFolderInfo,
 
       setSelected,
-      setSelection,
 
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -670,14 +855,15 @@ export default inject(
       getHeaderMenu,
       backToParentFolder,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       setSelectFileDialogVisible,
-      setCreateRoomDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
+      isEmptyArchive,
       isPrivacyFolder,
-      viewAs,
+      isArchiveFolder,
 
       setIsLoading,
       fetchFiles,
@@ -687,13 +873,31 @@ export default inject(
       activeFolders,
 
       isRoomsFolder,
-      isArchiveFolder,
 
       setAlreadyFetchingRooms,
 
       categoryType,
 
       enablePlugins,
+
+      setRestoreAllPanelVisible,
+      isEmptyPage,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
+
+      selectedFolder,
+
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
+
+      rootFolderType,
+
+      isEmptyArchive,
+      canRestoreAll,
+      canDeleteAll,
     };
   }
 )(

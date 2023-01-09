@@ -21,9 +21,10 @@ const IconEditor = ({
   isEdit,
   title,
   tags,
-  currentRoomTypeData,
+  defaultTagLabel,
   icon,
   onChangeIcon,
+  isDisabled,
 }) => {
   const [previewIcon, setPreviewIcon] = useState(null);
 
@@ -41,6 +42,7 @@ const IconEditor = ({
             uploadedFile={icon.uploadedFile}
             setUploadedFile={setUploadedFile}
             setPreviewIcon={setPreviewIcon}
+            isDisabled={isDisabled}
           />
 
           <PreviewTile
@@ -48,11 +50,16 @@ const IconEditor = ({
             title={title || t("Files:NewRoom")}
             previewIcon={previewIcon}
             tags={tags.map((tag) => tag.name)}
-            defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+            defaultTagLabel={defaultTagLabel}
+            isDisabled={isDisabled}
           />
         </div>
       )}
-      <Dropzone t={t} setUploadedFile={setUploadedFile} />
+      <Dropzone
+        t={t}
+        setUploadedFile={setUploadedFile}
+        isDisabled={isDisabled}
+      />
     </StyledIconEditor>
   );
 };

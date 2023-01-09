@@ -24,19 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.IdentityModel.Tokens.Jwt;
-
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Net.Http.Headers;
-
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
 
 public abstract class BaseStartup
 {
-    private readonly IConfiguration _configuration;
+    private const string CustomCorsPolicyName = "Basic";
+    private const string BasicAuthScheme = "Basic";
+    private const string MultiAuthSchemes = "MultiAuthSchemes";
+
+    protected readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
+    private readonly string _corsOrigin;
+
     protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
@@ -49,6 +50,9 @@ public abstract class BaseStartup
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
+
+        _corsOrigin = _configuration["core:cors"];
+
         DIHelper = new DIHelper();
 
         if (bool.TryParse(_configuration["core:products"], out var loadProducts))
@@ -118,10 +122,29 @@ public abstract class BaseStartup
         DIHelper.TryAdd<CookieAuthHandler>();
         DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CustomCorsPolicyName,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(_corsOrigin)
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
+                                  });
+            });
+        }
+
         services.AddDistributedCache(_configuration);
         services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
+
+        services.RegisterFeature();
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
@@ -155,10 +178,10 @@ public abstract class BaseStartup
 
         var authBuilder = services.AddAuthentication(options =>
         {
-            options.DefaultScheme = "MultiAuthSchemes";
-            options.DefaultChallengeScheme = "MultiAuthSchemes";
+            options.DefaultScheme = MultiAuthSchemes;
+            options.DefaultChallengeScheme = MultiAuthSchemes;
         }).AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, a => { })
-          .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("Basic", a => { })
+          .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>(BasicAuthScheme, a => { })
           .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { })
           .AddJwtBearer("Bearer", options =>
             {
@@ -180,7 +203,7 @@ public abstract class BaseStartup
 
                         var claimUserId = ctx.Principal.FindFirstValue("userId");
 
-                        if (String.IsNullOrEmpty(claimUserId))
+                        if (string.IsNullOrEmpty(claimUserId))
                         {
                             throw new Exception("Claim 'UserId' is not present in claim list");
                         }
@@ -193,24 +216,35 @@ public abstract class BaseStartup
                     }
                 };
             })
-          .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, options =>
+          .AddPolicyScheme(MultiAuthSchemes, JwtBearerDefaults.AuthenticationScheme, options =>
             {
-
                 options.ForwardDefaultSelector = context =>
                 {
                     var authorizationHeader = context.Request.Headers[HeaderNames.Authorization].FirstOrDefault();
 
-                    if (String.IsNullOrEmpty(authorizationHeader)) return CookieAuthenticationDefaults.AuthenticationScheme;
+                    if (string.IsNullOrEmpty(authorizationHeader))
+                    {
+                        return CookieAuthenticationDefaults.AuthenticationScheme;
+                    }
 
-                    if (authorizationHeader.StartsWith("Basic ")) return "Basic";
+                    if (authorizationHeader.StartsWith("Basic "))
+                    {
+                        return BasicAuthScheme;
+                    }
 
                     if (authorizationHeader.StartsWith("Bearer "))
                     {
                         var token = authorizationHeader.Substring("Bearer ".Length).Trim();
                         var jwtHandler = new JwtSecurityTokenHandler();
 
-                        return (jwtHandler.CanReadToken(token) && jwtHandler.ReadJwtToken(token).Issuer.Equals(_configuration["core:oidc:authority"]))
-                            ? JwtBearerDefaults.AuthenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme;
+                        if (jwtHandler.CanReadToken(token))
+                        {
+                            var issuer = jwtHandler.ReadJwtToken(token).Issuer;
+                            if (!string.IsNullOrEmpty(issuer) && issuer.Equals(_configuration["core:oidc:authority"]))
+                            {
+                                return JwtBearerDefaults.AuthenticationScheme;
+                            }
+                        }
                     }
 
                     return CookieAuthenticationDefaults.AuthenticationScheme;
@@ -226,7 +260,7 @@ public abstract class BaseStartup
         }
     }
 
-    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    public static IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
     {
         return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }
@@ -239,6 +273,11 @@ public abstract class BaseStartup
         });
 
         app.UseRouting();
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            app.UseCors(CustomCorsPolicyName);
+        }
 
         if (AddAndUseSession)
         {
@@ -273,35 +312,3 @@ public abstract class BaseStartup
     }
 }
 
-public static class LogNLogConfigureExtenstion
-{
-    private static LoggingConfiguration GetXmlLoggingConfiguration(IHostEnvironment hostEnvironment, IConfiguration configuration)
-    {
-        var loggerConfiguration = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
-
-        var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
-
-        if (!string.IsNullOrEmpty(settings.Name))
-        {
-            loggerConfiguration.Variables["name"] = settings.Name;
-        }
-
-        if (!string.IsNullOrEmpty(settings.Dir))
-        {
-            var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir);
-            loggerConfiguration.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
-        }
-
-        return loggerConfiguration;
-    }
-
-    public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
-        {
-            LogManager.ThrowConfigExceptions = false;
-
-            r.AddNLog(GetXmlLoggingConfiguration(hostBuildexContext.HostingEnvironment, hostBuildexContext.Configuration));
-        });
-    }
-}

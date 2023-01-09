@@ -239,9 +239,8 @@ const AccessComboBox = (props) => {
 
   return isExternalLink ? (
     <AccessRightSelect
-      options={[]}
+      accessOptions={advancedOptions}
       selectedOption={selectedOption}
-      advancedOptions={advancedOptions}
       isExternalLink={isExternalLink}
       isPersonal={isPersonal}
     />

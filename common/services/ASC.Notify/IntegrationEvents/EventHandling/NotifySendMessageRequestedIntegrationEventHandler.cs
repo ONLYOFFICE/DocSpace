@@ -54,10 +54,13 @@ public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEve
 
     public async Task Handle(NotifySendMessageRequestedIntegrationEvent @event)
     {
-        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        {
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-        SendNotifyMessage(@event.NotifyMessage);
+            SendNotifyMessage(@event.NotifyMessage);
 
-        await Task.CompletedTask;
+            await Task.CompletedTask;
+        }
     }
 }

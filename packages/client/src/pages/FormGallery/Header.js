@@ -20,7 +20,7 @@ const SectionHeaderContent = (props) => {
     history,
     match,
     isInfoPanelVisible,
-    toggleInfoPanel,
+    setIsInfoPanelVisible,
     setGallerySelected,
     categoryType,
   } = props;
@@ -41,6 +41,10 @@ const SectionHeaderContent = (props) => {
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
     );
+  };
+
+  const toggleInfoPanel = () => {
+    setIsInfoPanelVisible(!isInfoPanelVisible);
   };
 
   return (
@@ -72,12 +76,12 @@ const SectionHeaderContent = (props) => {
 };
 
 export default inject(({ auth, filesStore, oformsStore }) => {
-  const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+  const { isVisible, setIsVisible } = auth.infoPanelStore;
   const { categoryType } = filesStore;
   const { setGallerySelected } = oformsStore;
   return {
-    toggleInfoPanel: toggleIsVisible,
     isInfoPanelVisible: isVisible,
+    setIsInfoPanelVisible: setIsVisible,
     setGallerySelected,
     categoryType,
   };

@@ -3,9 +3,14 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import PropTypes from "prop-types";
 
-const ButtonWrapper = ({ label, iconName, isDisabled, noHover, ...props }) => (
-  <button type="button" {...props}></button>
-);
+const ButtonWrapper = ({
+  label,
+  iconName,
+  isDisabled,
+  noHover,
+  isConnect,
+  ...props
+}) => <button type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
@@ -14,11 +19,13 @@ ButtonWrapper.propTypes = {
   isDisabled: PropTypes.bool,
   onClick: PropTypes.func,
   $iconOptions: PropTypes.object,
+  isConnect: PropTypes.bool,
 };
 
 const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled ? "disabled" : "",
   tabIndex: props.tabIndex,
+  isConnect: props.isConnect,
 }))`
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
@@ -32,7 +39,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   padding: ${(props) => props.theme.socialButton.padding};
   border-radius: ${(props) => props.theme.socialButton.borderRadius};
   width: ${(props) => props.theme.socialButton.width};
-  height: ${(props) => props.theme.socialButton.height};
+  height: ${(props) =>
+    props.size === "base"
+      ? props.theme.socialButton.height
+      : props.theme.socialButton.heightSmall};
   text-align: ${(props) => props.theme.socialButton.textAlign};
   border: ${(props) => props.theme.socialButton.border};
   touch-callout: none;
@@ -58,9 +68,11 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   ${(props) =>
     !props.isDisabled
       ? css`
-          background: ${(props) => props.theme.socialButton.background};
+          background: ${(props) =>
+            props.isConnect
+              ? props.theme.socialButton.connectBackground
+              : props.theme.socialButton.background};
           box-shadow: ${(props) => props.theme.socialButton.boxShadow};
-          color: ${(props) => props.theme.socialButton.color};
 
           ${(props) =>
             !props.noHover &&
@@ -68,19 +80,20 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
               :hover,
               :active {
                 cursor: pointer;
-                box-shadow: ${(props) =>
-                  props.theme.socialButton.hoverBoxShadow};
-                border: 1px solid
-                  ${(props) => props.theme.socialButton.hoverBorder};
+                box-shadow: ${(props) => props.theme.socialButton.boxShadow};
 
                 .social_button_text {
-                  color: ${(props) => props.theme.socialButton.text.hoverColor};
+                  color: ${(props) =>
+                    !props.isConnect &&
+                    props.theme.socialButton.text.hoverColor};
                 }
               }
 
               :hover {
                 background: ${(props) =>
-                  props.theme.socialButton.hoverBackground};
+                  props.isConnect
+                    ? props.theme.socialButton.hoverConnectBackground
+                    : props.theme.socialButton.hoverBackground};
               }
 
               :active {
@@ -109,7 +122,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   .social_button_text {
     position: relative;
     pointer-events: none;
-
+    color: ${(props) =>
+      props.isConnect
+        ? props.theme.socialButton.text.connectColor
+        : props.theme.socialButton.text.color};
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
     font-family: Roboto, "Open Sans", sans-serif, Arial;
@@ -130,6 +146,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
     height: ${(props) => props.theme.socialButton.svg.height};
     min-width: ${(props) => props.theme.socialButton.svg.minWidth};
     min-height: ${(props) => props.theme.socialButton.svg.minHeight};
+
+    path {
+      fill: ${(props) => props.isConnect && props.theme.socialButton.svg.fill};
+    }
   }
 `;
 

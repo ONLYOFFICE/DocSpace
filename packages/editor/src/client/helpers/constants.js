@@ -1,2 +1,2 @@
-export const STUDIO_SCOPE = "client";
-export const STUDIO_REMOTE_ENTRY_URL = "/remoteEntry.js";
+export const CLIENT_SCOPE = "client";
+export const CLIENT_REMOTE_ENTRY_URL = "/remoteEntry.js";

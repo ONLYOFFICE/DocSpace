@@ -24,10 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Caching;
-
-using Module = ASC.Api.Core.Module;
-using SecurityContext = ASC.Core.SecurityContext;
+using ASC.Common.Log;
 
 namespace ASC.People.Api;
 
@@ -37,7 +34,6 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
-    private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomNamingPeople _customNamingPeople;
@@ -48,8 +44,6 @@ public class UserController : PeopleControllerBase
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
     private readonly Recaptcha _recaptcha;
-    private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
@@ -64,14 +58,17 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
+    private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
-    private readonly IDaoFactory _daoFactory;
-    private readonly EmailValidationKeyProvider _validationKeyProvider;
+    private readonly IQuotaService _quotaService;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
+    private readonly CountUserChecker _countUserChecker;
+    private readonly UsersInRoomChecker _usersInRoomChecker;
 
     public UserController(
         ICache cache,
         TenantManager tenantManager,
-        Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
@@ -82,8 +79,6 @@ public class UserController : PeopleControllerBase
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,
         Recaptcha recaptcha,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         TenantUtil tenantUtil,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
@@ -104,14 +99,17 @@ public class UserController : PeopleControllerBase
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
+        RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory,
-        EmailValidationKeyProvider validationKeyProvider)
+        UsersQuotaSyncOperation usersQuotaSyncOperation,
+        CountRoomAdminChecker countRoomAdminChecker,
+        CountUserChecker activeUsersChecker,
+        UsersInRoomChecker usersInRoomChecker,
+        IQuotaService quotaService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
         _tenantManager = tenantManager;
-        _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
         _customNamingPeople = customNamingPeople;
@@ -122,8 +120,6 @@ public class UserController : PeopleControllerBase
         _queueWorkerReassign = queueWorkerReassign;
         _queueWorkerRemove = queueWorkerRemove;
         _recaptcha = recaptcha;
-        _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _tenantUtil = tenantUtil;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
@@ -138,9 +134,13 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
+        _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
-        _daoFactory = daoFactory;
-        _validationKeyProvider = validationKeyProvider;
+        _countRoomAdminChecker = countRoomAdminChecker;
+        _countUserChecker = activeUsersChecker;
+        _usersInRoomChecker = usersInRoomChecker;
+        _quotaService = quotaService;
+        _usersQuotaSyncOperation = usersQuotaSyncOperation;
     }
 
     [HttpPost("active")]
@@ -178,7 +178,7 @@ public class UserController : PeopleControllerBase
         user.Notes = inDto.Comment;
         user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? false : null);
 
         user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
@@ -186,11 +186,11 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor, false, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
@@ -208,40 +208,26 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        var success = int.TryParse(inDto.RoomId, out var id);
+        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
 
-        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        if (options != null && !options.IsCorrect)
         {
-            var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
-            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
-                _validationKeyProvider.ValidEmailKeyInterval);
-            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
-                _validationKeyProvider.ValidEmailKeyInterval);
+            throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+        }
 
-            if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
+        inDto.Type = options != null ? options.EmployeeType : inDto.Type;
+
+        var user = new UserInfo();
+
+        var byEmail = options?.LinkType == LinkType.InvintationByEmail;
+
+        if (byEmail)
+        {
+            user = _userManager.GetUserByEmail(inDto.Email);
+
+            if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
-                throw new SecurityException("Invalid data");
-            }
-
-            if (success)
-            {
-                var folderDao = _daoFactory.GetFolderDao<int>();
-                var folder = await folderDao.GetFolderAsync(id);
-
-                if (folder == null)
-                {
-                    throw new ItemNotFoundException("Virtual room not found");
-                }
-            }
-            else
-            {
-                var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
-
-                if (folder == null)
-                {
-                    throw new ItemNotFoundException("Virtual room not found");
-                }
+                throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
             }
         }
 
@@ -261,8 +247,6 @@ public class UserController : PeopleControllerBase
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
 
-        var user = new UserInfo();
-
         //Validate email
         var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
@@ -275,45 +259,62 @@ public class UserController : PeopleControllerBase
         user.Notes = inDto.Comment;
         user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? false : null);
 
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        if (options != null && options.LinkType == LinkType.InvintationToRoom)
         {
+            var success = int.TryParse(options.RoomId, out var id);
+
             if (success)
             {
-                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
-                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _usersInRoomChecker.CheckAppend();
+                await _fileSecurity.ShareAsync(options.RoomId, FileEntryType.Folder, user.Id, options.Share);
             }
+        }
 
-            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
-            _messageService.Send(messageAction, _messageTarget.Create(new[] { user.Id.ToString(), inDto.RoomId }), user.DisplayUserName(false, _displayUserSettingsHelper));
-        }
-        else
-        {
-            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-        }
+        var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
+        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPost("invite")]
+    public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
+    {
+        foreach (var invite in inDto.Invitations)
+        {
+            var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
+            var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+
+            _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+            _logger.Debug(link);
+        }
+
+        var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+
+        foreach (var user in users)
+        {
+            yield return await _employeeDtoHelper.Get(user);
+        }
     }
 
     [HttpPut("{userid}/password")]
@@ -342,7 +343,7 @@ public class UserController : PeopleControllerBase
             {
                 user.Email = address.Address.ToLowerInvariant();
                 user.ActivationStatus = EmployeeActivationStatus.Activated;
-                _userManager.SaveUserInfo(user, syncCardDav: true);
+                await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
             }
         }
 
@@ -390,8 +391,8 @@ public class UserController : PeopleControllerBase
         CheckReassignProccess(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.DeleteUser(user.Id);
+        await _userPhotoManager.RemovePhoto(user.Id);
+        await _userManager.DeleteUser(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
         _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
@@ -425,7 +426,7 @@ public class UserController : PeopleControllerBase
         _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
-        _userManager.SaveUserInfo(user);
+        _userManager.UpdateUserInfo(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
@@ -434,8 +435,8 @@ public class UserController : PeopleControllerBase
 
         if (_coreBaseSettings.Personal)
         {
-            _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
+            await _userManager.DeleteUser(user.Id);
             _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
         else
@@ -480,6 +481,7 @@ public class UserController : PeopleControllerBase
         return GetByStatus(EmployeeStatus.Active);
     }
 
+    [AllowNotPayment]
     [HttpGet("email")]
     public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
     {
@@ -497,6 +499,7 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
+    [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [HttpGet("{username}", Order = 1)]
     public async Task<EmployeeFullDto> GetById(string username)
@@ -531,7 +534,7 @@ public class UserController : PeopleControllerBase
 
         if (isInvite)
         {
-            return _employeeFullDtoHelper.GetSimple(user);
+            return await _employeeFullDtoHelper.GetSimple(user);
         }
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -552,13 +555,13 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null);
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
@@ -604,9 +607,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
@@ -646,8 +649,8 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
+            await _userManager.DeleteUser(user.Id);
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
 
@@ -681,7 +684,7 @@ public class UserController : PeopleControllerBase
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (viewer.IsAdmin(_userManager) || viewer.Id == user.Id)
+            if (_userManager.IsDocSpaceAdmin(viewer) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -692,19 +695,15 @@ public class UserController : PeopleControllerBase
                     user.ActivationStatus = EmployeeActivationStatus.AutoGenerated;
                 }
 
-                _userManager.SaveUserInfo(user, syncCardDav: true);
+                await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
             }
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                if (user.IsVisitor(_userManager))
-                {
-                    _studioNotifyService.GuestInfoActivation(user);
-                }
-                else
-                {
-                    _studioNotifyService.UserInfoActivation(user);
-                }
+                var type = _userManager.IsDocSpaceAdmin(user) ? EmployeeType.DocSpaceAdmin :
+                    _userManager.IsUser(user) ? EmployeeType.User : EmployeeType.RoomAdmin;
+
+                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
             }
             else
             {
@@ -739,6 +738,7 @@ public class UserController : PeopleControllerBase
         return darkThemeSettings;
     }
 
+    [AllowNotPayment]
     [HttpGet("@self")]
     public async Task<EmployeeFullDto> Self()
     {
@@ -753,7 +753,7 @@ public class UserController : PeopleControllerBase
 
     [AllowNotPayment]
     [HttpPost("email")]
-    public object SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
+    public async Task<object> SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
     {
         Guid.TryParse(inDto.UserId, out var userid);
 
@@ -794,7 +794,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!viewer.IsAdmin(_userManager))
+        if (!_userManager.IsDocSpaceAdmin(viewer))
         {
             _studioNotifyService.SendEmailChangeInstructions(user, email);
         }
@@ -807,7 +807,7 @@ public class UserController : PeopleControllerBase
 
             user.Email = email;
             user.ActivationStatus = EmployeeActivationStatus.NotActivated;
-            _userManager.SaveUserInfo(user, syncCardDav: true);
+            await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
             _studioNotifyService.SendEmailActivationInstructions(user, email);
         }
 
@@ -846,7 +846,7 @@ public class UserController : PeopleControllerBase
             }
 
             u.ActivationStatus = activationstatus;
-            _userManager.SaveUserInfo(u);
+            _userManager.UpdateUserInfo(u);
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -873,7 +873,7 @@ public class UserController : PeopleControllerBase
 
                 try
                 {
-                    _userManager.SaveUserInfo(user);
+                    _userManager.UpdateUserInfo(user);
                 }
                 catch
                 {
@@ -907,7 +907,7 @@ public class UserController : PeopleControllerBase
 
         var isLdap = user.IsLDAP();
         var isSso = user.IsSSO();
-        var isAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         if (!isLdap && !isSso)
         {
@@ -917,7 +917,7 @@ public class UserController : PeopleControllerBase
             user.LastName = inDto.Lastname ?? user.LastName;
             user.Location = inDto.Location ?? user.Location;
 
-            if (isAdmin)
+            if (isDocSpaceAdmin)
             {
                 user.Title = inDto.Title ?? user.Title;
             }
@@ -949,7 +949,7 @@ public class UserController : PeopleControllerBase
 
         //Update contacts
         UpdateContacts(inDto.Contacts, user);
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
@@ -960,35 +960,29 @@ public class UserController : PeopleControllerBase
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
         }
-        if (self && !isAdmin)
+        if (self && !isDocSpaceAdmin)
         {
             _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
+        if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
         {
-            _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+            await _countUserChecker.CheckAppend();
+            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !inDto.IsVisitor && user.IsVisitor(_userManager))
+        if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
-            var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
-            if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
-            {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                _webItemSecurityCache.ClearCache(Tenant.Id);
-            }
-            else
-            {
-                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", usersQuota));
-            }
+            await _countRoomAdminChecker.CheckAppend();
+            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        _userManager.SaveUserInfo(user, inDto.IsVisitor, true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
@@ -1021,16 +1015,22 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(_userManager))
+                        if (!_userManager.IsUser(user))
                         {
-                            user.Status = EmployeeStatus.Active;
-                            _userManager.SaveUserInfo(user, syncCardDav: true);
+                            await _countRoomAdminChecker.CheckAppend();
                         }
+                        else
+                        {
+                            await _countUserChecker.CheckAppend();
+                        }
+
+                        user.Status = EmployeeStatus.Active;
+                        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
                     }
                     break;
                 case EmployeeStatus.Terminated:
                     user.Status = EmployeeStatus.Terminated;
-                    _userManager.SaveUserInfo(user, syncCardDav: true);
+                    await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
                     await _cookiesManager.ResetUserCookie(user.Id);
                     _messageService.Send(MessageAction.CookieSettingsUpdated);
@@ -1056,7 +1056,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
+            if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
                 || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
@@ -1064,22 +1064,15 @@ public class UserController : PeopleControllerBase
 
             switch (type)
             {
-                case EmployeeType.User:
-                    if (user.IsVisitor(_userManager))
-                    {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
-                        {
-                            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                            _webItemSecurityCache.ClearCache(Tenant.Id);
-                        }
-                    }
+                case EmployeeType.RoomAdmin:
+                    await _countRoomAdminChecker.CheckAppend();
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
-                case EmployeeType.Visitor:
-                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantExtra.GetTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
-                    {
-                        _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-                        _webItemSecurityCache.ClearCache(Tenant.Id);
-                    }
+                case EmployeeType.User:
+                    await _countUserChecker.CheckAppend();
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
             }
         }
@@ -1091,8 +1084,57 @@ public class UserController : PeopleControllerBase
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
-    private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
+    [HttpGet("checkrecalculatequota")]
+    public TaskProgressDto CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _usersQuotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
+
+    [HttpPut("quota")]
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    {
+        var users = inDto.UserIds
+            .Where(userId => !_userManager.IsSystemUser(userId))
+            .Select(userId => _userManager.GetUsers(userId))
+            .ToList();
+
+        foreach (var user in users)
+        {
+            if (inDto.Quota != -1)
+            {
+                var usedSpace = Math.Max(0,
+                    _quotaService.FindUserQuotaRows(
+                            _tenantManager.GetCurrentTenant().Id,
+                            user.Id
+                        )
+                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+                var tenanSpaceQuota = _quotaService.GetTenantQuota(Tenant.Id).MaxTotalSize;
+
+                if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
+                {
+                    continue;
+                }
+            }
+
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
+    }
+
+
+    private async Task UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {
         if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))
         {
@@ -1121,7 +1163,7 @@ public class UserController : PeopleControllerBase
             var userDepartment = _userManager.GetGroupInfo(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
-                _userManager.AddUserIntoGroup(user.Id, guid);
+                await _userManager.AddUserIntoGroup(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
                     _userManager.SetDepartmentManager(guid, user.Id);
@@ -1194,7 +1236,7 @@ public class UserController : PeopleControllerBase
                 try
                 {
                     _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
-                    _userManager.DeleteUser(newUserInfo.Id);
+                    await _userManager.DeleteUser(newUserInfo.Id);
                 }
                 finally
                 {
@@ -1232,14 +1274,14 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var isAdmin = _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager) ||
+        var isDocSpaceAdmin = _userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID) ||
                       _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         var includeGroups = new List<List<Guid>>();
@@ -1254,16 +1296,33 @@ public class UserController : PeopleControllerBase
         {
             switch (employeeType)
             {
-                case EmployeeType.User:
-                    excludeGroups.Add(Constants.GroupVisitor.ID);
+                case EmployeeType.DocSpaceAdmin:
+                    includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
                     break;
-                case EmployeeType.Visitor:
-                    includeGroups.Add(new List<Guid> { Constants.GroupVisitor.ID });
+                case EmployeeType.RoomAdmin:
+                    excludeGroups.Add(Constants.GroupUser.ID); 
+                    excludeGroups.Add(Constants.GroupAdmin.ID);
+                    break;
+                case EmployeeType.User:
+                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
                     break;
             }
         }
 
-        if (isAdministrator.HasValue && isAdministrator.Value)
+        if (payments != null)
+        {
+            switch (payments)
+            {
+                case Payments.Paid:
+                    excludeGroups.Add(Constants.GroupUser.ID);
+                    break;
+                case Payments.Free:
+                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
+                    break;
+            }
+        }
+
+        if (isDocSpaceAdministrator.HasValue && isDocSpaceAdministrator.Value)
         {
             var adminGroups = new List<Guid>
             {
@@ -1275,7 +1334,7 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 

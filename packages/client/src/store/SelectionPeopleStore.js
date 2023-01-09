@@ -1,8 +1,5 @@
-import { action, computed, makeObservable, observable } from "mobx";
-import {
-  EmployeeStatus,
-  EmployeeActivationStatus,
-} from "@docspace/common/constants";
+import { makeAutoObservable } from "mobx";
+import { EmployeeStatus } from "@docspace/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
 
 class SelectionStore {
@@ -13,32 +10,8 @@ class SelectionStore {
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      selection: observable,
-      bufferSelection: observable,
-      selected: observable,
-      selectUser: action,
-      setBufferSelection: action,
-      deselectUser: action,
-      selectAll: action,
-      setSelection: action,
-      clearSelection: action,
-      selectByStatus: action,
-      setSelected: action,
-      hasAnybodySelected: computed,
-      hasUsersToMakeEmployees: computed,
-      getUsersToMakeEmployeesIds: computed,
-      hasUsersToMakeGuests: computed,
-      getUsersToMakeGuestsIds: computed,
-      hasUsersToActivate: computed,
-      getUsersToActivateIds: computed,
-      hasUsersToDisable: computed,
-      getUsersToDisableIds: computed,
-      hasUsersToInvite: computed,
-      getUsersToInviteIds: computed,
-      hasUsersToRemove: computed,
-      getUsersToRemoveIds: computed,
-    });
+
+    makeAutoObservable(this);
   }
 
   setSelection = (selection) => {
@@ -126,130 +99,91 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
-    const isOwner = this.peopleStore.authStore.userStore.user.isOwner;
-    const users = this.selection.filter((x) => {
-      return (
-        (!x.isOwner &&
-          !x.isAdmin &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id) ||
-        (x.isAdmin &&
-          isOwner &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id)
-      );
-    });
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
     return users.length > 0;
   }
 
-  get getUsersToMakeEmployeesIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
+  get getUsersToMakeEmployees() {
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canMakeEmployeeUser(x));
+
+    return users.map((u) => u);
   }
 
-  get hasUsersToMakeGuests() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return !!users.length;
-  }
+  get hasFreeUsers() {
+    const users = this.selection.filter(
+      (x) => x.status !== EmployeeStatus.Disabled && x.isVisitor
+    );
 
-  get getUsersToMakeGuestsIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
+    return users.length > 0;
   }
 
   get hasUsersToActivate() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return !!users.length;
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canActivateUser(x));
+
+    return users.length > 0;
   }
 
-  get getUsersToActivateIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
+  get getUsersToActivate() {
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canActivateUser(x));
+
+    return users.map((u) => u);
   }
 
   get hasUsersToDisable() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return !!users.length;
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canDisableUser(x));
+
+    return users.length > 0;
   }
 
-  get getUsersToDisableIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
+  get getUsersToDisable() {
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canDisableUser(x));
+
+    return users.map((u) => u);
   }
 
   get hasUsersToInvite() {
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
-    );
-    return !!users.length;
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canInviteUser(x));
+
+    return users.length > 0;
   }
 
   get getUsersToInviteIds() {
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
-    );
-    return users.map((u) => u.id);
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canInviteUser(x));
+
+    return users.length > 0 ? users.map((u) => u.id) : [];
   }
 
   get hasUsersToRemove() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return !!users.length;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canRemoveUser(x));
+
+    return users.length > 0;
   }
 
   get getUsersToRemoveIds() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return users.map((u) => u.id);
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
+
+    const users = this.selection.filter((x) => canRemoveUser(x));
+
+    return users.length > 0 ? users : false;
   }
 }
 

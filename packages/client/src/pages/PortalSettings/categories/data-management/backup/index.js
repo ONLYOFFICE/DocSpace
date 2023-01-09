@@ -10,7 +10,14 @@ import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
 
-const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
+const Backup = ({
+  helpUrlCreatingBackup,
+  buttonSize,
+  t,
+  history,
+  isNotPaidPeriod,
+  currentColorScheme,
+}) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -26,7 +33,7 @@ const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
                   as="a"
                   href={helpUrlCreatingBackup}
                   target="_blank"
-                  color="#555F65"
+                  color={currentColorScheme.main.accent}
                   isBold
                   isHovered
                 >
@@ -67,19 +74,29 @@ const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
     );
   };
 
-  return (
+  return isNotPaidPeriod ? (
+    <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
+  ) : (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
-  const { helpUrlCreatingBackup, isTabletView } = settingsStore;
+  const { settingsStore, currentTariffStatusStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
+
+  const {
+    helpUrlCreatingBackup,
+    isTabletView,
+    currentColorScheme,
+  } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
     helpUrlCreatingBackup,
     buttonSize,
+    isNotPaidPeriod,
+    currentColorScheme,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

@@ -47,16 +47,17 @@ public static class ConfigurationManagerExtension
                       {"pathToConf", path }
               });
 
-        config.AddJsonFile("appsettings.json")
-              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-              .AddJsonFile("storage.json")
-              .AddJsonFile("kafka.json")
-              .AddJsonFile($"kafka.{env.EnvironmentName}.json", true)
-              .AddJsonFile("rabbitmq.json")
-              .AddJsonFile($"rabbitmq.{env.EnvironmentName}.json", true)
-              .AddJsonFile("redis.json")
-              .AddJsonFile($"redis.{env.EnvironmentName}.json", true);
-                    
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+              .AddJsonFile("storage.json", optional: false, reloadOnChange: true)
+              .AddJsonFile("kafka.json", optional: true, reloadOnChange: true)
+              .AddJsonFile($"kafka.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+              .AddJsonFile("rabbitmq.json", optional: true, reloadOnChange: true)
+              .AddJsonFile($"rabbitmq.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+              .AddJsonFile("activemq.json", optional: true, reloadOnChange: true)
+              .AddJsonFile($"activemq.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+              .AddJsonFile("redis.json", optional: true, reloadOnChange: true)
+              .AddJsonFile($"redis.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
         return config;
     }

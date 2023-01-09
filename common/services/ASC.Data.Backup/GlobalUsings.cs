@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
@@ -39,6 +35,7 @@ global using ASC.Data.Backup.ApiModels;
 global using ASC.Data.Backup.Contracts;
 global using ASC.Data.Backup.Core.IntegrationEvents.Events;
 global using ASC.Data.Backup.EF.Context;
+global using ASC.Data.Backup.Extension;
 global using ASC.Data.Backup.Services;
 global using ASC.EventBus.Abstractions;
 global using ASC.Files.Core.EF;
@@ -49,12 +46,9 @@ global using ASC.Web.Studio.Utility;
 
 global using Autofac;
 
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Http.Features;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
+global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using static ASC.Data.Backup.BackupAjaxHandler;

@@ -40,39 +40,36 @@ public sealed class UserManagerWrapper
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
-    private readonly MessageService _messageService;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
+    private readonly CountRoomAdminChecker _countManagerChecker;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
         UserManager userManager,
         SecurityContext securityContext,
-        MessageService messageService,
         CustomNamingPeople customNamingPeople,
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         IPSecurity.IPSecurity iPSecurity,
-        DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
-        UserFormatter userFormatter)
+        UserFormatter userFormatter,
+        CountRoomAdminChecker countManagerChecker)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
         _securityContext = securityContext;
-        _messageService = messageService;
         _customNamingPeople = customNamingPeople;
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _iPSecurity = iPSecurity;
-        _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
+        _countManagerChecker = countManagerChecker;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -108,7 +105,49 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false)
+    public async Task<UserInfo> AddInvitedUserAsync(string email, EmployeeType type)
+    {
+        var mail = new MailAddress(email);
+
+        if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
+        {
+            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
+        }
+
+        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
+        {
+            await _countManagerChecker.CheckAppend();
+        }
+
+        var user = new UserInfo
+        {
+            Email = mail.Address,
+            UserName = mail.User,
+            LastName = string.Empty,
+            FirstName = string.Empty,
+            ActivationStatus = EmployeeActivationStatus.Pending,
+            Status = EmployeeStatus.Active,
+        };
+
+        var newUser = await _userManager.SaveUserInfo(user);
+
+        var groupId = type switch
+        {
+            EmployeeType.User => Constants.GroupUser.ID,
+            EmployeeType.DocSpaceAdmin => Constants.GroupAdmin.ID,
+            _ => Guid.Empty,
+        };
+
+        if (groupId != Guid.Empty)
+        {
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
+        }
+
+        return newUser;
+    }
+
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+        bool updateExising = false, bool isAdmin = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -117,7 +156,7 @@ public sealed class UserManagerWrapper
             throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
-        if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
+        if (!updateExising && !CheckUniqueEmail(userInfo.Id, userInfo.Email))
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
@@ -131,12 +170,12 @@ public sealed class UserManagerWrapper
             userInfo.WorkFromDate = _tenantUtil.DateTimeNow();
         }
 
-        if (!_coreBaseSettings.Personal && !fromInviteLink)
+        if (!_coreBaseSettings.Personal && (!fromInviteLink || updateExising))
         {
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = _userManager.SaveUserInfo(userInfo, isVisitor, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -150,7 +189,7 @@ public sealed class UserManagerWrapper
             //NOTE: Notify user only if it's active
             if (afterInvite)
             {
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
@@ -167,7 +206,7 @@ public sealed class UserManagerWrapper
             else
             {
                 //Send user invite
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
@@ -179,9 +218,13 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (isVisitor)
+        if (isUser)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+        }
+        else if (isAdmin)
+        {
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
         }
 
         return newUserInfo;

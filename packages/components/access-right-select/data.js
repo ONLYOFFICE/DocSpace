@@ -11,7 +11,7 @@ import {
 export const data = [
   {
     key: "key1",
-    title: "Room administrator",
+    label: "Room administrator",
     description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
     icon: CrownIcon,
     quota: "free",
@@ -19,7 +19,7 @@ export const data = [
   },
   {
     key: "key2",
-    title: "Full access",
+    label: "Full access",
     description: `Edit, upload, create, view, download, delete files and folders.`,
     icon: CheckRoundIcon,
     quota: "paid",
@@ -29,31 +29,31 @@ export const data = [
   { key: "key3", isSeparator: true },
   {
     key: "key4",
-    title: "Editing",
+    label: "Editing",
     description: `Editing, viewing, downloading files and folders, filling out forms.`,
     icon: PencilIcon,
   },
   {
     key: "key5",
-    title: "Review",
+    label: "Review",
     description: `Reviewing, viewing, downloading files and folders, filling out forms.`,
     icon: ReviewIcon,
   },
   {
     key: "key6",
-    title: "Comment",
+    label: "Comment",
     description: `Commenting on files, viewing, downloading files and folders, filling out forms.`,
     icon: CommentIcon,
   },
   {
     key: "key7",
-    title: "Read only",
+    label: "Read only",
     description: `Viewing, downloading files and folders, filling out forms.`,
     icon: EyeIcon,
   },
   {
     key: "key8",
-    title: "Deny access",
+    label: "Deny access",
     description: "",
     icon: AccessNoneIcon,
   },

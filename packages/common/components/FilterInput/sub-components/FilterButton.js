@@ -17,6 +17,12 @@ const FilterButton = ({
 
   filterHeader,
   selectorLabel,
+
+  isPersonalRoom,
+  isRooms,
+  isAccounts,
+  id,
+  title
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
@@ -26,7 +32,7 @@ const FilterButton = ({
 
   return (
     <>
-      <StyledButton onClick={changeShowFilterBlock}>
+      <StyledButton id={id} onClick={changeShowFilterBlock} title={title}>
         <IconButton iconName="/static/images/filter.react.svg" size={16} />
         {selectedFilterValue && selectedFilterValue.length > 0 && (
           <ColorTheme themeId={ThemeType.IndicatorFilterButton} />
@@ -42,6 +48,9 @@ const FilterButton = ({
           getFilterData={getFilterData}
           onFilter={onFilter}
           selectorLabel={selectorLabel}
+          isPersonalRoom={isPersonalRoom}
+          isRooms={isRooms}
+          isAccounts={isAccounts}
         />
       )}
     </>

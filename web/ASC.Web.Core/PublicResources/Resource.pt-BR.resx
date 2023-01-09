@@ -100,9 +100,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Endereço de email incorreto</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Código promocional incorreto</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Sem permissão para executar esta ação</value>
   </data>
@@ -159,9 +156,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Senha deve conter</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>A senha deve conter</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>

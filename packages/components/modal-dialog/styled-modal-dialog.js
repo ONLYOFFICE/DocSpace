@@ -90,8 +90,7 @@ const StyledHeader = styled.div`
     font-family: "Open Sans";
     color: ${(props) => props.theme.modalDialog.textColor};
     font-weight: 700;
-    font-size: ${(props) =>
-      props.currentDisplayType === "modal" ? "18px" : "21px"};
+    font-size: "21px";
   }
 `;
 
@@ -134,6 +133,16 @@ const StyledFooter = styled.div`
   @media ${tablet} {
     gap: 10px;
   }
+
+  ${(props) =>
+    props.isDoubleFooterLine &&
+    css`
+      flex-direction: column;
+      div {
+        display: flex;
+        gap: 8px;
+      }
+    `}
 `;
 
 Dialog.defaultProps = { theme: Base };

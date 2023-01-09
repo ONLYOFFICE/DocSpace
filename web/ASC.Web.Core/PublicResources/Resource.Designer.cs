@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resource {
@@ -1150,6 +1150,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Telegram.
+        /// </summary>
+        public static string ConsumersTelegram {
+            get {
+                return ResourceManager.GetString("ConsumersTelegram", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot username.
+        /// </summary>
+        public static string ConsumersTelegramBotName {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot token.
+        /// </summary>
+        public static string ConsumersTelegramBotToken {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Telegram account to receive portal notifications via Telegram..
+        /// </summary>
+        public static string ConsumersTelegramDescription {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below..
+        /// </summary>
+        public static string ConsumersTelegramInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twilio.
         /// </summary>
         public static string ConsumersTwilio {
@@ -1537,15 +1582,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Incorrect promo code.
-        /// </summary>
-        public static string EmailAndPasswordIncorrectPromocode {
-            get {
-                return ResourceManager.GetString("EmailAndPasswordIncorrectPromocode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No permissions to perform this action.
         /// </summary>
         public static string ErrorAccessDenied {
@@ -1645,6 +1681,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown image file type.
+        /// </summary>
+        public static string ErrorFileNotImage {
+            get {
+                return ResourceManager.GetString("ErrorFileNotImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image size exceed the allowed parameters.
+        /// </summary>
+        public static string ErrorImageSize {
+            get {
+                return ResourceManager.GetString("ErrorImageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
         public static string ErrorImageWeightLimit {
@@ -1659,6 +1713,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorIncorrectUserName {
             get {
                 return ResourceManager.GetString("ErrorIncorrectUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The access to the portal is restricted.
+        /// </summary>
+        public static string ErrorIpSecurity {
+            get {
+                return ResourceManager.GetString("ErrorIpSecurity", resourceCulture);
             }
         }
         
@@ -1996,11 +2059,47 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud space for your office docs.
+        /// </summary>
+        public static string PortalName {
+            get {
+                return ResourceManager.GetString("PortalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Portal Access.
         /// </summary>
         public static string PortalSecurity {
             get {
                 return ResourceManager.GetString("PortalSecurity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is greater than portals quota..
+        /// </summary>
+        public static string QuotaGreaterPortalError {
+            get {
+                return ResourceManager.GetString("QuotaGreaterPortalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - some users cannot use this quota..
+        /// </summary>
+        public static string QuotaGroupError {
+            get {
+                return ResourceManager.GetString("QuotaGroupError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is less than used memory..
+        /// </summary>
+        public static string QuotaLessUsedMemoryError {
+            get {
+                return ResourceManager.GetString("QuotaLessUsedMemoryError", resourceCulture);
             }
         }
         
@@ -2145,6 +2244,213 @@ namespace ASC.Web.Core.PublicResources {
         public static string SuccessfullySentNotificationDeleteUserInfoMessage {
             get {
                 return ResourceManager.GetString("SuccessfullySentNotificationDeleteUserInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Business.
+        /// </summary>
+        public static string Tariffs_admin {
+            get {
+                return ResourceManager.GetString("Tariffs_admin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup.
+        /// </summary>
+        public static string Tariffs_startup {
+            get {
+                return ResourceManager.GetString("Tariffs_startup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking user logins &amp; action.
+        /// </summary>
+        public static string TariffsFeature_audit {
+            get {
+                return ResourceManager.GetString("TariffsFeature_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max file size.
+        /// </summary>
+        public static string TariffsFeature_file_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_file_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file size should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_file_size_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_file_size_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of managers should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_manager_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_manager_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of admins.
+        /// </summary>
+        public static string TariffsFeature_manager_price_count {
+            get {
+                return ResourceManager.GetString("TariffsFeature_manager_price_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic backup &amp; recovery.
+        /// </summary>
+        public static string TariffsFeature_restore {
+            get {
+                return ResourceManager.GetString("TariffsFeature_restore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlimited number of active rooms.
+        /// </summary>
+        public static string TariffsFeature_room {
+            get {
+                return ResourceManager.GetString("TariffsFeature_room", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of rooms should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_room_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_room_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SSO.
+        /// </summary>
+        public static string TariffsFeature_sso {
+            get {
+                return ResourceManager.GetString("TariffsFeature_sso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} storage space.
+        /// </summary>
+        public static string TariffsFeature_total_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The used storage size should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_total_size_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage space.
+        /// </summary>
+        public static string TariffsFeature_total_size_price_count {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size_price_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Admins added:.
+        /// </summary>
+        public static string TariffsFeature_used_manager {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_manager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rooms:.
+        /// </summary>
+        public static string TariffsFeature_used_room {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_room", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage space used:.
+        /// </summary>
+        public static string TariffsFeature_used_total_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_total_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users in room:.
+        /// </summary>
+        public static string TariffsFeature_used_usersInRoom {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_usersInRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlimited number of users.
+        /// </summary>
+        public static string TariffsFeature_users {
+            get {
+                return ResourceManager.GetString("TariffsFeature_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of users should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_users_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_users_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users in room.
+        /// </summary>
+        public static string TariffsFeature_usersInRoom {
+            get {
+                return ResourceManager.GetString("TariffsFeature_usersInRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of users in room should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_usersInRoom_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_usersInRoom_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Branding &amp; customization.
+        /// </summary>
+        public static string TariffsFeature_whitelabel {
+            get {
+                return ResourceManager.GetString("TariffsFeature_whitelabel", resourceCulture);
             }
         }
         

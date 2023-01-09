@@ -1,7 +1,7 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
   authStore;
@@ -26,8 +26,17 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  inviteUsersWarningDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
+  restoreAllPanelVisible = false;
+  archiveDialogVisible = false;
+  eventDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -38,9 +47,16 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  isRoomDelete = false;
+  archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
+  restoreAllArchive = false;
+  isConnectDialogReconnect = false;
+  saveAfterReconnectOAuth = false;
+  createRoomDialogVisible = false;
 
   constructor(
     authStore,
@@ -58,6 +74,22 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
+  setIsRoomDelete = (isRoomDelete) => {
+    this.isRoomDelete = isRoomDelete;
+  };
+
+  setArchiveAction = (archiveAction) => {
+    this.archiveAction = archiveAction;
+  };
+
+  setRestoreAllArchive = (restoreAllArchive) => {
+    this.restoreAllArchive = restoreAllArchive;
+  };
+
+  setArchiveDialogVisible = (archiveDialogVisible) => {
+    this.archiveDialogVisible = archiveDialogVisible;
+  };
+
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
   };
@@ -73,6 +105,10 @@ class DialogsStore {
   setMoveToPanelVisible = (moveToPanelVisible) => {
     !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
+  };
+
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
@@ -111,6 +147,10 @@ class DialogsStore {
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
+  setEventDialogVisible = (eventDialogVisible) => {
+    this.eventDialogVisible = eventDialogVisible;
+  };
+
   setDownloadDialogVisible = (downloadDialogVisible) => {
     !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
@@ -122,6 +162,14 @@ class DialogsStore {
 
   setConnectItem = (connectItem) => {
     this.connectItem = connectItem;
+  };
+
+  setIsConnectDialogReconnect = (isConnectDialogReconnect) => {
+    this.isConnectDialogReconnect = isConnectDialogReconnect;
+  };
+
+  setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
+    this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
@@ -148,24 +196,24 @@ class DialogsStore {
         this.setNewFilesIds(newIds);
       } else {
         newFilesPanelVisible = false;
-        const {
-          getRootFolder,
-          updateRootBadge,
-          treeFolders,
-        } = this.treeFoldersStore;
-        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
+        //   const {
+        //     getRootFolder,
+        //     updateRootBadge,
+        //     treeFolders,
+        //   } = this.treeFoldersStore;
+        //   const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
 
-        if (item) {
-          const { rootFolderType, id } = item;
-          const rootFolder = getRootFolder(rootFolderType);
-          updateRootBadge(rootFolder.id, item.new);
-          updateFolderBadge(id, item.new);
-        } else {
-          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
-          updateRootBadge(rootFolder.id, rootFolder.new);
-          if (this.selectedFolderStore.id === rootFolder.id)
-            updateFoldersBadge();
-        }
+        //   if (item) {
+        //     const { rootFolderType, id } = item;
+        //     const rootFolder = getRootFolder(rootFolderType);
+        //     updateRootBadge(rootFolder.id, item.new);
+        //     updateFolderBadge(id, item.new);
+        //   } else {
+        //     const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+        //     updateRootBadge(rootFolder.id, rootFolder.new);
+        //     if (this.selectedFolderStore.id === rootFolder.id)
+        //       updateFoldersBadge();
+        //   }
       }
     } else {
       this.setNewFilesIds(null);
@@ -240,6 +288,29 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
+  };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
+
+  setInviteUsersWarningDialogVisible = (inviteUsersWarningDialogVisible) => {
+    this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
+  };
+
+  setCreateRoomDialogVisible = (createRoomDialogVisible) => {
+    this.createRoomDialogVisible = createRoomDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -258,7 +329,13 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible ||
+      this.archiveDialogVisible ||
+      this.restoreAllPanelVisible ||
+      this.inviteUsersWarningDialogVisible ||
+      this.createRoomDialogVisible
     );
   }
 

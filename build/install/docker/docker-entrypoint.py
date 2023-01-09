@@ -21,9 +21,8 @@ MYSQL_HOST = os.environ["MYSQL_HOST"] if environ.get("MYSQL_HOST") else "localho
 MYSQL_DATABASE = os.environ["MYSQL_DATABASE"] if environ.get("MYSQL_DATABASE") else "onlyoffice"
 MYSQL_USER = os.environ["MYSQL_USER"] if environ.get("MYSQL_USER") else "onlyoffice_user"
 MYSQL_PASSWORD = os.environ["MYSQL_PASSWORD"] if environ.get("MYSQL_PASSWORD") else "onlyoffice_pass"
-DATABASE_MIGRATION = os.environ["DATABASE_MIGRATION"] if environ.get("DATABASE_MIGRATION") else "false"
 
-APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CORE_BASE_DOMAIN") else "localhost"
+APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CORE_BASE_DOMAIN") is not None else "localhost"
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
@@ -128,13 +127,11 @@ updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 updateJsonData(jsonData,"$.core.products.subfolder", "server")
 updateJsonData(jsonData,"$.web.hub.internal", "http://onlyoffice-socket:" + SERVICE_PORT + "/")
-updateJsonData(jsonData,"$.web.url-shortener.internal", "http://onlyoffice-urlshortener:" + SERVICE_PORT + "/")
 updateJsonData(jsonData,"$.files.docservice.url.portal", APP_URL_PORTAL)
 updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUBLIC)
 updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
 updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
-updateJsonData(jsonData,"$.migration.enabled", DATABASE_MIGRATION)
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"

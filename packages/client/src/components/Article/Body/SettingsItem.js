@@ -53,19 +53,17 @@ const PureSettingsItem = ({
     history,
   ]);
 
-  const isActive = () => {
-    return window.location.pathname.indexOf("/settings") > 0;
-  };
+  const isActive = window.location.pathname.includes("settings");
 
   return (
     <CatalogItem
-      id="settings"
       key="settings"
       text={t("Common:Settings")}
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
-      isActive={isActive()}
+      isActive={isActive}
+      folderId="document_catalog-settings"
     />
   );
 };

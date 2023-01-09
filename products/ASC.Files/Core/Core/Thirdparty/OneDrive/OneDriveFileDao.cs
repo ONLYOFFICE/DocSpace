@@ -132,6 +132,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             case FilterType.DocumentsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                 break;
+            case FilterType.OFormOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm);
+                break;
+            case FilterType.OFormTemplateOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate);
+                break;
             case FilterType.PresentationsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
                 break;
@@ -181,7 +187,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     }
 
 
-    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool excludeSubject = false, bool withoutMe = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -206,6 +212,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
                 yield break;
             case FilterType.DocumentsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.OFormOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm);
+                break;
+            case FilterType.OFormTemplateOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate);
                 break;
             case FilterType.PresentationsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);

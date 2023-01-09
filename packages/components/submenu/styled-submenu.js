@@ -78,6 +78,8 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   padding-top: 4px;
   line-height: 20px;
   margin-right: 17px;
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 export const StyledSubmenuItemText = styled.div`

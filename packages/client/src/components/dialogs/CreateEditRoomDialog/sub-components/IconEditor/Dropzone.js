@@ -58,9 +58,11 @@ const StyledDropzone = styled.div`
 
 StyledDropzone.defaultProps = { theme: Base };
 
-const Dropzone = ({ t, setUploadedFile }) => {
+const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
+    noClick: isDisabled,
+    noKeyboard: isDisabled,
     // maxSize: 1000000,
     accept: ["image/png", "image/jpeg"],
   });

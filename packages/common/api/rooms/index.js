@@ -13,11 +13,41 @@ export function getRooms(filter) {
     res.folders = decodeDisplayName(res.folders);
 
     if (res.current.rootFolderType === FolderType.Archive) {
-      res.folders.forEach((room) => (room.isArchive = true));
+      res.folders.forEach((room) => {
+        room.isArchive = true;
+        room.isLogoLoading = false;
+        for (let key in room.logo) {
+          room.logo[key] = "";
+        }
+      });
+    } else {
+      res.folders.forEach((f, index) => {
+        res.folders[index].isLogoLoading = true;
+        res.folders[index].logoHandlers = f.logo;
+
+        const newLogos = {};
+
+        for (let key in f.logo) {
+          newLogos[key] = "";
+        }
+
+        res.folders[index].logo = newLogos;
+      });
     }
 
     return res;
   });
+}
+
+export function getLogoIcon(url) {
+  const options = {
+    // baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+    method: "get",
+    url: `/products/files/httphandlers${url}`,
+    responseType: "text",
+  };
+
+  return request(options);
 }
 
 export function getRoomInfo(id) {
@@ -26,9 +56,96 @@ export function getRoomInfo(id) {
     url: `/files/rooms/${id}`,
   };
 
+  return request(options).then(async (res) => {
+    return new Promise((resolve, reject) => {
+      if (res.rootFolderType === FolderType.Archive) {
+        res.isLogoLoading = false;
+        res.isArchive = true;
+        for (let key in res.logo) {
+          res.logo[key] = "";
+        }
+
+        return resolve(res);
+      }
+
+      res.isLogoLoading = false;
+      res.logoHandlers = res.logo;
+
+      const newLogos = {};
+
+      const actions = [];
+
+      const getLogo = async (key) => {
+        const logo = await getLogoIcon(res.logo[key]);
+
+        newLogos[key] = logo;
+      };
+
+      for (let key in res.logo) {
+        actions.push(getLogo(key));
+      }
+
+      return Promise.all(actions).then(() => {
+        res.logo = newLogos;
+
+        resolve(res);
+      });
+    });
+  });
+}
+
+export function getRoomMembers(id) {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
   return request(options).then((res) => {
-    res.files = decodeDisplayName(res.files);
-    res.folders = decodeDisplayName(res.folders);
+    return res;
+  });
+}
+
+export function updateRoomMemberRole(id, data) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getHistory(module, id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getRoomHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=rooms&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getFileHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=files&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
     return res;
   });
 }
@@ -91,7 +208,7 @@ export function deleteRoom(id, deleteAfter = true) {
   });
 }
 
-export function archiveRoom(id, deleteAfter = true) {
+export function archiveRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {
@@ -105,8 +222,8 @@ export function archiveRoom(id, deleteAfter = true) {
   });
 }
 
-export function unarchiveRoom(id, deleteAfter = true) {
-  const data = { deleteAfter };
+export function unarchiveRoom(id) {
+  const data = { deleteAfter: false };
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,
@@ -202,3 +319,65 @@ export function removeLogoFromRoom(id) {
     return res;
   });
 }
+
+export const setInvitationLinks = async (roomId, linkId, title, access) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${roomId}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const resendEmailInvitations = async (id, usersIds) => {
+  const options = {
+    method: "post",
+    url: `/files/rooms/${id}/resend`,
+    data: {
+      usersIds,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const getRoomSecurityInfo = async (id) => {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const setRoomSecurity = async (id, data) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const acceptInvitationByLink = async () => {
+  const options = {
+    method: "post",
+    url: `/files/rooms/accept`,
+  };
+
+  return await request(options);
+};

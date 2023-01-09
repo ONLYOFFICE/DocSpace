@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "@docspace/components/scrollbar";
-import { isMobileOnly, isDesktop } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
 const StyledNav = styled.nav`
@@ -29,7 +29,7 @@ const StyledNav = styled.nav`
     ${(props) =>
       props.numberOfModules &&
       `@media (max-height: ${props.numberOfModules * 52 + 80}px) {
-      position: ${isDesktop && "relative"};
+      position: ${!isMobile && "relative"};
       margin-top: 16px;
     }`}
 

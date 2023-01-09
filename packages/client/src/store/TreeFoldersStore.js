@@ -1,14 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { getFoldersTree, getSubfolders } from "@docspace/common/api/files";
 import { FolderType } from "@docspace/common/constants";
-import { createTreeFolders } from "../helpers/files-helpers";
 
 class TreeFoldersStore {
   selectedFolderStore;
 
   treeFolders = [];
   selectedTreeNode = [];
-  expandedKeys = [];
   expandedPanelKeys = null;
   rootFoldersTitles = {};
   isLoadingNodes = false;
@@ -34,14 +32,15 @@ class TreeFoldersStore {
     });
   };
 
-  get sharedRoomId() {
-    return this.rootFoldersTitles[FolderType.Rooms]?.id;
-  }
-
   getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
-    this.treeFolders = treeFolders;
+    // this.treeFolders = treeFolders;
+
+    //TODO: remove after api fix
+    this.treeFolders = treeFolders
+      .filter((f) => f.rootFolderType !== FolderType.Recent)
+      .filter((f) => f.rootFolderType !== FolderType.Favorites);
   };
 
   setIsLoadingNodes = (isLoadingNodes) => {
@@ -53,32 +52,20 @@ class TreeFoldersStore {
     }
   };
 
-  setExpandedKeys = (expandedKeys) => {
-    this.expandedKeys = expandedKeys;
-  };
-
   setExpandedPanelKeys = (expandedPanelKeys) => {
     this.expandedPanelKeys = expandedPanelKeys;
   };
 
-  addExpandedKeys = (item) => {
-    !this.expandedKeys.includes(item) && this.expandedKeys.push(item);
-  };
+  // updateRootBadge = (id, count) => {
+  //   const index = this.treeFolders.findIndex((x) => x.id === id);
+  //   if (index < 0) return;
 
-  createNewExpandedKeys = (pathParts) => {
-    return createTreeFolders(pathParts, this.expandedKeys);
-  };
-
-  updateRootBadge = (id, count) => {
-    const index = this.treeFolders.findIndex((x) => x.id === id);
-    if (index < 0) return;
-
-    this.treeFolders = this.treeFolders.map((f, i) => {
-      if (i !== index) return f;
-      f.newItems -= count;
-      return f;
-    });
-  };
+  //   this.treeFolders = this.treeFolders.map((f, i) => {
+  //     if (i !== index) return f;
+  //     f.newItems -= count;
+  //     return f;
+  //   });
+  // };
 
   isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;
@@ -89,6 +76,10 @@ class TreeFoldersStore {
   };
 
   getSubfolders = (folderId) => getSubfolders(folderId);
+
+  get sharedRoomId() {
+    return this.rootFoldersTitles[FolderType.Rooms]?.id;
+  }
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderType === FolderType.USER);
@@ -148,7 +139,7 @@ class TreeFoldersStore {
     return this.archiveFolder ? this.archiveFolder.id : null;
   }
 
-  get isMyFolder() {
+  get isPersonalRoom() {
     return this.myFolder && this.myFolder.id === this.selectedFolderStore.id;
   }
 
@@ -212,22 +203,8 @@ class TreeFoldersStore {
     );
   }
 
-  get operationsFolders() {
-    if (this.isPrivacyFolder) {
-      return this.treeFolders.filter(
-        (folder) => folder.rootFolderType === FolderType.Privacy && folder
-      );
-    } else {
-      return this.treeFolders.filter(
-        (folder) =>
-          (folder.rootFolderType === FolderType.USER ||
-            folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects ||
-            folder.rootFolderType === FolderType.SHARE ||
-            folder.rootFolderType === FolderType.Rooms) &&
-          folder
-      );
-    }
+  get isArchiveFolderRoot() {
+    return FolderType.Archive === this.selectedFolderStore.rootFolderType;
   }
 
   get selectedKeys() {

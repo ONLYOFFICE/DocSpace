@@ -28,11 +28,13 @@ import {
   LinkTheme,
   SliderTheme,
   IndicatorLoaderTheme,
+  ProgressTheme,
+  MobileProgressBarTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
-  ({ currentColorScheme, isVersion, themeId, ...props }, ref) => {
+  ({ currentColorScheme, isVersion, themeId, hoverColor, ...props }, ref) => {
     switch (themeId) {
       case ThemeType.Button: {
         return (
@@ -269,6 +271,24 @@ const ColorTheme = forwardRef(
           />
         );
       }
+      case ThemeType.Progress: {
+        return (
+          <ProgressTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.MobileProgressBar: {
+        return (
+          <MobileProgressBarTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
     }
   }
 );
@@ -278,10 +298,11 @@ export default inject(({ auth, loginStore }) => {
     const { currentColorScheme } = loginStore;
     return { currentColorScheme };
   } else {
+    if (!auth) return;
     const { settingsStore } = auth;
     const { currentColorScheme } = settingsStore;
     return {
-      currentColorScheme,
+      currentColorScheme: currentColorScheme || false,
     };
   }
 })(observer(ColorTheme));

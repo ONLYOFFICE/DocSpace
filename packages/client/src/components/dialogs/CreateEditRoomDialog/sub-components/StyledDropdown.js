@@ -20,6 +20,8 @@ const StyledDropDown = styled(DropDown)`
   box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   border-radius: 3px;
   overflow: hidden;
+  ${(props) => !props.hasItems && "visibility: hidden"};
+  /* visibility: hidden */
 
   width: 446px;
   max-width: 446px;
@@ -45,6 +47,13 @@ const StyledDropDown = styled(DropDown)`
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
+
+    display: block;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:hover {
       background: ${(props) =>
         props.theme.createEditRoomDialog.dropdown.item.hoverBackground};

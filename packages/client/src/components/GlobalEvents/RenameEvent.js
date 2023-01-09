@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
 
@@ -21,9 +21,14 @@ const RenameEvent = ({
 
   editCompleteAction,
   clearActiveOperations,
-}) => {
-  const [visible, setVisible] = React.useState(false);
 
+  setEventDialogVisible,
+  eventDialogVisible,
+
+  selectedFolderId,
+
+  setSelectedFolder,
+}) => {
   const [startValue, setStartValue] = React.useState("");
 
   const { t } = useTranslation(["Files"]);
@@ -31,7 +36,7 @@ const RenameEvent = ({
   React.useEffect(() => {
     setStartValue(getTitleWithoutExst(item, false));
 
-    setVisible(true);
+    setEventDialogVisible(true);
   }, [item]);
 
   const onUpdate = React.useCallback((e, value) => {
@@ -47,6 +52,9 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
+      setIsLoading(false);
+
+      onClose();
 
       return editCompleteAction(item, type);
     } else {
@@ -80,14 +88,17 @@ const RenameEvent = ({
           })
       : renameFolder(item.id, value)
           .then(() => editCompleteAction(item, type))
-          .then(() =>
+          .then(() => {
+            if (selectedFolderId === item.id) {
+              setSelectedFolder({ title: value });
+            }
             toastr.success(
               t("FolderRenamed", {
                 folderTitle: item.title,
                 newFoldedTitle: value,
               })
-            )
-          )
+            );
+          })
           .catch((err) => {
             toastr.error(err);
             editCompleteAction(item, type);
@@ -112,8 +123,9 @@ const RenameEvent = ({
   return (
     <Dialog
       t={t}
-      visible={visible}
-      title={t("Home: Rename")}
+      visible={eventDialogVisible}
+      title={t("Home:Rename")}
+      title={t("Files:Rename")}
       startValue={startValue}
       onSave={onUpdate}
       onCancel={onCancel}
@@ -122,21 +134,43 @@ const RenameEvent = ({
   );
 };
 
-export default inject(({ filesStore, filesActionsStore, uploadDataStore }) => {
-  const { setIsLoading, addActiveItems, updateFile, renameFolder } = filesStore;
+export default inject(
+  ({
+    filesStore,
+    filesActionsStore,
+    selectedFolderStore,
+    uploadDataStore,
+    dialogsStore,
+  }) => {
+    const {
+      setIsLoading,
+      addActiveItems,
+      updateFile,
+      renameFolder,
+    } = filesStore;
 
-  const { editCompleteAction } = filesActionsStore;
+    const { id, setSelectedFolder } = selectedFolderStore;
 
-  const { clearActiveOperations } = uploadDataStore;
+    const { editCompleteAction } = filesActionsStore;
 
-  return {
-    setIsLoading,
-    addActiveItems,
-    updateFile,
-    renameFolder,
+    const { clearActiveOperations } = uploadDataStore;
+    const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
 
-    editCompleteAction,
+    return {
+      setIsLoading,
+      addActiveItems,
+      updateFile,
+      renameFolder,
 
-    clearActiveOperations,
-  };
-})(observer(RenameEvent));
+      editCompleteAction,
+
+      clearActiveOperations,
+      setEventDialogVisible,
+      eventDialogVisible,
+
+      selectedFolderId: id,
+
+      setSelectedFolder,
+    };
+  }
+)(observer(RenameEvent));

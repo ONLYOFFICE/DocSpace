@@ -1,13 +1,18 @@
 resolver $DNS_NAMESERVER valid=30s;
 
+map $SERVICE_LOGIN $service_login {
+    volatile;
+    $SERVICE_LOGIN $SERVICE_LOGIN;
+}
+
 map $SERVICE_DOCEDITOR $service_doceditor {
     volatile;
     $SERVICE_DOCEDITOR $SERVICE_DOCEDITOR;
 }
 
-map $SERVICE_MIGRATION $service_migration {
+map $SERVICE_CLIENT $service_client {
     volatile;
-    $SERVICE_MIGRATION $SERVICE_MIGRATION;
+    $SERVICE_CLIENT $SERVICE_CLIENT;
 }
 
 map $SERVICE_API_SYSTEM $service_api_system {
@@ -20,21 +25,6 @@ map $SERVICE_BACKUP $service_backup {
     $SERVICE_BACKUP $SERVICE_BACKUP;
 }
 
-map $SERVICE_CALENDAR $service_calendar {
-    volatile;
-    $SERVICE_CALENDAR $SERVICE_CALENDAR;
-}
-
-map $SERVICE_CRM $service_crm {
-    volatile;
-    $SERVICE_CRM $SERVICE_CRM;
-}
-
-map $SERVICE_STORAGE_ENCRYPTION $service_storage_encryption {
-    volatile;
-    $SERVICE_STORAGE_ENCRYPTION $SERVICE_STORAGE_ENCRYPTION;
-}
-
 map $SERVICE_FILES $service_files {
     volatile;
     $SERVICE_FILES $SERVICE_FILES;
@@ -43,16 +33,6 @@ map $SERVICE_FILES $service_files {
 map $SERVICE_FILES_SERVICES $service_files_services {
     volatile;
     $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
-}
-
-map $SERVICE_MAIL $service_mail {
-    volatile;
-    $SERVICE_MAIL $SERVICE_MAIL;
-}
-
-map $SERVICE_STORAGE_MIGRATION $service_storage_migration {
-    volatile;
-    $SERVICE_STORAGE_MIGRATION $SERVICE_STORAGE_MIGRATION;
 }
 
 map $SERVICE_NOTIFY $service_notify {
@@ -65,11 +45,6 @@ map $SERVICE_PEOPLE_SERVER $service_people_server {
     $SERVICE_PEOPLE_SERVER $SERVICE_PEOPLE_SERVER;
 }
 
-map $SERVICE_PROJECTS_SERVER $service_projects_server {
-    volatile;
-    $SERVICE_PROJECTS_SERVER $SERVICE_PROJECTS_SERVER;
-}
-
 map $SERVICE_SOCKET $service_socket {
     volatile;
     $SERVICE_SOCKET $SERVICE_SOCKET;
@@ -80,19 +55,9 @@ map $SERVICE_STUDIO_NOTIFY $service_studio_notify {
     $SERVICE_STUDIO_NOTIFY $SERVICE_STUDIO_NOTIFY;
 }
 
-map $SERVICE_TELEGRAM_SERVICE $service_telegram_service {
-    volatile;
-    $SERVICE_TELEGRAM_SERVICE $SERVICE_TELEGRAM_SERVICE;
-}
-
 map $SERVICE_THUMBNAILS $service_thumbnails {
     volatile;
     $SERVICE_THUMBNAILS $SERVICE_THUMBNAILS;
-}
-
-map $SERVICE_URLSHORTENER $service_urlshortener {
-    volatile;
-    $SERVICE_URLSHORTENER $SERVICE_URLSHORTENER;
 }
 
 map $SERVICE_API $service_api {

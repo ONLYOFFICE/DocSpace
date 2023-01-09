@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@docspace/common/history";
 import MediaViewer from "@docspace/common/components/MediaViewer";
-import { createTreeFolders } from "../../../helpers/files-helpers";
 
 const FilesMediaViewer = (props) => {
   const {
@@ -26,9 +25,7 @@ const FilesMediaViewer = (props) => {
     fetchFiles,
     setIsLoading,
     setFirstLoad,
-    setExpandedKeys,
     setToPreviewFile,
-    expandedKeys,
     setScrollToItem,
     setCurrentId,
     setBufferSelection,
@@ -93,8 +90,8 @@ const FilesMediaViewer = (props) => {
   const onDeleteMediaFile = (id) => {
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
-      successRemoveFolder: t("FolderRemoved"),
-      successRemoveFile: t("FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveFile: t("Files:FileRemoved"),
     };
 
     if (files.length > 0) {
@@ -118,19 +115,13 @@ const FilesMediaViewer = (props) => {
       setIsLoading(true);
       setFirstLoad(true);
 
-      fetchFiles(previewFile.folderId)
-        .then((data) => {
-          const pathParts = data.selectedFolder.pathParts;
-          const newExpandedKeys = createTreeFolders(pathParts, expandedKeys);
-          setExpandedKeys(newExpandedKeys);
-        })
-        .finally(() => {
-          setIsLoading(false);
-          setFirstLoad(false);
-          setScrollToItem({ id: previewFile.id, type: "file" });
-          setBufferSelection(previewFile);
-          setToPreviewFile(null);
-        });
+      fetchFiles(previewFile.folderId).finally(() => {
+        setIsLoading(false);
+        setFirstLoad(false);
+        setScrollToItem({ id: previewFile.id, type: "file" });
+        setBufferSelection(previewFile);
+        setToPreviewFile(null);
+      });
     }
 
     setMediaViewerData({ visible: false, id: null });
@@ -207,11 +198,7 @@ export default inject(
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { extsVideo, extsImage, extsAudio } = settingsStore;
-    const {
-      expandedKeys,
-      setExpandedKeys,
-      isFavoritesFolder,
-    } = treeFoldersStore;
+    const { isFavoritesFolder } = treeFoldersStore;
 
     return {
       files,
@@ -230,9 +217,7 @@ export default inject(
       previewFile,
       setIsLoading,
       setFirstLoad,
-      setExpandedKeys,
       setToPreviewFile,
-      expandedKeys,
       setScrollToItem,
       setCurrentId,
       setBufferSelection,

@@ -16,6 +16,7 @@ const StyledLabel = styled.label`
   .checkbox {
     margin-right: 12px;
     overflow: visible;
+    outline: none;
   }
 
   /* ${(props) =>
@@ -45,6 +46,12 @@ const StyledLabel = styled.label`
             }
             path {
               fill: ${(props) => props.theme.checkbox.arrowColor};
+            }
+            &:focus {
+              outline: none;
+              rect {
+                stroke: ${(props) => props.theme.checkbox.focusColor};
+              }
             }
           `
         : !props.isDisabled &&

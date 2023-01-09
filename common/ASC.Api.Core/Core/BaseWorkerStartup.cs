@@ -58,6 +58,8 @@ public class BaseWorkerStartup
         services.AddBaseDbContextPool<MessagesContext>();
         services.AddBaseDbContextPool<WebhooksDbContext>();
 
+        services.RegisterFeature();
+
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
         if (!HostEnvironment.IsDevelopment())
@@ -73,7 +75,7 @@ public class BaseWorkerStartup
         services.AddEventBus(Configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(Configuration);
-
+        services.AddHttpClient();
 
         DIHelper.Configure(services);
     }

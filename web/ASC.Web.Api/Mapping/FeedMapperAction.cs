@@ -41,3 +41,20 @@ public class DateTimeMappingConverter : ITypeConverter<DateTime, ApiDateTime>
         return _apiDateTimeHelper.Get(source);
     }
 }
+
+[Scope]
+public class FeedDtoMappingAction : IMappingAction<FeedResultItem, FeedDto>
+{
+    private readonly EmployeeDtoHelper _employeeDtoHelper;
+
+    public FeedDtoMappingAction(EmployeeDtoHelper employeeDtoHelper)
+    {
+        _employeeDtoHelper = employeeDtoHelper;
+    }
+
+    public void Process(FeedResultItem source, FeedDto destination, ResolutionContext context)
+    {
+        destination.Initiator = _employeeDtoHelper.Get(source.ModifiedBy).Result;
+        destination.Target = source.TargetId is JsonElement doc && doc.TryGetGuid(out var id) ? _employeeDtoHelper.Get(id).Result : null;
+    }
+}

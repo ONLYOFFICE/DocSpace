@@ -28,7 +28,6 @@ namespace ASC.Web.Studio.Core.Backup;
 
 public class BackupFileUploadHandler
 {
-    private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
     public BackupFileUploadHandler(RequestDelegate next)
     {
 
@@ -52,12 +51,6 @@ public class BackupFileUploadHandler
             }
 
             var file = context.Request.Form.Files[0];
-
-            if (file.Length <= 0 || file.Length > MaxBackupFileSize)
-            {
-                result = Error($"File size must be greater than 0 and less than {MaxBackupFileSize} bytes");
-            }
-
 
             var filePath = backupAjaxHandler.GetTmpFilePath();
 

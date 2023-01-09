@@ -96,6 +96,8 @@ declare global {
     capabilities: ICapabilities;
     match: MatchType;
     currentColorScheme: ITheme;
+    isAuth: boolean;
+    logoUrls: any;
   }
 
   interface DevRequest {

@@ -6,7 +6,7 @@ import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 class ResetApplicationDialogComponent extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class ResetApplicationDialogComponent extends React.Component {
           />
           <Button
             key="CloseBtn"
-            label={t("Common:CloseButton")}
+            label={t("Common:CancelButton")}
             size="normal"
             scale
             primary={false}

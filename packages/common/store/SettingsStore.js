@@ -7,7 +7,7 @@ import {
   ThemeKeys,
   COOKIE_EXPIRATION_YEAR,
   LANGUAGE,
-  TenantStatus
+  TenantStatus,
 } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
@@ -38,6 +38,9 @@ class SettingsStore {
     ? window.RendererProcessVariable?.theme?.type === "dark"
       ? Dark
       : Base
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? Dark
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
@@ -67,7 +70,7 @@ class SettingsStore {
   urlSupport = "https://helpdesk.onlyoffice.com/";
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
-  logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
+  logoUrl = "";
   customNames = {
     id: "Common",
     userCaption: "User",
@@ -142,6 +145,13 @@ class SettingsStore {
   enablePlugins = false;
   pluginOptions = [];
 
+  additionalResourcesData = null;
+  additionalResourcesIsDefault = true;
+  companyInfoSettingsData = null;
+  companyInfoSettingsIsDefault = true;
+
+  whiteLabelLogoUrls = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -186,6 +196,10 @@ class SettingsStore {
     this.defaultPage = defaultPage;
   };
 
+  setGreetingSettings = (greetingSettings) => {
+    this.greetingSettings = greetingSettings;
+  };
+
   getSettings = async () => {
     let newSettings = null;
 
@@ -224,6 +238,8 @@ class SettingsStore {
         this.setValue("hashSettings", newSettings[key]);
       }
     });
+
+    this.setGreetingSettings(newSettings.greetingSettings);
 
     return newSettings;
   };
@@ -271,7 +287,11 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
+    requests.push(
+      this.getPortalSettings(),
+      this.getAppearanceTheme(),
+      this.getWhiteLabelLogoUrls()
+    );
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -298,6 +318,37 @@ class SettingsStore {
     this.cultures = cultures;
   };
 
+  setAdditionalResourcesData = (data) => {
+    this.additionalResourcesData = data;
+  };
+
+  setAdditionalResourcesIsDefault = (additionalResourcesIsDefault) => {
+    this.additionalResourcesIsDefault = additionalResourcesIsDefault;
+  };
+
+  setAdditionalResources = async (
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled
+  ) => {
+    return await api.settings.setAdditionalResources(
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+      helpCenterEnabled
+    );
+  };
+
+  getAdditionalResources = async () => {
+    const res = await api.settings.getAdditionalResources();
+
+    this.setAdditionalResourcesData(res);
+    this.setAdditionalResourcesIsDefault(res.isDefault);
+  };
+
+  restoreAdditionalResources = async () => {
+    return await api.settings.restoreAdditionalResources();
+  };
+
   getPortalCultures = async () => {
     const cultures = await api.settings.getPortalCultures();
     this.setCultures(cultures);
@@ -321,9 +372,81 @@ class SettingsStore {
     this.updateEncryptionKeys(keys);
   };
 
+  setCompanyInfoSettingsData = (data) => {
+    this.companyInfoSettingsData = data;
+  };
+
+  setCompanyInfoSettingsIsDefault = (companyInfoSettingsIsDefault) => {
+    this.companyInfoSettingsIsDefault = companyInfoSettingsIsDefault;
+  };
+
+  setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
+    return api.settings.setCompanyInfoSettings(
+      address,
+      companyName,
+      email,
+      phone,
+      site
+    );
+  };
+
+  setLogoUrl = (url) => {
+    this.logoUrl = url[0];
+  };
+
+  setLogoUrls = (urls) => {
+    this.whiteLabelLogoUrls = urls;
+  };
+
+  getCompanyInfoSettings = async () => {
+    const res = await api.settings.getCompanyInfoSettings();
+
+    this.setCompanyInfoSettingsData(res);
+    this.setCompanyInfoSettingsIsDefault(res.isDefault);
+  };
+
+  getWhiteLabelLogoUrls = async () => {
+    const res = await api.settings.getLogoUrls();
+
+    this.setLogoUrls(Object.values(res));
+    this.setLogoUrl(Object.values(res));
+  };
+
+  restoreCompanyInfoSettings = async () => {
+    return await api.settings.restoreCompanyInfoSettings();
+  };
+
   getEncryptionKeys = async () => {
     const encryptionKeys = await api.files.getEncryptionKeys();
     this.updateEncryptionKeys(encryptionKeys);
+  };
+
+  getOAuthToken = (tokenGetterWin) => {
+    return new Promise((resolve, reject) => {
+      localStorage.removeItem("code");
+      let interval = null;
+      interval = setInterval(() => {
+        try {
+          const code = localStorage.getItem("code");
+
+          if (code) {
+            localStorage.removeItem("code");
+            clearInterval(interval);
+            resolve(code);
+          } else if (tokenGetterWin && tokenGetterWin.closed) {
+            clearInterval(interval);
+            reject();
+          }
+        } catch (e) {
+          clearInterval(interval);
+          reject(e);
+        }
+      }, 500);
+    });
+  };
+
+  getLoginLink = (token, code) => {
+    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
   };
 
   setModuleInfo = (homepage, productId) => {
@@ -556,7 +679,10 @@ class SettingsStore {
   };
 
   getAppearanceTheme = async () => {
-    const res = await api.settings.getAppearanceTheme();
+    let res = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.appearanceTheme)
+      res = window.__ASC_INITIAL_EDITOR_STATE__.appearanceTheme;
+    else res = await api.settings.getAppearanceTheme();
 
     const currentColorScheme = res.themes.find((theme) => {
       return res.selected === theme.id;
@@ -568,7 +694,11 @@ class SettingsStore {
   };
 
   sendAppearanceTheme = async (data) => {
-    const res = await api.settings.sendAppearanceTheme(data);
+    return api.settings.sendAppearanceTheme(data);
+  };
+
+  deleteAppearanceTheme = async (id) => {
+    return api.settings.deleteAppearanceTheme(id);
   };
 }
 

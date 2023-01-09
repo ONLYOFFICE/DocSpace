@@ -37,7 +37,6 @@ public class DnsSettings
     private readonly StudioNotifyService _studioNotifyService;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly MessageService _messageService;
-    private readonly TenantExtra _tenantExtra;
 
     public DnsSettings(
         PermissionContext permissionContext,
@@ -47,8 +46,7 @@ public class DnsSettings
         CoreSettings coreSettings,
         StudioNotifyService studioNotifyService,
         CommonLinkUtility commonLinkUtility,
-        MessageService messageService,
-        TenantExtra tenantExtra)
+        MessageService messageService)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;
@@ -58,7 +56,6 @@ public class DnsSettings
         _studioNotifyService = studioNotifyService;
         _commonLinkUtility = commonLinkUtility;
         _messageService = messageService;
-        _tenantExtra = tenantExtra;
     }
 
     public string SaveDnsSettings(string dnsName, bool enableDns)
@@ -155,7 +152,7 @@ public class DnsSettings
         var postfix = string.Join(string.Empty, new[] { dnsName, tenantAlias });
 
         var sb = new StringBuilder();
-        sb.Append(_commonLinkUtility.GetConfirmationUrl(email, confirmType, postfix));
+        sb.Append(_commonLinkUtility.GetConfirmationEmailUrl(email, confirmType, postfix));
         if (!string.IsNullOrEmpty(dnsName))
         {
             sb.AppendFormat("&dns={0}", dnsName);

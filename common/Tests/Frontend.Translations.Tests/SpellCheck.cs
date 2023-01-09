@@ -56,8 +56,8 @@ public static class SpellCheck
 
     public static DicPaths GetDictionaryPaths(string lng)
     {
-        const string dictionariesPath = @"..\..\..\dictionaries";
-        const string additionalPath = @"..\..\..\additional";
+        const string dictionariesPath = @"../../../dictionaries";
+        const string additionalPath = @"../../../additional";
 
         var path = dictionariesPath;
         string language;

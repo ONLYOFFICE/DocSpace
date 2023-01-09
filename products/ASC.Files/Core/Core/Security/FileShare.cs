@@ -38,7 +38,7 @@ public enum FileShare
     Comment,
     FillForms,
     CustomFilter,
-    RoomManager,
+    RoomAdmin,
     Editing
 }
 
@@ -46,7 +46,7 @@ public class FileShareConverter : System.Text.Json.Serialization.JsonConverter<F
 {
     public override FileShare Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == System.Text.Json.JsonTokenType.Number && reader.TryGetInt32(out var result))
+        if (reader.TokenType == JsonTokenType.Number && reader.TryGetInt32(out var result))
         {
             return (FileShare)result;
         }

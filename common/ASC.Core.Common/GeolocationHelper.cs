@@ -26,15 +26,21 @@
 
 namespace ASC.Geolocation;
 
+[Scope]
 public class GeolocationHelper
 {
     private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
     private readonly ILogger<GeolocationHelper> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public GeolocationHelper(IDbContextFactory<CustomDbContext> dbContextFactory, ILogger<GeolocationHelper> logger)
+    public GeolocationHelper(
+        IDbContextFactory<CustomDbContext> dbContextFactory,
+        ILogger<GeolocationHelper> logger,
+        IHttpContextAccessor httpContextAccessor)
     {
         _dbContextFactory = dbContextFactory;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IPGeolocationInfo GetIPGeolocation(string ip)
@@ -68,11 +74,11 @@ public class GeolocationHelper
         return IPGeolocationInfo.Default;
     }
 
-    public IPGeolocationInfo GetIPGeolocationFromHttpContext(HttpContext context)
+    public IPGeolocationInfo GetIPGeolocationFromHttpContext()
     {
-        if (context != null && context.Request != null)
+        if (_httpContextAccessor.HttpContext?.Request != null)
         {
-            var ip = (string)(context.Request.HttpContext.Items["X-Forwarded-For"] ?? context.Request.HttpContext.Items["REMOTE_ADDR"]);
+            var ip = (string)(_httpContextAccessor.HttpContext.Items["X-Forwarded-For"] ?? _httpContextAccessor.HttpContext.Items["REMOTE_ADDR"]);
             if (!string.IsNullOrWhiteSpace(ip))
             {
                 return GetIPGeolocation(ip);

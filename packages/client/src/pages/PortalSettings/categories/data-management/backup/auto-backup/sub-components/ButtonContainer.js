@@ -9,18 +9,11 @@ const ButtonContainer = ({
   onCancelModuleSettings,
   isChanged,
   isThirdStorageChanged,
-  setSavingProcess,
   t,
-  setResetProcess,
 }) => {
   const prevChange = useRef();
 
-  useEffect(() => {
-    if (!isChanged && isChanged !== prevChange.current) {
-      setSavingProcess(false);
-      setResetProcess(false);
-    }
-  }, [isChanged]);
+ 
 
   useEffect(() => {
     prevChange.current = isChanged;
@@ -50,17 +43,10 @@ const ButtonContainer = ({
 };
 
 export default inject(({ backup }) => {
-  const {
-    isChanged,
-    isThirdStorageChanged,
-    setSavingProcess,
-    setResetProcess,
-  } = backup;
+  const { isChanged, isThirdStorageChanged } = backup;
 
   return {
     isChanged,
     isThirdStorageChanged,
-    setSavingProcess,
-    setResetProcess,
   };
 })(observer(ButtonContainer));

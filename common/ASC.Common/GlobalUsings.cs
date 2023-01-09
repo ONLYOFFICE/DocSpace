@@ -35,17 +35,17 @@ global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.Loader;
 global using System.Runtime.Serialization;
+global using System.Security.Authentication;
 global using System.Security.Cryptography;
 global using System.Security.Principal;
 global using System.ServiceModel;
 global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml.Linq;
 global using System.Xml.XPath;
-
-global using ARSoft.Tools.Net;
-global using ARSoft.Tools.Net.Dns;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -72,8 +72,6 @@ global using JWT;
 global using JWT.Algorithms;
 global using JWT.Serializers;
 
-global using log4net.Util;
-
 global using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
@@ -95,7 +93,6 @@ global using Microsoft.Net.Http.Headers;
 global using NetEscapades.EnumGenerators;
 
 global using Newtonsoft.Json;
-global using Newtonsoft.Json.Serialization;
 
 global using NVelocity;
 global using NVelocity.App;

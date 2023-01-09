@@ -57,7 +57,9 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
         AdditionalPhone,
         AdditionalMobilePhone,
         AdditionalMail,
-        Skype
+        Skype,
+
+        UserQuotaLimit
     }
 
     public enum AccessRight

@@ -11,7 +11,7 @@ import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import i18n from "./i18n";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { checkProtocol } from "../../helpers/files-helpers";
 import Base from "@docspace/components/themes/base";
 

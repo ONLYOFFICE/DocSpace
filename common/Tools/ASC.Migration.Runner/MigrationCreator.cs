@@ -47,7 +47,6 @@ public class MigrationRunner
             {
                 var context = _dbContextActivator.CreateInstance(contextType, dbProvider);
 
-                context.Database.EnsureCreated();
                 context.Database.Migrate();
 
                 counter++;

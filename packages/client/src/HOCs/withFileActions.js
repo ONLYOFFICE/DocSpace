@@ -57,7 +57,10 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDrop = (items) => {
+      const { isTrashFolder, dragging, setDragging } = this.props;
       const { fileExst, id } = this.props.item;
+
+      if (isTrashFolder) return dragging && setDragging(false);
 
       if (!fileExst) {
         this.onDropZoneUpload(items, id);
@@ -73,6 +76,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
+        isRoomsFolder,
         isArchiveFolder,
         item,
         setBufferSelection,
@@ -88,6 +92,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         isPrivacy ||
         isTrashFolder ||
+        isRoomsFolder ||
         isArchiveFolder ||
         (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||
@@ -153,8 +158,7 @@ export default function withFileActions(WrappedFileItem) {
         !!e.target.closest(".lock-file") ||
         !!e.target.closest(".additional-badges") ||
         e.target.closest(".tag") ||
-        isTrashFolder ||
-        isArchiveFolder
+        isTrashFolder
       )
         return;
 
@@ -176,8 +180,8 @@ export default function withFileActions(WrappedFileItem) {
       this.props.selectTag(tag);
     };
 
-    onSelectType = (type) => {
-      this.props.selectType(type);
+    onSelectOption = (selectedOption) => {
+      this.props.selectOption(selectedOption);
     };
 
     getContextModel = () => {
@@ -197,10 +201,7 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        isDesktop,
-        personal,
         canWebEdit,
-        canViewedDocs,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -222,13 +223,6 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const showShare =
-        !isShareable ||
-        (isPrivacy && (!isDesktop || !fileExst)) ||
-        (personal && !canWebEdit && !canViewedDocs)
-          ? false
-          : true;
-
       const checkedProps = id <= 0 ? false : checked;
 
       return (
@@ -241,14 +235,13 @@ export default function withFileActions(WrappedFileItem) {
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
-          onSelectType={this.onSelectType}
+          onSelectOption={this.onSelectOption}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
           value={value}
           displayShareButton={displayShareButton}
           isPrivacy={isPrivacy}
-          showShare={showShare}
           checkedProps={checkedProps}
           dragging={dragging}
           getContextModel={this.getContextModel}
@@ -261,14 +254,12 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
-        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
         selectedFolderStore,
         filesStore,
         uploadDataStore,
-        settingsStore,
         contextOptionsStore,
       },
       { item, t }
@@ -276,9 +267,9 @@ export default function withFileActions(WrappedFileItem) {
       const {
         selectRowAction,
         selectTag,
-        selectType,
+        selectOption,
         onSelectItem,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         openFileAction,
         uploadEmptyFolders,
       } = filesActionsStore;
@@ -288,7 +279,6 @@ export default function withFileActions(WrappedFileItem) {
         isRecycleBinFolder,
         isRoomsFolder,
         isArchiveFolder,
-        //addExpandedKeys,
       } = treeFoldersStore;
       const {
         dragging,
@@ -317,8 +307,7 @@ export default function withFileActions(WrappedFileItem) {
       const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
+
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
         activeFolders.findIndex(
@@ -346,7 +335,7 @@ export default function withFileActions(WrappedFileItem) {
         selectRowAction,
         onSelectItem,
         selectTag,
-        selectType,
+        selectOption,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
         isRoomsFolder,
@@ -364,15 +353,10 @@ export default function withFileActions(WrappedFileItem) {
         checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
-        canWebEdit,
-        canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
-        //addExpandedKeys,
         getFolderInfo,
         viewAs,
-        isDesktop: auth.settingsStore.isDesktopClient,
-        personal: auth.settingsStore.personal,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         isActive,
         inProgress,
         setBufferSelection,

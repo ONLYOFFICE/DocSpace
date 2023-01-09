@@ -38,6 +38,16 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
+        var maxRequestLimit = 1024L * 1024L * 1024L;
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.MaxRequestBodySize = maxRequestLimit;
+        });
+        services.Configure<FormOptions>(x =>
+        {
+            x.MultipartBodyLengthLimit = maxRequestLimit;
+        });
+
         services.AddBaseDbContextPool<BackupsContext>();
         services.AddBaseDbContextPool<FilesDbContext>();
 

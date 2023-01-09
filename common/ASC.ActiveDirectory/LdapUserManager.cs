@@ -1,4 +1,5 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+﻿
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -57,8 +58,7 @@ public class LdapUserManager
         SettingsManager settingsManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
-        NovellLdapUserImporter novellLdapUserImporter,
-        WorkContext workContext)
+        NovellLdapUserImporter novellLdapUserImporter)
     {
         _logger = logger;
         _userManager = userManager;
@@ -106,9 +106,9 @@ public class LdapUserManager
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public bool TryAddLDAPUser(UserInfo ldapUserInfo, bool onlyGetChanges, out UserInfo portalUserInfo)
+    public async Task<UserInfo> TryAddLDAPUser(UserInfo ldapUserInfo, bool onlyGetChanges)
     {
-        portalUserInfo = Constants.LostUser;
+        var portalUserInfo = Constants.LostUser;
 
         try
         {
@@ -123,21 +123,14 @@ public class LdapUserManager
             {
                 _logger.DebugUserAlredyExistsForEmail(ldapUserInfo.Sid, ldapUserInfo.Email);
 
-                return false;
+                return portalUserInfo;
             }
 
             if (!TryChangeExistingUserName(ldapUserInfo.UserName, onlyGetChanges))
             {
                 _logger.DebugUserAlredyExistsForUserName(ldapUserInfo.Sid, ldapUserInfo.UserName);
 
-                return false;
-            }
-
-            var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
-            if (q.ActiveUsers <= _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length)
-            {
-                _logger.DebugExceedQuota(ldapUserInfo.Sid, ldapUserInfo.UserName);
-                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                return portalUserInfo;
             }
 
             if (!ldapUserInfo.WorkFromDate.HasValue)
@@ -148,20 +141,25 @@ public class LdapUserManager
             if (onlyGetChanges)
             {
                 portalUserInfo = ldapUserInfo;
-                return true;
+                return portalUserInfo;
             }
 
             _logger.DebugSaveUserInfo(ldapUserInfo.GetUserInfoString());
 
-            portalUserInfo = _userManager.SaveUserInfo(ldapUserInfo);
+            portalUserInfo = await _userManager.SaveUserInfo(ldapUserInfo);
+
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+            if (quotaSettings.EnableUserQuota)
+            {
+                _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = ldapUserInfo.LdapQouta }, ldapUserInfo.Id);
+            }
+
 
             var passwordHash = LdapUtils.GeneratePassword();
 
             _logger.DebugSetUserPassword(portalUserInfo.Id);
 
             _securityContext.SetUserPasswordHash(portalUserInfo.Id, passwordHash);
-
-            return true;
         }
         catch (TenantQuotaException ex)
         {
@@ -176,7 +174,7 @@ public class LdapUserManager
             }
         }
 
-        return false;
+        return portalUserInfo;
     }
 
     private bool TryChangeExistingUserName(string ldapUserName, bool onlyGetChanges)
@@ -211,7 +209,7 @@ public class LdapUserManager
 
             _logger.DebugSaveUserInfo(otherUser.GetUserInfoString());
 
-            _userManager.SaveUserInfo(otherUser);
+            _userManager.UpdateUserInfo(otherUser);
 
             return true;
         }
@@ -223,24 +221,25 @@ public class LdapUserManager
         return false;
     }
 
-    public UserInfo GetLDAPSyncUserChange(UserInfo ldapUserInfo, List<UserInfo> ldapUsers, out LdapChangeCollection changes)
+    public async Task<UserInfoAndLdapChangeCollectionWrapper> GetLDAPSyncUserChange(UserInfo ldapUserInfo, List<UserInfo> ldapUsers)
     {
-        return SyncLDAPUser(ldapUserInfo, ldapUsers, out changes, true);
+        return await SyncLDAPUser(ldapUserInfo, ldapUsers, true);
     }
 
-    public UserInfo SyncLDAPUser(UserInfo ldapUserInfo, List<UserInfo> ldapUsers = null)
+    public async Task<UserInfo> SyncLDAPUser(UserInfo ldapUserInfo, List<UserInfo> ldapUsers = null)
     {
-        LdapChangeCollection changes;
-        return SyncLDAPUser(ldapUserInfo, ldapUsers, out changes);
+        return (await SyncLDAPUser(ldapUserInfo, ldapUsers, false)).UserInfo;
     }
 
-    private UserInfo SyncLDAPUser(UserInfo ldapUserInfo, List<UserInfo> ldapUsers, out LdapChangeCollection changes, bool onlyGetChanges = false)
+    private async Task<UserInfoAndLdapChangeCollectionWrapper> SyncLDAPUser(UserInfo ldapUserInfo, List<UserInfo> ldapUsers, bool onlyGetChanges = false)
     {
-        UserInfo result;
-
-        changes = new LdapChangeCollection(_userFormatter);
-
         UserInfo userToUpdate;
+
+        var wrapper = new UserInfoAndLdapChangeCollectionWrapper()
+        {
+            LdapChangeCollection = new LdapChangeCollection(_userFormatter),
+            UserInfo = Constants.LostUser
+        };
 
         var userBySid = _userManager.GetUserBySid(ldapUserInfo.Sid);
 
@@ -254,28 +253,28 @@ public class LdapUserManager
                 {
                     if (onlyGetChanges)
                     {
-                        changes.SetSkipUserChange(ldapUserInfo);
+                        wrapper.LdapChangeCollection.SetSkipUserChange(ldapUserInfo);
                     }
 
                     _logger.DebugSyncUserLdapFailedWithStatus(ldapUserInfo.Sid, ldapUserInfo.UserName,
                         Enum.GetName(typeof(EmployeeStatus), ldapUserInfo.Status));
 
-                    return Constants.LostUser;
+                    return wrapper;
                 }
-
-                if (!TryAddLDAPUser(ldapUserInfo, onlyGetChanges, out result))
+                wrapper.UserInfo = await TryAddLDAPUser(ldapUserInfo, onlyGetChanges);
+                if (wrapper.UserInfo == Constants.LostUser)
                 {
                     if (onlyGetChanges)
                     {
-                        changes.SetSkipUserChange(ldapUserInfo);
+                        wrapper.LdapChangeCollection.SetSkipUserChange(ldapUserInfo);
                     }
 
-                    return Constants.LostUser;
+                    return wrapper;
                 }
 
                 if (onlyGetChanges)
                 {
-                    changes.SetAddUserChange(result, _logger);
+                    wrapper.LdapChangeCollection.SetAddUserChange(wrapper.UserInfo, _logger);
                 }
 
                 if (!onlyGetChanges && _settingsManager.Load<LdapSettings>().SendWelcomeEmail &&
@@ -290,13 +289,13 @@ public class LdapUserManager
                     var notifuEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
                     var client = workContext.NotifyContext.RegisterClient(notifuEngineQueue, source);
 
-                    var confirmLink = _commonLinkUtility.GetConfirmationUrl(ldapUserInfo.Email, ConfirmType.EmailActivation);
+                    var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(ldapUserInfo.Email, ConfirmType.EmailActivation);
 
                     client.SendNoticeToAsync(
                         NotifyConstants.ActionLdapActivation,
                         null,
                         new[] { new DirectRecipient(ldapUserInfo.Email, null, new[] { ldapUserInfo.Email }, false) },
-                        new[] { ASC.Core.Configuration.Constants.NotifyEMailSenderSysName },
+                        new[] { Core.Configuration.Constants.NotifyEMailSenderSysName },
                         null,
                         new TagValue(NotifyConstants.TagUserName, ldapUserInfo.DisplayUserName(_displayUserSettingsHelper)),
                         new TagValue(NotifyConstants.TagUserEmail, ldapUserInfo.Email),
@@ -305,7 +304,7 @@ public class LdapUserManager
                         new TagValue(NotifyCommonTags.WithoutUnsubscribe, true));
                 }
 
-                return result;
+                return wrapper;
             }
 
             if (userByEmail.IsLDAP())
@@ -314,13 +313,13 @@ public class LdapUserManager
                 {
                     if (onlyGetChanges)
                     {
-                        changes.SetSkipUserChange(ldapUserInfo);
+                        wrapper.LdapChangeCollection.SetSkipUserChange(ldapUserInfo);
                     }
 
                     _logger.DebugSyncUserLdapFailedWithEmail(
                         ldapUserInfo.Sid, ldapUserInfo.UserName, ldapUserInfo.Email);
 
-                    return Constants.LostUser;
+                    return wrapper;
                 }
             }
 
@@ -338,29 +337,30 @@ public class LdapUserManager
             _logger.DebugSyncUserLdapSkipping(ldapUserInfo.Sid, ldapUserInfo.UserName);
             if (onlyGetChanges)
             {
-                changes.SetNoneUserChange(ldapUserInfo);
+                wrapper.LdapChangeCollection.SetNoneUserChange(ldapUserInfo);
             }
-
-            return userBySid;
+            wrapper.UserInfo = userBySid;
+            return wrapper;
         }
 
         _logger.DebugSyncUserLdapUpdaiting(ldapUserInfo.Sid, ldapUserInfo.UserName);
-        if (!TryUpdateUserWithLDAPInfo(userToUpdate, ldapUserInfo, onlyGetChanges, out result))
+        UserInfo uf;
+        if (!TryUpdateUserWithLDAPInfo(userToUpdate, ldapUserInfo, onlyGetChanges, out uf))
         {
             if (onlyGetChanges)
             {
-                changes.SetSkipUserChange(ldapUserInfo);
+                wrapper.LdapChangeCollection.SetSkipUserChange(ldapUserInfo);
             }
 
-            return Constants.LostUser;
+            return wrapper;
         }
 
         if (onlyGetChanges)
         {
-            changes.SetUpdateUserChange(ldapUserInfo, result, _logger);
+            wrapper.LdapChangeCollection.SetUpdateUserChange(ldapUserInfo, uf, _logger);
         }
-
-        return result;
+        wrapper.UserInfo = uf;
+        return wrapper;
     }
 
     private const string EXT_MOB_PHONE = "extmobphone";
@@ -589,7 +589,7 @@ public class LdapUserManager
             {
                 _logger.DebugSaveUserInfo(userToUpdate.GetUserInfoString());
 
-                portlaUserInfo = _userManager.SaveUserInfo(userToUpdate);
+                portlaUserInfo = _userManager.UpdateUserInfo(userToUpdate);
             }
 
             return true;
@@ -603,9 +603,9 @@ public class LdapUserManager
         return false;
     }
 
-    public bool TryGetAndSyncLdapUserInfo(string login, string password, out UserInfo userInfo)
+    public async Task<UserInfo> TryGetAndSyncLdapUserInfo(string login, string password)
     {
-        userInfo = Constants.LostUser;
+        var userInfo = Constants.LostUser;
 
 
         try
@@ -614,7 +614,7 @@ public class LdapUserManager
 
             if (!settings.EnableLdapAuthentication)
             {
-                return false;
+                return userInfo;
             }
 
             _logger.DebugTryGetAndSyncLdapUserInfo(login);
@@ -626,7 +626,7 @@ public class LdapUserManager
             if (ldapUserInfo == null || ldapUserInfo.Item1.Equals(Constants.LostUser))
             {
                 _logger.DebugNovellLdapUserImporterLoginFailed(login);
-                return false;
+                return userInfo;
             }
 
             var portalUser = _userManager.GetUserBySid(ldapUserInfo.Item1.Sid);
@@ -636,16 +636,16 @@ public class LdapUserManager
                 if (!ldapUserInfo.Item2.IsDisabled)
                 {
                     _logger.DebugTryCheckAndSyncToLdapUser(ldapUserInfo.Item1.UserName, ldapUserInfo.Item1.Email, ldapUserInfo.Item2.DistinguishedName);
-
-                    if (!TryCheckAndSyncToLdapUser(ldapUserInfo, _novellLdapUserImporter, out userInfo))
+                    userInfo = await TryCheckAndSyncToLdapUser(ldapUserInfo, _novellLdapUserImporter);
+                    if (Equals(userInfo, Constants.LostUser))
                     {
                         _logger.DebugTryCheckAndSyncToLdapUserFailed();
-                        return false;
+                        return userInfo;
                     }
                 }
                 else
                 {
-                    return false;
+                    return userInfo;
                 }
             }
             else
@@ -667,18 +667,18 @@ public class LdapUserManager
                     tenantManager.SetCurrentTenant(tenant);
                     securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
-                    var uInfo = SyncLDAPUser(ldapUserInfo.Item1);
+                    var uInfo = await SyncLDAPUser(ldapUserInfo.Item1);
 
                     var newLdapUserInfo = new Tuple<UserInfo, LdapObject>(uInfo, ldapUserInfo.Item2);
 
                     if (novellLdapUserImporter.Settings.GroupMembership)
                     {
-                        if (!novellLdapUserImporter.TrySyncUserGroupMembership(newLdapUserInfo))
+                        if (!(await novellLdapUserImporter.TrySyncUserGroupMembership(newLdapUserInfo)))
                         {
                             log.DebugTryGetAndSyncLdapUserInfoDisablingUser(login, uInfo);
                             uInfo.Status = EmployeeStatus.Terminated;
                             uInfo.Sid = null;
-                            userManager.SaveUserInfo(uInfo);
+                            userManager.UpdateUserInfo(uInfo);
                             await cookiesManager.ResetUserCookie(uInfo.Id);
                         }
                     }
@@ -687,7 +687,7 @@ public class LdapUserManager
                 if (ldapUserInfo.Item2.IsDisabled)
                 {
                     _logger.DebugTryGetAndSyncLdapUserInfo(login);
-                    return false;
+                    return userInfo;
                 }
                 else
                 {
@@ -695,24 +695,24 @@ public class LdapUserManager
                 }
             }
 
-            return true;
+            return userInfo;
         }
         catch (Exception ex)
         {
             _logger.ErrorTryGetLdapUserInfoFailed(login, ex);
             userInfo = Constants.LostUser;
-            return false;
+            return userInfo;
         }
     }
 
-    private bool TryCheckAndSyncToLdapUser(Tuple<UserInfo, LdapObject> ldapUserInfo, LdapUserImporter importer,
-        out UserInfo userInfo)
+    private async Task<UserInfo> TryCheckAndSyncToLdapUser(Tuple<UserInfo, LdapObject> ldapUserInfo, LdapUserImporter importer)
     {
+        UserInfo userInfo;
         try
         {
             _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
-            userInfo = SyncLDAPUser(ldapUserInfo.Item1);
+            userInfo = await SyncLDAPUser(ldapUserInfo.Item1);
 
             if (userInfo == null || userInfo.Equals(Constants.LostUser))
             {
@@ -723,18 +723,18 @@ public class LdapUserManager
 
             if (!importer.Settings.GroupMembership)
             {
-                return true;
+                return userInfo;
             }
 
-            if (!importer.TrySyncUserGroupMembership(newLdapUserInfo))
+            if (!(await importer.TrySyncUserGroupMembership(newLdapUserInfo)))
             {
                 userInfo.Sid = null;
                 userInfo.Status = EmployeeStatus.Terminated;
-                _userManager.SaveUserInfo(userInfo);
+                _userManager.UpdateUserInfo(userInfo);
                 throw new Exception("The user did not pass the configuration check by ldap group settings");
             }
 
-            return true;
+            return userInfo;
         }
         catch (Exception ex)
         {
@@ -747,6 +747,6 @@ public class LdapUserManager
         }
 
         userInfo = Constants.LostUser;
-        return false;
+        return userInfo;
     }
 }

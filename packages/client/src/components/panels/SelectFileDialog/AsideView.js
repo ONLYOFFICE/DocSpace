@@ -26,7 +26,7 @@ const SelectFileDialogAsideView = ({
   resultingFolderTree,
   footer,
   fileId,
-  foldersType,
+  filteredType,
   onCloseSelectFolderDialog,
   onClickInput,
   isFolderPanelVisible,
@@ -59,7 +59,7 @@ const SelectFileDialogAsideView = ({
                 onClose={onCloseSelectFolderDialog}
                 onSelectFolder={onSelectFolder}
                 isPanelVisible={isFolderPanelVisible}
-                foldersType={foldersType}
+                filteredType={filteredType}
                 withoutProvider={withoutProvider}
                 id={folderId}
                 onSelectFile={onSelectFile}
@@ -70,7 +70,7 @@ const SelectFileDialogAsideView = ({
                 files={files}
                 folderTree={resultingFolderTree}
                 isFolderTreeLoading={!!!resultingFolderTree}
-                isNeedArrowIcon
+                withFileSelectDialog
                 maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
               />
 
@@ -97,7 +97,7 @@ const SelectFileDialogAsideView = ({
           theme={theme}
           primary
           scale
-          size="normalTouchscreen"
+          size="normal"
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={!fileId}
@@ -105,7 +105,7 @@ const SelectFileDialogAsideView = ({
         <Button
           theme={theme}
           scale
-          size="normalTouchscreen"
+          size="normal"
           label={t("Common:CancelButton")}
           onClick={onClose}
         />

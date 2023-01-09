@@ -30,7 +30,7 @@ namespace ASC.Common.Caching;
 public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
 {
     private IConnection _connection;
-    private readonly IConnectionFactory _connectionFactory;
+    private readonly ConnectionFactory _factory;
 
     private IModel _consumerChannel;
     private readonly Guid _instanceId;
@@ -53,14 +53,9 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         var rabbitMQConfiguration = configuration.GetSection("rabbitmq").Get<RabbitMQSettings>();
 
-        _connectionFactory = new ConnectionFactory
-        {
-            HostName = rabbitMQConfiguration.HostName,
-            UserName = rabbitMQConfiguration.UserName,
-            Password = rabbitMQConfiguration.Password
-        };
+        _factory = rabbitMQConfiguration.GetConnectionFactory();
 
-        _connection = _connectionFactory.CreateConnection();
+        _connection = _factory.CreateConnection();
         _consumerChannel = CreateConsumerChannel();
 
         StartBasicConsume();
@@ -114,8 +109,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
             _logger.ErrorStartBasicConsumeCanNotCall();
         }
     }
-
-
+    
     private void TryConnect()
     {
         lock (_lock)
@@ -125,7 +119,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
                 return;
             }
 
-            _connection = _connectionFactory.CreateConnection();
+            _connection = _factory.CreateConnection();
             _connection.ConnectionShutdown += (s, e) => TryConnect();
             _connection.CallbackException += (s, e) => TryConnect();
             _connection.ConnectionBlocked += (s, e) => TryConnect();
@@ -207,12 +201,4 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         _disposed = true;
     }
-}
-
-public class RabbitMQSettings
-{
-    public string HostName { get; set; }
-    public string UserName { get; set; }
-    public string Password { get; set; }
-
 }

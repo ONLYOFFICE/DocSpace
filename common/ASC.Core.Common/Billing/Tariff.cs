@@ -26,48 +26,51 @@
 
 namespace ASC.Core.Billing;
 
-[DebuggerDisplay("{QuotaId} ({State} before {DueDate})")]
+[DebuggerDisplay("{State} before {DueDate}")]
 [Serializable]
 public class Tariff
 {
-    public int QuotaId { get; set; }
+    public int Id { get; set; }
     public TariffState State { get; set; }
     public DateTime DueDate { get; set; }
     public DateTime DelayDueDate { get; set; }
     public DateTime LicenseDate { get; set; }
-    public bool Autorenewal { get; set; }
-    public bool Prolongable { get; set; }
-    public int Quantity { get; set; }
-
-    public static Tariff CreateDefault()
-    {
-        return new Tariff
-        {
-            QuotaId = Tenant.DefaultTenant,
-            State = TariffState.Paid,
-            DueDate = DateTime.MaxValue,
-            DelayDueDate = DateTime.MaxValue,
-            LicenseDate = DateTime.MaxValue,
-            Quantity = 1
-        };
-    }
-
+    public string CustomerId { get; set; }
+    public List<Quota> Quotas { get; set; }
 
     public override int GetHashCode()
     {
-        return QuotaId.GetHashCode();
+        return DueDate.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        return obj is Tariff t && t.QuotaId == QuotaId;
+        return obj is Tariff t && t.DueDate == DueDate;
     }
 
     public bool EqualsByParams(Tariff t)
     {
         return t != null
-            && t.QuotaId == QuotaId
             && t.DueDate == DueDate
-            && t.Quantity == Quantity;
+            && t.Quotas.Count == Quotas.Count
+            && t.Quotas.Any(q => Quotas.Contains(q))
+            && t.CustomerId == CustomerId;
+    }
+}
+
+public class Quota : IEquatable<Quota>
+{
+    public int Id { get; set; }
+    public int Quantity { get; set; }
+
+    public Quota(int id, int quantity)
+    {
+        Id = id;
+        Quantity = quantity;
+    }
+
+    public bool Equals(Quota other)
+    {
+        return other != null && other.Id == Id && other.Quantity == Quantity;
     }
 }

@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Api.Core.Middleware;
+
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
@@ -39,7 +40,9 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 
         var withStackTrace = true;
 
-        switch (context.Exception)
+        var exception = context.Exception.GetBaseException();
+
+        switch (exception)
         {
             case ItemNotFoundException:
                 status = HttpStatusCode.NotFound;
@@ -60,9 +63,13 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
             case InvalidOperationException:
                 status = HttpStatusCode.Forbidden;
                 break;
+            case TenantQuotaException:
+            case BillingNotFoundException:
+                status = HttpStatusCode.PaymentRequired;
+                break;
         }
 
-        var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
+        var result = new ObjectResult(new ErrorApiResponse(status, exception, message, withStackTrace))
         {
             StatusCode = (int)status
         };

@@ -6,20 +6,23 @@ import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
 
 class SelectFileInput extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    const { setExpandedPanelKeys, setFolderId, setFile } = props;
-
-    setExpandedPanelKeys(null);
-    setFolderId(null);
-    setFile(null);
-  }
-
   componentDidMount() {
     this.props.setFirstLoad(false);
   }
 
+  componentWillUnmount() {
+    const {
+      setExpandedPanelKeys,
+      setFolderId,
+      setFile,
+      onSelectFile,
+    } = this.props;
+
+    setExpandedPanelKeys(null);
+    setFolderId(null);
+    setFile({});
+    onSelectFile && onSelectFile({});
+  }
   render() {
     const {
       onClickInput,

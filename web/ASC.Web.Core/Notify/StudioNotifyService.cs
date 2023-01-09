@@ -98,6 +98,19 @@ public class StudioNotifyService
         _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
+    public void SendMsgToSales(string email, string userName, string message)
+    {
+        var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+
+        _client.SendNoticeToAsync(
+            Actions.UserMessageToSales,
+            _studioNotifyHelper.RecipientFromEmail(settings.SalesEmail, false),
+            new[] { EMailSenderName },
+            new TagValue(Tags.Body, message),
+            new TagValue(Tags.UserEmail, email),
+            new TagValue(Tags.UserName, userName));
+    }
+
     public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
     {
         fname = (fname ?? "").Trim();
@@ -156,7 +169,7 @@ public class StudioNotifyService
 
         var hash = auditEventDate.ToString("s");
 
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -181,7 +194,7 @@ public class StudioNotifyService
 
     public void SendEmailChangeInstructions(UserInfo user, string email)
     {
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailChange, _authContext.CurrentAccount.ID);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmailChange, _authContext.CurrentAccount.ID);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
@@ -199,7 +212,7 @@ public class StudioNotifyService
 
     public void SendEmailActivationInstructions(UserInfo user, string email)
     {
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.Id);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmailActivation, null, user.Id);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -218,6 +231,18 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
             Actions.RoomInvite,
+                _studioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
+                new TagValue(Tags.InviteLink, confirmationUrl),
+                TagValues.GreenButton(greenButtonText, confirmationUrl));
+    }
+
+    public void SendDocSpaceInvite(string email, string confirmationUrl)
+    {
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmDocSpaceInvite;
+
+        _client.SendNoticeToAsync(
+            Actions.DocSpaceInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
@@ -278,7 +303,7 @@ public class StudioNotifyService
 
     public void SendMsgMobilePhoneChange(UserInfo userInfo)
     {
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
@@ -291,7 +316,7 @@ public class StudioNotifyService
 
     public void SendMsgTfaReset(UserInfo userInfo)
     {
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
@@ -313,7 +338,7 @@ public class StudioNotifyService
 
     public void SendJoinMsg(string email, EmployeeType emplType)
     {
-        var inviteUrl = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType)
+        var inviteUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)emplType)
                     + string.Format("&emplType={0}", (int)emplType);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
@@ -353,25 +378,23 @@ public class StudioNotifyService
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
             notifyAction = defaultRebranding
-                               ? Actions.EnterpriseUserWelcomeV10
+                               ? Actions.EnterpriseUserWelcomeV1
                                    : _coreBaseSettings.CustomMode
-                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomMode
-                                     : Actions.EnterpriseWhitelabelUserWelcomeV10;
+                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomModeV1
+                                     : Actions.EnterpriseWhitelabelUserWelcomeV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserWelcomeV11;
+            notifyAction = Actions.OpensourceUserWelcomeV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserWelcomeV115;
+            notifyAction = Actions.SaasUserWelcomeV1;
         }
 
-        string greenButtonText() => _tenantExtra.Enterprise
-                              ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
-                              : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+        string greenButtonText() => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -437,17 +460,17 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
+            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV1 : Actions.EnterpriseWhitelabelUserActivationV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserActivationV11;
+            notifyAction = Actions.OpensourceUserActivationV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserActivationV115;
+            notifyAction = Actions.SaasUserActivationV1;
         }
 
         var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -506,7 +529,7 @@ public class StudioNotifyService
 
     public void SendMsgProfileDeletion(UserInfo user)
     {
-        var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.ProfileRemove, _authContext.CurrentAccount.ID, _authContext.CurrentAccount.ID);
+        var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.ProfileRemove, _authContext.CurrentAccount.ID, _authContext.CurrentAccount.ID);
 
         string greenButtonText() => _coreBaseSettings.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
@@ -629,27 +652,21 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
-
-            tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl)));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
+            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceAdminWelcomeV11;
+            notifyAction = Actions.OpensourceAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
         }
         else
         {
-            notifyAction = Actions.SaasAdminWelcomeV115;
-            //tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
-
+            notifyAction = Actions.SaasAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "common"));
-            tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx")));
         }
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
+        tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/payments")));
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -695,7 +712,7 @@ public class StudioNotifyService
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
         _client.SendNoticeToAsync(
-                Actions.PortalDeleteSuccessV115,
+                Actions.PortalDeleteSuccessV1,
                 new IRecipient[] { owner },
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, url),
@@ -745,31 +762,29 @@ public class StudioNotifyService
             if (_tenantExtra.Enterprise)
             {
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV10 : Actions.EnterpriseWhitelabelAdminActivationV10;
+                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV1 : Actions.EnterpriseWhitelabelAdminActivationV1;
                 footer = null;
             }
             else if (_tenantExtra.Opensource)
             {
-                notifyAction = Actions.OpensourceAdminActivationV11;
+                notifyAction = Actions.OpensourceAdminActivationV1;
                 footer = "opensource";
             }
             else
             {
-                notifyAction = Actions.SaasAdminActivationV115;
+                notifyAction = Actions.SaasAdminActivationV1;
             }
 
-            var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation);
             confirmationUrl += "&first=true";
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;
 
             _client.SendNoticeToAsync(
             notifyAction,
                 _studioNotifyHelper.RecipientFromEmail(u.Email, false),
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-            new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            new TagValue(Tags.ActivateUrl, confirmationUrl),
             TagValues.GreenButton(greenButtonText, confirmationUrl),
             new TagValue(CommonTags.Footer, footer));
         }
@@ -795,8 +810,8 @@ public class StudioNotifyService
 
         var culture = _setupInfo.GetPersonalCulture(lang);
 
-        var confirmUrl = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
-                     + "&emplType=" + (int)EmployeeType.User
+        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.RoomAdmin)
+                     + "&emplType=" + (int)EmployeeType.RoomAdmin
                      + "&lang=" + culture.Key
                      + additionalMember;
 
@@ -821,7 +836,7 @@ public class StudioNotifyService
 
         var hash = _authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
 
-        var linkToRecovery = _commonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
+        var linkToRecovery = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
         _client.SendNoticeToAsync(
             _coreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
@@ -898,7 +913,7 @@ public class StudioNotifyService
 
     private string GenerateActivationConfirmUrl(UserInfo user)
     {
-        var confirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.Id, user.Id);
+        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Activation, user.Id, user.Id);
 
         return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
     }

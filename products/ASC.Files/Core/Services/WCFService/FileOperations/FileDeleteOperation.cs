@@ -50,9 +50,8 @@ class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>
     public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
         : base(serviceProvider, f1, f2)
     {
+        this[OpType] = (int)FileOperationType.Delete;
     }
-
-    public override FileOperationType OperationType => FileOperationType.Delete;
 }
 
 class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
@@ -64,9 +63,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
 
-    public override FileOperationType OperationType => FileOperationType.Delete;
-
-
     public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
     : base(serviceProvider, fileOperationData)
     {
@@ -75,9 +71,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         _headers = fileOperationData.Headers;
         _isEmptyTrash = fileOperationData.IsEmptyTrash;
         _thumbnailSettings = thumbnailSettings;
+        this[OpType] = (int)FileOperationType.Delete;
     }
 
-    protected override async Task DoAsync(IServiceScope scope)
+    protected override async Task DoJob(IServiceScope scope)
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
         var messageService = scope.ServiceProvider.GetService<MessageService>();
@@ -94,7 +91,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         }
         if (root != null)
         {
-            Result += string.Format("folder_{0}{1}", root.Id, SplitChar);
+            this[Res] += string.Format("folder_{0}{1}", root.Id, SplitChar);
         }
         if (_isEmptyTrash)
         {
@@ -107,7 +104,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             await DeleteFilesAsync(Files, scope, true);
             await DeleteFoldersAsync(Folders, scope, true);
         }
-
     }
 
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false)
@@ -124,18 +120,18 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             T canCalculate = default;
             if (folder == null)
             {
-                Error = FilesCommonResource.ErrorMassage_FolderNotFound;
+                this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
             else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
                 && !DocSpaceHelper.IsRoom(folder.FolderType))
             {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
             else if (!_ignoreException && !await FilesSecurity.CanDeleteAsync(folder))
             {
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
-                Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
             else
             {
@@ -167,7 +163,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 }
                 else
                 {
-                    var immediately = _immediately || FolderDao.UseTrashForRemoveAsync(folder);
+                    var immediately = _immediately || !FolderDao.UseTrashForRemoveAsync(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
                         var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
@@ -201,7 +197,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         var (isError, message) = await WithErrorAsync(scope, files, true);
                         if (!_ignoreException && isError)
                         {
-                            Error = message;
+                            this[Err] = message;
                         }
                         else
                         {
@@ -256,11 +252,11 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             var (isError, message) = await WithErrorAsync(scope, new[] { file }, false);
             if (file == null)
             {
-                Error = FilesCommonResource.ErrorMassage_FileNotFound;
+                this[Err] = FilesCommonResource.ErrorMassage_FileNotFound;
             }
             else if (!_ignoreException && isError)
             {
-                Error = message;
+                this[Err] = message;
             }
             else
             {
@@ -282,7 +278,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         }
                     }
 
-                    socketManager.DeleteFile(file);
+                    await socketManager.DeleteFile(file);
                 }
                 else
                 {
@@ -302,11 +298,11 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             filesMessageService.Send(file, MessageInitiator.AutoCleanUp, MessageAction.FileDeleted, file.Title);
                         }
 
-                        socketManager.DeleteFile(file);
+                        await socketManager.DeleteFile(file);
                     }
                     catch (Exception ex)
                     {
-                        Error = ex.Message;
+                        this[Err] = ex.Message;
                         Logger.ErrorWithException(ex);
                     }
 

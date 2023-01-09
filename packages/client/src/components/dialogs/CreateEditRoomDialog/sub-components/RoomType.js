@@ -6,6 +6,10 @@ import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import RoomLogo from "@docspace/components/room-logo";
 import { Base } from "@docspace/components/themes";
+import {
+  getRoomTypeDescriptionTranslation,
+  getRoomTypeTitleTranslation,
+} from "./../data/index";
 
 const StyledRoomType = styled.div`
   cursor: pointer;
@@ -131,17 +135,27 @@ const StyledDisplayItem = styled(StyledRoomType)`
   }
 `;
 
-const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
+const RoomType = ({
+  t,
+  roomType,
+  onClick,
+  type = "listItem",
+  isOpen,
+  id,
+  selectedId,
+}) => {
+  const room = {
+    type: roomType,
+    title: getRoomTypeTitleTranslation(roomType, t),
+    description: getRoomTypeDescriptionTranslation(roomType, t),
+  };
+
   const arrowClassName =
     type === "dropdownButton"
       ? "choose_room-forward_btn dropdown-button"
       : type === "dropdownItem"
       ? "choose_room-forward_btn dropdown-item"
       : "choose_room-forward_btn";
-
-  const onSecondaryInfoClick = (e) => {
-    e.stopPropagation();
-  };
 
   const content = (
     <>
@@ -154,11 +168,6 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
           <Text noSelect className="choose_room-title-text">
             {t(room.title)}
           </Text>
-          {room.withSecondaryInfo && (
-            <div onClick={onSecondaryInfoClick}>
-              {/* <SecondaryInfoButton content={t(room.secondaryInfo)} /> */}
-            </div>
-          )}
         </div>
         <Text noSelect className="choose_room-description">
           {t(room.description)}
@@ -175,23 +184,37 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
   );
 
   return type === "listItem" ? (
-    <StyledListItem title={t(room.title)} onClick={onClick}>
+    <StyledListItem id={id} title={t(room.title)} onClick={onClick}>
       {content}
     </StyledListItem>
   ) : type === "dropdownButton" ? (
     <StyledDropdownButton
+      id={id}
       title={t(room.title)}
       onClick={onClick}
       isOpen={isOpen}
+      data-selected-id={selectedId}
     >
       {content}
     </StyledDropdownButton>
   ) : type === "dropdownItem" ? (
-    <StyledDropdownItem title={t(room.title)} onClick={onClick} isOpen={isOpen}>
+    <StyledDropdownItem
+      id={id}
+      title={t(room.title)}
+      onClick={onClick}
+      isOpen={isOpen}
+      data-selected-id={selectedId}
+    >
       {content}
     </StyledDropdownItem>
   ) : (
-    <StyledDisplayItem title={t(room.title)}>{content}</StyledDisplayItem>
+    <StyledDisplayItem
+      id={id}
+      title={t(room.title)}
+      data-selected-id={selectedId}
+    >
+      {content}
+    </StyledDisplayItem>
   );
 };
 

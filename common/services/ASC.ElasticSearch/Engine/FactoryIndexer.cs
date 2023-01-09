@@ -49,7 +49,7 @@ public interface IFactoryIndexer
 {
     string IndexName { get; }
     string SettingsTitle { get; }
-    void IndexAll();
+    Task IndexAll();
     void ReIndex();
 }
 
@@ -170,7 +170,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(_tenantManager.GetCurrentTenant().Id);
     }
 
-    public bool Index(T data, bool immediately = true)
+    public async Task<bool> Index(T data, bool immediately = true)
     {
         var t = _serviceProvider.GetService<T>();
         if (!Support(t))
@@ -180,7 +180,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            _indexer.Index(data, immediately);
+            await _indexer.Index(data, immediately);
 
             return true;
         }
@@ -192,7 +192,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         return false;
     }
 
-    public void Index(List<T> data, bool immediately = true, int retry = 0)
+    public async Task Index(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
         if (!Support(t) || data.Count == 0)
@@ -202,7 +202,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            _indexer.Index(data, immediately);
+            await _indexer.Index(data, immediately);
         }
         catch (ElasticsearchClientException e)
         {
@@ -214,14 +214,17 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
-                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
+                    foreach (var r in data.Where(r => r != null))
+                    {
+                        await Index(r, immediately);
+                    }
                 }
                 else if (e.Response.HttpStatusCode == 429)
                 {
                     Thread.Sleep(60000);
                     if (retry < 10)
                     {
-                        Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
+                        await Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 
@@ -246,14 +249,17 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
                     Logger.Error(inner.Response.HttpStatusCode.ToString());
-                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
+                    foreach (var r in data.Where(r => r != null))
+                    {
+                        await Index(r, immediately);
+                    }
                 }
                 else if (inner.Response.HttpStatusCode == 429)
                 {
                     Thread.Sleep(60000);
                     if (retry < 10)
                     {
-                        Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
+                        await Index(data.Where(r => r != null).ToList(), immediately, retry + 1);
                         return;
                     }
 
@@ -294,7 +300,10 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
                 if (e.Response.HttpStatusCode == 413 || e.Response.HttpStatusCode == 403 || e.Response.HttpStatusCode == 408)
                 {
-                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
+                    foreach (var r in data.Where(r => r != null))
+                    {
+                        await Index(r, immediately);
+                    }
                 }
                 else if (e.Response.HttpStatusCode == 429)
                 {
@@ -326,7 +335,10 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                 if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                 {
                     Logger.Error(inner.Response.HttpStatusCode.ToString());
-                    data.Where(r => r != null).ToList().ForEach(r => Index(r, immediately));
+                    foreach (var r in data.Where(r => r != null))
+                    {
+                        await Index(r, immediately);
+                    }
                 }
                 else if (inner.Response.HttpStatusCode == 429)
                 {
@@ -459,7 +471,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public Task<bool> IndexAsync(T data, bool immediately = true)
+    public Task IndexAsync(T data, bool immediately = true)
     {
         var t = _serviceProvider.GetService<T>();
 
@@ -521,9 +533,9 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         _indexer.Refresh();
     }
 
-    public virtual void IndexAll()
+    public virtual Task IndexAll()
     {
-        return;
+        return Task.CompletedTask;
     }
 
     public void ReIndex()
@@ -590,7 +602,31 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
                 throw;
             }
+        }, TaskCreationOptions.LongRunning);
 
+        task.ConfigureAwait(false);
+        task.Start(_scheduler);
+
+        return task;
+    }
+
+    private Task Queue(Func<Task> actionData)
+    {
+        var task = new Task(async () =>
+        {
+            try
+            {
+                await actionData();
+            }
+            catch (AggregateException agg)
+            {
+                foreach (var e in agg.InnerExceptions)
+                {
+                    Logger.ErrorQueue(e);
+                }
+
+                throw;
+            }
         }, TaskCreationOptions.LongRunning);
 
         task.ConfigureAwait(false);

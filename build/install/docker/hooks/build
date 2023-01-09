@@ -1,6 +1,7 @@
 #!/bin/bash
 export DOCKER_TAG=$DOCKER_TAG
 BUILD_NUMBER="$(date "+%Y%m%d%H")"
+
 docker-compose -f build.yml build \
     --build-arg GIT_BRANCH=$SOURCE_BRANCH \
     --build-arg PRODUCT_VERSION=$PRODUCT_VERSION \

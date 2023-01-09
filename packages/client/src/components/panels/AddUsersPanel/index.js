@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@docspace/components/backdrop";
@@ -8,78 +8,74 @@ import IconButton from "@docspace/components/icon-button";
 import { ShareAccessRights } from "@docspace/common/constants";
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import { withTranslation } from "react-i18next";
-import {
-  StyledAddUsersPanelPanel,
-  StyledContent,
-  StyledHeaderContent,
-  StyledBody,
-} from "../StyledPanels";
-import AccessComboBox from "../SharingPanel/AccessComboBox";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import toastr from "@docspace/components/toast/toastr";
 
-class AddUsersPanelComponent extends React.Component {
-  constructor(props) {
-    super(props);
+const AddUsersPanel = ({
+  isEncrypted,
+  defaultAccess,
+  onClose,
+  onParentPanelClose,
+  shareDataItems,
+  tempDataItems,
+  setDataItems,
+  t,
+  visible,
+  groupsCaption,
+  accessOptions,
+  isMultiSelect,
+  theme,
+}) => {
+  const accessRight = defaultAccess
+    ? defaultAccess
+    : isEncrypted
+    ? ShareAccessRights.FullAccess
+    : ShareAccessRights.ReadOnly;
 
-    const accessRight = props.isEncrypted
-      ? ShareAccessRights.FullAccess
-      : ShareAccessRights.ReadOnly;
+  const onBackClick = () => onClose();
 
-    this.state = {
-      showActionPanel: false,
-      accessRight,
-    };
-
-    this.scrollRef = React.createRef();
-  }
-
-  onPlusClick = () =>
-    this.setState({ showActionPanel: !this.state.showActionPanel });
-
-  onArrowClick = () => this.props.onClose();
-
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
+  const onKeyPress = (e) => {
+    if (e.key === "Esc" || e.key === "Escape") onClose();
   };
 
-  onClosePanels = () => {
-    this.props.onClose();
-    this.props.onSharingPanelClose();
+  useEffect(() => {
+    window.addEventListener("keyup", onKeyPress);
+
+    return () => window.removeEventListener("keyup", onKeyPress);
+  });
+
+  const onClosePanels = () => {
+    onClose();
+    onParentPanelClose();
   };
 
-  onPeopleSelect = (users) => {
-    const { shareDataItems, setShareDataItems, onClose } = this.props;
-    const items = shareDataItems;
+  const onUsersSelect = (users, access) => {
+    const items = [];
+
     for (let item of users) {
-      const groups = item?.groups.map((group) => ({
-        id: group,
-      }));
-
-      if (item.key) {
-        item.id = item.key;
-        item.groups = groups;
-      }
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
+
       if (!currentItem) {
         const newItem = {
-          access: this.state.accessRight,
-          isLocked: false,
-          isOwner: false,
-          sharedTo: item,
+          access: access.access,
+          email: item.email,
+          id: item.id,
+          displayName: item.label,
+          avatar: item.avatar,
         };
         items.push(newItem);
       }
     }
 
-    setShareDataItems(items);
+    if (users.length > items.length)
+      toastr.warning("Some users are already in room");
+
+    setDataItems(items);
     onClose();
   };
 
-  onOwnerSelect = (owner) => {
-    const { setShareDataItems, shareDataItems, onClose } = this.props;
+  const onUserSelect = (owner) => {
     const ownerItem = shareDataItems.find((x) => x.isOwner);
     ownerItem.sharedTo = owner[0];
 
@@ -87,119 +83,47 @@ class AddUsersPanelComponent extends React.Component {
       owner[0].id = owner[0].key;
     }
 
-    setShareDataItems(shareDataItems);
+    setDataItems(shareDataItems);
     onClose();
   };
 
-  componentDidMount() {
-    const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
-    setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
-    window.addEventListener("keyup", this.onKeyPress);
-  }
+  const selectedAccess = accessOptions.filter(
+    (access) => access.access === accessRight
+  )[0];
 
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPress);
-  }
-
-  onAccessChange = (e) => {
-    const accessRight = +e.currentTarget.dataset.access;
-    this.setState({ accessRight });
-  };
-
-  render() {
-    const {
-      t,
-      visible,
-      groupsCaption,
-      accessOptions,
-      isMultiSelect,
-      theme,
-      shareDataItems,
-    } = this.props;
-    const { accessRight } = this.state;
-
-    const selectedOptions = [];
-    shareDataItems.forEach((item) => {
-      const { sharedTo } = item;
-
-      if (item.isUser) {
-        const groups = sharedTo?.groups
-          ? sharedTo.groups.map((group) => group.id)
-          : [];
-        selectedOptions.push({ key: sharedTo.id, id: sharedTo.id, groups });
-      }
-    });
-
-    const zIndex = 310;
-
-    const embeddedComponent = isMultiSelect
-      ? {
-          embeddedComponent: (
-            <AccessComboBox
-              t={t}
-              access={accessRight}
-              directionX="right"
-              directionY="top"
-              onAccessChange={this.onAccessChange}
-              accessOptions={accessOptions}
-              arrowIconColor={theme.filesPanels.addUsers.arrowColor}
-              isEmbedded={true}
-            />
-          ),
-        }
-      : null;
-
-    //console.log("AddUsersPanel render");
-
-    return (
-      <StyledAddUsersPanelPanel visible={visible}>
-        <Backdrop
-          onClick={this.onClosePanels}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
+  return (
+    <>
+      <Backdrop
+        onClick={onClosePanels}
+        visible={visible}
+        zIndex={310}
+        isAside={true}
+      />
+      <Aside
+        className="header_aside-panel"
+        visible={visible}
+        onClose={onClosePanels}
+        withoutBodyScroll
+      >
+        <PeopleSelector
+          isMultiSelect={isMultiSelect}
+          onAccept={onUsersSelect}
+          onBackClick={onBackClick}
+          accessRights={accessOptions}
+          selectedAccessRight={selectedAccess}
+          onCancel={onClosePanels}
+          withCancelButton={!isMultiSelect}
+          withAccessRights={isMultiSelect}
+          withSelectAll={isMultiSelect}
         />
-        <Aside
-          className="header_aside-panel"
-          visible={visible}
-          onClose={this.onClosePanels}
-        >
-          <StyledContent>
-            <StyledBody ref={this.scrollRef}>
-              <PeopleSelector
-                className="peopleSelector"
-                role={isMultiSelect ? null : "user"}
-                employeeStatus={1}
-                displayType="aside"
-                withoutAside
-                isOpen={visible}
-                isMultiSelect={isMultiSelect}
-                onSelect={
-                  isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
-                }
-                {...embeddedComponent}
-                selectedOptions={selectedOptions}
-                groupsCaption={groupsCaption}
-                showCounter
-                onArrowClick={this.onArrowClick}
-                headerLabel={
-                  isMultiSelect
-                    ? t("Common:AddUsers")
-                    : t("PeopleTranslations:OwnerChange")
-                }
-                //onCancel={onClose}
-              />
-            </StyledBody>
-          </StyledContent>
-        </Aside>
-      </StyledAddUsersPanelPanel>
-    );
-  }
-}
+      </Aside>
+    </>
+  );
+};
 
-AddUsersPanelComponent.propTypes = {
+AddUsersPanel.propTypes = {
   visible: PropTypes.bool,
-  onSharingPanelClose: PropTypes.func,
+  onParentPanelClose: PropTypes.func,
   onClose: PropTypes.func,
 };
 
@@ -208,7 +132,7 @@ export default inject(({ auth }) => {
 })(
   observer(
     withTranslation(["SharingPanel", "PeopleTranslations", "Common"])(
-      withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+      withLoader(AddUsersPanel)(<Loaders.DialogAsideLoader isPanel />)
     )
   )
 );

@@ -16,6 +16,8 @@ interface IRegisterProps {
   trustedDomainsType?: number;
   trustedDomains?: string[];
   theme?: any;
+  currentColorScheme: ITheme;
+  id?: string;
 }
 
 const StyledRegister = styled(Box)`
@@ -41,6 +43,8 @@ const Register: React.FC<IRegisterProps> = (props) => {
     trustedDomainsType,
     trustedDomains,
     theme,
+    currentColorScheme,
+    id,
   } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -107,8 +111,10 @@ const Register: React.FC<IRegisterProps> = (props) => {
 
   return enabledJoin && !isAuthenticated ? (
     <>
-      <StyledRegister onClick={onRegisterClick}>
-        <Text color={theme.login.register.textColor}>{t("Register")}</Text>
+      <StyledRegister id={id} onClick={onRegisterClick}>
+        <Text as="span" color={currentColorScheme.accentColor}>
+          {t("Register")}
+        </Text>
       </StyledRegister>
 
       {visible && (

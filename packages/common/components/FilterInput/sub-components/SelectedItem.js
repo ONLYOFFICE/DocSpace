@@ -33,6 +33,8 @@ const StyledSelectedItem = styled.div`
 StyledSelectedItem.defaultProps = { theme: Base };
 
 const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
+  if (!label) return <></>;
+
   const onRemove = () => {
     removeSelectedItem(propKey, label, group);
   };
@@ -43,6 +45,7 @@ const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
         {label}
       </Text>
       <IconButton
+        className="selected-tag-removed"
         iconName={"/static/images/cross.react.svg"}
         size={12}
         onClick={onRemove}

@@ -37,7 +37,7 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
 const Badges = ({ t, statusType, withoutPaid, isPaid = false }) => {
   return (
     <StyledBadgesContainer className="badges additional-badges">
-      {!withoutPaid && !isPaid && (
+      {!withoutPaid && isPaid && (
         <StyledPaidBadge
           className="paid-badge"
           label={t("Paid")}

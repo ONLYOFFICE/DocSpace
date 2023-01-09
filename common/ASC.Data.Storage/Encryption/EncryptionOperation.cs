@@ -56,7 +56,7 @@ public class EncryptionOperation : DistributedTaskProgress
         _serverRootPath = serverRootPath;
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
@@ -92,12 +92,12 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module));
                 }
 
-                Parallel.ForEach(dictionary, (elem) =>
+                await Parallel.ForEachAsync(dictionary, async (elem, token) =>
                 {
-                    EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log).Wait();
+                    await EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                 });
             }
 
@@ -106,22 +106,25 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (!_hasErrors)
             {
-                DeleteProgressFilesAsync(storageFactory).Wait();
+                await DeleteProgressFilesAsync(storageFactory);
                 SaveNewSettings(encryptionSettingsHelper, log);
             }
 
             Percentage = 90;
             PublishChanges();
-
             ActivateTenants(tenantManager, log, notifyHelper);
 
             Percentage = 100;
+
+            IsCompleted = true;
             PublishChanges();
         }
         catch (Exception e)
         {
             Exception = e;
             log.ErrorEncryptionOperation(e);
+            IsCompleted = true;
+            PublishChanges();
         }
     }
 
@@ -256,7 +259,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {

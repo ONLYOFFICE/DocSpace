@@ -91,9 +91,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Email地址不正确</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>促销码有误</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>很抱歉，您没有权限执行这项操作</value>
   </data>
@@ -150,9 +147,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>密码格式不正确。新密码必须包含</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>它必须包含</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>数字</value>

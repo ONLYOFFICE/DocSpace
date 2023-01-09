@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { roomTypes } from "../data";
 import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
@@ -14,6 +13,7 @@ import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
+import { getRoomTypeDefaultTagTranslation } from "../data";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -31,72 +31,30 @@ const SetRoomParams = ({
   tagHandler,
   setIsScrollLocked,
   isEdit,
-  connectItems,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
+  isDisabled,
 }) => {
-  const onChangeName = (e) => {
-    // let value = e.target.value;
-    // value = value.replace("/", "");
-    // value = value.replace("\\", "");
-
-    // const storageFolderPath = roomParams.storageLocation.storageFolderPath;
-    // const pathArr = storageFolderPath.split("/");
-    // const folderName = pathArr.pop();
-
-    // if (roomParams.title === folderName)
-    //   setRoomParams({
-    //     ...roomParams,
-    //     title: value,
-    //     storageLocation: {
-    //       ...roomParams.storageLocation,
-    //       storageFolderPath:
-    //         pathArr.join("/") + (!!pathArr.length ? "/" : "") + value,
-    //     },
-    //   });
-    // else
-
+  const onChangeName = (e) =>
     setRoomParams({ ...roomParams, title: e.target.value });
-  };
 
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
 
-  // const onChangeThidpartyFolderName = (e) =>
-  //   setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
-
-  const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
-
-  const onChangeIsThirdparty = () =>
-    setRoomParams({ ...roomParams, isThirdparty: !roomParams.isThirdparty });
-
-  const setChangeStorageLocation = (storageLocation) =>
+  const onChangeStorageLocation = (storageLocation) =>
     setRoomParams({ ...roomParams, storageLocation });
 
-  const onChangeRememberThirdpartyStorage = () =>
-    setRoomParams({
-      ...roomParams,
-      rememberThirdpartyStorage: !roomParams.rememberThirdpartyStorage,
-    });
-
-  const [currentRoomTypeData] = roomTypes.filter(
-    (room) => room.type === roomParams.type
-  );
+  const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
   return (
     <StyledSetRoomParams>
       {isEdit ? (
-        <RoomType t={t} room={currentRoomTypeData} type="displayItem" />
+        <RoomType t={t} roomType={roomParams.type} type="displayItem" />
       ) : (
         <RoomTypeDropdown
           t={t}
-          currentRoom={currentRoomTypeData}
+          currentRoomType={roomParams.type}
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -107,22 +65,24 @@ const SetRoomParams = ({
           isThirdparty={roomParams.isThirdparty}
           storageLocation={roomParams.storageLocation}
           isPrivate={roomParams.isPrivate}
+          isDisabled={isDisabled}
         />
       )}
 
       <InputParam
-        id={"room-name"}
+        id="shared_room-name"
         title={`${t("Common:Name")}:`}
-        placeholder={t("NamePlaceholder")}
+        placeholder={t("Common:EnterName")}
         value={roomParams.title}
         onChange={onChangeName}
+        isDisabled={isDisabled}
       />
 
       <TagInput
         t={t}
         tagHandler={tagHandler}
-        currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
+        isDisabled={isDisabled}
       />
 
       {/* {!isEdit && (
@@ -136,22 +96,12 @@ const SetRoomParams = ({
       {!isEdit && (
         <ThirdPartyStorage
           t={t}
-          connectItems={connectItems}
-          setConnectDialogVisible={setConnectDialogVisible}
-          setRoomCreation={setRoomCreation}
-          saveThirdpartyResponse={saveThirdpartyResponse}
-          openConnectWindow={openConnectWindow}
-          setConnectItem={setConnectItem}
-          getOAuthToken={getOAuthToken}
-          roomParams={roomParams}
-          isThirdparty={roomParams.isThirdparty}
-          onChangeIsThirdparty={onChangeIsThirdparty}
+          roomTitle={roomParams.title}
           storageLocation={roomParams.storageLocation}
-          setChangeStorageLocation={setChangeStorageLocation}
-          rememberThirdpartyStorage={roomParams.rememberThirdpartyStorage}
-          onChangeRememberThirdpartyStorage={onChangeRememberThirdpartyStorage}
+          onChangeStorageLocation={onChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -159,9 +109,10 @@ const SetRoomParams = ({
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
-        currentRoomTypeData={currentRoomTypeData}
+        defaultTagLabel={getRoomTypeDefaultTagTranslation(roomParams.type, t)}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
+        isDisabled={isDisabled}
       />
     </StyledSetRoomParams>
   );

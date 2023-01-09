@@ -23,6 +23,7 @@ const InputParam = ({
   onChange,
   onFocus,
   onBlur,
+  isDisabled,
 }) => {
   return (
     <StyledInputParam>
@@ -42,6 +43,7 @@ const InputParam = ({
         scale
         placeholder={placeholder}
         tabIndex={2}
+        isDisabled={isDisabled}
       />
     </StyledInputParam>
   );

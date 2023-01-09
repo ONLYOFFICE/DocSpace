@@ -192,10 +192,4 @@
           &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Diese E-Mail ist automatisch generiert und erfordert keine Antwort. 
-&lt;br /&gt;Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer bzw. eine registrierte Benutzerin von &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt; sind.
-&lt;br /&gt;Um keine E-Mails mehr zu erhalten, klicken Sie bitte hier: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Abmelden&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

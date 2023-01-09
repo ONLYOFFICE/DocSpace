@@ -1,7 +1,4 @@
 import styled, { css } from "styled-components";
-
-import { isDesktop } from "react-device-detect";
-
 import SearchInput from "@docspace/components/search-input";
 
 const StyledFilterInput = styled.div`
@@ -35,6 +32,10 @@ const StyledFilterInput = styled.div`
     flex-wrap: wrap;
 
     margin-bottom: 8px;
+
+    .clear-all-link {
+      margin-left: 12px;
+    }
   }
 `;
 

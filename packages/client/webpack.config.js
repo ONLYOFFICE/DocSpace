@@ -244,7 +244,6 @@ module.exports = (env, argv) => {
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",
-        "./toastr": "./src/helpers/toastr",
         "./PreparationPortalDialog":
           "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
         "./SharingDialog": "./src/components/panels/SharingDialog",
@@ -261,7 +260,6 @@ module.exports = (env, argv) => {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
-        "./MyProfile": "./src/pages/My",
       },
       shared: {
         ...deps,

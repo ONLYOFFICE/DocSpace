@@ -2,7 +2,6 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import { Resizable } from "re-resizable";
 
 import {
   isDesktop as isDesktopUtils,
@@ -15,15 +14,10 @@ import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
-
+import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
-
-const enable = {
-  top: false,
-  right: false,
-  bottom: false,
-  left: false,
-};
+import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
+import Portal from "@docspace/components/portal";
 
 const Article = ({
   showText,
@@ -32,11 +26,16 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
-  isLoadedPage,
   children,
 
-  isBannerVisible,
+  withMainButton,
+
+  isGracePeriod,
+
   hideProfileBlock,
+  isFreeTariff,
+  isAvailableArticlePaymentAlert,
+  currentColorScheme,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -109,32 +108,43 @@ const Article = ({
     [setShowText]
   );
 
-  return (
+  const articleComponent = (
     <>
       <StyledArticle
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
-        isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <SubArticleHeader
-          isLoadedPage={isLoadedPage}
-          showText={showText}
-          onClick={toggleShowText}
-        >
+        <SubArticleHeader showText={showText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
-        {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
+        {articleMainButtonContent &&
+        withMainButton &&
+        !isMobileOnly &&
+        !isMobileUtils() ? (
           <SubArticleMainButton showText={showText}>
             {articleMainButtonContent.props.children}
           </SubArticleMainButton>
         ) : null}
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
+          <HideArticleMenuButton
+            showText={showText}
+            toggleShowText={toggleShowText}
+            currentColorScheme={currentColorScheme}
+          />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
+          {isAvailableArticlePaymentAlert &&
+            (isFreeTariff || isGracePeriod) &&
+            showText && (
+              <ArticlePaymentAlert
+                isFreeTariff={isFreeTariff}
+                toggleArticleOpen={toggleArticleOpen}
+              />
+            )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -149,6 +159,20 @@ const Article = ({
       ) : null}
     </>
   );
+
+  const renderPortalArticle = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={articleComponent}
+        appendTo={rootElement}
+        visible={true}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalArticle() : articleComponent;
 };
 
 Article.propTypes = {
@@ -176,10 +200,19 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth, bannerStore }) => {
-  const { settingsStore } = auth;
+export default inject(({ auth }) => {
+  const {
+    settingsStore,
+    currentQuotaStore,
+    currentTariffStatusStore,
+    userStore,
+  } = auth;
+  const { isFreeTariff } = currentQuotaStore;
+  const { isGracePeriod } = currentTariffStatusStore;
 
-  const { isBannerVisible } = bannerStore;
+  const { user } = userStore;
+
+  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
 
   const {
     showText,
@@ -188,6 +221,7 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -197,7 +231,9 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
-
-    isBannerVisible,
+    isFreeTariff,
+    isGracePeriod,
+    isAvailableArticlePaymentAlert,
+    currentColorScheme,
   };
 })(observer(Article));

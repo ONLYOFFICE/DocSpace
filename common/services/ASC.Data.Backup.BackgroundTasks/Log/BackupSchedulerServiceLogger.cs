@@ -46,8 +46,8 @@ internal static partial class BackupSchedulerServiceLogger
     [LoggerMessage(Level = LogLevel.Debug, Message = "{count} backups are to schedule")]
     public static partial void DebugBackupsSchedule(this ILogger<BackupSchedulerService> logger, int count);
 
-    [LoggerMessage(Level = LogLevel.Debug, Message = "Start scheduled backup: {tenantId}, {backupMail}, {storageType}, {storageBasePath}")]
-    public static partial void DebugStartScheduledBackup(this ILogger<BackupSchedulerService> logger, int tenantId, bool backupMail, BackupStorageType storageType, string storageBasePath);
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Start scheduled backup: {tenantId}, {storageType}, {storageBasePath}")]
+    public static partial void DebugStartScheduledBackup(this ILogger<BackupSchedulerService> logger, int tenantId, BackupStorageType storageType, string storageBasePath);
 
     [LoggerMessage(Level = LogLevel.Debug, Message = "Skip portal {tenantId} not paid")]
     public static partial void DebugNotPaid(this ILogger<BackupSchedulerService> logger, int tenantId);

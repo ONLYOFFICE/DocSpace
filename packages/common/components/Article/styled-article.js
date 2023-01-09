@@ -1,20 +1,13 @@
 import styled, { css } from "styled-components";
 
-import {
-  isMobile,
-  isMobileOnly,
-  isTablet,
-  isDesktop,
-} from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
 } from "@docspace/components/utils/device";
 
-import Heading from "@docspace/components/heading";
 import { Base } from "@docspace/components/themes";
-
 import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
@@ -29,6 +22,8 @@ const StyledArticle = styled.article`
   box-sizing: border-box;
 
   //padding: 0 20px;
+
+  border-right: ${(props) => props.theme.catalog.verticalLine};
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -68,9 +63,10 @@ const StyledArticle = styled.article`
     position: fixed;
     margin: 0;
     padding: 0;
-    margin-top: ${(props) =>
-      props.isBannerVisible ? "-16px" : "64px"} !important;
+    top: 64px;
     height: calc(100% - 64px) !important;
+
+    border-right: none;
   `}
 
   z-index: ${(props) =>
@@ -85,8 +81,7 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      ${!isDesktop && "padding-top:  16px"};
-      padding: 0 20px;
+      padding: 0 20px !important;
 
       @media ${tablet} {
         height: calc(100% - 150px);
@@ -116,9 +111,8 @@ StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
   height: 24px;
-  padding: 22px 20px 23px;
-
-  margin-left: -1px;
+  padding: 24px 21px 21px 20px;
+  margin: 0;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -149,7 +143,6 @@ const StyledArticleHeader = styled.div`
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 0 12px;
-    // margin-bottom: 16px !important;
   }
 
   ${isMobileOnly &&
@@ -157,7 +150,6 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 0 12px !important;
-    // margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -166,9 +158,24 @@ const StyledArticleHeader = styled.div`
 StyledArticleHeader.defaultProps = { theme: Base };
 
 const StyledHeading = styled.div`
+  height: 24px;
+
   margin: 0;
   padding: 0;
   cursor: pointer;
+
+  img.logo-icon_svg {
+    height: 24px;
+    width: 211px;
+  }
+
+  .logo-icon_svg {
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
@@ -192,9 +199,14 @@ const StyledHeading = styled.div`
 `;
 
 const StyledIconBox = styled.div`
+  cursor: pointer;
   display: none;
   align-items: center;
   height: 20px;
+
+  img {
+    height: 24px;
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "none" : "flex")};
@@ -279,16 +291,23 @@ const StyledArticleProfile = styled.div`
   justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  border-right: ${(props) => props.theme.catalog.verticalLine}
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     padding: 16px 14px;
   }
 
-  ${isTablet &&
-  css`
-    padding: 16px 14px;
-  `}
+  ${
+    isTablet &&
+    css`
+      padding: 16px 14px;
+    `
+  }
+
+  .profile-avatar {
+    cursor: pointer;
+  }
 
   .option-button {
     margin-left: auto;
@@ -319,7 +338,7 @@ const StyledUserName = styled.div`
 `;
 
 const StyledProfileWrapper = styled.div`
-  z-index: 301;
+  z-index: 209;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -337,6 +356,27 @@ const StyledProfileWrapper = styled.div`
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
   `}
 `;
+const StyledArticlePaymentAlert = styled.div`
+  border: ${(props) =>
+    props.isFreeTariff
+      ? props.theme.catalog.paymentAlert.border
+      : props.theme.catalog.paymentAlert.warningBorder};
+
+  border-radius: 6px;
+  margin: 32px 0px;
+  padding: 12px;
+  cursor: pointer;
+  display: grid;
+
+  grid-template-columns: 1fr 16px;
+
+  .article-payment_border {
+    color: ${(props) =>
+      props.isFreeTariff
+        ? props.theme.catalog.paymentAlert.color
+        : props.theme.catalog.paymentAlert.warningColor};
+  }
+`;
 
 export {
   StyledArticle,
@@ -350,4 +390,5 @@ export {
   StyledArticleProfile,
   StyledUserName,
   StyledProfileWrapper,
+  StyledArticlePaymentAlert,
 };

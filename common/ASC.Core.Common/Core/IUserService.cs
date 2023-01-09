@@ -30,7 +30,7 @@ namespace ASC.Core;
 public interface IUserService
 {
     IEnumerable<UserInfo> GetUsers(int tenant);
-    IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin,
+    IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,

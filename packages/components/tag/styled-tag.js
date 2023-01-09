@@ -7,7 +7,7 @@ import Base from "../themes/base";
 const StyledTag = styled.div`
   width: fit-content;
 
-  max-width: ${(props) => props.tagMaxWidth};
+  max-width: ${(props) => (props.tagMaxWidth ? props.tagMaxWidth : "100%")};
 
   display: flex;
   align-items: center;
@@ -15,7 +15,7 @@ const StyledTag = styled.div`
   box-sizing: border-box;
 
   padding: 2px 10px;
-  margin-right: 4px;
+  margin-right: ${(props) => (props.isLast ? "0" : "4px")};
 
   background: ${(props) =>
     props.isDisabled
@@ -40,11 +40,16 @@ const StyledTag = styled.div`
     cursor: pointer;
   }
 
+  .third-party-tag {
+    width: 16px;
+    height: 16px;
+  }
+
   ${(props) =>
+    props.isClickable &&
     !props.isDisabled &&
     css`
       cursor: pointer;
-
       &:hover {
         background: ${(props) => props.theme.tag.hoverBackground};
       }
@@ -58,6 +63,15 @@ const StyledDropdownIcon = styled(ReactSVG)`
   align-items: center;
 
   pointer-events: none;
+
+  svg {
+    path:first-child {
+      stroke: ${(props) => props.theme.tag.color};
+    }
+    path:last-child {
+      fill: ${(props) => props.theme.tag.color};
+    }
+  }
 `;
 
 const StyledDropdownText = styled(Text)`
@@ -67,6 +81,8 @@ const StyledDropdownText = styled(Text)`
   line-height: 30px;
 
   margin-left: 8px !important;
+
+  display: block;
 
   pointer-events: none;
 `;

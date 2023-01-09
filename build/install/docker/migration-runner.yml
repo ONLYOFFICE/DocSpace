@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   onlyoffice-migration-runner:
-    image: "${REPO}/${STATUS}appserver-migration-runner:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
     container_name: ${MIGRATION_RUNNER_HOST}
     restart: "no"
     environment:
@@ -13,5 +13,5 @@ services:
 
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true

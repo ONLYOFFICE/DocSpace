@@ -3,16 +3,23 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import CatalogItem from "@docspace/components/catalog-item";
-import { FolderType, ShareAccessRights } from "@docspace/common/constants";
+import {
+  FolderType,
+  ShareAccessRights,
+  FolderNames,
+} from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
-import withLoader from "../../../HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders";
-import Loader from "@docspace/components/loader";
 import { isMobile } from "react-device-detect";
+import SettingsItem from "./SettingsItem";
+import AccountsItem from "./AccountsItem";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
+`;
+
+const CatalogDivider = styled.div`
+  height: 16px;
 `;
 
 const Item = ({
@@ -33,8 +40,9 @@ const Item = ({
   showBadge,
   labelBadge,
   iconBadge,
+  folderId,
 }) => {
-  const [isDragActive, setIsDragActive] = React.useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const isDragging = dragging ? showDragItems(item) : false;
 
@@ -99,6 +107,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
+        folderId={folderId}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
@@ -125,6 +134,7 @@ const Items = ({
   data,
   showText,
   pathParts,
+  rootFolderType,
   selectedTreeNode,
   onClick,
   onBadgeClick,
@@ -133,7 +143,7 @@ const Items = ({
   setDragging,
   startUpload,
   uploadEmptyFolders,
-
+  isVisitor,
   isAdmin,
   myId,
   commonId,
@@ -148,6 +158,7 @@ const Items = ({
   trashIsEmpty,
 
   onHide,
+  firstLoad,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -161,14 +172,26 @@ const Items = ({
       if (selectedTreeNode.length > 0) {
         const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
 
+        if (
+          rootFolderType === FolderType.Rooms &&
+          item.rootFolderType === FolderType.Rooms
+        ) {
+          return true;
+        }
+
         if (pathParts && pathParts.includes(item.id) && !isMainFolder)
           return true;
 
-        if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
+        if (
+          (selectedTreeNode[0] === "@my" || selectedTreeNode[0] === "@rooms") &&
+          item.key === "0-0"
+        ) {
+          return true;
+        }
         return `${item.id}` === selectedTreeNode[0];
       }
     },
-    [selectedTreeNode, pathParts, docSpace]
+    [selectedTreeNode, pathParts, docSpace, rootFolderType]
   );
   const getEndOfBlock = React.useCallback(
     (item) => {
@@ -308,43 +331,16 @@ const Items = ({
             showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
+            folderId={`document_catalog-${FolderNames[item.rootFolderType]}`}
           />
         );
       });
 
-      const roomsHeader = (
-        <CatalogItem
-          key={"rooms-header"}
-          isHeader={true}
-          isFirstHeader={true}
-          showText={showText}
-          text={"Rooms"}
-        />
-      );
+      if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
+      if (!isVisitor) items.splice(3, 0, <AccountsItem key="accounts-item" />);
 
-      const filesHeader = (
-        <CatalogItem
-          key={"files-header"}
-          isHeader={true}
-          isFirstHeader={false}
-          showText={showText}
-          text={"Files"}
-        />
-      );
-
-      const otherHeader = (
-        <CatalogItem
-          key={"other-header"}
-          isHeader={true}
-          isFirstHeader={false}
-          showText={showText}
-          text={"Other"}
-        />
-      );
-
-      items.splice(3, 0, filesHeader);
-      items.unshift(roomsHeader);
-      items.push(otherHeader);
+      if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
+      else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
       return items;
     },
@@ -363,6 +359,9 @@ const Items = ({
       startUpload,
       uploadEmptyFolders,
       trashIsEmpty,
+      isAdmin,
+      isVisitor,
+      firstLoad,
     ]
   );
 
@@ -394,6 +393,7 @@ export default inject(
       setDragging,
       setStartDrag,
       trashIsEmpty,
+      firstLoad,
     } = filesStore;
 
     const { startUpload } = uploadDataStore;
@@ -406,19 +406,20 @@ export default inject(
       isPrivacyFolder,
     } = treeFoldersStore;
 
-    const { id } = selectedFolderStore;
+    const { id, pathParts, rootFolderType } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
       isAdmin: auth.isAdmin,
+      isVisitor: auth.userStore.user.isVisitor,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       currentId: id,
       showText: auth.settingsStore.showText,
       docSpace: auth.settingsStore.docSpace,
-      pathParts: selectedFolderStore.pathParts,
+      pathParts,
       data: treeFolders,
       selectedTreeNode,
       draggableItems: dragging ? selection : null,
@@ -430,6 +431,8 @@ export default inject(
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
       trashIsEmpty,
+      rootFolderType,
+      firstLoad,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

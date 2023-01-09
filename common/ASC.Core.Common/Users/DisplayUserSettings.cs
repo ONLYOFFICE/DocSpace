@@ -90,6 +90,11 @@ public class DisplayUserSettingsHelper
         }
         var result = _userFormatter.GetUserName(userInfo, format);
 
+        if (string.IsNullOrWhiteSpace(result))
+        {
+            result = userInfo.Email;
+        }
+
         return withHtmlEncode ? HtmlEncode(result) : result;
     }
     public string HtmlEncode(string str)

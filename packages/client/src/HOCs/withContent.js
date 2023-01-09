@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-//import toastr from "client/toastr";
+//import toastr from "@docspace/components/toast/toastr";
 import {
   // AppServerConfig,
   // FileAction,
@@ -77,12 +77,11 @@ export default function withContent(WrappedContent) {
         access === ShareAccessRights.FullAccess || // only badges?
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-      const linkStyles =
-        isTrashFolder || isArchiveFolder //|| window.innerWidth <= 1024
-          ? { noHover: true }
-          : { onClick: onFilesClick };
+      const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
+        ? { noHover: true }
+        : { onClick: onFilesClick };
 
-      if (!isDesktop && !isTrashFolder) {
+      if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
         linkStyles.href = href;
       }
 

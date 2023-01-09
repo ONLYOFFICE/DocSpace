@@ -56,10 +56,10 @@ public class IpRestrictionsController : BaseSettingsController
     }
 
     [HttpPut("iprestrictions")]
-    public IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
+    public IEnumerable<IpRestrictionBase> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Save(inDto.Ips, Tenant.Id);
+        return _iPRestrictionsService.Save(inDto.IpRestrictions, Tenant.Id);
     }
 
     [HttpGet("iprestrictions/settings")]

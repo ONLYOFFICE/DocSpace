@@ -14,6 +14,12 @@ const Slider = (props) => {
     value,
     withPouring,
     style,
+    isReadOnly = false,
+    isDisabled = false,
+    thumbBorderWidth,
+    thumbHeight,
+    thumbWidth,
+    runnableTrackHeight,
   } = props;
   const [size, setSize] = useState("0%");
 
@@ -26,6 +32,7 @@ const Slider = (props) => {
       {...props}
       themeId={ThemeType.Slider}
       type={type}
+      isDisabled={isDisabled}
       style={style}
       id={id}
       className={className}
@@ -36,6 +43,11 @@ const Slider = (props) => {
       size={value && withPouring ? size : "0%"}
       withPouring={withPouring}
       onChange={onChange}
+      isReadOnly={isReadOnly}
+      thumbBorderWidth={thumbBorderWidth}
+      thumbHeight={thumbHeight}
+      thumbWidth={thumbWidth}
+      runnableTrackHeight={runnableTrackHeight}
     />
   );
 };
@@ -44,12 +56,18 @@ Slider.propTypes = {
   id: PropTypes.string,
   type: PropTypes.string,
   className: PropTypes.string,
+  thumbWidth: PropTypes.string,
+  thumbHeight: PropTypes.string,
+  thumbBorderWidth: PropTypes.string,
+  runnableTrackHeight: PropTypes.string,
   onChange: PropTypes.func,
   min: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   step: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   value: PropTypes.number,
   withPouring: PropTypes.bool,
+  isReadOnly: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

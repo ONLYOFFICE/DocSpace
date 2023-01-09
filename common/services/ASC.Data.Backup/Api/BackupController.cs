@@ -32,25 +32,19 @@ namespace ASC.Data.Backup.Controllers;
 public class BackupController : ControllerBase
 {
     private readonly BackupAjaxHandler _backupHandler;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantExtra _tenantExtra;
     private readonly IEventBus _eventBus;
     private readonly Guid _currentUserId;
     private readonly int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,
-        CoreBaseSettings coreBaseSettings,
         TenantManager tenantManager,
         SecurityContext securityContext,
-        TenantExtra tenantExtra,
         IEventBus eventBus)
     {
         _currentUserId = securityContext.CurrentAccount.ID;
         _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
-        _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
         _eventBus = eventBus;
     }
     /// <summary>
@@ -61,11 +55,6 @@ public class BackupController : ControllerBase
     [HttpGet("getbackupschedule")]
     public BackupAjaxHandler.Schedule GetBackupSchedule()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetSchedule();
     }
 
@@ -76,15 +65,10 @@ public class BackupController : ControllerBase
     /// <param name="storageParams">Storage parameters</param>
     /// <param name="backupsStored">Max of the backup's stored copies</param>
     /// <param name="cronParams">Cron parameters</param>
-    /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
         var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
         var backupStored = backupSchedule.BackupsStored == null ? 0 : Int32.Parse(backupSchedule.BackupsStored);
@@ -94,7 +78,7 @@ public class BackupController : ControllerBase
             Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
             Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
         };
-        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron, backupSchedule.BackupMail);
+        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron);
         return true;
     }
 
@@ -105,11 +89,6 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackupschedule")]
     public bool DeleteBackupSchedule()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         _backupHandler.DeleteSchedule();
 
         return true;
@@ -120,16 +99,12 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <param name="storageType">Storage Type</param>
     /// <param name="storageParams">Storage Params</param>
-    /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
@@ -137,7 +112,6 @@ public class BackupController : ControllerBase
              tenantId: _tenantId,
              storageParams: storageParams,
              storageType: storageType,
-             backupMail: backup.BackupMail,
              createBy: _currentUserId
         ));
 
@@ -149,14 +123,10 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetBackupProgress();
     }
 
@@ -166,14 +136,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpGet("getbackuphistory")]
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
-        return _backupHandler.GetBackupHistory();
+        return await _backupHandler.GetBackupHistory();
     }
 
     /// <summary>
@@ -181,14 +146,9 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     [HttpDelete("deletebackup/{id}")]
-    public bool DeleteBackup(Guid id)
+    public async Task<bool> DeleteBackup(Guid id)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
-        _backupHandler.DeleteBackup(id);
+        await _backupHandler.DeleteBackup(id);
         return true;
     }
 
@@ -198,14 +158,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpDelete("deletebackuphistory")]
-    public bool DeleteBackupHistory()
+    public async Task<bool> DeleteBackupHistory()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
-        _backupHandler.DeleteAllBackups();
+        await _backupHandler.DeleteAllBackups();
         return true;
     }
 
@@ -221,10 +176,6 @@ public class BackupController : ControllerBase
     [HttpPost("startrestore")]
     public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
@@ -249,11 +200,6 @@ public class BackupController : ControllerBase
     [AllowNotPayment]
     public BackupProgress GetRestoreProgress()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetRestoreProgress();
     }
 
@@ -261,11 +207,6 @@ public class BackupController : ControllerBase
     [HttpGet("backuptmp")]
     public object GetTempPath()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetTmpFolder();
     }
 
@@ -275,10 +216,6 @@ public class BackupController : ControllerBase
     {
         try
         {
-            if (_coreBaseSettings.Standalone)
-            {
-                _tenantExtra.DemandControlPanelPermission();
-            }
             _backupHandler.DemandPermissionsRestore();
             return true;
         }
@@ -294,10 +231,6 @@ public class BackupController : ControllerBase
     {
         try
         {
-            if (_coreBaseSettings.Standalone)
-            {
-                _tenantExtra.DemandControlPanelPermission();
-            }
             _backupHandler.DemandPermissionsAutoBackup();
             return true;
         }

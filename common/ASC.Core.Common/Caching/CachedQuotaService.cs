@@ -31,6 +31,7 @@ class QuotaServiceCache
 {
     internal const string KeyQuota = "quota";
     internal const string KeyQuotaRows = "quotarows";
+    internal const string KeyUserQuotaRows = "userquotarows";
     internal readonly ICache Cache;
     internal readonly ICacheNotify<QuotaCacheItem> CacheNotify;
     internal readonly bool QuotaCacheEnabled;
@@ -122,7 +123,12 @@ class CachedQuotaService : IQuotaService
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
         Service.SetTenantQuotaRow(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.Any);
+
+        if (row.UserId != Guid.Empty)
+        {
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.Any);
+        }
     }
 
     public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
@@ -139,8 +145,27 @@ class CachedQuotaService : IQuotaService
         return result;
     }
 
+    public IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
+    {
+        var key = GetKey(tenantId, userId);
+        var result = Cache.Get<IEnumerable<TenantQuotaRow>>(key);
+
+        if (result == null)
+        {
+            result = Service.FindUserQuotaRows(tenantId, userId);
+            Cache.Insert(key, result, DateTime.UtcNow.Add(_cacheExpiration));
+        }
+
+        return result;
+    }
+
     public string GetKey(int tenant)
     {
         return QuotaServiceCache.KeyQuotaRows + tenant;
+    }
+
+    public string GetKey(int tenant, Guid userId)
+    {
+        return QuotaServiceCache.KeyQuotaRows + tenant + userId;
     }
 }

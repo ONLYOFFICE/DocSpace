@@ -28,7 +28,7 @@ const getTreeItems = (data, path, t) => {
       case "AccessRights":
         return t("AccessRights");
       case "ManagementCategoryCommon":
-        return t("ManagementCategoryCommon");
+        return t("Common:Common");
       case "Customization":
         return t("Customization");
       case "StudioTimeLanguageSettings":
@@ -51,6 +51,10 @@ const getTreeItems = (data, path, t) => {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "PortalDeletion":
+        return t("PortalDeletion");
+      case "Payments":
+        return t("Payments");
       case "SingleSignOn":
         return t("SingleSignOn");
       default:
@@ -127,11 +131,19 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isLoaded, tReady, setIsLoadedArticleBody } = this.props;
+    const { tReady, setIsLoadedArticleBody } = this.props;
 
-    const isLoadedSetting = isLoaded && tReady;
+    if (tReady) setIsLoadedArticleBody(true);
 
-    if (isLoadedSetting) setIsLoadedArticleBody(isLoadedSetting);
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      if (this.props.location.pathname.includes("payments")) {
+        this.setState({ selectedKeys: ["4-0"] });
+      }
+
+      if (this.props.location.pathname.includes("common")) {
+        this.setState({ selectedKeys: ["0-0"] });
+      }
+    }
 
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
@@ -188,10 +200,14 @@ class ArticleBodyContent extends React.Component {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "Payments":
+        return t("Payments");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":
         return t("RestoreBackup");
+      case "PortalDeletion":
+        return t("PortalDeletion");
       default:
         throw new Error("Unexpected translation key");
     }
@@ -199,11 +215,29 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, t } = this.props;
+    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
 
     const items = [];
+    let resultTree = [...settingsTree];
 
-    settingsTree.map((item) => {
+    if (isNotPaidPeriod) {
+      resultTree = [...settingsTree].filter((e) => {
+        return (
+          e.tKey === "Backup" ||
+          e.tKey === "Payments" ||
+          (isOwner && e.tKey === "PortalDeletion")
+        );
+      });
+    }
+
+    if (!isOwner) {
+      const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    }
+
+    resultTree.map((item) => {
       items.push(
         <CatalogItem
           key={item.key}
@@ -212,8 +246,9 @@ class ArticleBodyContent extends React.Component {
           showText={showText}
           text={this.mapKeys(item.tKey)}
           value={item.link}
-          isActive={item.key + "-0" === selectedKeys[0]}
+          isActive={item.key === selectedKeys[0][0]}
           onClick={() => this.onSelect(item.key)}
+          folderId={item.id}
         />
       );
     });
@@ -235,26 +270,26 @@ class ArticleBodyContent extends React.Component {
 
   render() {
     const items = this.catalogItems();
-    const { isLoadedPage, location, tReady } = this.props;
+    const { isLoadedArticleBody } = this.props;
 
-    const commonSettings =
-      location.pathname.includes("common/customization") ||
-      location.pathname === "/portal-settings";
-
-    const showLoader = commonSettings ? !isLoadedPage : !tReady;
-
-    return showLoader ? <LoaderArticleBody /> : <>{items}</>;
+    return !isLoadedArticleBody ? <LoaderArticleBody /> : <>{items}</>;
   }
 }
 
 export default inject(({ auth, common }) => {
-  const { isLoaded, setIsLoadedArticleBody } = common;
+  const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
+  const { currentTariffStatusStore, userStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
+  const { user } = userStore;
+  const { isOwner } = user;
 
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
-    isLoaded,
+    isLoadedArticleBody,
     setIsLoadedArticleBody,
+    isNotPaidPeriod,
+    isOwner,
   };
 })(
   withLoading(
