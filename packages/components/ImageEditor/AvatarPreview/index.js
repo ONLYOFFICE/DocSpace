@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-import Avatar from "@docspace/components/avatar";
-import Text from "@docspace/components/text";
+import Avatar from "../../avatar";
+import Text from "../../text";
 
-import { hugeMobile } from "@docspace/components/utils/device";
+import { hugeMobile } from "../../utils/device";
 
 const StyledWrapper = styled.div`
   width: 100%;

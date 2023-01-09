@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { hugeMobile } from "@docspace/components/utils/device";
+import { hugeMobile } from "../../utils/device";
 
-import { Base } from "@docspace/components/themes";
+import { Base } from "../../themes";
 
 const StyledDropzone = styled.div`
   cursor: pointer;
@@ -16,10 +16,8 @@ const StyledDropzone = styled.div`
 
   .dropzone_loader {
     position: absolute;
-
     top: 50%;
     left: 50%;
-
     transform: translate(-50%, -50%);
   }
 
@@ -43,8 +41,6 @@ const StyledDropzone = styled.div`
       font-size: 13px;
       line-height: 20px;
       &-main {
-        color: ${(props) =>
-          props.theme.createEditRoomDialog.dropzone.linkMainColor};
         font-weight: 600;
         text-decoration: underline;
         text-decoration-style: dashed;
