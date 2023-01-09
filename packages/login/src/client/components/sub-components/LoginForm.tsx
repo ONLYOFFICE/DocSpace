@@ -70,10 +70,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         if (!response || !response.token) throw new Error("Empty API response");
 
         setWithCredentialsStatus(true);
-        const redirectPath = localStorage.getItem("redirectPath");
+        const redirectPath = sessionStorage.getItem("referenceUrl");
 
         if (redirectPath) {
-          localStorage.removeItem("redirectPath");
+          sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
         }
       })
@@ -153,9 +153,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     const session = !isChecked;
     login(user, hash, session)
       .then((res: string | object) => {
-        const redirectPath = localStorage.getItem("redirectPath");
+        const redirectPath = sessionStorage.getItem("referenceUrl");
         if (redirectPath) {
-          localStorage.removeItem("redirectPath");
+          sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
           return;
         }

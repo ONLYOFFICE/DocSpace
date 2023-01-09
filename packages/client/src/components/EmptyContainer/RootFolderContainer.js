@@ -20,11 +20,11 @@ import config from "PACKAGE_FILE";
 import PlusIcon from "ASSETS_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "ASSETS_DIR/images/empty_screen_personal.svg?url";
 import EmptyScreenFormeUrl from "ASSETS_DIR/images/empty_screen_forme.png";
-import EmptyScreenCorporateUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
+import EmptyScreenCorporateSvgUrl from "ASSETS_DIR/images/empty_screen_corporate.svg?url";
 import EmptyScreenFavoritesUrl from "ASSETS_DIR/images/empty_screen_favorites.svg?url";
 import EmptyScreenRecentUrl from "ASSETS_DIR/images/empty_screen_recent.svg?url";
 import EmptyScreenPrivacyUrl from "ASSETS_DIR/images/empty_screen_privacy.png";
-import EmptyScreenTrashUrl from "ASSETS_DIR/images/empty_screen_trash_alt.png";
+import EmptyScreenTrashSvgUrl from "ASSETS_DIR/images/empty_screen_trash.svg?url";
 import EmptyScreenArchiveUrl from "ASSETS_DIR/images/empty_screen_archive.svg?url";
 
 const StyledPlusIcon = styled(PlusIcon)`
@@ -61,7 +61,7 @@ const RootFolderContainer = (props) => {
     isVisitor,
     sectionWidth,
   } = props;
-  const personalDescription = t("PersonalEmptyContainerDescription");
+  const personalDescription = t("EmptyFolderDecription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const emptyScreenHeader = t("EmptyScreenFolder");
@@ -153,7 +153,7 @@ const RootFolderContainer = (props) => {
       case FolderType.COMMON:
         return {
           descriptionText: commonDescription,
-          imageSrc: EmptyScreenCorporateUrl,
+          imageSrc: EmptyScreenCorporateSvgUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
@@ -181,14 +181,14 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
-          imageSrc: EmptyScreenTrashUrl,
+          imageSrc: EmptyScreenTrashSvgUrl,
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: EmptyScreenCorporateUrl,
+          imageSrc: EmptyScreenCorporateSvgUrl,
           buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
@@ -313,7 +313,7 @@ const RootFolderContainer = (props) => {
         alt="folder_icon"
       />
       <Link onClick={onGoToShared} {...linkStyles}>
-        {t("GoToShared")}
+        {t("GoToMyRooms")}
       </Link>
     </div>
   );

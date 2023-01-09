@@ -1,4 +1,4 @@
-﻿import EmptyScreenCorporatePngUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
+﻿import EmptyScreenCorporateSvgUrl from "ASSETS_DIR/images/empty_screen_corporate.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 
@@ -196,16 +196,16 @@ const RoomSelector = ({
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage || EmptyScreenCorporatePngUrl}
+      emptyScreenImage={emptyScreenImage || EmptyScreenCorporateSvgUrl}
       emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
       emptyScreenDescription={
         emptyScreenDescription || t("EmptyRoomsDescription")
       }
       searchEmptyScreenImage={
-        searchEmptyScreenImage || EmptyScreenCorporatePngUrl
+        searchEmptyScreenImage || EmptyScreenCorporateSvgUrl
       }
       searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
+        searchEmptyScreenHeader || t("Common:NotFoundTitle")
       }
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")

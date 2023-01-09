@@ -38,7 +38,6 @@ const SelectFolderDialogAsideView = ({
   isDisableButton,
   parentId,
   selectionFiles,
-  folderSelectionDisabled,
 }) => {
   const isLoaded = folderId && resultingFolderTree;
   return (
@@ -62,7 +61,7 @@ const SelectFolderDialogAsideView = ({
               onClick={onClose}
             />
           )}
-          {dialogName ? dialogName : t("Translations:FolderSelection")}
+          {dialogName}
         </StyledAsideHeader>
       </ModalDialog.Header>
       <ModalDialog.Body theme={theme}>
@@ -118,13 +117,7 @@ const SelectFolderDialogAsideView = ({
             size="normal"
             label={primaryButtonName}
             onClick={onButtonClick}
-            isDisabled={
-              folderSelectionDisabled ||
-              isDisableButton ||
-              isDisableTree ||
-              isLoadingData ||
-              !isAvailable
-            }
+            isDisabled={isDisableButton}
           />
           <Button
             size="normal"

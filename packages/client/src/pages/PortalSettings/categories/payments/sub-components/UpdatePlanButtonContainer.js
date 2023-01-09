@@ -6,6 +6,7 @@ import toastr from "@docspace/components/toast/toastr";
 import DowngradePlanButtonContainer from "./DowngradePlanButtonContainer";
 import api from "@docspace/common/api";
 import { Trans } from "react-i18next";
+import { updatePayment } from "@docspace/common/api/portal";
 
 const StyledBody = styled.div`
   button {
@@ -17,7 +18,6 @@ let timerId = null,
   intervalId = null,
   isWaitRequest = false;
 const UpdatePlanButtonContainer = ({
-  updatePayment,
   setIsLoading,
   paymentLink,
   isAlreadyPaid,
@@ -36,10 +36,21 @@ const UpdatePlanButtonContainer = ({
         setIsLoading(true);
       }, 500);
 
-      await updatePayment(managersCount);
+      const res = await updatePayment(managersCount);
+
+      if (res === false) {
+        toastr.error(t("ErrorNotification"));
+
+        setIsLoading(false);
+        clearTimeout(timerId);
+        timerId = null;
+
+        return;
+      }
+
       waitingForQuota();
     } catch (e) {
-      toastr.error(e);
+      toastr.error(t("ErrorNotification"));
       setIsLoading(false);
       clearTimeout(timerId);
       timerId = null;
@@ -154,7 +165,6 @@ export default inject(({ auth, payments }) => {
   const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
 
   const {
-    updatePayment,
     setIsLoading,
     paymentLink,
     isNeedRequest,
@@ -165,7 +175,6 @@ export default inject(({ auth, payments }) => {
   } = payments;
 
   return {
-    updatePayment,
     setIsLoading,
     paymentLink,
     isNeedRequest,

@@ -43,6 +43,7 @@ public class MigrationCreator
     private string _userName;
     private string _toRegion;
     private int _tenant;
+    private readonly object _locker = new object();
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -73,9 +74,7 @@ public class MigrationCreator
         _moduleProvider = moduleProvider;
     }
 
-
-
-    public async Task<string> Create(int tenant, string userName, string toRegion)
+    public string Create(int tenant, string userName, string toRegion)
     {
         Init(tenant, userName, toRegion);
 
@@ -85,7 +84,7 @@ public class MigrationCreator
         using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             DoMigrationDb(id, writer);
-            await DoMigrationStorage(id, writer);
+            DoMigrationStorage(id, writer);
         }
         return fileName;
     }
@@ -123,6 +122,12 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
+                    if (table.Name == "files_thirdparty_account" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
+                    {
+                        continue;
+                    }
+
+                    Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
                         ActionInvoker.Try(
@@ -156,6 +161,11 @@ public class MigrationCreator
                         {
                             ChangeAlias(data);
                             ChangeName(data);
+                        }
+
+                        if (data.TableName == "files_bunch_objects")
+                        {
+                            RemoveGeneralBunchObjects(data);
                         }
 
                         using (var file = _tempStream.Create())
@@ -194,7 +204,20 @@ public class MigrationCreator
                 newAlias = Console.ReadLine();
             }
         }
+        var q = data.Rows[0];
         data.Rows[0]["alias"] = newAlias;
+    }
+
+    private void RemoveGeneralBunchObjects(DataTable data)
+    {
+        for(var i = 0; i < data.Rows.Count; i++)
+        {
+            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
+            {
+                data.Rows.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     private List<string> GetAliases()
@@ -210,11 +233,13 @@ public class MigrationCreator
         data.Rows[0]["name"] = "";
     }
 
-    private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
+    private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
-        var fileGroups = await GetFilesGroup(id);
+        Console.WriteLine($"start backup storage");
+        var fileGroups = GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
+            Console.WriteLine($"start backup fileGroup: {group.Key}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(_tenant, group.Key);
@@ -225,8 +250,8 @@ public class MigrationCreator
                     using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5);
-
             }
+            Console.WriteLine($"end backup fileGroup: {group.Key}");
         }
 
         var restoreInfoXml = new XElement(
@@ -240,51 +265,73 @@ public class MigrationCreator
             restoreInfoXml.WriteTo(tmpFile);
             writer.WriteEntry(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
         }
+        Console.WriteLine($"end backup storage");
     }
 
-    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)
+    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
     {
-        var files = (await GetFilesToProcess(id)).ToList();
-
-        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>();
-        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
+        var files =   GetFilesToProcess(id).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
 
-    protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(Guid id)
+    private IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
 
-        foreach (var module in _storageFactoryConfig.GetModuleList().Where(m => m == "files"))
-        {
-            var store = _storageFactory.GetStorage(_tenant, module);
-            var domains = _storageFactoryConfig.GetDomainList(module).ToArray();
-
-            foreach (var domain in domains)
-            {
-                files.AddRange(await store.ListFilesRelativeAsync(domain, "\\", "*.*", true).Select(path => new BackupFileInfo(domain, module, path, _tenant)).ToListAsync());
-            }
-
-            files.AddRange(await
-                store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true)
-                .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant))
-                .ToListAsync());
-        }
-
         var filesDbContext = _dbFactory.CreateDbContext<FilesDbContext>();
-        files = files.Where(f => UserIsFileOwner(id, f, filesDbContext)).ToList();
+
+        var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
+
+        var store = _storageFactory.GetStorage(_tenant, module);
+
+        var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _tenant).ToList();
+
+        var tasks = new List<Task>(20);
+        foreach (var dbFile in dbFiles)
+        {
+            if (tasks.Count != 20)
+            {
+                tasks.Add(FindFiles(files, store, dbFile, module));
+            }
+            else
+            {
+                Task.WaitAll(tasks.ToArray());
+                tasks.Clear();
+            }
+        }
+        Task.WaitAll(tasks.ToArray());
         return files.Distinct();
     }
 
-    private bool UserIsFileOwner(Guid id, BackupFileInfo fileInfo, FilesDbContext filesDbContext)
+    private async Task FindFiles(List<BackupFileInfo> list, IDataStore store, DbFile dbFile, string module)
     {
-        var stringId = id.ToString();
-        return filesDbContext.Files.Any(
-            f => f.CreateBy == id &&
-            f.TenantId == _tenant &&
-            fileInfo.Path.Contains("\\file_" + f.Id + "\\"));
+        var files = await store.ListFilesRelativeAsync(string.Empty, $"\\{GetUniqFileDirectory(dbFile.Id)}", "*.*", true)
+                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _tenant))
+                 .ToListAsync();
+
+        lock (_locker)
+        {
+            list.AddRange(files);
+        }
+
+        if (files.Any()) 
+        {
+            Console.WriteLine($"file {dbFile.Id} found");
+        }
+        else
+        {
+            Console.WriteLine($"file {dbFile.Id} not found");
+        }
+    }
+
+    private string GetUniqFileDirectory(int fileId)
+    {
+        if (fileId == 0)
+        {
+            throw new ArgumentNullException("fileIdObject");
+        }
+
+        return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
     }
 }

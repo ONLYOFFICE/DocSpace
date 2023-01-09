@@ -1,5 +1,5 @@
 import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
-import EmptyScreenPersonsPngUrl from "PUBLIC_DIR/images/empty_screen_persons.png";
+import EmptyScreenPersonsSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
 import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -11,7 +11,7 @@ import Filter from "@docspace/common/api/people/filter";
 
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
-import { getUserRole } from "SRC_DIR/helpers/people-helpers";
+import { getUserRole } from "@docspace/common/utils";
 
 let timer = null;
 
@@ -183,9 +183,7 @@ const PeopleSelector = ({
       emptyScreenHeader={emptyScreenHeader || t("EmptyHeader")}
       emptyScreenDescription={emptyScreenDescription || t("EmptyDescription")}
       searchEmptyScreenImage={searchEmptyScreenImage}
-      searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyHeader")
-      }
+      searchEmptyScreenHeader={searchEmptyScreenHeader || t("NotFoundUsers")}
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyDescription")
       }
@@ -211,8 +209,8 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 PeopleSelector.defaultProps = {
   excludeItems: [],
   selectAllIcon: CatalogAccountsReactSvgUrl,
-  emptyScreenImage: EmptyScreenPersonsPngUrl,
-  searchEmptyScreenImage: EmptyScreenPersonsPngUrl,
+  emptyScreenImage: EmptyScreenPersonsSvgUrl,
+  searchEmptyScreenImage: EmptyScreenPersonsSvgUrl,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {

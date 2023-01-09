@@ -1,6 +1,7 @@
 ﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
 import UpSvgUrl from "ASSETS_DIR/images/up.svg?url";
 import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+import EmptyScreenCorporateSvgUrl from "ASSETS_DIR/images/empty_screen_corporate.svg?url";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
@@ -8,7 +9,6 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
-import EmptyScreenCorporateUrl from "ASSETS_DIR/images/empty_screen_corporate.png";
 import { ReactSVG } from "react-svg";
 import LoaderEmptyContainer from "./sub-components/loaderEmptyContainer";
 

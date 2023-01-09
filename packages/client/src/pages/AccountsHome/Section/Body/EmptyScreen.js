@@ -1,4 +1,4 @@
-﻿import EmptyScreenPersonsPngUrl from "PUBLIC_DIR/images/empty_screen_persons.png";
+﻿import EmptyScreenPersonSvgUrl from "ASSETS_DIR/images/empty_screen_persons.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
@@ -24,7 +24,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   return (
     <>
       <EmptyScreenContainer
-        imageSrc={EmptyScreenPersonsPngUrl}
+        imageSrc={EmptyScreenPersonSvgUrl}
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}

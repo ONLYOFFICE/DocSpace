@@ -47,7 +47,9 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.r
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
 yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$REV.noarch.rpm
 
+MONOREV=$REV
 if [ "$REV" = "9" ]; then
+	MONOREV="8"
 	yum localinstall -y --nogpgcheck https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/xorg-x11-font-utils-7.5-41.el8.x86_64.rpm
 elif [ "$REV" = "8" ]; then
 	POWERTOOLS_REPO="--enablerepo=powertools"

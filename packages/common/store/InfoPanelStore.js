@@ -1,8 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
-import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
 import { getUserById } from "@docspace/common/api/people";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, getUserRole } from "@docspace/common/utils";
 import { FolderType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";

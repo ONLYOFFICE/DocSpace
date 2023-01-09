@@ -1,7 +1,6 @@
 {
   "LblInviteAgain": "Invita di nuovo",
   "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate tramite posta elettronica all'indirizzo <1>{{email}}</1>",
-  "NotFoundTitle": "Nessun utente del gruppo trovato",
   "ReassignmentData": "Riassegnazione dei dati",
   "UserStatus": "Stato"
 }

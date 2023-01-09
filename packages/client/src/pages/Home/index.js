@@ -538,7 +538,7 @@ class PureHome extends React.Component {
             </Section.SectionHeader>
           )}
 
-          {!isEmptyPage && (
+          {!isEmptyPage && !isErrorRoomNotAvailable && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />

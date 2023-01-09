@@ -20,7 +20,7 @@ import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
 import { Encoder } from "./encoder";
 import FilesFilter from "../api/files/filter";
-
+import combineUrlFunc from "./combineUrl";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -163,7 +163,7 @@ export function isMe(user, userName) {
   );
 }
 
-export function isAdmin(currentUser, currentProductId) {
+export function isAdmin(currentUser) {
   return (
     currentUser.isAdmin ||
     currentUser.isOwner ||
@@ -171,7 +171,17 @@ export function isAdmin(currentUser, currentProductId) {
   );
 }
 
-import combineUrlFunc from "./combineUrl";
+export const getUserRole = (user) => {
+  if (user.isOwner) return "owner";
+  else if (isAdmin(user))
+    //TODO: Change to People Product Id const
+    return "admin";
+  //TODO: Need refactoring
+  else if (user.isVisitor) return "user";
+  else return "manager";
+};
+
+
 
 export const combineUrl = combineUrlFunc;
 
@@ -179,8 +189,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-        "=([^;]*)"
+      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+      "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -342,24 +352,6 @@ export function convertLanguage(key) {
   return key;
 }
 
-export function getFolderOptions(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
-
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
-  return options;
-}
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -373,7 +365,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }

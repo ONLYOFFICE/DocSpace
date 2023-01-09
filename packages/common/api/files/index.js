@@ -3,8 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { getFolderOptions, decodeDisplayName } from "../../utils";
-import { Encoder } from "../../utils/encoder";
+import { decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
@@ -51,8 +50,22 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter) {
-  const options = getFolderOptions(folderId, filter);
+export function getFolder(folderId, filter, signal) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
+  const params =
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toApiUrlParams()}`
+      : folderId;
+
+  const options = {
+    method: "get",
+    url: `/files/${params}`,
+    signal,
+  };
+
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
@@ -155,44 +168,46 @@ const sortInDisplayOrder = (folders) => {
 };
 
 export function getFoldersTree() {
-  return request({ method: "get", url: "/files/@root?filterType=2" }).then(
-    (response) => {
-      const folders = sortInDisplayOrder(response);
+  return request({
+    method: "get",
+    url: "/files/@root?filterType=2&count=1",
+  }).then((response) => {
+    const folders = sortInDisplayOrder(response);
 
-      return folders.map((data, index) => {
-        const type = +data.current.rootFolderType;
-        const name = getFolderClassNameByType(type);
-        const isRecycleBinFolder = type === FolderType.TRASH;
-        return {
-          id: data.current.id,
-          key: `0-${index}`,
-          parentId: data.current.parentId,
-          title: data.current.title,
-          rootFolderType: type,
-          folderClassName: name,
-          // folders: !isRecycleBinFolder
-          //   ? data.folders.map((folder) => {
-          //       return {
-          //         id: folder.id,
-          //         title: folder.title,
-          //         access: folder.access,
-          //         foldersCount: folder.foldersCount,
-          //         rootFolderType: folder.rootFolderType,
-          //         providerKey: folder.providerKey,
-          //         newItems: folder.new,
-          //       };
-          //     })
-          //   : null,
-          folders: null,
-          pathParts: data.pathParts,
-          foldersCount: !isRecycleBinFolder
-            ? data.current.foldersCount || data.folders.length
-            : null,
-          newItems: data.new,
-        };
-      });
-    }
-  );
+    return folders.map((data, index) => {
+      const type = +data.current.rootFolderType;
+      const name = getFolderClassNameByType(type);
+      const isRecycleBinFolder = type === FolderType.TRASH;
+      return {
+        id: data.current.id,
+        key: `0-${index}`,
+        parentId: data.current.parentId,
+        title: data.current.title,
+        rootFolderType: type,
+        folderClassName: name,
+        // folders: !isRecycleBinFolder
+        //   ? data.folders.map((folder) => {
+        //       return {
+        //         id: folder.id,
+        //         title: folder.title,
+        //         access: folder.access,
+        //         foldersCount: folder.foldersCount,
+        //         rootFolderType: folder.rootFolderType,
+        //         providerKey: folder.providerKey,
+        //         newItems: folder.new,
+        //       };
+        //     })
+        //   : null,
+        folders: null,
+        pathParts: data.pathParts,
+        foldersCount: !isRecycleBinFolder
+          ? data.current.foldersCount || data.folders.length
+          : null,
+        newItems: data.new,
+        security: data.current.security,
+      };
+    });
+  });
 }
 
 export function getCommonFoldersTree() {

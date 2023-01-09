@@ -55,7 +55,7 @@ class ThirdPartyModule extends React.PureComponent {
       isError,
       isLoadingData,
       isReset,
-
+      buttonSize,
       passedId,
       //commonThirdPartyList,
       isResourcesDefault,
@@ -76,6 +76,7 @@ class ThirdPartyModule extends React.PureComponent {
             withoutBasicSelection={isResourcesDefault ? false : true}
             isError={isError}
             id={passedId}
+            buttonSize={buttonSize}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />

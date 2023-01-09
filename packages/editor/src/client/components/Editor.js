@@ -97,14 +97,15 @@ function Editor({
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized) {
-        localStorage.setItem("redirectPath", window.location.href);
+        sessionStorage.setItem("referenceUrl", window.location.href);
         window.open(
           combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"),
           "_self"
         );
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      toastr.error(errorText);
+
+      errorText && toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -123,7 +124,7 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit
+      !fileInfo.security.Edit && !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();

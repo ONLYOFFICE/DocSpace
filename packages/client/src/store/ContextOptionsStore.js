@@ -206,19 +206,10 @@ class ContextOptionsStore {
     setIsVerHistoryPanel(true);
   };
 
-  finalizeVersion = async (id) => {
-    let timer = null;
-    try {
-      timer = setTimeout(() => {
-        this.filesActionsStore.setIsLoading(true);
-      }, 200);
-      await this.filesActionsStore.finalizeVersionAction(id);
-    } catch (err) {
-      toastr.error(err);
-    } finally {
-      this.filesActionsStore.setIsLoading(false);
-      clearTimeout(timer);
-    }
+  finalizeVersion = (id) => {
+    this.filesActionsStore
+      .finalizeVersionAction(id)
+      .catch((err) => toastr.error(err));
   };
 
   onClickFavorite = (e, id, t) => {
@@ -533,7 +524,7 @@ class ContextOptionsStore {
     onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
-  getFilesContextOptions = (item, t) => {
+  getFilesContextOptions = (item, t, isInfoPanel) => {
     const { contextOptions } = item;
     const { id, rootFolderId } = this.selectedFolderStore;
     const { enablePlugins } = this.authStore.settingsStore;
@@ -546,7 +537,7 @@ class ContextOptionsStore {
 
     const isMedia =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const isCanWebEdit = item.viewAccessability?.WebEdit;
+
     const hasInfoPanel = contextOptions.includes("show-info");
 
     const emailSendIsDisabled = true;
@@ -559,6 +550,7 @@ class ContextOptionsStore {
         }
       : false;
 
+<<<<<<< HEAD
     const blockAction = isCanWebEdit
       ? {
           id: "option_block-unblock-version",
@@ -570,12 +562,14 @@ class ContextOptionsStore {
         }
       : false;
 
+=======
+>>>>>>> release/rc-v1.2.0
     const onlyShowVersionHistory =
       !contextOptions.includes("finalize-version") &&
       contextOptions.includes("show-version-history");
 
-    const versionActions = !isMedia
-      ? !isMobile && !isMobileUtils() && !isTabletUtils()
+    const versionActions =
+      !isMobile && !isMobileUtils() && !isTabletUtils()
         ? onlyShowVersionHistory
           ? [
               {
@@ -631,11 +625,9 @@ class ContextOptionsStore {
               onClick: () => this.showVersionHistory(item.id, item.security),
               disabled: false,
             },
-          ]
-      : [];
-
+          ];
     const moveActions =
-      !isMobile && !isMobileUtils() && !isTabletUtils()
+      !isMobile && !isMobileUtils() && !isTabletUtils() && !isInfoPanel
         ? [
             {
               id: "option_move-or-copy",
@@ -862,7 +854,14 @@ class ContextOptionsStore {
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
-      blockAction,
+      {
+        id: "option_block-unblock-version",
+        key: "block-unblock-version",
+        label: t("UnblockVersion"),
+        icon: "/static/images/locked.react.svg",
+        onClick: () => this.lockFile(item, t),
+        disabled: false,
+      },
       {
         key: "separator1",
         isSeparator: true,
@@ -1057,14 +1056,14 @@ class ContextOptionsStore {
             key: "pin-room",
             label: t("PinToTop"),
             icon: PinReactSvgUrl,
-            onClick: pinRooms,
+            onClick: () => pinRooms(t),
             disabled: false,
           }
         : {
             key: "unpin-room",
             label: t("Unpin"),
             icon: UnpinReactSvgUrl,
-            onClick: unpinRooms,
+            onClick: () => unpinRooms(t),
             disabled: false,
           };
 
