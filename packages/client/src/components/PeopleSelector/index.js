@@ -1,5 +1,5 @@
 import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
-import EmptyScreenPersonsSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import EmptyScreenPersonsSvgUrl from "ASSETS_DIR/images/empty_screen_persons.svg?url";
 import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
