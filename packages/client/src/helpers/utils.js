@@ -12,6 +12,7 @@ import DocseditorSvgUrl from "ASSETS_DIR/images/logo/docseditor.svg?url";
 import LightSmallSvgUrl from "ASSETS_DIR/images/logo/lightsmall.svg?url";
 import DocsEditoRembedSvgUrl from "ASSETS_DIR/images/logo/docseditorembed.svg?url";
 import DarkLightSmallSvgUrl from "ASSETS_DIR/images/logo/dark_lightsmall.svg?url";
+import FaviconIcoUrl from "ASSETS_DIR/images/logo/favicon.ico?url";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -203,9 +204,11 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
 };
 
 export const getLogoFromPath = (path) => {
+  console.log("1");
   if (!path || path.indexOf("images/logo/") === -1) return path;
 
   const name = path.split("/").pop();
+  console.log(name);
   switch (name) {
     case "aboutpage.svg":
     case "loginpage.svg":
@@ -224,6 +227,8 @@ export const getLogoFromPath = (path) => {
       return LightSmallSvgUrl;
     case "docseditorembed.svg":
       return DocsEditoRembedSvgUrl;
+    case "favicon.ico":
+      return FaviconIcoUrl;
     default:
       break;
   }
