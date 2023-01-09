@@ -267,13 +267,8 @@ const DirectThirdPartyConnection = (props) => {
         key: "Disconnect-settings",
         label: t("Common:Disconnect"),
         onClick: onDisconnect,
-<<<<<<< HEAD
-        disabled: selectedThirdPartyAccount.connected ? false : true,
-        icon: AccessNoneReactSvgUrl,
-=======
         disabled: selectedThirdPartyAccount?.connected ? false : true,
-        icon: "/static/images/access.none.react.svg",
->>>>>>> release/rc-v1.2.0
+        icon: AccessNoneReactSvgUrl,
       },
     ];
   };

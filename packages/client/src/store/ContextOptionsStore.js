@@ -550,20 +550,6 @@ class ContextOptionsStore {
         }
       : false;
 
-<<<<<<< HEAD
-    const blockAction = isCanWebEdit
-      ? {
-          id: "option_block-unblock-version",
-          key: "block-unblock-version",
-          label: t("UnblockVersion"),
-          icon: LockedReactSvgUrl,
-          onClick: () => this.lockFile(item, t),
-          disabled: false,
-        }
-      : false;
-
-=======
->>>>>>> release/rc-v1.2.0
     const onlyShowVersionHistory =
       !contextOptions.includes("finalize-version") &&
       contextOptions.includes("show-version-history");
