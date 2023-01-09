@@ -1,7 +1,7 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
-const imageExtensions = /\.(bmp|gif|jpg|jpeg|png)$/;
+const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
 const fontsExtension = /\.(eot|otf|ttf|woff|woff2)$/;
 
 module.exports = {

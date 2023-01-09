@@ -17,27 +17,29 @@ import {
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
+import PresentationIcoUrl from "../../../../public/images/presentation.ico";
+import SpreadSheetIcoUrl from "../../../../public/images/spreadsheet.ico";
+import TextIcoUrl from "../../../../public/images/text.ico";
+
 export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;
   let icon = null;
 
   switch (documentType) {
     case "word":
-      icon = "text.ico";
+      icon = TextIcoUrl;
       break;
     case "slide":
-      icon = "presentation.ico";
+      icon = PresentationIcoUrl;
       break;
     case "cell":
-      icon = "spreadsheet.ico";
+      icon = SpreadSheetIcoUrl;
       break;
     default:
       break;
   }
 
-  const favicon = icon
-    ? `${homepage}/images/${icon}`
-    : logoUrls[2]?.path?.light;
+  const favicon = icon ? icon : logoUrls[2]?.path?.light;
   return favicon;
 };
 
