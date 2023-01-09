@@ -163,11 +163,6 @@ public class MigrationCreator
                             ChangeName(data);
                         }
 
-                        if (data.TableName == "files_bunch_objects")
-                        {
-                            RemoveGeneralBunchObjects(data);
-                        }
-
                         using (var file = _tempStream.Create())
                         {
                             data.WriteXml(file, XmlWriteMode.WriteSchema);
@@ -206,18 +201,6 @@ public class MigrationCreator
         }
         var q = data.Rows[0];
         data.Rows[0]["alias"] = newAlias;
-    }
-
-    private void RemoveGeneralBunchObjects(DataTable data)
-    {
-        for(var i = 0; i < data.Rows.Count; i++)
-        {
-            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
-            {
-                data.Rows.RemoveAt(i);
-                i--;
-            }
-        }
     }
 
     private List<string> GetAliases()

@@ -81,6 +81,7 @@ public class MigrationRunner
 
             await DoRestoreStorage(dataReader, columnMapper);
 
+            SetAdmin(columnMapper.GetTenantMapping());
             SetTenantActive(columnMapper.GetTenantMapping());
         }
     }
@@ -145,5 +146,25 @@ public class MigrationRunner
         tenant.StatusChanged = DateTime.UtcNow;
         dbContext.Tenants.Update(tenant);
         dbContext.SaveChanges();
+    }
+
+    private void SetAdmin(int tenantId)
+    {
+        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
+
+        var userGroup = new UserGroup()
+        {
+            Tenant = tenantId,
+            LastModified = DateTime.UtcNow,
+            RefType = Core.UserGroupRefType.Contains,
+            Removed = false,
+            UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
+            Userid = tenant.OwnerId.Value
+        };
+
+        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+        dbContextUser.UserGroups.Update(userGroup);
+        dbContextUser.SaveChanges();
     }
 }
