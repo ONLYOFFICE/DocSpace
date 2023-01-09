@@ -127,8 +127,6 @@ const SubMenu = (props) => {
     });
     const subMenuIconClassName = "p-submenu-icon";
 
-    console.log("call");
-
     const icon =
       item.icon &&
       (!item.icon.includes("images/") ? (
