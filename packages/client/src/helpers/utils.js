@@ -204,11 +204,10 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
 };
 
 export const getLogoFromPath = (path) => {
-  console.log("1");
   if (!path || path.indexOf("images/logo/") === -1) return path;
 
   const name = path.split("/").pop();
-  console.log(name);
+
   switch (name) {
     case "aboutpage.svg":
     case "loginpage.svg":
