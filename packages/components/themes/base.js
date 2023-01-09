@@ -2211,6 +2211,8 @@ const Base = {
       borderImageSource: `linear-gradient(to right,${white} 21px,${grayLightMid} 21px,${grayLightMid} calc(100% - 20px),${white} calc(100% - 20px))`,
       lengthenBorderImageSource: `linear-gradient(to right, ${grayLightMid}, ${grayLightMid})`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
+
+      settingsIconDisableColor: "#D0D5DA",
     },
 
     tableCell: {
@@ -3105,8 +3107,8 @@ const Base = {
   },
 
   itemIcon: {
-    borderColor: grayLightMid
-  }
+    borderColor: grayLightMid,
+  },
 };
 
 export default Base;
