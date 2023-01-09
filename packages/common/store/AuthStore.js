@@ -124,6 +124,12 @@ class AuthStore {
     return isAdmin(user, currentProductId);
   }
 
+  get isPaymentAlertVisible() {
+    const { isFreeTariff } = this.currentQuotaStore;
+    const { isGracePeriod } = this.currentTariffStatusStore;
+
+    return this.isAdmin && (isFreeTariff || isGracePeriod);
+  }
   login = async (user, hash, session = true) => {
     try {
       const response = await api.user.login(user, hash, session);
