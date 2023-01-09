@@ -96,6 +96,7 @@ const StyledVideoPlayer = styled.div`
   }
 
   .dropdown-speed {
+    padding-right: 10px;
     position: relative;
     display: inline-block;
   }
@@ -190,8 +191,8 @@ const StyledVideoActions = styled.div`
     left: 0;
     right: 0;
     justify-content: space-between;
-    padding-left: 29px;
-    padding-right: 19px;
+    padding-left: 20px;
+    padding-right: 30px;
     display: flex;
     align-items: center;
 
@@ -217,11 +218,22 @@ const StyledVideoActions = styled.div`
       cursor: pointer;
     }
   }
+
+  .context-menu-icon {
+    padding-left: 19px;
+    padding-bottom: 3px;
+    width: 18px;
+    height: 20px;
+  }
+
+  .fullscreen-button {
+    padding-bottom: 2px;
+  }
 `;
 
 const StyledDuration = styled.div`
   padding-left: 10px;
-  padding-right: 14px;
+  padding-right: 0px;
   width: 102px;
   color: #fff;
   user-select: none;
@@ -260,7 +272,7 @@ const StyledVideoControls = styled.div`
   `}
 
   .volume-wrapper {
-    width: 100px;
+    width: 123px;
     height: 28px;
     display: flex;
     align-items: center;
@@ -310,6 +322,7 @@ export default function ViewerPlayer(props) {
     onMaskClick,
     displayUI,
     isAudio,
+    isVideo,
     audioIcon,
     playlist,
     playlistPos,
@@ -497,6 +510,27 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleSpeedSelectionMenu = (e) => {
+    if (isMobileOnly) {
+      const speed = ["X0.5", "X1", "X1.5", "X2"];
+
+      const currentSpeed =
+        state.speedState === 1
+          ? 0
+          : state.speedState === 0
+          ? state.speedState + 2
+          : state.speedState === 3
+          ? 1
+          : state.speedState + 1;
+
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          speedState: currentSpeed,
+        })
+      );
+      const videoSpeed = Number(speed[currentSpeed].substring(1));
+      return (videoRef.current.playbackRate = videoSpeed);
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         speedSelection: !state.speedSelection,
@@ -703,11 +737,11 @@ export default function ViewerPlayer(props) {
         isPlaying: false,
         isFullScreen: state.isFullScreen,
         speedSelection: false,
+        isOpenContext: false,
         opacity: 1,
         deltaY: 0,
         deltaX: 0,
         speedState: 1,
-        isLoaded: true,
       })
     );
   }
@@ -888,11 +922,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
 
                 {!isMobileOnly && (
                   <div
-                    className="controller"
+                    className="controller context-menu-wrapper"
                     onClick={toggleContext}
                     style={{ position: "relative" }}
                   >
-                    <MediaContextMenu />
+                    <MediaContextMenu className="context-menu-icon" />
                     {contextMenu}
                   </div>
                 )}
