@@ -340,11 +340,7 @@ const RootFolderContainer = (props) => {
   return (
     <>
       {showLoader ? (
-        viewAs === "tile" ? (
-          <Loaders.Tiles />
-        ) : (
-          <Loaders.Rows />
-        )
+        <Loaders.EmptyContainerLoader viewAs={viewAs} />
       ) : (
         <EmptyContainer
           headerText={headerText}
