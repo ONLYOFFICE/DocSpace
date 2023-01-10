@@ -54,7 +54,6 @@
   "Rename": "Renombrar",
   "SendByEmail": "Enviar por correo electrónico",
   "Share": "Compartir",
-  "SharedEmptyContainerDescription": "La sección 'Compartido para mi' muestra los archivos que sus compañeros de equipo han compartido con usted. Si usted no ha visto los últimos cambios, están marcados como nuevos. Es posible eliminar los archivos de la lista mediante el menú contextual. ",
   "ShowVersionHistory": "Mostrar historial de versiones",
   "Spreadsheet": "Hoja de cálculo",
   "TooltipElementCopyMessage": "Copiar {{element}}",

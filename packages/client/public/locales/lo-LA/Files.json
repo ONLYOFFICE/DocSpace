@@ -52,7 +52,6 @@
   "Rename": "ປ່ຽນຊື່",
   "SendByEmail": "ສົ່ງຜ່ານອີເມວ",
   "Share": "ແບ່ງປັນ",
-  "SharedEmptyContainerDescription": "ສ່ວນ 'ແບ່ງປັນກັບຂ້ອຍ' ສະແດງໄຟລ໌ທີ່ແບ່ງປັນໃຫ້ທ່ານໂດຍເພື່ອນຮ່ວມທີມ. ຖ້າທ່ານບໍ່ໄດ້ເຫັນການປ່ຽນແປງໃໝ່ຫຼ້າສຸດ, ມັນຈະຖືກໝາຍເປັນໃໝ່. ທ່ານສາມາດເອົາໄຟລ໌ອອກຈາກບັນຊີໂດຍໃຊ້ເມນູ",
   "ShowVersionHistory": "ສະແດງປະຫວັດສະບັບ",
   "TooltipElementCopyMessage": "ຄັດລອກ {{element}}",
   "TooltipElementsCopyMessage": "ຄັດລອກ {{element}} ອົງປະກອບ",

@@ -95,7 +95,6 @@
   "SearchByContent": "Search by file contents",
   "SendByEmail": "Send by email",
   "Share": "Share",
-  "SharedEmptyContainerDescription": "The 'Shared with Me' section shows files shared to you by teammates. If you haven't seen the latest changes, they are marked as new. You can remove the files from the list using the context menu. ",
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "TooltipElementCopyMessage": "Copy {{element}}",

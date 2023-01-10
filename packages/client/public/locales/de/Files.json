@@ -54,7 +54,6 @@
   "Rename": "Umbenennen",
   "SendByEmail": "Per E-Mail senden",
   "Share": "Freigeben",
-  "SharedEmptyContainerDescription": "'Für mich freigegeben' ist der Bereich mit geteilten Dateien. Wenn Sie die letzten Änderungen nicht gesehen haben, werden diese als neue gekennzeichnet. Im Kontextmenü können Sie die Dateien aus der Liste entfernen.",
   "ShowVersionHistory": "Versionshistorie anzeigen",
   "Spreadsheet": "Tabellenkalkulation",
   "TooltipElementCopyMessage": "Kopieren {{element}}",

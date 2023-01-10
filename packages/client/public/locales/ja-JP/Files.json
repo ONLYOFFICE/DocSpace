@@ -54,7 +54,6 @@
   "Rename": "名前の変更",
   "SendByEmail": "メールで送信",
   "Share": "シェア",
-  "SharedEmptyContainerDescription": "「私と共有」には、他の方からあなたに共有されたファイルが表示されます。最新の変更点を見ていない場合は、新しいとマークされています。コンテキストメニューを使って、リストからファイルを削除することができます。",
   "ShowVersionHistory": "バージョン履歴の表示",
   "Spreadsheet": "スプレッドシート",
   "TooltipElementCopyMessage": "{{element}}をコピー",
