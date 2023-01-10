@@ -1,4 +1,4 @@
-﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+﻿import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
 import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
 import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
 import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";

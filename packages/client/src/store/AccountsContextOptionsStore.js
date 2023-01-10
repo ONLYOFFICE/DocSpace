@@ -7,7 +7,7 @@ import RemoveReactSvgUrl from "ASSETS_DIR/images/remove.react.svg?url";
 import RessingDataReactSvgUrl from "ASSETS_DIR/images/ressing_data.react.svg?url";
 import DelDataReactSvgUrl from "ASSETS_DIR/images/del_data.react.svg?url";
 import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
-import InfoReactSvgUrl from "ASSETS_DIR/images/info.react.svg?url";
+import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import RestoreAuthReactSvgUrl from "ASSETS_DIR/images/restore.auth.react.svg?url";
 import DisableReactSvgUrl from "ASSETS_DIR/images/disable.react.svg?url";
 import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";

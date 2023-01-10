@@ -1,4 +1,4 @@
-﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+﻿import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
 

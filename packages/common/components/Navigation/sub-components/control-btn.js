@@ -129,7 +129,7 @@ const ControlButtons = ({
               zIndex={402}
               className="option-button"
               directionX="right"
-              iconName="images/vertical-dots.react.svg"
+              iconName="/static/images/vertical-dots.react.svg"
               size={15}
               isFill
               getData={getContextOptionsFolder}

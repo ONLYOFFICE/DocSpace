@@ -96,7 +96,7 @@ const Avatar = (props) => {
         <EditContainer>
           <IconButton
             className="edit_icon"
-            iconName="/static/images/pencil.react.svg"
+            iconName="images/pencil.react.svg"
             onClick={editAction}
             size={16}
           />

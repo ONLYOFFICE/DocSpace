@@ -13,7 +13,7 @@ import MsnIconUrl from "ASSETS_DIR/images/windows.msn.react.svg?url";
 import IcqIconUrl from "ASSETS_DIR/images/icq.react.svg?url";
 import JabberIconUrl from "ASSETS_DIR/images/jabber.react.svg?url";
 import AimIconUrl from "ASSETS_DIR/images/aim.react.svg?url";
-import FacebookIconUrl from "ASSETS_DIR/images/share.facebook.react.svg?url";
+import FacebookIconUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
 import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg?url";
 import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg?url";
 import TwitterIconUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";

@@ -1,4 +1,4 @@
-﻿import InfoReactSvgUrl from "ASSETS_DIR/images/info.react.svg?url";
+﻿import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import EnableReactSvgUrl from "ASSETS_DIR/images/enable.react.svg?url";
 import DisableReactSvgUrl from "ASSETS_DIR/images/disable.react.svg?url";
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";

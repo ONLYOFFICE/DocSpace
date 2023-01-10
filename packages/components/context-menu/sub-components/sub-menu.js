@@ -5,7 +5,7 @@ import ObjectUtils from "../../utils/objectUtils";
 import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
-import ArrowIcon from "../svg/arrow.right.react.svg";
+import ArrowIcon from "../../../client/public/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
 
 //import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";

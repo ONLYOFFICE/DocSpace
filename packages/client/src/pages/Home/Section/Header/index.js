@@ -10,9 +10,9 @@ import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg
 import ActionsUploadReactSvgUrl from "ASSETS_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "ASSETS_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "ASSETS_DIR/images/reconnect.svg?url";
-import SettingsReactSvgUrl from "ASSETS_DIR/images/settings.react.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
 import DownloadReactSvgUrl from "ASSETS_DIR/images/download.react.svg?url";
-import MoveReactSvgUrl from "ASSETS_DIR/images/move.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "ASSETS_DIR/images/rename.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";

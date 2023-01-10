@@ -1,4 +1,4 @@
-﻿import VerticalDotsReactSvgUrl from "ASSETS_DIR/images/vertical-dots.react.svg?url";
+﻿import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 import React, { useEffect, useState, useReducer } from "react";
