@@ -12,7 +12,6 @@ import {
   createFolder,
   moveToFolder,
 } from "@docspace/common/api/files";
-import { deleteRoom } from "@docspace/common/api/rooms";
 import {
   ConflictResolveType,
   FileAction,
@@ -709,9 +708,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
-      const actions = items.map((item) => deleteRoom(item));
-
-      return Promise.all(actions)
+      return removeFiles(items)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
