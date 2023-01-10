@@ -5,6 +5,7 @@ import {
   StyledViewerContainer,
   StyledSwitchToolbar,
   StyledButtonScroll,
+  StyledMobileDetails,
 } from "./styled-viewer";
 import ControlBtn from "./sub-components/control-btn";
 import Text from "@docspace/components/text";
@@ -18,7 +19,7 @@ import ViewerPlayer from "./sub-components/viewer-player";
 
 import MediaContextMenu from "../../../public/images/vertical-dots.react.svg";
 import ContextMenu from "@docspace/components/context-menu";
-import BackArrow from "../../../public/images/arrow.path.react.svg";
+import BackArrow from "../../../public/images/viewer.media.back.react.svg";
 
 export const Viewer = (props) => {
   const {
@@ -94,32 +95,19 @@ export const Viewer = (props) => {
     cm.current.show(e);
   };
 
-  let detailsStyle = {
-    zIndex: "307",
-    position: "fixed",
-    top: "0",
-    left: "0",
-    right: "0",
-    height: "53px",
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-  };
-
   const contextMenuHeader = {
     icon: headerIcon,
     title: title,
   };
 
   const mobileDetails = (
-    <div className="mobile-details" style={detailsStyle}>
-      <BackArrow onClick={onMaskClick} />
-      <Text isBold fontSize="14px" color={"#D1D1D1"} className="title">
+    <StyledMobileDetails>
+      <BackArrow className="mobile-close" onClick={onMaskClick} />
+      <Text fontSize="14px" color={"#fff"} className="title">
         {title}
       </Text>
       <div className="details-context">
-        <MediaContextMenu onClick={onContextMenu} />
-
+        <MediaContextMenu className="mobile-context" onClick={onContextMenu} />
         <ContextMenu
           getContextModel={contextModel}
           ref={cm}
@@ -127,7 +115,7 @@ export const Viewer = (props) => {
           header={contextMenuHeader}
         />
       </div>
-    </div>
+    </StyledMobileDetails>
   );
 
   const displayUI = isAudio || panelVisible;
@@ -179,8 +167,8 @@ export const Viewer = (props) => {
             >
               <IconButton
                 color={"#fff"}
-                iconName="/static/images/cross.react.svg"
-                size={17}
+                iconName="/static/images/viewer.media.close.svg"
+                size={28}
                 isClickable
               />
             </ControlBtn>

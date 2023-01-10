@@ -42,14 +42,6 @@ const StyledVideoPlayer = styled.div`
   #videoPlayer:focus-visible {
     outline: none;
   }
-
-  .mobile-details {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.8) 100%
-    );
-  }
   .video-wrapper {
     position: fixed;
     z-index: 305;
@@ -166,14 +158,14 @@ const StyledVideoPlayer = styled.div`
     align-items: center;
     position: fixed;
     right: 0;
-    bottom: 77px;
+    bottom: 79px;
     left: 0;
     padding: 0 28px;
     height: 30px;
 
     ${isMobileOnly &&
     css`
-      bottom: 44px;
+      bottom: 46px;
       padding: 0 16px;
     `}
 
@@ -208,6 +200,10 @@ const StyledVideoActions = styled.div`
     }
   }
 
+  .mobile-actions {
+    padding: 2px 6px;
+  }
+
   .controller {
     display: flex;
     justify-content: center;
@@ -234,6 +230,10 @@ const StyledVideoActions = styled.div`
 const StyledDuration = styled.div`
   padding-left: 10px;
   padding-right: 0px;
+  ${isMobileOnly &&
+  css`
+    padding-left: 0px;
+  `}
   width: 102px;
   color: #fff;
   user-select: none;
@@ -257,7 +257,11 @@ const StyledVideoControls = styled.div`
   );
   .volume-container {
     display: flex;
+    margin-left: 6px;
 
+    .icon-play {
+      margin-right: 12px;
+    }
     svg {
       &:hover {
         cursor: pointer;
@@ -276,7 +280,7 @@ const StyledVideoControls = styled.div`
     height: 28px;
     display: flex;
     align-items: center;
-    padding-left: 15px;
+    padding-left: 9px;
 
     &:hover {
       input[type="range"]::-webkit-slider-thumb {
@@ -858,13 +862,24 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             />
           </div>
           <StyledVideoActions>
-            <div className="actions-container" ref={actionRef}>
+            <div
+              className={
+                isMobileOnly
+                  ? "actions-container mobile-actions"
+                  : "actions-container"
+              }
+              ref={actionRef}
+            >
               <div className="controll-box">
                 <div
                   className="controller volume-container video-play"
                   onClick={togglePlay}
                 >
-                  {!state.isPlaying ? <IconPlay /> : <IconStop />}
+                  {!state.isPlaying ? (
+                    <IconPlay className="icon-play" />
+                  ) : (
+                    <IconStop className="icon-stop" />
+                  )}
                 </div>
 
                 <StyledDuration>
