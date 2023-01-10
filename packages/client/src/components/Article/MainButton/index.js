@@ -1,5 +1,5 @@
 ﻿import ActionsUploadReactSvgUrl from "ASSETS_DIR/images/actions.upload.react.svg?url";
-import FormReactSvgUrl from "ASSETS_DIR/images/form.react.svg?url";
+import FormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
 import FormBlankReactSvgUrl from "ASSETS_DIR/images/form.blank.react.svg?url";
 import FormFileReactSvgUrl from "ASSETS_DIR/images/form.file.react.svg?url";
 import FormGalleryReactSvgUrl from "ASSETS_DIR/images/form.gallery.react.svg?url";

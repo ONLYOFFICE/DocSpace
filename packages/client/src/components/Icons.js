@@ -6,7 +6,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import FavoriteIcon from "ASSETS_DIR/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "ASSETS_DIR/images/file.actions.convert.edit.doc.react.svg";
 import FileActionsLockedIcon from "ASSETS_DIR/images/file.actions.locked.react.svg";
-import EditFormIcon from "ASSETS_DIR/images/file.actions.edit.form.react.svg";
+import EditFormIcon from "PUBLIC_DIR/images/access.edit.form.react.svg";
 import Base from "@docspace/components/themes/base";
 
 export const EncryptedFileIcon = styled.div`

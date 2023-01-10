@@ -1,5 +1,5 @@
 ﻿import PencilReactSvgUrl from "ASSETS_DIR/images/pencil.react.svg?url";
-import ChangeMailReactSvgUrl from "ASSETS_DIR/images/change.mail.react.svg?url";
+import ChangeMailReactSvgUrl from "PUBLIC_DIR/images/email.react.svg?url";
 import ChangeSecurityReactSvgUrl from "ASSETS_DIR/images/change.security.react.svg?url";
 import FolderReactSvgUrl from "ASSETS_DIR/images/folder.react.svg?url";
 import EnableReactSvgUrl from "ASSETS_DIR/images/enable.react.svg?url";
