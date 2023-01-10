@@ -152,19 +152,21 @@ public class MigrationRunner
     {
         using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
         var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
-
-        var userGroup = new UserGroup()
-        {
-            Tenant = tenantId,
-            LastModified = DateTime.UtcNow,
-            RefType = Core.UserGroupRefType.Contains,
-            Removed = false,
-            UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
-            Userid = tenant.OwnerId.Value
-        };
-
         using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
-        dbContextUser.UserGroups.Update(userGroup);
-        dbContextUser.SaveChanges();
+
+        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId)) {
+            var userGroup = new UserGroup()
+            {
+                Tenant = tenantId,
+                LastModified = DateTime.UtcNow,
+                RefType = Core.UserGroupRefType.Contains,
+                Removed = false,
+                UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
+                Userid = tenant.OwnerId.Value
+            };
+
+            dbContextUser.UserGroups.Add(userGroup);
+            dbContextUser.SaveChanges();
+        }
     }
 }
