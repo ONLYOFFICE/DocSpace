@@ -2204,6 +2204,8 @@ const Dark = {
       borderImageSource: `linear-gradient(to right,${black} 21px,#474747 21px,#474747 calc(100% - 20px),${black} calc(100% - 20px))`,
       lengthenBorderImageSource: `linear-gradient(to right, #474747, #474747)`,
       hotkeyBorderBottom: `1px solid ${globalColors.blueMain}`,
+
+      settingsIconDisableColor: "#474747",
     },
 
     tableCell: {
@@ -3104,8 +3106,8 @@ const Dark = {
   },
 
   itemIcon: {
-    borderColor: "#474747"
-  }
+    borderColor: "#474747",
+  },
 };
 
 export default Dark;

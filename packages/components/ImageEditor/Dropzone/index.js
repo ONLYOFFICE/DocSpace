@@ -1,24 +1,22 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-import { useTranslation } from "react-i18next";
 import { useDropzone } from "react-dropzone";
-
-import StyledDropzone from "./StyledDropzone";
-import Loader from "@docspace/components/loader";
-
-import { toastr } from "@docspace/components";
 import resizeImage from "resize-image";
+
+import Loader from "../../loader";
+
+import { toastr } from "../../";
+
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import StyledDropzone from "./StyledDropzone";
 
 const ONE_MEGABYTE = 1024 * 1024;
 const COMPRESSION_RATIO = 2;
 const NO_COMPRESSION_RATIO = 1;
 
-const Dropzone = ({ setUploadedFile }) => {
+const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
   const [loadingFile, setLoadingFile] = useState(false);
-  const { t } = useTranslation("CreateEditRoomDialog");
-
   const mount = useRef(false);
-
   const timer = useRef(null);
 
   useEffect(() => {
@@ -99,7 +97,7 @@ const Dropzone = ({ setUploadedFile }) => {
           error instanceof Error &&
           error.message === "recursion depth exceeded"
         ) {
-          toastr.error(t("SizeImageLarge"));
+          toastr.error(t("CreateEditRoomDialog:SizeImageLarge"));
         }
         console.error(error);
       })
@@ -113,6 +111,8 @@ const Dropzone = ({ setUploadedFile }) => {
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
+    noClick: isDisabled,
+    noKeyboard: isDisabled,
     // maxSize: 1000000,
     accept: ["image/png", "image/jpeg"],
     onDrop,
@@ -126,12 +126,16 @@ const Dropzone = ({ setUploadedFile }) => {
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
         <div className="dropzone-link">
-          <span className="dropzone-link-main">{t("DropzoneTitleLink")}</span>
+          <ColorTheme className="dropzone-link-main" themeId={ThemeType.Link}>
+            {t("CreateEditRoomDialog:DropzoneTitleLink")}
+          </ColorTheme>
           <span className="dropzone-link-secondary">
-            {t("DropzoneTitleSecondary")}
+            {t("CreateEditRoomDialog:DropzoneTitleSecondary")}
           </span>
         </div>
-        <div className="dropzone-exsts">{t("DropzoneTitleExsts")}</div>
+        <div className="dropzone-exsts">
+          {t("CreateEditRoomDialog:DropzoneTitleExsts")}
+        </div>
       </div>
     </StyledDropzone>
   );

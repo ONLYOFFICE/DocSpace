@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import { smallTablet } from "@docspace/components/utils/device";
-
 import Tags from "@docspace/common/components/Tags";
-import Tag from "@docspace/components/tag";
-import { Base } from "@docspace/components/themes";
+
+import { smallTablet } from "../../utils/device";
+import Tag from "../../tag";
+import { Base } from "../../themes";
 
 const StyledPreviewTile = styled.div`
   background: ${(props) =>
@@ -73,7 +73,7 @@ const StyledPreviewTile = styled.div`
 `;
 StyledPreviewTile.defaultProps = { theme: Base };
 
-const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
+const PreviewTile = ({ title, previewIcon, tags, defaultTagLabel }) => {
   return (
     <StyledPreviewTile>
       <div className="tile-header">
