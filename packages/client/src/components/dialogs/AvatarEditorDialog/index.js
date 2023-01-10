@@ -13,12 +13,32 @@ import {
   deleteAvatar,
 } from "@docspace/common/api/people";
 import { dataUrlToFile } from "@docspace/common/utils/dataUrlToFile";
-import AvatarEditor from "./editor";
+import ImageEditor from "@docspace/components/ImageEditor";
+import AvatarPreview from "@docspace/components/ImageEditor/AvatarPreview";
 
-const StyledModalDialog = styled(ModalDialog)``;
+const StyledModalDialog = styled(ModalDialog)`
+  .wrapper-image-editor {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    .avatar-editor {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+  }
+`;
 
 const AvatarEditorDialog = (props) => {
-  const { t } = useTranslation(["Profile", "PeopleTranslations", "ProfileAction", "Common"]);
+  const { t } = useTranslation([
+    "Profile",
+    "PeopleTranslations",
+    "ProfileAction",
+    "Common",
+    "CreateEditRoomDialog",
+  ]);
+
   const {
     visible,
     onClose,
@@ -89,13 +109,16 @@ const AvatarEditorDialog = (props) => {
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body>
-        <AvatarEditor
+        <ImageEditor
           t={t}
-          avatar={avatar}
-          onChangeAvatar={onChangeAvatar}
-          profile={profile}
-          preview={preview}
+          className="wrapper-image-editor"
+          classNameWrapperImageCropper="avatar-editor"
+          image={avatar}
           setPreview={setPreview}
+          onChangeImage={onChangeAvatar}
+          Preview={
+            <AvatarPreview avatar={preview} userName={profile.displayName} />
+          }
         />
       </ModalDialog.Body>
       <ModalDialog.Footer>

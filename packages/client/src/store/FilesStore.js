@@ -106,6 +106,9 @@ class FilesStore {
 
   isErrorRoomNotAvailable = false;
 
+  roomsController = null;
+  filesController = null;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -125,6 +128,9 @@ class FilesStore {
     this.filesSettingsStore = filesSettingsStore;
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
+
+    this.roomsController = new AbortController();
+    this.filesController = new AbortController();
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -323,9 +329,9 @@ class FilesStore {
         this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
       );
 
-      if (typeof id == "string") {
-        this.getFileInfo(id);
-      } else {
+      this.getFileInfo(id);
+
+      if (typeof id !== "string") {
         this.createThumbnail(id);
       }
     });
@@ -334,6 +340,10 @@ class FilesStore {
   debounceRemoveFiles = debounce(() => {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
+
+  setIsErrorRoomNotAvailable = (state) => {
+    this.isErrorRoomNotAvailable = state;
+  };
 
   setTempActionFilesIds = (tempActionFilesIds) => {
     this.tempActionFilesIds = tempActionFilesIds;
@@ -688,6 +698,10 @@ class FilesStore {
     this.bufferSelection = bufferSelection;
   };
 
+  setIsLoadedFetchFiles = (isLoadedFetchFiles) => {
+    this.isLoadedFetchFiles = isLoadedFetchFiles;
+  };
+
   //TODO: FILTER
   setFilesFilter = (filter) => {
     const key = `UserFilter=${this.authStore.userStore.user.id}`;
@@ -805,6 +819,11 @@ class FilesStore {
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
 
+    if (this.isLoading) {
+      this.roomsController.abort();
+      this.roomsController = new AbortController();
+    }
+
     this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
@@ -813,8 +832,8 @@ class FilesStore {
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
       return this.fetchRooms();
 
-    this.isErrorRoomNotAvailable = false;
-    this.isLoadedFetchFiles = false;
+    this.setIsErrorRoomNotAvailable(false);
+    this.setIsLoadedFetchFiles(false);
 
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
@@ -836,7 +855,7 @@ class FilesStore {
     setSelectedNode([folderId + ""]);
 
     return api.files
-      .getFolder(folderId, filterData)
+      .getFolder(folderId, filterData, this.filesController.signal)
       .then(async (data) => {
         filterData.total = data.total;
 
@@ -968,14 +987,15 @@ class FilesStore {
         ].includes(err?.response?.status);
 
         if (isUserError) {
-          this.isErrorRoomNotAvailable = true;
-          this.isEmptyPage = true;
+          runInAction(() => {
+            this.isErrorRoomNotAvailable = true;
+          });
         } else {
           toastr.error(err);
         }
       })
       .finally(() => {
-        this.isLoadedFetchFiles = true;
+        this.setIsLoadedFetchFiles(true);
       });
   };
 
@@ -987,6 +1007,11 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode, roomsFolderId } = this.treeFoldersStore;
+
+    if (this.isLoading) {
+      this.filesController.abort();
+      this.filesController = new AbortController();
+    }
 
     const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
@@ -1011,7 +1036,7 @@ class FilesStore {
 
     const request = () =>
       api.rooms
-        .getRooms(filterData)
+        .getRooms(filterData, this.roomsController.signal)
         .then(async (data) => {
           if (!folderId) setSelectedNode([data.current.id + ""]);
 
@@ -1076,7 +1101,7 @@ class FilesStore {
 
             this.setCreatedItem(null);
           }
-          this.isErrorRoomNotAvailable = false;
+          this.setIsErrorRoomNotAvailable(false);
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
@@ -2420,10 +2445,10 @@ class FilesStore {
           sortedFiles.spreadsheets.push(item);
         } else if (isPresentation(item.fileExst)) {
           sortedFiles.presentations.push(item);
-        } else if (isDocument(item.fileExst)) {
-          sortedFiles.documents.push(item);
         } else if (isMasterFormExtension(item.fileExst)) {
           sortedFiles.masterForms.push(item);
+        } else if (isDocument(item.fileExst)) {
+          sortedFiles.documents.push(item);
         } else {
           sortedFiles.other.push(item);
         }
@@ -2711,9 +2736,15 @@ class FilesStore {
     return folderInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+  openDocEditor = (
+    id,
+    providerKey = null,
+    tab = null,
+    url = null,
+    preview = false
+  ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1) {
+    if (foundIndex !== -1 && !preview) {
       this.updateSelectionStatus(
         id,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing,

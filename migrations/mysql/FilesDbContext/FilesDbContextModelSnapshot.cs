@@ -2528,8 +2528,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasDefaultValueSql("'0'");
 
                     b.Property<bool>("Private")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasColumnName("private");
+                        .HasColumnName("private")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")

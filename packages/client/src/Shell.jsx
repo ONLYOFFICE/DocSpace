@@ -164,6 +164,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setSnackbarExist,
     userTheme,
     //user,
+    whiteLabelLogoUrls,
   } = rest;
 
   useEffect(() => {
@@ -173,6 +174,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       toastr.error(err);
     }
   }, []);
+
+  useEffect(() => {
+    if (!whiteLabelLogoUrls) return;
+    const favicon = whiteLabelLogoUrls[2]?.path?.light;
+
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    }
+    link.href = favicon;
+  }, [whiteLabelLogoUrls]);
 
   useEffect(() => {
     socketHelper.emit({
@@ -494,6 +508,8 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
+    getWhiteLabelLogoUrls,
+    whiteLabelLogoUrls,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
@@ -528,6 +544,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
+    whiteLabelLogoUrls,
   };
 })(observer(Shell));
 

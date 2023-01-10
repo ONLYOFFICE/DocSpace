@@ -24,13 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.RegularExpressions;
+
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 [Scope]
 public class MigrationCreator
 {
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IConfiguration _configuration;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly TempStream _tempStream;
     private readonly DbFactory _dbFactory;
@@ -42,8 +42,10 @@ public class MigrationCreator
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
     private string _userName;
+    private string _mail;
     private string _toRegion;
     private int _tenant;
+    private readonly object _locker = new object();
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -54,9 +56,9 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
+    public string NewAlias { get; private set; }
+
     public MigrationCreator(
-        IHostEnvironment hostEnvironment,
-        IConfiguration configuration,
         TenantDomainValidator tenantDomainValidator,
         TempStream tempStream,
         DbFactory dbFactory,
@@ -65,8 +67,6 @@ public class MigrationCreator
         ModuleProvider moduleProvider,
         CreatorDbContext сreatorDbContext)
     {
-        _hostEnvironment = hostEnvironment;
-        _configuration = configuration;
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
         _dbFactory = dbFactory;
@@ -76,39 +76,55 @@ public class MigrationCreator
         _creatorDbContext = сreatorDbContext;
     }
 
-
-
-    public async Task<string> Create(int tenant, string userName, string toRegion)
+    public string Create(int tenant, string userName, string mail, string toRegion)
     {
-        Init(tenant, userName, toRegion);
+        Init(tenant, userName, mail, toRegion);
 
-        var id = GetId();
+        var id = GetUserId();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             DoMigrationDb(id, writer);
-            await DoMigrationStorage(id, writer);
+            DoMigrationStorage(id, writer);
         }
         return fileName;
     }
 
-    private void Init(int tenant, string userName, string toRegion)
+    private void Init(int tenant, string userName, string mail, string toRegion)
     {
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
         _toRegion = toRegion;
         _userName = userName;
+        _mail = mail;
         _tenant = tenant;
     }
 
-    private Guid GetId()
+    private Guid GetUserId()
     {
         try
         {
-            var userDbContext = _creatorDbContext.CreateDbContext<UserDbContext>();
-            return userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+            var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
+            User user = null;
+            if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail)) 
+            {
+                if (string.IsNullOrEmpty(_userName))
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    _userName = user.UserName;
+                }
+                else
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                }
+            }
+            else
+            {
+                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+            }
+            return user.Id;
         }
         catch (Exception)
         {
@@ -126,6 +142,12 @@ public class MigrationCreator
             {
                 foreach (var table in tablesToProcess)
                 {
+                    if (table.Name == "files_thirdparty_account" || table.Name == "files_thirdparty_id_mapping" || table.Name == "core_subscription" || table.Name == "files_security")
+                    {
+                        continue;
+                    }
+
+                    Console.WriteLine($"backup table {table.Name}");
                     using (var data = new DataTable(table.Name))
                     {
                         ActionInvoker.Try(
@@ -178,26 +200,51 @@ public class MigrationCreator
     private void ChangeAlias(DataTable data)
     {
         var aliases = GetAliases();
-        var newAlias = _userName;
+        NewAlias = _userName;
         while (true)
         {
             try
             {
-                _tenantDomainValidator.ValidateDomainLength(newAlias);
-                _tenantDomainValidator.ValidateDomainCharacters(newAlias);
-                if (aliases.Contains(newAlias))
+                NewAlias = RemoveInvalidCharacters(NewAlias);
+                _tenantDomainValidator.ValidateDomainLength(NewAlias);
+                _tenantDomainValidator.ValidateDomainCharacters(NewAlias);
+                if (aliases.Contains(NewAlias))
                 {
                     throw new Exception($"Alias is busy");
                 }
                 break;
             }
+            catch (TenantTooShortException ex)
+            {
+                if (NewAlias.Length > 100)
+                {
+                    NewAlias = NewAlias.Substring(0, 50);
+                }
+                else
+                {
+                    NewAlias = $"DocSpace{NewAlias}";
+                }
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                newAlias = Console.ReadLine();
+                var last = NewAlias.Substring(NewAlias.Length-1);
+                if (int.TryParse(last, out var lastNumber))
+                {
+                    NewAlias = NewAlias.Substring(0, NewAlias.Length - 1) + (lastNumber + 1);
+                }
+                else
+                {
+                    NewAlias = NewAlias + 1;
+                }
             }
         }
-        data.Rows[0]["alias"] = newAlias;
+        Console.WriteLine($"Alias is - {NewAlias}");
+        data.Rows[0]["alias"] = NewAlias;
+    }
+
+    private string RemoveInvalidCharacters(string alias)
+    {
+        return Regex.Replace(alias, "[^a-z0-9]", "", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     private List<string> GetAliases()
@@ -213,11 +260,13 @@ public class MigrationCreator
         data.Rows[0]["name"] = "";
     }
 
-    private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
+    private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
-        var fileGroups = await GetFilesGroup(id);
+        Console.WriteLine($"start backup storage");
+        var fileGroups = GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
+            Console.WriteLine($"start backup fileGroup: {group.Key}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(_tenant, group.Key);
@@ -228,8 +277,8 @@ public class MigrationCreator
                     using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5);
-
             }
+            Console.WriteLine($"end backup fileGroup: {group.Key}");
         }
 
         var restoreInfoXml = new XElement(
@@ -243,51 +292,73 @@ public class MigrationCreator
             restoreInfoXml.WriteTo(tmpFile);
             writer.WriteEntry(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
         }
+        Console.WriteLine($"end backup storage");
     }
 
-    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)
+    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
     {
-        var files = (await GetFilesToProcess(id)).ToList();
-
-        var backupsContext = _creatorDbContext.CreateDbContext<BackupsContext>();
-        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
-        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
+        var files =   GetFilesToProcess(id).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
 
-    protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(Guid id)
+    private IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
 
-        foreach (var module in _storageFactoryConfig.GetModuleList().Where(m => m == "files"))
+        var filesDbContext = _dbFactory.CreateDbContext<FilesDbContext>();
+
+        var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
+
+        var store = _storageFactory.GetStorage(_tenant, module);
+
+        var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _tenant).ToList();
+
+        var tasks = new List<Task>(20);
+        foreach (var dbFile in dbFiles)
         {
-            var store = _storageFactory.GetStorage(_tenant, module);
-            var domains = _storageFactoryConfig.GetDomainList(module).ToArray();
-
-            foreach (var domain in domains)
+            if (tasks.Count != 20)
             {
-                files.AddRange(await store.ListFilesRelativeAsync(domain, "\\", "*.*", true).Select(path => new BackupFileInfo(domain, module, path, _tenant)).ToListAsync());
+                tasks.Add(FindFiles(files, store, dbFile, module));
             }
-
-            files.AddRange(await
-                store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true)
-                .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant))
-                .ToListAsync());
+            else
+            {
+                Task.WaitAll(tasks.ToArray());
+                tasks.Clear();
+            }
         }
-
-        var filesDbContext = _creatorDbContext.CreateDbContext<FilesDbContext>();
-        files = files.Where(f => UserIsFileOwner(id, f, filesDbContext)).ToList();
+        Task.WaitAll(tasks.ToArray());
         return files.Distinct();
     }
 
-    private bool UserIsFileOwner(Guid id, BackupFileInfo fileInfo, FilesDbContext filesDbContext)
+    private async Task FindFiles(List<BackupFileInfo> list, IDataStore store, DbFile dbFile, string module)
     {
-        var stringId = id.ToString();
-        return filesDbContext.Files.Any(
-            f => f.CreateBy == id &&
-            f.TenantId == _tenant &&
-            fileInfo.Path.Contains("\\file_" + f.Id + "\\"));
+        var files = await store.ListFilesRelativeAsync(string.Empty, $"\\{GetUniqFileDirectory(dbFile.Id)}", "*.*", true)
+                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _tenant))
+                 .ToListAsync();
+
+        lock (_locker)
+        {
+            list.AddRange(files);
+        }
+
+        if (files.Any()) 
+        {
+            Console.WriteLine($"file {dbFile.Id} found");
+        }
+        else
+        {
+            Console.WriteLine($"file {dbFile.Id} not found");
+        }
+    }
+
+    private string GetUniqFileDirectory(int fileId)
+    {
+        if (fileId == 0)
+        {
+            throw new ArgumentNullException("fileIdObject");
+        }
+
+        return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
     }
 }

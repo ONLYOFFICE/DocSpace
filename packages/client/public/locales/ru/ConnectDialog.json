@@ -4,5 +4,6 @@
   "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
   "ConnectionUrl": "URL-адрес подключения",
   "Login": "Логин",
-  "Reconnect": "Подключить повторно"
+  "Reconnect": "Подключить повторно",
+  "SuccessfulConnectionOfAThirdParty": "Подключение стороннего ресурса прошло успешно."
 }

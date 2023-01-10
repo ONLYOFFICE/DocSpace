@@ -944,7 +944,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             tmp = _coreConfiguration.PersonalMaxSpace(_settingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
         }
 
-        return Math.Min(tmp, chunkedUpload ? _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic) : _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
+        return Math.Min(tmp, chunkedUpload ?
+            await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic) :
+            await _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
     }
 
     private async Task RecalculateFoldersCountAsync(int id)
@@ -1304,7 +1306,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     protected IQueryable<DbFolderQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFiles)
     {
-        var folderType = FileEntryType.Folder;
         var e = from r in dbFiles
                 select new DbFolderQuery
                 {
@@ -1318,11 +1319,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                              ).FirstOrDefault()
                             where f.TenantId == r.TenantId
                             select f
-                           ).FirstOrDefault(),
-                    Shared = (from f in filesDbContext.Security
-                              where f.EntryType == folderType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
-                              select f
-                              ).Any()
+                           ).FirstOrDefault()
                 };
 
         return e;
@@ -1346,7 +1343,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         where f.TenantId == r.TenantId
                         select f
                           ).FirstOrDefault(),
-                Shared = true
             });
     }
 

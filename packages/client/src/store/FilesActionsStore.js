@@ -757,19 +757,41 @@ class FilesActionStore {
       .then(() => fetchFiles(this.selectedFolderStore.id, filter, true, true));
   };
 
-  lockFileAction = (id, locked) => {
+  lockFileAction = async (id, locked) => {
+    let timer = null;
     const { setFile } = this.filesStore;
-    return lockFile(id, locked).then((res) => setFile(res));
+    try {
+      timer = setTimeout(() => {
+        this.filesStore.setActiveFiles([id]);
+      }, 200);
+      await lockFile(id, locked).then((res) => {
+        setFile(res), this.filesStore.setActiveFiles([]);
+      });
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      clearTimeout(timer);
+    }
   };
 
-  finalizeVersionAction = (id) => {
+  finalizeVersionAction = async (id) => {
+    let timer = null;
     const { setFile } = this.filesStore;
-
-    return finalizeVersion(id, 0, false).then((res) => {
-      if (res && res[0]) {
-        setFile(res[0]);
-      }
-    });
+    try {
+      timer = setTimeout(() => {
+        this.filesStore.setActiveFiles([id]);
+      }, 200);
+      await finalizeVersion(id, 0, false).then((res) => {
+        if (res && res[0]) {
+          setFile(res[0]);
+          this.filesStore.setActiveFiles([]);
+        }
+      });
+    } catch (err) {
+      toastr.error(err);
+    } finally {
+      clearTimeout(timer);
+    }
   };
 
   duplicateAction = (item, label) => {
@@ -1317,7 +1339,7 @@ class FilesActionStore {
       case "copy":
         const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
 
-        return hasSelection && canCopy;
+        return hasSelection && canCopy.length > 0;
       case "showInfo":
       case "download":
         return hasSelection;

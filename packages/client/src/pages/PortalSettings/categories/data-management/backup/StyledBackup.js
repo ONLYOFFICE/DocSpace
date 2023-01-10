@@ -103,6 +103,9 @@ const StyledAutoBackup = styled.div`
   .auto-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
+    button {
+      margin-bottom: 16px;
+    }
   }
   .automatic-backup_main {
     margin-bottom: 30px;
@@ -173,6 +176,10 @@ const StyledRestoreBackup = styled.div`
   ${commonStyles}
   .restore-backup_third-party-module {
     margin-top: 16px;
+
+    button {
+      margin-bottom: 16px;
+    }
   }
   .restore-description {
     max-width: ${TEXT_LENGTH};
@@ -327,7 +334,11 @@ const StyledBackup = styled.div`
     display: flex;
     margin-bottom: 12px;
     display: grid;
-    grid-template-columns: minmax(100px, 310px) 32px;
+
+    ${(props) =>
+      props.isConnectedAccount
+        ? "grid-template-columns:minmax(100px,  310px) 32px"
+        : "grid-template-columns:minmax(100px,  350px) 32px"};
     grid-gap: 8px;
   }
 

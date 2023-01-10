@@ -124,7 +124,10 @@ class AxiosClient {
       //   : error.message;
 
       if (error?.response?.status === 401 && this.isSSR) {
-        error.response.data.error.message = 401;
+        error.response.data = {
+          ...error?.response?.data,
+          error: { ...error?.response?.data?.error, message: 401 },
+        };
       }
 
       const loginURL = combineUrl(proxyURL, "/login");

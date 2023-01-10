@@ -70,17 +70,21 @@ public class MigrationRunner
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
         var columnMapper = new ColumnMapper();
+
         using (var dataReader = new ZipReadOperator(_backupFile))
         {
             foreach (var module in _modules)
             {
+                Console.WriteLine($"start restore module: {module}");
                 var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, columnMapper, _dbFactory, false, false, _region, _storageFactory, _storageFactoryConfig, _moduleProvider);
 
                 await restoreTask.RunJob();
+                Console.WriteLine($"end restore module: {module}");
             }
 
             await DoRestoreStorage(dataReader, columnMapper);
 
+            SetAdmin(columnMapper.GetTenantMapping());
             SetTenantActive(columnMapper.GetTenantMapping());
         }
     }
@@ -91,6 +95,7 @@ public class MigrationRunner
 
         foreach (var group in fileGroups)
         {
+            Console.WriteLine($"start restore fileGroup: {group.Key}");
             foreach (var file in group)
             {
                 var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
@@ -117,6 +122,7 @@ public class MigrationRunner
                     }
                 }
             }
+            Console.WriteLine($"end restore fileGroup: {group.Key}");
         }
     }
 
@@ -143,5 +149,27 @@ public class MigrationRunner
         tenant.StatusChanged = DateTime.UtcNow;
         dbContext.Tenants.Update(tenant);
         dbContext.SaveChanges();
+    }
+
+    private void SetAdmin(int tenantId)
+    {
+        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
+        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+
+        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId)) {
+            var userGroup = new UserGroup()
+            {
+                Tenant = tenantId,
+                LastModified = DateTime.UtcNow,
+                RefType = Core.UserGroupRefType.Contains,
+                Removed = false,
+                UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
+                Userid = tenant.OwnerId.Value
+            };
+
+            dbContextUser.UserGroups.Add(userGroup);
+            dbContextUser.SaveChanges();
+        }
     }
 }

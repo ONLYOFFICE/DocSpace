@@ -34,6 +34,7 @@ class AuthStore {
   pricePerManager = null;
   currencies = [];
 
+  isLogout = false;
   constructor() {
     this.userStore = new UserStore();
 
@@ -52,14 +53,15 @@ class AuthStore {
 
     this.skipRequest = skipRequest;
 
-    try {
-      await this.userStore.init();
-    } catch (e) {
-      console.error(e);
-    }
+    await this.settingsStore.init();
 
     const requests = [];
-    requests.push(this.settingsStore.init());
+
+    if (this.settingsStore.isLoaded && this.settingsStore.socketUrl) {
+      requests.push(this.userStore.init());
+    } else {
+      this.userStore.setIsLoaded(true);
+    }
 
     if (this.isAuthenticated && !skipRequest) {
       requests.push(
@@ -188,6 +190,7 @@ class AuthStore {
   logout = async () => {
     await api.user.logout();
 
+    this.isLogout = true;
     //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
@@ -220,7 +223,7 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      this.userStore.isAuthenticated ||
+      (this.settingsStore.isLoaded && this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
       this.settingsStore.tenantStatus === TenantStatus.PortalRestore
     );
   }

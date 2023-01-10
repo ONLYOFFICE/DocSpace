@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import StyledPinIcon from "@docspace/client/src/components/StyledPinIcon";
+import StyledPinIcon from "../../StyledPinIcon";
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, theme }) =>

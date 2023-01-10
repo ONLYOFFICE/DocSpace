@@ -6,9 +6,10 @@ import SelectUsersCountContainer from "./sub-components/SelectUsersCountContaine
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
 import toastr from "@docspace/components/toast/toastr";
 import axios from "axios";
-import { combineUrl } from "@docspace/common/utils";
+//import { combineUrl } from "@docspace/common/utils";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import { Trans } from "react-i18next";
+import { getPaymentLink } from "@docspace/common/api/portal";
 
 const StyledBody = styled.div`
   border-radius: 12px;
@@ -73,7 +74,8 @@ const PriceCalculation = ({
 }) => {
   useEffect(() => {
     initializeInfo();
-    !isAlreadyPaid && setStartPaymentLink();
+
+    !isAlreadyPaid && setStartPaymentLink(t);
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -99,16 +101,9 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await axios
-        .put(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal/payment/url"),
-          { quantity: { admin: value } },
-          {
-            cancelToken: source.token,
-          }
-        )
-        .then((response) => {
-          setPaymentLink(response.data.response);
+      await getPaymentLink(value, source.token)
+        .then((link) => {
+          setPaymentLink(link);
           setIsLoading(false);
         })
         .catch((thrown) => {
@@ -117,7 +112,7 @@ const PriceCalculation = ({
             console.log("Request canceled", thrown.message);
           } else {
             console.error(thrown);
-            toastr.error(thrown);
+            toastr.error(t("ErrorNotification"));
           }
           return;
         });

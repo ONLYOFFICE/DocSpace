@@ -25,5 +25,6 @@
   "ThirdPartyStorageRememberChoice": "Запомнить этот выбор для новых комнат",
   "ThirdPartyStorageTitle": "Место хранения",
   "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра",
-  "ViewOnlyRoomTitle": "Комната для просмотра"
+  "ViewOnlyRoomTitle": "Комната для просмотра",
+  "SizeImageLarge": "Размер изображения слишком велик, выберите другое изображение."
 }

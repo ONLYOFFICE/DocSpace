@@ -38,6 +38,7 @@ newInstance
       "DeleteThirdPartyDialog",
       "ThirdPartyMoveDialog",
       "PortalUnavailable",
+      "Errors",
     ],
 
     backend: {

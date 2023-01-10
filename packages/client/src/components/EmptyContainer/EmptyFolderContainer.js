@@ -137,7 +137,7 @@ const EmptyFolderContainer = ({
       }
       imageSrc={
         isRooms
-          ? "images/empty_screen_corporate.png"
+          ? "images/empty_screen_corporate.svg"
           : "/static/images/empty_screen_alt.svg"
       }
       buttons={buttons}

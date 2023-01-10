@@ -1443,6 +1443,21 @@ public class S3Storage : BaseStorage
         return method;
     }
 
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        using var client = GetClient();
+
+        var getObjectMetadataRequest = new GetObjectMetadataRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path)
+        };
+
+        var el = await client.GetObjectMetadataAsync(getObjectMetadataRequest);
+
+        return el.ETag;
+    }
+  
     private enum EncryptionMethod
     {
         None,

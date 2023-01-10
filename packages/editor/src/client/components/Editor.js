@@ -46,8 +46,6 @@ const onSDKError = (event) => {
   );
 };
 
-const text = "text";
-const presentation = "presentation";
 let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
@@ -96,12 +94,16 @@ function Editor({
   }
   useEffect(() => {
     if (error && mfReady) {
-      if (error?.unAuthorized && error?.redirectPath) {
-        localStorage.setItem("redirectPath", window.location.href);
-        window.location.href = error?.redirectPath;
+      if (error?.unAuthorized) {
+        sessionStorage.setItem("referenceUrl", window.location.href);
+        window.open(
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"),
+          "_self"
+        );
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      toastr.error(errorText);
+
+      errorText && toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -120,7 +122,8 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit
+      !fileInfo.security.Edit &&
+      !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
@@ -538,10 +541,11 @@ function Editor({
 
       if (successAuth) {
         const documentType = config.documentType;
+
         const fileExt =
-          documentType === text
+          documentType === "word"
             ? "docx"
-            : documentType === presentation
+            : documentType === "slide"
             ? "pptx"
             : "xlsx";
 
@@ -551,7 +555,7 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
-            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
               defaultFileName
             )}`
           );
