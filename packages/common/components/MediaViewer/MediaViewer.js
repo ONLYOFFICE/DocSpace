@@ -493,7 +493,8 @@ class MediaViewer extends React.Component {
 
     const currentFile = playlist[playlistPos];
 
-    const targetFile = files.find((item) => item.id === currentFileId);
+    const targetFile =
+      files.find((item) => item.id === currentFileId) || playlist[0];
     const { title } = currentFile;
 
     let isImage = false;
@@ -508,6 +509,9 @@ class MediaViewer extends React.Component {
     const ext = this.getFileExtension(title);
 
     const onSetSelectionFile = () => {
+      if (window.location.href.indexOf("/#preview") > 1) {
+        return setBufferSelection(playlist[0]);
+      }
       setBufferSelection(targetFile);
     };
 

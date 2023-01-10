@@ -85,13 +85,10 @@ class MediaViewerDataStore {
       });
     } else if (this.previewFile) {
       playlist.push({
+        ...this.previewFile,
         id: id,
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
-        title: this.previewFile.title,
-        fileExst: this.previewFile.fileExst,
-        fileStatus: this.previewFile.fileStatus,
-        canShare: this.previewFile.canShare,
       });
     }
 
