@@ -906,9 +906,9 @@ class FilesStore {
             if (
               data.current.providerKey &&
               data.current.rootFolderType === Rooms &&
-              this.treeFoldersStore.sharedRoomId
+              this.treeFoldersStore.myRoomsId
             ) {
-              folderId = this.treeFoldersStore.sharedRoomId;
+              folderId = this.treeFoldersStore.myRoomsId;
             }
 
             const folderInfo =
@@ -2715,10 +2715,6 @@ class FilesStore {
       pathParts: favoritesFolder.pathParts,
     });
   };
-
-  moveRoomToArchive = (id) => api.rooms.archiveRoom(id);
-
-  removeRoomFromArchive = (id) => api.rooms.unarchiveRoom(id);
 
   pinRoom = (id) => api.rooms.pinRoom(id);
 
