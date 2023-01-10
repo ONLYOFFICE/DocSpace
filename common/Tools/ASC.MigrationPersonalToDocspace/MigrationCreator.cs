@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.RegularExpressions;
+
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 [Scope]
@@ -41,6 +43,7 @@ public class MigrationCreator
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
     private string _userName;
+    private string _mail;
     private string _toRegion;
     private int _tenant;
     private readonly object _locker = new object();
@@ -74,11 +77,11 @@ public class MigrationCreator
         _moduleProvider = moduleProvider;
     }
 
-    public string Create(int tenant, string userName, string toRegion)
+    public string Create(int tenant, string userName, string mail, string toRegion)
     {
-        Init(tenant, userName, toRegion);
+        Init(tenant, userName, mail, toRegion);
 
-        var id = GetId();
+        var id = GetUserId();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
@@ -89,22 +92,40 @@ public class MigrationCreator
         return fileName;
     }
 
-    private void Init(int tenant, string userName, string toRegion)
+    private void Init(int tenant, string userName, string mail, string toRegion)
     {
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
         _toRegion = toRegion;
         _userName = userName;
+        _mail = mail;
         _tenant = tenant;
     }
 
-    private Guid GetId()
+    private Guid GetUserId()
     {
         try
         {
             var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
-            return userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+            User user = null;
+            if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail)) 
+            {
+                if (string.IsNullOrEmpty(_userName))
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    _userName = user.UserName;
+                }
+                else
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                }
+            }
+            else
+            {
+                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+            }
+            return user.Id;
         }
         catch (Exception)
         {
@@ -185,6 +206,7 @@ public class MigrationCreator
         {
             try
             {
+                newAlias = RemoveInvalidCharacters(newAlias);
                 _tenantDomainValidator.ValidateDomainLength(newAlias);
                 _tenantDomainValidator.ValidateDomainCharacters(newAlias);
                 if (aliases.Contains(newAlias))
@@ -193,14 +215,37 @@ public class MigrationCreator
                 }
                 break;
             }
+            catch (TenantTooShortException ex)
+            {
+                if (newAlias.Length > 100)
+                {
+                    newAlias = newAlias.Substring(0, 50);
+                }
+                else
+                {
+                    newAlias = $"DocSpace{newAlias}";
+                }
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                newAlias = Console.ReadLine();
+                var last = newAlias.Substring(newAlias.Length-1);
+                if (int.TryParse(last, out var lastNumber))
+                {
+                    newAlias = newAlias.Substring(0, newAlias.Length - 1) + (lastNumber + 1);
+                }
+                else
+                {
+                    newAlias = newAlias + 1;
+                }
             }
         }
-        var q = data.Rows[0];
+        Console.WriteLine($"Alias is - {newAlias}");
         data.Rows[0]["alias"] = newAlias;
+    }
+
+    private string RemoveInvalidCharacters(string alias)
+    {
+        return Regex.Replace(alias, "[^a-z0-9]", "", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     private List<string> GetAliases()
