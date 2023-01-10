@@ -141,21 +141,21 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-documnet",
             key: "new-document",
-            label: t("NewDocument"),
+            label: t("Common:NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
             id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
-            label: t("NewSpreadsheet"),
+            label: t("Common:NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
             id: "personal_new-presentation",
             key: "new-presentation",
-            label: t("NewPresentation"),
+            label: t("Common:NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
@@ -193,7 +193,7 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-folder",
             key: "new-folder",
-            label: t("NewFolder"),
+            label: t("Common:NewFolder"),
             onClick: this.createFolder,
             icon: "images/catalog.folder.react.svg",
           },

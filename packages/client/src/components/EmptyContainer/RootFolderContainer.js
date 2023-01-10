@@ -50,8 +50,7 @@ const RootFolderContainer = (props) => {
     sectionWidth,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
-  const shareDescription = t("SharedEmptyContainerDescription");
-  const commonDescription = t("CommonEmptyContainerDescription");
+
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
   const noFilesHeader = t("NoFilesHereYet");
@@ -131,17 +130,6 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
           imageSrc: "images/empty_screen_personal.svg",
-          buttons: commonButtons,
-        };
-      case FolderType.SHARE:
-        return {
-          descriptionText: shareDescription,
-          imageSrc: "images/empty_screen_forme.png",
-        };
-      case FolderType.COMMON:
-        return {
-          descriptionText: commonDescription,
-          imageSrc: "images/empty_screen_corporate.svg",
           buttons: commonButtons,
         };
       case FolderType.Favorites:

@@ -28,7 +28,7 @@ newInstance
       loadPath: loadLanguagePath(config.homepage),
     },
 
-    ns: ["Files"],
+    ns: ["Files", "Common"],
     defaultNS: "Files",
 
     react: {
