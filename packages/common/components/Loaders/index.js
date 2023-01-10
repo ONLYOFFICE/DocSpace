@@ -44,6 +44,8 @@ import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
 import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
 import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
 
+import EmptyContainerLoader from "./EmptyContainerLoader/EmptyContainerLoader";
+
 export default {
   Rectangle,
   Circle,
@@ -90,4 +92,6 @@ export default {
   SettingsHeader,
   SettingsAdmin,
   SettingsCommon,
+
+  EmptyContainerLoader,
 };
