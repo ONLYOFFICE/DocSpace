@@ -28,6 +28,7 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
+const storageCheckbox = JSON.parse(localStorage.getItem("checked"));
 
 let requestCounter = 0;
 
@@ -48,6 +49,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
+  isChecked = storageCheckbox !== "checked" ? false : true;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -395,6 +397,11 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+  };
+
+  setIsChecked = (checked) => {
+    this.isChecked = checked;
+    localStorage.setItem("checked", JSON.stringify(checked));
   };
 
   setPageItemsLength = (pageItemsLength) => {

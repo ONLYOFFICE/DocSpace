@@ -21,12 +21,12 @@ const Dialog = ({
   onSave,
   onCancel,
   onClose,
+  onCreate,
+  isChecked,
+  setIsChecked,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-  const [isChecked, setIsChecked] = useState(
-    localStorage.getItem("checked") === "false"
-  );
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -91,8 +91,7 @@ const Dialog = ({
   );
 
   const onChangeCheckbox = () => {
-    setIsChecked((prev) => !prev);
-    localStorage.setItem("checked", `${isChecked}`);
+    setIsChecked(!isChecked);
   };
 
   return (
@@ -114,12 +113,15 @@ const Dialog = ({
           tabIndex={1}
           onChange={onChange}
           onFocus={onFocus}
-          isDisabled={isChecked}
+          isDisabled={isDisabled}
         />
-        <Box displayProp="flex" alignItems="center" paddingProp="15px 0 5px">
-          <Checkbox isChecked={isChecked} onChange={onChangeCheckbox} />
-          {t("Common:DontAskAgain")}
-        </Box>
+        {onCreate && (
+          <Box displayProp="flex" alignItems="center" paddingProp="16px 0 8px">
+            <Checkbox isChecked={isChecked} onChange={onChangeCheckbox} />
+            {t("Common:DontAskAgain")}
+          </Box>
+        )}
+
         {options && (
           <ComboBox
             style={{ marginTop: "16px" }}
@@ -132,7 +134,7 @@ const Dialog = ({
       <ModalDialog.Footer>
         <Button
           key="GlobalSendBtn"
-          label={t("Common:Create")}
+          label={onCreate ? t("Common:Create") : t("Common:Save")}
           size="normal"
           scale
           primary
@@ -153,8 +155,9 @@ const Dialog = ({
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, filesStore }) => {
   const { folderFormValidation } = auth.settingsStore;
+  const { setIsChecked, isChecked } = filesStore;
 
-  return { folderFormValidation };
+  return { folderFormValidation, setIsChecked, isChecked };
 })(observer(Dialog));

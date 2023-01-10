@@ -21,7 +21,7 @@ const CreateEvent = ({
   templateId,
   fromTemplate,
   onClose,
-
+  onCreate,
   setIsLoading,
   createFile,
   createFolder,
@@ -49,6 +49,8 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
+  setIsChecked,
+  isChecked,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -74,7 +76,13 @@ const CreateEvent = ({
     }
 
     setHeaderTitle(defaultName);
-    setEventDialogVisible(true);
+
+    if (!isChecked) {
+      setEventDialogVisible(true);
+    } else {
+      onSave(null, defaultName);
+      setIsChecked(true);
+    }
 
     return () => {
       setEventDialogVisible(false);
@@ -198,7 +206,6 @@ const CreateEvent = ({
             createdFileId = file.id;
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
-
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => editCompleteAction(item, type))
@@ -267,6 +274,7 @@ const CreateEvent = ({
       onSave={onSave}
       onCancel={onCancel}
       onClose={onCloseAction}
+      onCreate={onCreate}
     />
   );
 };
@@ -313,6 +321,8 @@ export default inject(
       eventDialogVisible,
     } = dialogsStore;
 
+    const { setIsChecked, isChecked } = filesStore;
+
     return {
       setEventDialogVisible,
       eventDialogVisible,
@@ -341,6 +351,8 @@ export default inject(
 
       replaceFileStream,
       setEncryptionAccess,
+      setIsChecked,
+      isChecked,
     };
   }
 )(observer(CreateEvent));

@@ -28,17 +28,11 @@ const CommonSettings = ({
 
   t,
   showTitle,
+  isChecked,
+  setIsChecked,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
-  const [isChecked, setIsChecked] = React.useState(
-    localStorage.getItem("checked") === "false"
-  );
-
-  const onChangeCheckbox = () => {
-    setIsChecked((prev) => !prev);
-    localStorage.setItem("checked", `${isChecked}`);
-  };
 
   const onChangeOriginalCopy = React.useCallback(() => {
     setStoreOriginal(!storeOriginalFiles, "storeOriginalFiles");
@@ -76,6 +70,10 @@ const CommonSettings = ({
     [setIsLoadingRecent, setRecentSetting]
   );
 
+  const onChangeCheckbox = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <StyledSettings showTitle={showTitle}>
       <Box className="settings-section">
@@ -84,6 +82,12 @@ const CommonSettings = ({
             {t("Common:Common")}
           </Heading>
         )}
+        <ToggleButton
+          className="toggle-btn"
+          label={t("Common:DontAskAgain")}
+          onChange={onChangeCheckbox}
+          isChecked={isChecked}
+        />
         <ToggleButton
           className="toggle-btn"
           label={t("OriginalCopy")}
@@ -95,12 +99,6 @@ const CommonSettings = ({
           label={t("DisplayNotification")}
           onChange={onChangeDeleteConfirm}
           isChecked={confirmDelete}
-        />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("Common:DontAskAgain")}
-          onChange={onChangeCheckbox}
-          isChecked={isChecked}
         />
       </Box>
 
@@ -153,50 +151,55 @@ const CommonSettings = ({
   );
 };
 
-export default inject(({ auth, settingsStore, treeFoldersStore }) => {
-  const {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forcesave,
+export default inject(
+  ({ auth, settingsStore, treeFoldersStore, filesStore }) => {
+    const {
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forcesave,
 
-    setUpdateIfExist,
-    setStoreOriginal,
+      setUpdateIfExist,
+      setStoreOriginal,
 
-    setConfirmDelete,
+      setConfirmDelete,
 
-    setForceSave,
+      setForceSave,
 
-    favoritesSection,
-    recentSection,
-    setFavoritesSetting,
-    setRecentSetting,
-  } = settingsStore;
+      favoritesSection,
+      recentSection,
+      setFavoritesSetting,
+      setRecentSetting,
+    } = settingsStore;
 
-  const { myFolderId, commonFolderId } = treeFoldersStore;
+    const { myFolderId, commonFolderId } = treeFoldersStore;
+    const { setIsChecked, isChecked } = filesStore;
 
-  return {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave: forcesave,
+    return {
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forceSave: forcesave,
 
-    myFolderId,
-    commonFolderId,
-    isVisitor: auth.userStore.user.isVisitor,
-    favoritesSection,
-    recentSection,
+      myFolderId,
+      commonFolderId,
+      isVisitor: auth.userStore.user.isVisitor,
+      favoritesSection,
+      recentSection,
 
-    setUpdateIfExist,
-    setStoreOriginal,
+      setUpdateIfExist,
+      setStoreOriginal,
 
-    setConfirmDelete,
+      setConfirmDelete,
 
-    setForceSave,
+      setForceSave,
 
-    setFavoritesSetting,
-    setRecentSetting,
-    myFolderId,
-    commonFolderId,
-  };
-})(observer(CommonSettings));
+      setFavoritesSetting,
+      setRecentSetting,
+      myFolderId,
+      commonFolderId,
+      setIsChecked,
+      isChecked,
+    };
+  }
+)(observer(CommonSettings));

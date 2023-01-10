@@ -11,6 +11,7 @@ import EditRoomEvent from "./EditRoomEvent";
 const GlobalEvents = () => {
   const [createDialogProps, setCreateDialogProps] = useState({
     visible: false,
+    onCreate: false,
     id: null,
     type: null,
     extension: null,
@@ -44,6 +45,7 @@ const GlobalEvents = () => {
 
     setCreateDialogProps({
       visible: visible,
+      onCreate: true,
       id: payload.id,
       type: FileAction.Create,
       extension: payload.extension,
@@ -53,6 +55,7 @@ const GlobalEvents = () => {
       onClose: () => {
         setCreateDialogProps({
           visible: false,
+          onCreate: false,
           id: null,
           type: null,
           extension: null,
