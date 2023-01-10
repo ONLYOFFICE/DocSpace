@@ -2736,9 +2736,15 @@ class FilesStore {
     return folderInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+  openDocEditor = (
+    id,
+    providerKey = null,
+    tab = null,
+    url = null,
+    preview = false
+  ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1) {
+    if (foundIndex !== -1 && !preview) {
       this.updateSelectionStatus(
         id,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing,

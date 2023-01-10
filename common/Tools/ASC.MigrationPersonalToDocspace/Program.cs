@@ -86,10 +86,15 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 
 });
 
+if(string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
+{
+    throw new Exception("username or email must be entered");
+}
+
 var app = builder.Build();
 Console.WriteLine("backup start");
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion);
+var fileName = migrationCreator.Create(param.Tenant, param.UserName, param.Mail, param.ToRegion);
 Console.WriteLine("backup was success");
 Console.WriteLine("restore start");
 var migrationRunner = app.Services.GetService<MigrationRunner>();
@@ -104,14 +109,18 @@ if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 }
 
 Console.WriteLine("migration was success");
+Console.WriteLine($"new alias is - {migrationCreator.NewAlias}");
 
 public sealed class Options
 {
     [Option('t', "tenant", Required = true)]
     public int Tenant { get; set; }
 
-    [Option('u', "username", Required = true)]
+    [Option('u', "username", Required = false, HelpText = "enter username or mail for find user")]
     public string UserName { get; set; }
+
+    [Option('m', "mail", Required = false, HelpText = "enter username or mail for find user")]
+    public string Mail { get; set; }
 
     [Option("toregion", Required = true)]
     public string ToRegion { get; set; }

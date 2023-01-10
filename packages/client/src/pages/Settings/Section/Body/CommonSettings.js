@@ -13,8 +13,8 @@ const CommonSettings = ({
   forceSave,
 
   isVisitor,
-  favoritesSection,
-  recentSection,
+  //favoritesSection,
+  //recentSection,
 
   setUpdateIfExist,
   setStoreOriginal,
@@ -82,12 +82,14 @@ const CommonSettings = ({
           onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("DisplayNotification")}
-          onChange={onChangeDeleteConfirm}
-          isChecked={confirmDelete}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("DisplayNotification")}
+            onChange={onChangeDeleteConfirm}
+            isChecked={confirmDelete}
+          />
+        )}
       </Box>
 
       {/* <Box className="settings-section">
