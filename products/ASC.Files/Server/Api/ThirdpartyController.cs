@@ -187,7 +187,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty")]
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
-        return _fileStorageService.GetThirdPartyAsync<string>();
+        return _fileStorageService.GetThirdPartyAsync();
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty/backup")]
     public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
-        var folder = await _fileStorageService.GetBackupThirdPartyAsync<string>();
+        var folder = await _fileStorageService.GetBackupThirdPartyAsync();
         if (folder != null)
         {
 
@@ -268,7 +268,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageService.SaveThirdPartyAsync<string>(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
@@ -303,7 +303,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageService.SaveThirdPartyBackupAsync<string>(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyBackupAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
