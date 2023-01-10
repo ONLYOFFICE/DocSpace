@@ -31,8 +31,6 @@ namespace ASC.Migration.PersonalToDocspace.Creator;
 [Scope]
 public class MigrationCreator
 {
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IConfiguration _configuration;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly TempStream _tempStream;
     private readonly DbFactory _dbFactory;
@@ -57,9 +55,9 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
+    public string NewAlias { get; private set; }
+
     public MigrationCreator(
-        IHostEnvironment hostEnvironment,
-        IConfiguration configuration,
         TenantDomainValidator tenantDomainValidator,
         TempStream tempStream,
         DbFactory dbFactory,
@@ -67,8 +65,6 @@ public class MigrationCreator
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
     {
-        _hostEnvironment = hostEnvironment;
-        _configuration = configuration;
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
         _dbFactory = dbFactory;
@@ -201,15 +197,15 @@ public class MigrationCreator
     private void ChangeAlias(DataTable data)
     {
         var aliases = GetAliases();
-        var newAlias = _userName;
+        NewAlias = _userName;
         while (true)
         {
             try
             {
-                newAlias = RemoveInvalidCharacters(newAlias);
-                _tenantDomainValidator.ValidateDomainLength(newAlias);
-                _tenantDomainValidator.ValidateDomainCharacters(newAlias);
-                if (aliases.Contains(newAlias))
+                NewAlias = RemoveInvalidCharacters(NewAlias);
+                _tenantDomainValidator.ValidateDomainLength(NewAlias);
+                _tenantDomainValidator.ValidateDomainCharacters(NewAlias);
+                if (aliases.Contains(NewAlias))
                 {
                     throw new Exception($"Alias is busy");
                 }
@@ -217,30 +213,30 @@ public class MigrationCreator
             }
             catch (TenantTooShortException ex)
             {
-                if (newAlias.Length > 100)
+                if (NewAlias.Length > 100)
                 {
-                    newAlias = newAlias.Substring(0, 50);
+                    NewAlias = NewAlias.Substring(0, 50);
                 }
                 else
                 {
-                    newAlias = $"DocSpace{newAlias}";
+                    NewAlias = $"DocSpace{NewAlias}";
                 }
             }
             catch (Exception ex)
             {
-                var last = newAlias.Substring(newAlias.Length-1);
+                var last = NewAlias.Substring(NewAlias.Length-1);
                 if (int.TryParse(last, out var lastNumber))
                 {
-                    newAlias = newAlias.Substring(0, newAlias.Length - 1) + (lastNumber + 1);
+                    NewAlias = NewAlias.Substring(0, NewAlias.Length - 1) + (lastNumber + 1);
                 }
                 else
                 {
-                    newAlias = newAlias + 1;
+                    NewAlias = NewAlias + 1;
                 }
             }
         }
-        Console.WriteLine($"Alias is - {newAlias}");
-        data.Rows[0]["alias"] = newAlias;
+        Console.WriteLine($"Alias is - {NewAlias}");
+        data.Rows[0]["alias"] = NewAlias;
     }
 
     private string RemoveInvalidCharacters(string alias)

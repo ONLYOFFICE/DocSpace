@@ -109,6 +109,7 @@ if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 }
 
 Console.WriteLine("migration was success");
+Console.WriteLine($"new alias is - {migrationCreator.NewAlias}");
 
 public sealed class Options
 {
