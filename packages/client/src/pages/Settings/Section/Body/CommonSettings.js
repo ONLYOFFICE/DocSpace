@@ -124,12 +124,14 @@ const CommonSettings = ({
         <Heading className="heading" level={2} size="xsmall">
           {t("StoringFileVersion")}
         </Heading>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("UpdateOrCreate")}
-          onChange={onChangeUpdateIfExist}
-          isChecked={updateIfExist}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("UpdateOrCreate")}
+            onChange={onChangeUpdateIfExist}
+            isChecked={updateIfExist}
+          />
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("KeepIntermediateVersion")}
