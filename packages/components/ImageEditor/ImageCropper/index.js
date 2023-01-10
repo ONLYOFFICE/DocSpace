@@ -3,6 +3,9 @@ import { ReactSVG } from "react-svg";
 import throttle from "lodash/throttle";
 import AvatarEditor from "react-avatar-editor";
 
+import ZoomMinusReactSvgUrl from "../../../../public/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "../../../../public/images/zoom-plus.react.svg?url";
+
 import Slider from "../../slider";
 import IconButton from "../../icon-button";
 import StyledImageCropper from "./StyledImageCropper";
@@ -105,7 +108,7 @@ const ImageCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomOutClick}
-          iconName={"/static/images/zoom-minus.react.svg"}
+          iconName={ZoomMinusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}
@@ -123,7 +126,7 @@ const ImageCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomInClick}
-          iconName={"/static/images/zoom-plus.react.svg"}
+          iconName={ZoomPlusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}

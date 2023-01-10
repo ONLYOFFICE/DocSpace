@@ -3,6 +3,13 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 
+import ArchiveSvg32Url from "../../../public/images/icons/32/room/archive.svg?url";
+import CustomSvg32Url from "../../../public/images/icons/32/room/custom.svg?url";
+import EditingSvg32Url from "../../../public/images/icons/32/room/editing.svg?url";
+import FillingFormSvg32Url from "../../../public/images/icons/32/room/filling.form.svg?url";
+import ReviewSvg32Url from "../../../public/images/icons/32/room/review.svg?url";
+import ViewOnlySvg32Url from "../../../public/images/icons/32/room/view.only.svg?url";
+
 import { RoomsType } from "@docspace/common/constants";
 
 import Checkbox from "../checkbox";
@@ -23,36 +30,24 @@ const RoomLogo = ({
 }) => {
   const getIcon = () => {
     if (isArchive) {
-      return isPrivacy
-        ? "/static/images/room.privacy.archive.svg"
-        : "/static/images/room.archive.svg";
+      return ArchiveSvg32Url;
     }
 
     switch (type) {
       case RoomsType.ReadOnlyRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.view.svg"
-          : "/static/images/room.view.svg";
+        return isPrivacy;
+        ViewOnlySvg32Url;
       case RoomsType.ReviewRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.review.svg"
-          : "/static/images/room.review.svg";
+        return isPrivacy;
+        ReviewSvg32Url;
       case RoomsType.FillingFormsRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.fill.svg"
-          : "/static/images/room.fill.svg";
+        return FillingFormSvg32Url;
       case RoomsType.EditingRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.editing.svg"
-          : "/static/images/room.editing.svg";
+        return EditingSvg32Url;
       case RoomsType.CustomRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.custom.svg"
-          : "/static/images/room.custom.svg";
+        return CustomSvg32Url;
       default:
-        return isPrivacy
-          ? "/static/images/room.privacy.custom.svg"
-          : "/static/images/room.custom.svg";
+        return "";
     }
   };
 

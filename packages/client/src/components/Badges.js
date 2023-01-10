@@ -1,4 +1,4 @@
-﻿import UnpinReactSvgUrl from "ASSETS_DIR/images/unpin.react.svg?url";
+﻿import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
 import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
 import AccessEditFormReactSvgUrl from "PUBLIC_DIR/images/access.edit.form.react.svg?url";
 import FileActionsConvertEditDocReactSvgUrl from "PUBLIC_DIR/images/file.actions.convert.edit.doc.react.svg?url";

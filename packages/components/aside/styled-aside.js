@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossIcon from "../../../public/images/cross.react.svg";
 
 import { isMobile } from "react-device-detect";
 

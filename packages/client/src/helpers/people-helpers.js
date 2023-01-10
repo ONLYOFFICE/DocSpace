@@ -16,7 +16,7 @@ import AimIconUrl from "ASSETS_DIR/images/aim.react.svg?url";
 import FacebookIconUrl from "ASSETS_DIR/images/share.facebook.react.svg?url";
 import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg?url";
 import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg?url";
-import TwitterIconUrl from "ASSETS_DIR/images/share.twitter.react.svg?url";
+import TwitterIconUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
 import BloggerIconUrl from "ASSETS_DIR/images/blogger.react.svg?url";
 import YahooIconUrl from "ASSETS_DIR/images/yahoo.react.svg?url";
 

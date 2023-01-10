@@ -66,7 +66,7 @@ const CloseButton = ({ closeToast, theme }) => (
     <StyledIconButton
       className="closeButton"
       onClick={closeToast}
-      iconName="/static/images/cross.react.svg"
+      iconName={CrossIconReactSvgUrl}
       size={12}
     />
   </StyledCloseWrapper>

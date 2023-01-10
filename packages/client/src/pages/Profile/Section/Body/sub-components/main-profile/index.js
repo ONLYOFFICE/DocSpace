@@ -1,4 +1,4 @@
-﻿import SendClockReactSvgUrl from "ASSETS_DIR/images/send.clock.react.svg?url";
+﻿import SendClockReactSvgUrl from "PUBLIC_DIR/images/send.clock.react.svg?url";
 import PencilOutlineReactSvgUrl from "PUBLIC_DIR/images/pencil.outline.react.svg?url";
 import React from "react";
 import { ReactSVG } from "react-svg";

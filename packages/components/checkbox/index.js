@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import { StyledLabel, HiddenInput } from "./styled-checkbox";
-import CheckboxIndeterminateIcon from "./svg/checkbox.indeterminate.react.svg";
-import CheckboxCheckedIcon from "./svg/checkbox.checked.react.svg";
-import CheckboxIcon from "./svg/checkbox.react.svg";
+import CheckboxIndeterminateIcon from "../../../public/images/checkbox.indeterminate.react.svg";
+import CheckboxCheckedIcon from "../../../public/images/checkbox.checked.react.svg";
+import CheckboxIcon from "../../../public/images/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
 const RenderCheckboxIcon = ({ isChecked, isIndeterminate, tabIndex }) => {

@@ -1,4 +1,4 @@
-﻿import DepartmentsGroupReactSvgUrl from "ASSETS_DIR/images/departments.group.react.svg?url";
+﻿import DepartmentsGroupReactSvgUrl from "PUBLIC_DIR/images/departments.group.react.svg?url";
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
