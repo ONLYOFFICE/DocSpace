@@ -8,7 +8,7 @@
   "AddTrustedDomain": "Añadir dominio seguro",
   "Admins": "Administradores",
   "AllDomains": "Cualquier dominios",
-  "AuditDownloadText": "Usted puede descargar el informe para los datos disponibles durante el período de almacenamiento seleccionado para ver estadísticas detalladas. Note, por favor, que el registro es actualmente activado para los módulos Documentos, Proyectos, CRM y Personas así como para los ajustes de portal.",
+  "AuditDownloadText": "Usted puede descargar el informe para los datos disponibles durante el período de almacenamiento seleccionado para ver estadísticas detalladas.",
   "AuditTrailNav": "Rastro de auditoría",
   "AutoBackup": "Copia de seguridad automática",
   "AutoBackupDescription": "Use esta opción para la copia de seguridad automática de los datos del portal.",

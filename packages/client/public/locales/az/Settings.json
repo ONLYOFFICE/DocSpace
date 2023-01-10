@@ -8,7 +8,7 @@
   "AddTrustedDomain": "İnanılmış domen əlavə et",
   "Admins": "Adminlər",
   "AllDomains": "Hər hansı bir domen adı",
-  "AuditDownloadText": "Ətraflı statistikaya baxmaq üçün seçilmiş saxlama müddəti ərzində mövcud olan məlumat üçün hesabatı yükləyə bilərsiniz. Nəzərə alın ki, qeydiyyat hazırda Sənədlər, Layihələr, CRM və İnsanlar modulları, həmçinin portal parametrləri üçün aktivdir.",
+  "AuditDownloadText": "Ətraflı statistikaya baxmaq üçün seçilmiş saxlama müddəti ərzində mövcud olan məlumat üçün hesabatı yükləyə bilərsiniz.",
   "AuditTrailNav": "Audit izi",
   "AutoBackup": "Avtomatik ehtiyat nüsxəsi",
   "AutoBackupDescription": "Portal məlumatlarının avtomatik yedəklənməsi üçün bu seçimdən istifadə edin.",

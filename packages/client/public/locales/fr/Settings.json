@@ -8,7 +8,7 @@
   "AddTrustedDomain": "Ajouter domaine autorisé",
   "Admins": "Administrateurs",
   "AllDomains": "Tous les domaines",
-  "AuditDownloadText": "Vous pouvez télécharger le rapport des données accessibles lors d'une période sélectionnée pour voir les statistiques détaillées. Veuillez noter que la fonction d'enregistrement est activée pour les modules Documents, Projets, CRM  et Personnes ainsi que pour les paramètres de portail. ",
+  "AuditDownloadText": "Vous pouvez télécharger le rapport des données accessibles lors d'une période sélectionnée pour voir les statistiques détaillées.",
   "AuditTrailNav": "Piste d'audit ",
   "AutoBackup": "Sauvegarde automatique",
   "AutoBackupDescription": "Utilisez cette option pour la sauvegarde automatique des données du portail.",

@@ -8,7 +8,7 @@
   "AddTrustedDomain": "Aggiungi dominio affidabile",
   "Admins": "Amministratori",
   "AllDomains": "Tutti i domini",
-  "AuditDownloadText": "È possibile scaricare il report per i dati disponibili durante il periodo di archiviazione selezionato per visualizzare le statistiche dettagliate. Si noti che la registrazione è attualmente abilitata per i moduli Documenti, Progetti, CRM e Contatti, nonché per le impostazioni del portale.",
+  "AuditDownloadText": "È possibile scaricare il report per i dati disponibili durante il periodo di archiviazione selezionato per visualizzare le statistiche dettagliate.",
   "AuditTrailNav": "Registro di controllo",
   "AutoBackup": "Backup automatico",
   "AutoBackupDescription": "Usa questa opzione per un backup automatico dei dati del portale.",
