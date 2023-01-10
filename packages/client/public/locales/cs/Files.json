@@ -6,7 +6,6 @@
   "ByAuthor": "Autor",
   "ByCreation": "Vytvořeno",
   "ByLastModified": "Upraveno",
-  "CommonEmptyContainerDescription": "Sekce 'Sdílené' obsahuje soubory, které správce portálu sdílí se všemi uživateli. Soubory v ní mohou vytvářet pouze správci portálu. Uživatelům lze v rámci sekce udělit plný přístup k určité složce. Tímto způsobem budou moci vytvářet/nahrávat soubory právě v této složce.  ",
   "ContainsSpecCharacter": "Název nesmí obsahovat žádný z následujících znaků: *+:\"<>?|/",
   "Convert": "Konvertovat",
   "CopyItem": "<strong>{{title}}</strong> zkopírováno",
