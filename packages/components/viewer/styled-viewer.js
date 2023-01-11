@@ -57,6 +57,9 @@ const StyledViewerContainer = styled.div`
     top: 13px;
     right: 12px;
     height: 17px;
+    &:hover {
+      background-color: transparent;
+    }
     svg {
       path {
         fill: ${(props) => props.theme.mediaViewer.iconColor};
