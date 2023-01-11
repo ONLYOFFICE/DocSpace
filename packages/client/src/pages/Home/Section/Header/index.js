@@ -18,6 +18,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -658,7 +659,6 @@ class SectionHeaderContent extends React.Component {
     } = this.props;
 
     const menuItems = this.getMenuItems();
-    const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
     return (
@@ -677,9 +677,7 @@ class SectionHeaderContent extends React.Component {
               />
             ) : (
               <div className="header-container">
-                {isLoading ? (
-                  <Loaders.SectionHeader />
-                ) : (
+                {
                   <Navigation
                     sectionWidth={context.sectionWidth}
                     showText={showText}
@@ -716,7 +714,7 @@ class SectionHeaderContent extends React.Component {
                     isEmptyPage={isEmptyPage}
                     isRoom={isRoom}
                   />
-                )}
+                }
               </div>
             )}
           </StyledContainer>
@@ -919,5 +917,9 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(withRouter(observer(SectionHeaderContent)))
+  ])(
+    withLoader(withRouter(observer(SectionHeaderContent)))(
+      <Loaders.SectionHeader />
+    )
+  )
 );
