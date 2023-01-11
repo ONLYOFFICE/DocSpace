@@ -1,2 +1,2 @@
-export { default as RadioButtonIcon } from "./radiobutton.react.svg";
-export { default as RadioButtonIconChecked } from "./radiobutton.checked.react.svg";
+export { default as RadioButtonIcon } from "../../../../public/images/radiobutton.react.svg";
+export { default as RadioButtonIconChecked } from "../../../../public/images/radiobutton.checked.react.svg";

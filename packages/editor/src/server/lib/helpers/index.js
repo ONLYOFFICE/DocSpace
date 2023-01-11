@@ -17,9 +17,9 @@ import {
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
-import PresentationIcoUrl from "../../../../public/images/presentation.ico";
-import SpreadSheetIcoUrl from "../../../../public/images/spreadsheet.ico";
-import TextIcoUrl from "../../../../public/images/text.ico";
+import PresentationIcoUrl from "../../../../../../public/images/presentation.ico";
+import SpreadSheetIcoUrl from "../../../../../../public/images/spreadsheet.ico";
+import TextIcoUrl from "../../../../../../public/images/text.ico";
 
 export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;

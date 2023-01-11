@@ -1,1 +1,1 @@
-export { default as ArrowContentIcon } from "./arrow.content.react.svg";
+export { default as ArrowContentIcon } from "../../../../public/images/arrow.content.react.svg";
