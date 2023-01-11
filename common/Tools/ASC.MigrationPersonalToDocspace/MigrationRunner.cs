@@ -142,6 +142,7 @@ public class MigrationRunner
 
         var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
+        Console.WriteLine("set tenant status");
         tenant.LastModified = DateTime.UtcNow;
         tenant.StatusChanged = DateTime.UtcNow;
         if (tenant.OwnerId == Guid.Empty)
@@ -149,6 +150,7 @@ public class MigrationRunner
             using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
             var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
             tenant.OwnerId = user.Id;
+            Console.WriteLine($"set ownerId {user.Id}");
         }
         dbContextTenant.Tenants.Update(tenant);
         dbContextTenant.SaveChanges();
