@@ -1,19 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import MediaDeleteIcon from "../../../../public/images/media.delete.react.svg";
-import MediaDownloadIcon from "../../../../public/images/media.download.react.svg";
 import ImageViewer from "./sub-components/image-viewer";
-import VideoViewer from "./sub-components/video-viewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
-import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { isMobileOnly } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
-const StyledVideoViewer = styled(VideoViewer)`
-  z-index: 301;
-`;
 const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
@@ -31,14 +24,6 @@ const ButtonKeys = Object.freeze({
   del: 46,
   s: 83,
 });
-
-const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-  ${commonIconsStyles}
-`;
-
-const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
-  ${commonIconsStyles}
-`;
 
 let ctrIsPressed = false;
 class MediaViewer extends React.Component {
@@ -135,6 +120,7 @@ class MediaViewer extends React.Component {
       visible === prevProps.visible &&
       playlistPos !== prevState.playlistPos
     ) {
+      this.updateHammer();
       if (ext === ".tiff" || ext === ".tif") {
         this.getTiffDataURL(src);
       } else {
@@ -516,10 +502,6 @@ class MediaViewer extends React.Component {
     };
 
     const getContextModel = () => {
-      const onOpenContext = (contextFunction, file, t) => {
-        contextFunction();
-      };
-
       const desktopModel = [
         {
           key: "download",
@@ -534,11 +516,6 @@ class MediaViewer extends React.Component {
           icon: "images/rename.react.svg",
           onClick: () => onClickRename(targetFile),
           disabled: false,
-        },
-
-        {
-          key: "separator0",
-          isSeparator: true,
         },
         {
           key: "delete",

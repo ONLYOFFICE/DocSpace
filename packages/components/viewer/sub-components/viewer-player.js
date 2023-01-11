@@ -260,7 +260,6 @@ const StyledVideoControls = styled.div`
   .volume-container {
     display: flex;
     margin-left: 10px;
-    ${(props) => console.log(props)}
 
     .icon-play {
       margin-right: 12px;
