@@ -19,7 +19,6 @@ import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
-import EmptyScreenFormeUrl from "PUBLIC_DIR/images/empty_screen_forme.png";
 import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
 import EmptyScreenFavoritesUrl from "PUBLIC_DIR/images/empty_screen_favorites.svg?url";
 import EmptyScreenRecentUrl from "PUBLIC_DIR/images/empty_screen_recent.svg?url";
