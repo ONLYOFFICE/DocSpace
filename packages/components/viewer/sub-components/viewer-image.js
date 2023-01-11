@@ -383,9 +383,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
           transition: "all .5s ease-out",
           top: props.top - navMenuHeight / 2,
           left: props.left,
-          transform: `rotate(${-90}deg) scaleX(${props.scaleX}) scaleY(${
-            props.scaleY
-          })`,
+          transform: `rotate(${props.rotate}deg) scaleX(${props.scaleX}) scaleY(${props.scaleY})`,
           willChange: "transform",
         }}
       />
