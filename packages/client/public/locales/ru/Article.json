@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Добавить аккаунт Box",
-  "ButtonAddDropBox": "Добавить аккаунт Dropbox",
-  "ButtonAddGoogle": "Добавить аккаунт Google",
-  "ButtonAddNextcloud": "Добавить аккаунт Nextcloud",
-  "ButtonAddSkyDrive": "Добавить аккаунт OneDrive",
   "FilesUploaded": "Файлы загружены",
   "Upload": "Загрузить",
   "UploadFiles": "Загрузить файлы",

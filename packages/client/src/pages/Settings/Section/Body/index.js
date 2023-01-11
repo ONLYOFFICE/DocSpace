@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import Error520 from "client/Error520";
-//import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -45,17 +44,7 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
     content: <AdminSettings t={t} />,
   };
 
-  // const connectedCloud = {
-  //   id: "connected-clouds",
-  //   name: t("ThirdPartySettings"),
-  //   content: <ConnectClouds />,
-  // };
-
   const data = [adminSettings, commonSettings];
-
-  // if (enableThirdParty) {
-  //   data.push(connectedCloud);
-  // }
 
   const onSelect = useCallback(
     (e) => {

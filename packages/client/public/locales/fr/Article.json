@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Ajouter un compte Box",
-  "ButtonAddDropBox": "Ajouter un compte Dropbox",
-  "ButtonAddGoogle": "Ajouter un compte Google",
-  "ButtonAddNextcloud": "Ajouter un compte Nextcloud",
-  "ButtonAddSkyDrive": "Ajouter un compte OneDrive",
   "FilesUploaded": "Fichiers chargés",
   "Upload": "Télécharger",
   "UploadFiles": "Télécharger les fichiers",
