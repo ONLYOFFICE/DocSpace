@@ -88,6 +88,8 @@ const StyledVideoPlayer = styled.div`
   }
 
   .dropdown-speed {
+    ${(props) =>
+      props.audio === "true" ? "margin-right: -10px" : "margin-right: 0px"};
     padding-right: 10px;
     position: relative;
     display: inline-block;
@@ -257,16 +259,24 @@ const StyledVideoControls = styled.div`
   );
   .volume-container {
     display: flex;
-    margin-left: 6px;
+    margin-left: 10px;
+    ${(props) => console.log(props)}
 
     .icon-play {
       margin-right: 12px;
+    }
+    .is-audio {
+      margin-right: 1px;
     }
     svg {
       &:hover {
         cursor: pointer;
       }
     }
+  }
+
+  .volume-container-audio {
+    margin-left: -2px;
   }
 
   ${isMobileOnly &&
@@ -786,7 +796,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
     }px)`,
   };
   return (
-    <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
+    <StyledVideoPlayer
+      id="video-playerId"
+      isFullScreen={state.isFullScreen}
+      audio={isAudio.toString()}
+    >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {isMobileOnly && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
@@ -871,12 +885,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               ref={actionRef}
             >
               <div className="controll-box">
-                <div
-                  className="controller volume-container video-play"
-                  onClick={togglePlay}
-                >
+                <div className="controller video-play" onClick={togglePlay}>
                   {!state.isPlaying ? (
-                    <IconPlay className="icon-play" />
+                    <IconPlay
+                      className={isAudio ? "icon-play is-audio" : "icon-play"}
+                    />
                   ) : (
                     <IconStop className="icon-stop" />
                   )}
@@ -887,7 +900,13 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 </StyledDuration>
 
                 {!isMobileOnly && (
-                  <div className="volume-container">
+                  <div
+                    className={
+                      isAudio
+                        ? "volume-container volume-container-audio"
+                        : "volume-container"
+                    }
+                  >
                     {state.isMuted ? (
                       <IconVolumeMuted onClick={toggleVolumeMute} />
                     ) : state.volume >= 50 ? (
