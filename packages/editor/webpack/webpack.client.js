@@ -87,10 +87,6 @@ const clientConfig = {
       patterns: [
         {
           context: path.resolve(process.cwd(), "public"),
-          from: "images/**/*.*",
-        },
-        {
-          context: path.resolve(process.cwd(), "public"),
           from: "locales/**/*.json",
           transform: minifyJson,
         },
