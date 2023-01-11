@@ -1,10 +1,11 @@
-import LoginPageSvgUrl from "../../client/public/images/logo/loginpage.svg?url";
-import DarkLoginPageSvgUrl from "../../client/public/images/logo/dark_loginpage.svg?url";
-import LeftMenuSvgUrl from "../../client/public/images/logo/leftmenu.svg?url";
-import DocseditorSvgUrl from "../../client/public/images/logo/docseditor.svg?url";
-import LightSmallSvgUrl from "../../client/public/images/logo/lightsmall.svg?url";
-import DocsEditoRembedSvgUrl from "../../client/public/images/logo/docseditorembed.svg?url";
-import DarkLightSmallSvgUrl from "../../client/public/images/logo/dark_lightsmall.svg?url";
+import LoginPageSvgUrl from "../../../public/images/logo/loginpage.svg?url";
+import DarkLoginPageSvgUrl from "../../../public/images/logo/dark_loginpage.svg?url";
+import LeftMenuSvgUrl from "../../../public/images/logo/leftmenu.svg?url";
+import DocseditorSvgUrl from "../../../public/images/logo/docseditor.svg?url";
+import LightSmallSvgUrl from "../../../public/images/logo/lightsmall.svg?url";
+import DocsEditoRembedSvgUrl from "../../../public/images/logo/docseditorembed.svg?url";
+import DarkLightSmallSvgUrl from "../../../public/images/logo/dark_lightsmall.svg?url";
+import FaviconIcoUrl from "../../../public/images/logo/favicon.ico?url";
 
 import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
 import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
@@ -181,16 +182,14 @@ export const getUserRole = (user) => {
   else return "manager";
 };
 
-
-
 export const combineUrl = combineUrlFunc;
 
 export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-      "=([^;]*)"
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -365,7 +364,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -500,6 +499,7 @@ export const getLogoFromPath = (path) => {
   if (!path || path.indexOf("images/logo/") === -1) return path;
 
   const name = path.split("/").pop();
+
   switch (name) {
     case "aboutpage.svg":
     case "loginpage.svg":
@@ -518,6 +518,8 @@ export const getLogoFromPath = (path) => {
       return LightSmallSvgUrl;
     case "docseditorembed.svg":
       return DocsEditoRembedSvgUrl;
+    case "favicon.ico":
+      return FaviconIcoUrl;
     default:
       break;
   }

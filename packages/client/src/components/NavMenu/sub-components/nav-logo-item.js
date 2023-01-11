@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import { getLogoFromPath } from "SRC_DIR/helpers/utils";
+import { getLogoFromPath } from "@docspace/common/utils";
 const LogoItem = styled.div`
   display: flex;
   min-width: 48px;

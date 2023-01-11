@@ -1,5 +1,5 @@
 import React from "react";
-import { getLogoFromPath } from "SRC_DIR/helpers/utils";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";

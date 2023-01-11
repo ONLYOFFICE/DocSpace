@@ -5,15 +5,6 @@ import { useEffect, useState } from "react";
 import { CategoryType } from "./constants";
 import { FolderType } from "@docspace/common/constants";
 
-import LoginPageSvgUrl from "ASSETS_DIR/images/logo/loginpage.svg?url";
-import DarkLoginPageSvgUrl from "ASSETS_DIR/images/logo/dark_loginpage.svg?url";
-import LeftMenuSvgUrl from "ASSETS_DIR/images/logo/leftmenu.svg?url";
-import DocseditorSvgUrl from "ASSETS_DIR/images/logo/docseditor.svg?url";
-import LightSmallSvgUrl from "ASSETS_DIR/images/logo/lightsmall.svg?url";
-import DocsEditoRembedSvgUrl from "ASSETS_DIR/images/logo/docseditorembed.svg?url";
-import DarkLightSmallSvgUrl from "ASSETS_DIR/images/logo/dark_lightsmall.svg?url";
-import FaviconIcoUrl from "ASSETS_DIR/images/logo/favicon.ico?url";
-
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
   const { organizationName } = settingsStore;
@@ -201,36 +192,4 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
     default:
       throw new Error("Unknown category type");
   }
-};
-
-export const getLogoFromPath = (path) => {
-  if (!path || path.indexOf("images/logo/") === -1) return path;
-
-  const name = path.split("/").pop();
-
-  switch (name) {
-    case "aboutpage.svg":
-    case "loginpage.svg":
-      return LoginPageSvgUrl;
-    case "dark_loginpage.svg":
-      return DarkLoginPageSvgUrl;
-    case "leftmenu.svg":
-    case "dark_leftmenu.svg":
-      return LeftMenuSvgUrl;
-    case "dark_aboutpage.svg":
-    case "dark_lightsmall.svg":
-      return DarkLightSmallSvgUrl;
-    case "docseditor.svg":
-      return DocseditorSvgUrl;
-    case "lightsmall.svg":
-      return LightSmallSvgUrl;
-    case "docseditorembed.svg":
-      return DocsEditoRembedSvgUrl;
-    case "favicon.ico":
-      return FaviconIcoUrl;
-    default:
-      break;
-  }
-
-  return path;
 };
