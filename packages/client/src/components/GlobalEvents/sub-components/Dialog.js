@@ -79,12 +79,14 @@ const Dialog = ({
 
   const onCancelAction = useCallback((e) => {
     onCancel && onCancel(e);
+    setIsChecked(false);
   }, []);
 
   const onCloseAction = useCallback(
     (e) => {
       if (!isDisabled) {
         onClose && onClose(e);
+        setIsChecked(false);
       }
     },
     [isDisabled]
@@ -157,7 +159,7 @@ const Dialog = ({
 
 export default inject(({ auth, filesStore }) => {
   const { folderFormValidation } = auth.settingsStore;
-  const { setIsChecked, isChecked } = filesStore;
+  const { isChecked, setIsChecked } = filesStore;
 
-  return { folderFormValidation, setIsChecked, isChecked };
+  return { folderFormValidation, isChecked, setIsChecked };
 })(observer(Dialog));

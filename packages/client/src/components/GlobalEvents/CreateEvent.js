@@ -81,7 +81,6 @@ const CreateEvent = ({
       setEventDialogVisible(true);
     } else {
       onSave(null, defaultName);
-      setIsChecked(true);
     }
 
     return () => {
@@ -95,6 +94,7 @@ const CreateEvent = ({
 
     const isMakeFormFromFile = templateId ? true : false;
 
+    setIsChecked(isChecked);
     setIsLoading(true);
 
     let newValue = value;
