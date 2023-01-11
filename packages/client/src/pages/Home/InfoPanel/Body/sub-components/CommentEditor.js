@@ -1,4 +1,4 @@
-﻿import PencilReactSvgUrl from "ASSETS_DIR/images/pencil.react.svg?url";
+﻿import PencilReactSvgUrl from "PUBLIC_DIR/images/pencil.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject } from "mobx-react";
 import { ReactSVG } from "react-svg";
@@ -72,10 +72,7 @@ const CommentEditor = ({
           )}
           {changeVersionHistoryAbility && (
             <div className="edit_toggle" onClick={onOpenEditor}>
-              <ReactSVG
-                className="edit_toggle-icon"
-                src={PencilReactSvgUrl}
-              />
+              <ReactSVG className="edit_toggle-icon" src={PencilReactSvgUrl} />
               <div className="property-content edit_toggle-text">
                 {comment ? t("Common:EditButton") : t("Common:AddButton")}
               </div>

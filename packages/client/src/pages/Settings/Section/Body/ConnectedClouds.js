@@ -1,5 +1,5 @@
-﻿import FolderReactSvgUrl from "ASSETS_DIR/images/folder.react.svg?url";
-import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+﻿import FolderReactSvgUrl from "PUBLIC_DIR/images/folder.react.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";

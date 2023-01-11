@@ -1,4 +1,4 @@
-﻿import EmptyScreenInfoPanelPngUrl from "ASSETS_DIR/images/empty_screen_info_panel.png";
+﻿import EmptyScreenInfoPanelPngUrl from "PUBLIC_DIR/images/empty_screen_info_panel.png";
 import React from "react";
 
 import { StyledNoItemContainer } from "../../styles/noItem";

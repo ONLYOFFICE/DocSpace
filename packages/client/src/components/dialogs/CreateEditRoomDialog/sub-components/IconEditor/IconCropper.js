@@ -1,5 +1,5 @@
-﻿import IconCropperGridSvgUrl from "ASSETS_DIR/images/icon-cropper-grid.svg?url";
-import TrashReactSvgUrl from "ASSETS_DIR/images/trash.react.svg?url";
+﻿import IconCropperGridSvgUrl from "PUBLIC_DIR/images/icon-cropper-grid.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
 import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
 import React, { useState, useEffect } from "react";
@@ -162,10 +162,7 @@ const IconCropper = ({
   return (
     <StyledIconCropper className="icon_cropper">
       <div className="icon_cropper-crop_area">
-        <ReactSVG
-          className="icon_cropper-grid"
-          src={IconCropperGridSvgUrl}
-        />
+        <ReactSVG className="icon_cropper-grid" src={IconCropperGridSvgUrl} />
         <AvatarEditor
           ref={setEditorRef}
           image={uploadedFile}

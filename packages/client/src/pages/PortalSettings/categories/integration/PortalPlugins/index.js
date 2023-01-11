@@ -1,4 +1,4 @@
-﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
+﻿import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import React from "react";
 import styled from "styled-components";

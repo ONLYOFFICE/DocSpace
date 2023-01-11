@@ -1,4 +1,4 @@
-﻿import SecuritySvgUrl from "ASSETS_DIR/images/security.svg?url";
+﻿import SecuritySvgUrl from "PUBLIC_DIR/images/security.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";

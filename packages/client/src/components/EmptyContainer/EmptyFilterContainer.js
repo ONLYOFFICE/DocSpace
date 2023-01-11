@@ -1,4 +1,4 @@
-﻿import EmptyScreenFilterAltSvgUrl from "ASSETS_DIR/images/empty_screen_filter_alt.svg?url";
+﻿import EmptyScreenFilterAltSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";

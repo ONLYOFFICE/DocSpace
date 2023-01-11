@@ -1,4 +1,4 @@
-﻿import DarkGeneralPngUrl from "ASSETS_DIR/images/dark_general.png";
+﻿import DarkGeneralPngUrl from "PUBLIC_DIR/images/dark_general.png";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";

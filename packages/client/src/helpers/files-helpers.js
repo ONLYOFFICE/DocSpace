@@ -1,4 +1,4 @@
-﻿import CatalogQuestionReactSvgUrl from "ASSETS_DIR/images/catalog.question.react.svg?url";
+﻿import CatalogQuestionReactSvgUrl from "PUBLIC_DIR/images/catalog.question.react.svg?url";
 import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";

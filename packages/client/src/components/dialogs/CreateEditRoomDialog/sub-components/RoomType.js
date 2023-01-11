@@ -1,4 +1,4 @@
-﻿import ArrowReactSvgUrl from "ASSETS_DIR/images/arrow.react.svg?url";
+﻿import ArrowReactSvgUrl from "PUBLIC_DIR/images/arrow.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";

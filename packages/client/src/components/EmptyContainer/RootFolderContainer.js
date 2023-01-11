@@ -1,7 +1,7 @@
-﻿import PrivacySvgUrl from "ASSETS_DIR/images/privacy.svg?url";
-import PersonSvgUrl from "ASSETS_DIR/images/person.svg?url";
-import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
-import EmptyFolderImageSvgUrl from "ASSETS_DIR/images/empty-folder-image.svg?url";
+﻿import PrivacySvgUrl from "PUBLIC_DIR/images/privacy.svg?url";
+import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
@@ -17,15 +17,15 @@ import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
-import PlusIcon from "ASSETS_DIR/images/plus.react.svg";
-import EmptyScreenPersonalUrl from "ASSETS_DIR/images/empty_screen_personal.svg?url";
-import EmptyScreenFormeUrl from "ASSETS_DIR/images/empty_screen_forme.png";
-import EmptyScreenCorporateSvgUrl from "ASSETS_DIR/images/empty_screen_corporate.svg?url";
-import EmptyScreenFavoritesUrl from "ASSETS_DIR/images/empty_screen_favorites.svg?url";
-import EmptyScreenRecentUrl from "ASSETS_DIR/images/empty_screen_recent.svg?url";
-import EmptyScreenPrivacyUrl from "ASSETS_DIR/images/empty_screen_privacy.png";
-import EmptyScreenTrashSvgUrl from "ASSETS_DIR/images/empty_screen_trash.svg?url";
-import EmptyScreenArchiveUrl from "ASSETS_DIR/images/empty_screen_archive.svg?url";
+import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
+import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
+import EmptyScreenFormeUrl from "PUBLIC_DIR/images/empty_screen_forme.png";
+import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import EmptyScreenFavoritesUrl from "PUBLIC_DIR/images/empty_screen_favorites.svg?url";
+import EmptyScreenRecentUrl from "PUBLIC_DIR/images/empty_screen_recent.svg?url";
+import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.png";
+import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url";
+import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {

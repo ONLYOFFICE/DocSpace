@@ -1,4 +1,4 @@
-﻿import SecuritySvgUrl from "ASSETS_DIR/images/security.svg?url";
+﻿import SecuritySvgUrl from "PUBLIC_DIR/images/security.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { Trans } from "react-i18next";

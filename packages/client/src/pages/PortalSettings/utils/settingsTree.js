@@ -1,11 +1,11 @@
 ﻿import CommonSettingsSvgUrl from "PUBLIC_DIR/images/common-settings.svg?url";
 import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
-import SecuritySettingsIconUrl from "ASSETS_DIR/images/security-settings.svg?url";
-import IntegrationSettingsIconUrl from "ASSETS_DIR/images/integration-settings.svg?url";
-import PaymentIconUrl from "ASSETS_DIR/images/payment.react.svg?url";
-import DataManagementIconUrl from "ASSETS_DIR/images/data-management.react.svg?url";
-import RestoreIconUrl from "ASSETS_DIR/images/restore.react.svg?url";
-import TrashIconUrl from "ASSETS_DIR/images/trash.react.svg?url";
+import SecuritySettingsIconUrl from "PUBLIC_DIR/images/security-settings.svg?url";
+import IntegrationSettingsIconUrl from "PUBLIC_DIR/images/integration-settings.svg?url";
+import PaymentIconUrl from "PUBLIC_DIR/images/payment.react.svg?url";
+import DataManagementIconUrl from "PUBLIC_DIR/images/data-management.react.svg?url";
+import RestoreIconUrl from "PUBLIC_DIR/images/restore.react.svg?url";
+import TrashIconUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 /**
  * Array for generation current settings tree.
  */

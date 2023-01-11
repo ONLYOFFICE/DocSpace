@@ -5,20 +5,20 @@ import {
   EmployeeStatus,
 } from "@docspace/common/constants";
 
-import PhoneIconUrl from "ASSETS_DIR/images/phone.react.svg?url";
-import MobileIconUrl from "ASSETS_DIR/images/mobile.react.svg?url";
-import GmailIconUrl from "ASSETS_DIR/images/gmail.react.svg?url";
-import SkypeIconUrl from "ASSETS_DIR/images/skype.react.svg?url";
-import MsnIconUrl from "ASSETS_DIR/images/windows.msn.react.svg?url";
-import IcqIconUrl from "ASSETS_DIR/images/icq.react.svg?url";
-import JabberIconUrl from "ASSETS_DIR/images/jabber.react.svg?url";
-import AimIconUrl from "ASSETS_DIR/images/aim.react.svg?url";
+import PhoneIconUrl from "PUBLIC_DIR/images/phone.react.svg?url";
+import MobileIconUrl from "PUBLIC_DIR/images/mobile.react.svg?url";
+import GmailIconUrl from "PUBLIC_DIR/images/gmail.react.svg?url";
+import SkypeIconUrl from "PUBLIC_DIR/images/skype.react.svg?url";
+import MsnIconUrl from "PUBLIC_DIR/images/windows.msn.react.svg?url";
+import IcqIconUrl from "PUBLIC_DIR/images/icq.react.svg?url";
+import JabberIconUrl from "PUBLIC_DIR/images/jabber.react.svg?url";
+import AimIconUrl from "PUBLIC_DIR/images/aim.react.svg?url";
 import FacebookIconUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
-import LivejournalIconUrl from "ASSETS_DIR/images/livejournal.react.svg?url";
-import MyspaceIconUrl from "ASSETS_DIR/images/myspace.react.svg?url";
+import LivejournalIconUrl from "PUBLIC_DIR/images/livejournal.react.svg?url";
+import MyspaceIconUrl from "PUBLIC_DIR/images/myspace.react.svg?url";
 import TwitterIconUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
-import BloggerIconUrl from "ASSETS_DIR/images/blogger.react.svg?url";
-import YahooIconUrl from "ASSETS_DIR/images/yahoo.react.svg?url";
+import BloggerIconUrl from "PUBLIC_DIR/images/blogger.react.svg?url";
+import YahooIconUrl from "PUBLIC_DIR/images/yahoo.react.svg?url";
 
 export const getUserStatus = (user) => {
   if (

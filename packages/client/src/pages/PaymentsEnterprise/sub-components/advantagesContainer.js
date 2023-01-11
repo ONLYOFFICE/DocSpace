@@ -1,9 +1,9 @@
-﻿import PaymentsEnterpriseSvgUrl from "ASSETS_DIR/images/payments_enterprise.svg?url";
-import PaymentsEnterpriseCubesSvgUrl from "ASSETS_DIR/images/payments_enterprise_cubes.svg?url";
-import PaymentsEnterpriseLockSvgUrl from "ASSETS_DIR/images/payments_enterprise_lock.svg?url";
-import PaymentsEnterpriseSmartphoneSvgUrl from "ASSETS_DIR/images/payments_enterprise_smartphone.svg?url";
-import PaymentsEnterpriseUpdateSvgUrl from "ASSETS_DIR/images/payments_enterprise_update.svg?url";
-import PaymentsEnterpriseHelpSvgUrl from "ASSETS_DIR/images/payments_enterprise_help.svg?url";
+﻿import PaymentsEnterpriseSvgUrl from "PUBLIC_DIR/images/payments_enterprise.svg?url";
+import PaymentsEnterpriseCubesSvgUrl from "PUBLIC_DIR/images/payments_enterprise_cubes.svg?url";
+import PaymentsEnterpriseLockSvgUrl from "PUBLIC_DIR/images/payments_enterprise_lock.svg?url";
+import PaymentsEnterpriseSmartphoneSvgUrl from "PUBLIC_DIR/images/payments_enterprise_smartphone.svg?url";
+import PaymentsEnterpriseUpdateSvgUrl from "PUBLIC_DIR/images/payments_enterprise_update.svg?url";
+import PaymentsEnterpriseHelpSvgUrl from "PUBLIC_DIR/images/payments_enterprise_help.svg?url";
 import React from "react";
 import styled from "styled-components";
 

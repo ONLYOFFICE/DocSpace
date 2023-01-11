@@ -1,4 +1,4 @@
-﻿import PanelReactSvgUrl from "ASSETS_DIR/images/panel.react.svg?url";
+﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";

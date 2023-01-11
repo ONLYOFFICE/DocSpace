@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ArrowRightIcon from "ASSETS_DIR/images/arrow.right.react.svg";
+import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 

@@ -1,4 +1,4 @@
-﻿import EmptyFolderImageSvgUrl from "ASSETS_DIR/images/empty-folder-image.svg?url";
+﻿import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import ManageAccessRightsReactSvgUrl from "PUBLIC_DIR/images/manage.access.rights.react.svg?url";
 import React from "react";
 

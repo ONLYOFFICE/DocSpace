@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import DefaultUserPhotoSize32PngUrl from "ASSETS_DIR/images/default_user_photo_size_32-32.png?url";
+import DefaultUserPhotoSize32PngUrl from "PUBLIC_DIR/images/default_user_photo_size_32-32.png?url";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,

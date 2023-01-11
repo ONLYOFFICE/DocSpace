@@ -1,4 +1,4 @@
-﻿import FormGallerySearchReactSvgUrl from "ASSETS_DIR/images/form-gallery-search.react.svg?url";
+﻿import FormGallerySearchReactSvgUrl from "PUBLIC_DIR/images/form-gallery-search.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";

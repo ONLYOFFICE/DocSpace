@@ -3,7 +3,7 @@ import BoxSvgUrl from "PUBLIC_DIR/images/cloud.services.box.react.svg?url";
 import DropboxSvgUrl from "PUBLIC_DIR/images/cloud.services.dropbox.react.svg?url";
 import OnedriveSvgUrl from "PUBLIC_DIR/images/cloud.services.onedrive.react.svg?url";
 import NextcloudSvgUrl from "PUBLIC_DIR/images/cloud.services.nextcloud.react.svg?url";
-import MoreSvgUrl from "ASSETS_DIR/images/services/more.svg?url";
+import MoreSvgUrl from "PUBLIC_DIR/images/services/more.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Link from "@docspace/components/link";

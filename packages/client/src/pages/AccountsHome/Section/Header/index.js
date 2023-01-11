@@ -1,5 +1,5 @@
-﻿import PlusSvgUrl from "ASSETS_DIR/images/plus.svg?url";
-import PanelReactSvgUrl from "ASSETS_DIR/images/panel.react.svg?url";
+﻿import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";

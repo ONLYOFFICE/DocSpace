@@ -1,4 +1,4 @@
-﻿import EmptyScreenPersonSvgUrl from "ASSETS_DIR/images/empty_screen_persons.svg?url";
+﻿import EmptyScreenPersonSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";

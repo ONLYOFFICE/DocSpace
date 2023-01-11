@@ -1,4 +1,4 @@
-﻿import EmptyScreenFormGalleryReactSvgUrl from "ASSETS_DIR/images/empty_screen_form-gallery.react.svg?url";
+﻿import EmptyScreenFormGalleryReactSvgUrl from "PUBLIC_DIR/images/empty_screen_form-gallery.react.svg?url";
 import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";

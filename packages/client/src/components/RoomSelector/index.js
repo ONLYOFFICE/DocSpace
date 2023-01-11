@@ -1,4 +1,4 @@
-﻿import EmptyScreenCorporateSvgUrl from "ASSETS_DIR/images/empty_screen_corporate.svg?url";
+﻿import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 

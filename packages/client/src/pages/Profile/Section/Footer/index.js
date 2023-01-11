@@ -1,5 +1,5 @@
-﻿import RemoveSessionSvgUrl from "ASSETS_DIR/images/remove.session.svg?url";
-import TickSvgUrl from "ASSETS_DIR/images/tick.svg?url";
+﻿import RemoveSessionSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
+import TickSvgUrl from "PUBLIC_DIR/images/tick.svg?url";
 import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
