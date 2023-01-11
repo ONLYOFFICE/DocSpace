@@ -13,7 +13,6 @@ import {
   InvitePanel,
 } from "../panels";
 import {
-  ThirdPartyMoveDialog,
   ConnectDialog,
   DeleteThirdPartyDialog,
   EmptyTrashDialog,
@@ -77,9 +76,6 @@ const Panels = (props) => {
         isCopy={copyPanelVisible}
         isRestore={restoreAllPanelVisible}
       />
-    ),
-    thirdPartyMoveDialogVisible && (
-      <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
     deleteThirdPartyDialogVisible && (

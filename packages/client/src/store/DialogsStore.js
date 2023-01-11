@@ -137,10 +137,6 @@ class DialogsStore {
     this.deleteThirdPartyDialogVisible = deleteThirdPartyDialogVisible;
   };
 
-  setThirdPartyMoveDialogVisible = (thirdPartyMoveDialogVisible) => {
-    this.thirdPartyMoveDialogVisible = thirdPartyMoveDialogVisible;
-  };
-
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;

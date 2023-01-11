@@ -1,5 +1,0 @@
-{
-  "MoveConfirmation": "移动确认",
-  "MoveConfirmationAlert": "您即将从{{provider}}目录中移动元件。在这种情况下，该元件将从您的{{provider}}账户中被删除。如果这些元件之前被共享的话，他人不再能访问它们。",
-  "MoveFileOption": "移动文件"
-}

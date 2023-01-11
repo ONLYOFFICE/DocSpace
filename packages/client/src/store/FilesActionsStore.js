@@ -1236,18 +1236,6 @@ class FilesActionStore {
       isCopy,
     };
 
-    const {
-      setThirdPartyMoveDialogVisible,
-      setDestFolderId,
-    } = this.dialogsStore;
-
-    const provider = selection.find((x) => x.providerKey);
-
-    if (provider && providerKey !== provider.providerKey) {
-      setDestFolderId(destFolderId);
-      return setThirdPartyMoveDialogVisible(true);
-    }
-
     for (let item of selection) {
       if (!item.isFolder) {
         fileIds.push(item.id);

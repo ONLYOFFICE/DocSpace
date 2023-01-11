@@ -4,7 +4,6 @@ import DownloadDialog from "./DownloadDialog";
 import ConvertDialog from "./ConvertDialog";
 import DeleteThirdPartyDialog from "./DeleteThirdPartyDialog";
 import ConnectDialog from "./ConnectDialog";
-import ThirdPartyMoveDialog from "./ThirdPartyMoveDialog";
 import ConflictResolveDialog from "./ConflictResolveDialog";
 import ChangeEmailDialog from "./ChangeEmailDialog";
 import ChangePasswordDialog from "./ChangePasswordDialog";
@@ -36,7 +35,6 @@ export {
   ConvertDialog,
   DeleteThirdPartyDialog,
   ConnectDialog,
-  ThirdPartyMoveDialog,
   ConflictResolveDialog,
   ChangeEmailDialog,
   ChangePasswordDialog,
