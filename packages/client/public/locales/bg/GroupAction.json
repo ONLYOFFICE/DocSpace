@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Добавяне на ръководител на отдел",
-  "CustomNewDepartment": "{{groupCaption}} (създаване)",
-  "GroupAction": "Групово действие",
-  "SearchAddedMembers": "Търси добавени членове",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' беше запазено успешно"
-}
