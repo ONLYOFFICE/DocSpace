@@ -486,6 +486,27 @@ const ViewerBase = (props) => {
     };
   }
 
+  function handleResetZoom() {
+    const [imgWidth, imgHeight] = getImgWidthHeight(
+      state.imageWidth,
+      state.imageHeight
+    );
+
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        width: imgWidth,
+        height: imgHeight,
+        scaleX: 1,
+        scaleY: 1,
+        top: state.top,
+        left: state.left,
+        loading: false,
+        percent: 100,
+        withTransition: true,
+      })
+    );
+  }
+
   function handleZoom(targetX, targetY, direct, scale) {
     let imgCenterXY = getImageCenterXY();
     let diffX = targetX - imgCenterXY.x;
@@ -542,8 +563,8 @@ const ViewerBase = (props) => {
     dispatch(
       createAction(ACTION_TYPES.update, {
         width: width,
-        scaleX: scaleX,
-        scaleY: scaleY,
+        scaleX: scaleX > 0 ? scaleX : 0,
+        scaleY: scaleY > 0 ? scaleY : 0,
         height: height,
         top: top,
         left: left,
@@ -552,6 +573,8 @@ const ViewerBase = (props) => {
         withTransition: true,
       })
     );
+
+    return [scaleX, scaleY];
   }
 
   let currentTop = (containerSize.current.height - state.height) / 2;
@@ -618,6 +641,7 @@ const ViewerBase = (props) => {
         opacity={state.opacity}
         getImageCenterXY={getImageCenterXY}
         handleZoom={handleZoom}
+        handleResetZoom={handleResetZoom}
         height={state.height}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}

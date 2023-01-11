@@ -6,6 +6,15 @@ export const UP = "Up";
 export const DOWN = "Down";
 export type HandledEvents = React.MouseEvent | TouchEvent | MouseEvent;
 export type Vector2 = [number, number];
+export type Tuple<T> = [T, T];
+export type Point = { x: number; y: number }
+export type ZoomEvent = {
+  event: TouchEvent,
+  scale: number,
+  middleSegment: Point,
+}
+
+
 export type SwipeDirections =
   | typeof LEFT
   | typeof RIGHT
@@ -52,10 +61,13 @@ export interface SwipeEventData {
    * Velocity per axis - [ deltaX/time, deltaY/time ]
    */
   vxvy: Vector2;
+
+  piching: boolean;
 }
 
 export type SwipeCallback = (eventData: SwipeEventData) => void;
 export type TapCallback = ({ event }: { event: HandledEvents }) => void;
+export type ZoomCallback = (event: ZoomEvent) => void;
 
 export type SwipeableDirectionCallbacks = {
   /**
@@ -95,7 +107,7 @@ export type SwipeableCallbacks = SwipeableDirectionCallbacks & {
   onTap: TapCallback;
 
   // TODO: add zoom functionality
-  onZoom: TapCallback;
+  onZoom: ZoomCallback;
   /**
    * Called for `touchstart` and `mousedown`.
    */
@@ -161,6 +173,9 @@ export type SwipeableState = {
   start: number;
   swiping: boolean;
   xy: Vector2;
+  startPosition?: Tuple<Point>;
+  lastDistance: number;
+  pinching: boolean;
 };
 
 export type StateSetter = (
