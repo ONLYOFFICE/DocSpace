@@ -5,7 +5,7 @@ import CloudServicesOnedriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.o
 import CloudServicesKdriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.kdrive.react.svg?url";
 import CloudServicesYandexReactSvgUrl from "PUBLIC_DIR/images/cloud.services.yandex.react.svg?url";
 import CloudServicesNextcloudReactSvgUrl from "PUBLIC_DIR/images/cloud.services.nextcloud.react.svg?url";
-import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import CloudServicesWebdavReactSvgUrl from "PUBLIC_DIR/images/cloud.services.webdav.react.svg?url";
 import authStore from "@docspace/common/store/AuthStore";
 import { FileType, RoomsType } from "@docspace/common/constants";

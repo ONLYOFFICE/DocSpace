@@ -6,7 +6,7 @@ import FormGalleryReactSvgUrl from "ASSETS_DIR/images/form.gallery.react.svg?url
 import ActionsDocumentsReactSvgUrl from "ASSETS_DIR/images/actions.documents.react.svg?url";
 import SpreadsheetReactSvgUrl from "ASSETS_DIR/images/spreadsheet.react.svg?url";
 import ActionsPresentationReactSvgUrl from "ASSETS_DIR/images/actions.presentation.react.svg?url";
-import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";

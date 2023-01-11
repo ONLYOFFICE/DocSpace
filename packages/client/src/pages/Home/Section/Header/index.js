@@ -6,7 +6,7 @@ import FormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
 import FormBlankReactSvgUrl from "ASSETS_DIR/images/form.blank.react.svg?url";
 import FormFileReactSvgUrl from "ASSETS_DIR/images/form.file.react.svg?url";
 import FormGalleryReactSvgUrl from "ASSETS_DIR/images/form.gallery.react.svg?url";
-import CatalogFolderReactSvgUrl from "ASSETS_DIR/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import ActionsUploadReactSvgUrl from "ASSETS_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "ASSETS_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "ASSETS_DIR/images/reconnect.svg?url";

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CrossIconReactSvgUrl from "../../../public/images/cross.react.svg?url";
+import CrossIconReactSvgUrl from "../../../../public/images/cross.react.svg?url";
 import styled, { css } from "styled-components";
 import { smallTablet } from "../../utils/device";
 import IconButton from "../../icon-button";
