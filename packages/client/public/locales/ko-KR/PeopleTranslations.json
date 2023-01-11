@@ -9,7 +9,6 @@
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "비밀번호 변경",
   "PendingTitle": "보류 중",
-  "ReassignData": "데이터 재할당",
   "RemoveData": "개인 데이터 삭제",
   "SendInviteAgain": "초대장 다시 보내기",
   "SuccessChangeUserStatus": "사용자 상태가 성공적으로 변경되었습니다",
