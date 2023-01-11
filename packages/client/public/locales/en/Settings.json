@@ -1,5 +1,5 @@
 {
-  "Accent": "Accent",
+  "AccentColor": "Accent",
   "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
   "AccessRightsAllUsers": "All {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
@@ -42,7 +42,7 @@
   "BrandingSubtitle": "Use this option to provide on-brand experience to users.",
   "BreakpointWarningText": "This section is only available in desktop version",
   "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{sectionName}}</1> settings",
-  "Buttons": "Buttons",
+  "ButtonsColor": "Buttons",
   "ByApp": "By authenticator app",
   "BySms": "By sms",
   "ChangeLogoButton": "Change Logo",

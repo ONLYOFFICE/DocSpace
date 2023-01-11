@@ -67442,7 +67442,7 @@
 						<name>Settings</name>
 						<children>
 							<concept_node>
-								<name>Accent</name>
+								<name>AccentColor</name>
 								<description/>
 								<comment/>
 								<default_text/>
@@ -72430,7 +72430,7 @@
 								</translations>
 							</concept_node>
 							<concept_node>
-								<name>Buttons</name>
+								<name>ButtonsColor</name>
 								<description/>
 								<comment/>
 								<default_text/>
