@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import MediaDeleteIcon from "../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../public/images/media.download.react.svg";
+import CrossReactSvgUrl from "../../../../public/images/cross.react.svg?url";
 import ImageViewer from "./sub-components/image-viewer";
 import VideoViewer from "./sub-components/video-viewer";
 import MediaScrollButton from "./sub-components/scroll-button";
@@ -525,11 +526,7 @@ class MediaViewer extends React.Component {
               onClick={onClose && onClose}
               className="mediaPlayerClose"
             >
-              <IconButton
-                iconName="/static/images/cross.react.svg"
-                size={25}
-                isClickable
-              />
+              <IconButton iconName={CrossReactSvgUrl} size={25} isClickable />
             </ControlBtn>
           </div>
         </div>

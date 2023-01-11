@@ -69,7 +69,6 @@ const Login: React.FC<ILoginProps> = ({
     return (
       <div className="buttonWrapper">
         <SocialButton
-          //iconName="/static/images/sso.react.svg"
           IconComponent={SSOIcon}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
@@ -188,7 +187,6 @@ const Login: React.FC<ILoginProps> = ({
       id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      //className="with-background-pattern"
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>

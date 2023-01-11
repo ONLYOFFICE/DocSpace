@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import PencilReactSvgUrl from "../../../public/images/pencil.react.svg?url";
 
 import { GuestIcon, AdministratorIcon, OwnerIcon } from "./svg";
 import {
@@ -96,7 +97,7 @@ const Avatar = (props) => {
         <EditContainer>
           <IconButton
             className="edit_icon"
-            iconName="images/pencil.react.svg"
+            iconName={PencilReactSvgUrl}
             onClick={editAction}
             size={16}
           />

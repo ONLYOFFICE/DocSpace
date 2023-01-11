@@ -8,6 +8,7 @@ import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 import ToggleInfoPanelButton from "./toggle-infopanel-btn";
 import PlusButton from "./plus-btn";
+import VerticalDotsReactSvgUrl from "../../../../../public/images/vertical-dots.react.svg?url";
 
 const StyledContainer = styled.div`
   margin-left: 20px;
@@ -129,7 +130,7 @@ const ControlButtons = ({
               zIndex={402}
               className="option-button"
               directionX="right"
-              iconName="/static/images/vertical-dots.react.svg"
+              iconName={VerticalDotsReactSvgUrl}
               size={15}
               isFill
               getData={getContextOptionsFolder}

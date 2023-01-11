@@ -13,6 +13,8 @@ import {
   StyledUserName,
   StyledProfileWrapper,
 } from "../styled-article";
+import VerticalDotsReactSvgUrl from "../../../../../public/images/vertical-dots.react.svg?url";
+import DefaultUserPhotoPngUrl from "../../../../../public/images/default_user_photo_size_82-82.png?url";
 
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions, onProfileClick } = props;
@@ -45,9 +47,7 @@ const ArticleProfile = (props) => {
   const model = getActions(t);
   const username = user.displayName.split(" ");
 
-  const userAvatar = user.hasAvatar
-    ? user.avatar
-    : "/images/default_user_photo_size_82-82.png";
+  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoPngUrl;
 
   return (
     <StyledProfileWrapper showText={showText}>
@@ -92,7 +92,7 @@ const ArticleProfile = (props) => {
               zIndex={402}
               directionX="left"
               directionY="top"
-              iconName="/static/images/vertical-dots.react.svg"
+              iconName={VerticalDotsReactSvgUrl}
               size={32}
               isFill
               getData={() => getActions(t)}

@@ -2,6 +2,8 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 
+import ClearReactSvgUrl from "../../../../../public/images/clear.react.svg?url";
+
 import Loaders from "../../Loaders";
 
 import Backdrop from "@docspace/components/backdrop";
@@ -374,7 +376,7 @@ const FilterBlock = ({
             {showFooter && (
               <IconButton
                 id="filter_search-options-clear"
-                iconName="/static/images/clear.react.svg"
+                iconName={ClearReactSvgUrl}
                 isFill={true}
                 onClick={onClearFilter}
                 size={17}
