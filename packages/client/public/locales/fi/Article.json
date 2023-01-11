@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Liitä Box-tili",
-  "ButtonAddDropBox": "Liitä Dropbox-tili",
-  "ButtonAddGoogle": "Liitä Google-tili",
-  "ButtonAddNextcloud": "Liitä Nextcloud-tili",
-  "ButtonAddSkyDrive": "Liitä OneDrive-tili",
   "FilesUploaded": "Tiedostoja lisätty",
   "Upload": "Lataa",
   "UploadFiles": "Lataa tiedostoja",

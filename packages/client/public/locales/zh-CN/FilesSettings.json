@@ -1,8 +1,5 @@
 {
-  "Clouds": "云",
-  "ConnectAdminDescription": "如需成功连接，请在<1>此页面</1>中输入必要信息。",
   "ConnectCloud": "连接云端",
-  "ConnectDescriptionText": "您还没有连接任何第三方的云",
   "ConnectEmpty": "未找到任何文件",
   "ConnectMessage": "您可以将以下服务连接到您的ONLYOFFICE账户。它们将在 \"我的文档 \"文件夹中显示，而且，您将能够在同一个工作区编辑并保存所有的文件。",
   "ConnextOtherAccount": "其他账户",
@@ -15,6 +12,5 @@
   "OriginalCopy": "以原始格式保存文件副本",
   "StoringFileVersion": "保存文件版本",
   "ThirdPartyBtn": "允许用户连接第三方存储",
-  "ThirdPartySettings": "已连接云",
   "UpdateOrCreate": "更新具有相同名称的现有文件版本。或创建文件副本。"
 }

@@ -1,8 +1,5 @@
 {
-  "Clouds": "Bulutlar",
-  "ConnectAdminDescription": "Başarılı bağlantı için gerekli verileri <1>bu sayfaya</1> girin.",
   "ConnectCloud": "Hesabı bağla",
-  "ConnectDescriptionText": "Henüz herhangi bir üçüncü taraf bulut bağlamadınız.",
   "ConnectEmpty": "Burada bir şey yok",
   "ConnectMessage": "Aşağıdaki hesapları ONLYOFFICE Dökümanlara bağlayabilirsiniz. Bunlar 'Belgerim' bölümünde görüntülenecektir ve portalınızda tek bir yerde hepsini düzenleme ve kaydetme şansına sahip olacaksınız.",
   "ConnextOtherAccount": "Diğer hesap",
@@ -15,6 +12,5 @@
   "OriginalCopy": "Dosya kopyasını da orijinal türünde kaydet",
   "StoringFileVersion": "Dosya sürümleri depolanıyor",
   "ThirdPartyBtn": "Kullanıcıların üçüncü taraf depolarına bağlanmasına izin ver",
-  "ThirdPartySettings": "Bağlı bulutlar",
   "UpdateOrCreate": "Aynı isme sahip mevcut dosyanın dosya sürümünü güncelleyin. Aksi halde, dosyanın bir kopyası oluşturulacaktır."
 }

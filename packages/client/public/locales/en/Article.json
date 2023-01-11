@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Add Box account",
-  "ButtonAddDropBox": "Add DropBox account",
-  "ButtonAddGoogle": "Add Google account",
-  "ButtonAddNextcloud": "Add Nextcloud account",
-  "ButtonAddSkyDrive": "Add OneDrive account",
   "FilesUploaded": "Files uploaded",
   "Upload": "Upload",
   "UploadFiles": "Upload files",

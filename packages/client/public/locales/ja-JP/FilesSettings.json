@@ -1,8 +1,5 @@
 {
-  "Clouds": "クラウド",
-  "ConnectAdminDescription": "接続を成功させるためには、<1>このページ</1>に必要なデータを入力してください。",
   "ConnectCloud": "クラウドを接続する",
-  "ConnectDescriptionText": "サードパーティーのクラウドをまだ接続していない",
   "ConnectEmpty": "ここには何もありません",
   "ConnectMessage": "ONLYOFFICEアカウントには、以下のサービスを接続することができます。これらは「私の文書」フォルダに表示され、一つのワークスペースですべてのドキュメントを編集・保存することができるようになります。",
   "ConnextOtherAccount": "その他のアカウント",
@@ -15,6 +12,5 @@
   "OriginalCopy": "ピーしたファイルをオリジナルのフォーマットでも保存する",
   "StoringFileVersion": "ファイルバージョンの保存",
   "ThirdPartyBtn": "ユーザーが第三者機関のストレージに接続できる",
-  "ThirdPartySettings": "接続されたクラウド",
   "UpdateOrCreate": "同じ名前の既存のファイルに対して、ファイルのバージョンを更新します。それ以外の場合は、ファイルのコピーが作成されます。"
 }

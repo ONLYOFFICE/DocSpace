@@ -164,10 +164,7 @@ const ServiceItem = (props) => {
 const ThirdPartyDialog = (props) => {
   const {
     t,
-    theme,
-    i18n,
     tReady,
-    isAdmin,
     googleConnectItem,
     boxConnectItem,
     dropboxConnectItem,
@@ -185,6 +182,8 @@ const ThirdPartyDialog = (props) => {
     setConnectItem,
     getThirdPartyIcon,
   } = props;
+
+  debugger;
 
   const onClose = () => {
     setThirdPartyDialogVisible(false);
@@ -242,14 +241,6 @@ const ThirdPartyDialog = (props) => {
       <ModalDialog.Body>
         <Text as="div" className="connect-cloud-message" noSelect>
           {t("ConnectMessage")}
-          {/* {isAdmin && (
-            <Trans t={t} i18nKey="ConnectAdminDescription" ns="FilesSettings">
-              For successful connection enter the necessary data at
-              <Link isHovered href="/settings/integration/third-party-services">
-                this page
-              </Link>
-            </Trans>
-          )} */}
         </Text>
         <div className="service-block">
           {googleConnectItem && (
