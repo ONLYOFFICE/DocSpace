@@ -443,16 +443,6 @@ public class FileSecurity : IFileSecurity
                         EntryId = entry.Id,
                         EntryType = entry.FileEntryType,
                         Share = FileShare.Read,
-                        Subject = WebItemManager.DocumentsProductID,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
-                        Owner = entry.RootCreateBy
-                    },
-                    new FileShareRecord
-                    {
-                        Level = int.MaxValue,
-                        EntryId = entry.Id,
-                        EntryType = entry.FileEntryType,
-                        Share = FileShare.Read,
                         Subject = Constants.GroupAdmin.ID,
                         TenantId = _tenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootCreateBy
