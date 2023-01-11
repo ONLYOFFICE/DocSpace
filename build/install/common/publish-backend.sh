@@ -79,6 +79,7 @@ services_name_backend+=(ASC.Web.Studio)
 services_name_backend+=(ASC.Data.Backup.BackgroundTasks)
 services_name_backend+=(ASC.ClearEvents)
 services_name_backend+=(ASC.ApiSystem)
+services_name_backend+=(ASC.Web.HealthChecks.UI)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
