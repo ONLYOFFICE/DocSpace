@@ -129,11 +129,13 @@ class ArticleBodyContent extends React.Component {
       selectedKeys: [CurrentSettingsCategoryKey],
     };
   }
-
+  componentDidMount() {
+    const { tReady, setIsLoadedArticleBody } = this.props;
+    if (tReady) setIsLoadedArticleBody(true);
+  }
   componentDidUpdate(prevProps, prevState) {
     const { tReady, setIsLoadedArticleBody } = this.props;
-
-    if (tReady) setIsLoadedArticleBody(true);
+    if (prevProps.tReady !== tReady) setIsLoadedArticleBody(true);
 
     if (prevProps.location.pathname !== this.props.location.pathname) {
       if (this.props.location.pathname.includes("payments")) {
