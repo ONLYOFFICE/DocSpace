@@ -1,8 +1,5 @@
 {
-  "ConnectCloud": "クラウドを接続する",
   "ConnectEmpty": "ここには何もありません",
-  "ConnectMessage": "ONLYOFFICEアカウントには、以下のサービスを接続することができます。これらは「私の文書」フォルダに表示され、一つのワークスペースですべてのドキュメントを編集・保存することができるようになります。",
-  "ConnextOtherAccount": "その他のアカウント",
   "DisplayFavorites": "お気に入りの表示",
   "DisplayNotification": "ゴミ箱への移動時に通知を表示",
   "DisplayRecent": "最近の表示",

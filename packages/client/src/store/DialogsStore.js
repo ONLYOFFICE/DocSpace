@@ -16,11 +16,10 @@ class DialogsStore {
   copyPanelVisible = false;
   deleteThirdPartyDialogVisible = false;
   connectDialogVisible = false;
-  thirdPartyMoveDialogVisible = false;
+  thirdPartyMoveDialogVisible = true;
   deleteDialogVisible = false;
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
-  thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
@@ -172,10 +171,6 @@ class DialogsStore {
     this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
-  setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
-    this.thirdPartyDialogVisible = thirdPartyDialogVisible;
-  };
-
   setDestFolderId = (destFolderId) => {
     this.destFolderId = destFolderId;
   };
@@ -323,7 +318,6 @@ class DialogsStore {
       this.deleteDialogVisible ||
       this.downloadDialogVisible ||
       this.emptyTrashDialogVisible ||
-      this.thirdPartyDialogVisible ||
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||

@@ -1,9 +1,6 @@
 {
   "AdditionalSections": "Additional sections",
-  "ConnectCloud": "Connect cloud",
   "ConnectEmpty": "There's nothing here",
-  "ConnectMessage": "You can connect the following services to your DocSpace account. They will be displayed in the 'My Documents' folder and you will be able to edit and save all your documents in a single space. ",
-  "ConnextOtherAccount": "Other accounts",
   "DisplayFavorites": "Display Favorites",
   "DisplayNotification": "Display notification when moving items to Trash",
   "DisplayRecent": "Display Recent",

@@ -1,8 +1,5 @@
 {
-  "ConnectCloud": "连接云端",
   "ConnectEmpty": "未找到任何文件",
-  "ConnectMessage": "您可以将以下服务连接到您的ONLYOFFICE账户。它们将在 \"我的文档 \"文件夹中显示，而且，您将能够在同一个工作区编辑并保存所有的文件。",
-  "ConnextOtherAccount": "其他账户",
   "DisplayFavorites": "显示收藏",
   "DisplayNotification": "将项目移至垃圾箱时展示消息通知",
   "DisplayRecent": "显示最近",
