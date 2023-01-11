@@ -1,5 +1,5 @@
-/* global document */
 import * as React from "react";
+
 import {
   AttachTouch,
   SwipeDirections,
@@ -22,21 +22,6 @@ import {
   Tuple,
   Point,
 } from "./types";
-
-export {
-  LEFT,
-  RIGHT,
-  UP,
-  DOWN,
-  SwipeDirections,
-  SwipeEventData,
-  SwipeableDirectionCallbacks,
-  SwipeCallback,
-  TapCallback,
-  SwipeableHandlers,
-  SwipeableProps,
-  Vector2,
-};
 
 const defaultProps: ConfigurationOptions = {
   delta: 10,
@@ -434,7 +419,7 @@ function updateTransientState(
   return state;
 }
 
-export function useSwipeable(options: SwipeableProps): SwipeableHandlers {
+export function useSwipeable(options) {
   const { trackMouse } = options;
   const transientState = React.useRef({ ...initialState });
   const transientProps = React.useRef<SwipeablePropsWithDefaultOptions>({

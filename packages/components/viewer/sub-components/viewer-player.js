@@ -42,14 +42,6 @@ const StyledVideoPlayer = styled.div`
   #videoPlayer:focus-visible {
     outline: none;
   }
-
-  .mobile-details {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.8) 100%
-    );
-  }
   .video-wrapper {
     position: fixed;
     z-index: 305;
@@ -96,6 +88,9 @@ const StyledVideoPlayer = styled.div`
   }
 
   .dropdown-speed {
+    ${(props) =>
+      props.audio === "true" ? "margin-right: -10px" : "margin-right: 0px"};
+    padding-right: 10px;
     position: relative;
     display: inline-block;
   }
@@ -165,14 +160,14 @@ const StyledVideoPlayer = styled.div`
     align-items: center;
     position: fixed;
     right: 0;
-    bottom: 77px;
+    bottom: 79px;
     left: 0;
     padding: 0 28px;
     height: 30px;
 
     ${isMobileOnly &&
     css`
-      bottom: 44px;
+      bottom: 46px;
       padding: 0 16px;
     `}
 
@@ -190,8 +185,8 @@ const StyledVideoActions = styled.div`
     left: 0;
     right: 0;
     justify-content: space-between;
-    padding-left: 29px;
-    padding-right: 19px;
+    padding-left: 20px;
+    padding-right: 30px;
     display: flex;
     align-items: center;
 
@@ -207,6 +202,10 @@ const StyledVideoActions = styled.div`
     }
   }
 
+  .mobile-actions {
+    padding: 2px 6px;
+  }
+
   .controller {
     display: flex;
     justify-content: center;
@@ -217,11 +216,26 @@ const StyledVideoActions = styled.div`
       cursor: pointer;
     }
   }
+
+  .context-menu-icon {
+    padding-left: 19px;
+    padding-bottom: 3px;
+    width: 18px;
+    height: 20px;
+  }
+
+  .fullscreen-button {
+    padding-bottom: 2px;
+  }
 `;
 
 const StyledDuration = styled.div`
   padding-left: 10px;
-  padding-right: 14px;
+  padding-right: 0px;
+  ${isMobileOnly &&
+  css`
+    padding-left: 0px;
+  `}
   width: 102px;
   color: #fff;
   user-select: none;
@@ -245,12 +259,23 @@ const StyledVideoControls = styled.div`
   );
   .volume-container {
     display: flex;
+    margin-left: 10px;
 
+    .icon-play {
+      margin-right: 12px;
+    }
+    .is-audio {
+      margin-right: 1px;
+    }
     svg {
       &:hover {
         cursor: pointer;
       }
     }
+  }
+
+  .volume-container-audio {
+    margin-left: -2px;
   }
 
   ${isMobileOnly &&
@@ -260,11 +285,11 @@ const StyledVideoControls = styled.div`
   `}
 
   .volume-wrapper {
-    width: 100px;
+    width: 123px;
     height: 28px;
     display: flex;
     align-items: center;
-    padding-left: 15px;
+    padding-left: 9px;
 
     &:hover {
       input[type="range"]::-webkit-slider-thumb {
@@ -310,10 +335,15 @@ export default function ViewerPlayer(props) {
     onMaskClick,
     displayUI,
     isAudio,
+    isVideo,
     audioIcon,
     playlist,
     playlistPos,
   } = props;
+
+  const localStorageVolume = localStorage.getItem("player-volume");
+  const stateVolume =
+    localStorageVolume !== null ? Number(localStorageVolume) : 100;
 
   const initialState = {
     width: 0,
@@ -330,7 +360,7 @@ export default function ViewerPlayer(props) {
     volumeSelection: false,
     speedState: 1,
     isOpenContext: false,
-    volume: 100,
+    volume: stateVolume,
     size: "0%",
     opacity: 1,
     deltaY: 0,
@@ -357,9 +387,11 @@ export default function ViewerPlayer(props) {
 
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
+  const actionRef = React.useRef(null);
+  const mobileProgressRef = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const [currentVolume, setCurrentVolume] = React.useState(100);
+  const [currentVolume, setCurrentVolume] = React.useState(stateVolume);
   const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
   const handlers = useSwipeable({
     onSwiping: (e) => {
@@ -438,6 +470,8 @@ export default function ViewerPlayer(props) {
 
     setCurrentVolume(e.target.value);
 
+    localStorage.setItem("player-volume", e.target.value);
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         isMuted: volume ? false : true,
@@ -447,10 +481,22 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleVolumeMute = () => {
+    let volume = null;
+
+    if (!state.isMuted) {
+      localStorage.setItem("player-volume", 0);
+    }
+
+    if (state.isMuted) {
+      volume = currentVolume === 0 ? 100 : currentVolume;
+      videoRef.current.volume = volume / 100;
+      localStorage.setItem("player-volume", volume);
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         isMuted: !state.isMuted,
-        volume: state.volume ? 0 : currentVolume,
+        volume: state.volume ? 0 : volume,
       })
     );
   };
@@ -477,6 +523,27 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleSpeedSelectionMenu = (e) => {
+    if (isMobileOnly) {
+      const speed = ["X0.5", "X1", "X1.5", "X2"];
+
+      const currentSpeed =
+        state.speedState === 1
+          ? 0
+          : state.speedState === 0
+          ? state.speedState + 2
+          : state.speedState === 3
+          ? 1
+          : state.speedState + 1;
+
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          speedState: currentSpeed,
+        })
+      );
+      const videoSpeed = Number(speed[currentSpeed].substring(1));
+      return (videoRef.current.playbackRate = videoSpeed);
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         speedSelection: !state.speedSelection,
@@ -681,10 +748,9 @@ export default function ViewerPlayer(props) {
         duration: lasting,
         progress: 0,
         isPlaying: false,
-        isMuted: false,
         isFullScreen: state.isFullScreen,
         speedSelection: false,
-        volume: state.volume,
+        isOpenContext: false,
         opacity: 1,
         deltaY: 0,
         deltaX: 0,
@@ -721,6 +787,8 @@ export default function ViewerPlayer(props) {
     opacity: `${state.opacity}`,
     width: `${state.width}px`,
     height: `${state.height}px`,
+    top: 0,
+    position: "fixed",
     transform: `
 translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       state.top
@@ -730,19 +798,42 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
     <StyledVideoPlayer
       id="video-playerId"
       isFullScreen={state.isFullScreen}
-      {...handlers}
+      audio={isAudio.toString()}
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {isMobileOnly && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
-        <video
-          onClick={togglePlay}
-          id="videoPlayer"
-          ref={videoRef}
-          src={props.video.src}
-          style={imgStyle}
-          onTimeUpdate={handleOnTimeUpdate}
-        ></video>
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "80px",
+            top: "53px",
+          }}
+          {...handlers}
+        >
+          <video
+            onClick={togglePlay}
+            id="videoPlayer"
+            ref={videoRef}
+            onLoadStart={() => {
+              const volumeNow =
+                localStorageVolume !== null
+                  ? Number(localStorage.getItem("player-volume") / 100)
+                  : 1;
+              videoRef.current.volume = volumeNow;
+              dispatch(
+                createAction(ACTION_TYPES.update, {
+                  isMuted: volumeNow === 0,
+                })
+              );
+            }}
+            src={props.video.src}
+            style={imgStyle}
+            onTimeUpdate={handleOnTimeUpdate}
+          ></video>
+        </div>
         {!state.isPlaying && !isAudio && (
           <div
             className="bg-play"
@@ -763,6 +854,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               top: `${(window.innerHeight - 190) / 2 + state.deltaY}px`,
               position: "fixed",
               opacity: `${state.opacity}`,
+              zIndex: "-1",
             }}
           >
             <img src={audioIcon} />
@@ -772,7 +864,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
 
       {displayUI && (
         <StyledVideoControls>
-          <div className="mobile-video-progress">
+          <div className="mobile-video-progress" ref={mobileProgressRef}>
             <input
               ref={inputRef}
               type="range"
@@ -783,13 +875,23 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             />
           </div>
           <StyledVideoActions>
-            <div className="actions-container">
+            <div
+              className={
+                isMobileOnly
+                  ? "actions-container mobile-actions"
+                  : "actions-container"
+              }
+              ref={actionRef}
+            >
               <div className="controll-box">
-                <div
-                  className="controller volume-container video-play"
-                  onClick={togglePlay}
-                >
-                  {!state.isPlaying ? <IconPlay /> : <IconStop />}
+                <div className="controller video-play" onClick={togglePlay}>
+                  {!state.isPlaying ? (
+                    <IconPlay
+                      className={isAudio ? "icon-play is-audio" : "icon-play"}
+                    />
+                  ) : (
+                    <IconStop className="icon-stop" />
+                  )}
                 </div>
 
                 <StyledDuration>
@@ -797,7 +899,13 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 </StyledDuration>
 
                 {!isMobileOnly && (
-                  <div className="volume-container">
+                  <div
+                    className={
+                      isAudio
+                        ? "volume-container volume-container-audio"
+                        : "volume-container"
+                    }
+                  >
                     {state.isMuted ? (
                       <IconVolumeMuted onClick={toggleVolumeMute} />
                     ) : state.volume >= 50 ? (
@@ -847,11 +955,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
 
                 {!isMobileOnly && (
                   <div
-                    className="controller"
+                    className="controller context-menu-wrapper"
                     onClick={toggleContext}
                     style={{ position: "relative" }}
                   >
-                    <MediaContextMenu />
+                    <MediaContextMenu className="context-menu-icon" />
                     {contextMenu}
                   </div>
                 )}

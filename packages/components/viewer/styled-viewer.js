@@ -54,10 +54,9 @@ const StyledViewerContainer = styled.div`
   }
   .mediaPlayerClose {
     position: fixed;
-    top: 17px;
-    right: 16px;
+    top: 13px;
+    right: 12px;
     height: 17px;
-    width: 17px;
     svg {
       path {
         fill: ${(props) => props.theme.mediaViewer.iconColor};
@@ -82,19 +81,6 @@ const StyledViewer = styled(ViewerBase)`
     width: 100%;
     height: 100%;
     min-height: 400px;
-  }
-
-  .mobile-details {
-    background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.8) 100%
-    );
-    svg {
-      path {
-        fill: #fff;
-      }
-    }
   }
   .react-viewer-inline > .react-viewer-mask,
   .react-viewer-inline > .react-viewer-close,
@@ -214,6 +200,46 @@ const StyledSwitchToolbar = styled.div`
   }
 `;
 
+const StyledMobileDetails = styled.div`
+  z-index: 307;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 53px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+
+  svg {
+    path {
+      fill: #fff;
+    }
+  }
+
+  .mobile-close {
+    position: fixed;
+    left: 21px;
+    top: 22px;
+  }
+
+  .mobile-context {
+    position: fixed;
+    right: 22px;
+    top: 22px;
+  }
+
+  .title {
+    font-weight: 600;
+    margin-top: 6px;
+  }
+`;
+
 const StyledButtonScroll = styled.div`
   z-index: 307;
   position: fixed;
@@ -227,4 +253,5 @@ export {
   StyledViewer,
   StyledSwitchToolbar,
   StyledButtonScroll,
+  StyledMobileDetails,
 };
