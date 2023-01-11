@@ -62,8 +62,7 @@ const RootFolderContainer = (props) => {
     sectionWidth,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
-  const shareDescription = t("SharedEmptyContainerDescription");
-  const commonDescription = t("CommonEmptyContainerDescription");
+
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
   const noFilesHeader = t("NoFilesHereYet");
@@ -143,17 +142,6 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
           imageSrc: EmptyScreenPersonalUrl,
-          buttons: commonButtons,
-        };
-      case FolderType.SHARE:
-        return {
-          descriptionText: shareDescription,
-          imageSrc: EmptyScreenFormeUrl,
-        };
-      case FolderType.COMMON:
-        return {
-          descriptionText: commonDescription,
-          imageSrc: EmptyScreenCorporateSvgUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
@@ -350,11 +338,7 @@ const RootFolderContainer = (props) => {
   return (
     <>
       {showLoader ? (
-        viewAs === "tile" ? (
-          <Loaders.Tiles />
-        ) : (
-          <Loaders.Rows />
-        )
+        <Loaders.EmptyContainerLoader viewAs={viewAs} />
       ) : (
         <EmptyContainer
           headerText={headerText}

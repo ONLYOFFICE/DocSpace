@@ -35,15 +35,7 @@ const PureConnectDialogContainer = (props) => {
     setSaveAfterReconnectOAuth,
     setSelectedThirdPartyAccount,
   } = props;
-  const {
-    corporate,
-    title,
-    link,
-    token,
-    provider_id,
-    provider_key,
-    key,
-  } = item;
+  const { title, link, token, provider_id, provider_key, key } = item;
 
   const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
@@ -52,7 +44,7 @@ const PureConnectDialogContainer = (props) => {
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [customerTitle, setCustomerTitleValue] = useState(folderTitle);
-  const [isCorporate, setMakeShared] = useState(!!corporate);
+
   const [oAuthToken, setToken] = useState(token);
 
   const [isTitleValid, setIsTitleValid] = useState(true);
@@ -91,13 +83,12 @@ const PureConnectDialogContainer = (props) => {
     //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
 
     if (title.match(folderFormValidation)) {
-      toastr.warning(t("Home:ContainsSpecCharacter"));
+      toastr.warning(t("Files:ContainsSpecCharacter"));
     }
     title = title.replace(folderFormValidation, "_");
 
     setCustomerTitleValue(title);
   };
-  const onChangeMakeShared = () => setMakeShared(!isCorporate);
 
   const onClose = useCallback(() => {
     !isLoading && setConnectDialogVisible(false);
@@ -343,15 +334,6 @@ const PureConnectDialogContainer = (props) => {
               onChange={onChangeFolderName}
             />
           </FieldContainer>
-        )}
-
-        {!personal && !(isConnectionViaBackupModule || roomCreation) && (
-          <Checkbox
-            label={t("ConnectMakeShared")}
-            isChecked={isCorporate}
-            onChange={onChangeMakeShared}
-            isDisabled={isLoading}
-          />
         )}
       </ModalDialog.Body>
       <ModalDialog.Footer>

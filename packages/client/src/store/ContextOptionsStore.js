@@ -329,7 +329,7 @@ class ContextOptionsStore {
           )
         : null;
 
-    this.filesStore.openDocEditor(id, providerKey, tab, urlFormation);
+    this.filesStore.openDocEditor(id, providerKey, tab, urlFormation, preview);
   };
 
   isPwa = () => {

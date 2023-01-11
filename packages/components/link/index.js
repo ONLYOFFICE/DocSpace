@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import StyledText from "./styled-link";
 
 // eslint-disable-next-line react/display-name
-const Link = ({ isTextOverflow, children, noHover, ...rest }) => {
+const Link = ({
+  isTextOverflow,
+  children,
+  noHover,
+  enableUserSelect,
+  ...rest
+}) => {
   // console.log("Link render", rest);
 
   return (
@@ -12,6 +18,7 @@ const Link = ({ isTextOverflow, children, noHover, ...rest }) => {
       isTextOverflow={isTextOverflow}
       noHover={noHover}
       truncate={isTextOverflow}
+      enableUserSelect={enableUserSelect}
       {...rest}
     >
       {children}
@@ -57,6 +64,8 @@ Link.propTypes = {
   title: PropTypes.string,
   /** Type of link */
   type: PropTypes.oneOf(["action", "page"]),
+
+  enableUserSelect: PropTypes.bool,
 };
 
 Link.defaultProps = {
@@ -71,6 +80,7 @@ Link.defaultProps = {
   rel: "noopener noreferrer",
   tabIndex: -1,
   type: "page",
+  enableUserSelect: false,
 };
 
 export default Link;

@@ -47,6 +47,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -1142,11 +1143,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var key = $"{module}/{bunch}/{data}";
-        var folderId = await Query(filesDbContext.BunchObjects)
-            .Where(r => r.RightNode == key)
-            .Select(r => r.LeftNode)
-            .FirstOrDefaultAsync()
-            ;
+        var folderId = await InternalGetFolderIDAsync(key);
 
         if (folderId != null)
         {
@@ -1156,6 +1153,15 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var newFolderId = 0;
         if (createIfNotExists)
         {
+            await _semaphore.WaitAsync();
+            folderId = await InternalGetFolderIDAsync(key);
+
+            if (folderId != null)
+            {
+                _semaphore.Release();
+                return Convert.ToInt32(folderId);
+            }
+
             var folder = _serviceProvider.GetService<Folder<int>>();
             folder.ParentId = 0;
             switch (bunch)
@@ -1231,9 +1237,20 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 await tx.CommitAsync(); //Commit changes
             });
+            _semaphore.Release();
         }
 
         return newFolderId;
+    }
+
+    private async Task<string> InternalGetFolderIDAsync(string key)
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        return await Query(filesDbContext.BunchObjects)
+            .Where(r => r.RightNode == key)
+            .Select(r => r.LeftNode)
+            .FirstOrDefaultAsync();
     }
 
     Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)

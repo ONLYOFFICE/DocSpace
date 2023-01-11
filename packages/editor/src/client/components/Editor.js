@@ -46,8 +46,6 @@ const onSDKError = (event) => {
   );
 };
 
-const text = "text";
-const presentation = "presentation";
 let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
@@ -124,7 +122,8 @@ function Editor({
       fileInfo &&
       fileInfo.viewAccessability.WebRestrictedEditing &&
       fileInfo.security.FillForms &&
-      !fileInfo.security.Edit && !config?.document?.isLinkedForMe
+      !fileInfo.security.Edit &&
+      !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
@@ -192,15 +191,15 @@ function Editor({
   const getDefaultFileName = (format) => {
     switch (format) {
       case "docx":
-        return t("NewDocument");
+        return t("Common:NewDocument");
       case "xlsx":
-        return t("NewSpreadsheet");
+        return t("Common:NewSpreadsheet");
       case "pptx":
-        return t("NewPresentation");
+        return t("Common:NewPresentation");
       case "docxf":
-        return t("NewMasterForm");
+        return t("Common:NewMasterForm");
       default:
-        return t("NewFolder");
+        return t("Common:NewFolder");
     }
   };
 
@@ -502,11 +501,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        // if (fileInfo.rootFolderType === FolderType.Rooms) {
-        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        // } else {
-        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        //}
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
@@ -542,10 +541,11 @@ function Editor({
 
       if (successAuth) {
         const documentType = config.documentType;
+
         const fileExt =
-          documentType === text
+          documentType === "word"
             ? "docx"
-            : documentType === presentation
+            : documentType === "slide"
             ? "pptx"
             : "xlsx";
 
@@ -555,7 +555,7 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
-            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
               defaultFileName
             )}`
           );

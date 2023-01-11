@@ -4,34 +4,27 @@ import PropTypes from "prop-types";
 
 import TileLoader from "../TileLoader";
 import RectangleLoader from "../RectangleLoader";
-import { tablet } from "@docspace/components/utils/device";
+import { smallTablet, tablet } from "@docspace/components/utils/device";
 
 const StyledTilesLoader = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  grid-template-columns: repeat(auto-fill, 216px);
   width: 100%;
   grid-gap: 16px;
+
+  @media ${tablet} {
+    grid-template-columns: repeat(auto-fill, 214px);
+  }
+
+  @media ${smallTablet} {
+    grid-template-columns: repeat(auto-fill, minmax(214px, 1fr));
+  }
 `;
 
 const StyledWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 16px;
-
-  .folders {
-    margin-top: -1px;
-    margin-bottom: 12px;
-  }
-
-  .files {
-    margin-top: 25px;
-  }
-
-  margin-right: 3px;
-
-  @media ${tablet} {
-    margin-right: -1px;
-  }
 `;
 
 const TilesLoader = ({
@@ -57,7 +50,7 @@ const TilesLoader = ({
       {foldersCount > 0 ? (
         <RectangleLoader
           height="22px"
-          width="57px"
+          width="78px"
           className="folders"
           animate
           {...rest}
@@ -69,7 +62,7 @@ const TilesLoader = ({
         ? withTitle && (
             <RectangleLoader
               height="22px"
-              width="35px"
+              width="103px"
               className="files"
               animate
               {...rest}

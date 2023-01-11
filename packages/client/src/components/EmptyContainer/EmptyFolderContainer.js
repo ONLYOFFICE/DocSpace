@@ -10,7 +10,7 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
 import { ReactSVG } from "react-svg";
-import LoaderEmptyContainer from "./sub-components/loaderEmptyContainer";
+import Loaders from "@docspace/common/components/Loaders";
 
 const EmptyFolderContainer = ({
   t,
@@ -29,6 +29,7 @@ const EmptyFolderContainer = ({
   folderId,
   tReady,
   isLoadedFetchFiles,
+  viewAs,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -127,7 +128,7 @@ const EmptyFolderContainer = ({
   );
 
   if (!isLoadedFetchFiles || !tReady) {
-    return <LoaderEmptyContainer />;
+    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
   }
 
   return (
@@ -159,6 +160,7 @@ export default inject(
       fetchRooms,
       setIsEmptyPage,
       isLoadedFetchFiles,
+      viewAs,
     } = filesStore;
     const {
       navigationPath,
@@ -195,6 +197,7 @@ export default inject(
       onClickInviteUsers,
       folderId,
       isLoadedFetchFiles,
+      viewAs,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

@@ -5,23 +5,13 @@ import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 
 const StyledIcon = styled.img`
-  /* width: 24px;
-  height: 24px;
-  margin-top: 4px; */
-
   ${(props) =>
     props.isRoom &&
     css`
       border-radius: 6px;
-      outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
-    `}
-
-  ${(props) =>
-    props.isHidden &&
-    css`
-      display: none;
-      border-radius: none;
-      outline: none;
+      outline: 1px solid
+        ${(props) =>
+          props.default ? "none" : props.theme.itemIcon.borderColor};
     `}
 `;
 
@@ -47,20 +37,12 @@ const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
 
   return (
     <>
-      {isRoom && (
-        <StyledIcon
-          className={`react-svg-icon`}
-          isHidden={!showDefaultIcon}
-          isRoom={isRoom}
-          src={defaultRoomIcon}
-        />
-      )}
       <StyledIcon
         className={`react-svg-icon`}
-        isHidden={showDefaultIcon}
         isRoom={isRoom}
-        src={icon}
+        src={showDefaultIcon ? defaultRoomIcon : icon}
         onLoad={onLoadRoomIcon}
+        default={showDefaultIcon}
       />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>

@@ -37,6 +37,7 @@ const TileLoader = ({
         <RectangleLoader
           className="second-content"
           title={title}
+          height="22px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -48,6 +49,8 @@ const TileLoader = ({
         <RectangleLoader
           className="option-button"
           title={title}
+          height="16px"
+          width="16px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -63,9 +66,9 @@ const TileLoader = ({
       <StyledMainContent>
         <RectangleLoader
           className="main-content"
-          height="100%"
           title={title}
-          borderRadius={borderRadius}
+          height="156px"
+          borderRadius={borderRadius ? borderRadius : "0"}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
           backgroundOpacity={backgroundOpacity}
@@ -79,6 +82,7 @@ const TileLoader = ({
         <RectangleLoader
           className="first-content"
           title={title}
+          width="100%"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -87,32 +91,31 @@ const TileLoader = ({
           speed={speed}
           animate={true}
         />
-        <div className="files-second-content">
-          <RectangleLoader
-            className="second-content"
-            title={title}
-            width="100%"
-            borderRadius={borderRadius}
-            backgroundColor={backgroundColor}
-            foregroundColor={foregroundColor}
-            backgroundOpacity={backgroundOpacity}
-            foregroundOpacity={foregroundOpacity}
-            speed={speed}
-            animate={true}
-          />
-          <RectangleLoader
-            className="second-content"
-            title={title}
-            width="100%"
-            borderRadius={borderRadius}
-            backgroundColor={backgroundColor}
-            foregroundColor={foregroundColor}
-            backgroundOpacity={backgroundOpacity}
-            foregroundOpacity={foregroundOpacity}
-            speed={speed}
-            animate={true}
-          />
-        </div>
+        <RectangleLoader
+          className="second-content"
+          title={title}
+          height="22px"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={true}
+        />
+        <RectangleLoader
+          className="option-button"
+          title={title}
+          height="16px"
+          width="16px"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={true}
+        />
       </StyledBottom>
     </StyledTile>
   );

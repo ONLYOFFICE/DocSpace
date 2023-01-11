@@ -2,7 +2,7 @@
   "CopyToClipboard": "Copy the link",
   "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
   "GetShortenLink": "Get shortened link",
-  "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
+  "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your DocSpace.",
   "IndividualInvitation": "Individual invitation",
   "InviteAccountSearchPlaceholder": "Invite people by email",
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",

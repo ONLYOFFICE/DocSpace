@@ -20,8 +20,8 @@ import {
   removeFiles,
   removeShareFiles,
   createFolder,
+  moveToFolder,
 } from "@docspace/common/api/files";
-import { deleteRoom } from "@docspace/common/api/rooms";
 import {
   ConflictResolveType,
   FileAction,
@@ -718,9 +718,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
-      const actions = items.map((item) => deleteRoom(item));
-
-      return Promise.all(actions)
+      return removeFiles(items)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -925,16 +923,16 @@ class FilesActionStore {
   };
 
   setArchiveAction = async (action, folders, t) => {
-    const {
-      addActiveItems,
-      moveRoomToArchive,
-      removeRoomFromArchive,
-      setSelected,
-    } = this.filesStore;
+    const { addActiveItems, setSelected } = this.filesStore;
 
     const { setSelectedFolder } = this.selectedFolderStore;
 
-    const { roomsFolder, isRoomsFolder } = this.treeFoldersStore;
+    const {
+      roomsFolder,
+      isRoomsFolder,
+      archiveRoomsId,
+      myRoomsId,
+    } = this.treeFoldersStore;
     const { setPortalQuota } = this.authStore.currentQuotaStore;
 
     const {
@@ -945,6 +943,11 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
+
+    if (!myRoomsId || !archiveRoomsId) {
+      console.error("Default categories not found");
+      return;
+    }
 
     const items = Array.isArray(folders)
       ? folders.map((x) => (x?.id ? x.id : x))
@@ -960,15 +963,9 @@ class FilesActionStore {
 
     addActiveItems(null, items);
 
-    const actions = [];
-
     switch (action) {
       case "archive":
-        items.forEach((item) => {
-          actions.push(moveRoomToArchive(item));
-        });
-
-        return Promise.all(actions)
+        return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
 
@@ -1007,10 +1004,7 @@ class FilesActionStore {
           })
           .finally(() => clearActiveOperations(null, items));
       case "unarchive":
-        items.forEach((item) => {
-          actions.push(removeRoomFromArchive(item));
-        });
-        return Promise.all(actions)
+        return moveToFolder(myRoomsId, items)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
 
