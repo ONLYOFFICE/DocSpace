@@ -1,10 +1,18 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import Loaders from "@docspace/common/components/Loaders";
+import withLoading from "SRC_DIR/HOCs/withLoading";
+import ArticleHeader from "@docspace/common/components/Article/sub-components/article-header";
+import { withRouter } from "react-router";
+import { inject, observer } from "mobx-react";
 
-const ArticleHeaderContent = () => {
-  const { t } = useTranslation("Common");
-
-  return <>{t("Settings")}</>;
+const ArticleHeaderContent = ({ isLoadedArticleBody }) => {
+  return isLoadedArticleBody ? <ArticleHeader /> : <Loaders.ArticleHeader />;
 };
 
-export default React.memo(ArticleHeaderContent);
+export default inject(({ common }) => {
+  const { isLoadedArticleBody } = common;
+
+  return {
+    isLoadedArticleBody,
+  };
+})(withLoading(withRouter(observer(ArticleHeaderContent))));

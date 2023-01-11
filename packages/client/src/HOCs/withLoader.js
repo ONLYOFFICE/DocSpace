@@ -17,7 +17,6 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isLoaded,
       isLoading,
       viewAs,
-      setIsBurgerLoading,
       isLoadingFilesFind,
     } = props;
     const [inLoad, setInLoad] = useState(false);
@@ -44,14 +43,6 @@ const withLoader = (WrappedComponent) => (Loader) => {
         cleanTimer();
       };
     }, [isLoading]);
-
-    useEffect(() => {
-      if ((!isEditor && firstLoad) || !isLoaded || (isMobile && inLoad)) {
-        setIsBurgerLoading(true);
-      } else {
-        setIsBurgerLoading(false);
-      }
-    }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
 
     return (!isEditor && firstLoad && !isGallery) ||
       !isLoaded ||
@@ -81,14 +72,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isLoadingFilesFind,
       isInit,
     } = filesStore;
-    const { settingsStore } = auth;
-    const { setIsBurgerLoading } = settingsStore;
+
     return {
       firstLoad,
       isLoaded: auth.isLoaded,
       isLoading,
       viewAs,
-      setIsBurgerLoading,
       isLoadingFilesFind,
       isInit,
     };

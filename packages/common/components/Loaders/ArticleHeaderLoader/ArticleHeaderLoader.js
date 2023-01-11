@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import StyledContainer from "./StyledArticleHeader";
 import RectangleLoader from "../RectangleLoader";
-
+import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
+import { isTablet, isMobileOnly } from "react-device-detect";
 const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
@@ -16,12 +17,17 @@ const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
     speed,
     animate,
   } = rest;
+  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+
+  const loaderWidth = width ? width : isTabletView ? "28px" : "211px";
+  const loaderHeight = height ? height : "28px";
+
   return (
     <StyledContainer id={id} className={className} style={style}>
       <RectangleLoader
         title={title}
-        width={width}
-        height={height}
+        width={loaderWidth}
+        height={loaderHeight}
         borderRadius={borderRadius}
         backgroundColor={backgroundColor}
         foregroundColor={foregroundColor}

@@ -10,7 +10,6 @@ import {
 } from "@docspace/components/utils/device";
 
 import SubArticleBackdrop from "./sub-components/article-backdrop";
-import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
@@ -116,9 +115,8 @@ const Article = ({
         articleOpen={articleOpen}
         {...rest}
       >
-        <SubArticleHeader showText={showText}>
-          {articleHeaderContent ? articleHeaderContent.props.children : null}
-        </SubArticleHeader>
+        {articleHeaderContent ? articleHeaderContent.props.children : null}
+
         {articleMainButtonContent &&
         withMainButton &&
         !isMobileOnly &&

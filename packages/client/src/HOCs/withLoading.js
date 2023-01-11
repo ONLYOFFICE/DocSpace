@@ -15,17 +15,7 @@ const withLoading = (WrappedComponent) => {
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
       isLoadedWelcomePageSettings,
-      isBurgerLoading,
-      setIsBurgerLoading,
     } = props;
-
-    useEffect(() => {
-      if (isLoadedArticleBody) {
-        setIsBurgerLoading(false);
-      } else {
-        setIsBurgerLoading(true);
-      }
-    }, [isLoadedArticleBody, setIsBurgerLoading]);
 
     const pathname = location.pathname;
     const index = pathname.lastIndexOf("/");
@@ -40,40 +30,28 @@ const withLoading = (WrappedComponent) => {
       isLoadedDNSSettings &&
       isLoadedPortalRenaming &&
       isLoadedArticleBody &&
-      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedSubmenu;
 
     const isLoadedCustomizationNavbarSettings =
       isLoadedCustomizationNavbar &&
       isLoadedArticleBody &&
-      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedSubmenu;
 
     const isLoadedCustomizationSettingLngTZSettings =
-      isLoadedArticleBody &&
-      !isBurgerLoading &&
-      isLoadedSectionHeader &&
-      isLoadedLngTZSettings;
+      isLoadedArticleBody && isLoadedSectionHeader && isLoadedLngTZSettings;
 
     const isLoadedCustomizationSettingWelcomePageSettings =
       isLoadedArticleBody &&
-      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedWelcomePageSettings;
 
     const isLoadedCustomizationSettingPortalRenaming =
-      isLoadedArticleBody &&
-      !isBurgerLoading &&
-      isLoadedSectionHeader &&
-      isLoadedPortalRenaming;
+      isLoadedArticleBody && isLoadedSectionHeader && isLoadedPortalRenaming;
 
     const isLoadedCustomizationSettingDNSSettings =
-      isLoadedArticleBody &&
-      !isBurgerLoading &&
-      isLoadedSectionHeader &&
-      isLoadedDNSSettings;
+      isLoadedArticleBody && isLoadedSectionHeader && isLoadedDNSSettings;
 
     const isLoadedPage =
       setting === "language-and-time-zone"
@@ -91,7 +69,7 @@ const withLoading = (WrappedComponent) => {
     return <WrappedComponent {...props} isLoadedPage={isLoadedPage} />;
   };
 
-  return inject(({ common, auth }) => {
+  return inject(({ common }) => {
     const {
       isLoadedArticleBody,
       isLoadedSectionHeader,
@@ -104,8 +82,6 @@ const withLoading = (WrappedComponent) => {
       isLoadedWelcomePageSettings,
     } = common;
 
-    const { isBurgerLoading, setIsBurgerLoading } = auth.settingsStore;
-
     return {
       isLoadedArticleBody,
       isLoadedSectionHeader,
@@ -116,8 +92,6 @@ const withLoading = (WrappedComponent) => {
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
       isLoadedWelcomePageSettings,
-      isBurgerLoading,
-      setIsBurgerLoading,
     };
   })(observer(withLoading));
 };

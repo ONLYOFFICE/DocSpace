@@ -1,19 +1,13 @@
 import React from "react";
 import Loaders from "@docspace/common/components/Loaders";
-import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import withLoader from "../../../HOCs/withLoader";
+import ArticleHeader from "@docspace/common/components/Article/sub-components/article-header";
 
-const ArticleHeaderContent = ({ currentModuleName }) => {
-  return <>{currentModuleName}</>;
+const ArticleHeaderContent = () => {
+  return <ArticleHeader />;
 };
 
-export default inject(({ auth }) => {
-  return {
-    currentModuleName: (auth.product && auth.product.title) || "",
-  };
-})(
-  withTranslation([])(
-    withLoader(observer(ArticleHeaderContent))(<Loaders.ArticleHeader />)
-  )
+export default withTranslation([])(
+  withLoader(ArticleHeaderContent)(<Loaders.ArticleHeader />)
 );

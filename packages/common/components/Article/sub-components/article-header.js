@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router";
-import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
@@ -16,7 +15,6 @@ const ArticleHeader = ({
   showText,
   children,
   onClick,
-  isBurgerLoading,
   whiteLabelLogoUrls,
   userTheme,
   ...rest
@@ -38,27 +36,19 @@ const ArticleHeader = ({
   if (isMobileOnly) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
-      {isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="28px" />
-      ) : (
-        <StyledIconBox name="article-burger" showText={showText}>
-          <img src={burgerLogo} onClick={onLogoClick} />
-        </StyledIconBox>
-      )}
+      <StyledIconBox name="article-burger" showText={showText}>
+        <img src={burgerLogo} onClick={onLogoClick} />
+      </StyledIconBox>
 
-      {!isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="211px" />
-      ) : (
-        <StyledHeading showText={showText} size="large">
-          {isTabletView ? (
-            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
-          ) : (
-            <Link to="/">
-              <img className="logo-icon_svg" src={logo} />
-            </Link>
-          )}
-        </StyledHeading>
-      )}
+      <StyledHeading showText={showText} size="large">
+        {isTabletView ? (
+          <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
+        ) : (
+          <Link to="/">
+            <img className="logo-icon_svg" src={logo} />
+          </Link>
+        )}
+      </StyledHeading>
     </StyledArticleHeader>
   );
 };
@@ -73,11 +63,10 @@ ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
   const { settingsStore, userStore } = auth;
-  const { isBurgerLoading, whiteLabelLogoUrls } = settingsStore;
+  const { whiteLabelLogoUrls } = settingsStore;
   const { userTheme } = userStore;
 
   return {
-    isBurgerLoading,
     whiteLabelLogoUrls,
     userTheme,
   };
