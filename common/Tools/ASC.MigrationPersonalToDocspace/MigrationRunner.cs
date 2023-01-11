@@ -139,15 +139,16 @@ public class MigrationRunner
     private void SetTenantActiveaAndTenantOwner(int tenantId)
     {
         using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
 
         var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
         Console.WriteLine("set tenant status");
         tenant.LastModified = DateTime.UtcNow;
         tenant.StatusChanged = DateTime.UtcNow;
-        if (tenant.OwnerId == Guid.Empty)
+        if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
         {
-            using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+            
             var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
             tenant.OwnerId = user.Id;
             Console.WriteLine($"set ownerId {user.Id}");
