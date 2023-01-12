@@ -494,12 +494,9 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation([
-          "People",
-          "Common",
-          "PeopleTranslations",
-          "GroupSelector",
-        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
+        withTranslation(["People", "Common", "PeopleTranslations"])(
+          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
+        )
       )
     )
   )

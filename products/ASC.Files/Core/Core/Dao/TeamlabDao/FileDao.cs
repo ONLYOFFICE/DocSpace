@@ -770,11 +770,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            var fromFolders = Query(filesDbContext.Files)
+            var fromFolders = await Query(filesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.ParentId)
                 .Distinct()
-                .AsAsyncEnumerable();
+                .ToListAsync();
 
             var toDeleteLinks = Query(filesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             filesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
@@ -803,7 +803,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             await tx.CommitAsync();
 
-            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId));
+            foreach (var folderId in fromFolders)
+            {
+                await RecalculateFilesCountAsync(folderId);
+            }
 
             if (deleteFolder)
             {
@@ -814,8 +817,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 await _factoryIndexer.DeleteAsync(toDeleteFile);
             }
-
-            await forEachTask;
         });
     }
 

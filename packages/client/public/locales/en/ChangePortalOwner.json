@@ -1,14 +1,14 @@
 {
   "AppointAdmin": "Appoint administrators",
-  "BackupPortal": "Backup portal data",
-  "ChangeInstruction": "To change the Portal owner please choose the Name of the new Portal owner below.",
-  "ChangeOwner": "Change portal owner",
+  "BackupPortal": "Backup DocSpace data",
+  "ChangeInstruction": "To change the DocSpace owner, please choose the name of the new owner below.",
+  "ChangeOwner": "Change DocSpace owner",
   "ChangeUser": "Change user",
-  "DeactivateOrDeletePortal": "Deactivate or delete portal",
+  "DeactivateOrDeletePortal": "Deactivate or delete DocSpace",
   "DoTheSame": "Do the same as administrators",
-  "ManagePortal": "Manage portal configuration",
+  "ManagePortal": "Manage DocSpace configuration",
   "ManageUser": "Manage user accounts",
-  "NewPortalOwner": "New portal owner",
-  "PortalOwnerCan": "Portal owner can:",
+  "NewPortalOwner": "New DocSpace owner",
+  "PortalOwnerCan": "DocSpace owner can:",
   "SetAccessRights": "Set access rights"
 }

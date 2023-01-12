@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Pridať účet",
   "ArchivingData": "Archivácia údajov",
   "ConnectingAccount": "Pripojenie účtu",
   "Copy": "Kopírovať",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Stiahnite si ONLYOFFICE Documents na Google Play",
   "MobileIos": "Stiahnite si ONLYOFFICE Documents na App Store",
   "MobileLinux": "Stiahnite si ONLYOFFICE Desktop Editors pre Linux",
-  "MobileMac": "Stiahnite si ONLYOFFICE Desktop Editors pre Mac OS",
+  "MobileMac": "Stiahnite si ONLYOFFICE Desktop Editors pre macOS",
   "MobileWin": "Stiahnite si ONLYOFFICE Desktop Editors pre Windows",
   "MoveHere": "Posunúť sem",
   "MoveToOperation": "Presúva sa",

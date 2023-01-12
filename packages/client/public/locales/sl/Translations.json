@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Dodaj račun",
   "ArchivingData": "Arhiviraj podatke",
   "ConnectingAccount": "Povezovanje računa",
   "Copy": "Kopiraj",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Dobi ONLYOFFICE dokumente na Google Play",
   "MobileIos": "Prenesi ONLYOFFICE dokumente na App Store",
   "MobileLinux": "Prenesi ONLYOFFICE namizne urejevalnike za Linux",
-  "MobileMac": "Prenesi ONLYOFFICE namizne urejevalnike za Mac OS",
+  "MobileMac": "Prenesi ONLYOFFICE namizne urejevalnike za macOS",
   "MobileWin": "Prenesi ONLYOFFICE namizne urejevalnike za Windows",
   "MoveHere": "Premakni sem",
   "MoveToOperation": "Premikanje",

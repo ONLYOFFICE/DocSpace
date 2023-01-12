@@ -1,7 +1,7 @@
 {
-  "BackupPortal": "Zálohovať dáta portálu",
+  "BackupPortal": "Zálohovať dáta DocSpace",
   "ChangeOwner": "Priradiť správcov modulu",
   "DeactivateOrDeletePortal": "Nastaviť prístupové práva k modulom",
-  "ManagePortal": "Spravovať konfiguráciu portálu",
+  "ManagePortal": "Spravovať konfiguráciu DocSpace",
   "ManageUser": "Spravovať používateľské účty"
 }
