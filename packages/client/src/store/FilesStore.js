@@ -49,7 +49,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  isChecked = storageCheckbox !== "checked" ? false : true;
+  isChecked = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";

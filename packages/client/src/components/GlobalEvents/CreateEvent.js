@@ -21,7 +21,6 @@ const CreateEvent = ({
   templateId,
   fromTemplate,
   onClose,
-  onCreate,
   setIsLoading,
   createFile,
   createFolder,
@@ -73,7 +72,7 @@ const CreateEvent = ({
     } else {
       setStartValue(defaultName);
     }
-
+    
     setHeaderTitle(defaultName);
 
     if (!isChecked) {
