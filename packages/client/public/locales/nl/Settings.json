@@ -61,7 +61,6 @@
   "ManagementCategorySecurity": "Veiligheid",
   "ManualBackupDescription": "Gebruik deze optie als u alle data opgeslagen op het portaal als bestand wilt ontvangen.",
   "ManualBackupHelp": "<strong>Gegevens back-up</strong> optie wordt gebruikt om een back-up te maken en later te kunnen herstellen naar uw lokale portaal.",
-  "ManualBackupHelpNote": "Selecteer de gegevens opslag type (vergeet niet uw opslag door derden gegevens in te geven om er bij te kunnen).<br/><strong>Opmerking:</strong> u dient eerst uw overige accounts (Dropbox, Box.com, OneDrive of Google Drive) toe te voegen aan de {{organizationName}} Gemeenschappelijke documenten folder voordat u uw back-up op een van deze kunt bewaren.",
   "MaxCopies": "{{copiesCount}} - maximum aantal back-ups",
   "Migration": "Migratie",
   "PasswordMinLenght": "Minimumlengte wachtwoord",

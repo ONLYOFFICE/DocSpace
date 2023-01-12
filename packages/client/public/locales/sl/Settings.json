@@ -61,7 +61,6 @@
   "ManagementCategorySecurity": "Varnost",
   "ManualBackupDescription": "To možnost uporabite, če želite vse podatke na portalu dobiti v datoteki.",
   "ManualBackupHelp": "<strong>Varnostno kopiranje podatkov</strong> možnost je uporabljena za kasnejšnje obnavljanje podatkov na lokalni strežnik.",
-  "ManualBackupHelpNote": "Izberite shrambo podatkov (ne pozabite vnesti podatkov o pomnilniku tretjih oseb, ki bodo omogočali dostop).<br/><strong>Opomba:</strong> Svoj tuj račun morate povezati (Dropbox, Box.com, OneDrive ali Google Drive) z {{organizationName}} Skupno, preden boste tam lahko shranili svoje varnostno kopiranje.",
   "MaxCopies": "{{copiesCount}} - največje število varnostnih kopij",
   "Migration": "Migracija",
   "PasswordMinLenght": "Minimalna dolžina gesla",

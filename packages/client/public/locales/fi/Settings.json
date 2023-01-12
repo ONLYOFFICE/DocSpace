@@ -61,7 +61,6 @@
   "ManagementCategorySecurity": "Turvallisuus",
   "ManualBackupDescription": "Käytä tätä, jos haluat tallettaa sivuston kaiken sisällön tiedostoon.",
   "ManualBackupHelp": "<strong>Varmuuskopiointi</strong> mahdollistaa kaiken portaalin tiedon varmuuskopioinnin sen palauttamiseksi myöhemmin paikalliseen palvelimeen.",
-  "ManualBackupHelpNote": "Valitse tietojen tallennus (älä unohda syöttää kolmannen osapuolen tallennuksen tietojasi, jotta voit käyttää niitä).<br/><strong>Huom:</strong> sinun tulee yhdistää ulkopuolinen tallennuspalvelusi (Dropbox, Box.com, OneDrive tai Google Drive) {{organizationName}} Yleisten asiakirjojen moduuliin ennen kuin voit varmuuskopioida sinne.",
   "MaxCopies": "{{copiesCount}} - varmuuskopioiden enimmäismäärä",
   "Migration": "Migraatio",
   "PasswordMinLenght": "Salasanan vähimmäispituus",

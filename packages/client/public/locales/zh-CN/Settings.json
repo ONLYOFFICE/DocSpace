@@ -63,7 +63,6 @@
   "ManagementCategorySecurity": "安全性",
   "ManualBackupDescription": "如果要将门户中包含的所有数据作为文件获取，请使用此选项。",
   "ManualBackupHelp": "<strong>數據備份</strong>選項用於備份門戶網站數據，以便以後將其還原到本地服務器。",
-  "ManualBackupHelpNote": "選擇數據的存儲（不要忘記輸入第三方存儲詳細信息以便能夠存取它）。<br/><strong>注意：</strong>您需要將第三方帳戶（DropBox，Box.com，OneDrive或Google Drive）連接到{{organizationName}} Common文件夾，然後才能在其中保存備份。",
   "MaxCopies": "{{copiesCount}} - 备份的最大数量",
   "Migration": "迁移",
   "PasswordMinLenght": "密码最短长度",

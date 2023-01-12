@@ -63,7 +63,6 @@
   "ManagementCategorySecurity": "Sicurezza",
   "ManualBackupDescription": "Usa questa opzione se desideri ottenere tutti i dati contenuti nel portale come file.",
   "ManualBackupHelp": "strong>Backup dei dati</strong> si usa per creare una copia di backup dei dati del portale per poter ripristinarla in seguito sul server locale.",
-  "ManualBackupHelpNote": "Seleziona la risorsa di archiviazione per i dati (non dimenticare di inserire i tuoi dati di archivio di terze parti per accedere).<br/><strong>Nota:</strong> prima di poter salvare la copia di backup creata su un account esterno (Dropbox, Box.com, OneDrive o Google Drive) hai bisogno di collegarlo ai Documenti comuni {{organizationName}}.",
   "MaxCopies": "{{copiesCount}} - numero massimo di copie di backup",
   "Migration": "Migrazione",
   "PasswordMinLenght": "Lunghezza della password minima",

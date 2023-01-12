@@ -58,7 +58,6 @@
   "ManagementCategorySecurity": "Segurança",
   "ManualBackupDescription": "Utilize esta opção se quer obter todos os dados do portal num ficheiro.",
   "ManualBackupHelp": "A opção <strong>Cópia de Segurança </strong> é utilizada para guardar os dados do portal e para permitir que estes possam ser posteriormente restaurados para o seu servidor local.",
-  "ManualBackupHelpNote": "Selecione o armazenamento para os dados (não se esqueça de introduzir os dados do armazenamento em terceiros para conseguir aceder ao mesmo).<br/><strong>Nota:</strong> precisa de se ligar à sua conta no armazenamento em terceiros (DropBox, Box.com, OneDrive ou Google Drive) para pasta Comum da {{organizationName}}, assim consegue guardar a sua cópia de segurança lá.",
   "MaxCopies": "{{copiesCount}} - número máximo de cópias de segurança",
   "Migration": "Migração",
   "PasswordMinLenght": "Comprimento mínimo da senha",
