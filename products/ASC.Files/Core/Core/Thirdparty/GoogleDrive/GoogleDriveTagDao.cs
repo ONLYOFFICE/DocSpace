@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class GoogleDriveTagDao : GoogleDriveDaoBase, ITagDao<string>
+internal class GoogleDriveTagDao : GoogleDriveDaoBase, IThirdPartyTagDao
 {
     public GoogleDriveTagDao(
         IServiceProvider serviceProvider,

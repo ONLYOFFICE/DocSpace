@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Scope]
-internal class SharpBoxTagDao : SharpBoxDaoBase, ITagDao<string>
+internal class SharpBoxTagDao : SharpBoxDaoBase, IThirdPartyTagDao
 {
     public SharpBoxTagDao(
         IServiceProvider serviceProvider,

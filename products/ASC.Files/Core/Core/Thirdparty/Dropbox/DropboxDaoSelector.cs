@@ -47,7 +47,7 @@ internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, I
         return base.GetFolderDao<DropboxFolderDao>(id);
     }
 
-    public ITagDao<string> GetTagDao(string id)
+    public IThirdPartyTagDao GetTagDao(string id)
     {
         return base.GetTagDao<DropboxTagDao>(id);
     }

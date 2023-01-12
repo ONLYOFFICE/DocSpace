@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -25,25 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Thirdparty;
-
-internal interface IDaoSelector : IDisposable
+internal interface IThirdPartyTagDao
 {
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao(string id);
-    IFolderDao<string> GetFolderDao(string id);
-    ISecurityDao<string> GetSecurityDao(string id);
-    IThirdPartyTagDao GetTagDao(string id);
-    string ConvertId(string id);
-    string GetIdCode(string id);
-}
-
-internal interface IDaoSelector<T> where T : class, IProviderInfo
-{
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>;
-    IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>;
-    ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>;
-    IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao;
-    string ConvertId(string id);
-    string GetIdCode(string id);
+    IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch);
 }

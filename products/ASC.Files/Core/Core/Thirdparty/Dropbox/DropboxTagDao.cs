@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Dropbox;
 
 [Scope]
-internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
+internal class DropboxTagDao : DropboxDaoBase, IThirdPartyTagDao
 {
     public DropboxTagDao(
         IServiceProvider serviceProvider,

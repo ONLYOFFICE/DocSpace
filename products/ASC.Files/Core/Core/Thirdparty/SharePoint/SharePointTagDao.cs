@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
-internal class SharePointTagDao : SharePointDaoBase, ITagDao<string>
+internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
 {
     public SharePointTagDao(
         IServiceProvider serviceProvider,

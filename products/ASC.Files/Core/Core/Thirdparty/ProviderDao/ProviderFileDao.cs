@@ -33,9 +33,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         SecurityDao<string> securityDao,
-        TagDao<string> tagDao,
         CrossDao crossDao)
-        : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
+        : base(serviceProvider, tenantManager, securityDao, crossDao)
     {
 
     }

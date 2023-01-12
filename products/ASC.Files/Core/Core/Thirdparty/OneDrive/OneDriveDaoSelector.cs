@@ -47,7 +47,7 @@ internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>,
         return base.GetFolderDao<OneDriveFolderDao>(id);
     }
 
-    public ITagDao<string> GetTagDao(string id)
+    public IThirdPartyTagDao GetTagDao(string id)
     {
         return base.GetTagDao<OneDriveTagDao>(id);
     }

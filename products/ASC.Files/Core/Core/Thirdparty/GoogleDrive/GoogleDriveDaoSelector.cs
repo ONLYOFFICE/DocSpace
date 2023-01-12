@@ -47,7 +47,7 @@ internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProvider
         return base.GetFolderDao<GoogleDriveFolderDao>(id);
     }
 
-    public ITagDao<string> GetTagDao(string id)
+    public IThirdPartyTagDao GetTagDao(string id)
     {
         return base.GetTagDao<GoogleDriveTagDao>(id);
     }

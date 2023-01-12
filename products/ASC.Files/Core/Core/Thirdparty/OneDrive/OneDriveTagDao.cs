@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope]
-internal class OneDriveTagDao : OneDriveDaoBase, ITagDao<string>
+internal class OneDriveTagDao : OneDriveDaoBase, IThirdPartyTagDao
 {
     public OneDriveTagDao(
         IServiceProvider serviceProvider,

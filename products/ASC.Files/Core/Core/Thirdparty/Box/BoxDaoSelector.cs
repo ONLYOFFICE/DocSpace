@@ -47,7 +47,7 @@ internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelec
         return base.GetFolderDao<BoxFolderDao>(id);
     }
 
-    public ITagDao<string> GetTagDao(string id)
+    public IThirdPartyTagDao GetTagDao(string id)
     {
         return base.GetTagDao<BoxTagDao>(id);
     }

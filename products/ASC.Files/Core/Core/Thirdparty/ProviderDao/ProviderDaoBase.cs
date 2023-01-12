@@ -61,20 +61,17 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         SecurityDao<string> securityDao,
-        TagDao<string> tagDao,
         CrossDao crossDao)
     {
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _securityDao = securityDao;
-        _tagDao = tagDao;
         _crossDao = crossDao;
     }
 
     protected readonly IServiceProvider _serviceProvider;
     protected readonly TenantManager _tenantManager;
     protected readonly SecurityDao<string> _securityDao;
-    protected readonly TagDao<string> _tagDao;
     protected readonly CrossDao _crossDao;
 
     protected bool IsCrossDao(string id1, string id2)

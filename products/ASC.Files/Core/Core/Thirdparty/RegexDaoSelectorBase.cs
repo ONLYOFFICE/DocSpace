@@ -98,7 +98,7 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
         return GetDao<T1>(id);
     }
 
-    public virtual ITagDao<string> GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ITagDao<string>
+    public virtual IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao
     {
         return GetDao<T1>(id);
     }

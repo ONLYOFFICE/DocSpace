@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope]
-internal class BoxTagDao : BoxDaoBase, ITagDao<string>
+internal class BoxTagDao : BoxDaoBase, IThirdPartyTagDao
 {
     public BoxTagDao(
         IServiceProvider serviceProvider,

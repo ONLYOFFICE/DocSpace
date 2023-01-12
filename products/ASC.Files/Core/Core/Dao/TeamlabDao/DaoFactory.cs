@@ -87,8 +87,8 @@ public static class DaoFactoryExtension
         services.TryAdd<ISecurityDao<int>, SecurityDao<int>>();
         services.TryAdd<ISecurityDao<string>, ProviderSecurityDao>();
 
-        services.TryAdd<ITagDao<int>, TagDao<int>>();
-        services.TryAdd<ITagDao<string>, ProviderTagDao>();
+        services.TryAdd<ITagDao<int>, TagDao>();
+        services.TryAdd<ITagDao<string>, ThirdPartyTagDao>();
 
         services.TryAdd<ILinkDao, LinkDao>();
 
