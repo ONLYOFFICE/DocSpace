@@ -25,7 +25,7 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
+const SectionBodyContent = ({ isErrorSettings, history, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
 
   const setting = window.location.pathname.endsWith("/settings/common")
@@ -63,11 +63,13 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
     [setting, history]
   );
 
+  const showAdminSettings = user.isAdmin || user.isOwner;
+
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {isVisitor ? (
+      {!showAdminSettings ? (
         <CommonSettings t={t} showTitle={true} />
       ) : (
         <Submenu
@@ -84,7 +86,7 @@ export default inject(({ auth, settingsStore }) => {
   const { settingsIsLoaded } = settingsStore;
 
   return {
-    isVisitor: auth.userStore.user.isVisitor,
     settingsIsLoaded,
+    user: auth.userStore.user,
   };
 })(withRouter(observer(SectionBodyContent)));
