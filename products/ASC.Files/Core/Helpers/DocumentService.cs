@@ -258,6 +258,7 @@ public static class DocumentService
         string signatureSecret,
         IHttpClientFactory clientFactory)
     {
+        var cancellationTokenSource = new CancellationTokenSource(Timeout);
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(documentTrackerUrl),
@@ -318,8 +319,8 @@ public static class DocumentService
         request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
         string dataResponse;
-        using (var response = await httpClient.SendAsync(request))
-        using (var stream = await response.Content.ReadAsStreamAsync())
+        using (var response = await httpClient.SendAsync(request, cancellationTokenSource.Token))
+        using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
         {
             if (stream == null)
             {
