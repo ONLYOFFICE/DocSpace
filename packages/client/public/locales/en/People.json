@@ -3,6 +3,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "NotFoundUsers": "No users found",
   "NotFoundUsersDescription": "No people matching your filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
-  "ReassignmentData": "Data reassignment",
   "UserStatus": "Status"
 }

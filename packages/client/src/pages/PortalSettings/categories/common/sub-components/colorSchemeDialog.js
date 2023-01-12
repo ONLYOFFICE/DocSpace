@@ -95,7 +95,7 @@ const ColorSchemeDialog = (props) => {
       <ModalDialog.Body>
         <div>
           <div className="flex relative">
-            <div className="name-color">{t("Settings:Accent")}</div>
+            <div className="name-color">{t("Settings:AccentColor")}</div>
             <div
               id="accent"
               className="modal-add-theme accent-box"
@@ -106,7 +106,7 @@ const ColorSchemeDialog = (props) => {
           </div>
 
           <div className="flex relative">
-            <div className="name-color">{t("Settings:Buttons")}</div>
+            <div className="name-color">{t("Settings:ButtonsColor")}</div>
             <div
               id="buttons"
               className="modal-add-theme buttons-box"

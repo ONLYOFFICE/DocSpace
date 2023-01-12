@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "編集時に中間バージョンを残す",
   "OriginalCopy": "ピーしたファイルをオリジナルのフォーマットでも保存する",
   "StoringFileVersion": "ファイルバージョンの保存",
-  "ThirdPartyBtn": "ユーザーが第三者機関のストレージに接続できる",
   "UpdateOrCreate": "同じ名前の既存のファイルに対して、ファイルのバージョンを更新します。それ以外の場合は、ファイルのコピーが作成されます。"
 }

@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "Manter versões intermediárias ao editar",
   "OriginalCopy": "Salve a cópia do arquivo no formato original também",
   "StoringFileVersion": "Armazenamento de versões de arquivo",
-  "ThirdPartyBtn": "Habilitar configurações de terceiros para usuários",
   "UpdateOrCreate": "Atualizar a versão de arquivo para o arquivo existente com o mesmo nome. Caso contrário, será criada uma cópia do arquivo."
 }

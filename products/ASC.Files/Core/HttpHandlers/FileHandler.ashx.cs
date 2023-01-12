@@ -215,7 +215,9 @@ public class FileHandlerService
             return;
         }
 
-        var filename = context.Request.Query["filename"]; if (String.IsNullOrEmpty(filename))
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+
+        if (String.IsNullOrEmpty(filename))
         {
             var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
             filename = FileConstant.DownloadTitle + ext;
@@ -239,7 +241,7 @@ public class FileHandlerService
         {
             var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
             var url = tmp.ToString();
-            context.Response.Redirect(url);
+            context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
         }
 
@@ -1123,7 +1125,7 @@ public class FileHandlerService
                 _ = int.TryParse(sizes[0], out width);
                 _ = int.TryParse(sizes[1], out height);
             }
-            
+
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 

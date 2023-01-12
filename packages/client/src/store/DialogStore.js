@@ -14,7 +14,6 @@ class DialogStore {
   changeUserStatusDialogVisible = false;
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
-  invitationDialogVisible = false;
   deleteDialogVisible = false;
 
   constructor() {
@@ -65,10 +64,6 @@ class DialogStore {
     this.deleteDialogVisible = visible;
   };
 
-  setInvitationDialogVisible = (visible) => {
-    this.invitationDialogVisible = visible;
-  };
-
   closeDialogs = () => {
     this.setChangeEmailDialogVisible(false);
     this.setChangePasswordDialogVisible(false);
@@ -82,7 +77,6 @@ class DialogStore {
 
     this.setSendInviteDialogVisible(false);
     this.setDeleteDialogVisible(false);
-    this.setInvitationDialogVisible(false);
   };
 }
 

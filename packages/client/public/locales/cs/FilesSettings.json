@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "Při úpravách zachovat meziverze",
   "OriginalCopy": "Uložit kopii souboru i v původním formátu",
   "StoringFileVersion": "Ukládání verzí souborů",
-  "ThirdPartyBtn": "Umožnit uživatelům připojit úložiště třetích stran",
   "UpdateOrCreate": "Aktualizovat verzi souboru pro existující soubor se stejným názvem. V opačném případě bude vytvořena kopie souboru."
 }

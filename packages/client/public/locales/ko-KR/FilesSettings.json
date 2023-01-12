@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "편집 시 중간 버전 유지",
   "OriginalCopy": "파일 복사본을 원본 형식으로도 저장",
   "StoringFileVersion": "파일 버전 저장 중",
-  "ThirdPartyBtn": "사용자가 제3자 스토리지에 연결하도록 허용",
   "UpdateOrCreate": "같은 이름을 가진 기존 파일의 파일 버전을 업데이트하세요. 그렇지 않으면, 파일 복사본이 생성됩니다."
 }

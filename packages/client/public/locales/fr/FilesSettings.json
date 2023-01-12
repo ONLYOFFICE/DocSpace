@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "Sauvegarder les versions intermédiaires lors de l'édition",
   "OriginalCopy": "Sauvegarder également la copie du fichier dans le format original.",
   "StoringFileVersion": "Stockage des versions de fichier",
-  "ThirdPartyBtn": "Activer les paramètres de tiers liés aux stockages pour les utilisateurs",
   "UpdateOrCreate": "Mettre à jour la version du fichier pour le fichier existant avec le même nom. Sinon, une copie du fichier sera créée."
 }

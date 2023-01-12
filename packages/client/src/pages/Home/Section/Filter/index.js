@@ -1354,7 +1354,7 @@ export default inject(
     const { fetchTags } = tagsStore;
 
     const { user } = auth.userStore;
-    const { customNames, personal } = auth.settingsStore;
+    const { personal } = auth.settingsStore;
     const {
       isFavoritesFolder,
       isRecentFolder,
@@ -1375,7 +1375,6 @@ export default inject(
     } = filesActionsStore;
 
     return {
-      customNames,
       user,
       userId: user.id,
       selectedFolderId: selectedFolderStore.id,
