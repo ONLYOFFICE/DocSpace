@@ -9,37 +9,16 @@ import {
   getAppearanceTheme,
   getLogoUrls,
 } from "@docspace/common/api/settings";
-import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   openEdit,
   getSettingsFiles,
   // getShareFiles,
 } from "@docspace/common/api/files";
-import pkg from "../../../../package.json";
 
-import PresentationIcoUrl from "../../../../../../public/images/presentation.ico";
-import SpreadSheetIcoUrl from "../../../../../../public/images/spreadsheet.ico";
-import TextIcoUrl from "../../../../../../public/images/text.ico";
+import { getLogoFromPath } from "@docspace/common/utils";
 
-export const getFavicon = (documentType, logoUrls) => {
-  const { homepage } = pkg;
-  let icon = null;
-
-  switch (documentType) {
-    case "word":
-      icon = TextIcoUrl;
-      break;
-    case "slide":
-      icon = PresentationIcoUrl;
-      break;
-    case "cell":
-      icon = SpreadSheetIcoUrl;
-      break;
-    default:
-      break;
-  }
-
-  const favicon = icon ? icon : logoUrls[2]?.path?.light;
+export const getFavicon = (logoUrls) => {
+  const favicon = logoUrls[2]?.path?.light;
   return favicon;
 };
 
@@ -114,6 +93,11 @@ export const initDocEditor = async (req) => {
     if (type) {
       config.type = type;
     }
+
+    logoUrls.forEach((logo) => {
+      logo.path.dark = getLogoFromPath(logo.path.dark);
+      logo.path.light = getLogoFromPath(logo.path.dark);
+    });
 
     return {
       config,

@@ -41,12 +41,17 @@ module.exports = {
       {
         test: /\.svg/,
         //type: "asset/inline",
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: ["@svgr/webpack"],
       },
-
       {
         test: imageExtensions,
         type: "asset/resource",
+      },
+      {
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
       },
     ],
   },
