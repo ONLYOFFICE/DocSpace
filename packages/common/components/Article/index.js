@@ -13,7 +13,6 @@ import SubArticleBackdrop from "./sub-components/article-backdrop";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
-import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -28,12 +27,7 @@ const Article = ({
   children,
 
   withMainButton,
-
-  isGracePeriod,
-
   hideProfileBlock,
-  isFreeTariff,
-  isAvailableArticlePaymentAlert,
   currentColorScheme,
   ...rest
 }) => {
@@ -135,14 +129,6 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isAvailableArticlePaymentAlert &&
-            (isFreeTariff || isGracePeriod) &&
-            showText && (
-              <ArticlePaymentAlert
-                isFreeTariff={isFreeTariff}
-                toggleArticleOpen={toggleArticleOpen}
-              />
-            )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -199,18 +185,7 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth }) => {
-  const {
-    settingsStore,
-    currentQuotaStore,
-    currentTariffStatusStore,
-    userStore,
-  } = auth;
-  const { isFreeTariff } = currentQuotaStore;
-  const { isGracePeriod } = currentTariffStatusStore;
-
-  const { user } = userStore;
-
-  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
+  const { settingsStore } = auth;
 
   const {
     showText,
@@ -229,9 +204,6 @@ export default inject(({ auth }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
-    isFreeTariff,
-    isGracePeriod,
-    isAvailableArticlePaymentAlert,
     currentColorScheme,
   };
 })(observer(Article));

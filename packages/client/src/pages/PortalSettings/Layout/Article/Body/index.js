@@ -10,6 +10,7 @@ import { isMobileOnly } from "react-device-detect";
 
 import { isMobile } from "@docspace/components/utils/device";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import ArticlePaymentAlert from "@docspace/common/components/Article/sub-components/article-payment-alert";
 
 import {
   //getKeyByLink,
@@ -217,7 +218,13 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
+    const {
+      showText,
+      isNotPaidPeriod,
+      t,
+      isOwner,
+      isPaymentAlertVisible,
+    } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
@@ -255,6 +262,10 @@ class ArticleBodyContent extends React.Component {
       );
     });
 
+    showText &&
+      isPaymentAlertVisible &&
+      items.push(<ArticlePaymentAlert t={t} key="payment-alert" />);
+
     return items;
   };
 
@@ -268,12 +279,13 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore, userStore } = auth;
+  const { currentTariffStatusStore, userStore, isPaymentAlertVisible } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
   const { isOwner } = user;
 
   return {
+    isPaymentAlertVisible,
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
@@ -284,7 +296,9 @@ export default inject(({ auth, common }) => {
 })(
   withLoading(
     withRouter(
-      withTranslation(["Settings", "Common"])(observer(ArticleBodyContent))
+      withTranslation(["Settings", "Common", "Payments"])(
+        observer(ArticleBodyContent)
+      )
     )
   )
 );

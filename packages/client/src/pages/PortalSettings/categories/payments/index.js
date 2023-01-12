@@ -167,10 +167,11 @@ const PaymentsPage = ({
 
       isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
-      const requests = [getSettingsPayment(), setPortalQuota()];
-
-      if (!currencySymbol && !startValue)
-        requests.push(setPortalPaymentQuotas());
+      const requests = [
+        getSettingsPayment(),
+        setPortalQuota(),
+        setPortalPaymentQuotas(),
+      ];
 
       if (isAlreadyPaid) requests.push(setPaymentAccount());
 

@@ -6,7 +6,7 @@ import {
   StyledRectangleLoader,
 } from "./StyledArticleFolderLoader";
 import { inject, observer } from "mobx-react";
-
+import RectangleLoader from "../RectangleLoader";
 const ArticleFolderLoader = ({
   id,
   className,
@@ -14,6 +14,7 @@ const ArticleFolderLoader = ({
   showText,
 
   isVisitor,
+  isPaymentAlertVisible,
   ...rest
 }) => {
   return (
@@ -47,6 +48,10 @@ const ArticleFolderLoader = ({
             <StyledRectangleLoader {...rest} />
             <StyledRectangleLoader {...rest} />
           </StyledBlock>
+
+          {showText && isPaymentAlertVisible && (
+            <RectangleLoader width="210px" height="88px" />
+          )}
         </>
       )}
     </StyledContainer>
@@ -67,8 +72,14 @@ ArticleFolderLoader.defaultProps = {
 };
 
 export default inject(({ auth }) => {
+  const { settingsStore, userStore, isPaymentAlertVisible } = auth;
+
+  const { showText } = settingsStore;
+  const { user } = userStore;
+
   return {
-    showText: auth.settingsStore.showText,
-    isVisitor: auth.userStore.user.isVisitor,
+    showText,
+    isVisitor: user.isVisitor,
+    isPaymentAlertVisible,
   };
 })(observer(ArticleFolderLoader));

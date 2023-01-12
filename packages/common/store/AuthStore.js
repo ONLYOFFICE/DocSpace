@@ -41,9 +41,9 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
     this.infoPanelStore = new InfoPanelStore();
-    this.currentQuotaStore = new CurrentQuotasStore();
     this.currentTariffStatusStore = new CurrentTariffStatusStore();
     this.paymentQuotasStore = new PaymentQuotasStore();
+    this.currentQuotaStore = new CurrentQuotasStore(this.paymentQuotasStore);
     makeAutoObservable(this);
   }
 

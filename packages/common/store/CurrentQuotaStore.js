@@ -15,14 +15,18 @@ class QuotasStore {
 
   isLoaded = false;
 
-  constructor() {
+  constructor(paymentQuotasStore) {
     makeAutoObservable(this);
+
+    this.paymentQuotasStore = paymentQuotasStore;
   }
 
   init = async () => {
     if (this.isLoaded) return;
 
     await this.setPortalQuota();
+
+    this.isFreeTariff && this.paymentQuotasStore.setPortalPaymentQuotas();
 
     this.setIsLoaded(true);
   };

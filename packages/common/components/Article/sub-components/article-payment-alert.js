@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
-import { useTranslation, Trans } from "react-i18next";
+import { Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import { StyledArticlePaymentAlert } from "../styled-article";
 import styled from "styled-components";
 import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
-import Loaders from "../../Loaders";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   margin: auto 0;
@@ -27,17 +26,11 @@ const ArticlePaymentAlert = ({
   isFreeTariff,
   theme,
   currencySymbol,
-  setPortalPaymentQuotas,
   currentTariffPlanTitle,
   toggleArticleOpen,
   tariffPlanTitle,
+  t,
 }) => {
-  const { t, ready } = useTranslation("Payments");
-
-  useEffect(() => {
-    isFreeTariff && setPortalPaymentQuotas();
-  }, []);
-
   const onClick = () => {
     const paymentPageUrl = combineUrl(
       PROXY_BASE_URL,
@@ -47,11 +40,7 @@ const ArticlePaymentAlert = ({
     toggleArticleOpen();
   };
 
-  const isShowLoader = !ready;
-
-  return isShowLoader ? (
-    <Loaders.Rectangle width="210px" height="88px" />
-  ) : (
+  return (
     <StyledArticlePaymentAlert
       onClick={onClick}
       isFreeTariff={isFreeTariff}
@@ -65,13 +54,13 @@ const ArticlePaymentAlert = ({
               {{ planName: currentTariffPlanTitle }}
             </Trans>
           ) : (
-            t("LatePayment")
+            t("Payments:LatePayment")
           )}
         </Text>
         <Text fontWeight={600}>
           {isFreeTariff
-            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
-            : t("GracePeriodActivated")}
+            ? t("Payments:ActivateBusinessPlan", { planName: tariffPlanTitle })
+            : t("Payments:GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
@@ -86,7 +75,7 @@ const ArticlePaymentAlert = ({
               )}
             </>
           ) : (
-            t("PayBeforeTheEndGracePeriod")
+            t("Payments:PayBeforeTheEndGracePeriod")
           )}
         </Text>
       </div>
@@ -98,17 +87,13 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
+    const { paymentQuotasStore, currentQuotaStore } = auth;
+    const { currentTariffPlanTitle, isFreeTariff } = currentQuotaStore;
     const { theme } = auth;
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-    } = paymentQuotasStore;
+    const { planCost, tariffPlanTitle } = paymentQuotasStore;
 
     return {
-      setPortalPaymentQuotas,
+      isFreeTariff,
       pricePerManager: planCost.value,
       theme,
       currencySymbol: planCost.currencySymbol,

@@ -75,8 +75,8 @@ class PaymentQuotasStore {
   get tariffPlanTitle() {
     return this.portalPaymentQuotas.title;
   }
-  setPortalPaymentQuotas = async (t) => {
-    if (this.isLoaded) return;
+  setPortalPaymentQuotas = async () => {
+    if (this.isLoaded || this.isInit) return;
 
     try {
       const res = await api.portal.getPortalPaymentQuotas();

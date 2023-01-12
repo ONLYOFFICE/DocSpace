@@ -21,6 +21,7 @@ import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
+import ArticlePaymentAlert from "@docspace/common/components/Article/sub-components/article-payment-alert";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -47,6 +48,8 @@ const ArticleBodyContent = (props) => {
     filesIsLoading,
     roomsFolderId,
     archiveFolderId,
+    isPaymentAlertVisible,
+    t,
   } = props;
 
   const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
@@ -176,6 +179,8 @@ const ArticleBodyContent = (props) => {
         onHide={toggleArticleOpen}
       />
 
+      {showText && isPaymentAlertVisible && <ArticlePaymentAlert t={t} />}
+
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
           {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
@@ -229,6 +234,7 @@ export default inject(
       FirebaseHelper,
       theme,
     } = auth.settingsStore;
+    const { isPaymentAlertVisible } = auth;
 
     const selectedFolderTitle = selectedFolderStore.title;
 
@@ -237,6 +243,7 @@ export default inject(
       : setDocumentTitle();
 
     return {
+      isPaymentAlertVisible,
       toggleArticleOpen,
       showText,
       articleOpen,
@@ -271,7 +278,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation([])(
+    withTranslation(["Payments"])(
       withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
     )
   )
