@@ -79,7 +79,7 @@ const CreateEvent = ({
     if (!isChecked) {
       setEventDialogVisible(true);
     } else {
-      onSave(null, defaultName);
+      onSave(null, title || defaultName);
     }
 
     return () => {
