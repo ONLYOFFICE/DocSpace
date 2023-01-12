@@ -49,7 +49,6 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
-  setIsChecked,
   isChecked,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
@@ -94,7 +93,6 @@ const CreateEvent = ({
 
     const isMakeFormFromFile = templateId ? true : false;
 
-    setIsChecked(isChecked);
     setIsLoading(true);
 
     let newValue = value;
@@ -274,7 +272,7 @@ const CreateEvent = ({
       onSave={onSave}
       onCancel={onCancel}
       onClose={onCloseAction}
-      onCreate={onCreate}
+      onCreate={true}
     />
   );
 };

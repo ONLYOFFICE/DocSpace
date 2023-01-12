@@ -118,9 +118,12 @@ const Dialog = ({
           isDisabled={isDisabled}
         />
         {onCreate && (
-          <Box displayProp="flex" alignItems="center" paddingProp="16px 0 8px">
-            <Checkbox isChecked={isChecked} onChange={onChangeCheckbox} />
-            {t("Common:DontAskAgain")}
+          <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
+            <Checkbox
+              label={t("Common:DontAskAgain")}
+              isChecked={isChecked}
+              onChange={onChangeCheckbox}
+            />
           </Box>
         )}
 
