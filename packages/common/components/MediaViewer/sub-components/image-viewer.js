@@ -207,6 +207,7 @@ class ImageViewer extends React.Component {
       isImage,
       isAudio,
       isVideo,
+      isPreviewFile,
       contextModel,
       audioIcon,
       headerIcon,
@@ -324,7 +325,7 @@ class ImageViewer extends React.Component {
         ),
       },
       {
-        key: "separator",
+        key: "context-separator",
         actionType: -1,
         noHover: true,
         render: (
@@ -397,6 +398,7 @@ class ImageViewer extends React.Component {
           headerIcon={headerIcon}
           isAudio={isAudio}
           isVideo={isVideo}
+          isPreviewFile={isPreviewFile}
           audioIcon={audioIcon}
           onSetSelectionFile={onSetSelectionFile}
           onMaskClick={onClose}

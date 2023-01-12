@@ -137,7 +137,11 @@ class MediaViewer extends React.Component {
         this.updateHammer();
 
         const newPlaylistPos =
-          playlistPos < playlist.length ? playlistPos + 1 : 0;
+          playlistPos < playlist.length
+            ? playlist.length !== prevProps.playlist.length
+              ? playlistPos + 1
+              : playlistPos
+            : 0;
 
         this.setState({
           playlist: playlist,
@@ -495,9 +499,6 @@ class MediaViewer extends React.Component {
     const ext = this.getFileExtension(title);
 
     const onSetSelectionFile = () => {
-      if (isPreviewFile) {
-        return setBufferSelection(playlist[0]);
-      }
       setBufferSelection(targetFile);
     };
 
@@ -650,6 +651,7 @@ class MediaViewer extends React.Component {
             isImage={isImage}
             isAudio={isAudio}
             isVideo={isVideo}
+            isPreviewFile={isPreviewFile}
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}
