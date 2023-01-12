@@ -11,7 +11,7 @@ import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
-import { combineUrl, updateTempContent } from "@docspace/common/utils";
+import { updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -30,7 +30,6 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 
-const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
 const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
@@ -51,13 +50,6 @@ const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-const PaymentsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Payments {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -470,7 +462,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PublicRoute exact path={"/wizard"} component={WizardRoute} />
               <PrivateRoute path={"/about"} component={AboutRoute} />
               <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute path={"/payments"} component={PaymentsRoute} />
               <PrivateRoute
                 restricted
                 path={"/portal-settings"}
