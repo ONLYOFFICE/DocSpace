@@ -718,7 +718,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
-      return removeFiles(items)
+      return removeFiles(items, [], true, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -1246,18 +1246,6 @@ class FilesActionStore {
       isCopy,
     };
 
-    const {
-      setThirdPartyMoveDialogVisible,
-      setDestFolderId,
-    } = this.dialogsStore;
-
-    const provider = selection.find((x) => x.providerKey);
-
-    if (provider && providerKey !== provider.providerKey) {
-      setDestFolderId(destFolderId);
-      return setThirdPartyMoveDialogVisible(true);
-    }
-
     for (let item of selection) {
       if (!item.isFolder) {
         fileIds.push(item.id);
@@ -1474,7 +1462,6 @@ class FilesActionStore {
         alert: true,
       });
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      onClose();
       return toastr.error(err.message ? err.message : err);
     }
   };

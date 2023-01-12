@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import Error520 from "client/Error520";
-//import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -26,7 +25,7 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
+const SectionBodyContent = ({ isErrorSettings, history, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
 
   const setting = window.location.pathname.endsWith("/settings/common")
@@ -45,17 +44,7 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
     content: <AdminSettings t={t} />,
   };
 
-  // const connectedCloud = {
-  //   id: "connected-clouds",
-  //   name: t("ThirdPartySettings"),
-  //   content: <ConnectClouds />,
-  // };
-
   const data = [adminSettings, commonSettings];
-
-  // if (enableThirdParty) {
-  //   data.push(connectedCloud);
-  // }
 
   const onSelect = useCallback(
     (e) => {
@@ -74,11 +63,13 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
     [setting, history]
   );
 
+  const showAdminSettings = user.isAdmin || user.isOwner;
+
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {isVisitor ? (
+      {!showAdminSettings ? (
         <CommonSettings t={t} showTitle={true} />
       ) : (
         <Submenu
@@ -95,7 +86,7 @@ export default inject(({ auth, settingsStore }) => {
   const { settingsIsLoaded } = settingsStore;
 
   return {
-    isVisitor: auth.userStore.user.isVisitor,
     settingsIsLoaded,
+    user: auth.userStore.user,
   };
 })(withRouter(observer(SectionBodyContent)));

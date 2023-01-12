@@ -1,12 +1,6 @@
 {
   "AdditionalSections": "Additional sections",
-  "Clouds": "Clouds",
-  "ConnectAdminDescription": "For successful connection, enter the necessary data on <1>this page</1>.",
-  "ConnectCloud": "Connect cloud",
-  "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
   "ConnectEmpty": "There's nothing here",
-  "ConnectMessage": "You can connect the following services to your DocSpace account. They will be displayed in the 'My Documents' folder and you will be able to edit and save all your documents in a single space. ",
-  "ConnextOtherAccount": "Other accounts",
   "DisplayFavorites": "Display Favorites",
   "DisplayNotification": "Display notification when moving items to Trash",
   "DisplayRecent": "Display Recent",
@@ -16,8 +10,7 @@
   "OriginalCopy": "Save the file copy in the original format as well",
   "StoringFileVersion": "Storing file versions",
   "ThirdPartyAccounts": "Third-party accounts",
-  "ThirdPartyBtn": "Allow users to connect third-party storages",
-  "ThirdPartySettings": "Connected clouds",
+  "ThirdPartyBtn": "Allow Room admins to connect third-party storages",
   "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
   "UploadPluginsHere": "Upload plugins here"
 }

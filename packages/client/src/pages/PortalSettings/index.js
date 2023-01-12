@@ -43,7 +43,6 @@ const DNSSettings = lazy(() =>
 const PortalRenaming = lazy(() =>
   import("./categories/common/Customization/portal-renaming")
 );
-const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 
 const Integration = lazy(() => import("./categories/integration"));
 const Payments = lazy(() => import("./categories/payments"));
@@ -196,7 +195,6 @@ const Settings = () => {
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
-          <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
 

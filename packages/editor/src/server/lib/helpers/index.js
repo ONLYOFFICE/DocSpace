@@ -5,7 +5,6 @@ import { getUser } from "@docspace/common/api/people";
 import {
   getSettings,
   getBuildVersion,
-  getCurrentCustomSchema,
   getAppearanceTheme,
   getLogoUrls,
 } from "@docspace/common/api/settings";
@@ -52,7 +51,6 @@ export const initDocEditor = async (req) => {
       settings,
       filesSettings,
       versionInfo,
-      customNames,
       appearanceTheme,
       logoUrls,
     ] = await Promise.all([
@@ -60,7 +58,6 @@ export const initDocEditor = async (req) => {
       getSettings(),
       getSettingsFiles(),
       getBuildVersion(),
-      getCurrentCustomSchema("Common"),
       getAppearanceTheme(),
       getLogoUrls(),
     ]);
@@ -114,7 +111,6 @@ export const initDocEditor = async (req) => {
       //sharingSettings,
       portalSettings: settings,
       versionInfo,
-      customNames,
       appearanceTheme,
       logoUrls,
     };

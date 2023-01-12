@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Додати обліковий запис Box",
-  "ButtonAddDropBox": "Додати обліковий запис Dropbox",
-  "ButtonAddGoogle": "Додати обліковий запис Google",
-  "ButtonAddNextcloud": "Додати обліковий запис NextCloud",
-  "ButtonAddSkyDrive": "Додати обліковий запис OneDrive",
   "FilesUploaded": "Файли завантажено",
   "Upload": "Завантажити",
   "UploadFiles": "Передати файли",

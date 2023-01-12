@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Lisää osastopäällikkö",
-  "CustomNewDepartment": "{{groupCaption}} (luominen)",
-  "GroupAction": "Ryhmätoiminta",
-  "SearchAddedMembers": "Hae lisättyjä jäseniä",
-  "SuccessSaveGroup": "{{groupCaption}} ’{{groupName}}’ on tallennettu onnistuneesti"
-}

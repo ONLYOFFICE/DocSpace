@@ -341,7 +341,6 @@ class SectionHeaderContent extends React.Component {
 
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore } = auth;
-  const { customNames } = auth.settingsStore;
   const {
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,
@@ -363,7 +362,6 @@ export default inject(({ auth, setup, common }) => {
   return {
     addUsers,
     removeAdmins,
-    groupsCaption: customNames.groupsCaption,
     selected,
     setSelected,
     admins,

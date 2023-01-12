@@ -41,6 +41,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -942,5 +943,9 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(withRouter(observer(SectionHeaderContent)))
+  ])(
+    withLoader(withRouter(observer(SectionHeaderContent)))(
+      <Loaders.SectionHeader />
+    )
+  )
 );

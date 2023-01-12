@@ -36,7 +36,6 @@ newInstance
       "ConnectDialog",
       "ConflictResolveDialog",
       "DeleteThirdPartyDialog",
-      "ThirdPartyMoveDialog",
       "PortalUnavailable",
       "Errors",
     ],
