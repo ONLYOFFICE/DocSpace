@@ -1,6 +1,5 @@
 {
   "LblInviteAgain": "Покани отново",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <1>{{email}}</1>",
-  "ReassignmentData": "Пренасочване на данни",
   "UserStatus": "Статус"
 }

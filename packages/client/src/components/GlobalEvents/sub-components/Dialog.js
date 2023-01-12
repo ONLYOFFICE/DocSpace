@@ -57,7 +57,7 @@ const Dialog = ({
     let newValue = e.target.value;
 
     if (newValue.match(folderFormValidation)) {
-      toastr.warning(t("ContainsSpecCharacter"));
+      toastr.warning(t("Files:ContainsSpecCharacter"));
     }
 
     newValue = newValue.replace(folderFormValidation, "_");

@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Adaugă cont",
   "ArchivingData": "Se arhivează datele",
   "ConnectingAccount": "Conectare cont",
   "Copy": "Copiere",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Descarcă ONLYOFFICE Documents din Google Play",
   "MobileIos": "Descarcă ONLYOFFICE Documents din App Store",
   "MobileLinux": "Descarcă ONLYOFFICE Desktop Editors pentru Linux",
-  "MobileMac": "Descarcă ONLYOFFICE Desktop Editors pentru Mac OS",
+  "MobileMac": "Descarcă ONLYOFFICE Desktop Editors pentru macOS",
   "MobileWin": "Descarcă ONLYOFFICE Desktop Editors pentru Windows",
   "MoveHere": "Mutare în acest loc",
   "MoveToOperation": "Mutare",

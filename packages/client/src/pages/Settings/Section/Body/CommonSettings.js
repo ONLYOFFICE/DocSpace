@@ -13,8 +13,8 @@ const CommonSettings = ({
   forceSave,
 
   isVisitor,
-  favoritesSection,
-  recentSection,
+  //favoritesSection,
+  //recentSection,
 
   setUpdateIfExist,
   setStoreOriginal,
@@ -94,12 +94,14 @@ const CommonSettings = ({
           onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("DisplayNotification")}
-          onChange={onChangeDeleteConfirm}
-          isChecked={confirmDelete}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("DisplayNotification")}
+            onChange={onChangeDeleteConfirm}
+            isChecked={confirmDelete}
+          />
+        )}
       </Box>
 
       {/* <Box className="settings-section">
@@ -134,12 +136,14 @@ const CommonSettings = ({
         <Heading className="heading" level={2} size="xsmall">
           {t("StoringFileVersion")}
         </Heading>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("UpdateOrCreate")}
-          onChange={onChangeUpdateIfExist}
-          isChecked={updateIfExist}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("UpdateOrCreate")}
+            onChange={onChangeUpdateIfExist}
+            isChecked={updateIfExist}
+          />
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("KeepIntermediateVersion")}
