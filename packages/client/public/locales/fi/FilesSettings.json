@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "Pidä väliversiot muokkauksen aikana",
   "OriginalCopy": "Tallenna kopio tiedostosta myös alkuperäisessä muodossa",
   "StoringFileVersion": "Tiedostoversioiden tallentaminen",
-  "ThirdPartyBtn": "Salli käyttäjien yhdistää kolmannen osapuolen tallennustilat",
   "UpdateOrCreate": "Päivitä samannimisen tiedoston tiedostoversio. Muussa tapauksessa tiedostosta luodaan kopio."
 }

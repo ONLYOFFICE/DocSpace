@@ -8,6 +8,5 @@
   "KeepIntermediateVersion": "编辑时保留中间版本",
   "OriginalCopy": "以原始格式保存文件副本",
   "StoringFileVersion": "保存文件版本",
-  "ThirdPartyBtn": "允许用户连接第三方存储",
   "UpdateOrCreate": "更新具有相同名称的现有文件版本。或创建文件副本。"
 }
