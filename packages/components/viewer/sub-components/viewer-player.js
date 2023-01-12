@@ -274,10 +274,6 @@ const StyledVideoControls = styled.div`
     }
   }
 
-  .volume-container-audio {
-    margin-left: -2px;
-  }
-
   ${isMobileOnly &&
   css`
     height: 80px;
@@ -456,6 +452,7 @@ export default function ViewerPlayer(props) {
 
   const togglePlay = (e) => {
     e.stopPropagation();
+    if (e.target === videoRef.current && isMobileOnly) return;
     dispatch(
       createAction(ACTION_TYPES.update, {
         isPlaying: !state.isPlaying,
@@ -501,7 +498,7 @@ export default function ViewerPlayer(props) {
     );
   };
 
-  const toggleContext = () => {
+  const toggleContext = (e) => {
     dispatch(
       createAction(ACTION_TYPES.update, {
         isOpenContext: !state.isOpenContext,
@@ -686,7 +683,6 @@ export default function ViewerPlayer(props) {
     dispatch(
       createAction(ACTION_TYPES.update, {
         volumeSelection: false,
-        speedSelection: false,
         isOpenContext: false,
       })
     );
@@ -769,6 +765,14 @@ export default function ViewerPlayer(props) {
     });
   }, [props.activeIndex]);
 
+  React.useEffect(() => {
+    let timer;
+    if (isMobileOnly && videoRef.current && displayUI) {
+      clearTimeout(timer);
+      timer = setTimeout(() => props.setPanelVisible(false), 5000);
+    }
+  }, [displayUI]);
+
   let contextRight = 9;
   let contextBottom = 48;
   const contextMenu = generateContextMenu(
@@ -801,7 +805,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       audio={isAudio.toString()}
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
-      {isMobileOnly && mobileDetails}
+      {isMobileOnly && displayUI && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
         <div
           style={{
@@ -953,7 +957,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                   </div>
                 )}
 
-                {!isMobileOnly && (
+                {!isMobileOnly && !props.isPreviewFile && (
                   <div
                     className="controller context-menu-wrapper"
                     onClick={toggleContext}

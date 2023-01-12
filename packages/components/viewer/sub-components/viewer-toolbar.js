@@ -167,6 +167,13 @@ export default function ViewerToolbar(props) {
   if (!props.scalable) {
     toolbars = deleteToolbarFromKey(toolbars, ["scaleX", "scaleY"]);
   }
+
+  if (props.isPreviewFile) {
+    toolbars = deleteToolbarFromKey(toolbars, [
+      "context-menu",
+      "context-separator",
+    ]);
+  }
   // if (!props.downloadable) {
   //   toolbars = deleteToolbarFromKey(toolbars, ["download"]);
   // }

@@ -50,6 +50,7 @@ const ViewerBase = (props) => {
     onNextClick,
     onPrevClick,
     onMaskClick,
+    isPreviewFile,
   } = props;
 
   const initialState = {
@@ -621,7 +622,7 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {isMobileOnly && mobileDetails}
+      {isMobileOnly && props.displayUI && mobileDetails}
       <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
       <ViewerImage
         prefixCls={prefixCls}
@@ -679,6 +680,7 @@ const ViewerBase = (props) => {
                   height={state.imageHeight}
                   percent={state.percent}
                   attribute={attribute}
+                  isPreviewFile={isPreviewFile}
                   zoomable={zoomable}
                   rotatable={rotatable}
                   onPercentClick={onPercentClick}
