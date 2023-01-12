@@ -461,7 +461,6 @@ class SharingPanelComponent extends React.Component {
       isPersonal,
       isMyId,
       selection,
-      groupsCaption,
       canShareOwnerChange,
       uploadPanelVisible,
       documentTitle,
@@ -764,7 +763,6 @@ class SharingPanelComponent extends React.Component {
                 visible={showAddUsersPanel}
                 shareDataItems={filteredShareDataItems}
                 setShareDataItems={this.setShareDataItems}
-                groupsCaption={groupsCaption}
                 accessOptions={accessOptions}
                 isMultiSelect
                 isEncrypted={isEncrypted}
@@ -810,7 +808,7 @@ const SharingPanel = inject(
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { personal, customNames, isDesktopClient } = auth.settingsStore;
+    const { personal, isDesktopClient } = auth.settingsStore;
     const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
@@ -854,7 +852,6 @@ const SharingPanel = inject(
       theme: auth.settingsStore.theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
-      groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
       selection: uploadPanelVisible

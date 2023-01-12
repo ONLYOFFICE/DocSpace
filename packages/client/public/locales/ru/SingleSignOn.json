@@ -10,7 +10,6 @@
   "CustomEntryButton": "Пользовательская надпись для кнопки входа:",
   "CustomEntryTooltip": "Надпись для кнопки, которая используется для входа на портал с помощью сервиса Single Sign-on",
   "DownloadMetadataXML": "Скачать XML-файл метаданных поставщика сервиса",
-  "EmptyFieldErrorMessage": "Поле не заполнено",
   "Encryption": "Шифрование",
   "GenerateCertificate": "Сгенерировать новый самоподписанный сертификат ",
   "Hide": "Скрыть",
