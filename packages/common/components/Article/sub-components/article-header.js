@@ -63,10 +63,11 @@ ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
   const { settingsStore, userStore } = auth;
-  const { whiteLabelLogoUrls } = settingsStore;
+  const { whiteLabelLogoUrls, showText } = settingsStore;
   const { userTheme } = userStore;
 
   return {
+    showText,
     whiteLabelLogoUrls,
     userTheme,
   };
