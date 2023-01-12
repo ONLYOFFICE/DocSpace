@@ -15,6 +15,7 @@ echo "Executing -- ${NAME_SERVICE}"
 PRODUCT=${PRODUCT:-"onlyoffice"}
 CONTAINER_PREFIX=${PRODUCT}-
 SERVICE_PORT=${SERVICE_PORT:-"5050"}
+SHEME=${SHEME:-"http"}
 URLS=${URLS:-"${SHEME}://0.0.0.0:${SERVICE_PORT}"}
 PATH_TO_CONF=${PATH_TO_CONF:-"/var/www/services/ASC.Web.HealthChecks.UI/service"}
 
