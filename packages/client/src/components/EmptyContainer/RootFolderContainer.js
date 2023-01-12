@@ -48,6 +48,7 @@ const RootFolderContainer = (props) => {
     setIsEmptyPage,
     isVisitor,
     sectionWidth,
+    setIsLoadedEmptyPage,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -87,8 +88,17 @@ const RootFolderContainer = (props) => {
 
     return () => {
       setIsEmptyPage(false);
+      setIsLoadedEmptyPage(false);
     };
-  }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      setIsLoadedEmptyPage(true);
+    } else {
+      setIsLoadedEmptyPage(false);
+    }
+  }, [isLoading]);
 
   const onGoToPersonal = () => {
     const newFilter = filter.clone();
@@ -313,31 +323,17 @@ const RootFolderContainer = (props) => {
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
 
-  React.useEffect(() => {
-    let timeout;
-
-    if (isLoading) {
-      setShowLoader(isLoading);
-    } else {
-      timeout = setTimeout(() => setShowLoader(isLoading), 300);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [isLoading]);
+  if (isLoading) {
+    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
+  }
 
   return (
-    <>
-      {showLoader ? (
-        <Loaders.EmptyContainerLoader viewAs={viewAs} />
-      ) : (
-        <EmptyContainer
-          headerText={headerText}
-          isEmptyPage={isEmptyPage}
-          sectionWidth={sectionWidth}
-          {...emptyFolderProps}
-        />
-      )}
-    </>
+    <EmptyContainer
+      headerText={headerText}
+      isEmptyPage={isEmptyPage}
+      sectionWidth={sectionWidth}
+      {...emptyFolderProps}
+    />
   );
 };
 
@@ -362,6 +358,7 @@ export default inject(
       setAlreadyFetchingRooms,
       isEmptyPage,
       setIsEmptyPage,
+      setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
@@ -387,6 +384,7 @@ export default inject(
       setAlreadyFetchingRooms,
       isEmptyPage,
       setIsEmptyPage,
+      setIsLoadedEmptyPage,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));
