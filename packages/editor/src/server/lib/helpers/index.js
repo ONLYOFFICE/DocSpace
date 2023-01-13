@@ -96,6 +96,21 @@ export const initDocEditor = async (req) => {
       logo.path.light = getLogoFromPath(logo.path.dark);
     });
 
+    config.editorConfig.customization.logo.image =
+      config.editorConfig.customization.logo.url +
+      "doceditor/" +
+      getLogoFromPath(config.editorConfig.customization.logo.image);
+
+    config.editorConfig.customization.logo.imageDark =
+      config.editorConfig.customization.logo.url +
+      "doceditor/" +
+      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+
+    config.editorConfig.customization.customer.logo =
+      config.editorConfig.customization.logo.url +
+      "doceditor/" +
+      getLogoFromPath(config.editorConfig.customization.customer.logo);
+
     return {
       config,
       personal,
