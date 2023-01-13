@@ -159,7 +159,9 @@ class HotkeyStore {
       setHotkeyCaretStart,
     } = this.filesStore;
 
-    const index = selection.findIndex((f) => f.id === hotkeyCaret?.id);
+    const index = selection.findIndex(
+      (f) => f.id === hotkeyCaret?.id && f.isFolder === hotkeyCaret?.isFolder
+    );
     if (index !== -1) {
       const newSelection = selection;
       newSelection.splice(index, 1);
@@ -250,7 +252,11 @@ class HotkeyStore {
     if (!hotkeyCaret && !selection.length) return this.selectFirstFile();
 
     if (viewAs === "tile") {
-      if (this.nextForTileDown.id === hotkeyCaret.id) return;
+      if (
+        this.nextForTileDown.id === hotkeyCaret.id &&
+        this.nextForTileDown.isFolder === hotkeyCaret.isFolder
+      )
+        return;
 
       setSelection(this.selectionsDown);
       this.setCaret(this.nextForTileDown);
@@ -290,12 +296,21 @@ class HotkeyStore {
     if (!hotkeyCaret && !selection.length) this.selectFirstFile();
 
     if (viewAs === "tile") {
-      if (this.prevForTileUp.id === hotkeyCaret.id) return;
+      if (
+        this.prevForTileUp.id === hotkeyCaret.id &&
+        this.prevForTileUp.isFolder === hotkeyCaret.isFolder
+      )
+        return;
 
       setSelection(this.selectionsUp);
       this.setCaret(this.prevForTileUp);
     } else if (this.prevFile) {
-      if (selection.findIndex((f) => f.id === this.prevFile.id) !== -1) {
+      if (
+        selection.findIndex(
+          (f) =>
+            f.id === this.prevFile.id && f.isFolder === this.prevFile.isFolder
+        ) !== -1
+      ) {
         const startIndex = filesList.findIndex(
           (f) =>
             f.id === hotkeyCaretStart.id &&
@@ -648,15 +663,19 @@ class HotkeyStore {
     let selectionsDown = JSON.parse(JSON.stringify(selection));
 
     const hotkeyCaretStartIndex = filesList.findIndex(
-      (f) => f.id === hotkeyCaretStart?.id
+      (f) =>
+        f.id === hotkeyCaretStart?.id &&
+        f.isFolder === hotkeyCaretStart?.isFolder
     );
 
     const firstSelectionIndex = filesList.findIndex(
-      (f) => f.id === selection[0]?.id
+      (f) => f.id === selection[0]?.id && f.isFolder === selection[0]?.isFolder
     );
 
     const nextForTileDownIndex = filesList.findIndex(
-      (f) => f.id === this.nextForTileDown?.id
+      (f) =>
+        f.id === this.nextForTileDown?.id &&
+        f.isFolder === this.nextForTileDown?.isFolder
     );
 
     let nextForTileDownItemIndex = nextForTileDownIndex;
@@ -714,15 +733,19 @@ class HotkeyStore {
     let selectionsUp = JSON.parse(JSON.stringify(selection));
 
     const hotkeyCaretStartIndex = filesList.findIndex(
-      (f) => f.id === hotkeyCaretStart?.id
+      (f) =>
+        f.id === hotkeyCaretStart?.id &&
+        f.isFolder === hotkeyCaretStart?.isFolder
     );
 
     const firstSelectionIndex = filesList.findIndex(
-      (f) => f.id === selection[0]?.id
+      (f) => f.id === selection[0]?.id && f.isFolder === selection[0]?.isFolder
     );
 
     const prevForTileUpIndex = filesList.findIndex(
-      (f) => f.id === this.prevForTileUp?.id
+      (f) =>
+        f.id === this.prevForTileUp?.id &&
+        f.isFolder === this.prevForTileUp?.isFolder
     );
     let prevForTileUpItemIndex = prevForTileUpIndex;
 
