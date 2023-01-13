@@ -1545,6 +1545,8 @@ public class FileSecurity : IFileSecurity
         {
             if (action != FilesSecurityActions.Read &&
                 action != FilesSecurityActions.ReadHistory &&
+                action != FilesSecurityActions.Copy &&
+                action != FilesSecurityActions.Duplicate &&
                 action != FilesSecurityActions.Lock)
             {
                 file.Security[action] = false;
