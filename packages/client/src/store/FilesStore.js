@@ -1830,18 +1830,47 @@ class FilesStore {
     scrollElm && scrollElm.scrollTo(0, 0);
   };
 
-  addFile = (item, isFolder) => {
+  addItem = (item, isFolder) => {
+    const { socketHelper } = this.authStore.settingsStore;
+
+    if (isFolder) {
+      const foundIndex = this.folders.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      this.folders.unshift(item);
+
+      console.log("[WS] subscribe to folder changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: `DIR-${item.id}`,
+          individual: true,
+        },
+      });
+    } else {
+      const foundIndex = this.files.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      console.log("[WS] subscribe to file changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: `FILE-${item.id}`, individual: true },
+      });
+
+      this.files.unshift(item);
+    }
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     const filter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     filter.total += 1;
 
     if (isRooms) this.setRoomsFilter(filter);
     else this.setFilter(filter);
-
-    isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
     this.scrollToTop();
   };
@@ -2798,19 +2827,19 @@ class FilesStore {
   setCreatedItem = (createdItem) => {
     this.createdItem = createdItem;
 
-    const { socketHelper } = this.authStore.settingsStore;
-    if (createdItem?.type == "file") {
-      console.log(
-        "[WS] subscribe to file's changes",
-        createdItem.id,
-        createdItem.title
-      );
+    // const { socketHelper } = this.authStore.settingsStore;
+    // if (createdItem?.type == "file") {
+    //   console.log(
+    //     "[WS] subscribe to file's changes",
+    //     createdItem.id,
+    //     createdItem.title
+    //   );
 
-      socketHelper.emit({
-        command: "subscribe",
-        data: { roomParts: `FILE-${createdItem.id}`, individual: true },
-      });
-    }
+    //   socketHelper.emit({
+    //     command: "subscribe",
+    //     data: { roomParts: `FILE-${createdItem.id}`, individual: true },
+    //   });
+    // }
   };
 
   setScrollToItem = (item) => {

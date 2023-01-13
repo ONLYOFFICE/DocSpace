@@ -164,7 +164,7 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
       fetchFiles,
-      addFile,
+      addItem,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 

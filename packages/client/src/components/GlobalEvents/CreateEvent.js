@@ -35,7 +35,7 @@ const CreateEvent = ({
 
   isPrivacy,
   isDesktop,
-  editCompleteAction,
+  completeAction,
 
   clearActiveOperations,
   fileCopyAs,
@@ -72,7 +72,7 @@ const CreateEvent = ({
     } else {
       setStartValue(defaultName);
     }
-    
+
     setHeaderTitle(defaultName);
 
     if (!isChecked) {
@@ -125,7 +125,7 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(item, type, true))
+        .then(() => completeAction(item, type, true))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
@@ -145,7 +145,7 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((err) => {
             let errorMessage = "";
             if (typeof err === "object") {
@@ -205,7 +205,7 @@ const CreateEvent = ({
             addActiveItems([file.id]);
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -241,7 +241,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -299,7 +299,7 @@ export default inject(
 
     const { gallerySelected, setGallerySelected } = oformsStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
 
     const { clearActiveOperations, fileCopyAs } = uploadDataStore;
 
@@ -338,7 +338,7 @@ export default inject(
       isDesktop: isDesktopClient,
       isPrivacy: isPrivacyFolder,
       isTrashFolder: isRecycleBinFolder,
-      editCompleteAction,
+      completeAction,
 
       clearActiveOperations,
       fileCopyAs,

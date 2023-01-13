@@ -22,7 +22,7 @@ const ConvertPasswordDialogComponent = (props) => {
     setFormCreationInfo,
     setPasswordEntryProcess,
     isDesktop,
-    editCompleteAction,
+    completeAction,
     fileCopyAs,
   } = props;
   const inputRef = React.useRef(null);
@@ -129,7 +129,7 @@ const ConvertPasswordDialogComponent = (props) => {
             open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => {
-            editCompleteAction(fileInfo);
+            completeAction(fileInfo);
           })
           .catch((err) => {
             let errorMessage = "";
@@ -263,7 +263,7 @@ export default inject(
     } = dialogsStore;
     const { copyAsAction, fileCopyAs } = uploadDataStore;
     const { setPasswordEntryProcess } = filesStore;
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
     const { settingsStore } = auth;
     const { isTabletView, isDesktopClient } = settingsStore;
 
@@ -277,7 +277,7 @@ export default inject(
       setFormCreationInfo,
       setPasswordEntryProcess,
       isDesktop: isDesktopClient,
-      editCompleteAction,
+      completeAction,
     };
   }
 )(observer(ConvertPasswordDialog));
