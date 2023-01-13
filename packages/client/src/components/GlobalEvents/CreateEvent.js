@@ -318,7 +318,7 @@ export default inject(
       eventDialogVisible,
     } = dialogsStore;
 
-    const { setIsChecked, isChecked } = filesStore;
+    const { isChecked } = filesStore;
 
     return {
       setEventDialogVisible,
@@ -348,7 +348,7 @@ export default inject(
 
       replaceFileStream,
       setEncryptionAccess,
-      setIsChecked,
+
       isChecked,
     };
   }
