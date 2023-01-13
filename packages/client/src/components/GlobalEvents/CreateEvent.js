@@ -48,7 +48,7 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
-  isChecked,
+  createWithoutDialog,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -75,7 +75,7 @@ const CreateEvent = ({
 
     setHeaderTitle(defaultName);
 
-    if (!isChecked) {
+    if (!createWithoutDialog) {
       setEventDialogVisible(true);
     } else {
       onSave(null, title || defaultName);
@@ -318,7 +318,7 @@ export default inject(
       eventDialogVisible,
     } = dialogsStore;
 
-    const { isChecked } = filesStore;
+    const { createWithoutDialog } = filesStore;
 
     return {
       setEventDialogVisible,
@@ -349,7 +349,7 @@ export default inject(
       replaceFileStream,
       setEncryptionAccess,
 
-      isChecked,
+      createWithoutDialog,
     };
   }
 )(observer(CreateEvent));

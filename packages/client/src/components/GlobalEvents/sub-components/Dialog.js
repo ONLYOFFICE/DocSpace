@@ -22,16 +22,16 @@ const Dialog = ({
   onCancel,
   onClose,
   isCreateDialog,
-  isChecked,
-  setIsChecked,
+  createWithoutDialog,
+  setCreateWithoutDialog,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    isChecked && isCreateDialog && setChecked(isChecked);
-  }, [isCreateDialog, isChecked]);
+    createWithoutDialog && isCreateDialog && setIsChecked(createWithoutDialog);
+  }, [isCreateDialog, createWithoutDialog]);
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -77,29 +77,29 @@ const Dialog = ({
   const onSaveAction = useCallback(
     (e) => {
       setIsDisabled(true);
-      isCreateDialog && setIsChecked(checked);
+      isCreateDialog && setCreateWithoutDialog(isChecked);
       onSave && onSave(e, value);
     },
-    [onSave, isCreateDialog, value, checked]
+    [onSave, isCreateDialog, value, isChecked]
   );
 
   const onCancelAction = useCallback((e) => {
     onCancel && onCancel(e);
-    setIsChecked(false);
+    setCreateWithoutDialog(false);
   }, []);
 
   const onCloseAction = useCallback(
     (e) => {
       if (!isDisabled) {
         onClose && onClose(e);
-        setIsChecked(false);
+        setCreateWithoutDialog(false);
       }
     },
     [isDisabled]
   );
 
   const onChangeCheckbox = () => {
-    isCreateDialog && setChecked((val) => !val);
+    isCreateDialog && setIsChecked((val) => !val);
   };
 
   return (
@@ -127,7 +127,7 @@ const Dialog = ({
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
               label={t("Common:DontAskAgain")}
-              isChecked={checked}
+              isChecked={isChecked}
               onChange={onChangeCheckbox}
             />
           </Box>
@@ -168,7 +168,7 @@ const Dialog = ({
 
 export default inject(({ auth, filesStore }) => {
   const { folderFormValidation } = auth.settingsStore;
-  const { isChecked, setIsChecked } = filesStore;
+  const { createWithoutDialog, setCreateWithoutDialog } = filesStore;
 
-  return { folderFormValidation, isChecked, setIsChecked };
+  return { folderFormValidation, createWithoutDialog, setCreateWithoutDialog };
 })(observer(Dialog));

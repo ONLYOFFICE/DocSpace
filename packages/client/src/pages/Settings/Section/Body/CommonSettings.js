@@ -28,8 +28,8 @@ const CommonSettings = ({
 
   t,
   showTitle,
-  isChecked,
-  setIsChecked,
+  createWithoutDialog,
+  setCreateWithoutDialog,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -71,7 +71,7 @@ const CommonSettings = ({
   );
 
   const onChangeCheckbox = () => {
-    setIsChecked(!isChecked);
+    setCreateWithoutDialog(!createWithoutDialog);
   };
 
   return (
@@ -86,7 +86,7 @@ const CommonSettings = ({
           className="toggle-btn"
           label={t("Common:DontAskAgain")}
           onChange={onChangeCheckbox}
-          isChecked={isChecked}
+          isChecked={createWithoutDialog}
         />
         <ToggleButton
           className="toggle-btn"
@@ -177,7 +177,7 @@ export default inject(
     } = settingsStore;
 
     const { myFolderId, commonFolderId } = treeFoldersStore;
-    const { setIsChecked, isChecked } = filesStore;
+    const { setCreateWithoutDialog, createWithoutDialog } = filesStore;
 
     return {
       storeOriginalFiles,
@@ -202,8 +202,8 @@ export default inject(
       setRecentSetting,
       myFolderId,
       commonFolderId,
-      setIsChecked,
-      isChecked,
+      setCreateWithoutDialog,
+      createWithoutDialog,
     };
   }
 )(observer(CommonSettings));

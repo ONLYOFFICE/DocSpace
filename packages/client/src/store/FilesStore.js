@@ -28,7 +28,7 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
-const storageCheckbox = JSON.parse(localStorage.getItem("checked"));
+const storageCheckbox = JSON.parse(localStorage.getItem("createWithoutDialog"));
 
 let requestCounter = 0;
 
@@ -49,7 +49,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  isChecked = storageCheckbox ? true : false;
+  createWithoutDialog = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -399,9 +399,9 @@ class FilesStore {
     localStorage.setItem("viewAs", viewAs);
   };
 
-  setIsChecked = (checked) => {
-    this.isChecked = checked;
-    localStorage.setItem("checked", JSON.stringify(checked));
+  setCreateWithoutDialog = (checked) => {
+    this.createWithoutDialog = checked;
+    localStorage.setItem("createWithoutDialog", JSON.stringify(checked));
   };
 
   setPageItemsLength = (pageItemsLength) => {
