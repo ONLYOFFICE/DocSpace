@@ -485,7 +485,19 @@ class FilesStore {
     if (!this.isEditor) {
       requests.push(
         getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
+        this.treeFoldersStore.fetchTreeFolders().then((treeFolders) => {
+          if (!treeFolders || !treeFolders.length) return;
+
+          const trashFolder = treeFolders.find(
+            (f) => f.rootFolderType == FolderType.TRASH
+          );
+
+          if (!trashFolder) return;
+
+          const isEmpty = !trashFolder.foldersCount && !trashFolder.filesCount;
+
+          this.setTrashIsEmpty(isEmpty);
+        })
       );
 
       if (isDesktopClient) {
@@ -493,7 +505,6 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => this.setIsInit(true));
   };
