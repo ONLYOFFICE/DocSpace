@@ -1445,30 +1445,49 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime)
+    {
+        Expression<Func<DbFolder, bool>> filter = f => f.FolderType == FolderType.DEFAULT;
+
+        await foreach (var q in GetTenantsWithFeeds(fromTime, filter, false))
+        {
+            yield return q;
+        }
+    }
+
+    public async IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
+    {
+        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+        Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
+
+        await foreach (var q in GetTenantsWithFeeds(fromTime, filter, true))
+        {
+            yield return q;
+        }
+    }
+
+    private async IAsyncEnumerable<int> GetTenantsWithFeeds(DateTime fromTime, Expression<Func<DbFolder, bool>> filter, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1 = filesDbContext.Folders
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Where(filter)
+            .Select(r => r.TenantId).Distinct();
 
         await foreach (var q in q1.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2 = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2 = filesDbContext.Security.Where(r => r.TimeStamp > fromTime).Select(r => r.TenantId).Distinct();
+
+            await foreach (var q in q2.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 
