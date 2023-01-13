@@ -62,7 +62,6 @@
   "ManagementCategorySecurity": "セキュリティ",
   "ManualBackupDescription": "ポータルに含まれるすべてのデータをファイルとして取得したい場合にこのオプションを使用してください。",
   "ManualBackupHelp": "<strong>データ バックアップ</strong>  はポータルデータの写しを取って保管し、ローカルサーバに復元するのために使用される機能です。",
-  "ManualBackupHelpNote": "データのためのストレージを選択してください。（アクセスすることができるように、第三者サービスストレージ詳細も入力してください）。<br/><strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）を{{organizationName}}「共通文書」フォルダーに接続する必要です。",
   "MaxCopies": "{{copiesCount}}は、バックアップの最大コピー数",
   "Migration": "移行",
   "PasswordMinLenght": "最小のパスワードの長さ",

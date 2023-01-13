@@ -100,7 +100,7 @@ public class RoomsModule : FeedModule
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
+        return await _folderDao.GetTenantsWithRoomsFeedsAsync(fromTime).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)

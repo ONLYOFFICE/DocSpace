@@ -115,7 +115,6 @@
   "ManagementCategorySecurity": "Security",
   "ManualBackupDescription": "Use this option if you want to get all data contained in the space as a file.",
   "ManualBackupHelp": "<strong>Data Backup</strong> option is used to back up the space data to be able to restore it later to your local server.",
-  "ManualBackupHelpNote": "Select the storage for the data (do not forget to enter your third-party storage details to be able to access it).<br/><strong>Note:</strong> you need to connect your third-party account (DropBox, Box.com, OneDrive or Google Drive) to {{organizationName}} Common folder before you will be able to save your backup there.",
   "MaxCopies": "{{copiesCount}} - maximum number of backup copies",
   "Migration": "Migration",
   "NewColorScheme": "New color scheme",
