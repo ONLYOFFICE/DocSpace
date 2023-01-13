@@ -239,6 +239,7 @@ const ViewerBase = (props) => {
         scaleX = state.scaleX;
         scaleY = state.scaleY;
       }
+      props.setPanelVisible(true);
       dispatch(
         createAction(ACTION_TYPES.update, {
           width: width,
@@ -623,7 +624,13 @@ const ViewerBase = (props) => {
       ref={viewerCore}
     >
       {isMobileOnly && props.displayUI && mobileDetails}
-      <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
+      <div
+        className={`${prefixCls}-mask`}
+        style={{
+          zIndex: zIndex,
+          backgroundColor: `${props.displayUI ? "transparent" : "#000"}`,
+        }}
+      />
       <ViewerImage
         prefixCls={prefixCls}
         imgSrc={
@@ -641,6 +648,7 @@ const ViewerBase = (props) => {
         currentTop={currentTop}
         opacity={state.opacity}
         getImageCenterXY={getImageCenterXY}
+        setPanelVisible={props.setPanelVisible}
         handleZoom={handleZoom}
         handleResetZoom={handleResetZoom}
         height={state.height}

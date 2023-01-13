@@ -12,6 +12,7 @@ export default function ViewerImage(props) {
     playlist,
     playlistPos,
     containerSize,
+    setPanelVisible,
   } = props;
   const navMenuHeight = 53;
   const isMouseDown = React.useRef(false);
@@ -220,6 +221,9 @@ export default function ViewerImage(props) {
       )
         return;
       if (e.deltaY > 70) props.onMaskClick();
+    },
+    onTap: (e) => {
+      setPanelVisible((visible) => !visible);
     },
     onSwiped: () => {
       console.log("onTouchEndOrOnMouseUp");

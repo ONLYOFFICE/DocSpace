@@ -135,7 +135,6 @@ export const Viewer = (props) => {
   );
 
   const displayUI = isAudio || panelVisible;
-  // const displayUI = true;
 
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
@@ -144,6 +143,7 @@ export const Viewer = (props) => {
       mobileDetails={mobileDetails}
       container={container}
       onMaskClick={onMaskClick}
+      setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
     />,
     container
