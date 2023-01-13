@@ -159,7 +159,11 @@ public class TenantManager
     public Tenant SaveTenant(Tenant tenant)
     {
         var newTenant = TenantService.SaveTenant(CoreSettings, tenant);
-        SetCurrentTenant(newTenant);
+        if (CallContext.GetData(CurrentTenant) is Tenant)
+        {
+            SetCurrentTenant(newTenant);
+        }
+
         return newTenant;
     }
 
