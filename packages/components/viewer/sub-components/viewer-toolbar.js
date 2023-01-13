@@ -17,6 +17,10 @@ const ToolbarItem = styled.li`
     cursor: pointer;
   }
 
+  .zoomPercent {
+    font-size: 10px;
+  }
+
   svg {
     path,
     rect {
