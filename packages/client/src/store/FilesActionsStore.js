@@ -553,7 +553,6 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  //TODO: refactor
   completeAction = async (selectedItem, type, isFolder = false) => {
     switch (type) {
       case FileAction.Create:
@@ -571,20 +570,6 @@ class FilesActionStore {
       default:
         break;
     }
-
-    // if (type === FileAction.Create) {
-    //   this.filesStore.addItem(selectedItem, isFolder);
-    // }
-
-    // if (type === FileAction.Rename) {
-    //   this.onSelectItem(
-    //     {
-    //       id: selectedItem.id,
-    //       isFolder: selectedItem.isFolder,
-    //     },
-    //     false
-    //   );
-    // }
   };
 
   onSelectItem = (
