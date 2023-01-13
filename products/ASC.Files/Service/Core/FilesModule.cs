@@ -147,7 +147,7 @@ public class FilesModule : FeedModule
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync();
+        return await _fileDao.GetTenantsWithFeedsAsync(fromTime, false).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)

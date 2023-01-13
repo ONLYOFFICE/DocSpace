@@ -967,12 +967,17 @@ class FilesActionStore {
       case "archive":
         return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Archive rooms operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
             if (!isRoomsFolder) {
@@ -1006,13 +1011,19 @@ class FilesActionStore {
       case "unarchive":
         return moveToFolder(myRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Restore rooms from archive operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
+
             this.updateCurrentFolder(null, [items]);
           })
           .then(() => setPortalQuota())

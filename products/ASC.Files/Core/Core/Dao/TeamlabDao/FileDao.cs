@@ -1462,30 +1462,31 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1Task = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Select(r => r.TenantId)
+            .Distinct();
 
         await foreach (var q in q1Task.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2Task = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2Task.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2Task = filesDbContext.Security
+            .Where(r => r.TimeStamp > fromTime)
+            .Select(r => r.TenantId)
+            .Distinct();
+
+            await foreach (var q in q2Task.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 

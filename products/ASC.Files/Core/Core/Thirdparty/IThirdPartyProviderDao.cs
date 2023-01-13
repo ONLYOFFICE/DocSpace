@@ -112,7 +112,7 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         throw new NotImplementedException();
     }
@@ -229,7 +229,12 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<string> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
+    public IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
     {
         throw new NotImplementedException();
     }

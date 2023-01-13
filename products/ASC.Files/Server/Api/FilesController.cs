@@ -116,13 +116,16 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="start"></param>
     /// <returns>Operation result</returns>
     [HttpGet("file/{fileId}/checkconversion")]
-    public IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(T fileId, bool start)
+    public async IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(T fileId, bool start)
     {
-        return _filesControllerHelper.CheckConversionAsync(new CheckConversionRequestDto<T>()
+        await foreach (var r in _filesControllerHelper.CheckConversionAsync(new CheckConversionRequestDto<T>()
         {
             FileId = fileId,
             StartConvert = start
-        });
+        }))
+        {
+            yield return r;
+        }
     }
 
     [HttpGet("file/{fileId}/presigneduri")]
