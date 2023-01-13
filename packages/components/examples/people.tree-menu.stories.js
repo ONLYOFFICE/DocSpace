@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import TreeMenu from "../tree-menu";
 import TreeNode from "../tree-menu/sub-components/tree-node";
-import CatalogDepartmentsIcon from "../public/static/images/catalog.departments.react.svg";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
-import ExpanderDownIcon from "../public/static/images/expander-down.react.svg";
-import ExpanderRightIcon from "../public/static/images/expander-right.react.svg";
+import CatalogDepartmentsIcon from "../../../public/images/catalog.departments.react.svg";
+import CatalogFolderIcon from "../../../public/images/catalog.folder.react.svg";
+import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../public/images/expander-right.react.svg";
 
 export default {
   title: "Examples/Tree",

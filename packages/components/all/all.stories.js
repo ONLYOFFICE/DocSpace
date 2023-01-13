@@ -27,8 +27,8 @@ import Toast from "../toast";
 import toastr from "../toast/toastr";
 import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
-import SettingsIcon from "../public/static/images/settings.react.svg";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
+import SettingsIcon from "../../../public/images/settings.react.svg";
+import CatalogFolderIcon from "../../../public/images/catalog.folder.react.svg";
 const array_items = [
   {
     key: "0",
