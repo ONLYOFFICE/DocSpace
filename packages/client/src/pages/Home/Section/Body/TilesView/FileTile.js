@@ -51,6 +51,7 @@ const FileTile = (props) => {
     onSelectOption,
     columnCount,
     isRooms,
+    withCtrlSelect,
   } = props;
 
   const temporaryExtension =
@@ -103,7 +104,7 @@ const FileTile = (props) => {
           isPrivacy={isPrivacy}
           isDragging={dragging}
           dragging={dragging && isDragging}
-          onClick={onMouseClick}
+          // onClick={onMouseClick}
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
@@ -121,6 +122,7 @@ const FileTile = (props) => {
           selectOption={onSelectOption}
           columnCount={columnCount}
           isRooms={isRooms}
+          withCtrlSelect={withCtrlSelect}
         >
           <FilesTileContent
             item={item}
@@ -136,13 +138,13 @@ const FileTile = (props) => {
 
 export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection } = filesStore;
+  const { setSelection, withCtrlSelect } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
-  return { getIcon, setSelection, isRooms };
+  return { getIcon, setSelection, isRooms, withCtrlSelect };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

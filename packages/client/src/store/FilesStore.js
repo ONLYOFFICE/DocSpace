@@ -2897,6 +2897,18 @@ class FilesStore {
     return await api.rooms.setRoomSecurity(id, data);
   };
 
+  withCtrlSelect = (item) => {
+    this.setHotkeyCaret(item);
+    this.setHotkeyCaretStart(item);
+
+    const fileIndex = this.selection.findIndex((f) => f.id === item.id);
+    if (fileIndex === -1) {
+      this.setSelection([item, ...this.selection]);
+    } else {
+      this.deselectFile(item);
+    }
+  };
+
   get disableDrag() {
     const {
       isRecycleBinFolder,

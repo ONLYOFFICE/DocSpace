@@ -121,7 +121,12 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseClick = (e) => {
-      const { viewAs } = this.props;
+      const { viewAs, withCtrlSelect, item } = this.props;
+
+      if (e.ctrlKey) {
+        withCtrlSelect(item);
+        return;
+      }
 
       if (
         e.target.tagName === "INPUT" ||
@@ -300,6 +305,7 @@ export default function withFileActions(WrappedFileItem) {
         activeFolders,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -369,6 +375,7 @@ export default function withFileActions(WrappedFileItem) {
         openFileAction,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
       };
     }
   )(observer(WithFileActions));

@@ -437,7 +437,18 @@ class Tile extends React.PureComponent {
   };
 
   onFileClick = (e) => {
-    const { onSelect, item, checked, setSelection } = this.props;
+    const {
+      onSelect,
+      item,
+      checked,
+      setSelection,
+      withCtrlSelect,
+    } = this.props;
+
+    if (e.ctrlKey) {
+      withCtrlSelect(item);
+      return;
+    }
 
     if (
       e.detail === 1 &&
