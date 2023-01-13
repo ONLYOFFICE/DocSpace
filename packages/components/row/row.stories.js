@@ -3,7 +3,9 @@ import Row from ".";
 import Text from "../text";
 import Avatar from "../avatar";
 import ComboBox from "../combobox";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
+import CatalogFolderIcon from "../../../public/images/catalog.folder.react.svg";
+
+import ItemActiveReactSvgUrl from "../../../public/images/item.active.react.svg?url";
 
 export default {
   title: "Components/Row",
@@ -33,7 +35,7 @@ const renderElementComboBox = (onSelect) => (
     options={[
       {
         key: 1,
-        icon: "static/images/item.active.react.svg",
+        icon: { ItemActiveReactSvgUrl },
         label: "Open",
       },
       { key: 2, icon: "static/images/check.react.svg", label: "Closed" },
@@ -41,7 +43,7 @@ const renderElementComboBox = (onSelect) => (
     onSelect={(option) => onSelect(option)}
     selectedOption={{
       key: 0,
-      icon: "static/images/item.active.react.svg",
+      icon: { ItemActiveReactSvgUrl },
       label: "",
     }}
     scaled={false}
