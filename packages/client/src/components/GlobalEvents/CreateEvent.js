@@ -271,7 +271,7 @@ const CreateEvent = ({
       onSave={onSave}
       onCancel={onCancel}
       onClose={onCloseAction}
-      onCreate={true}
+      isCreateDialog={true}
     />
   );
 };

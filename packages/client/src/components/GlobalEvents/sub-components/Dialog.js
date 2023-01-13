@@ -21,7 +21,7 @@ const Dialog = ({
   onSave,
   onCancel,
   onClose,
-  onCreate,
+  isCreateDialog,
   isChecked,
   setIsChecked,
 }) => {
@@ -30,8 +30,8 @@ const Dialog = ({
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    isChecked && onCreate && setChecked(isChecked);
-  }, [onCreate, isChecked]);
+    isChecked && isCreateDialog && setChecked(isChecked);
+  }, [isCreateDialog, isChecked]);
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -77,10 +77,10 @@ const Dialog = ({
   const onSaveAction = useCallback(
     (e) => {
       setIsDisabled(true);
-      onCreate && setIsChecked(checked);
+      isCreateDialog && setIsChecked(checked);
       onSave && onSave(e, value);
     },
-    [onSave, onCreate, value, checked]
+    [onSave, isCreateDialog, value, checked]
   );
 
   const onCancelAction = useCallback((e) => {
@@ -99,7 +99,7 @@ const Dialog = ({
   );
 
   const onChangeCheckbox = () => {
-    onCreate && setChecked((val) => !val);
+    isCreateDialog && setChecked((val) => !val);
   };
 
   return (
@@ -123,7 +123,7 @@ const Dialog = ({
           onFocus={onFocus}
           isDisabled={isDisabled}
         />
-        {onCreate && (
+        {isCreateDialog && (
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
               label={t("Common:DontAskAgain")}
@@ -145,7 +145,7 @@ const Dialog = ({
       <ModalDialog.Footer>
         <Button
           key="GlobalSendBtn"
-          label={onCreate ? t("Common:Create") : t("Common:Save")}
+          label={isCreateDialog ? t("Common:Create") : t("Common:Save")}
           size="normal"
           scale
           primary
