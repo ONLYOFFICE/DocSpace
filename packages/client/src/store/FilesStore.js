@@ -329,9 +329,9 @@ class FilesStore {
         this.files[foundIndex].fileStatus & ~FileStatus.IsEditing
       );
 
-      if (typeof id == "string") {
-        this.getFileInfo(id);
-      } else {
+      this.getFileInfo(id);
+
+      if (typeof id !== "string") {
         this.createThumbnail(id);
       }
     });
@@ -906,9 +906,9 @@ class FilesStore {
             if (
               data.current.providerKey &&
               data.current.rootFolderType === Rooms &&
-              this.treeFoldersStore.sharedRoomId
+              this.treeFoldersStore.myRoomsId
             ) {
-              folderId = this.treeFoldersStore.sharedRoomId;
+              folderId = this.treeFoldersStore.myRoomsId;
             }
 
             const folderInfo =
@@ -2716,10 +2716,6 @@ class FilesStore {
     });
   };
 
-  moveRoomToArchive = (id) => api.rooms.archiveRoom(id);
-
-  removeRoomFromArchive = (id) => api.rooms.unarchiveRoom(id);
-
   pinRoom = (id) => api.rooms.pinRoom(id);
 
   unpinRoom = (id) => api.rooms.unpinRoom(id);
@@ -2736,9 +2732,15 @@ class FilesStore {
     return folderInfo;
   };
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+  openDocEditor = (
+    id,
+    providerKey = null,
+    tab = null,
+    url = null,
+    preview = false
+  ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1) {
+    if (foundIndex !== -1 && !preview) {
       this.updateSelectionStatus(
         id,
         this.files[foundIndex].fileStatus | FileStatus.IsEditing,

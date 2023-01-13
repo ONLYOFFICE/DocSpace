@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "部長を追加",
-  "CustomNewDepartment": "{{groupCaption}}の (作成)",
-  "GroupAction": "団体行動",
-  "SearchAddedMembers": "追加されたメンバーの検索",
-  "SuccessSaveGroup": "{{groupCaption}}の '{{ groupName }}'が正常に保存されました。"
-}

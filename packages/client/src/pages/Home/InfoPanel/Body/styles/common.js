@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { mobile } from "@docspace/components/utils/device";
+import { mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
   ${({ isAccounts }) =>
@@ -44,6 +44,11 @@ const StyledTitle = styled.div`
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
+
+  @media ${tablet} {
+    width: 440px;
+    padding: 24px 0 24px 20px;
+  }
 
   @media ${mobile} {
     width: calc(100% - 32px);

@@ -1,6 +1,5 @@
 {
   "LblInviteAgain": "ເຊີນອີກຄັ້ງ",
   "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ອີເມວ <1> {{email}} </1> ທີ່ຢູ່ເມວ",
-  "ReassignmentData": "ການຈັດສັນຂໍ້ມູນຄືນ",
   "UserStatus": "ສະຖານະ"
 }

@@ -93,7 +93,7 @@ public class FoldersModule : FeedModule
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
+        return await _folderDao.GetTenantsWithFoldersFeedsAsync(fromTime).ToListAsync();
     }
 
     public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)

@@ -858,8 +858,7 @@ public class FileSecurity : IFileSecurity
                 if (e.Access == FileShare.Review ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing ||
-                    e.Access == FileShare.FillForms)
+                    e.Access == FileShare.Editing)
                 {
                     return true;
                 }
@@ -1546,6 +1545,8 @@ public class FileSecurity : IFileSecurity
         {
             if (action != FilesSecurityActions.Read &&
                 action != FilesSecurityActions.ReadHistory &&
+                action != FilesSecurityActions.Copy &&
+                action != FilesSecurityActions.Duplicate &&
                 action != FilesSecurityActions.Lock)
             {
                 file.Security[action] = false;

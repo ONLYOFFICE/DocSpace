@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Προσθήκη προϊσταμένου τμήματος",
-  "CustomNewDepartment": "{{groupCaption}} (δημιουργία)",
-  "GroupAction": "Ενέργεια ομάδας",
-  "SearchAddedMembers": "Αναζήτηση προστιθέμενων μελών",
-  "SuccessSaveGroup": "Το {{groupCaption}} «{{ groupName }}» έχει αποθηκευτεί επιτυχώς"
-}

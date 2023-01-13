@@ -6,7 +6,7 @@ import RoomTypeDropdown from "./RoomTypeDropdown";
 import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
 import RoomType from "./RoomType";
-import IconEditor from "./IconEditor";
+
 import PermanentSettings from "./PermanentSettings";
 import InputParam from "./Params/InputParam";
 import IsPrivateParam from "./IsPrivateParam";
@@ -15,11 +15,22 @@ import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 import { getRoomTypeDefaultTagTranslation } from "../data";
 
+import ImageEditor from "@docspace/components/ImageEditor";
+import PreviewTile from "@docspace/components/ImageEditor/PreviewTile";
+
 const StyledSetRoomParams = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 22px;
+
+  .icon-editor {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: start;
+    gap: 16px;
+  }
 `;
 
 const SetRoomParams = ({
@@ -35,6 +46,8 @@ const SetRoomParams = ({
   isValidTitle,
   setIsValidTitle,
 }) => {
+  const [previewIcon, setPreviewIcon] = React.useState(null);
+
   const onChangeName = (e) => {
     setIsValidTitle(true);
     setRoomParams({ ...roomParams, title: e.target.value });
@@ -111,14 +124,26 @@ const SetRoomParams = ({
         />
       )}
 
-      <IconEditor
+      <ImageEditor
         t={t}
-        title={roomParams.title}
-        tags={roomParams.tags}
-        defaultTagLabel={getRoomTypeDefaultTagTranslation(roomParams.type, t)}
-        icon={roomParams.icon}
-        onChangeIcon={onChangeIcon}
         isDisabled={isDisabled}
+        image={roomParams.icon}
+        setPreview={setPreviewIcon}
+        onChangeImage={onChangeIcon}
+        classNameWrapperImageCropper={"icon-editor"}
+        Preview={
+          <PreviewTile
+            t={t}
+            title={roomParams.title || t("Files:NewRoom")}
+            previewIcon={previewIcon}
+            tags={roomParams.tags.map((tag) => tag.name)}
+            isDisabled={isDisabled}
+            defaultTagLabel={getRoomTypeDefaultTagTranslation(
+              roomParams.type,
+              t
+            )}
+          />
+        }
       />
     </StyledSetRoomParams>
   );

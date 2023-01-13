@@ -35,8 +35,6 @@ const getTreeItems = (data, path, t) => {
         return t("StudioTimeLanguageSettings");
       case "CustomTitles":
         return t("CustomTitles");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
@@ -184,8 +182,6 @@ class ArticleBodyContent extends React.Component {
         return t("StudioTimeLanguageSettings");
       case "CustomTitlesWelcome":
         return t("CustomTitlesWelcome");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
