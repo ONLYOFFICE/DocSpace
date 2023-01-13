@@ -221,27 +221,25 @@ const ConvertPasswordDialogComponent = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <StyledComponent isTabletView={isTabletView}>
-          <div className="convert-password_footer">
-            <Button
-              id="convert-password-dialog_button-accept"
-              className="convert-password-dialog_button"
-              key="ContinueButton"
-              label={t("Common:SaveButton")}
-              size="small"
-              primary
-              onClick={onConvert}
-              isLoading={isLoading}
-            />
-            <Button
-              className="convert-password-dialog_button"
-              key="CloseButton"
-              label={t("Common:CloseButton")}
-              size="small"
-              onClick={onClose}
-            />
-          </div>
-        </StyledComponent>
+        <Button
+          id="convert-password-dialog_button-accept"
+          className="convert-password-dialog_button"
+          key="ContinueButton"
+          label={t("Common:SaveButton")}
+          size="normal"
+          scale
+          primary
+          onClick={onConvert}
+          isLoading={isLoading}
+        />
+        <Button
+          className="convert-password-dialog_button"
+          key="CloseButton"
+          label={t("Common:CloseButton")}
+          scale
+          size="normal"
+          onClick={onClose}
+        />
       </ModalDialog.Footer>
     </ModalDialog>
   );
