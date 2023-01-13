@@ -27,6 +27,11 @@ const Dialog = ({
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    isChecked && onCreate && setChecked(isChecked);
+  }, [onCreate, isChecked]);
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -72,9 +77,10 @@ const Dialog = ({
   const onSaveAction = useCallback(
     (e) => {
       setIsDisabled(true);
+      onCreate && setIsChecked(checked);
       onSave && onSave(e, value);
     },
-    [onSave, value]
+    [onSave, onCreate, value, checked]
   );
 
   const onCancelAction = useCallback((e) => {
@@ -93,7 +99,7 @@ const Dialog = ({
   );
 
   const onChangeCheckbox = () => {
-    setIsChecked(!isChecked);
+    onCreate && setChecked((val) => !val);
   };
 
   return (
@@ -121,7 +127,7 @@ const Dialog = ({
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
               label={t("Common:DontAskAgain")}
-              isChecked={isChecked}
+              isChecked={checked}
               onChange={onChangeCheckbox}
             />
           </Box>
