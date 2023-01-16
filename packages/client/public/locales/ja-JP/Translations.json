@@ -1,5 +1,4 @@
 {
-  "AddAccount": "アカウントの追加",
   "ArchivingData": "データのアーカイブ",
   "ConnectingAccount": "接続アカウント",
   "Copy": "コピー",
@@ -31,7 +30,7 @@
   "MobileAndroid": "GooglePlayでONLYOFFICE Documentsを入手する",
   "MobileIos": "AppStoreでONLYOFFICEドキュメントをダウンロードする",
   "MobileLinux": "Linux用のONLYOFFICEデスクトップエディタをダウンロードする",
-  "MobileMac": "MacOS用のONLYOFFICEデスクトップエディタをダウンロードする",
+  "MobileMac": "macOS用のONLYOFFICEデスクトップエディタをダウンロードする",
   "MobileWin": "Windows用のONLYOFFICEデスクトップエディタをダウンロードする",
   "MoveHere": "ここに移動",
   "MoveToOperation": "移動中",

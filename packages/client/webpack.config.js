@@ -244,7 +244,6 @@ module.exports = (env, argv) => {
           "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
-        "./GroupSelector": "./src/components/GroupSelector",
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",

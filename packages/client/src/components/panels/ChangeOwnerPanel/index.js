@@ -8,7 +8,6 @@ import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-// import OwnerSelector from "./OwnerSelector";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -75,15 +74,8 @@ class ChangeOwnerComponent extends React.Component {
   };
 
   render() {
-    const {
-      visible,
-      t,
-      selection,
-      groupsCaption,
-      isLoading,
-      theme,
-    } = this.props;
-    const { showPeopleSelector, owner } = this.state;
+    const { visible, t, selection, isLoading } = this.props;
+    const { owner } = this.state;
 
     const ownerName = owner.displayName ? owner.displayName : owner.label;
     const fileName = selection[0]?.title;
@@ -135,17 +127,6 @@ class ChangeOwnerComponent extends React.Component {
             </StyledFooter>
           </StyledContent>
         </Aside>
-        {/* {showPeopleSelector && (
-          <OwnerSelector
-            theme={theme}
-            ownerLabel={t("ChangeOwner")}
-            isOpen={showPeopleSelector}
-            groupsCaption={groupsCaption}
-            onOwnerSelect={this.onOwnerSelect}
-            onClose={this.onClose}
-            onClosePanel={this.onShowPeopleSelector}
-          />
-        )} */}
       </StyledAsidePanel>
     );
   }
@@ -169,7 +150,6 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
-    groupsCaption: auth.settingsStore.customNames.groupsCaption,
     theme: auth.settingsStore.theme,
     selection: selection.length ? selection : [bufferSelection],
     isLoading,

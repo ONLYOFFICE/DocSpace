@@ -100,15 +100,6 @@ class AccountsContextOptionsStore {
             label: t("PeopleTranslations:DisableUserButton"),
             onClick: () => this.onDisableClick(t, item),
           };
-
-        case "reassign-data":
-          return {
-            id: "option_reassign-data",
-            key: option,
-            icon: "images/ressing_data.react.svg",
-            label: t("PeopleTranslations:ReassignData"),
-            onClick: () => this.onReassignDataClick(item),
-          };
         case "delete-personal-data":
           return {
             id: "option_delete-personal-data",
@@ -356,20 +347,6 @@ class AccountsContextOptionsStore {
     const { changeStatus } = this.peopleStore;
 
     changeStatus(EmployeeStatus.Disabled, [id]);
-  };
-
-  onReassignDataClick = (item) => {
-    const { userName } = item;
-
-    toastr.warning("Work at progress");
-
-    // history.push(
-    //   combineUrl(
-    //     window.DocSpaceConfig?.proxy?.url,
-    //     config.homepage,
-    //     `/reassign/${userName}`
-    //   )
-    // );
   };
 
   onDeletePersonalDataClick = (t, item) => {

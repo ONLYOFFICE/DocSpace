@@ -24,13 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.RegularExpressions;
+
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 [Scope]
 public class MigrationCreator
 {
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IConfiguration _configuration;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly TempStream _tempStream;
     private readonly DbFactory _dbFactory;
@@ -41,6 +41,7 @@ public class MigrationCreator
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
     private string _userName;
+    private string _mail;
     private string _toRegion;
     private int _tenant;
     private readonly object _locker = new object();
@@ -54,9 +55,9 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
+    public string NewAlias { get; private set; }
+
     public MigrationCreator(
-        IHostEnvironment hostEnvironment,
-        IConfiguration configuration,
         TenantDomainValidator tenantDomainValidator,
         TempStream tempStream,
         DbFactory dbFactory,
@@ -64,8 +65,6 @@ public class MigrationCreator
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
     {
-        _hostEnvironment = hostEnvironment;
-        _configuration = configuration;
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
         _dbFactory = dbFactory;
@@ -74,11 +73,11 @@ public class MigrationCreator
         _moduleProvider = moduleProvider;
     }
 
-    public string Create(int tenant, string userName, string toRegion)
+    public string Create(int tenant, string userName, string mail, string toRegion)
     {
-        Init(tenant, userName, toRegion);
+        Init(tenant, userName, mail, toRegion);
 
-        var id = GetId();
+        var id = GetUserId();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
@@ -89,22 +88,40 @@ public class MigrationCreator
         return fileName;
     }
 
-    private void Init(int tenant, string userName, string toRegion)
+    private void Init(int tenant, string userName, string mail, string toRegion)
     {
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
         _toRegion = toRegion;
         _userName = userName;
+        _mail = mail;
         _tenant = tenant;
     }
 
-    private Guid GetId()
+    private Guid GetUserId()
     {
         try
         {
             var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
-            return userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+            User user = null;
+            if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail)) 
+            {
+                if (string.IsNullOrEmpty(_userName))
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    _userName = user.UserName;
+                }
+                else
+                {
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                }
+            }
+            else
+            {
+                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+            }
+            return user.Id;
         }
         catch (Exception)
         {
@@ -180,27 +197,51 @@ public class MigrationCreator
     private void ChangeAlias(DataTable data)
     {
         var aliases = GetAliases();
-        var newAlias = _userName;
+        NewAlias = _userName;
         while (true)
         {
             try
             {
-                _tenantDomainValidator.ValidateDomainLength(newAlias);
-                _tenantDomainValidator.ValidateDomainCharacters(newAlias);
-                if (aliases.Contains(newAlias))
+                NewAlias = RemoveInvalidCharacters(NewAlias);
+                _tenantDomainValidator.ValidateDomainLength(NewAlias);
+                _tenantDomainValidator.ValidateDomainCharacters(NewAlias);
+                if (aliases.Contains(NewAlias))
                 {
                     throw new Exception($"Alias is busy");
                 }
                 break;
             }
+            catch (TenantTooShortException ex)
+            {
+                if (NewAlias.Length > 100)
+                {
+                    NewAlias = NewAlias.Substring(0, 50);
+                }
+                else
+                {
+                    NewAlias = $"DocSpace{NewAlias}";
+                }
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                newAlias = Console.ReadLine();
+                var last = NewAlias.Substring(NewAlias.Length-1);
+                if (int.TryParse(last, out var lastNumber))
+                {
+                    NewAlias = NewAlias.Substring(0, NewAlias.Length - 1) + (lastNumber + 1);
+                }
+                else
+                {
+                    NewAlias = NewAlias + 1;
+                }
             }
         }
-        var q = data.Rows[0];
-        data.Rows[0]["alias"] = newAlias;
+        Console.WriteLine($"Alias is - {NewAlias}");
+        data.Rows[0]["alias"] = NewAlias;
+    }
+
+    private string RemoveInvalidCharacters(string alias)
+    {
+        return Regex.Replace(alias, "[^a-z0-9]", "", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     private List<string> GetAliases()

@@ -18,6 +18,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -141,21 +142,21 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-documnet",
             key: "new-document",
-            label: t("NewDocument"),
+            label: t("Common:NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
             id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
-            label: t("NewSpreadsheet"),
+            label: t("Common:NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
             id: "personal_new-presentation",
             key: "new-presentation",
-            label: t("NewPresentation"),
+            label: t("Common:NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
@@ -193,7 +194,7 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-folder",
             key: "new-folder",
-            label: t("NewFolder"),
+            label: t("Common:NewFolder"),
             onClick: this.createFolder,
             icon: "images/catalog.folder.react.svg",
           },
@@ -674,6 +675,7 @@ class SectionHeaderContent extends React.Component {
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
+                isMobileView={isMobileOnly}
               />
             ) : (
               <div className="header-container">
@@ -919,5 +921,9 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(withRouter(observer(SectionHeaderContent)))
+  ])(
+    withLoader(withRouter(observer(SectionHeaderContent)))(
+      <Loaders.SectionHeader />
+    )
+  )
 );

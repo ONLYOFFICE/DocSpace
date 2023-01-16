@@ -10,8 +10,8 @@ import {
   removeFiles,
   removeShareFiles,
   createFolder,
+  moveToFolder,
 } from "@docspace/common/api/files";
-import { deleteRoom } from "@docspace/common/api/rooms";
 import {
   ConflictResolveType,
   FileAction,
@@ -553,13 +553,12 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (selectedItem, type, isFolder = false) => {
-    if (type === FileAction.Create) {
-      this.filesStore.addFile(selectedItem, isFolder);
-    }
-
-    if (type === FileAction.Create || type === FileAction.Rename) {
-      type === FileAction.Rename &&
+  completeAction = async (selectedItem, type, isFolder = false) => {
+    switch (type) {
+      case FileAction.Create:
+        this.filesStore.addItem(selectedItem, isFolder);
+        break;
+      case FileAction.Rename:
         this.onSelectItem(
           {
             id: selectedItem.id,
@@ -567,6 +566,9 @@ class FilesActionStore {
           },
           false
         );
+        break;
+      default:
+        break;
     }
   };
 
@@ -605,7 +607,7 @@ class FilesActionStore {
         } else {
           setSelection([item]);
           setHotkeyCaret(null);
-          setHotkeyCaretStart(null);
+          setHotkeyCaretStart(item);
         }
       } else if (
         isSelected &&
@@ -614,7 +616,7 @@ class FilesActionStore {
         !isSingleMenu
       ) {
         setHotkeyCaret(null);
-        setHotkeyCaretStart(null);
+        setHotkeyCaretStart(item);
       } else {
         setSelected("none");
         setBufferSelection(item);
@@ -708,9 +710,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
-      const actions = items.map((item) => deleteRoom(item));
-
-      return Promise.all(actions)
+      return removeFiles(items, [], true, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -915,16 +915,16 @@ class FilesActionStore {
   };
 
   setArchiveAction = async (action, folders, t) => {
-    const {
-      addActiveItems,
-      moveRoomToArchive,
-      removeRoomFromArchive,
-      setSelected,
-    } = this.filesStore;
+    const { addActiveItems, setSelected } = this.filesStore;
 
     const { setSelectedFolder } = this.selectedFolderStore;
 
-    const { roomsFolder, isRoomsFolder } = this.treeFoldersStore;
+    const {
+      roomsFolder,
+      isRoomsFolder,
+      archiveRoomsId,
+      myRoomsId,
+    } = this.treeFoldersStore;
     const { setPortalQuota } = this.authStore.currentQuotaStore;
 
     const {
@@ -935,6 +935,11 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
+
+    if (!myRoomsId || !archiveRoomsId) {
+      console.error("Default categories not found");
+      return;
+    }
 
     const items = Array.isArray(folders)
       ? folders.map((x) => (x?.id ? x.id : x))
@@ -950,22 +955,21 @@ class FilesActionStore {
 
     addActiveItems(null, items);
 
-    const actions = [];
-
     switch (action) {
       case "archive":
-        items.forEach((item) => {
-          actions.push(moveRoomToArchive(item));
-        });
-
-        return Promise.all(actions)
+        return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Archive rooms operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
             if (!isRoomsFolder) {
@@ -997,18 +1001,21 @@ class FilesActionStore {
           })
           .finally(() => clearActiveOperations(null, items));
       case "unarchive":
-        items.forEach((item) => {
-          actions.push(removeRoomFromArchive(item));
-        });
-        return Promise.all(actions)
+        return moveToFolder(myRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Restore rooms from archive operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
+
             this.updateCurrentFolder(null, [items]);
           })
           .then(() => setPortalQuota())
@@ -1096,9 +1103,13 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
+      setHotkeyCaret,
+      setHotkeyCaretStart,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+    setHotkeyCaret(null);
+    setHotkeyCaretStart(file);
 
     if (checked) {
       selectFile(file);
@@ -1241,18 +1252,6 @@ class FilesActionStore {
       folderTitle,
       isCopy,
     };
-
-    const {
-      setThirdPartyMoveDialogVisible,
-      setDestFolderId,
-    } = this.dialogsStore;
-
-    const provider = selection.find((x) => x.providerKey);
-
-    if (provider && providerKey !== provider.providerKey) {
-      setDestFolderId(destFolderId);
-      return setThirdPartyMoveDialogVisible(true);
-    }
 
     for (let item of selection) {
       if (!item.isFolder) {
@@ -1470,7 +1469,6 @@ class FilesActionStore {
         alert: true,
       });
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      onClose();
       return toastr.error(err.message ? err.message : err);
     }
   };

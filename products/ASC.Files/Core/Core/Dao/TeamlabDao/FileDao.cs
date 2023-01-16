@@ -770,11 +770,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            var fromFolders = Query(filesDbContext.Files)
+            var fromFolders = await Query(filesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.ParentId)
                 .Distinct()
-                .AsAsyncEnumerable();
+                .ToListAsync();
 
             var toDeleteLinks = Query(filesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             filesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
@@ -803,7 +803,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             await tx.CommitAsync();
 
-            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId));
+            foreach (var folderId in fromFolders)
+            {
+                await RecalculateFilesCountAsync(folderId);
+            }
 
             if (deleteFolder)
             {
@@ -814,8 +817,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 await _factoryIndexer.DeleteAsync(toDeleteFile);
             }
-
-            await forEachTask;
         });
     }
 
@@ -1461,30 +1462,31 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1Task = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Select(r => r.TenantId)
+            .Distinct();
 
         await foreach (var q in q1Task.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2Task = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2Task.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2Task = filesDbContext.Security
+            .Where(r => r.TimeStamp > fromTime)
+            .Select(r => r.TenantId)
+            .Distinct();
+
+            await foreach (var q in q2Task.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 

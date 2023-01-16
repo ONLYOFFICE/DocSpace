@@ -1080,9 +1080,7 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
 
     return fileCopyAs(fileId, title, folderId, enableExternalExt, password)
-      .then(() => {
-        fetchFiles(folderId, filter, true, true);
-      })
+      .then(() => fetchFiles(folderId, filter, true, true))
       .catch((err) => {
         return Promise.reject(err);
       });

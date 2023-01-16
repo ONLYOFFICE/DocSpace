@@ -79,6 +79,17 @@ const StyledDropdown = styled.div`
   &.download-dialog-dropDown {
     margin-top: 4px;
   }
+
+  @media (orientation: portrait) {
+    ${(props) =>
+      props.isMobileView &&
+      css`
+        top: auto !important;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+      `}
+  }
 `;
 
 StyledDropdown.defaultProps = { theme: Base };

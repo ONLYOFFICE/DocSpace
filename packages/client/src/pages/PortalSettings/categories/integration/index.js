@@ -40,7 +40,7 @@ const IntegrationWrapper = (props) => {
     },
     {
       id: "third-party-services",
-      name: t("ThirdPartyTitle"),
+      name: t("Translations:ThirdPartyTitle"),
       content: <ThirdParty />,
     },
   ];
@@ -91,7 +91,7 @@ export default inject(({ setup, auth }) => {
     enablePlugins,
   };
 })(
-  withTranslation(["Settings", "SingleSignOn"])(
+  withTranslation(["Settings", "SingleSignOn", "Translations"])(
     withRouter(observer(IntegrationWrapper))
   )
 );

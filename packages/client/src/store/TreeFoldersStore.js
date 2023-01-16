@@ -73,8 +73,12 @@ class TreeFoldersStore {
 
   getSubfolders = (folderId) => getSubfolders(folderId);
 
-  get sharedRoomId() {
+  get myRoomsId() {
     return this.rootFoldersTitles[FolderType.Rooms]?.id;
+  }
+
+  get archiveRoomsId() {
+    return this.rootFoldersTitles[FolderType.Archive]?.id;
   }
 
   get myFolder() {

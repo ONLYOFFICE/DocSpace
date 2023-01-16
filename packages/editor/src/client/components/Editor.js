@@ -191,15 +191,15 @@ function Editor({
   const getDefaultFileName = (format) => {
     switch (format) {
       case "docx":
-        return t("NewDocument");
+        return t("Common:NewDocument");
       case "xlsx":
-        return t("NewSpreadsheet");
+        return t("Common:NewSpreadsheet");
       case "pptx":
-        return t("NewPresentation");
+        return t("Common:NewPresentation");
       case "docxf":
-        return t("NewMasterForm");
+        return t("Common:NewMasterForm");
       default:
-        return t("NewFolder");
+        return t("Common:NewFolder");
     }
   };
 
@@ -501,11 +501,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        // if (fileInfo.rootFolderType === FolderType.Rooms) {
-        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        // } else {
-        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        //}
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 

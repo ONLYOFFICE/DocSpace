@@ -74,15 +74,15 @@ export const setDocumentTitle = (subTitle = null) => {
 export const getDefaultFileName = (format) => {
   switch (format) {
     case "docx":
-      return i18n.t("NewDocument");
+      return i18n.t("Common:NewDocument");
     case "xlsx":
-      return i18n.t("NewSpreadsheet");
+      return i18n.t("Common:NewSpreadsheet");
     case "pptx":
-      return i18n.t("NewPresentation");
+      return i18n.t("Common:NewPresentation");
     case "docxf":
-      return i18n.t("NewMasterForm");
+      return i18n.t("Common:NewMasterForm");
     default:
-      return i18n.t("NewFolder");
+      return i18n.t("Common:NewFolder");
   }
 };
 

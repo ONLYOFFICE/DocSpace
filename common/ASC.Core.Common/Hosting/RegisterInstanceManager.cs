@@ -33,6 +33,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
 {
     private readonly IRegisterInstanceDao<T> _registerInstanceRepository;
     private readonly int _timeUntilUnregisterInSeconds;
+    private readonly bool _isSingletoneMode;
     public RegisterInstanceManager(IRegisterInstanceDao<T> registerInstanceRepository,
                                    IConfiguration configuration)
     {
@@ -42,9 +43,17 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         {
             _timeUntilUnregisterInSeconds = 15;
         }
+
+        if (!bool.TryParse(configuration["core:hosting:singletonMode"], out _isSingletoneMode))
+        {
+            _isSingletoneMode = true;
+        }
+
     }
     public async Task Register(string instanceId)
     {
+        if (_isSingletoneMode) return;
+
         var instances = await _registerInstanceRepository.GetAll();
         var registeredInstance = instances.FirstOrDefault(x => x.InstanceRegistrationId == instanceId);
 
@@ -76,6 +85,8 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
 
     public async Task<bool> IsActive(string instanceId)
     {
+        if (_isSingletoneMode) return await Task.FromResult(true);
+
         var instances = await _registerInstanceRepository.GetAll();
         var instance = instances.FirstOrDefault(x => x.InstanceRegistrationId == instanceId);
 
@@ -84,6 +95,8 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
 
     public async Task<List<string>> DeleteOrphanInstances()
     {
+        if (_isSingletoneMode) return await Task.FromResult(new List<string>());
+
         var instances = await _registerInstanceRepository.GetAll();
         var oldRegistrations = instances.Where(IsOrphanInstance).ToList();
 

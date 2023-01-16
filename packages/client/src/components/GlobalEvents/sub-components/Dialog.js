@@ -6,6 +6,8 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import ComboBox from "@docspace/components/combobox";
+import Checkbox from "@docspace/components/checkbox";
+import Box from "@docspace/components/box";
 
 const Dialog = ({
   t,
@@ -19,9 +21,17 @@ const Dialog = ({
   onSave,
   onCancel,
   onClose,
+  isCreateDialog,
+  createWithoutDialog,
+  setCreateWithoutDialog,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    createWithoutDialog && isCreateDialog && setIsChecked(createWithoutDialog);
+  }, [isCreateDialog, createWithoutDialog]);
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -52,7 +62,7 @@ const Dialog = ({
     let newValue = e.target.value;
 
     if (newValue.match(folderFormValidation)) {
-      toastr.warning(t("ContainsSpecCharacter"));
+      toastr.warning(t("Files:ContainsSpecCharacter"));
     }
 
     newValue = newValue.replace(folderFormValidation, "_");
@@ -67,23 +77,30 @@ const Dialog = ({
   const onSaveAction = useCallback(
     (e) => {
       setIsDisabled(true);
+      isCreateDialog && setCreateWithoutDialog(isChecked);
       onSave && onSave(e, value);
     },
-    [onSave, value]
+    [onSave, isCreateDialog, value, isChecked]
   );
 
   const onCancelAction = useCallback((e) => {
     onCancel && onCancel(e);
+    setCreateWithoutDialog(false);
   }, []);
 
   const onCloseAction = useCallback(
     (e) => {
       if (!isDisabled) {
         onClose && onClose(e);
+        setCreateWithoutDialog(false);
       }
     },
     [isDisabled]
   );
+
+  const onChangeCheckbox = () => {
+    isCreateDialog && setIsChecked((val) => !val);
+  };
 
   return (
     <ModalDialog
@@ -106,6 +123,16 @@ const Dialog = ({
           onFocus={onFocus}
           isDisabled={isDisabled}
         />
+        {isCreateDialog && (
+          <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
+            <Checkbox
+              label={t("Common:DontAskAgain")}
+              isChecked={isChecked}
+              onChange={onChangeCheckbox}
+            />
+          </Box>
+        )}
+
         {options && (
           <ComboBox
             style={{ marginTop: "16px" }}
@@ -118,7 +145,7 @@ const Dialog = ({
       <ModalDialog.Footer>
         <Button
           key="GlobalSendBtn"
-          label={t("Common:SaveButton")}
+          label={isCreateDialog ? t("Common:Create") : t("Common:Save")}
           size="normal"
           scale
           primary
@@ -139,8 +166,9 @@ const Dialog = ({
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, filesStore }) => {
   const { folderFormValidation } = auth.settingsStore;
+  const { createWithoutDialog, setCreateWithoutDialog } = filesStore;
 
-  return { folderFormValidation };
+  return { folderFormValidation, createWithoutDialog, setCreateWithoutDialog };
 })(observer(Dialog));

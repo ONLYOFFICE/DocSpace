@@ -1,9 +1,8 @@
 {
   "Account": "Account",
   "ConnectFolderTitle": "Folder title",
-  "ConnectMakeShared": "Share and put into 'Common' folder",
-  "ConnectionUrl": "Connection url",
+  "ConnectionUrl": "Connection URL",
   "Login": "Login",
   "Reconnect": "Reconnect",
-  "SuccessfulConnectionOfAThirdParty": "Connection of a third-party resource was successful."
+  "SuccessfulConnectionOfAThirdParty": "Third-party service was successfully connected."
 }

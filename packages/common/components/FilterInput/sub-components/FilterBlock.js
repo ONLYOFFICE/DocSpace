@@ -14,7 +14,6 @@ import Portal from "@docspace/components/portal";
 import FilterBlockItem from "./FilterBlockItem";
 
 import PeopleSelector from "client/PeopleSelector";
-import GroupSelector from "client/GroupSelector";
 
 import {
   StyledFilterBlock,
@@ -344,23 +343,13 @@ const FilterBlock = ({
       {showSelector.show ? (
         <>
           <StyledFilterBlock>
-            {showSelector.isAuthor ? (
-              <PeopleSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            ) : (
-              <GroupSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            )}
+            <PeopleSelector
+              className="people-selector"
+              isMultiSelect={false}
+              onAccept={selectOption}
+              onBackClick={onArrowClick}
+              headerLabel={selectorLabel}
+            />
 
             <StyledControlContainer onClick={hideFilterBlock}>
               <StyledCrossIcon />

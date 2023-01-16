@@ -8,11 +8,11 @@ import toastr from "@docspace/components/toast/toastr";
 import copy from "copy-to-clipboard";
 
 const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
-  const { t } = useTranslation("InviteDialog");
+  const { t } = useTranslation("Translations");
 
   const onCopyClick = () => {
     copy(placeholder);
-    toastr.success(t("InviteDialog:LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   return (
