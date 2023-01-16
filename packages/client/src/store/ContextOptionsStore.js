@@ -388,6 +388,10 @@ class ContextOptionsStore {
       successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
+    if (id === this.selectedFolderStore.id) {
+      console.log("needToMove");
+    }
+
     this.filesActionsStore.deleteItemAction(
       id,
       translations,
