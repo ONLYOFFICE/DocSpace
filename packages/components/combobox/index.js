@@ -44,11 +44,13 @@ class ComboBox extends React.Component {
       disableItemClick,
       isDisabled,
       toggleAction,
+      isLoading,
     } = this.props;
 
     if (
       isDisabled ||
       disableItemClick ||
+      isLoading ||
       (disableIconClick && e && e.target.closest(".optionalBlock"))
     )
       return;
@@ -112,6 +114,7 @@ class ComboBox extends React.Component {
       isAside,
       withBackground,
       advancedOptionsCount,
+      isLoading,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -185,6 +188,7 @@ class ComboBox extends React.Component {
           modernView={modernView}
           fillIcon={fillIcon}
           tabIndex={tabIndex}
+          isLoading={isLoading}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -294,25 +298,25 @@ ComboBox.propTypes = {
   comboIcon: PropTypes.string,
   manualY: PropTypes.string,
   manualX: PropTypes.string,
-  //** Dropdown manual width */
+  /** Dropdown manual width */
   manualWidth: PropTypes.string,
   displaySelectedOption: PropTypes.bool,
   fixedDirection: PropTypes.bool,
   /** Disable clicking on the item */
   disableItemClick: PropTypes.bool,
-
+  /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
   isExternalLink: PropTypes.bool,
   isPersonal: PropTypes.bool,
-
   offsetLeft: PropTypes.number,
-
-  /**Tell when combo-box should displaying at modern view */
+  /** Tell when combo-box should displaying at modern view */
   modernView: PropTypes.bool,
-
-  /**Count of advanced options  */
+  /** Count of advanced options  */
   advancedOptionsCount: PropTypes.number,
+  /** Accepts css tab-index style */
   tabIndex: PropTypes.number,
+  /** Tells when a component is loading */
+  isLoading: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -333,6 +337,7 @@ ComboBox.defaultProps = {
   isExternalLink: false,
   modernView: false,
   tabIndex: -1,
+  isLoading: false,
 };
 
 export default ComboBox;

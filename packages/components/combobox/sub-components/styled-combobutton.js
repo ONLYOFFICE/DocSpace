@@ -6,6 +6,8 @@ import NoUserSelect from "../../utils/commonStyles";
 import TriangleDownIcon from "../../../../public/images/triangle.down.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
+import Loader from "../../loader";
+
 const StyledTriangleDownIcon = styled(TriangleDownIcon)`
   ${commonIconsStyles}
 `;
@@ -13,7 +15,7 @@ const StyledTriangleDownIcon = styled(TriangleDownIcon)`
 const modernViewButton = css`
   height: ${(props) => props.theme.comboBox.button.heightModernView};
   background: ${(props) =>
-    props.isOpen
+    props.isOpen || props.isLoading
       ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.backgroundModernView};
 
@@ -23,7 +25,7 @@ const modernViewButton = css`
 
 const hoverModernViewButton = css`
   background: ${(props) =>
-    props.isOpen
+    props.isOpen || props.isLoading
       ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.hoverBackgroundModernView} !important;
 `;
@@ -117,7 +119,9 @@ const StyledComboButton = styled.div`
         ? props.theme.comboBox.button.hoverBorderColorOpen
         : props.theme.comboBox.button.hoverBorderColor};
     cursor: ${(props) =>
-      props.isDisabled || (!props.containOptions && !props.withAdvancedOptions)
+      props.isDisabled ||
+      (!props.containOptions && !props.withAdvancedOptions) ||
+      props.isLoading
         ? "default"
         : "pointer"};
 
@@ -138,6 +142,7 @@ const StyledComboButton = styled.div`
     }
   }
   .combo-button-label {
+    visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
     margin-right: ${(props) =>
       props.noBorder
         ? props.theme.comboBox.label.marginRight
@@ -182,6 +187,8 @@ StyledComboButton.defaultProps = { theme: Base };
 const StyledOptionalItem = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
 
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
+
   path {
     fill: ${(props) =>
       props.defaultOption
@@ -199,6 +206,8 @@ const StyledIcon = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
+
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 
   .combo-button_selected-icon {
     path {
@@ -227,6 +236,8 @@ const StyledArrowIcon = styled.div`
   display: flex;
   align-self: center;
 
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
+
   .combo-buttons_expander-icon {
     path {
       fill: ${(props) => props.theme.comboBox.label.selectedColor};
@@ -253,7 +264,15 @@ const StyledArrowIcon = styled.div`
     margin-left: auto;
   `}
 `;
+
 StyledArrowIcon.defaultProps = { theme: Base };
+
+const StyledLoader = styled(Loader)`
+  position: absolute;
+  margin-left: ${(props) =>
+    props.displaySize === "content" ? "-16px" : "-8px"};
+  margin-top: 2px;
+`;
 
 export {
   StyledArrowIcon,
@@ -261,4 +280,5 @@ export {
   StyledOptionalItem,
   StyledComboButton,
   StyledTriangleDownIcon,
+  StyledLoader,
 };
