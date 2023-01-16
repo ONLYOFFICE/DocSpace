@@ -435,6 +435,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
         onMask={props.onMaskClick}
         isFistImage={playlistPos === 0}
         isLastImage={playlistPos === playlist.length - 1}
+        setPanelVisible={setPanelVisible}
       />
     ) : (
       <img

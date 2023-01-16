@@ -13,6 +13,7 @@ function MobileViewer({
   onMask,
   isFistImage,
   isLastImage,
+  setPanelVisible,
 }) {
   const imgRef = React.useRef(null);
   const lastTapTime = React.useRef(0);
@@ -94,7 +95,9 @@ function MobileViewer({
 
   useGesture(
     {
-      onDragStart: () => {
+      onDragStart: ({ pinching }) => {
+        if (pinching) return;
+
         const time = new Date().getTime();
 
         if (time - lastTapTime.current < 300) {
@@ -220,6 +223,9 @@ function MobileViewer({
           y: crop.y,
         });
         setCrop((pre) => ({ ...pre, ...newPoint }));
+      },
+      onClick: (event) => {
+        setPanelVisible((visible) => !visible);
       },
     },
     {
