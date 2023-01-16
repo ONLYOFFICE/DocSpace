@@ -630,7 +630,7 @@ const ViewerBase = (props) => {
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
-          backgroundColor: `${props.displayUI ? "transparent" : "#000"}`,
+          backgroundColor: `${props.displayUI ? "rgba(55,55,55,0.6)" : "#000"}`,
         }}
       />
       <ViewerImage
