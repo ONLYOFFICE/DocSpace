@@ -175,36 +175,27 @@ export function getFoldersTree() {
     const folders = sortInDisplayOrder(response);
 
     return folders.map((data, index) => {
-      const type = +data.current.rootFolderType;
+      const { new: newItems, pathParts, current, folders, files } = data;
+      const { foldersCount, filesCount } = current;
+      const { parentId, title, id, rootFolderType, security } = current;
+
+      const type = +rootFolderType;
+
       const name = getFolderClassNameByType(type);
-      const isRecycleBinFolder = type === FolderType.TRASH;
+
       return {
-        id: data.current.id,
+        id,
         key: `0-${index}`,
-        parentId: data.current.parentId,
-        title: data.current.title,
+        parentId,
+        title,
         rootFolderType: type,
         folderClassName: name,
-        // folders: !isRecycleBinFolder
-        //   ? data.folders.map((folder) => {
-        //       return {
-        //         id: folder.id,
-        //         title: folder.title,
-        //         access: folder.access,
-        //         foldersCount: folder.foldersCount,
-        //         rootFolderType: folder.rootFolderType,
-        //         providerKey: folder.providerKey,
-        //         newItems: folder.new,
-        //       };
-        //     })
-        //   : null,
         folders: null,
-        pathParts: data.pathParts,
-        foldersCount: !isRecycleBinFolder
-          ? data.current.foldersCount || data.folders.length
-          : null,
-        newItems: data.new,
-        security: data.current.security,
+        pathParts,
+        foldersCount,
+        filesCount,
+        newItems,
+        security,
       };
     });
   });
