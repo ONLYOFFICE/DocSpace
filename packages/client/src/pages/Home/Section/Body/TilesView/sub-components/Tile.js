@@ -443,10 +443,16 @@ class Tile extends React.PureComponent {
       checked,
       setSelection,
       withCtrlSelect,
+      withShiftSelect,
     } = this.props;
 
-    if (e.ctrlKey || e.shiftKey) {
+    if (e.ctrlKey || e.metaKey) {
       withCtrlSelect(item);
+      return;
+    }
+
+    if (e.shiftKey) {
+      withShiftSelect(item);
       return;
     }
 

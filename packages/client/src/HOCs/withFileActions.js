@@ -121,16 +121,15 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseClick = (e) => {
-      const { viewAs, withCtrlSelect, item } = this.props;
-      const { ctrlKey, shiftKey } = e;
+      const { viewAs, withCtrlSelect, withShiftSelect, item } = this.props;
 
-      console.log("withFileActions onMouseClick", item.id, {
-        ctrlKey,
-        shiftKey,
-      });
-
-      if (e.ctrlKey || e.shiftKey) {
+      if (e.ctrlKey || e.metaKey) {
         withCtrlSelect(item);
+        return;
+      }
+
+      if (e.shiftKey) {
+        withShiftSelect(item);
         return;
       }
 
@@ -223,8 +222,6 @@ export default function withFileActions(WrappedFileItem) {
         isFolder,
       } = this.props;
       const { fileExst, access, id } = item;
-
-      console.log("Render withFileActions", id);
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -323,6 +320,7 @@ export default function withFileActions(WrappedFileItem) {
         setEnabledHotkeys,
         setSelected,
         withCtrlSelect,
+        withShiftSelect,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -393,6 +391,7 @@ export default function withFileActions(WrappedFileItem) {
         setEnabledHotkeys,
         setSelected,
         withCtrlSelect,
+        withShiftSelect,
       };
     }
   )(observer(WithFileActions));

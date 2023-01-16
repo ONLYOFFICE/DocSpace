@@ -2958,6 +2958,75 @@ class FilesStore {
     }
   };
 
+  withShiftSelect = (item) => {
+    const startCaretIndex = this.filesList.findIndex(
+      (f) =>
+        f.id === this.hotkeyCaretStart.id &&
+        f.isFolder === this.hotkeyCaretStart.isFolder
+    );
+
+    const caretIndex = this.filesList.findIndex(
+      (f) =>
+        f.id === this.hotkeyCaret.id && f.isFolder === this.hotkeyCaret.isFolder
+    );
+
+    const itemIndex = this.filesList.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
+
+    const isMoveDown = caretIndex < itemIndex;
+
+    let newSelection = JSON.parse(JSON.stringify(this.selection));
+    let index = caretIndex;
+    const newItemIndex = isMoveDown ? itemIndex + 1 : itemIndex - 1;
+
+    while (index !== newItemIndex) {
+      const filesItem = this.filesList[index];
+
+      const selectionIndex = newSelection.findIndex(
+        (f) => f.id === filesItem.id && f.isFolder === filesItem.isFolder
+      );
+      if (selectionIndex === -1) {
+        newSelection.push(filesItem);
+      }
+
+      if (isMoveDown) {
+        index++;
+      } else {
+        index--;
+      }
+    }
+
+    newSelection = newSelection.filter((f) => {
+      const listIndex = this.filesList.findIndex(
+        (x) => x.id === f.id && x.isFolder === f.isFolder
+      );
+
+      if (isMoveDown) {
+        const isSelect = itemIndex > startCaretIndex;
+        if (isSelect) return true;
+
+        if (listIndex >= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex >= itemIndex;
+        }
+      } else {
+        const isSelect = itemIndex < startCaretIndex;
+        if (isSelect) return true;
+
+        if (listIndex <= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex <= itemIndex;
+        }
+      }
+    });
+
+    this.setSelection(newSelection);
+    this.setHotkeyCaret(item);
+  };
+
   get disableDrag() {
     const {
       isRecycleBinFolder,

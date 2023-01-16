@@ -53,6 +53,7 @@ const FileTile = (props) => {
     columnCount,
     isRooms,
     withCtrlSelect,
+    withShiftSelect,
   } = props;
 
   const temporaryExtension =
@@ -124,6 +125,7 @@ const FileTile = (props) => {
           columnCount={columnCount}
           isRooms={isRooms}
           withCtrlSelect={withCtrlSelect}
+          withShiftSelect={withShiftSelect}
         >
           <FilesTileContent
             item={item}
@@ -139,13 +141,13 @@ const FileTile = (props) => {
 
 export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection, withCtrlSelect } = filesStore;
+  const { setSelection, withCtrlSelect, withShiftSelect } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
-  return { getIcon, setSelection, isRooms, withCtrlSelect };
+  return { getIcon, setSelection, isRooms, withCtrlSelect, withShiftSelect };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

@@ -607,7 +607,7 @@ class FilesActionStore {
         } else {
           setSelection([item]);
           setHotkeyCaret(null);
-          setHotkeyCaretStart(null);
+          setHotkeyCaretStart(item);
         }
       } else if (
         isSelected &&
@@ -616,7 +616,7 @@ class FilesActionStore {
         !isSingleMenu
       ) {
         setHotkeyCaret(null);
-        setHotkeyCaretStart(null);
+        setHotkeyCaretStart(item);
       } else {
         setSelected("none");
         setBufferSelection(item);
@@ -1103,9 +1103,13 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
+      setHotkeyCaret,
+      setHotkeyCaretStart,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+    setHotkeyCaret(null);
+    setHotkeyCaretStart(file);
 
     if (checked) {
       selectFile(file);
