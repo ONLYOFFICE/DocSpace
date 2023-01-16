@@ -1,5 +1,6 @@
 import { getScripts } from "./helpers";
 import pkg from "../../../package.json";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const { title } = pkg;
 const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
@@ -27,7 +28,9 @@ const template: Template = (
     ? `${t("Authorization")} – ${organizationName}`
     : title;
 
-  const favicon = initLoginState.logoUrls[2]?.path?.light;
+  const favicon = getLogoFromPath(initLoginState.logoUrls[2]?.path?.light);
+
+  console.log(favicon);
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
