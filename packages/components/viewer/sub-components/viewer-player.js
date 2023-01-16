@@ -349,6 +349,10 @@ export default function ViewerPlayer(props) {
     playlistPos,
     setPanelVisible,
     onTouch,
+    isOpenMobileContext,
+    setGlobalTimer,
+    globalTimer,
+    videoControls,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -375,6 +379,7 @@ export default function ViewerPlayer(props) {
     deltaY: 0,
     deltaX: 0,
     speedToastVisible: false,
+    isControlTouch: false,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -471,6 +476,7 @@ export default function ViewerPlayer(props) {
   const togglePlay = (e) => {
     e.stopPropagation();
     if (e.target === videoRef.current && isMobileOnly) return;
+    props.setIsPlay(!state.isPlaying);
     dispatch(
       createAction(ACTION_TYPES.update, {
         isPlaying: !state.isPlaying,
@@ -791,11 +797,13 @@ export default function ViewerPlayer(props) {
         deltaX: 0,
         speedState: 1,
         speedToastVisible: false,
+        isControlTouch: false,
       })
     );
   }
 
   const onClose = () => {
+    if (isMobileOnly) return;
     onMaskClick();
   };
 
@@ -806,12 +814,38 @@ export default function ViewerPlayer(props) {
   }, [props.activeIndex]);
 
   React.useEffect(() => {
-    let timer;
-    if (isMobileOnly && videoRef.current && displayUI) {
-      clearTimeout(timer);
-      timer = setTimeout(() => setPanelVisible(false), 5000);
+    if (isOpenMobileContext || state.isControlTouch || !props.isPlay) {
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          isControlTouch: false,
+        })
+      );
+      return clearTimeout(globalTimer);
     }
-  }, [displayUI]);
+    if (isMobileOnly && videoRef.current && displayUI) {
+      clearTimeout(globalTimer);
+      setGlobalTimer(setTimeout(() => setPanelVisible(false), 5000));
+    }
+  }, [displayUI, isOpenMobileContext, state.isControlTouch, props.isPlay]);
+
+  const onControlTouch = () => {
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        isControlTouch: true,
+      })
+    );
+  };
+
+  React.useEffect(() => {
+    if (videoControls && videoControls.current) {
+      videoControls.current.addEventListener("touchstart", onControlTouch);
+    }
+
+    return () =>
+      videoControls &&
+      videoControls.current &&
+      videoControls.current.removeEventListener("touchstart", onControlTouch);
+  }, [videoControls.current]);
 
   let contextRight = 9;
   let contextBottom = 48;
@@ -839,6 +873,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       state.top
     }px)`,
   };
+
   return (
     <StyledVideoPlayer
       id="video-playerId"
@@ -921,112 +956,113 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
         )}
       </div>
 
-      {displayUI && (
-        <StyledVideoControls>
-          <div className="mobile-video-progress" ref={mobileProgressRef}>
-            <input
-              ref={inputRef}
-              type="range"
-              min="0"
-              max="100"
-              value={state.progress ? state.progress : "0"}
-              onChange={(e) => handleVideoProgress(e)}
-            />
-          </div>
-          <StyledVideoActions>
-            <div
-              className={
-                isMobileOnly
-                  ? "actions-container mobile-actions"
-                  : "actions-container"
-              }
-              ref={actionRef}
-            >
-              <div className="controll-box">
-                <div className="controller video-play" onClick={togglePlay}>
-                  {!state.isPlaying ? (
-                    <IconPlay
-                      className={isAudio ? "icon-play is-audio" : "icon-play"}
-                    />
-                  ) : (
-                    <IconStop className="icon-stop" />
-                  )}
-                </div>
-
-                <StyledDuration>
-                  {state.duration && state.duration}
-                </StyledDuration>
-
-                {!isMobileOnly && (
-                  <div
-                    className={
-                      isAudio
-                        ? "volume-container volume-container-audio"
-                        : "volume-container"
-                    }
-                  >
-                    {state.isMuted ? (
-                      <IconVolumeMuted onClick={toggleVolumeMute} />
-                    ) : state.volume >= 50 ? (
-                      <IconVolumeMax onClick={toggleVolumeMute} />
-                    ) : (
-                      <IconVolumeMin onClick={toggleVolumeMute} />
-                    )}
-
-                    <div className="volume-wrapper">
-                      <input
-                        ref={volumeRef}
-                        className="volume-toolbar"
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={state.volume}
-                        onChange={(e) => handleVolumeUpdate(e)}
-                      />
-                    </div>
-                  </div>
+      <StyledVideoControls
+        ref={videoControls}
+        style={{ opacity: `${displayUI ? "1" : "0"}` }}
+      >
+        <div className="mobile-video-progress" ref={mobileProgressRef}>
+          <input
+            ref={inputRef}
+            type="range"
+            min="0"
+            max="100"
+            value={state.progress ? state.progress : "0"}
+            onChange={(e) => handleVideoProgress(e)}
+          />
+        </div>
+        <StyledVideoActions>
+          <div
+            className={
+              isMobileOnly
+                ? "actions-container mobile-actions"
+                : "actions-container"
+            }
+            ref={actionRef}
+          >
+            <div className="controll-box">
+              <div className="controller video-play" onClick={togglePlay}>
+                {!state.isPlaying ? (
+                  <IconPlay
+                    className={isAudio ? "icon-play is-audio" : "icon-play"}
+                  />
+                ) : (
+                  <IconStop className="icon-stop" />
                 )}
               </div>
-              <div className="controll-box">
+
+              <StyledDuration>
+                {state.duration && state.duration}
+              </StyledDuration>
+
+              {!isMobileOnly && (
                 <div
-                  className="controller dropdown-speed"
-                  onClick={toggleSpeedSelectionMenu}
+                  className={
+                    isAudio
+                      ? "volume-container volume-container-audio"
+                      : "volume-container"
+                  }
                 >
-                  {speedIcons[state.speedState]}
-                  {state.speedSelection && (
-                    <div className="dropdown-content">
-                      {SpeedButtonComponent()}
-                    </div>
+                  {state.isMuted ? (
+                    <IconVolumeMuted onClick={toggleVolumeMute} />
+                  ) : state.volume >= 50 ? (
+                    <IconVolumeMax onClick={toggleVolumeMute} />
+                  ) : (
+                    <IconVolumeMin onClick={toggleVolumeMute} />
                   )}
-                </div>
-                {!isAudio && (
-                  <div
-                    className="controller fullscreen-button"
-                    onClick={toggleScreen}
-                  >
-                    {!state.isFullScreen ? (
-                      <IconFullScreen />
-                    ) : (
-                      <IconExitFullScreen />
-                    )}
-                  </div>
-                )}
 
-                {!isMobileOnly && !props.isPreviewFile && (
-                  <div
-                    className="controller context-menu-wrapper"
-                    onClick={toggleContext}
-                    style={{ position: "relative" }}
-                  >
-                    <MediaContextMenu className="context-menu-icon" />
-                    {contextMenu}
+                  <div className="volume-wrapper">
+                    <input
+                      ref={volumeRef}
+                      className="volume-toolbar"
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={state.volume}
+                      onChange={(e) => handleVolumeUpdate(e)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="controll-box">
+              <div
+                className="controller dropdown-speed"
+                onClick={toggleSpeedSelectionMenu}
+              >
+                {speedIcons[state.speedState]}
+                {state.speedSelection && (
+                  <div className="dropdown-content">
+                    {SpeedButtonComponent()}
                   </div>
                 )}
               </div>
+              {!isAudio && (
+                <div
+                  className="controller fullscreen-button"
+                  onClick={toggleScreen}
+                >
+                  {!state.isFullScreen ? (
+                    <IconFullScreen />
+                  ) : (
+                    <IconExitFullScreen />
+                  )}
+                </div>
+              )}
+
+              {!isMobileOnly && !props.isPreviewFile && (
+                <div
+                  className="controller context-menu-wrapper"
+                  onClick={toggleContext}
+                  style={{ position: "relative" }}
+                >
+                  <MediaContextMenu className="context-menu-icon" />
+                  {contextMenu}
+                </div>
+              )}
             </div>
-          </StyledVideoActions>
-        </StyledVideoControls>
-      )}
+          </div>
+        </StyledVideoActions>
+      </StyledVideoControls>
     </StyledVideoPlayer>
   );
 }

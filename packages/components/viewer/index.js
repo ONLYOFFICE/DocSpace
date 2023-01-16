@@ -46,19 +46,23 @@ export const Viewer = (props) => {
   );
   const [container, setContainer] = React.useState(props.container);
   const [panelVisible, setPanelVisible] = React.useState(true);
+  const [isOpenMobileContext, setIsOpenMobileContext] = React.useState(false);
+  const [isPlay, setIsPlay] = React.useState(null);
+  const [globalTimer, setGlobalTimer] = React.useState(null);
   const [init, setInit] = React.useState(false);
 
   const detailsContainerRef = React.useRef(null);
+  const videoControls = React.useRef(null);
   const videoElement = React.useRef(null);
   const cm = React.useRef(null);
 
   const [isFullscreen, setIsFullScreen] = React.useState(false);
-
   React.useEffect(() => {
     document.body.appendChild(defaultContainer.current);
   }, []);
 
   React.useEffect(() => {
+    if (!isPlay) clearTimeout(timer);
     document.addEventListener("touchstart", onTouch);
     if (!isMobileOnly) {
       document.addEventListener("mousemove", resetTimer);
@@ -70,7 +74,7 @@ export const Viewer = (props) => {
       };
     }
     return () => document.removeEventListener("touchstart", onTouch);
-  }, []);
+  }, [isPlay]);
 
   function resetTimer() {
     setPanelVisible(true);
@@ -102,6 +106,7 @@ export const Viewer = (props) => {
     return null;
   }
   const onContextMenu = (e) => {
+    setIsOpenMobileContext((open) => !open);
     onSetSelectionFile();
     cm.current.show(e);
   };
@@ -128,6 +133,7 @@ export const Viewer = (props) => {
             ref={cm}
             withBackdrop={true}
             header={contextMenuHeader}
+            onHide={() => setIsOpenMobileContext(false)}
           />
         </div>
       )}
@@ -159,8 +165,14 @@ export const Viewer = (props) => {
       contextModel={contextModel}
       mobileDetails={mobileDetails}
       displayUI={displayUI}
+      isOpenMobileContext={isOpenMobileContext}
+      globalTimer={globalTimer}
+      setGlobalTimer={setGlobalTimer}
+      videoControls={videoControls}
       onTouch={onTouch}
       title={title}
+      setIsPlay={setIsPlay}
+      isPlay={isPlay}
       onMaskClick={onMaskClick}
       setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
