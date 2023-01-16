@@ -35,11 +35,9 @@ const RoomLogo = ({
 
     switch (type) {
       case RoomsType.ReadOnlyRoom:
-        return isPrivacy;
-        ViewOnlySvg32Url;
+        return ViewOnlySvg32Url;
       case RoomsType.ReviewRoom:
-        return isPrivacy;
-        ReviewSvg32Url;
+        return ReviewSvg32Url;
       case RoomsType.FillingFormsRoom:
         return FillingFormSvg32Url;
       case RoomsType.EditingRoom:
@@ -63,12 +61,9 @@ const RoomLogo = ({
     <StyledContainer id={id} className={className} style={style}>
       <StyledLogoContainer
         className="room-logo_icon-container"
-        type={type}
-        isPrivacy={isPrivacy}
-        isArchive={isArchive}
         onClick={onSelect}
       >
-        <ReactSVG className="room-logo_icon" src={icon} />
+        <img className="room-logo_icon" src={icon} />
       </StyledLogoContainer>
 
       {withCheckbox && (
