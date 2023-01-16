@@ -7,7 +7,7 @@ import RemoveReactSvgUrl from "PUBLIC_DIR/images/remove.react.svg?url";
 import RessingDataReactSvgUrl from "PUBLIC_DIR/images/ressing_data.react.svg?url";
 import DelDataReactSvgUrl from "PUBLIC_DIR/images/del_data.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
-import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
 import DisableReactSvgUrl from "PUBLIC_DIR/images/disable.react.svg?url";
 import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
@@ -138,7 +138,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_details",
             key: option,
-            icon: InfoReactSvgUrl,
+            icon: InfoOutlineReactSvgUrl,
             label: t("Common:Info"),
             onClick: this.onDetailsClick,
           };
