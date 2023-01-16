@@ -406,7 +406,10 @@ export default function ViewerPlayer(props) {
   const handlers = useSwipeable({
     onSwiping: (e) => {
       const [width, height, left, top] = getVideoPosition(videoRef.current);
-      const opacity = state.opacity - Math.abs(e.deltaX) / 500;
+      const opacity =
+        state.deltaY < e.deltaY
+          ? state.opacity - Math.abs(e.deltaX) / 500
+          : state.opacity + Math.abs(e.deltaX) / 500;
 
       const direction =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
