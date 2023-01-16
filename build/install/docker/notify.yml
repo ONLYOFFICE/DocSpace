@@ -43,4 +43,7 @@ volumes:
   app_data:
   files_data:
   people_data:
- 
+  crm_data:
+  project_data:
+  calendar_data:
+  mail_data:

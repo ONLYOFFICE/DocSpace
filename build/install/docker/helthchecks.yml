@@ -14,8 +14,8 @@ x-service:
 services:
   onlyoffice-health-checks-ui:
     <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-health-checks-ui:${DOCKER_TAG}"
-    container_name: ${HELTH_CHECKS_UI_HOST}
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-healthchecks:${DOCKER_TAG}"
+    container_name: ${HELTHCHECKS_HOST}
 
 networks:
   default:

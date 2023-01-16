@@ -297,13 +297,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.St
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 
 ## ASC.Web.HealthChecks.UI ##
-FROM dotnetrun AS health_checks_ui
+FROM dotnetrun AS healthchecks
 WORKDIR ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service
 
-COPY --chown=onlyoffice:onlyoffice docker-healthchecks-ui-entrypoint.sh ./docker-healthchecks-ui-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice ddocker-healthchecks-entrypoint.sh ./docker-healthchecks-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service/ .
 
-ENTRYPOINT ["./docker-healthchecks-ui-entrypoint.sh"]
+ENTRYPOINT ["./docker-healthchecks-entrypoint.sh"]
 CMD ["ASC.Web.HealthChecks.UI.dll", "ASC.Web.HealthChecks.UI"]
 
 ## ASC.Migration.Runner ##

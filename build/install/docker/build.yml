@@ -134,9 +134,9 @@ services:
       target: onlyoffice-migration-runner
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
 
-  onlyoffice-health-checks-ui:
+  onlyoffice-healthchecks:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
-      target: health_checks_ui
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-health-checks-ui:${DOCKER_TAG}"
+      target: healthchecks
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-healthchecks:${DOCKER_TAG}"
