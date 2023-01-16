@@ -159,6 +159,7 @@ export const Viewer = (props) => {
       contextModel={contextModel}
       mobileDetails={mobileDetails}
       displayUI={displayUI}
+      onTouch={onTouch}
       title={title}
       onMaskClick={onMaskClick}
       setPanelVisible={setPanelVisible}

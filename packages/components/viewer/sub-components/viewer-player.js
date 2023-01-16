@@ -348,6 +348,7 @@ export default function ViewerPlayer(props) {
     playlist,
     playlistPos,
     setPanelVisible,
+    onTouch,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -435,11 +436,12 @@ export default function ViewerPlayer(props) {
       );
     },
     onSwipedLeft: (e) => {
-      if (e.event.path[0] === inputRef.current) return;
       if (e.deltaX <= -100) onNextClick();
     },
+    onTap: (e) => {
+      onTouch(e.event);
+    },
     onSwipedRight: (e) => {
-      if (e.event.path[0] === inputRef.current) return;
       if (e.deltaX >= 100) onPrevClick();
     },
     onSwipedDown: (e) => {
