@@ -189,7 +189,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
-        var needToMark = new List<FileEntry<TTo>>();
+        var needToMark = new List<FileEntry>();
 
         var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
         var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
@@ -200,13 +200,20 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var ntm = needToMark.Distinct();
         foreach (var n in ntm)
         {
-            await fileMarker.MarkAsNewAsync(n);
+            if (n is FileEntry<T> entry1)
+            {
+                await fileMarker.MarkAsNewAsync(entry1);
+            }
+            else if (n is FileEntry<TTo> entry2)
+            {
+                await fileMarker.MarkAsNewAsync(entry2);
+            }
         }
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
+    private async Task<List<FileEntry>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
     {
-        var needToMark = new List<FileEntry<TTo>>();
+        var needToMark = new List<FileEntry>();
 
         if (folderIds.Count == 0)
         {
@@ -230,6 +237,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
 
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+            var isThirdPartyRoom = isRoom && folder.ProviderEntry;
 
             if (folder == null)
             {
@@ -396,10 +404,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                             TTo newFolderId = default;
 
-                            if (isRoom && folder.ProviderEntry)
+                            if (isThirdPartyRoom)
                             {
                                 await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, toFolder.FolderType);
-                                newFolderId = (TTo)Convert.ChangeType(folder, typeof(TTo));
                             }
                             else
                             {
@@ -428,8 +435,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 }
                             }
 
-                            newFolder = await folderDao.GetFolderAsync(newFolderId);
-
                             if (isRoom)
                             {
                                 if (toFolder.FolderType == FolderType.Archive)
@@ -447,14 +452,23 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
 
 
-                            if (isToFolder)
+                            if (isToFolder && toFolder.FolderType != FolderType.Archive)
                             {
-                                needToMark.Add(newFolder);
+                                if (isThirdPartyRoom)
+                                {
+                                    needToMark.Add(folder);
+                                }
+                                else
+                                {
+                                    newFolder = await folderDao.GetFolderAsync(newFolderId);
+                                    needToMark.Add(newFolder);
+                                }
                             }
 
                             if (ProcessedFolder(folderId))
                             {
-                                sb.Append($"folder_{newFolderId}{SplitChar}");
+                                var id = isThirdPartyRoom ? folder.Id.ToString() : newFolderId.ToString();
+                                sb.Append($"folder_{id}{SplitChar}");
                             }
                         }
                     }

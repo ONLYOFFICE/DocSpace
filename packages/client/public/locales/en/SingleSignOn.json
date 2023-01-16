@@ -3,7 +3,7 @@
   "AdvancedSettings": "Advanced Settings",
   "AdvancedSettingsTooltip": "Hide default authentication page and automatically redirect to SSO service",
   "AttributeMatching": "Attribute Mapping",
-  "AttributeMatchingTooltip": "The correspondence of the single sign-on attributes to the fields of the portal 'People' module",
+  "AttributeMatchingTooltip": "The correspondence of the Single Sign-On attributes to the entries of the 'Accounts' section",
   "Binding": "Binding:",
   "CertificateExist": "Certificate with same action type already exists",
   "ConfirmationText": "All the data you entered will be lost. Are you sure you want to continue?",

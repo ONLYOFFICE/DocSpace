@@ -77,7 +77,6 @@ const AboutContent = (props) => {
     companyInfoSettingsData,
     previewData,
     whiteLabelLogoUrls,
-    userTheme,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -103,7 +102,7 @@ const AboutContent = (props) => {
     : companyInfoSettingsData?.address;
 
   const logo = getLogoFromPath(
-    userTheme === "Dark"
+    !theme.isBase
       ? whiteLabelLogoUrls[6]?.path.dark
       : whiteLabelLogoUrls[6]?.path.light
   );
@@ -242,15 +241,13 @@ const AboutContent = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, userStore } = auth;
+  const { settingsStore } = auth;
 
   const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
-  const { userTheme } = userStore;
 
   return {
     theme,
     companyInfoSettingsData,
     whiteLabelLogoUrls,
-    userTheme,
   };
 })(observer(AboutContent));

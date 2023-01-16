@@ -19,7 +19,7 @@ const ArticleHeader = ({
   onClick,
   isBurgerLoading,
   whiteLabelLogoUrls,
-  userTheme,
+  theme,
   ...rest
 }) => {
   const history = useHistory();
@@ -27,14 +27,12 @@ const ArticleHeader = ({
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
   const onLogoClick = () => history.push("/");
 
-  const burgerLogo =
-    userTheme === "Dark"
-      ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
-      : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
-  const logo =
-    userTheme === "Dark"
-      ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
-      : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
+  const burgerLogo = !theme.isBase
+    ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
+  const logo = !theme.isBase
+    ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
   if (isMobileOnly) return <></>;
   return (
@@ -73,13 +71,12 @@ ArticleHeader.propTypes = {
 ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
-  const { settingsStore, userStore } = auth;
-  const { isBurgerLoading, whiteLabelLogoUrls } = settingsStore;
-  const { userTheme } = userStore;
+  const { settingsStore } = auth;
+  const { isBurgerLoading, whiteLabelLogoUrls, theme } = settingsStore;
 
   return {
     isBurgerLoading,
     whiteLabelLogoUrls,
-    userTheme,
+    theme,
   };
 })(observer(ArticleHeader));

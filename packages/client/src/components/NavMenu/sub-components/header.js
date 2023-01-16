@@ -121,7 +121,6 @@ const HeaderComponent = ({
   theme,
   toggleArticleOpen,
   logoUrl,
-  userTheme,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -200,7 +199,7 @@ const HeaderComponent = ({
   }, [history]);
 
   const logo = getLogoFromPath(
-    userTheme === "Dark" ? logoUrl?.path?.dark : logoUrl?.path?.light
+    !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light
   );
 
   return (
@@ -362,6 +361,5 @@ export default inject(({ auth }) => {
     currentProductId,
     toggleArticleOpen,
     //currentProductName: (product && product.title) || "",
-    userTheme: user.theme,
   };
 })(observer(HeaderComponent));

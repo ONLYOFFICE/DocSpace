@@ -17,10 +17,10 @@ const StyledWrapper = styled.div`
 `;
 
 const DocspaceLogo = (props) => {
-  const { className, whiteLabelLogoUrls, userTheme } = props;
+  const { className, whiteLabelLogoUrls, theme } = props;
 
   const logo = getLogoFromPath(
-    userTheme === "Dark"
+    !theme.isBase
       ? whiteLabelLogoUrls[1]?.path?.dark
       : whiteLabelLogoUrls[1]?.path?.light
   );
@@ -33,12 +33,11 @@ const DocspaceLogo = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, userStore } = auth;
-  const { whiteLabelLogoUrls } = settingsStore;
-  const { userTheme } = userStore;
+  const { settingsStore } = auth;
+  const { whiteLabelLogoUrls, theme } = settingsStore;
 
   return {
     whiteLabelLogoUrls,
-    userTheme,
+    theme,
   };
 })(observer(DocspaceLogo));
