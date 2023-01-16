@@ -125,11 +125,13 @@ export default function withFileActions(WrappedFileItem) {
 
       if (e.ctrlKey || e.metaKey) {
         withCtrlSelect(item);
+        e.preventDefault();
         return;
       }
 
       if (e.shiftKey) {
         withShiftSelect(item);
+        e.preventDefault();
         return;
       }
 

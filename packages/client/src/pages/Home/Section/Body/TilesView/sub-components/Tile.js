@@ -448,11 +448,13 @@ class Tile extends React.PureComponent {
 
     if (e.ctrlKey || e.metaKey) {
       withCtrlSelect(item);
+      e.preventDefault();
       return;
     }
 
     if (e.shiftKey) {
       withShiftSelect(item);
+      e.preventDefault();
       return;
     }
 
