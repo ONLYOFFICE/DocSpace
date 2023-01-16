@@ -2,9 +2,9 @@ import React from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 
-import CheckToastIcon from "../../../public/images/check.toast.react.svg";
-import DangerToastIcon from "../../../public/images/danger.toast.react.svg";
-import InfoToastIcon from "../../../public/images/info.toast.react.svg";
+import CheckToastReactSvg from "../../../public/images/check.toast.react.svg";
+import DangerToastReactSvg from "../../../public/images/danger.toast.react.svg";
+import InfoToastReactSvg from "../../../public/images/info.toast.react.svg";
 
 import Text from "../text";
 import {
@@ -31,13 +31,13 @@ const getTitle = (type) => {
   return title;
 };
 
-const StyledCheckToastIcon = styled(CheckToastIcon)`
+const StyledCheckToastIcon = styled(CheckToastReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledDangerToastIcon = styled(DangerToastIcon)`
+const StyledDangerToastIcon = styled(DangerToastReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledInfoToastIcon = styled(InfoToastIcon)`
+const StyledInfoToastIcon = styled(InfoToastReactSvg)`
   ${commonIconsStyles}
 `;
 
