@@ -45,6 +45,7 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
+  isAdmin,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
 
@@ -112,7 +113,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (
+      {!isEdit && isAdmin && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
@@ -149,6 +150,6 @@ const SetRoomParams = ({
   );
 };
 
-export default withTranslation(["CreateEditRoomDialog"])(
+export default withTranslation(["CreateEditRoomDialog", "Translations"])(
   withLoader(SetRoomParams)(<Loaders.SetRoomParamsLoader />)
 );
