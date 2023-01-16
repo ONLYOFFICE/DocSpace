@@ -22,7 +22,7 @@ const ConvertPasswordDialogComponent = (props) => {
     setFormCreationInfo,
     setPasswordEntryProcess,
     isDesktop,
-    editCompleteAction,
+    completeAction,
     fileCopyAs,
   } = props;
   const inputRef = React.useRef(null);
@@ -129,7 +129,7 @@ const ConvertPasswordDialogComponent = (props) => {
             open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => {
-            editCompleteAction(fileInfo);
+            completeAction(fileInfo);
           })
           .catch((err) => {
             let errorMessage = "";
@@ -221,27 +221,25 @@ const ConvertPasswordDialogComponent = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <StyledComponent isTabletView={isTabletView}>
-          <div className="convert-password_footer">
-            <Button
-              id="convert-password-dialog_button-accept"
-              className="convert-password-dialog_button"
-              key="ContinueButton"
-              label={t("Common:SaveButton")}
-              size="small"
-              primary
-              onClick={onConvert}
-              isLoading={isLoading}
-            />
-            <Button
-              className="convert-password-dialog_button"
-              key="CloseButton"
-              label={t("Common:CloseButton")}
-              size="small"
-              onClick={onClose}
-            />
-          </div>
-        </StyledComponent>
+        <Button
+          id="convert-password-dialog_button-accept"
+          className="convert-password-dialog_button"
+          key="ContinueButton"
+          label={t("Common:SaveButton")}
+          size="normal"
+          scale
+          primary
+          onClick={onConvert}
+          isLoading={isLoading}
+        />
+        <Button
+          className="convert-password-dialog_button"
+          key="CloseButton"
+          label={t("Common:CloseButton")}
+          scale
+          size="normal"
+          onClick={onClose}
+        />
       </ModalDialog.Footer>
     </ModalDialog>
   );
@@ -263,7 +261,7 @@ export default inject(
     } = dialogsStore;
     const { copyAsAction, fileCopyAs } = uploadDataStore;
     const { setPasswordEntryProcess } = filesStore;
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
     const { settingsStore } = auth;
     const { isTabletView, isDesktopClient } = settingsStore;
 
@@ -277,7 +275,7 @@ export default inject(
       setFormCreationInfo,
       setPasswordEntryProcess,
       isDesktop: isDesktopClient,
-      editCompleteAction,
+      completeAction,
     };
   }
 )(observer(ConvertPasswordDialog));

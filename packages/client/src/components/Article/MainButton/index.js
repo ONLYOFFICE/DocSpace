@@ -221,20 +221,6 @@ const ArticleMainButtonContent = (props) => {
   React.useEffect(() => {
     if (isRoomsFolder) return;
 
-    const folderUpload = !isMobile
-      ? [
-          {
-            id: "actions_upload-folders",
-            className: "main-button_drop-down",
-            icon: "images/actions.upload.react.svg",
-            label: t("UploadFolder"),
-            disabled: isPrivacy,
-            onClick: onUploadFolderClick,
-            key: "upload-folder",
-          },
-        ]
-      : [];
-
     const formActions = [
       {
         id: "actions_template",
@@ -364,7 +350,15 @@ const ArticleMainButtonContent = (props) => {
             onClick: onUploadFileClick,
             key: "upload-files",
           },
-          ...folderUpload,
+          {
+            id: "actions_upload-folders",
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFolder"),
+            disabled: isPrivacy,
+            onClick: onUploadFolderClick,
+            key: "upload-folder",
+          },
         ];
 
     const menuModel = [...actions];
