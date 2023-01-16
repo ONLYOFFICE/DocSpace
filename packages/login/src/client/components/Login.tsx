@@ -25,6 +25,7 @@ import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import { getLogoFromPath } from "@docspace/common/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -50,6 +51,7 @@ const Login: React.FC<ILoginProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
     const theme =
@@ -59,6 +61,11 @@ const Login: React.FC<ILoginProps> = ({
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;

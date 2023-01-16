@@ -13,6 +13,7 @@ import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import LoginContainer from "@docspace/common/components/LoginContainer";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface IBarProp {
   t: TFuncType;
@@ -40,6 +41,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
 
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
     const theme =
@@ -49,6 +51,11 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const onSubmit = (code: number | string) => {
     if (code !== validCode) {
