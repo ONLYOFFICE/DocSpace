@@ -553,13 +553,12 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (selectedItem, type, isFolder = false) => {
-    if (type === FileAction.Create) {
-      this.filesStore.addFile(selectedItem, isFolder);
-    }
-
-    if (type === FileAction.Create || type === FileAction.Rename) {
-      type === FileAction.Rename &&
+  completeAction = async (selectedItem, type, isFolder = false) => {
+    switch (type) {
+      case FileAction.Create:
+        this.filesStore.addItem(selectedItem, isFolder);
+        break;
+      case FileAction.Rename:
         this.onSelectItem(
           {
             id: selectedItem.id,
@@ -567,6 +566,9 @@ class FilesActionStore {
           },
           false
         );
+        break;
+      default:
+        break;
     }
   };
 
