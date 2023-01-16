@@ -380,6 +380,7 @@ export default function ViewerPlayer(props) {
     deltaX: 0,
     speedToastVisible: false,
     isControlTouch: false,
+    isFirstTap: false,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -446,7 +447,21 @@ export default function ViewerPlayer(props) {
       if (e.deltaX <= -100) onNextClick();
     },
     onTap: (e) => {
+      if (displayUI && props.isPlay && state.isFirstTap) {
+        props.setIsPlay(false);
+        return dispatch(
+          createAction(ACTION_TYPES.update, {
+            isFirstTap: false,
+            isPlaying: false,
+          })
+        );
+      }
       onTouch(e.event);
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          isFirstTap: true,
+        })
+      );
     },
     onSwipedRight: (e) => {
       if (e.deltaX >= 100) onPrevClick();
@@ -798,6 +813,7 @@ export default function ViewerPlayer(props) {
         speedState: 1,
         speedToastVisible: false,
         isControlTouch: false,
+        isFirstTap: false,
       })
     );
   }
