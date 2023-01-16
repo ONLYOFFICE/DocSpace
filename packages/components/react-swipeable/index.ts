@@ -40,6 +40,11 @@ const initialState: SwipeableState = {
   xy: [0, 0],
   lastDistance: 0,
   pinching: false,
+  fingers: 0,
+  lastTouchStart: 0,
+  isDoubleTap: false,
+  startTouches: [],
+  interaction: null,
 };
 const mouseMove = "mousemove";
 const mouseUp = "mouseup";
@@ -68,6 +73,11 @@ function getDistance(p1: Point, p2: Point): number {
   return Math.hypot(p2.x - p1.x, p2.y - p1.y);
 }
 
+const cancelEvent = (event: any): void => {
+  event.stopPropagation();
+  event.preventDefault();
+};
+
 
 function getXYfromEvent(event: TouchEvent): Tuple<Point> {
   return [...event.touches]
@@ -82,6 +92,11 @@ function getMiddleSegment(p1: Point, p2: Point): Point {
     y: (p1.y + p2.y) / 2,
   }
 }
+
+const getPointByPageCoordinates = (touch: Touch): Point => ({
+  x: touch.pageX,
+  y: touch.pageY,
+});
 
 
 function rotateXYByAngle(pos: Vector2, angle: number): Vector2 {
@@ -106,41 +121,53 @@ function getHandlers(
   ] {
   const onStart = (event: HandledEvents) => {
     const isTouch = "touches" in event;
-    // if more than a single touch don't track, for now...
-    if (isTouch && event.touches.length > 1) {
-      if (event.touches.length === 2) {
-        set((state) => {
-          const startPosition = getXYfromEvent(event);
-          return {
-            ...state,
-            startPosition,
-            lastDistance: 0,
-            pinching: true,
-          }
-        })
-      } else {
-        return;
-      }
-    }
+    event.stopPropagation();
+
+    if (!isTouch) return
 
     set((state, props) => {
       // setup mouse listeners on document to track swipe since swipe can leave container
-      if (props.trackMouse && !isTouch) {
-        document.addEventListener(mouseMove, onMove);
-        document.addEventListener(mouseUp, onUp);
-      }
+      // if (props.trackMouse && !isTouch) {
+      //   document.addEventListener(mouseMove, onMove);
+      //   document.addEventListener(mouseUp, onUp);
+      // }
+
+
       const { clientX, clientY } = isTouch ? event.touches[0] : event;
       const xy = rotateXYByAngle([clientX, clientY], props.rotationAngle);
 
       props.onTouchStartOrOnMouseDown &&
         props.onTouchStartOrOnMouseDown({ event });
 
+      const time = new Date().getTime();
+
+
+      if (event.touches.length > 1) {
+        state.lastTouchStart = 0
+      }
+
+
+      if (time - state.lastTouchStart < 300) {
+        state.isDoubleTap = true;
+        props.onDoubleTap?.(event);
+        console.log("Double Click");
+      } else {
+        state.isDoubleTap = false;
+      }
+
+      if (event.touches.length === 1) {
+        state.lastTouchStart = time;
+      }
+
       return {
         ...state,
         ...initialState,
+        lastTouchStart: state.lastTouchStart,
         initial: xy.slice() as Vector2,
         xy,
         start: event.timeStamp || 0,
+        fingers: isTouch ? event.touches.length : 0,
+        isDoubleTap: state.isDoubleTap
       };
     });
   };
@@ -148,6 +175,27 @@ function getHandlers(
   const onMove = (event: HandledEvents) => {
     set((state, props) => {
       const isTouch = "touches" in event;
+
+      if (state.isDoubleTap || !isTouch) {
+        return state
+      }
+
+
+      if (state.first) {
+        state.startTouches = [...event.touches].map(touch => getPointByPageCoordinates(touch));
+
+        const fingers = event.touches.length;
+
+        if (fingers === 2) {
+          state.interaction = "zoom";
+        } else if (fingers === 1) {
+          state.interaction = "drag";
+        } else {
+          state.interaction = null;
+        }
+      }
+
+
       // Discount a swipe if additional touches are present after
       // a swipe has started.
       if (isTouch && event.touches.length > 1) {
@@ -176,6 +224,7 @@ function getHandlers(
           props.onZoom?.({ event, scale, middleSegment });
           return {
             ...state,
+            first: false,
             lastDistance: distance,
           }
         }
@@ -279,7 +328,7 @@ function getHandlers(
 
       props.onTouchEndOrOnMouseUp && props.onTouchEndOrOnMouseUp({ event });
 
-      return { ...state, ...initialState, eventData };
+      return { ...state, ...initialState, eventData, lastTouchStart: state.lastTouchStart };
     });
   };
 

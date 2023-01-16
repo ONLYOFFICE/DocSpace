@@ -2,8 +2,9 @@ import * as React from "react";
 import classnames from "classnames";
 import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "../../react-swipeable";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 
+import MobileViewer from "./mobile-viewer";
 export default function ViewerImage(props) {
   const {
     dispatch,
@@ -13,11 +14,16 @@ export default function ViewerImage(props) {
     playlistPos,
     containerSize,
   } = props;
-  const navMenuHeight = 53;
+
   const isMouseDown = React.useRef(false);
   const isZoomingRef = React.useRef(true);
   const imgRef = React.useRef(null);
+  const dirRef = React.useRef("");
+  const swipedRef = React.useRef(false);
+
   const unMountedRef = React.useRef(false);
+  const startPostionRef = React.useRef({ x: 0, y: 0 });
+  const isDoubleTapRef = React.useRef(false);
 
   React.useEffect(() => {
     unMountedRef.current = false;
@@ -70,73 +76,148 @@ export default function ViewerImage(props) {
       CompareTo(imageBounds.top, containerBounds.top) &&
       isHeightOutContainer
     ) {
-      point.y = heightOverhang + navMenuHeight / 2;
+      point.y = heightOverhang;
     } else if (
-      CompareTo(
-        containerBounds.bottom,
-        imageBounds.bottom + navMenuHeight / 2
-      ) &&
+      CompareTo(containerBounds.bottom, imageBounds.bottom) &&
       isHeightOutContainer
     ) {
-      point.y =
-        -(imageBounds.height - containerBounds.height - navMenuHeight / 2) +
-        heightOverhang;
+      point.y = -(imageBounds.height - containerBounds.height) + heightOverhang;
     } else if (!isHeightOutContainer) {
       point.y =
-        (containerBounds.height - imageBounds.height) / 2 +
-        heightOverhang +
-        navMenuHeight / 2;
+        (containerBounds.height - imageBounds.height) / 2 + heightOverhang;
     }
 
     return point;
   };
 
   const handlers = useSwipeable({
+    onSwipeStart: (e) => {
+      dirRef.current = e.dir;
+      swipedRef.current = false;
+      startPostionRef.current = {
+        x: props.left,
+        y: props.top,
+      };
+    },
     onSwiping: (e) => {
       if (
         e.piching ||
         !isZoomingRef.current ||
         unMountedRef.current ||
-        !imgRef.current
+        !imgRef.current ||
+        isDoubleTapRef.current
       )
         return;
+
+      let newPoint = {
+        x: 0,
+        y: 0,
+      };
+
+      const isFistImage = playlistPos === 0;
+      const isLastImage = playlistPos === playlist.length - 1;
+
+      const containerBounds = imgRef.current.parentNode.getBoundingClientRect();
+      const imageBounds = imgRef.current.getBoundingClientRect();
+
+      const deltaWidth = (containerBounds.width - imageBounds.width) / 2;
+      const deltaHeight = (containerBounds.height - imageBounds.height) / 2;
+
+      const originalWidth = imgRef.current.clientWidth;
+      const widthOverhang = (imageBounds.width - originalWidth) / 2;
+
+      const originalHeight = imgRef.current.clientHeight;
+      const heightOverhang = (imageBounds.height - originalHeight) / 2;
+
+      if (props.scaleX * props.scaleY <= 1) {
+        switch (dirRef.current) {
+          case "Down":
+            newPoint.x = props.left;
+            newPoint.y = e.deltaY + deltaHeight + heightOverhang;
+
+            break;
+          case "Left":
+            newPoint.x = isLastImage
+              ? props.left
+              : e.deltaX + deltaWidth + widthOverhang;
+            newPoint.y = props.top;
+            break;
+          case "Right":
+            newPoint.x = isFistImage
+              ? props.left
+              : e.deltaX + deltaWidth + widthOverhang;
+            newPoint.y = props.top;
+            break;
+          default:
+            newPoint.x = props.left;
+            newPoint.y = props.top;
+            break;
+        }
+      } else {
+        const isWidthOutContainer = imageBounds.width >= containerBounds.width;
+
+        const isHeightOutContainer =
+          imageBounds.height >= containerBounds.height;
+
+        const [vx, vy] = e.vxvy;
+
+        const absVx = Math.abs(vx) > 0 ? Math.abs(vx) + 1 : 0;
+        const absVy = Math.abs(vy) > 0 ? Math.abs(vy) + 1 : 0;
+
+        const isImageHeightInsideContainer =
+          imageBounds.top > containerBounds.top &&
+          containerBounds.bottom > imageBounds.bottom;
+        const isImageWidhtInsideContainer =
+          imageBounds.left > containerBounds.left &&
+          containerBounds.right > imageBounds.right;
+
+        const left = imageBounds.left + e.deltaX * absVx;
+        const right = imageBounds.right + e.deltaX * absVx;
+
+        if (isWidthOutContainer) {
+          if (left > containerBounds.left) {
+            newPoint.x = widthOverhang;
+          } else if (right < containerBounds.right) {
+            newPoint.x =
+              -(imageBounds.width - containerBounds.width) + widthOverhang;
+          } else {
+            newPoint.x = e.deltaX * absVx + startPostionRef.current.x;
+          }
+        } else if (isImageWidhtInsideContainer) {
+          newPoint.x = props.left;
+        } else {
+          newPoint.x = e.deltaX * absVx + startPostionRef.current.x;
+        }
+
+        const top = imageBounds.top + e.deltaY * absVy;
+        const bottom = imageBounds.bottom + e.deltaY * absVy;
+
+        if (isHeightOutContainer) {
+          if (top > containerBounds.top) {
+            newPoint.y = heightOverhang;
+          } else if (bottom < containerBounds.bottom) {
+            newPoint.y =
+              -(imageBounds.height - containerBounds.height) + heightOverhang;
+          } else {
+            newPoint.y = e.deltaY * absVy + startPostionRef.current.y;
+          }
+        } else if (isImageHeightInsideContainer) {
+          newPoint.y = props.top;
+        } else {
+          newPoint.y = e.deltaY * absVy + startPostionRef.current.y;
+        }
+      }
 
       const opacity =
         props.scaleX !== 1 && props.scaleY !== 1
           ? 1
-          : props.opacity - Math.abs(e.deltaX) / 500;
+          : dirRef.current === "Down"
+          ? 2 -
+            (imageBounds.height / 2 + props.top) / (containerBounds.height / 2)
+          : 1;
 
       const direction =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "horizontal" : "vertical";
-
-      let Point = {
-        x: props.left + (e.deltaX * props.scaleX) / 15,
-        y: props.top + (e.deltaY * props.scaleY) / 15,
-      };
-
-      const newPoint = maybeAdjustImage(Point);
-
-      console.log(newPoint);
-
-      // let swipeLeft = 0;
-
-      // const isEdgeImage =
-      //   (playlistPos === 0 && e.deltaX > 0) ||
-      //   (playlistPos === playlist.length - 1 && e.deltaX < 0);
-
-      // if (props.width < window.innerWidth) {
-      //   swipeLeft =
-      //     direction === "horizontal"
-      //       ? isEdgeImage
-      //         ? props.left
-      //         : e.deltaX > 0
-      //         ? props.left + 2
-      //         : props.left - 2
-      //       : props.left;
-      // } else {
-      //   swipeLeft =
-      //     direction === "horizontal" ? (isEdgeImage ? 0 : e.deltaX) : 0;
-      // }
 
       return dispatch(
         createAction(actionType.update, {
@@ -155,7 +236,10 @@ export default function ViewerImage(props) {
         !isZoomingRef.current
       )
         return;
-      if (e.deltaX <= -100) props.onNextClick();
+      if (e.deltaX <= -100 && playlistPos !== playlist.length - 1) {
+        swipedRef.current = true;
+        props.onNextClick();
+      }
     },
     onSwipedRight: (e) => {
       if (
@@ -164,71 +248,32 @@ export default function ViewerImage(props) {
         !isZoomingRef.current
       )
         return;
-      if (e.deltaX >= 100) props.onPrevClick();
-    },
-    onSwipedDown: (e) => {
-      // if (unMountedRef.current) return;
-      // console.log("onSwiped");
-      // let Point = {
-      //   x: props.left + (e.deltaX * props.scaleX) / 15,
-      //   y: props.top + (e.deltaY * props.scaleY) / 15,
-      // };
-      // const newPoint = maybeAdjustImage(props.scaleX, props.scaleY, Point);
-      // return dispatch(
-      //   createAction(actionType.update, {
-      //     left: newPoint.x,
-      //     top: newPoint.y,
-      //     deltaX: 0,
-      //     deltaY: 0,
-      //     opacity: 1,
-      //   })
-      // );
-    },
 
-    onZoom: (event) => {
-      if (unMountedRef.current || !imgRef.current) return;
-
-      const { handleZoom, handleResetZoom } = props;
-      const { scale, middleSegment } = event;
-
-      const zoomCondition = scale > 1;
-      const direct = zoomCondition ? 1 : -1;
-      const zoom = Math.abs(1 - scale) * 50;
-
-      if (zoom < 0.25) return;
-
-      if (isZoomingRef.current) {
-        isZoomingRef.current = false;
-        const [scaleX] = handleZoom(
-          middleSegment.x,
-          middleSegment.y,
-          direct,
-          zoom
-        );
-
-        setTimeout(() => {
-          if (scaleX < 1) handleResetZoom();
-          isZoomingRef.current = true;
-        }, 200);
+      if (e.deltaX >= 100 && playlistPos !== 0) {
+        swipedRef.current = true;
+        props.onPrevClick();
       }
     },
-    onTouchEndOrOnMouseUp: (e) => {
-      if (
-        (props.scaleX !== 1 && props.scaleY !== 1) ||
-        e.piching ||
-        !isZoomingRef.current
-      )
-        return;
-      if (e.deltaY > 70) props.onMaskClick();
+    onSwipedDown: (e) => {
+      if (unMountedRef.current) return;
+
+      if (e.deltaY > 200 && props.scaleX * props.scaleY === 1) {
+        swipedRef.current = true;
+        props.onMaskClick();
+      }
     },
-    onSwiped: () => {
-      console.log("onTouchEndOrOnMouseUp");
+
+    onSwiped: (e) => {
+      if (unMountedRef.current || isDoubleTapRef.current) return;
+      console.log("onSwiped");
       let Point = {
         x: props.left,
         y: props.top,
       };
+      dirRef.current = "";
+
       setTimeout(() => {
-        if (unMountedRef.current) return;
+        if (unMountedRef.current || swipedRef.current) return;
         const newPoint = maybeAdjustImage(Point);
         return dispatch(
           createAction(actionType.update, {
@@ -240,6 +285,10 @@ export default function ViewerImage(props) {
           })
         );
       }, 200);
+    },
+    onTouchEndOrOnMouseUp: () => {
+      dirRef.current = "";
+      isDoubleTapRef.current = false;
     },
   });
 
@@ -323,7 +372,8 @@ export default function ViewerImage(props) {
   }
 
   function onClose(e) {
-    if (e.target === imgRef.current) return;
+    if (e.target === imgRef.current || e.nativeEvent.pointerType === "touch")
+      return;
     props.onMaskClick();
   }
 
@@ -364,28 +414,24 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
 
   let styleIndex = {
     zIndex: props.zIndex,
-    top: isMobile ? navMenuHeight : 0,
   };
 
   let imgNode = null;
 
   if (props.imgSrc !== "") {
-    imgNode = isMobile ? (
-      <img
+    imgNode = isMobileOnly ? (
+      <MobileViewer
         className={imgClass}
         src={props.imgSrc}
-        ref={imgRef}
-        style={{
-          position: "absolute",
-          width: `${props.width}px`,
-          height: `${props.height}px`,
-          opacity: `${props.opacity}`,
-          transition: "all .5s ease-out",
-          top: props.top - navMenuHeight / 2,
-          left: props.left,
-          transform: `rotate(${props.rotate}deg) scaleX(${props.scaleX}) scaleY(${props.scaleY})`,
-          willChange: "transform",
-        }}
+        width={props.width}
+        height={props.height}
+        left={props.left}
+        top={props.top}
+        onPrev={props.onPrevClick}
+        onNext={props.onNextClick}
+        onMask={props.onMaskClick}
+        isFistImage={playlistPos === 0}
+        isLastImage={playlistPos === playlist.length - 1}
       />
     ) : (
       <img
@@ -408,6 +454,18 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
         }}
       >
         <ViewerLoading />
+      </div>
+    );
+  }
+
+  if (isMobileOnly) {
+    return (
+      <div
+        className={`${props.prefixCls}-canvas`}
+        onClick={onClose}
+        style={styleIndex}
+      >
+        {imgNode}
       </div>
     );
   }

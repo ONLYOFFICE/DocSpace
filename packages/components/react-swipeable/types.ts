@@ -1,3 +1,4 @@
+import { Point } from './types';
 import * as React from "react";
 
 export const LEFT = "Left";
@@ -106,16 +107,18 @@ export type SwipeableCallbacks = SwipeableDirectionCallbacks & {
    */
   onTap: TapCallback;
 
-  // TODO: add zoom functionality
-  onZoom: ZoomCallback;
   /**
    * Called for `touchstart` and `mousedown`.
-   */
+  */
   onTouchStartOrOnMouseDown: TapCallback;
   /**
    * Called for `touchend` and `mouseup`.
-   */
+  */
   onTouchEndOrOnMouseUp: TapCallback;
+
+
+  onZoom: ZoomCallback;
+  onDoubleTap: (event: TouchEvent) => void;
 };
 
 // Configuration Options
@@ -176,6 +179,11 @@ export type SwipeableState = {
   startPosition?: Tuple<Point>;
   lastDistance: number;
   pinching: boolean;
+  fingers: number;
+  lastTouchStart: number;
+  isDoubleTap: boolean;
+  startTouches: Point[];
+  interaction: "zoom" | "drag" | null;
 };
 
 export type StateSetter = (

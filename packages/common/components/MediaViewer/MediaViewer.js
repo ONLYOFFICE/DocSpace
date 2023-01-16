@@ -264,7 +264,7 @@ class MediaViewer extends React.Component {
   };
 
   doubleTap = () => {
-    document.querySelector('li[data-key="zoomIn"]').click();
+    document.querySelector('li[data-key="zoomIn"]')?.click();
   };
 
   prevMedia = () => {

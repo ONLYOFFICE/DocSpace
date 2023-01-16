@@ -126,6 +126,7 @@ const ViewerBase = (props) => {
   const viewerCore = React.useRef(null);
   const init = React.useRef(false);
   const currentLoadIndex = React.useRef(0);
+
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   React.useEffect(() => {
@@ -491,15 +492,16 @@ const ViewerBase = (props) => {
       state.imageWidth,
       state.imageHeight
     );
-
+    const left = (containerSize.current.width - imgWidth) / 2;
+    const top = (containerSize.current.height - imgHeight) / 2;
     dispatch(
       createAction(ACTION_TYPES.update, {
         width: imgWidth,
         height: imgHeight,
         scaleX: 1,
         scaleY: 1,
-        top: state.top,
-        left: state.left,
+        top: top,
+        left: left,
         loading: false,
         percent: 100,
         withTransition: true,
