@@ -83,21 +83,21 @@ class HotkeyStore {
     }
 
     if (!hotkeyCaret && selection.length) {
-      this.setCaret(selection[0]);
+      this.setCaret(selection[0], !(e.ctrlKey || e.metaKey || e.shiftKey));
       this.filesStore.setHotkeyCaretStart(selection[0]);
     }
 
     if (!hotkeyCaret || isDefaultKeys) return e;
   };
 
-  setCaret = (caret) => {
+  setCaret = (caret, withScroll = true) => {
     //TODO: inf-scroll
     // const id = caret.isFolder ? `folder_${caret.id}` : `file_${caret.id}`;
     // const elem = document.getElementById(id);
     // if (!elem) return;
 
     this.filesStore.setHotkeyCaret(caret);
-    this.scrollToCaret();
+    withScroll && this.scrollToCaret();
 
     const { offsetTop } = this.getItemOffset();
     if (offsetTop) this.elemOffset = offsetTop;
