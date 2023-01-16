@@ -300,7 +300,7 @@ CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
 FROM dotnetrun AS healthchecks
 WORKDIR ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service
 
-COPY --chown=onlyoffice:onlyoffice ddocker-healthchecks-entrypoint.sh ./docker-healthchecks-entrypoint.sh
+COPY --chown=onlyoffice:onlyoffice docker-healthchecks-entrypoint.sh ./docker-healthchecks-entrypoint.sh
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service/ .
 
 ENTRYPOINT ["./docker-healthchecks-entrypoint.sh"]
