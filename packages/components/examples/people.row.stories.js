@@ -4,8 +4,8 @@ import Row from "../row";
 import Avatar from "../avatar";
 import Link from "../link";
 import RowContent from "../row-content";
-import SendClockIcon from "../../../public/images/send.clock.react.svg";
-import CatalogSpamIcon from "../../../public/images/catalog.spam.react.svg";
+import SendClockReactSvg from "../../../public/images/send.clock.react.svg";
+import CatalogSpamReactSvg from "../../../public/images/catalog.spam.react.svg";
 
 export default {
   title: "Examples/Row",
@@ -259,10 +259,10 @@ const Template = (args) => {
               </Link>
               <>
                 {user.status === "pending" && (
-                  <SendClockIcon size="small" isfill={true} color="#3B72A7" />
+                  <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
                 )}
                 {user.status === "disabled" && (
-                  <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+                  <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
                 )}
               </>
               {user.isHead ? (
