@@ -1,17 +1,17 @@
-import AccessNoneIconUrl from "../../../public/images/access.none.react.svg?url";
-import CheckRoundIconUrl from "../../../public/images/check.react.svg?url";
-import CommentIconUrl from "../../../public/images/access.comment.react.svg?url";
-import CrownIconUrl from "../../../public/images/access.edit.react.svg?url";
-import EyeIconUrl from "../../../public/images/eye.react.svg?url";
-import PencilIconUrl from "../../../public/images/access.edit.react.svg?url";
-import ReviewIconUrl from "../../../public/images/access.review.react.svg?url";
+import ActionsDocumentReactSvgUrl from "../../../public/images/actions.documents.react.svg?url";
+import CheckReactSvgUrl from "../../../public/images/check.react.svg?url";
+import AccessEditReactSvgUrl from "../../../public/images/access.edit.react.svg?url";
+import AccessReviewReactSvgUrl from "../../../public/images/access.review.react.svg?url";
+import AccessCommentReactSvgUrl from "../../../public/images/access.comment.react.svg?url";
+import EyeReactSvgUrl from "../../../public/images/eye.react.svg?url";
+import AccessNoneReactSvgUrl from "../../../public/images/access.none.react.svg?url";
 
 export const data = [
   {
     key: "key1",
     label: "Room administrator",
     description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
-    icon: CrownIconUrl,
+    icon: ActionsDocumentReactSvgUrl,
     quota: "free",
     color: "#20D21F",
   },
@@ -19,7 +19,7 @@ export const data = [
     key: "key2",
     label: "Full access",
     description: `Edit, upload, create, view, download, delete files and folders.`,
-    icon: CheckRoundIconUrl,
+    icon: CheckReactSvgUrl,
     quota: "paid",
     color: "#EDC409",
   },
@@ -29,30 +29,30 @@ export const data = [
     key: "key4",
     label: "Editing",
     description: `Editing, viewing, downloading files and folders, filling out forms.`,
-    icon: PencilIconUrl,
+    icon: AccessEditReactSvgUrl,
   },
   {
     key: "key5",
     label: "Review",
     description: `Reviewing, viewing, downloading files and folders, filling out forms.`,
-    icon: ReviewIconUrl,
+    icon: AccessReviewReactSvgUrl,
   },
   {
     key: "key6",
     label: "Comment",
     description: `Commenting on files, viewing, downloading files and folders, filling out forms.`,
-    icon: CommentIconUrl,
+    icon: AccessCommentReactSvgUrl,
   },
   {
     key: "key7",
     label: "Read only",
     description: `Viewing, downloading files and folders, filling out forms.`,
-    icon: EyeIconUrl,
+    icon: EyeReactSvgUrl,
   },
   {
     key: "key8",
     label: "Deny access",
     description: "",
-    icon: AccessNoneIconUrl,
+    icon: AccessNoneReactSvgUrl,
   },
 ];

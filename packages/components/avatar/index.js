@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import PencilReactSvgUrl from "../../../public/images/pencil.react.svg?url";
 
-import { GuestIcon, AdministratorIcon, OwnerIcon } from "./svg";
+import { GuestReactSvg, AdministratorReactSvg, OwnerReactSvg } from "./svg";
 import {
   EmptyIcon,
   EditContainer,
@@ -17,13 +17,13 @@ import {
 import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
 
-const StyledGuestIcon = styled(GuestIcon)`
+const StyledGuestIcon = styled(GuestReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledAdministratorIcon = styled(AdministratorIcon)`
+const StyledAdministratorIcon = styled(AdministratorReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledOwnerIcon = styled(OwnerIcon)`
+const StyledOwnerIcon = styled(OwnerReactSvg)`
   ${commonIconsStyles}
 `;
 const getRoleIcon = (role) => {

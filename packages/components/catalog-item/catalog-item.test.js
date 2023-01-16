@@ -2,8 +2,11 @@ import React from "react";
 import { mount } from "enzyme";
 import CatalogItem from ".";
 
+import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
+import CatalogTrashReactSvgUrl from "../../../public/images/catalog.trash.react.svg?url";
+
 const baseProps = {
-  icon: "/static/images/catalog.folder.react.svg",
+  icon: CatalogFolderReactSvgUrl,
   text: "Documents",
   showText: true,
   onClick: () => jest.fn(),
@@ -11,7 +14,7 @@ const baseProps = {
   showBadge: true,
   isEndOfBlock: true,
   labelBadge: "2",
-  iconBadge: "/static/images/catalog.trash.react.svg",
+  iconBadge: CatalogTrashReactSvgUrl,
   onClickBadge: () => jest.fn(),
 };
 
