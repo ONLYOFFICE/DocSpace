@@ -18,6 +18,7 @@ const Accounts = ({
   isAdmin,
   changeUserType,
   canChangeUserType,
+  loading,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
@@ -114,6 +115,7 @@ const Accounts = ({
         displaySelectedOption
         modernView
         manualWidth={"fit-content"}
+        isLoading={loading}
       />
     );
 
@@ -192,7 +194,7 @@ const Accounts = ({
 
 export default inject(({ auth, peopleStore, accessRightsStore }) => {
   const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
-  const { changeType: changeUserType } = peopleStore;
+  const { changeType: changeUserType, usersStore } = peopleStore;
   const { canChangeUserType } = accessRightsStore;
 
   return {
@@ -201,6 +203,7 @@ export default inject(({ auth, peopleStore, accessRightsStore }) => {
     changeUserType,
     selfId,
     canChangeUserType,
+    loading: usersStore.operationRunning,
   };
 })(
   withTranslation([

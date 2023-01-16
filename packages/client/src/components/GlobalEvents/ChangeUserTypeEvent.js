@@ -12,10 +12,10 @@ const ChangeUserTypeEvent = ({
   peopleFilter,
   updateUserType,
   getUsersList,
+  setOperationRunning,
+  operationRunning,
 }) => {
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common"]);
-
-  const [isRequestRunning, setIsRequestRunning] = useState(false);
 
   useEffect(() => {
     setVisible(true);
@@ -26,12 +26,12 @@ const ChangeUserTypeEvent = ({
   }, [peopleDialogData]);
 
   const onChangeUserType = async () => {
-    setIsRequestRunning(true);
+    setOperationRunning(true);
     updateUserType(toType, userIDs, peopleFilter, fromType)
       .then(() => toastr.success(t("SuccessChangeUserType")))
       .catch((err) => toastr.error(err))
       .finally(() => {
-        setIsRequestRunning(false);
+        setOperationRunning(false);
         onClose();
       });
   };
@@ -72,7 +72,7 @@ const ChangeUserTypeEvent = ({
       secondType={secondType}
       onCloseAction={onCloseAction}
       onChangeUserType={onChangeUserType}
-      isRequestRunning={isRequestRunning}
+      isRequestRunning={operationRunning}
     />
   );
 };
@@ -87,7 +87,12 @@ export default inject(({ dialogsStore, peopleStore }) => {
 
   const { data: peopleDialogData } = dialogStore;
   const { filter: peopleFilter } = filterStore;
-  const { updateUserType, getUsersList } = usersStore;
+  const {
+    updateUserType,
+    getUsersList,
+    operationRunning,
+    setOperationRunning,
+  } = usersStore;
 
   return {
     visible,
@@ -96,5 +101,7 @@ export default inject(({ dialogsStore, peopleStore }) => {
     peopleFilter,
     updateUserType,
     getUsersList,
+    operationRunning,
+    setOperationRunning,
   };
 })(observer(ChangeUserTypeEvent));
