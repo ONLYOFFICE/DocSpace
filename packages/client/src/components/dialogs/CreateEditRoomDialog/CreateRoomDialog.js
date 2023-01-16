@@ -39,6 +39,8 @@ const CreateRoomDialog = ({
 
   deleteThirdParty,
   fetchThirdPartyProviders,
+  isAdmin,
+  enableThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
@@ -150,6 +152,8 @@ const CreateRoomDialog = ({
             isDisabled={isLoading}
             isValidTitle={isValidTitle}
             setIsValidTitle={setIsValidTitle}
+            isAdmin={isAdmin}
+            enableThirdParty={enableThirdParty}
           />
         )}
       </ModalDialog.Body>

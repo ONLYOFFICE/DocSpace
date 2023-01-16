@@ -68,18 +68,7 @@ class SettingsStore {
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
   logoUrl = "";
-  customNames = {
-    id: "Common",
-    userCaption: "User",
-    usersCaption: "Users",
-    groupCaption: "Group",
-    groupsCaption: "Groups",
-    userPostCaption: "Title",
-    regDateCaption: "Registration Date",
-    groupHeadCaption: "Head",
-    guestCaption: "Guest",
-    guestsCaption: "Guests",
-  };
+
   isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
@@ -242,15 +231,6 @@ class SettingsStore {
     this.folderPath = await api.files.getFolderPath(id);
   };
 
-  getCurrentCustomSchema = async (id) => {
-    let customNames = null;
-    if (window?.__ASC_INITIAL_EDITOR_STATE__?.customNames) {
-      customNames = window.__ASC_INITIAL_EDITOR_STATE__.customNames;
-      window.__ASC_INITIAL_EDITOR_STATE__.customNames = null;
-    } else customNames = await api.settings.getCurrentCustomSchema(id);
-    this.customNames = customNames;
-  };
-
   getCustomSchemaList = async () => {
     this.customSchemaList = await api.settings.getCustomSchemaList();
   };
@@ -263,13 +243,6 @@ class SettingsStore {
 
       this.enablePlugins = origSettings.plugins.enabled;
       this.pluginOptions = origSettings.plugins.allow;
-    }
-
-    if (
-      origSettings.nameSchemaId &&
-      this.tenantStatus !== TenantStatus.PortalRestore
-    ) {
-      this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
 
     if (origSettings.tenantAlias) {

@@ -24,7 +24,7 @@ import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -50,15 +50,21 @@ const Login: React.FC<ILoginProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -109,10 +115,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-            url,
-            "login",
-            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-          );
+              url,
+              "login",
+              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+            );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(

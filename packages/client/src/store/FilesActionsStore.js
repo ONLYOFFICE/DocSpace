@@ -553,13 +553,12 @@ class FilesActionStore {
     return this.downloadFiles(fileIds, folderIds, label);
   };
 
-  editCompleteAction = async (selectedItem, type, isFolder = false) => {
-    if (type === FileAction.Create) {
-      this.filesStore.addFile(selectedItem, isFolder);
-    }
-
-    if (type === FileAction.Create || type === FileAction.Rename) {
-      type === FileAction.Rename &&
+  completeAction = async (selectedItem, type, isFolder = false) => {
+    switch (type) {
+      case FileAction.Create:
+        this.filesStore.addItem(selectedItem, isFolder);
+        break;
+      case FileAction.Rename:
         this.onSelectItem(
           {
             id: selectedItem.id,
@@ -567,6 +566,9 @@ class FilesActionStore {
           },
           false
         );
+        break;
+      default:
+        break;
     }
   };
 
@@ -605,7 +607,7 @@ class FilesActionStore {
         } else {
           setSelection([item]);
           setHotkeyCaret(null);
-          setHotkeyCaretStart(null);
+          setHotkeyCaretStart(item);
         }
       } else if (
         isSelected &&
@@ -614,7 +616,7 @@ class FilesActionStore {
         !isSingleMenu
       ) {
         setHotkeyCaret(null);
-        setHotkeyCaretStart(null);
+        setHotkeyCaretStart(item);
       } else {
         setSelected("none");
         setBufferSelection(item);
@@ -708,7 +710,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
-      return removeFiles(items)
+      return removeFiles(items, [], true, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -957,12 +959,17 @@ class FilesActionStore {
       case "archive":
         return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Archive rooms operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
             if (!isRoomsFolder) {
@@ -996,13 +1003,19 @@ class FilesActionStore {
       case "unarchive":
         return moveToFolder(myRoomsId, items)
           .then(async (res) => {
-            if (res[0]?.error) return Promise.reject(res[0].error);
+            const lastResult = res && res[res.length - 1];
+
+            if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
-              label: "Archive room operation",
+              label: "Restore rooms from archive operation",
             };
-            const data = res ? res : null;
+            const data = lastResult || null;
+
+            console.log(pbData.label, { data, res });
+
             await this.uploadDataStore.loopFilesOperations(data, pbData);
+
             this.updateCurrentFolder(null, [items]);
           })
           .then(() => setPortalQuota())
@@ -1090,9 +1103,13 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
+      setHotkeyCaret,
+      setHotkeyCaretStart,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+    setHotkeyCaret(null);
+    setHotkeyCaretStart(file);
 
     if (checked) {
       selectFile(file);
@@ -1452,7 +1469,6 @@ class FilesActionStore {
         alert: true,
       });
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      onClose();
       return toastr.error(err.message ? err.message : err);
     }
   };

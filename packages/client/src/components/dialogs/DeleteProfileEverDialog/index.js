@@ -69,7 +69,8 @@ class DeleteProfileEverDialogComponent extends React.Component {
               ns="DeleteProfileEverDialog"
               t={t}
             >
-              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>
+              {{ userCaption: t("Common:User") }}{" "}
+              <strong>{{ user: user.displayName }}</strong>
               will be deleted. User personal documents which are available to
               others will be deleted.
             </Trans>
@@ -110,9 +111,8 @@ DeleteProfileEverDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
+  inject(({ peopleStore }) => ({
     homepage: config.homepage,
-    userCaption: auth.settingsStore.customNames.userCaption,
     setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(DeleteProfileEverDialog))
 );

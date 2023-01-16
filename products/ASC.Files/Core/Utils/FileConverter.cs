@@ -52,9 +52,14 @@ public class FileConverterQueue<T>
         {
             var task = PeekTask(file);
 
-            if (Contains(task))
+            if (task != null)
             {
-                return;
+                if (task.Progress != 100)
+                {
+                    return;
+                }
+
+                Dequeue(task);
             }
 
             var queueResult = new FileConverterOperationResult
@@ -137,15 +142,13 @@ public class FileConverterQueue<T>
     public async Task<FileConverterOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
     {
         var file = pair.Key;
-        var operation = PeekTask(pair.Key);
+        var operation = PeekTask(file);
 
         if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
         {
             if (operation.Progress == 100)
-            {
-                var task = PeekTask(file);
-
-                Dequeue(task);
+            {            
+                Dequeue(operation);
             }
 
             return operation;
@@ -183,21 +186,6 @@ public class FileConverterQueue<T>
             }, options);
     }
 
-    private bool Contains(FileConverterOperationResult val)
-    {
-        if (val == null)
-        {
-            return false;
-        }
-
-        var queueTasks = LoadFromCache();
-
-        return queueTasks.Any(x =>
-        {
-            return String.Compare(x.Source, val.Source) == 0;
-        });
-    }
-
     private bool IsOrphanCacheItem(FileConverterOperationResult x)
     {
         return !string.IsNullOrEmpty(x.Processed)
@@ -213,7 +201,7 @@ public class FileConverterQueue<T>
 
         SaveToCache(listTasks);
 
-        return queueTasks;
+        return listTasks;
     }
 
     private void SaveToCache(IEnumerable<FileConverterOperationResult> queueTasks)

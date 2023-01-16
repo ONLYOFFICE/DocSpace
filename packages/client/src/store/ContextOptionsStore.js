@@ -129,8 +129,19 @@ class ContextOptionsStore {
       this.settingsStore.extsWebRestrictedEditing[0];
 
     this.uploadDataStore.copyAsAction(id, newTitle, folderId).catch((err) => {
-      if (err.indexOf("password") == -1) {
-        toastr.error(err, t("Common:Warning"));
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          err?.response?.data?.error?.message ||
+          err?.statusText ||
+          err?.message ||
+          "";
+      } else {
+        errorMessage = err;
+      }
+
+      if (errorMessage.indexOf("password") == -1) {
+        toastr.error(errorMessage, t("Common:Warning"));
         return;
       }
 

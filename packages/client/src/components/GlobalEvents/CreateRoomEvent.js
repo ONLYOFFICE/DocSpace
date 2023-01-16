@@ -30,6 +30,8 @@ const CreateRoomEvent = ({
   fetchFiles,
   setInfoPanelIsVisible,
   setView,
+  isAdmin,
+  enableThirdParty,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
@@ -142,6 +144,8 @@ const CreateRoomEvent = ({
       setIsLoading={setIsLoading}
       deleteThirdParty={deleteThirdParty}
       fetchThirdPartyProviders={fetchThirdPartyProviders}
+      isAdmin={isAdmin}
+      enableThirdParty={enableThirdParty}
     />
   );
 };
@@ -164,7 +168,7 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
       fetchFiles,
-      addFile,
+      addItem,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
@@ -183,6 +187,10 @@ export default inject(
       setIsVisible: setInfoPanelIsVisible,
       setView,
     } = auth.infoPanelStore;
+
+    const { isAdmin } = auth;
+
+    const { enableThirdParty } = settingsStore;
 
     return {
       createRoom,
@@ -205,6 +213,8 @@ export default inject(
       fetchFiles,
       setInfoPanelIsVisible,
       setView,
+      isAdmin,
+      enableThirdParty,
     };
   }
 )(observer(CreateRoomEvent));

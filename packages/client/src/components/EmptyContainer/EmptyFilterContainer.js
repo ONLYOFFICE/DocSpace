@@ -16,6 +16,9 @@ const EmptyFilterContainer = ({
   fetchRooms,
   linkStyles,
   isRooms,
+  isArchiveFolder,
+  isRoomsFolder,
+  setClearSearch,
 }) => {
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = isRooms
@@ -24,7 +27,13 @@ const EmptyFilterContainer = ({
 
   const onResetFilter = () => {
     setIsLoading(true);
-    if (isRooms) {
+
+    if (isArchiveFolder) {
+      setClearSearch(true);
+      return;
+    }
+
+    if (isRoomsFolder) {
       const newFilter = RoomsFilter.getDefault();
       fetchRooms(selectedFolderId, newFilter)
         .catch((err) => toastr.error(err))
@@ -74,6 +83,9 @@ export default inject(
       selectedFolderId: selectedFolderStore.id,
       setIsLoading: filesStore.setIsLoading,
       isRooms,
+      isArchiveFolder,
+      isRoomsFolder,
+      setClearSearch: filesStore.setClearSearch,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));
