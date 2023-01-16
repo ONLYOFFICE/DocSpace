@@ -122,6 +122,12 @@ export default function withFileActions(WrappedFileItem) {
 
     onMouseClick = (e) => {
       const { viewAs, withCtrlSelect, item } = this.props;
+      const { ctrlKey, shiftKey } = e;
+
+      console.log("withFileActions onMouseClick", item.id, {
+        ctrlKey,
+        shiftKey,
+      });
 
       if (e.ctrlKey || e.shiftKey) {
         withCtrlSelect(item);
@@ -209,6 +215,8 @@ export default function withFileActions(WrappedFileItem) {
         isFolder,
       } = this.props;
       const { fileExst, access, id } = item;
+
+      console.log("Render withFileActions", id);
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
