@@ -19,6 +19,7 @@ function MobileViewer({
   const lastTapTime = React.useRef(0);
   const unmount = React.useRef(false);
   const isDoubleTapRef = React.useRef(false);
+  const setTimeoutIDTap = React.useRef();
 
   const [crop, setCrop] = React.useState({
     x: left,
@@ -32,6 +33,7 @@ function MobileViewer({
     unmount.current = false;
 
     return () => {
+      setTimeoutIDTap.current && clearTimeout(setTimeoutIDTap.current);
       unmount.current = true;
     };
   }, []);
@@ -95,32 +97,6 @@ function MobileViewer({
 
   useGesture(
     {
-      onDragStart: ({ pinching }) => {
-        if (pinching) return;
-
-        const time = new Date().getTime();
-
-        if (time - lastTapTime.current < 300) {
-          lastTapTime.current = 0;
-          isDoubleTapRef.current = true;
-          const imageWidth = imgRef.current.width;
-          const imageHeight = imgRef.current.height;
-          const containerBounds = imgRef.current.parentNode.getBoundingClientRect();
-
-          const deltaWidth = (containerBounds.width - imageWidth) / 2;
-          const deltaHeight = (containerBounds.height - imageHeight) / 2;
-
-          setCrop((pre) => ({
-            ...pre,
-            scale: 1,
-            rotate: 0,
-            x: deltaWidth,
-            y: deltaHeight,
-          }));
-        } else {
-          lastTapTime.current = time;
-        }
-      },
       onDrag: ({
         offset: [dx, dy],
         movement: [mdx, mdy],
@@ -150,7 +126,7 @@ function MobileViewer({
         }));
       },
 
-      onDragEnd: ({ cancel, canceled, movement: [mdx, mdy] }) => {
+      onDragEnd: ({ cancel, canceled, movement: [mdx, mdy], dragging }) => {
         if (unmount.current) {
           return;
         }
@@ -159,7 +135,6 @@ function MobileViewer({
           isDoubleTapRef.current = false;
           cancel();
         }
-
         if (crop.scale === 1) {
           if (mdx < -imgRef.current.width / 4) {
             return onNext();
@@ -212,8 +187,6 @@ function MobileViewer({
         return memo;
       },
       onPinchEnd: (event) => {
-        console.log("onPinchEnd", event, unmount.current);
-
         if (unmount.current) {
           return;
         }
@@ -224,8 +197,36 @@ function MobileViewer({
         });
         setCrop((pre) => ({ ...pre, ...newPoint }));
       },
-      onClick: (event) => {
-        setPanelVisible((visible) => !visible);
+      onClick: () => {
+        const time = new Date().getTime();
+
+        if (time - lastTapTime.current < 300) {
+          //on Double Tap
+          lastTapTime.current = 0;
+          isDoubleTapRef.current = true;
+          const imageWidth = imgRef.current.width;
+          const imageHeight = imgRef.current.height;
+          const containerBounds = imgRef.current.parentNode.getBoundingClientRect();
+
+          const deltaWidth = (containerBounds.width - imageWidth) / 2;
+          const deltaHeight = (containerBounds.height - imageHeight) / 2;
+
+          setCrop((pre) => ({
+            ...pre,
+            scale: 1,
+            rotate: 0,
+            x: deltaWidth,
+            y: deltaHeight,
+          }));
+
+          clearTimeout(setTimeoutIDTap.current);
+        } else {
+          lastTapTime.current = time;
+          setTimeoutIDTap.current = setTimeout(() => {
+            // onTap
+            setPanelVisible((visible) => !visible);
+          }, 300);
+        }
       },
     },
     {
