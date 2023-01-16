@@ -29,8 +29,6 @@ const HistoryBlock = ({
   const isItemAction =
     json.Item === FeedItemTypes.File || json.Item === FeedItemTypes.Folder;
 
-  console.log(initiator);
-
   const userAvatar = initiator.hasAvatar
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
