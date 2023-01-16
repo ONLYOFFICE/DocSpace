@@ -394,8 +394,8 @@ class MediaViewer extends React.Component {
             : null;
           break;
         case ButtonKeys.space:
-          document.getElementsByClassName("volume-container").length > 0 &&
-            document.getElementsByClassName("volume-container")[0].click();
+          document.getElementsByClassName("video-play").length > 0 &&
+            document.getElementsByClassName("video-play")[0].click();
           break;
         case ButtonKeys.esc:
           if (!this.props.deleteDialogVisible) this.props.onClose();
