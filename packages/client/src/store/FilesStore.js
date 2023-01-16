@@ -111,6 +111,8 @@ class FilesStore {
   roomsController = null;
   filesController = null;
 
+  clearSearch = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -353,6 +355,10 @@ class FilesStore {
 
   setOperationAction = (operationAction) => {
     this.operationAction = operationAction;
+  };
+
+  setClearSearch = (clearSearch) => {
+    this.clearSearch = clearSearch;
   };
 
   updateSelectionStatus = (id, status, isEditing) => {

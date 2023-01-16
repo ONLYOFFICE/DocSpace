@@ -43,7 +43,10 @@ const FilterInput = React.memo(
     isPersonalRoom,
     isRooms,
     isAccounts,
-    filterTitle
+    filterTitle,
+
+    clearSearch,
+    setClearSearch,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -57,6 +60,14 @@ const FilterInput = React.memo(
 
       if (value) setViewSettings(value);
     }, [getViewSettingsData]);
+
+    React.useEffect(() => {
+      if (clearSearch) {
+        setInputValue("");
+        onClearSearch();
+        setClearSearch(false);
+      }
+    }, [clearSearch]);
 
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
