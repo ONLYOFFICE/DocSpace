@@ -2948,7 +2948,9 @@ class FilesStore {
     this.setHotkeyCaret(item);
     this.setHotkeyCaretStart(item);
 
-    const fileIndex = this.selection.findIndex((f) => f.id === item.id);
+    const fileIndex = this.selection.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
     if (fileIndex === -1) {
       this.setSelection([item, ...this.selection]);
     } else {
