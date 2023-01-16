@@ -367,7 +367,6 @@ export default function ViewerPlayer(props) {
     speedSelection: false,
     progress: 0,
     duration: 0,
-    volumeSelection: false,
     speedState: 1,
     isOpenContext: false,
     volume: stateVolume,
@@ -518,7 +517,6 @@ export default function ViewerPlayer(props) {
     dispatch(
       createAction(ACTION_TYPES.update, {
         isOpenContext: !state.isOpenContext,
-        volumeSelection: false,
         speedSelection: false,
       })
     );
@@ -572,7 +570,6 @@ export default function ViewerPlayer(props) {
     dispatch(
       createAction(ACTION_TYPES.update, {
         speedSelection: !state.speedSelection,
-        volumeSelection: false,
         isOpenContext: false,
       })
     );
@@ -709,12 +706,20 @@ export default function ViewerPlayer(props) {
   };
 
   const handleOutsideClick = (e) => {
-    dispatch(
-      createAction(ACTION_TYPES.update, {
-        volumeSelection: false,
-        isOpenContext: false,
-      })
-    );
+    if (state.isOpenContext) {
+      return dispatch(
+        createAction(ACTION_TYPES.update, {
+          isOpenContext: false,
+        })
+      );
+    }
+    if (state.speedSelection) {
+      return dispatch(
+        createAction(ACTION_TYPES.update, {
+          speedSelection: false,
+        })
+      );
+    }
   };
 
   React.useEffect(() => {
@@ -836,6 +841,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       id="video-playerId"
       isFullScreen={state.isFullScreen}
       audio={isAudio.toString()}
+      onClick={handleOutsideClick}
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {isMobileOnly && displayUI && mobileDetails}
