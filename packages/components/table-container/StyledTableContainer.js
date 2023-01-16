@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet, hugeMobile } from "../utils/device";
+import IconButton from "../icon-button";
 import Scrollbar from "../scrollbar";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
@@ -412,6 +413,21 @@ const StyledScrollbar = styled(Scrollbar)`
 
 StyledTableRow.defaultProps = { theme: Base };
 
+const StyledSettingsIcon = styled(IconButton)`
+  ${(props) =>
+    props.isDisabled &&
+    css`
+      svg {
+        path {
+          fill: ${props.theme.tableContainer.header
+            .settingsIconDisableColor} !important;
+        }
+      }
+    `}
+`;
+
+StyledSettingsIcon.defaultProps = { theme: Base };
+
 export {
   StyledTableContainer,
   StyledTableRow,
@@ -424,4 +440,5 @@ export {
   StyledInfoPanelToggleWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
+  StyledSettingsIcon,
 };

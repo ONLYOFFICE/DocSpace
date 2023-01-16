@@ -221,20 +221,6 @@ const ArticleMainButtonContent = (props) => {
   React.useEffect(() => {
     if (isRoomsFolder) return;
 
-    const folderUpload = !isMobile
-      ? [
-          {
-            id: "actions_upload-folders",
-            className: "main-button_drop-down",
-            icon: "images/actions.upload.react.svg",
-            label: t("UploadFolder"),
-            disabled: isPrivacy,
-            onClick: onUploadFolderClick,
-            key: "upload-folder",
-          },
-        ]
-      : [];
-
     const formActions = [
       {
         id: "actions_template",
@@ -309,7 +295,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-document",
             className: "main-button_drop-down",
             icon: "images/actions.documents.react.svg",
-            label: t("NewDocument"),
+            label: t("Common:NewDocument"),
             onClick: onCreate,
             action: "docx",
             key: "docx",
@@ -318,7 +304,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-spreadsheet",
             className: "main-button_drop-down",
             icon: "images/spreadsheet.react.svg",
-            label: t("NewSpreadsheet"),
+            label: t("Common:NewSpreadsheet"),
             onClick: onCreate,
             action: "xlsx",
             key: "xlsx",
@@ -327,7 +313,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-presentation",
             className: "main-button_drop-down",
             icon: "images/actions.presentation.react.svg",
-            label: t("NewPresentation"),
+            label: t("Common:NewPresentation"),
             onClick: onCreate,
             action: "pptx",
             key: "pptx",
@@ -337,7 +323,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-folder",
             className: "main-button_drop-down",
             icon: "images/catalog.folder.react.svg",
-            label: t("NewFolder"),
+            label: t("Common:NewFolder"),
             onClick: onCreate,
             key: "new-folder",
           },
@@ -364,7 +350,15 @@ const ArticleMainButtonContent = (props) => {
             onClick: onUploadFileClick,
             key: "upload-files",
           },
-          ...folderUpload,
+          {
+            id: "actions_upload-folders",
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFolder"),
+            disabled: isPrivacy,
+            onClick: onUploadFolderClick,
+            key: "upload-folder",
+          },
         ];
 
     const menuModel = [...actions];

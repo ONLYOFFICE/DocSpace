@@ -137,7 +137,11 @@ class MediaViewer extends React.Component {
         this.updateHammer();
 
         const newPlaylistPos =
-          playlistPos < playlist.length ? playlistPos + 1 : 0;
+          playlistPos < playlist.length
+            ? playlist.length !== prevProps.playlist.length
+              ? playlistPos + 1
+              : playlistPos
+            : 0;
 
         this.setState({
           playlist: playlist,
@@ -495,9 +499,6 @@ class MediaViewer extends React.Component {
     const ext = this.getFileExtension(title);
 
     const onSetSelectionFile = () => {
-      if (window.location.href.indexOf("/#preview") > 1) {
-        return setBufferSelection(playlist[0]);
-      }
       setBufferSelection(targetFile);
     };
 
@@ -549,6 +550,7 @@ class MediaViewer extends React.Component {
           label: t("MoveTo"),
           icon: "images/move.react.svg",
           onClick: onMoveAction,
+          disabled: isPreviewFile,
         },
         // {
         //   key: "download-as",
@@ -563,7 +565,7 @@ class MediaViewer extends React.Component {
           label: t("Translations:Copy"),
           icon: "/static/images/copy.react.svg",
           onClick: onCopyAction,
-          disabled: false,
+          disabled: isPreviewFile,
         },
         {
           id: "option_create-copy",
@@ -571,26 +573,27 @@ class MediaViewer extends React.Component {
           label: t("Common:Duplicate"),
           icon: "/static/images/duplicate.react.svg",
           onClick: () => onDuplicate(targetFile, t),
-          disabled: false,
+          disabled: isPreviewFile,
         },
         {
           key: "rename",
           label: t("Rename"),
           icon: "images/rename.react.svg",
           onClick: () => onClickRename(targetFile),
-          disabled: false,
+          disabled: isPreviewFile,
         },
 
         {
           key: "separator0",
           isSeparator: true,
+          disabled: isPreviewFile,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
           onClick: () => onClickDelete(targetFile, t),
-          disabled: false,
+          disabled: isPreviewFile,
         },
       ];
 
@@ -648,6 +651,7 @@ class MediaViewer extends React.Component {
             isImage={isImage}
             isAudio={isAudio}
             isVideo={isVideo}
+            isPreviewFile={isPreviewFile}
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}

@@ -13,6 +13,7 @@ export default function ViewerImage(props) {
     playlist,
     playlistPos,
     containerSize,
+    setPanelVisible,
   } = props;
 
   const isMouseDown = React.useRef(false);
@@ -262,7 +263,9 @@ export default function ViewerImage(props) {
         props.onMaskClick();
       }
     },
-
+    onTap: (e) => {
+      setPanelVisible((visible) => !visible);
+    },
     onSwiped: (e) => {
       if (unMountedRef.current || isDoubleTapRef.current) return;
       console.log("onSwiped");

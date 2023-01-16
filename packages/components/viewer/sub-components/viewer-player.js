@@ -128,6 +128,22 @@ const StyledVideoPlayer = styled.div`
     }
   }
 
+  .video-speed-toast {
+    position: fixed;
+    width: 72px;
+    height: 56px;
+    border-radius: 9px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      width: 46px;
+      height: 46px;
+    }
+  }
+
   input[type="range"] {
     -webkit-appearance: none;
     margin-right: 15px;
@@ -223,10 +239,6 @@ const StyledVideoActions = styled.div`
     width: 18px;
     height: 20px;
   }
-
-  .fullscreen-button {
-    padding-bottom: 2px;
-  }
 `;
 
 const StyledDuration = styled.div`
@@ -272,10 +284,6 @@ const StyledVideoControls = styled.div`
         cursor: pointer;
       }
     }
-  }
-
-  .volume-container-audio {
-    margin-left: -2px;
   }
 
   ${isMobileOnly &&
@@ -339,6 +347,7 @@ export default function ViewerPlayer(props) {
     audioIcon,
     playlist,
     playlistPos,
+    setPanelVisible,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -365,6 +374,7 @@ export default function ViewerPlayer(props) {
     opacity: 1,
     deltaY: 0,
     deltaX: 0,
+    speedToastVisible: false,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -456,6 +466,7 @@ export default function ViewerPlayer(props) {
 
   const togglePlay = (e) => {
     e.stopPropagation();
+    if (e.target === videoRef.current && isMobileOnly) return;
     dispatch(
       createAction(ACTION_TYPES.update, {
         isPlaying: !state.isPlaying,
@@ -501,7 +512,7 @@ export default function ViewerPlayer(props) {
     );
   };
 
-  const toggleContext = () => {
+  const toggleContext = (e) => {
     dispatch(
       createAction(ACTION_TYPES.update, {
         isOpenContext: !state.isOpenContext,
@@ -524,6 +535,7 @@ export default function ViewerPlayer(props) {
 
   const toggleSpeedSelectionMenu = (e) => {
     if (isMobileOnly) {
+      let timer;
       const speed = ["X0.5", "X1", "X1.5", "X2"];
 
       const currentSpeed =
@@ -538,7 +550,18 @@ export default function ViewerPlayer(props) {
       dispatch(
         createAction(ACTION_TYPES.update, {
           speedState: currentSpeed,
+          speedToastVisible: true,
         })
+      );
+      clearTimeout(timer);
+      setTimeout(
+        () =>
+          dispatch(
+            createAction(ACTION_TYPES.update, {
+              speedToastVisible: false,
+            })
+          ),
+        2000
       );
       const videoSpeed = Number(speed[currentSpeed].substring(1));
       return (videoRef.current.playbackRate = videoSpeed);
@@ -602,9 +625,10 @@ export default function ViewerPlayer(props) {
     const [width, height] = getVideoWidthHeight(video);
 
     let left = (window.innerWidth - width) / 2;
-    let top = !state.isFullScreen
-      ? (window.innerHeight - height - footerHeight) / 2
-      : 0;
+    let top =
+      !state.isFullScreen || isMobileOnly
+        ? (window.innerHeight - height - footerHeight) / 2
+        : 0;
 
     return [width, height, left, top];
   };
@@ -686,7 +710,6 @@ export default function ViewerPlayer(props) {
     dispatch(
       createAction(ACTION_TYPES.update, {
         volumeSelection: false,
-        speedSelection: false,
         isOpenContext: false,
       })
     );
@@ -738,6 +761,8 @@ export default function ViewerPlayer(props) {
 
     const lasting = `${currentTime} / ${duration}`;
 
+    setPanelVisible(true);
+
     const [width, height, left, top] = getVideoPosition(video);
     dispatch(
       createAction(ACTION_TYPES.update, {
@@ -755,6 +780,7 @@ export default function ViewerPlayer(props) {
         deltaY: 0,
         deltaX: 0,
         speedState: 1,
+        speedToastVisible: false,
       })
     );
   }
@@ -769,6 +795,14 @@ export default function ViewerPlayer(props) {
     });
   }, [props.activeIndex]);
 
+  React.useEffect(() => {
+    let timer;
+    if (isMobileOnly && videoRef.current && displayUI) {
+      clearTimeout(timer);
+      timer = setTimeout(() => setPanelVisible(false), 5000);
+    }
+  }, [displayUI]);
+
   let contextRight = 9;
   let contextBottom = 48;
   const contextMenu = generateContextMenu(
@@ -778,10 +812,11 @@ export default function ViewerPlayer(props) {
   );
 
   let iconLeft =
-    state.left && isMobileOnly
+    state.deltaX && isMobileOnly
       ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
       : (window.innerWidth - iconWidth) / 2 + "px";
-  let iconTop = (window.innerHeight - iconHeight) / 2 + state.deltaY + "px";
+  let iconTop =
+    (window.innerHeight - iconHeight) / 2 - 13 + state.deltaY + "px";
 
   let imgStyle = {
     opacity: `${state.opacity}`,
@@ -801,7 +836,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       audio={isAudio.toString()}
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
-      {isMobileOnly && mobileDetails}
+      {isMobileOnly && displayUI && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
         <div
           style={{
@@ -846,6 +881,19 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             <BigIconPlay onClick={togglePlay} />
           </div>
         )}
+        {state.speedToastVisible && (
+          <div
+            className="video-speed-toast"
+            style={{
+              left: `${iconLeft}`,
+              top: `${iconTop}`,
+              background: `rgba(51, 51, 51, 0.65)`,
+            }}
+          >
+            {speedIcons[state.speedState]}
+          </div>
+        )}
+
         {isAudio && (
           <div
             className="audio-container"
@@ -953,7 +1001,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                   </div>
                 )}
 
-                {!isMobileOnly && (
+                {!isMobileOnly && !props.isPreviewFile && (
                   <div
                     className="controller context-menu-wrapper"
                     onClick={toggleContext}

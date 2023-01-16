@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Añadir cuenta",
   "ArchivingData": "Archivando datos",
   "ConnectingAccount": "Conectando cuenta",
   "Copy": "Copiar",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Obtener ONLYOFFICE Documents en el Google Play",
   "MobileIos": "Descargar ONLYOFFICE Documents en el App Store",
   "MobileLinux": "Descargar los editores de escritorio ONLYOFFICE para Linux",
-  "MobileMac": "Descargar los editores de escritorio ONLYOFFICE para Mac OS",
+  "MobileMac": "Descargar los editores de escritorio ONLYOFFICE para macOS",
   "MobileWin": "Descargar los editores de escritorio ONLYOFFICE para Windows",
   "MoveHere": "Mover aquí",
   "MoveToOperation": "Moviendo",

@@ -59,12 +59,17 @@ export const Viewer = (props) => {
   }, []);
 
   React.useEffect(() => {
-    document.addEventListener("mousemove", resetTimer);
-    return () => {
-      document.removeEventListener("mousemove", resetTimer);
-      clearTimeout(timer);
-      setPanelVisible(true);
-    };
+    document.addEventListener("touchstart", onTouch);
+    if (!isMobileOnly) {
+      document.addEventListener("mousemove", resetTimer);
+
+      return () => {
+        document.removeEventListener("mousemove", resetTimer);
+        clearTimeout(timer);
+        setPanelVisible(true);
+      };
+    }
+    return () => document.removeEventListener("touchstart", onTouch);
   }, []);
 
   function resetTimer() {
@@ -72,6 +77,12 @@ export const Viewer = (props) => {
     clearTimeout(timer);
     timer = setTimeout(() => setPanelVisible(false), 5000);
   }
+
+  const onTouch = (e) => {
+    if (e.target === videoElement.current) {
+      setPanelVisible((visible) => !visible);
+    }
+  };
 
   React.useEffect(() => {
     if (props.visible && !init) {
@@ -106,15 +117,20 @@ export const Viewer = (props) => {
       <Text fontSize="14px" color={"#fff"} className="title">
         {title}
       </Text>
-      <div className="details-context">
-        <MediaContextMenu className="mobile-context" onClick={onContextMenu} />
-        <ContextMenu
-          getContextModel={contextModel}
-          ref={cm}
-          withBackdrop={true}
-          header={contextMenuHeader}
-        />
-      </div>
+      {!props.isPreviewFile && (
+        <div className="details-context">
+          <MediaContextMenu
+            className="mobile-context"
+            onClick={onContextMenu}
+          />
+          <ContextMenu
+            getContextModel={contextModel}
+            ref={cm}
+            withBackdrop={true}
+            header={contextMenuHeader}
+          />
+        </div>
+      )}
     </StyledMobileDetails>
   );
 
@@ -127,6 +143,7 @@ export const Viewer = (props) => {
       mobileDetails={mobileDetails}
       container={container}
       onMaskClick={onMaskClick}
+      setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
     />,
     container
@@ -144,6 +161,7 @@ export const Viewer = (props) => {
       displayUI={displayUI}
       title={title}
       onMaskClick={onMaskClick}
+      setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
       setIsFullScreen={setIsFullScreen}
       videoRef={videoElement}

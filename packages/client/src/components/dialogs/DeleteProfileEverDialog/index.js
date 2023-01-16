@@ -50,17 +50,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
     });
   };
 
-  onReassignDataClick = () => {
-    const { homepage, user } = this.props;
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        homepage,
-        `/reassign/${user.userName}`
-      )
-    );
-  };
-
   render() {
     console.log("DeleteProfileEverDialog render");
     const { t, tReady, visible, user, onClose, userCaption } = this.props;
@@ -80,17 +69,17 @@ class DeleteProfileEverDialogComponent extends React.Component {
               ns="DeleteProfileEverDialog"
               t={t}
             >
-              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>
+              {{ userCaption: t("Common:User") }}{" "}
+              <strong>{{ user: user.displayName }}</strong>
               will be deleted. User personal documents which are available to
-              others will be deleted. To avoid this, you must start the data
-              reassign process before deleting.
+              others will be deleted.
             </Trans>
           </Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
-            label={t("Common:OKButton")}
+            label={t("Common:Delete")}
             size="normal"
             primary={true}
             scale
@@ -122,9 +111,8 @@ DeleteProfileEverDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
+  inject(({ peopleStore }) => ({
     homepage: config.homepage,
-    userCaption: auth.settingsStore.customNames.userCaption,
     setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(DeleteProfileEverDialog))
 );

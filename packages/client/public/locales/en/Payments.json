@@ -1,5 +1,5 @@
 {
-  "AccessingProblem": "If you are an existing user and have problems accessing this portal please contact the portal administrator.",
+  "AccessingProblem": "If you are an existing user and have problems accessing this space please contact the administrator.",
   "ActivateBusinessPlan": "Activate {{planName}} plan?",
   "AdministratorDescription": "DocSpace configuration, room creation and administration, ability to invite and manage users in DocSpace and in virtual rooms, ability to manage access rights.",
   "Benefits": "Benefits",
@@ -27,7 +27,7 @@
   "Pay": "Pay",
   "PayBeforeTheEndGracePeriod": "Make sure to make payment before the grace period is due",
   "Payer": "Payer",
-  "PayerDescription": "This user has access to payment details and is the only user that can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe client portal.",
+  "PayerDescription": "This user has access to payment details and is the only user who can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe customer portal.",
   "PaymentOverdue": "Cannot add new users.",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per admin/month",
   "PriceCalculation": "Calculate your price",

@@ -97,9 +97,9 @@ const DeleteDialogComponent = (props) => {
 
     const itemId = selection.map((s) => s.id);
 
-    await deleteRoomsAction(itemId, translations);
-
     onClose();
+
+    await deleteRoomsAction(itemId, translations);
   };
 
   const onClose = () => {

@@ -1,5 +1,4 @@
 {
-  "AddAccount": "ເພີ່ມບັນຊີ",
   "ArchivingData": "ການເກັບກໍາຂໍ້ມູນ",
   "ConnectingAccount": "ການເຊື່ອມໂຍງບັນຊີ",
   "Copy": "ສໍາເນົາ",
@@ -23,7 +22,7 @@
   "MobileAndroid": "ເອົາ ເອ ກະສານສະເພາະ ໃນ Google Play",
   "MobileIos": "ດາວໂຫລດ ເອກະສານ ONLYOFFICE ໃນ App Store",
   "MobileLinux": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Linux",
-  "MobileMac": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Mac OS",
+  "MobileMac": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ macOS",
   "MobileWin": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Windows",
   "MoveHere": "ຍ້າຍ ນີ້",
   "MoveToOperation": "ກຳລັງເຄື່ອນຍ້າຍ",

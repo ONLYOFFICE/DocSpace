@@ -1,6 +1,6 @@
 {
   "ChangeEmailTitle": "Change email",
-  "Desc": "Please set up the portal registration data.",
+  "Desc": "Please set up the DocSpace registration data.",
   "Domain": "Domain:",
   "ErrorEmail": "Invalid email address",
   "ErrorInitWizard": "The service is currently unavailable, please try again later.",
@@ -17,6 +17,6 @@
   "LicenseLink": "License agreements",
   "PlaceholderLicense": "Your license file",
   "Timezone": "Time zone:",
-  "WelcomeTitle": "Welcome to your portal!",
-  "WizardTitle": "Set up your portal"
+  "WelcomeTitle": "Welcome to your DocSpace!",
+  "WizardTitle": "Set up your DocSpace"
 }
