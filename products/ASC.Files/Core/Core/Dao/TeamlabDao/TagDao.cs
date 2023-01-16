@@ -204,7 +204,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
         return InternalGetTagsAsync(names, tagType);
     }
 
-    public async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
+    private async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
