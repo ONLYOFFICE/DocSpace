@@ -6,6 +6,7 @@ import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import HistoryBlockUser from "./HistoryBlockUser";
 import { FeedItemTypes } from "@docspace/common/constants";
+import DefaultUserAvatarSmall from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 
 import { StyledHistoryBlock } from "../../styles/history";
 import { getDateTime } from "../../helpers/HistoryHelper";
@@ -28,6 +29,12 @@ const HistoryBlock = ({
   const isItemAction =
     json.Item === FeedItemTypes.File || json.Item === FeedItemTypes.Folder;
 
+  console.log(initiator);
+
+  const userAvatar = initiator.hasAvatar
+    ? initiator.avatarSmall
+    : DefaultUserAvatarSmall;
+
   return (
     <StyledHistoryBlock
       withBottomDivider={!isLastEntity}
@@ -38,7 +45,7 @@ const HistoryBlock = ({
         className="avatar"
         size="min"
         source={
-          initiator.avatarSmall ||
+          userAvatar ||
           (initiator.displayName ? "" : initiator.email && AtReactSvgUrl)
         }
         userName={initiator.displayName}

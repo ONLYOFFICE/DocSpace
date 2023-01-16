@@ -32,6 +32,7 @@ import { getPasswordErrorMessage } from "../../../helpers/utils";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 import Box from "@docspace/components/box";
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -546,6 +547,8 @@ const Confirm = (props) => {
   const onBlurPassword = () => {
     setIsPasswordErrorShow(true);
   };
+
+  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhoto;
 
   return (
     <ConfirmContainer>

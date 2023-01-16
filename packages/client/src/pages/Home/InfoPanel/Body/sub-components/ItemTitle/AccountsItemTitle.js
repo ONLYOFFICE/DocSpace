@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { withTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
-
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import { Avatar, ContextMenuButton } from "@docspace/components";
 import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges";
 import { StyledAccountsItemTitle } from "../../styles/accounts";
@@ -40,13 +40,15 @@ const AccountsItemTitle = ({
   };
   const contextOptions = getData();
 
+  const userAvatar = selection.hasAvatar ? selection.avatar : DefaultUserPhoto;
+
   return (
     <StyledAccountsItemTitle isPending={isPending} ref={itemTitleRef}>
       <Avatar
         className="avatar"
         role={selection.role ? selection.role : "user"}
         size={"big"}
-        source={selection.avatar}
+        source={userAvatar}
       />
       <div className="info-panel__info-text">
         <Text

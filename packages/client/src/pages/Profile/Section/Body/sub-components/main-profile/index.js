@@ -1,5 +1,6 @@
 ﻿import SendClockReactSvgUrl from "PUBLIC_DIR/images/send.clock.react.svg?url";
 import PencilOutlineReactSvgUrl from "PUBLIC_DIR/images/pencil.outline.react.svg?url";
+import DefaultUserAvatarMax from "PUBLIC_DIR/images/default_user_photo_size_200-200.png";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
@@ -47,13 +48,17 @@ const MainProfile = (props) => {
     sendActivationLink && sendActivationLink(t);
   };
 
+  const userAvatar = profile.hasAvatar
+    ? profile.avatarMax
+    : DefaultUserAvatarMax;
+
   return (
     <StyledWrapper>
       <Avatar
         className={"avatar"}
         size="max"
         role={role}
-        source={profile.avatarMax}
+        source={userAvatar}
         userName={profile.displayName}
         editing={true}
         editAction={() => setChangeAvatarVisible(true)}

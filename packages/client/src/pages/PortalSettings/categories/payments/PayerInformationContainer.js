@@ -7,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
 import Avatar from "@docspace/components/avatar";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 const StyledContainer = styled.div`
   display: flex;
   background: ${(props) => props.theme.client.settings.payment.backgroundColor};
@@ -158,7 +158,9 @@ const PayerInformationContainer = ({
     );
   };
 
-  const avatarUrl = payerInfo ? { source: payerInfo.avatar } : {};
+  const avatarUrl = payerInfo
+    ? { source: payerInfo.hasAvatar ? payerInfo.avatar : DefaultUserPhoto }
+    : {};
 
   return (
     <StyledContainer style={style} theme={theme}>
