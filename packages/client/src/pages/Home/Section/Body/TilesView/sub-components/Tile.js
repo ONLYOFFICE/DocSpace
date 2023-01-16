@@ -445,7 +445,7 @@ class Tile extends React.PureComponent {
       withCtrlSelect,
     } = this.props;
 
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.shiftKey) {
       withCtrlSelect(item);
       return;
     }

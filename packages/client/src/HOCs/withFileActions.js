@@ -123,7 +123,7 @@ export default function withFileActions(WrappedFileItem) {
     onMouseClick = (e) => {
       const { viewAs, withCtrlSelect, item } = this.props;
 
-      if (e.ctrlKey) {
+      if (e.ctrlKey || e.shiftKey) {
         withCtrlSelect(item);
         return;
       }
