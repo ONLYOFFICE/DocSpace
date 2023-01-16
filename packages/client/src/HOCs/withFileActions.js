@@ -150,6 +150,14 @@ export default function withFileActions(WrappedFileItem) {
       } else this.fileContextClick();
     };
 
+    onDoubleClick = (e) => {
+      if (e.ctrlKey || e.shiftKey) {
+        return e;
+      }
+
+      this.onFilesClick(e);
+    };
+
     onFilesClick = (e) => {
       const {
         item,
@@ -241,6 +249,7 @@ export default function withFileActions(WrappedFileItem) {
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
+          onDoubleClick={this.onDoubleClick}
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}

@@ -27,6 +27,7 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    onDoubleClick,
     inProgress,
     index,
     setFirsElemChecked,
@@ -125,7 +126,7 @@ const FilesTableRow = (props) => {
         isFolder={item.isFolder}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}
-        onDoubleClick={onFilesClick}
+        onDoubleClick={onDoubleClick}
         checked={checkedProps}
         contextOptions={item.contextOptions}
         getContextModel={getContextModel}
