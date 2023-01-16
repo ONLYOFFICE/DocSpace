@@ -34,6 +34,7 @@ const FileTile = (props) => {
     checkedProps,
     getIcon,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isActive,
     isEdit,
@@ -106,7 +107,7 @@ const FileTile = (props) => {
           dragging={dragging && isDragging}
           // onClick={onMouseClick}
           thumbnailClick={onFilesClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
