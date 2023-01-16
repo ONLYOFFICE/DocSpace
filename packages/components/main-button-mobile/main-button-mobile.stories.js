@@ -1,6 +1,9 @@
 import React from "react";
 import MainButtonMobile from ".";
 import { useEffect, useReducer, useState } from "react";
+import MobileActionsFolderReactSvgUrl from "../../../public/images/mobile.actions.folder.react.svg?url";
+import MobileActionsRemoveReactSvgUrl from "../../../public/images/mobile.actions.remove.react.svg?url";
+import MobileStartReactSvgUrl from "../../../public/images/mobile.star.react.svg?url";
 
 export default {
   title: "Components/MainButtonMobile",
@@ -83,22 +86,22 @@ const Template = ({ ...args }) => {
     {
       key: "1",
       label: "New document",
-      icon: "static/images/mobile.actions.document.react.svg",
+      icon: MobileActionsFolderReactSvgUrl,
     },
     {
       key: "2",
       label: "New presentation",
-      icon: "static/images/mobile.actions.presentation.react.svg",
+      icon: MobileActionsFolderReactSvgUrl,
     },
     {
       key: "3",
       label: "New spreadsheet",
-      icon: "static/images/mobile.actions.spreadsheet.react.svg",
+      icon: MobileActionsFolderReactSvgUrl,
     },
     {
       key: "4",
       label: "New folder",
-      icon: "static/images/mobile.actions.folder.react.svg",
+      icon: MobileActionsFolderReactSvgUrl,
     },
   ];
 
@@ -106,7 +109,7 @@ const Template = ({ ...args }) => {
     {
       key: "1",
       label: "Uploads",
-      icon: "/static/images/mobile.actions.remove.react.svg",
+      icon: MobileActionsRemoveReactSvgUrl,
       percent: uploadPercent,
       status: `${state.uploads}/${maxUploads}`,
       open: isOpenUploads,
@@ -115,7 +118,7 @@ const Template = ({ ...args }) => {
     {
       key: "2",
       label: "Other operations",
-      icon: "/static/images/mobile.actions.remove.react.svg",
+      icon: MobileActionsRemoveReactSvgUrl,
       percent: operationPercent,
       status: `3 files not loaded`,
       open: isOpenOperations,
@@ -128,13 +131,13 @@ const Template = ({ ...args }) => {
     {
       key: "1",
       label: "Import point",
-      icon: "static/images/mobile.star.react.svg",
+      icon: MobileStartReactSvgUrl,
       onClick: () => setIsOpenButton(false),
     },
     {
       key: "2",
       label: "Import point",
-      icon: "static/images/mobile.star.react.svg",
+      icon: MobileStartReactSvgUrl,
       onClick: () => setIsOpenButton(false),
     },
     {
@@ -145,7 +148,7 @@ const Template = ({ ...args }) => {
     {
       key: "4",
       label: "Import point",
-      icon: "static/images/mobile.star.react.svg",
+      icon: MobileStartReactSvgUrl,
       onClick: () => setIsOpenButton(false),
     },
   ];
