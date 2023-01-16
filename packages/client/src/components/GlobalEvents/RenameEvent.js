@@ -19,7 +19,7 @@ const RenameEvent = ({
   updateFile,
   renameFolder,
 
-  editCompleteAction,
+  completeAction,
   clearActiveOperations,
 
   setEventDialogVisible,
@@ -54,7 +54,7 @@ const RenameEvent = ({
 
       onClose();
 
-      return editCompleteAction(item, type);
+      return completeAction(item, type);
     } else {
       timerId = setTimeout(() => {
         isFile ? addActiveItems([item.id]) : addActiveItems(null, [item.id]);
@@ -63,7 +63,7 @@ const RenameEvent = ({
 
     isFile
       ? updateFile(item.id, value)
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .then(() =>
             toastr.success(
               t("FileRenamed", {
@@ -74,7 +74,7 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item, type);
+            completeAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -84,7 +84,7 @@ const RenameEvent = ({
             onClose();
           })
       : renameFolder(item.id, value)
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .then(() => {
             if (selectedFolderId === item.id) {
               setSelectedFolder({ title: value });
@@ -98,7 +98,7 @@ const RenameEvent = ({
           })
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item, type);
+            completeAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -146,7 +146,7 @@ export default inject(
 
     const { id, setSelectedFolder } = selectedFolderStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
 
     const { clearActiveOperations } = uploadDataStore;
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
@@ -157,7 +157,7 @@ export default inject(
       updateFile,
       renameFolder,
 
-      editCompleteAction,
+      completeAction,
 
       clearActiveOperations,
       setEventDialogVisible,
