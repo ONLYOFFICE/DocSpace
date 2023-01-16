@@ -4,7 +4,7 @@ import Button from "../button";
 import TextInput from "../button";
 import Text from "../text";
 //import { Icons } from "../icons";
-import CheckIcon from "../public/static/images/check.react.svg";
+import CheckIcon from "../../../public/images/check.react.svg";
 
 const optionsChildren = [
   "button",

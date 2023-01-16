@@ -1,12 +1,10 @@
-import {
-  AccessNoneIcon,
-  CheckRoundIcon,
-  CommentIcon,
-  CrownIcon,
-  EyeIcon,
-  PencilIcon,
-  ReviewIcon,
-} from "./svg";
+import AccessNoneIcon from "../../../public/images/access.none.react.svg?url";
+import CheckRoundIcon from "../../../public/images/check.react.svg?url";
+import CommentIcon from "../../../public/images/access.comment.react.svg?url";
+import CrownIcon from "../../../public/images/access.edit.react.svg?url";
+import EyeIcon from "../../../public/images/eye.react.svg?url";
+import PencilIcon from "../../../public/images/access.edit.react.svg?url";
+import ReviewIcon from "../../../public/images/access.review.react.svg?url";
 
 export const data = [
   {

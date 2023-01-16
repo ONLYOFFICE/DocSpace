@@ -4,8 +4,8 @@ import Row from "../row";
 import Avatar from "../avatar";
 import Link from "../link";
 import RowContent from "../row-content";
-import SendClockIcon from "../public/static/images/send.clock.react.svg";
-import CatalogSpamIcon from "../public/static/images/catalog.spam.react.svg";
+import SendClockIcon from "../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../public/images/catalog.spam.react.svg";
 
 export default {
   title: "Examples/Row",
