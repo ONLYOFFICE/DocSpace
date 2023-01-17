@@ -111,7 +111,7 @@ class PeopleStore {
     this.changeType(action, getUsersToMakeEmployees);
   };
 
-  changeType = (type, users) => {
+  changeType = (type, users, callback) => {
     const { setDialogData } = this.dialogStore;
     const event = new Event(Events.CHANGE_USER_TYPE);
 
@@ -134,7 +134,7 @@ class PeopleStore {
         return user?.id ? user.id : user;
       });
 
-    setDialogData({ toType: type, fromType, userIDs });
+    setDialogData({ toType: type, fromType, userIDs, callback });
 
     window.dispatchEvent(event);
   };
