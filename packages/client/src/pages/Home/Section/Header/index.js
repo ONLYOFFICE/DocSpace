@@ -675,6 +675,7 @@ class SectionHeaderContent extends React.Component {
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
+                isMobileView={isMobileOnly}
               />
             ) : (
               <div className="header-container">
