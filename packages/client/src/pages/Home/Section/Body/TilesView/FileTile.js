@@ -34,6 +34,7 @@ const FileTile = (props) => {
     checkedProps,
     getIcon,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isActive,
     isEdit,
@@ -51,6 +52,8 @@ const FileTile = (props) => {
     onSelectOption,
     columnCount,
     isRooms,
+    withCtrlSelect,
+    withShiftSelect,
   } = props;
 
   const temporaryExtension =
@@ -103,9 +106,9 @@ const FileTile = (props) => {
           isPrivacy={isPrivacy}
           isDragging={dragging}
           dragging={dragging && isDragging}
-          onClick={onMouseClick}
+          // onClick={onMouseClick}
           thumbnailClick={onFilesClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
@@ -121,6 +124,8 @@ const FileTile = (props) => {
           selectOption={onSelectOption}
           columnCount={columnCount}
           isRooms={isRooms}
+          withCtrlSelect={withCtrlSelect}
+          withShiftSelect={withShiftSelect}
         >
           <FilesTileContent
             item={item}
@@ -136,13 +141,13 @@ const FileTile = (props) => {
 
 export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection } = filesStore;
+  const { setSelection, withCtrlSelect, withShiftSelect } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
-  return { getIcon, setSelection, isRooms };
+  return { getIcon, setSelection, isRooms, withCtrlSelect, withShiftSelect };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

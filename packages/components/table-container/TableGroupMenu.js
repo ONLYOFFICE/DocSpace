@@ -22,6 +22,7 @@ const TableGroupMenu = (props) => {
     isInfoPanelVisible,
     toggleInfoPanel,
     withoutInfoPanelToggler,
+    isMobileView,
     ...rest
   } = props;
   const onCheckboxChange = (e) => {
@@ -54,6 +55,7 @@ const TableGroupMenu = (props) => {
           manualY="42px"
           manualX="-32px"
           title={t("Common:TitleSelectFile")}
+          isMobileView={isMobileView}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
