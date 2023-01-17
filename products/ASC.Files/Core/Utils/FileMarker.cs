@@ -277,6 +277,16 @@ public class FileMarker
                 var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
                 userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
 
+                var room = parentFolders.Where(f => DocSpaceHelper.IsRoom(f.FolderType)).FirstOrDefault();
+
+                if (room.CreateBy != obj.CurrentAccountId)
+                {
+                    var roomOwnerEntries = parentFolders.Cast<FileEntry>().Concat(new[] { obj.FileEntry }).ToList();
+                    userEntriesData.Add(room.CreateBy, roomOwnerEntries);
+
+                    RemoveFromCahce(virtualRoomsFolderId, room.CreateBy);
+                }
+
                 if (obj.FileEntry.ProviderEntry)
                 {
                     var virtualRoomsFolder = await _daoFactory.GetFolderDao<int>().GetFolderAsync(virtualRoomsFolderId);
