@@ -171,6 +171,8 @@ const SectionFilterContent = ({
   searchTitleOpenLocation,
   isLoadedLocationFiles,
   setIsLoadedSearchFiles,
+  clearSearch,
+  setClearSearch,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
@@ -1325,6 +1327,8 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      clearSearch={clearSearch}
+      setClearSearch={setClearSearch}
     />
   );
 };
@@ -1349,6 +1353,8 @@ export default inject(
       createThumbnails,
       setCurrentRoomsFilter,
       thirdPartyStore,
+      clearSearch,
+      setClearSearch,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1406,6 +1412,9 @@ export default inject(
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
       setIsLoadedSearchFiles,
+
+      clearSearch,
+      setClearSearch,
     };
   }
 )(

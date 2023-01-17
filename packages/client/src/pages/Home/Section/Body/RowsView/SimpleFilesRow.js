@@ -212,6 +212,7 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     checkedProps,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isEdit,
     isActive,
@@ -301,7 +302,7 @@ const SimpleFilesRow = (props) => {
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
