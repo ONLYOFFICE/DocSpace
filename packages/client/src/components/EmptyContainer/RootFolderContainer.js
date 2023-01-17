@@ -93,11 +93,7 @@ const RootFolderContainer = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (!isLoading) {
-      setIsLoadedEmptyPage(true);
-    } else {
-      setIsLoadedEmptyPage(false);
-    }
+    setIsLoadedEmptyPage(!isLoading);
   }, [isLoading]);
 
   const onGoToPersonal = () => {
