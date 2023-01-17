@@ -609,6 +609,7 @@ const ViewerBase = (props) => {
     activeImg = getActiveImage();
   }
 
+  const displayVisible = JSON.parse(localStorage.getItem("displayVisible"));
   return (
     <div
       className={className}
@@ -625,14 +626,14 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {isMobileOnly && props.displayUI && mobileDetails}
+      {isMobileOnly && displayVisible !== "true" && mobileDetails}
       <div
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
           backgroundColor: `${
             isMobileOnly
-              ? props.displayUI
+              ? !displayVisible
                 ? "rgba(55,55,55,0.6)"
                 : "#000"
               : "rgba(55,55,55,0.6)"

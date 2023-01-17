@@ -816,6 +816,8 @@ export default function ViewerPlayer(props) {
 
     setPanelVisible(true);
 
+    localStorage.setItem("displayVisible", false);
+
     const [width, height, left, top] = getVideoPosition(video);
     dispatch(
       createAction(ACTION_TYPES.update, {
