@@ -113,6 +113,8 @@ class FilesStore {
 
   clearSearch = false;
 
+  isLoadedEmptyPage = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -135,7 +137,6 @@ class FilesStore {
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
-
     const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
@@ -436,6 +437,10 @@ class FilesStore {
 
   setIsEmptyPage = (isEmptyPage) => {
     this.isEmptyPage = isEmptyPage;
+  };
+
+  setIsLoadedEmptyPage = (isLoadedEmptyPage) => {
+    this.isLoadedEmptyPage = isLoadedEmptyPage;
   };
 
   get tooltipOptions() {
