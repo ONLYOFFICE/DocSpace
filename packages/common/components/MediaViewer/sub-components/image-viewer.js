@@ -20,28 +20,6 @@ import equal from "fast-deep-equal/react";
 import { Base } from "@docspace/components/themes";
 import { Viewer } from "@docspace/components/viewer";
 
-const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaZoomOutIcon = styled(MediaZoomOutIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaRotateLeftIcon = styled(MediaRotateLeftIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaRotateRightIcon = styled(MediaRotateRightIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaFavoriteIcon = styled(MediaFavoriteIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-  ${commonIconsStyles}
-`;
-// const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
-//   ${commonIconsStyles}
-// `;
-
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
@@ -261,7 +239,7 @@ class ImageViewer extends React.Component {
         actionType: 2,
         render: (
           <div className="iconContainer zoomOut">
-            <StyledMediaZoomOutIcon size="scale" />
+            <MediaZoomOutIcon size="scale" />
           </div>
         ),
       },
@@ -274,7 +252,7 @@ class ImageViewer extends React.Component {
         actionType: 1,
         render: (
           <div className="iconContainer zoomIn">
-            <StyledMediaZoomInIcon size="scale" />
+            <MediaZoomInIcon size="scale" />
           </div>
         ),
       },
@@ -283,7 +261,7 @@ class ImageViewer extends React.Component {
         actionType: 5,
         render: (
           <div className="iconContainer rotateLeft">
-            <StyledMediaRotateLeftIcon size="scale" />
+            <MediaRotateLeftIcon size="scale" />
           </div>
         ),
       },
@@ -292,7 +270,7 @@ class ImageViewer extends React.Component {
         actionType: 6,
         render: (
           <div className="iconContainer rotateRight">
-            <StyledMediaRotateRightIcon size="scale" />
+            <MediaRotateRightIcon size="scale" />
           </div>
         ),
       },
@@ -343,7 +321,7 @@ class ImageViewer extends React.Component {
         actionType: 103,
         render: (
           <div className="iconContainer rotateLeft">
-            <StyledMediaDeleteIcon size="scale" />
+            <MediaDeleteIcon size="scale" />
           </div>
         ),
       },
@@ -352,7 +330,7 @@ class ImageViewer extends React.Component {
         actionType: 104,
         render: (
           <div className="iconContainer rotateLeft">
-            <StyledMediaFavoriteIcon size="scale" />
+            <MediaFavoriteIcon size="scale" />
           </div>
         ),
       },
