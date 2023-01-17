@@ -46,7 +46,7 @@ export const Viewer = (props) => {
   );
   const [container, setContainer] = React.useState(props.container);
   const [panelVisible, setPanelVisible] = React.useState(true);
-  const [isOpenMobileContext, setIsOpenMobileContext] = React.useState(false);
+  const [isOpenContextMenu, setIsOpenContextMenu] = React.useState(false);
   const [isPlay, setIsPlay] = React.useState(null);
   const [globalTimer, setGlobalTimer] = React.useState(null);
   const [init, setInit] = React.useState(false);
@@ -62,7 +62,7 @@ export const Viewer = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (!isPlay) clearTimeout(timer);
+    if (!isPlay || isOpenContextMenu) return clearTimeout(timer);
     document.addEventListener("touchstart", onTouch);
     if (!isMobileOnly) {
       document.addEventListener("mousemove", resetTimer);
@@ -74,7 +74,7 @@ export const Viewer = (props) => {
       };
     }
     return () => document.removeEventListener("touchstart", onTouch);
-  }, [isPlay]);
+  }, [isPlay, isOpenContextMenu]);
 
   function resetTimer() {
     setPanelVisible(true);
@@ -106,7 +106,7 @@ export const Viewer = (props) => {
     return null;
   }
   const onContextMenu = (e) => {
-    setIsOpenMobileContext((open) => !open);
+    setIsOpenContextMenu((open) => !open);
     onSetSelectionFile();
     cm.current.show(e);
   };
@@ -133,7 +133,7 @@ export const Viewer = (props) => {
             ref={cm}
             withBackdrop={true}
             header={contextMenuHeader}
-            onHide={() => setIsOpenMobileContext(false)}
+            onHide={() => setIsOpenContextMenu(false)}
           />
         </div>
       )}
@@ -165,13 +165,14 @@ export const Viewer = (props) => {
       contextModel={contextModel}
       mobileDetails={mobileDetails}
       displayUI={displayUI}
-      isOpenMobileContext={isOpenMobileContext}
+      isOpenContextMenu={isOpenContextMenu}
       globalTimer={globalTimer}
       setGlobalTimer={setGlobalTimer}
       videoControls={videoControls}
       onTouch={onTouch}
       title={title}
       setIsPlay={setIsPlay}
+      setIsOpenContextMenu={setIsOpenContextMenu}
       isPlay={isPlay}
       onMaskClick={onMaskClick}
       setPanelVisible={setPanelVisible}

@@ -349,10 +349,11 @@ export default function ViewerPlayer(props) {
     playlistPos,
     setPanelVisible,
     onTouch,
-    isOpenMobileContext,
+    isOpenContextMenu,
     setGlobalTimer,
     globalTimer,
     videoControls,
+    setIsOpenContextMenu,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -467,7 +468,7 @@ export default function ViewerPlayer(props) {
       if (e.deltaX >= 100) onPrevClick();
     },
     onSwipedDown: (e) => {
-      if (e.deltaY > 70) onClose();
+      if (e.deltaY > 70) onMaskClick();
     },
     onSwiped: (e) => {
       const [width, height, left, top] = getVideoPosition(videoRef.current);
@@ -538,6 +539,7 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleContext = (e) => {
+    setIsOpenContextMenu(!state.isOpenContext);
     dispatch(
       createAction(ACTION_TYPES.update, {
         isOpenContext: !state.isOpenContext,
@@ -590,7 +592,7 @@ export default function ViewerPlayer(props) {
       const videoSpeed = Number(speed[currentSpeed].substring(1));
       return (videoRef.current.playbackRate = videoSpeed);
     }
-
+    setIsOpenContextMenu(!state.speedSelection);
     dispatch(
       createAction(ACTION_TYPES.update, {
         speedSelection: !state.speedSelection,
@@ -695,6 +697,10 @@ export default function ViewerPlayer(props) {
 
     const lasting = `${currentTime} / ${duration}`;
 
+    if (progress === 100) {
+      props.setIsPlay(false);
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         duration: lasting,
@@ -745,6 +751,12 @@ export default function ViewerPlayer(props) {
       );
     }
   };
+
+  React.useEffect(() => {
+    if (!state.speedSelection && !state.isOpenContext) {
+      setIsOpenContextMenu(false);
+    }
+  }, [state.isOpenContext, state.speedSelection]);
 
   React.useEffect(() => {
     state.isMuted
@@ -830,7 +842,9 @@ export default function ViewerPlayer(props) {
   }, [props.activeIndex]);
 
   React.useEffect(() => {
-    if (isOpenMobileContext || state.isControlTouch || !props.isPlay) {
+    if (!isMobileOnly) return;
+
+    if (isOpenContextMenu || state.isControlTouch || !props.isPlay) {
       dispatch(
         createAction(ACTION_TYPES.update, {
           isControlTouch: false,
@@ -842,7 +856,7 @@ export default function ViewerPlayer(props) {
       clearTimeout(globalTimer);
       setGlobalTimer(setTimeout(() => setPanelVisible(false), 5000));
     }
-  }, [displayUI, isOpenMobileContext, state.isControlTouch, props.isPlay]);
+  }, [displayUI, isOpenContextMenu, state.isControlTouch, props.isPlay]);
 
   const onControlTouch = () => {
     dispatch(
