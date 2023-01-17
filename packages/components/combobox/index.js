@@ -112,6 +112,7 @@ class ComboBox extends React.Component {
       isAside,
       withBackground,
       advancedOptionsCount,
+      isMobileView,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -210,6 +211,7 @@ class ComboBox extends React.Component {
             withBackdrop={withBackdrop}
             isAside={isAside}
             withBackground={withBackground}
+            isMobileView={isMobileView && !disableMobileView}
           >
             {advancedOptions
               ? advancedOptions

@@ -23,7 +23,7 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
-import { useThemeDetector } from "SRC_DIR/helpers/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";

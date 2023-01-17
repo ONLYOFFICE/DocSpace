@@ -129,8 +129,19 @@ class ContextOptionsStore {
       this.settingsStore.extsWebRestrictedEditing[0];
 
     this.uploadDataStore.copyAsAction(id, newTitle, folderId).catch((err) => {
-      if (err.indexOf("password") == -1) {
-        toastr.error(err, t("Common:Warning"));
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          err?.response?.data?.error?.message ||
+          err?.statusText ||
+          err?.message ||
+          "";
+      } else {
+        errorMessage = err;
+      }
+
+      if (errorMessage.indexOf("password") == -1) {
+        toastr.error(errorMessage, t("Common:Warning"));
         return;
       }
 
@@ -363,7 +374,44 @@ class ContextOptionsStore {
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
   };
 
+  onClickDeleteSelectedFolder = (t) => {
+    const { setIsFolderActions, setDeleteDialogVisible } = this.dialogsStore;
+    const { confirmDelete } = this.settingsStore;
+    const { deleteAction } = this.filesActionsStore;
+    const { id: selectedFolderId } = this.selectedFolderStore;
+    const {
+      isThirdPartySelection,
+      getFolderInfo,
+      setBufferSelection,
+    } = this.filesStore;
+
+    setIsFolderActions(true);
+
+    if (confirmDelete || isThirdPartySelection) {
+      getFolderInfo(selectedFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
+    } else {
+      const translations = {
+        deleteOperation: t("Translations:DeleteOperation"),
+        deleteFromTrash: t("Translations:DeleteFromTrash"),
+        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+        FolderRemoved: t("Files:FolderRemoved"),
+      };
+
+      deleteAction(translations, [selectedFolderId], true).catch((err) =>
+        toastr.error(err)
+      );
+    }
+  };
+
   onClickDelete = (item, t) => {
+    if (item.id === this.selectedFolderStore.id) {
+      this.onClickDeleteSelectedFolder(t);
+      return;
+    }
+
     const {
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
@@ -371,6 +419,7 @@ class ContextOptionsStore {
 
     const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
+    console.log(providerKey, id, rootFolderId);
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
     if (isRootThirdPartyFolder) {

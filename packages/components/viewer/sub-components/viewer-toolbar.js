@@ -19,9 +19,13 @@ const ToolbarItem = styled.li`
 
   .zoomPercent {
     font-size: 10px;
+    font-weight: 700;
+    -webkit-user-select: none;
   }
 
   svg {
+    width: 16px;
+    height: 16px;
     path,
     rect {
       ${(props) => (props.percent !== 25 ? "fill: #fff;" : "fill: #BEBEBE;")}

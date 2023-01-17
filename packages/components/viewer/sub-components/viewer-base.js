@@ -630,7 +630,13 @@ const ViewerBase = (props) => {
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
-          backgroundColor: `${props.displayUI ? "rgba(55,55,55,0.6)" : "#000"}`,
+          backgroundColor: `${
+            isMobileOnly
+              ? props.displayUI
+                ? "rgba(55,55,55,0.6)"
+                : "#000"
+              : "rgba(55,55,55,0.6)"
+          }`,
         }}
       />
       <ViewerImage
