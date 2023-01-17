@@ -133,3 +133,10 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: onlyoffice-migration-runner
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
+
+  onlyoffice-healthchecks:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: healthchecks
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-healthchecks:${DOCKER_TAG}"
