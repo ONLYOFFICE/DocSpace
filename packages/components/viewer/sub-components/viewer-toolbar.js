@@ -23,6 +23,13 @@ const ToolbarItem = styled.li`
     -webkit-user-select: none;
   }
 
+  .zoomOut,
+  .zoomIn,
+  .rotateLeft,
+  .rotateRight {
+    margin-top: 3px;
+  }
+
   svg {
     width: 16px;
     height: 16px;

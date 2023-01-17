@@ -382,6 +382,7 @@ export default function ViewerPlayer(props) {
     speedToastVisible: false,
     isControlTouch: false,
     isFirstTap: false,
+    isSecondTap: false,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -454,6 +455,7 @@ export default function ViewerPlayer(props) {
           createAction(ACTION_TYPES.update, {
             isFirstTap: false,
             isPlaying: false,
+            isSecondTap: true,
           })
         );
       }
@@ -461,6 +463,7 @@ export default function ViewerPlayer(props) {
       dispatch(
         createAction(ACTION_TYPES.update, {
           isFirstTap: true,
+          isSecondTap: false,
         })
       );
     },
@@ -491,7 +494,14 @@ export default function ViewerPlayer(props) {
 
   const togglePlay = (e) => {
     e.stopPropagation();
-    if (e.target === videoRef.current && isMobileOnly) return;
+    if ((e.target === videoRef.current && isMobileOnly) || state.isSecondTap) {
+      return dispatch(
+        createAction(ACTION_TYPES.update, {
+          isSecondTap: false,
+        })
+      );
+    }
+
     props.setIsPlay(!state.isPlaying);
     dispatch(
       createAction(ACTION_TYPES.update, {
@@ -826,6 +836,7 @@ export default function ViewerPlayer(props) {
         speedToastVisible: false,
         isControlTouch: false,
         isFirstTap: false,
+        isSecondTap: false,
       })
     );
   }
