@@ -413,6 +413,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
             <Switch>
+              <Redirect from="/Products/Files/" to="/rooms/shared" />
               <PrivateRoute
                 exact
                 path={[
