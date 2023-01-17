@@ -2958,22 +2958,26 @@ class FilesStore {
       (f) => f.id === item.id && f.isFolder === item.isFolder
     );
     if (fileIndex === -1) {
-      this.setSelection([item, ...this.selection]);
+      this.setSelection([...this.selection, item]);
     } else {
       this.deselectFile(item);
     }
   };
 
   withShiftSelect = (item) => {
+    const caretStart = this.hotkeyCaretStart
+      ? this.hotkeyCaretStart
+      : this.filesList[0];
+    const caret = this.hotkeyCaret ? this.hotkeyCaret : caretStart;
+
+    if (!caret || !caretStart) return;
+
     const startCaretIndex = this.filesList.findIndex(
-      (f) =>
-        f.id === this.hotkeyCaretStart.id &&
-        f.isFolder === this.hotkeyCaretStart.isFolder
+      (f) => f.id === caretStart.id && f.isFolder === caretStart.isFolder
     );
 
     const caretIndex = this.filesList.findIndex(
-      (f) =>
-        f.id === this.hotkeyCaret.id && f.isFolder === this.hotkeyCaret.isFolder
+      (f) => f.id === caret.id && f.isFolder === caret.isFolder
     );
 
     const itemIndex = this.filesList.findIndex(
@@ -2994,6 +2998,11 @@ class FilesStore {
       );
       if (selectionIndex === -1) {
         newSelection.push(filesItem);
+      } else {
+        newSelection = newSelection.filter(
+          (_, fIndex) => selectionIndex !== fIndex
+        );
+        newSelection.push(filesItem);
       }
 
       if (isMoveDown) {
@@ -3003,13 +3012,18 @@ class FilesStore {
       }
     }
 
+    const lastSelection = this.selection[this.selection.length - 1];
+    const indexOfLast = this.filesList.findIndex(
+      (f) => f.id === lastSelection.id && f.isFolder === lastSelection.isFolder
+    );
+
     newSelection = newSelection.filter((f) => {
       const listIndex = this.filesList.findIndex(
         (x) => x.id === f.id && x.isFolder === f.isFolder
       );
 
       if (isMoveDown) {
-        const isSelect = itemIndex > startCaretIndex;
+        const isSelect = listIndex < indexOfLast;
         if (isSelect) return true;
 
         if (listIndex >= startCaretIndex) {
@@ -3018,7 +3032,7 @@ class FilesStore {
           return listIndex >= itemIndex;
         }
       } else {
-        const isSelect = itemIndex < startCaretIndex;
+        const isSelect = listIndex > indexOfLast;
         if (isSelect) return true;
 
         if (listIndex <= startCaretIndex) {
