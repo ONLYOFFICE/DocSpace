@@ -697,6 +697,7 @@ const ViewerBase = (props) => {
                   percent={state.percent}
                   attribute={attribute}
                   isPreviewFile={isPreviewFile}
+                  setIsOpenContextMenu={props.setIsOpenContextMenu}
                   zoomable={zoomable}
                   rotatable={rotatable}
                   onPercentClick={onPercentClick}

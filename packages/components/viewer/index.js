@@ -62,7 +62,8 @@ export const Viewer = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if ((!isPlay || isOpenContextMenu) && !isImage) return clearTimeout(timer);
+    if ((!isPlay || isOpenContextMenu) && (!isImage || isOpenContextMenu))
+      return clearTimeout(timer);
     document.addEventListener("touchstart", onTouch);
     if (!isMobileOnly) {
       document.addEventListener("mousemove", resetTimer);
@@ -147,6 +148,7 @@ export const Viewer = (props) => {
       {...props}
       displayUI={displayUI}
       mobileDetails={mobileDetails}
+      setIsOpenContextMenu={setIsOpenContextMenu}
       container={container}
       onMaskClick={onMaskClick}
       setPanelVisible={setPanelVisible}
