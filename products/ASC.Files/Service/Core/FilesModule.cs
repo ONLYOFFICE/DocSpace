@@ -137,17 +137,17 @@ public class FilesModule : FeedModule
             .Where(f => f.ShareRecord == null)
             .ToListAsync();
 
-        var folderIDs = files.Select(r => r.File.ParentId).ToList();
+        var folderIDs = files.Select(r => r.File.ParentId).Distinct().ToList();
         var folders = await _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync();
         var roomsIds = await _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
         return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)),
             roomsIds.GetValueOrDefault(f.File.ParentId)), f));
-    }
+        }
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync();
+        return await _fileDao.GetTenantsWithFeedsAsync(fromTime, false).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)

@@ -61,13 +61,29 @@ public class MigrationRunner
         _logger = logger;
     }
 
-    public async Task Run(string backupFile, string region)
+    public async Task Run(string backupFile, string region, string fromAlias, string toAlias)
     {
         _region = region;
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
         var columnMapper = new ColumnMapper();
+        if (!string.IsNullOrEmpty(toAlias))
+        {
+            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>();
+            var fromTenant = dbContextTenant.Tenants.SingleOrDefault(q => q.Alias == fromAlias);
 
+            using var dbContextToTenant = _dbFactory.CreateDbContext<TenantDbContext>(region);
+            var toTenant = dbContextToTenant.Tenants.SingleOrDefault(q => q.Alias == toAlias);
+
+            toTenant.Status = TenantStatus.Restoring;
+            toTenant.StatusChanged = DateTime.UtcNow;
+
+            dbContextTenant.Tenants.Update(toTenant);
+            dbContextToTenant.SaveChanges();
+
+            columnMapper.SetMapping("tenants_tenants", "id", fromTenant.Id, toTenant.Id);
+            columnMapper.Commit();
+        }
         using (var dataReader = new ZipReadOperator(_backupFile))
         {
             foreach (var module in _modules)
@@ -139,16 +155,19 @@ public class MigrationRunner
     private void SetTenantActiveaAndTenantOwner(int tenantId)
     {
         using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
 
         var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
+        Console.WriteLine("set tenant status");
         tenant.LastModified = DateTime.UtcNow;
         tenant.StatusChanged = DateTime.UtcNow;
-        if (tenant.OwnerId == Guid.Empty)
+        if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
         {
-            using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+            
             var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
             tenant.OwnerId = user.Id;
+            Console.WriteLine($"set ownerId {user.Id}");
         }
         dbContextTenant.Tenants.Update(tenant);
         dbContextTenant.SaveChanges();

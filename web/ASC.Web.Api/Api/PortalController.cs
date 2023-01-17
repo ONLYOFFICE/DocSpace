@@ -356,7 +356,8 @@ public class PortalController : ControllerBase
 
             tenant.Alias = alias;
             tenant = _tenantManager.SaveTenant(tenant);
-
+            _tenantManager.SetCurrentTenant(tenant);
+            _commonLinkUtility.ServerRootPath = null;
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {

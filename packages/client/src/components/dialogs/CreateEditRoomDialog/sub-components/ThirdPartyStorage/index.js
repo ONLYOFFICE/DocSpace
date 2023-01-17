@@ -7,7 +7,8 @@ import { StyledParam } from "../Params/StyledParam";
 import ToggleParam from "../Params/ToggleParam";
 import ThirdPartyComboBox from "./ThirdPartyComboBox";
 
-import Checkbox from "@docspace/components/checkbox";
+import Link from "@docspace/components/link";
+import Text from "@docspace/components/text";
 import FolderInput from "./FolderInput";
 import { getOAuthToken } from "@docspace/common/utils";
 
@@ -38,6 +39,7 @@ const ThirdPartyStorage = ({
   getOAuthToken,
 
   isDisabled,
+  currentColorScheme,
 }) => {
   const onChangeIsThirdparty = () => {
     if (isDisabled) return;
@@ -48,10 +50,17 @@ const ThirdPartyStorage = ({
       });
     } else {
       toastr.warning(
-        <div>
-          <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
-          <a href="#">Third-party services</a>
-        </div>,
+        <Text as="p">
+          {t("ThirdPartyStorageNoStorageAlert")}{" "}
+          <Link
+            href="/portal-settings/integration/third-party-services"
+            type="page"
+            noHover
+            color={currentColorScheme.main.accent}
+          >
+            {t("Translations:ThirdPartyTitle")}
+          </Link>
+        </Text>,
         null,
         5000,
         true,
@@ -79,13 +88,6 @@ const ThirdPartyStorage = ({
       ...storageLocation,
       storageFolderId,
     });
-
-  const onChangeIsSaveThirdpartyAccount = () => {
-    onChangeStorageLocation({
-      ...storageLocation,
-      rememberThirdpartyStorage: !storageLocation.rememberThirdpartyStorage,
-    });
-  };
 
   return (
     <StyledThirdPartyStorage>
@@ -127,94 +129,77 @@ const ThirdPartyStorage = ({
           isDisabled={isDisabled}
         />
       )}
-
-      {/* {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
-        <Checkbox
-          className="thirdparty-checkbox"
-          label={t("ThirdPartyStorageRememberChoice")}
-          isChecked={storageLocation.isSaveThirdpartyAccount}
-          onChange={onChangeIsSaveThirdpartyAccount}
-        />
-      )} */}
     </StyledThirdPartyStorage>
   );
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    tagsStore,
-    filesActionsStore,
-    selectedFolderStore,
-    settingsStore,
-    dialogsStore,
-  }) => {
-    // const { getOAuthToken } = auth.settingsStore;
-    const {
-      openConnectWindow,
-      saveThirdParty,
-      deleteThirdParty,
-    } = settingsStore.thirdPartyStore;
+export default inject(({ auth, settingsStore, dialogsStore }) => {
+  const { currentColorScheme } = auth.settingsStore;
 
-    const {
-      setConnectItem,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-      setSaveThirdpartyResponse,
-    } = dialogsStore;
+  const {
+    openConnectWindow,
+    saveThirdParty,
+    deleteThirdParty,
+  } = settingsStore.thirdPartyStore;
 
-    const thirdPartyStore = settingsStore.thirdPartyStore;
+  const {
+    setConnectItem,
+    setConnectDialogVisible,
+    setRoomCreation,
+    saveThirdpartyResponse,
+    setSaveThirdpartyResponse,
+  } = dialogsStore;
 
-    const connectItems = [
-      thirdPartyStore.googleConnectItem,
-      thirdPartyStore.boxConnectItem,
-      thirdPartyStore.dropboxConnectItem,
-      thirdPartyStore.oneDriveConnectItem,
-      thirdPartyStore.nextCloudConnectItem && [
-        ...thirdPartyStore.nextCloudConnectItem,
-        "Nextcloud",
-      ],
-      thirdPartyStore.kDriveConnectItem,
-      thirdPartyStore.yandexConnectItem,
-      thirdPartyStore.ownCloudConnectItem && [
-        ...thirdPartyStore.ownCloudConnectItem,
-        "ownCloud",
-      ],
-      thirdPartyStore.webDavConnectItem,
-      thirdPartyStore.sharePointConnectItem,
-    ]
-      .map(
-        (item) =>
-          item && {
-            id: item[0],
-            className: `storage_${item[0].toLowerCase()}`,
-            providerKey: item[0],
-            isOauth: item.length > 1 && item[0] !== "WebDav",
-            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
-            ...(item[0] === "WebDav" && {
-              category: item[item.length - 1],
-            }),
-          }
-      )
-      .filter((item) => !!item);
+  const thirdPartyStore = settingsStore.thirdPartyStore;
 
-    return {
-      connectItems,
+  const connectItems = [
+    thirdPartyStore.googleConnectItem,
+    thirdPartyStore.boxConnectItem,
+    thirdPartyStore.dropboxConnectItem,
+    thirdPartyStore.oneDriveConnectItem,
+    thirdPartyStore.nextCloudConnectItem && [
+      ...thirdPartyStore.nextCloudConnectItem,
+      "Nextcloud",
+    ],
+    thirdPartyStore.kDriveConnectItem,
+    thirdPartyStore.yandexConnectItem,
+    thirdPartyStore.ownCloudConnectItem && [
+      ...thirdPartyStore.ownCloudConnectItem,
+      "ownCloud",
+    ],
+    thirdPartyStore.webDavConnectItem,
+    thirdPartyStore.sharePointConnectItem,
+  ]
+    .map(
+      (item) =>
+        item && {
+          id: item[0],
+          className: `storage_${item[0].toLowerCase()}`,
+          providerKey: item[0],
+          isOauth: item.length > 1 && item[0] !== "WebDav",
+          oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+          ...(item[0] === "WebDav" && {
+            category: item[item.length - 1],
+          }),
+        }
+    )
+    .filter((item) => !!item);
 
-      setConnectDialogVisible,
-      setRoomCreation,
+  return {
+    connectItems,
 
-      saveThirdParty,
-      deleteThirdParty,
+    setConnectDialogVisible,
+    setRoomCreation,
 
-      saveThirdpartyResponse,
-      setSaveThirdpartyResponse,
+    saveThirdParty,
+    deleteThirdParty,
 
-      openConnectWindow,
-      setConnectItem,
-      getOAuthToken,
-    };
-  }
-)(observer(ThirdPartyStorage));
+    saveThirdpartyResponse,
+    setSaveThirdpartyResponse,
+
+    openConnectWindow,
+    setConnectItem,
+    getOAuthToken,
+    currentColorScheme,
+  };
+})(observer(ThirdPartyStorage));

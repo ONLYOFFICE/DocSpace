@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Add account",
   "ArchivingData": "Archiving data",
   "ChooseFromList": "Choose from list",
   "ConnectingAccount": "Connecting account",
@@ -33,7 +32,7 @@
   "MobileAndroid": "Get ONLYOFFICE Documents on Google Play",
   "MobileIos": "Download ONLYOFFICE Documents on the App Store",
   "MobileLinux": "Download ONLYOFFICE Desktop Editors for Linux",
-  "MobileMac": "Download ONLYOFFICE Desktop Editors for Mac OS",
+  "MobileMac": "Download ONLYOFFICE Desktop Editors for macOS",
   "MobileWin": "Download ONLYOFFICE Desktop Editors for Windows",
   "MoveHere": "Move here",
   "MoveToOperation": "Moving",
@@ -60,6 +59,7 @@
   "SubNewForm": "Blank",
   "SubNewFormFile": "From text file",
   "ThirdPartyInfo": "Change the third-party info",
+  "ThirdPartyTitle": "Third-party services",
   "TitleShowActions": "Show File Actions",
   "TitleShowFolderActions": "Show Folder Actions",
   "TypeTitleBoxNet": "Box",

@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Ajouter un compte",
   "ArchivingData": "Archivage des données",
   "ConnectingAccount": "Connecter un compte",
   "Copy": "Copier",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Télécharger ONLYOFFICE Documents sur Google Play",
   "MobileIos": "Télécharger ONLYOFFICE Documents sur App Store",
   "MobileLinux": "Télécharger les applications de bureau ONLYOFFICE pour Linux",
-  "MobileMac": "Télécharger les applications de bureau ONLYOFFICE pour Mac OS",
+  "MobileMac": "Télécharger les applications de bureau ONLYOFFICE pour macOS",
   "MobileWin": "Télécharger les applications de bureau ONLYOFFICE pour Windows",
   "MoveHere": "Déplacer ici",
   "MoveToOperation": "Déplacement",

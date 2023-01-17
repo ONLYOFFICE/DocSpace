@@ -28,6 +28,7 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
+const storageCheckbox = JSON.parse(localStorage.getItem("createWithoutDialog"));
 
 let requestCounter = 0;
 
@@ -48,6 +49,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
+  createWithoutDialog = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -108,6 +110,8 @@ class FilesStore {
 
   roomsController = null;
   filesController = null;
+
+  clearSearch = false;
 
   isLoadedEmptyPage = false;
 
@@ -354,6 +358,10 @@ class FilesStore {
     this.operationAction = operationAction;
   };
 
+  setClearSearch = (clearSearch) => {
+    this.clearSearch = clearSearch;
+  };
+
   updateSelectionStatus = (id, status, isEditing) => {
     const index = this.selection.findIndex((x) => x.id === id);
 
@@ -396,6 +404,11 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+  };
+
+  setCreateWithoutDialog = (checked) => {
+    this.createWithoutDialog = checked;
+    localStorage.setItem("createWithoutDialog", JSON.stringify(checked));
   };
 
   setPageItemsLength = (pageItemsLength) => {
@@ -483,7 +496,19 @@ class FilesStore {
     if (!this.isEditor) {
       requests.push(
         getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
+        this.treeFoldersStore.fetchTreeFolders().then((treeFolders) => {
+          if (!treeFolders || !treeFolders.length) return;
+
+          const trashFolder = treeFolders.find(
+            (f) => f.rootFolderType == FolderType.TRASH
+          );
+
+          if (!trashFolder) return;
+
+          const isEmpty = !trashFolder.foldersCount && !trashFolder.filesCount;
+
+          this.setTrashIsEmpty(isEmpty);
+        })
       );
 
       if (isDesktopClient) {
@@ -491,7 +516,6 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => this.setIsInit(true));
   };
@@ -1828,18 +1852,47 @@ class FilesStore {
     scrollElm && scrollElm.scrollTo(0, 0);
   };
 
-  addFile = (item, isFolder) => {
+  addItem = (item, isFolder) => {
+    const { socketHelper } = this.authStore.settingsStore;
+
+    if (isFolder) {
+      const foundIndex = this.folders.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      this.folders.unshift(item);
+
+      console.log("[WS] subscribe to folder changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: `DIR-${item.id}`,
+          individual: true,
+        },
+      });
+    } else {
+      const foundIndex = this.files.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      console.log("[WS] subscribe to file changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: `FILE-${item.id}`, individual: true },
+      });
+
+      this.files.unshift(item);
+    }
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     const filter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     filter.total += 1;
 
     if (isRooms) this.setRoomsFilter(filter);
     else this.setFilter(filter);
-
-    isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
     this.scrollToTop();
   };
@@ -2796,19 +2849,19 @@ class FilesStore {
   setCreatedItem = (createdItem) => {
     this.createdItem = createdItem;
 
-    const { socketHelper } = this.authStore.settingsStore;
-    if (createdItem?.type == "file") {
-      console.log(
-        "[WS] subscribe to file's changes",
-        createdItem.id,
-        createdItem.title
-      );
+    // const { socketHelper } = this.authStore.settingsStore;
+    // if (createdItem?.type == "file") {
+    //   console.log(
+    //     "[WS] subscribe to file's changes",
+    //     createdItem.id,
+    //     createdItem.title
+    //   );
 
-      socketHelper.emit({
-        command: "subscribe",
-        data: { roomParts: `FILE-${createdItem.id}`, individual: true },
-      });
-    }
+    //   socketHelper.emit({
+    //     command: "subscribe",
+    //     data: { roomParts: `FILE-${createdItem.id}`, individual: true },
+    //   });
+    // }
   };
 
   setScrollToItem = (item) => {
@@ -2900,6 +2953,89 @@ class FilesStore {
 
   setRoomSecurity = async (id, data) => {
     return await api.rooms.setRoomSecurity(id, data);
+  };
+
+  withCtrlSelect = (item) => {
+    this.setHotkeyCaret(item);
+    this.setHotkeyCaretStart(item);
+
+    const fileIndex = this.selection.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
+    if (fileIndex === -1) {
+      this.setSelection([item, ...this.selection]);
+    } else {
+      this.deselectFile(item);
+    }
+  };
+
+  withShiftSelect = (item) => {
+    const startCaretIndex = this.filesList.findIndex(
+      (f) =>
+        f.id === this.hotkeyCaretStart.id &&
+        f.isFolder === this.hotkeyCaretStart.isFolder
+    );
+
+    const caretIndex = this.filesList.findIndex(
+      (f) =>
+        f.id === this.hotkeyCaret.id && f.isFolder === this.hotkeyCaret.isFolder
+    );
+
+    const itemIndex = this.filesList.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
+
+    const isMoveDown = caretIndex < itemIndex;
+
+    let newSelection = JSON.parse(JSON.stringify(this.selection));
+    let index = caretIndex;
+    const newItemIndex = isMoveDown ? itemIndex + 1 : itemIndex - 1;
+
+    while (index !== newItemIndex) {
+      const filesItem = this.filesList[index];
+
+      const selectionIndex = newSelection.findIndex(
+        (f) => f.id === filesItem.id && f.isFolder === filesItem.isFolder
+      );
+      if (selectionIndex === -1) {
+        newSelection.push(filesItem);
+      }
+
+      if (isMoveDown) {
+        index++;
+      } else {
+        index--;
+      }
+    }
+
+    newSelection = newSelection.filter((f) => {
+      const listIndex = this.filesList.findIndex(
+        (x) => x.id === f.id && x.isFolder === f.isFolder
+      );
+
+      if (isMoveDown) {
+        const isSelect = itemIndex > startCaretIndex;
+        if (isSelect) return true;
+
+        if (listIndex >= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex >= itemIndex;
+        }
+      } else {
+        const isSelect = itemIndex < startCaretIndex;
+        if (isSelect) return true;
+
+        if (listIndex <= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex <= itemIndex;
+        }
+      }
+    });
+
+    this.setSelection(newSelection);
+    this.setHotkeyCaret(item);
   };
 
   get disableDrag() {

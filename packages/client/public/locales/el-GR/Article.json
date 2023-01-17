@@ -1,9 +1,4 @@
 {
-  "ButtonAddBoxNet": "Προσθήκη λογαριασμού Box",
-  "ButtonAddDropBox": "Προσθήκη λογαριασμού DropBox",
-  "ButtonAddGoogle": "Προσθήκη λογαριασμού Google",
-  "ButtonAddNextcloud": "Προσθήκη λογαριασμού Nextcloud",
-  "ButtonAddSkyDrive": "Προθήκη λογαριασμού OneDrive",
   "FilesUploaded": "Αρχεία Που Μεταφορτώθηκαν",
   "Upload": "Μεταφόρτωση",
   "UploadFiles": "Μεταφόρτωση αρχεία",

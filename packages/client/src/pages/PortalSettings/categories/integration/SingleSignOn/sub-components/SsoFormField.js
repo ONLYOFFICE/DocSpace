@@ -16,11 +16,11 @@ const SsoFormField = ({
   value,
   hasError,
 }) => {
-  const { t } = useTranslation("SingleSignOn");
+  const { t } = useTranslation("Common");
 
   return (
     <FieldContainer
-      errorMessage={t("EmptyFieldErrorMessage")}
+      errorMessage={t("Common:EmptyFieldError")}
       hasError={hasError}
       inlineHelpButton
       isVertical

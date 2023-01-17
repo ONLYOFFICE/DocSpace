@@ -171,6 +171,8 @@ const SectionFilterContent = ({
   setIsLoadedSearchFiles,
   isLoadedEmptyPage,
   isEmptyPage,
+  clearSearch,
+  setClearSearch,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -1340,6 +1342,8 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      clearSearch={clearSearch}
+      setClearSearch={setClearSearch}
     />
   );
 };
@@ -1364,6 +1368,8 @@ export default inject(
       createThumbnails,
       setCurrentRoomsFilter,
       thirdPartyStore,
+      clearSearch,
+      setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
     } = filesStore;
@@ -1373,7 +1379,7 @@ export default inject(
     const { fetchTags } = tagsStore;
 
     const { user } = auth.userStore;
-    const { customNames, personal } = auth.settingsStore;
+    const { personal } = auth.settingsStore;
     const {
       isFavoritesFolder,
       isRecentFolder,
@@ -1394,7 +1400,6 @@ export default inject(
     } = filesActionsStore;
 
     return {
-      customNames,
       user,
       userId: user.id,
       selectedFolderId: selectedFolderStore.id,
@@ -1427,6 +1432,9 @@ export default inject(
 
       isLoadedEmptyPage,
       isEmptyPage,
+
+      clearSearch,
+      setClearSearch,
     };
   }
 )(

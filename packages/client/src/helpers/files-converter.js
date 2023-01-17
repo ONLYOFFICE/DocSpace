@@ -47,7 +47,7 @@ export const onConvertFiles = (e, resolve) => {
     if (entry.isFile) {
       entry.file(
         (file) => {
-          addFile(file, entry.fullPath);
+          addItem(file, entry.fullPath);
           callback();
         },
         () => {
@@ -110,7 +110,7 @@ export const onConvertFiles = (e, resolve) => {
       const entry = item.webkitGetAsEntry();
       if (entry) {
         if (entry.isFile) {
-          addFile(item.getAsFile(), entry.fullPath);
+          addItem(item.getAsFile(), entry.fullPath);
         } else {
           entries.push(entry);
         }

@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Hesap ekle",
   "ArchivingData": "Veriler arşivleniyor",
   "ConnectingAccount": "Hesap bağlanıyor",
   "Copy": "Kopyala",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Google Play'de ONLYOFFICE Belgelerini Alın",
   "MobileIos": "ONLYOFFICE Belgelerini App Store'dan İndirin",
   "MobileLinux": "Linux için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
-  "MobileMac": "Mac OS için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
+  "MobileMac": "macOS için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
   "MobileWin": "Windows için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
   "MoveHere": "Buraya taşı",
   "MoveToOperation": "Taşınıyor",

@@ -18,6 +18,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -674,6 +675,7 @@ class SectionHeaderContent extends React.Component {
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
+                isMobileView={isMobileOnly}
               />
             ) : (
               <div className="header-container">
@@ -919,5 +921,9 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(withRouter(observer(SectionHeaderContent)))
+  ])(
+    withLoader(withRouter(observer(SectionHeaderContent)))(
+      <Loaders.SectionHeader />
+    )
+  )
 );

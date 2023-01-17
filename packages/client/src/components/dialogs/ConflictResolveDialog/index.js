@@ -66,8 +66,6 @@ const ConflictResolveDialog = (props) => {
     setActiveFiles,
     setMoveToPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
-    theme,
   } = props;
 
   const {
@@ -88,7 +86,6 @@ const ConflictResolveDialog = (props) => {
     setConflictResolveDialogVisible(false);
     setMoveToPanelVisible(false);
     setCopyPanelVisible(false);
-    setThirdPartyMoveDialogVisible(false);
   };
   const onCloseDialog = () => {
     let newActiveFiles = activeFiles;
@@ -262,7 +259,6 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     conflictResolveDialogItems: items,
     setMoveToPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
@@ -280,7 +276,6 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     setActiveFiles,
     setMoveToPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
   };
 })(
   withRouter(

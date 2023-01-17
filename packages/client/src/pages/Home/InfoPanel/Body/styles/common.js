@@ -46,8 +46,7 @@ const StyledTitle = styled.div`
   z-index: 100;
 
   @media ${tablet} {
-    width: 440px;
-    padding: 24px 0 24px 20px;
+    padding: 24px 20px 24px 20px;
   }
 
   @media ${mobile} {

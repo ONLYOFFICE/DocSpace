@@ -121,7 +121,19 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseClick = (e) => {
-      const { viewAs } = this.props;
+      const { viewAs, withCtrlSelect, withShiftSelect, item } = this.props;
+
+      if (e.ctrlKey || e.metaKey) {
+        withCtrlSelect(item);
+        e.preventDefault();
+        return;
+      }
+
+      if (e.shiftKey) {
+        withShiftSelect(item);
+        e.preventDefault();
+        return;
+      }
 
       if (
         e.target.tagName === "INPUT" ||
@@ -143,6 +155,14 @@ export default function withFileActions(WrappedFileItem) {
           return;
         if (e.detail === 1) this.fileContextClick();
       } else this.fileContextClick();
+    };
+
+    onDoubleClick = (e) => {
+      if (e.ctrlKey || e.shiftKey) {
+        return e;
+      }
+
+      this.onFilesClick(e);
     };
 
     onFilesClick = (e) => {
@@ -236,6 +256,7 @@ export default function withFileActions(WrappedFileItem) {
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
+          onDoubleClick={this.onDoubleClick}
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
@@ -300,6 +321,8 @@ export default function withFileActions(WrappedFileItem) {
         activeFolders,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
+        withShiftSelect,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -369,6 +392,8 @@ export default function withFileActions(WrappedFileItem) {
         openFileAction,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
+        withShiftSelect,
       };
     }
   )(observer(WithFileActions));

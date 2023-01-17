@@ -345,7 +345,8 @@ public interface IFolderDao<T>
     IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
     IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds);
 
-    IAsyncEnumerable<T> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
+    IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime);
+    IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime);
 
     #endregion
 }

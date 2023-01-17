@@ -291,7 +291,7 @@ public interface IFileDao<T>
 
     IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 
-    IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime);
+    IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity);
 
     Task<EntryProperties> GetProperties(T fileId);
 

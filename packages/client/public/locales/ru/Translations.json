@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Подключить",
   "ArchivingData": "Архивирование данных",
   "ChooseFromList": "Выберите из списка",
   "ConnectingAccount": "Подключение аккаунта",
@@ -33,7 +32,7 @@
   "MobileAndroid": "Скачать ONLYOFFICE Документы в Google Play",
   "MobileIos": "Скачать ONLYOFFICE Документы в App Store",
   "MobileLinux": "Скачать десктопные редакторы ONLYOFFICE для Linux",
-  "MobileMac": "Скачать десктопные редакторы ONLYOFFICE для Mac OS",
+  "MobileMac": "Скачать десктопные редакторы ONLYOFFICE для macOS",
   "MobileWin": "Скачать десктопные редакторы ONLYOFFICE для Windows",
   "MoveHere": "Переместить сюда",
   "MoveToOperation": "Перемещение",
@@ -60,6 +59,7 @@
   "SubNewForm": "Пустая",
   "SubNewFormFile": "Из текстового файла",
   "ThirdPartyInfo": "Изменить настройки подключения",
+  "ThirdPartyTitle": "Сторонние сервисы",
   "TitleShowActions": "Показать действия над файлом",
   "TitleShowFolderActions": "Показать действия над папкой",
   "TypeTitleBoxNet": "Box",
