@@ -62,7 +62,7 @@ export const Viewer = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (!isPlay || isOpenContextMenu) return clearTimeout(timer);
+    if ((!isPlay || isOpenContextMenu) && !isImage) return clearTimeout(timer);
     document.addEventListener("touchstart", onTouch);
     if (!isMobileOnly) {
       document.addEventListener("mousemove", resetTimer);
@@ -140,7 +140,7 @@ export const Viewer = (props) => {
     </StyledMobileDetails>
   );
 
-  const displayUI = isAudio || panelVisible;
+  const displayUI = (isMobileOnly && isAudio) || panelVisible;
 
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
