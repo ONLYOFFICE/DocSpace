@@ -1,5 +1,6 @@
 import React from "react";
 import { useGesture } from "@use-gesture/react";
+import { useSpring, animated } from "@react-spring/web";
 
 function MobileViewer({
   src,
@@ -20,14 +21,28 @@ function MobileViewer({
   const unmount = React.useRef(false);
   const isDoubleTapRef = React.useRef(false);
   const setTimeoutIDTap = React.useRef();
+  const startAngleRef = React.useRef(0);
 
-  const [crop, setCrop] = React.useState({
+  const [scale, setScale] = React.useState(1);
+
+  const [style, api] = useSpring(() => ({
     x: left,
     y: top,
     scale: 1,
     rotate: 0,
     opacity: 1,
-  });
+    width: width,
+    height: height,
+    touchAction: "none",
+  }));
+  React.useEffect(() => {
+    const point = maybeAdjustImage({
+      x: left,
+      y: top,
+    });
+
+    api.start({ ...point });
+  }, [left, top]);
 
   React.useEffect(() => {
     unmount.current = false;
@@ -37,14 +52,6 @@ function MobileViewer({
       unmount.current = true;
     };
   }, []);
-
-  React.useEffect(() => {
-    setCrop((pre) => ({
-      ...pre,
-      x: left,
-      y: top,
-    }));
-  }, [left, top]);
 
   const CompareTo = (a, b) => {
     return Math.trunc(a) > Math.trunc(b);
@@ -97,6 +104,11 @@ function MobileViewer({
 
   useGesture(
     {
+      onDragStart: ({ pinching }) => {
+        if (pinching) return;
+
+        setScale(style.scale.get());
+      },
       onDrag: ({
         offset: [dx, dy],
         movement: [mdx, mdy],
@@ -111,22 +123,25 @@ function MobileViewer({
 
         if (pinching || canceled) cancel();
 
-        setCrop((crop) => ({
-          ...crop,
+        api.start({
           x:
-            crop.scale === 1 &&
+            style.scale.get() === 1 &&
             ((isFistImage && mdx > 0) || (isLastImage && mdx < 0))
-              ? crop.x
+              ? style.x.get()
               : dx,
           y: dy,
           opacity:
-            crop.scale === 1 && mdy > 0
+            style.scale.get() === 1 && mdy > 0
               ? imgRef.current.height / 10 / mdy
-              : crop.opacity,
-        }));
+              : style.opacity.get(),
+          immediate: true,
+          config: {
+            duration: 0,
+          },
+        });
       },
 
-      onDragEnd: ({ cancel, canceled, movement: [mdx, mdy], dragging }) => {
+      onDragEnd: ({ cancel, canceled, movement: [mdx, mdy] }) => {
         if (unmount.current) {
           return;
         }
@@ -135,7 +150,7 @@ function MobileViewer({
           isDoubleTapRef.current = false;
           cancel();
         }
-        if (crop.scale === 1) {
+        if (style.scale.get() === 1) {
           if (mdx < -imgRef.current.width / 4) {
             return onNext();
           } else if (mdx > imgRef.current.width / 4) {
@@ -147,17 +162,25 @@ function MobileViewer({
         }
 
         const newPoint = maybeAdjustImage({
-          x: crop.x,
-          y: crop.y,
+          x: style.x.get(),
+          y: style.y.get(),
         });
 
-        setCrop((pre) => ({ ...pre, ...newPoint, opacity: 1 }));
+        api.start({
+          ...newPoint,
+          opacity: 1,
+        });
+      },
+
+      onPinchStart: () => {
+        const roundedAngle = Math.round(style.rotate.get());
+        startAngleRef.current = roundedAngle - (roundedAngle % 90);
       },
 
       onPinch: ({
         origin: [ox, oy],
         offset: [dScale, dRotate],
-        movement: [mScale, mRotate],
+        movement: [mScale],
         memo,
         first,
       }) => {
@@ -170,32 +193,44 @@ function MobileViewer({
           } = imgRef.current.getBoundingClientRect();
           const tx = ox - (x + width / 2);
           const ty = oy - (y + height / 2);
-          memo = [crop.x, crop.y, tx, ty];
+          memo = [style.x.get(), style.y.get(), tx, ty];
         }
 
         const x = memo[0] - (mScale - 1) * memo[2];
         const y = memo[1] - (mScale - 1) * memo[3];
 
-        setCrop((pre) => ({
-          ...pre,
+        setScale(style.scale.get());
+        api.start({
           x,
           y,
           scale: dScale,
           rotate: dRotate,
-        }));
-
+          delay: 0,
+        });
         return memo;
       },
-      onPinchEnd: (event) => {
+      onPinchEnd: ({ movement: [, mRotate], direction: [, dirRotate] }) => {
         if (unmount.current) {
           return;
         }
 
         const newPoint = maybeAdjustImage({
-          x: crop.x,
-          y: crop.y,
+          x: style.x.get(),
+          y: style.y.get(),
         });
-        setCrop((pre) => ({ ...pre, ...newPoint }));
+
+        api.start({
+          ...newPoint,
+          rotate:
+            Math.abs(mRotate / 90) > 1 / 3
+              ? Math.trunc(
+                  startAngleRef.current +
+                    90 *
+                      Math.max(Math.trunc(Math.abs(mRotate) / 90), 1) *
+                      dirRotate
+                )
+              : startAngleRef.current,
+        });
       },
       onClick: () => {
         const time = new Date().getTime();
@@ -210,14 +245,13 @@ function MobileViewer({
 
           const deltaWidth = (containerBounds.width - imageWidth) / 2;
           const deltaHeight = (containerBounds.height - imageHeight) / 2;
-
-          setCrop((pre) => ({
-            ...pre,
+          api.start({
             scale: 1,
-            rotate: 0,
             x: deltaWidth,
             y: deltaHeight,
-          }));
+            rotate: 0,
+            immediate: true,
+          });
 
           clearTimeout(setTimeoutIDTap.current);
         } else {
@@ -231,10 +265,10 @@ function MobileViewer({
     },
     {
       drag: {
-        from: () => [crop.x, crop.y],
-        axis: crop.scale === 1 ? "lock" : undefined,
+        from: () => [style.x.get(), style.y.get()],
+        axis: scale === 1 ? "lock" : undefined,
         bounds: () => {
-          if (crop.scale === 1) return undefined;
+          if (style.scale.get() === 1) return undefined;
 
           const imageBounds = imgRef.current.getBoundingClientRect();
           const containerBounds = imgRef.current.parentNode.getBoundingClientRect();
@@ -271,7 +305,7 @@ function MobileViewer({
       pinch: {
         scaleBounds: { min: 0.5, max: 5 },
         rubberband: false,
-        from: () => [crop.scale, crop.rotate],
+        from: () => [style.scale.get(), style.rotate.get()],
         threshold: [0.1, 5],
       },
 
@@ -280,22 +314,7 @@ function MobileViewer({
   );
 
   return (
-    <img
-      src={src}
-      className={className}
-      ref={imgRef}
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        opacity: `${crop.opacity}`,
-        // transition: "all 0.2s linear",
-        transform: `translate(${crop.x}px, ${crop.y}px) rotate(${crop.rotate}deg) scale(${crop.scale})`,
-        willChange: "transform",
-        touchAction: "none",
-        MozUserSelect: "none",
-        userSelect: "none",
-      }}
-    />
+    <animated.img src={src} className={className} ref={imgRef} style={style} />
   );
 }
 
