@@ -20,6 +20,7 @@ const ToolbarItem = styled.li`
   .zoomPercent {
     font-size: 10px;
     font-weight: 700;
+    -webkit-user-select: none;
   }
 
   svg {
