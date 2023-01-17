@@ -45,6 +45,7 @@ class FilesActionStore {
   itemOpenLocation = null;
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
+  isGroupMenuBlocked = false;
 
   constructor(
     authStore,
@@ -282,6 +283,7 @@ class FilesActionStore {
 
       try {
         this.filesStore.setOperationAction(true);
+        this.setGroupMenuBlocked(true);
         await removeFiles(folderIds, fileIds, deleteAfter, immediately)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
@@ -337,6 +339,7 @@ class FilesActionStore {
         return toastr.error(err.message ? err.message : err);
       } finally {
         this.filesStore.setOperationAction(false);
+        this.setGroupMenuBlocked(false);
       }
     }
   };
@@ -550,7 +553,10 @@ class FilesActionStore {
       this.dialogsStore.setIsFolderActions(false);
     }
 
-    return this.downloadFiles(fileIds, folderIds, label);
+    this.setGroupMenuBlocked(true);
+    return this.downloadFiles(fileIds, folderIds, label).finally(() =>
+      this.setGroupMenuBlocked(false)
+    );
   };
 
   completeAction = async (selectedItem, type, isFolder = false) => {
@@ -710,6 +716,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
+      this.setGroupMenuBlocked(true);
       return removeFiles(items, [], true, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
@@ -723,7 +730,10 @@ class FilesActionStore {
               ? translations?.successRemoveRooms
               : translations?.successRemoveRoom
           )
-        );
+        )
+        .finally(() => {
+          this.setGroupMenuBlocked(false);
+        });
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
@@ -1456,6 +1466,7 @@ class FilesActionStore {
     });
 
     try {
+      this.setGroupMenuBlocked(true);
       await this.deleteItemOperation(false, itemId, translations, true);
 
       const id = Array.isArray(itemId) ? itemId : [itemId];
@@ -1470,6 +1481,8 @@ class FilesActionStore {
       });
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
+    } finally {
+      this.setGroupMenuBlocked(false);
     }
   };
 
@@ -1897,6 +1910,10 @@ class FilesActionStore {
       true,
       false
     ).finally(() => setIsLoading(false));
+  };
+
+  setGroupMenuBlocked = (blocked) => {
+    this.isGroupMenuBlocked = blocked;
   };
 }
 
