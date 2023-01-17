@@ -7,8 +7,8 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import Submenu from "@docspace/components/submenu";
-import CommonSettings from "./CommonSettings";
-import AdminSettings from "./AdminSettings";
+import PersonalSettings from "./CommonSettings";
+import GeneralSettings from "./AdminSettings";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
 
@@ -34,14 +34,14 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
 
   const commonSettings = {
     id: "common",
-    name: t("Common:Common"),
-    content: <CommonSettings t={t} />,
+    name: t("Common:SettingsPersonal"),
+    content: <PersonalSettings t={t} />,
   };
 
   const adminSettings = {
     id: "admin",
-    name: t("Common:AdminSettings"),
-    content: <AdminSettings t={t} />,
+    name: t("Common:SettingsGenaral"),
+    content: <GeneralSettings t={t} />,
   };
 
   const data = [adminSettings, commonSettings];
@@ -70,7 +70,7 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
   ) : (
     <StyledContainer>
       {!showAdminSettings ? (
-        <CommonSettings t={t} showTitle={true} />
+        <PersonalSettings t={t} showTitle={true} />
       ) : (
         <Submenu
           data={data}
