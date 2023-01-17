@@ -23,6 +23,8 @@ const ToolbarItem = styled.li`
   }
 
   svg {
+    width: 16px;
+    height: 16px;
     path,
     rect {
       ${(props) => (props.percent !== 25 ? "fill: #fff;" : "fill: #BEBEBE;")}
