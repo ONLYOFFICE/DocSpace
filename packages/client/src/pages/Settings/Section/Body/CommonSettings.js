@@ -6,7 +6,7 @@ import Heading from "@docspace/components/heading";
 import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
-const CommonSettings = ({
+const PersonalSettings = ({
   storeOriginalFiles,
   confirmDelete,
   updateIfExist,
@@ -206,4 +206,4 @@ export default inject(
       createWithoutDialog,
     };
   }
-)(observer(CommonSettings));
+)(observer(PersonalSettings));
