@@ -110,7 +110,7 @@ function Editor({
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
 
-      errorText && toastr.error(errorText);
+      errorText && toastr.error(errorText, null, 0, true);
     }
   }, [mfReady, error]);
 
