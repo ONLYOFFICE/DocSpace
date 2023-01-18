@@ -1,6 +1,14 @@
 import React from "react";
 import { useGesture } from "@use-gesture/react";
 import { useSpring, animated } from "@react-spring/web";
+import styled from "styled-components";
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+`;
 
 function MobileViewer({
   src,
@@ -17,10 +25,13 @@ function MobileViewer({
   setPanelVisible,
 }) {
   const imgRef = React.useRef(null);
-  const lastTapTime = React.useRef(0);
-  const unmount = React.useRef(false);
+  const containerRef = React.useRef(null);
+
+  const unmountRef = React.useRef(false);
+
+  const lastTapTimeRef = React.useRef(0);
   const isDoubleTapRef = React.useRef(false);
-  const setTimeoutIDTap = React.useRef();
+  const setTimeoutIDTapRef = React.useRef();
   const startAngleRef = React.useRef(0);
 
   const [scale, setScale] = React.useState(1);
@@ -45,11 +56,11 @@ function MobileViewer({
   }, [left, top]);
 
   React.useEffect(() => {
-    unmount.current = false;
+    unmountRef.current = false;
 
     return () => {
-      setTimeoutIDTap.current && clearTimeout(setTimeoutIDTap.current);
-      unmount.current = true;
+      setTimeoutIDTapRef.current && clearTimeout(setTimeoutIDTapRef.current);
+      unmountRef.current = true;
     };
   }, []);
 
@@ -116,7 +127,7 @@ function MobileViewer({
         pinching,
         canceled,
       }) => {
-        if (isDoubleTapRef.current || unmount.current) {
+        if (isDoubleTapRef.current || unmountRef.current) {
           isDoubleTapRef.current = false;
           return;
         }
@@ -142,7 +153,7 @@ function MobileViewer({
       },
 
       onDragEnd: ({ cancel, canceled, movement: [mdx, mdy] }) => {
-        if (unmount.current) {
+        if (unmountRef.current) {
           return;
         }
 
@@ -172,9 +183,13 @@ function MobileViewer({
         });
       },
 
-      onPinchStart: () => {
-        const roundedAngle = Math.round(style.rotate.get());
-        startAngleRef.current = roundedAngle - (roundedAngle % 90);
+      onPinchStart: ({ event, cancel }) => {
+        if (event.target === containerRef.current) {
+          cancel();
+        } else {
+          const roundedAngle = Math.round(style.rotate.get());
+          startAngleRef.current = roundedAngle - (roundedAngle % 90);
+        }
       },
 
       onPinch: ({
@@ -183,7 +198,11 @@ function MobileViewer({
         movement: [mScale],
         memo,
         first,
+        canceled,
+        event,
       }) => {
+        if (canceled || event.target === containerRef.current) return;
+
         if (first) {
           const {
             width,
@@ -209,10 +228,23 @@ function MobileViewer({
         });
         return memo;
       },
-      onPinchEnd: ({ movement: [, mRotate], direction: [, dirRotate] }) => {
-        if (unmount.current) {
+      onPinchEnd: ({
+        movement: [, mRotate],
+        direction: [, dirRotate],
+        canceled,
+      }) => {
+        if (unmountRef.current || canceled) {
           return;
         }
+        const rotate =
+          Math.abs(mRotate / 90) > 1 / 3
+            ? Math.trunc(
+                startAngleRef.current +
+                  90 *
+                    Math.max(Math.trunc(Math.abs(mRotate) / 90), 1) *
+                    dirRotate
+              )
+            : startAngleRef.current;
 
         const newPoint = maybeAdjustImage({
           x: style.x.get(),
@@ -220,24 +252,29 @@ function MobileViewer({
         });
 
         api.start({
+          rotate,
           ...newPoint,
-          rotate:
-            Math.abs(mRotate / 90) > 1 / 3
-              ? Math.trunc(
-                  startAngleRef.current +
-                    90 *
-                      Math.max(Math.trunc(Math.abs(mRotate) / 90), 1) *
-                      dirRotate
-                )
-              : startAngleRef.current,
+          delay: 0,
+          onResolve: () => {
+            const newPoint = maybeAdjustImage({
+              x: style.x.get(),
+              y: style.y.get(),
+            });
+
+            api.start({
+              ...newPoint,
+              immediate: true,
+              delay: 0,
+            });
+          },
         });
       },
       onClick: () => {
         const time = new Date().getTime();
 
-        if (time - lastTapTime.current < 300) {
+        if (time - lastTapTimeRef.current < 300) {
           //on Double Tap
-          lastTapTime.current = 0;
+          lastTapTimeRef.current = 0;
           isDoubleTapRef.current = true;
           const imageWidth = imgRef.current.width;
           const imageHeight = imgRef.current.height;
@@ -253,10 +290,10 @@ function MobileViewer({
             immediate: true,
           });
 
-          clearTimeout(setTimeoutIDTap.current);
+          clearTimeout(setTimeoutIDTapRef.current);
         } else {
-          lastTapTime.current = time;
-          setTimeoutIDTap.current = setTimeout(() => {
+          lastTapTimeRef.current = time;
+          setTimeoutIDTapRef.current = setTimeout(() => {
             // onTap
             setPanelVisible((visible) => !visible);
           }, 300);
@@ -309,12 +346,19 @@ function MobileViewer({
         threshold: [0.1, 5],
       },
 
-      target: imgRef,
+      target: containerRef,
     }
   );
 
   return (
-    <animated.img src={src} className={className} ref={imgRef} style={style} />
+    <ImageWrapper ref={containerRef}>
+      <animated.img
+        src={src}
+        className={className}
+        ref={imgRef}
+        style={style}
+      />
+    </ImageWrapper>
   );
 }
 
