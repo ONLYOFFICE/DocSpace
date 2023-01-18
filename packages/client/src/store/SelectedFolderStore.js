@@ -74,6 +74,38 @@ class SelectedFolderStore {
     this.parentId = parentId;
   };
 
+  addDefaultLogoPaths = () => {
+    const cachebreaker = new Date().getTime();
+    this.logo = {
+      small: `/storage/room_logos/root/${this.id}_small.png?` + cachebreaker,
+      medium: `/storage/room_logos/root/${this.id}_medium.png?` + cachebreaker,
+      large: `/storage/room_logos/root/${this.id}_large.png?` + cachebreaker,
+      original:
+        `/storage/room_logos/root/${this.id}_original.png?` + cachebreaker,
+    };
+  };
+
+  removeLogoPaths = () => {
+    this.logo = {
+      small: "",
+      medium: "",
+      large: "",
+      original: "",
+    };
+  };
+
+  updateLogoPathsCacheBreaker = () => {
+    if (!this.logo.original) return;
+
+    const cachebreaker = new Date().getTime();
+    this.logo = {
+      small: this.logo.small.split("?")[0] + "?" + cachebreaker,
+      medium: this.logo.medium.split("?")[0] + "?" + cachebreaker,
+      large: this.logo.large.split("?")[0] + "?" + cachebreaker,
+      original: this.logo.original.split("?")[0] + "?" + cachebreaker,
+    };
+  };
+
   setSelectedFolder = (selectedFolder) => {
     const { socketHelper } = this.settingsStore;
 
