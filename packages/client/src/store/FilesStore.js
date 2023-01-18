@@ -287,6 +287,8 @@ class FilesStore {
       console.log(`[WS] markasnew-file ${fileId}:${count}`);
 
       const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
+
+      this.treeFoldersStore.fetchTreeFolders();
       if (foundIndex == -1) return;
 
       this.updateFileStatus(
@@ -295,7 +297,6 @@ class FilesStore {
           ? this.files[foundIndex].fileStatus | FileStatus.IsNew
           : this.files[foundIndex].fileStatus & ~FileStatus.IsNew
       );
-      this.treeFoldersStore.fetchTreeFolders();
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE

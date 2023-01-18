@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
 import api from "@docspace/common/api";
+import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const EditRoomEvent = ({
   addActiveItems,
@@ -34,7 +35,11 @@ const EditRoomEvent = ({
 
   withPaging,
 
-  reloadSelection,
+  addDefaultLogoPaths,
+  updateLogoPathsCacheBreaker,
+  removeLogoPaths,
+
+  reloadInfoPanelSelection,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -110,34 +115,31 @@ const EditRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            if (!withPaging) {
-              setFolder(room);
-            }
-
-            // to update state info panel
-            reloadSelection();
-
+            if (!withPaging) setFolder(room);
+            reloadInfoPanelSelection();
             URL.revokeObjectURL(img.src);
-
             setActiveFolders([]);
           };
           img.src = url;
         });
       } else {
-        if (!withPaging) {
-          setFolder(room);
-        }
-        // to update state info panel
-        reloadSelection();
+        if (!withPaging) setFolder(room);
+        reloadInfoPanelSelection();
       }
     } catch (err) {
       console.log(err);
     } finally {
-      if (withPaging) {
-        await updateCurrentFolder(null, currentFolderId);
-      }
-      setIsLoading(false);
+      if (withPaging) await updateCurrentFolder(null, currentFolderId);
 
+      if (item.logo.original && !roomParams.icon.uploadedFile) {
+        removeLogoPaths();
+        reloadInfoPanelSelection();
+      } else if (!item.logo.original && roomParams.icon.uploadedFile)
+        addDefaultLogoPaths();
+      else if (item.logo.original && roomParams.icon.uploadedFile)
+        updateLogoPathsCacheBreaker();
+
+      setIsLoading(false);
       onClose();
     }
   };
@@ -147,7 +149,6 @@ const EditRoomEvent = ({
 
     if (logo) {
       const imgExst = logo.slice(".")[1];
-
       const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
@@ -167,7 +168,6 @@ const EditRoomEvent = ({
 
   useEffect(() => {
     setCreateRoomDialogVisible(true);
-
     return () => setCreateRoomDialogVisible(false);
   }, []);
 
@@ -209,12 +209,17 @@ export default inject(
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
-    const { id: currentFolderId } = selectedFolderStore;
+    const {
+      id: currentFolderId,
+      addDefaultLogoPaths,
+      removeLogoPaths,
+      updateLogoPathsCacheBreaker,
+    } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-    const { reloadSelection } = auth.infoPanelStore;
+    const { reloadSelection: reloadInfoPanelSelection } = auth.infoPanelStore;
     return {
       addActiveItems,
       setActiveFolders,
@@ -240,7 +245,11 @@ export default inject(
       withPaging,
       setCreateRoomDialogVisible,
 
-      reloadSelection,
+      addDefaultLogoPaths,
+      updateLogoPathsCacheBreaker,
+      removeLogoPaths,
+
+      reloadInfoPanelSelection,
     };
   }
 )(observer(EditRoomEvent));
