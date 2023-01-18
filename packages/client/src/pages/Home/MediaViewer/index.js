@@ -31,6 +31,16 @@ const FilesMediaViewer = (props) => {
     setBufferSelection,
     mediaViewerAudioFormats,
     isFavoritesFolder,
+    onClickFavorite,
+    onShowInfoPanel,
+    onClickDownload,
+    onClickDownloadAs,
+    onClickRename,
+    onClickDelete,
+    onMoveAction,
+    onCopyAction,
+    getIcon,
+    onDuplicate,
   } = props;
 
   useEffect(() => {
@@ -146,6 +156,7 @@ const FilesMediaViewer = (props) => {
   return (
     visible && (
       <MediaViewer
+        t={t}
         userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
@@ -155,7 +166,19 @@ const FilesMediaViewer = (props) => {
         playlist={playlist}
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
+        onClickFavorite={onClickFavorite}
+        setBufferSelection={setBufferSelection}
+        files={files}
+        onClickDownload={onClickDownload}
+        onShowInfoPanel={onShowInfoPanel}
+        onClickDownloadAs={onClickDownloadAs}
+        onClickDelete={onClickDelete}
+        onClickRename={onClickRename}
+        onMoveAction={onMoveAction}
+        onCopyAction={onCopyAction}
+        onDuplicate={onDuplicate}
         onClose={onMediaViewerClose}
+        getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={mediaFormats} //TODO:
@@ -177,6 +200,7 @@ export default inject(
     settingsStore,
     dialogsStore,
     treeFoldersStore,
+    contextOptionsStore,
   }) => {
     const {
       files,
@@ -197,8 +221,20 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage, extsAudio } = settingsStore;
+    const { extsVideo, extsImage, extsAudio, getIcon } = settingsStore;
     const { isFavoritesFolder } = treeFoldersStore;
+
+    const {
+      onClickFavorite,
+      onShowInfoPanel,
+      onClickDownloadAs,
+      onClickDownload,
+      onClickRename,
+      onClickDelete,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
+    } = contextOptionsStore;
 
     return {
       files,
@@ -222,6 +258,16 @@ export default inject(
       setCurrentId,
       setBufferSelection,
       isFavoritesFolder,
+      onClickFavorite,
+      onClickDownloadAs,
+      onClickDelete,
+      onClickDownload,
+      onShowInfoPanel,
+      onClickRename,
+      onMoveAction,
+      getIcon,
+      onCopyAction,
+      onDuplicate,
     };
   }
 )(
