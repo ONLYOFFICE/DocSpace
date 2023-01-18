@@ -320,7 +320,7 @@ class ImageViewer extends React.Component {
         key: "delete",
         actionType: 103,
         render: (
-          <div className="iconContainer rotateLeft">
+          <div className="iconContainer viewer-delete">
             <MediaDeleteIcon size="scale" />
           </div>
         ),
@@ -329,7 +329,7 @@ class ImageViewer extends React.Component {
         key: "favorite",
         actionType: 104,
         render: (
-          <div className="iconContainer rotateLeft">
+          <div className="iconContainer viewer-favorite">
             <MediaFavoriteIcon size="scale" />
           </div>
         ),

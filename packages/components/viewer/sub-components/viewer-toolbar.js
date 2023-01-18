@@ -23,6 +23,13 @@ const ToolbarItem = styled.li`
     -webkit-user-select: none;
   }
 
+  .zoomOut,
+  .zoomIn,
+  .rotateLeft,
+  .rotateRight {
+    margin-top: 3px;
+  }
+
   svg {
     width: 16px;
     height: 16px;
@@ -121,7 +128,10 @@ export default function ViewerToolbar(props) {
           noHover={config.noHover}
           key={config.key}
           className={`${props.prefixCls}-btn`}
-          onClick={() => props.setIsOpen((open) => !open)}
+          onClick={() => {
+            props.setIsOpenContextMenu((open) => !open);
+            props.setIsOpen((open) => !open);
+          }}
           data-key={config.key}
         >
           <div className="context" style={{ height: "16px" }}>

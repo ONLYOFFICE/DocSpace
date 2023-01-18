@@ -295,7 +295,19 @@ function MobileViewer({
           lastTapTimeRef.current = time;
           setTimeoutIDTapRef.current = setTimeout(() => {
             // onTap
-            setPanelVisible((visible) => !visible);
+
+            setPanelVisible((visible) => {
+              let display = visible;
+              const displayVisible =
+                JSON.parse(localStorage.getItem("displayVisible")) || null;
+
+              if (displayVisible !== null) {
+                display = !displayVisible;
+              }
+
+              localStorage.setItem("displayVisible", display);
+              return !visible;
+            });
           }, 300);
         }
       },
