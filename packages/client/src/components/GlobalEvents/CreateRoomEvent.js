@@ -30,7 +30,6 @@ const CreateRoomEvent = ({
   fetchFiles,
   setInfoPanelIsVisible,
   setView,
-  isAdmin,
   enableThirdParty,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
@@ -144,7 +143,6 @@ const CreateRoomEvent = ({
       setIsLoading={setIsLoading}
       deleteThirdParty={deleteThirdParty}
       fetchThirdPartyProviders={fetchThirdPartyProviders}
-      isAdmin={isAdmin}
       enableThirdParty={enableThirdParty}
     />
   );
@@ -188,8 +186,6 @@ export default inject(
       setView,
     } = auth.infoPanelStore;
 
-    const { isAdmin } = auth;
-
     const { enableThirdParty } = settingsStore;
 
     return {
@@ -213,7 +209,6 @@ export default inject(
       fetchFiles,
       setInfoPanelIsVisible,
       setView,
-      isAdmin,
       enableThirdParty,
     };
   }

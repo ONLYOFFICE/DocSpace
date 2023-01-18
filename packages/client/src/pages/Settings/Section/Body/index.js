@@ -40,7 +40,7 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
 
   const adminSettings = {
     id: "admin",
-    name: t("Common:SettingsGenaral"),
+    name: t("Common:SettingsGeneral"),
     content: <GeneralSettings t={t} />,
   };
 
