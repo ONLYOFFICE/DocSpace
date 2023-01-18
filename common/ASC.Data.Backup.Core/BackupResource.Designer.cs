@@ -22,7 +22,7 @@ namespace ASC.Data.Backup.Core {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class BackupResource {
+    internal class BackupResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Data.Backup.Core {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Data.Backup.Core.BackupResource", typeof(BackupResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Data.Backup.Core {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Data.Backup.Core {
         /// <summary>
         ///   Looks up a localized string similar to The backup file is invalid. Please, use a file created in ONLYOFFICE v11.5 or later..
         /// </summary>
-        public static string BackupNotFound {
+        internal static string BackupNotFound {
             get {
                 return ResourceManager.GetString("BackupNotFound", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Data.Backup.Core {
         /// <summary>
         ///   Looks up a localized string similar to Set Password.
         /// </summary>
-        public static string ButtonSetPassword {
+        internal static string ButtonSetPassword {
             get {
                 return ResourceManager.GetString("ButtonSetPassword", resourceCulture);
             }

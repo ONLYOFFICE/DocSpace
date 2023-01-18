@@ -84,13 +84,14 @@ public class WebhooksController : BaseSettingsController
 
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Name, model.Uri, model.SecretKey, model.Enabled);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    [HttpDelete("webhook")]
+    [HttpDelete("webhook/{id}")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);

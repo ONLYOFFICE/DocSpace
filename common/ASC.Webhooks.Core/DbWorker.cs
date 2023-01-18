@@ -52,6 +52,15 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
+        var sameObj = await webhooksDbContext.WebhooksConfigs
+           .Where(it => it.TenantId == Tenant && it.Name == name)
+           .FirstOrDefaultAsync();
+
+        if(sameObj != null)
+        {
+            return sameObj;
+        }
+
         var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey, Name = name };
         toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
         await webhooksDbContext.SaveChangesAsync();
@@ -83,12 +92,12 @@ public class DbWorker
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled)
+    public async Task<WebhooksConfig> UpdateWebhookConfig(string name, string uri, string key, bool? enabled)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var updateObj = await webhooksDbContext.WebhooksConfigs
-            .Where(it => it.TenantId == Tenant && it.Id == id)
+            .Where(it => it.TenantId == Tenant && it.Name == name)
             .FirstOrDefaultAsync();
 
         if (updateObj != null)
@@ -96,11 +105,6 @@ public class DbWorker
             if (!string.IsNullOrEmpty(uri))
             {
                 updateObj.Uri = uri;
-            }
-
-            if (!string.IsNullOrEmpty(name))
-            {
-                updateObj.Name = name;
             }
 
             if (!string.IsNullOrEmpty(key))
