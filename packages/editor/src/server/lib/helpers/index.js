@@ -33,9 +33,12 @@ export const getFavicon = (documentType, logoUrls) => {
       break;
   }
 
+  if (!icon && !logoUrls) return null;
+
   const favicon = icon
     ? `${homepage}/images/${icon}`
     : logoUrls[2]?.path?.light;
+
   return favicon;
 };
 
@@ -128,7 +131,13 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
-    error = { errorMessage: typeof err === "string" ? err : err.message };
+    let message = "";
+    if (typeof err === "string") message = err;
+    else message = err.response?.data?.error?.message || err.message;
+
+    error = {
+      errorMessage: message,
+    };
     return { error };
   }
 };
