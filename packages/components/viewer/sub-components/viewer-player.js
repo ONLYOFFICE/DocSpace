@@ -383,6 +383,7 @@ export default function ViewerPlayer(props) {
     isControlTouch: false,
     isFirstTap: false,
     isSecondTap: false,
+    isFirstStart: true,
   };
   function reducer(state, action) {
     switch (action.type) {
@@ -405,6 +406,7 @@ export default function ViewerPlayer(props) {
 
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
+  // const videoWrapperRef = React.useRef(null);
   const actionRef = React.useRef(null);
   const mobileProgressRef = React.useRef(null);
 
@@ -449,6 +451,16 @@ export default function ViewerPlayer(props) {
       if (e.deltaX <= -100) onNextClick();
     },
     onTap: (e) => {
+      const wrapper = document.querySelector("#wrapper");
+      if (e.event.target === wrapper) {
+        onTouch(e.event, true);
+        return dispatch(
+          createAction(ACTION_TYPES.update, {
+            isFirstTap: true,
+            isSecondTap: false,
+          })
+        );
+      }
       if (displayUI && props.isPlay && state.isFirstTap) {
         props.setIsPlay(false);
         return dispatch(
@@ -502,10 +514,16 @@ export default function ViewerPlayer(props) {
       );
     }
 
-    props.setIsPlay(!state.isPlaying);
+    if (isMobileOnly) {
+      props.setIsPlay(!state.isPlaying);
+    }
+    if (state.isFirstStart) {
+      props.setIsPlay(true);
+    }
     dispatch(
       createAction(ACTION_TYPES.update, {
         isPlaying: !state.isPlaying,
+        isFirstStart: false,
       })
     );
   };
@@ -707,9 +725,9 @@ export default function ViewerPlayer(props) {
 
     const lasting = `${currentTime} / ${duration}`;
 
-    if (progress === 100) {
-      props.setIsPlay(false);
-    }
+    // if (progress === 100) {
+    //   props.setIsPlay(false);
+    // }
 
     dispatch(
       createAction(ACTION_TYPES.update, {
@@ -817,6 +835,7 @@ export default function ViewerPlayer(props) {
     setPanelVisible(true);
 
     localStorage.setItem("displayVisible", false);
+    props.setIsPlay(false);
 
     const [width, height, left, top] = getVideoPosition(video);
     dispatch(
@@ -839,6 +858,7 @@ export default function ViewerPlayer(props) {
         isControlTouch: false,
         isFirstTap: false,
         isSecondTap: false,
+        isFirstStart: true,
       })
     );
   }
@@ -928,6 +948,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       {isMobileOnly && displayUI && mobileDetails}
       <div className="video-wrapper" onClick={onClose}>
         <div
+          id="wrapper"
           style={{
             position: "fixed",
             left: 0,
@@ -958,7 +979,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             onTimeUpdate={handleOnTimeUpdate}
           ></video>
         </div>
-        {!state.isPlaying && !isAudio && (
+        {!state.isPlaying && displayUI && !isAudio && (
           <div
             className="bg-play"
             style={{

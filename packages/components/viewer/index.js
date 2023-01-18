@@ -83,8 +83,8 @@ export const Viewer = (props) => {
     timer = setTimeout(() => setPanelVisible(false), 5000);
   }
 
-  const onTouch = (e) => {
-    if (e.target === videoElement.current) {
+  const onTouch = (e, canTouch) => {
+    if (e.target === videoElement.current || canTouch) {
       setPanelVisible((visible) => !visible);
     }
   };
