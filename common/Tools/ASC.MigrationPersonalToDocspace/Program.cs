@@ -37,8 +37,7 @@ var param = Parser.Default.ParseArguments<Options>(args).Value;
 {
     FromRegion = "personal",
     ToRegion = "personal",
-    Tenant = 1,
-    UserName = "administrator"
+    FromAlias = "localhost"
 };*/
 
 var builder = WebApplication.CreateBuilder(options);
@@ -94,11 +93,12 @@ if(string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
 var app = builder.Build();
 Console.WriteLine("backup start");
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = migrationCreator.Create(param.Tenant, param.UserName, param.Mail, param.ToRegion);
+var fileName = migrationCreator.Create(param.FromAlias, param.UserName, param.Mail, param.ToRegion, param.ToAlias);
 Console.WriteLine("backup was success");
+
 Console.WriteLine("restore start");
 var migrationRunner = app.Services.GetService<MigrationRunner>();
-await migrationRunner.Run(fileName, param.ToRegion);
+await migrationRunner.Run(fileName, param.ToRegion, param.FromAlias, param.ToAlias);
 Console.WriteLine("restore was success");
 
 Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Equals(fileName)).ToList().ForEach(File.Delete);
@@ -109,12 +109,14 @@ if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 }
 
 Console.WriteLine("migration was success");
-Console.WriteLine($"new alias is - {migrationCreator.NewAlias}");
-
+if (!string.IsNullOrEmpty(migrationCreator.NewAlias))
+{
+    Console.WriteLine($"new alias is - {migrationCreator.NewAlias}");
+}
 public sealed class Options
 {
-    [Option('t', "tenant", Required = true)]
-    public int Tenant { get; set; }
+    [Option('a', "FromAlias", Required = true)]
+    public string FromAlias { get; set; }
 
     [Option('u', "username", Required = false, HelpText = "enter username or mail for find user")]
     public string UserName { get; set; }
@@ -122,9 +124,12 @@ public sealed class Options
     [Option('m', "mail", Required = false, HelpText = "enter username or mail for find user")]
     public string Mail { get; set; }
 
-    [Option("toregion", Required = true)]
+    [Option('t' ,"toregion", Required = true)]
     public string ToRegion { get; set; }
 
-    [Option("fromregion", Required = false, Default = "personal")]
+    [Option('f' ,"fromregion", Required = false, Default = "personal")]
     public string FromRegion { get; set; }
+
+    [Option("ToAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
+    public string ToAlias { get; set; }
 }

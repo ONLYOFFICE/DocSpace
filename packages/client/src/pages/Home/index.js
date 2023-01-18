@@ -492,6 +492,7 @@ class PureHome extends React.Component {
       frameConfig,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -538,13 +539,19 @@ class PureHome extends React.Component {
             </Section.SectionHeader>
           )}
 
-          {!isEmptyPage && !isErrorRoomNotAvailable && (
+          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
               ) : (
                 <SectionFilterContent />
               )}
+            </Section.SectionFilter>
+          )}
+
+          {isLoadedEmptyPage && (
+            <Section.SectionFilter>
+              <div style={{ height: "32px" }} />
             </Section.SectionFilter>
           )}
 
@@ -622,7 +629,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
-
+      isLoadedEmptyPage,
       disableDrag,
       isErrorRoomNotAvailable,
     } = filesStore;
@@ -773,6 +780,7 @@ export default inject(
       setViewAs,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

@@ -435,6 +435,13 @@ public class FileSecurity : IFileSecurity
                 break;
 
             case FolderType.VirtualRooms:
+                defaultRecords = null;
+
+                if (entry is not Folder<T> || entry is Folder<T> folder && folder.FolderType != FolderType.VirtualRooms)
+                {
+                    break;
+                }
+
                 defaultRecords = new[]
                 {
                     new FileShareRecord
@@ -443,7 +450,7 @@ public class FileSecurity : IFileSecurity
                         EntryId = entry.Id,
                         EntryType = entry.FileEntryType,
                         Share = FileShare.Read,
-                        Subject = Constants.GroupAdmin.ID,
+                        Subject = Constants.GroupEveryone.ID,
                         TenantId = _tenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootCreateBy
                     }
@@ -612,7 +619,7 @@ public class FileSecurity : IFileSecurity
         var isRoom = folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
 
         if ((action == FilesSecurityActions.ReadHistory ||
-             action == FilesSecurityActions.EditHistory) && 
+             action == FilesSecurityActions.EditHistory) &&
              e.ProviderEntry)
         {
             return false;
@@ -755,8 +762,8 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if ((action == FilesSecurityActions.Delete || 
-                    action == FilesSecurityActions.Move) && 
+                if ((action == FilesSecurityActions.Delete ||
+                    action == FilesSecurityActions.Move) &&
                     !isRoom)
                 {
                     return false;
