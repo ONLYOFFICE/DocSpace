@@ -131,13 +131,15 @@ const EditRoomEvent = ({
     } finally {
       if (withPaging) await updateCurrentFolder(null, currentFolderId);
 
-      if (item.logo.original && !roomParams.icon.uploadedFile) {
-        removeLogoPaths();
-        reloadInfoPanelSelection();
-      } else if (!item.logo.original && roomParams.icon.uploadedFile)
-        addDefaultLogoPaths();
-      else if (item.logo.original && roomParams.icon.uploadedFile)
-        updateLogoPathsCacheBreaker();
+      if (item.id === currentFolderId) {
+        if (item.logo.original && !roomParams.icon.uploadedFile) {
+          removeLogoPaths();
+          reloadInfoPanelSelection();
+        } else if (!item.logo.original && roomParams.icon.uploadedFile)
+          addDefaultLogoPaths();
+        else if (item.logo.original && roomParams.icon.uploadedFile)
+          updateLogoPathsCacheBreaker();
+      }
 
       setIsLoading(false);
       onClose();
