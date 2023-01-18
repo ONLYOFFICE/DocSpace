@@ -690,6 +690,7 @@ const ViewerBase = (props) => {
               {noToolbar || (
                 <ViewerToolbar
                   isMobileOnly={isMobileOnly}
+                  imageTimer={props.imageTimer}
                   prefixCls={prefixCls}
                   onAction={handleAction}
                   alt={activeImg.alt}

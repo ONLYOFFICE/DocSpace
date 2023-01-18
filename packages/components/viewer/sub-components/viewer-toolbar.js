@@ -93,6 +93,7 @@ function deleteToolbarFromKey(toolbars, keys) {
 
 export default function ViewerToolbar(props) {
   function handleAction(config) {
+    clearTimeout(props.imageTimer);
     if (config.key === "percent") return props.onPercentClick();
     props.onAction(config);
   }

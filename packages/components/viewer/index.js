@@ -51,6 +51,8 @@ export const Viewer = (props) => {
   const [globalTimer, setGlobalTimer] = React.useState(null);
   const [init, setInit] = React.useState(false);
 
+  const [imageTimer, setImageTimer] = React.useState(null);
+
   const detailsContainerRef = React.useRef(null);
   const videoControls = React.useRef(null);
   const videoElement = React.useRef(null);
@@ -81,6 +83,7 @@ export const Viewer = (props) => {
     setPanelVisible(true);
     clearTimeout(timer);
     timer = setTimeout(() => setPanelVisible(false), 5000);
+    setImageTimer(timer);
   }
 
   const onTouch = (e, canTouch) => {
@@ -150,6 +153,7 @@ export const Viewer = (props) => {
       mobileDetails={mobileDetails}
       setIsOpenContextMenu={setIsOpenContextMenu}
       container={container}
+      imageTimer={imageTimer}
       onMaskClick={onMaskClick}
       setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
