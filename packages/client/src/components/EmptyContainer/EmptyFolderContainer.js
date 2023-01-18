@@ -30,6 +30,7 @@ const EmptyFolderContainer = ({
   tReady,
   isLoadedFetchFiles,
   viewAs,
+  setIsLoadedEmptyPage,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -40,9 +41,20 @@ const EmptyFolderContainer = ({
   };
 
   React.useEffect(() => {
+    if (isLoadedFetchFiles && tReady) {
+      setIsLoadedEmptyPage(true);
+    } else {
+      setIsLoadedEmptyPage(false);
+    }
+  }, [isLoadedFetchFiles, tReady]);
+
+  React.useEffect(() => {
     setIsEmptyPage(true);
 
-    return () => setIsEmptyPage(false);
+    return () => {
+      setIsEmptyPage(false);
+      setIsLoadedEmptyPage(false);
+    };
   }, []);
 
   const onInviteUsersClick = () => {
@@ -161,6 +173,7 @@ export default inject(
       setIsEmptyPage,
       isLoadedFetchFiles,
       viewAs,
+      setIsLoadedEmptyPage,
     } = filesStore;
     const {
       navigationPath,
@@ -198,6 +211,7 @@ export default inject(
       folderId,
       isLoadedFetchFiles,
       viewAs,
+      setIsLoadedEmptyPage,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

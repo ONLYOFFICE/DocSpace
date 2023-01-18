@@ -25,6 +25,7 @@ const TableGroupMenu = (props) => {
     toggleInfoPanel,
     withoutInfoPanelToggler,
     isMobileView,
+    isBlocked,
     ...rest
   } = props;
   const onCheckboxChange = (e) => {
@@ -62,7 +63,7 @@ const TableGroupMenu = (props) => {
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
           {headerMenu.map((item, index) => (
-            <GroupMenuItem key={index} item={item} />
+            <GroupMenuItem key={index} item={item} isBlocked={isBlocked} />
           ))}
         </StyledScrollbar>
         {!withoutInfoPanelToggler && (

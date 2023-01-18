@@ -679,6 +679,7 @@ class SectionHeaderContent extends React.Component {
       isEmptyArchive,
       isVisitor,
       isRoom,
+      isGroupMenuBlocked,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -699,6 +700,7 @@ class SectionHeaderContent extends React.Component {
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
                 isMobileView={isMobileOnly}
+                isBlocked={isGroupMenuBlocked}
               />
             ) : (
               <div className="header-container">
@@ -818,6 +820,7 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       backToParentFolder,
+      isGroupMenuBlocked,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -935,6 +938,7 @@ export default inject(
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
+      isGroupMenuBlocked,
     };
   }
 )(

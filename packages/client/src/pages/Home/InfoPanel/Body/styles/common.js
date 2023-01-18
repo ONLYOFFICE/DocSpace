@@ -37,22 +37,16 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  position: fixed;
+  //position: fixed;
   margin-top: -80px;
   margin-left: -20px;
-  width: calc(100% - 40px);
+  width: 100%;
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
-  @media ${tablet} {
-    width: 440px;
-    padding: 24px 0 24px 20px;
-  }
-
   @media ${mobile} {
-    width: calc(100% - 32px);
-    padding: 24px 0 24px 16px;
+    padding: 24px -16px 24px 16px;
   }
 
   display: flex;

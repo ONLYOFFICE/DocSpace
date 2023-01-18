@@ -39,7 +39,6 @@ const CreateRoomDialog = ({
 
   deleteThirdParty,
   fetchThirdPartyProviders,
-  isAdmin,
   enableThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
@@ -152,7 +151,6 @@ const CreateRoomDialog = ({
             isDisabled={isLoading}
             isValidTitle={isValidTitle}
             setIsValidTitle={setIsValidTitle}
-            isAdmin={isAdmin}
             enableThirdParty={enableThirdParty}
           />
         )}

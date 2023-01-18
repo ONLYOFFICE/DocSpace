@@ -103,14 +103,19 @@ const ChangePortalOwnerDialog = ({
 
   const onChangeAction = () => {
     setIsLoading(true);
-    sendOwnerChange(selectedUser.id).then(() => {
-      onClose && onClose();
-      toastr.success(
-        t("Settings:ConfirmEmailSended", {
-          ownerName: selectedUser.label,
-        })
-      );
-    });
+    sendOwnerChange(selectedUser.id)
+      .then(() => {
+        onClose && onClose();
+        toastr.success(
+          t("Settings:ConfirmEmailSended", {
+            ownerName: selectedUser.label,
+          })
+        );
+      })
+      .catch((error) => {
+        toastr.error(error?.response?.data?.error?.message);
+        onClose && onClose();
+      });
   };
 
   const onCloseAction = () => {

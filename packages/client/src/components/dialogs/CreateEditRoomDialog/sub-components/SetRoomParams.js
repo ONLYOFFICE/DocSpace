@@ -45,7 +45,6 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
-  isAdmin,
   enableThirdParty,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
@@ -114,7 +113,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (enableThirdParty || isAdmin) && (
+      {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}

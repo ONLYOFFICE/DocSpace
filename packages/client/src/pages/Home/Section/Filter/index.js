@@ -171,10 +171,23 @@ const SectionFilterContent = ({
   searchTitleOpenLocation,
   isLoadedLocationFiles,
   setIsLoadedSearchFiles,
+  isLoadedEmptyPage,
+  isEmptyPage,
   clearSearch,
   setClearSearch,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+  const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isEmptyPage) {
+      setIsLoadedFilter(isLoadedEmptyPage);
+    }
+
+    if (!isEmptyPage && !isLoadedEmptyPage) {
+      setIsLoadedFilter(true);
+    }
+  }, [isLoadedEmptyPage, isEmptyPage]);
 
   React.useEffect(() => {
     if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
@@ -1302,6 +1315,10 @@ const SectionFilterContent = ({
     }
   };
 
+  if (!isLoadedFilter) {
+    return <Loaders.Filter />;
+  }
+
   return (
     <FilterInput
       t={t}
@@ -1355,6 +1372,8 @@ export default inject(
       thirdPartyStore,
       clearSearch,
       setClearSearch,
+      isLoadedEmptyPage,
+      isEmptyPage,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1412,6 +1431,9 @@ export default inject(
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
       setIsLoadedSearchFiles,
+
+      isLoadedEmptyPage,
+      isEmptyPage,
 
       clearSearch,
       setClearSearch,

@@ -145,7 +145,7 @@ class ProfileActionsStore {
       ? {
           key: "user-menu-settings",
           icon: CatalogSettingsReactSvgUrl,
-          label: t("Common:Settings"),
+          label: t("Common:SettingsDocSpace"),
           onClick: () => this.onSettingsClick(settingsUrl),
         }
       : null;
