@@ -2,6 +2,7 @@ import React from "react";
 import EmptyScreenContainer from "./";
 import Link from "../link";
 import CrossReactSvgUrl from "../../../public/images/cross.react.svg";
+import EmptyScreenFilterPng from "../../../public/images/empty_screen_filter.png";
 
 export default {
   title: "Components/EmptyScreenContainer",
@@ -37,7 +38,7 @@ const Template = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  imageSrc: "/static/images/empty_screen_filter.png",
+  imageSrc: { EmptyScreenFilterPng },
   imageAlt: "Empty Screen Filter image",
   headerText: "No results matching your search could be found",
   subheadingText: "No files to be displayed in this section",
