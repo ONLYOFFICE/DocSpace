@@ -45,7 +45,6 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
-  isAdmin,
   enableThirdParty,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
