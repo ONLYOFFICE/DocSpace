@@ -626,7 +626,7 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {isMobileOnly && displayVisible !== "true" && mobileDetails}
+      {isMobileOnly && !displayVisible && mobileDetails}
       <div
         className={`${prefixCls}-mask`}
         style={{
