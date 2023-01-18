@@ -633,7 +633,7 @@ function Editor({
     }
   };
 
-  const initAdditionalComponents =
+  const additionalComponents =
     error && !error?.unAuthorized ? (
       <ErrorContainerBody />
     ) : (
@@ -659,7 +659,7 @@ function Editor({
         ></DocumentEditor>
       )}
 
-      {initAdditionalComponents}
+      {additionalComponents}
 
       <Toast />
     </EditorWrapper>
