@@ -71,7 +71,7 @@ class NewFilesPanel extends React.Component {
     const folderIds = folders
       .filter((f) => !readingFiles.includes(f.id.toString()))
       .map((f) => f.id);
-    console.log("tut check 2");
+
     this.props
       .markAsRead(folderIds, fileIds)
       //.then(() => this.setNewBadgeCount())
@@ -110,8 +110,6 @@ class NewFilesPanel extends React.Component {
       this.setState({ inProgress: false });
       return this.onFileClick(item);
     }
-
-    console.log("tut check");
 
     markAsRead(folderIds, fileIds, item)
       .then(() => {
