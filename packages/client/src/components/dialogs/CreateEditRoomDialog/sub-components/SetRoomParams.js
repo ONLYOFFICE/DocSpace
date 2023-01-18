@@ -114,7 +114,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (enableThirdParty || isAdmin) && (
+      {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
