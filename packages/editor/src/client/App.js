@@ -32,9 +32,15 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
   useEffect(() => {
     const tempElm = document.getElementById("loader");
 
-    if (tempElm && !rest.error && !rest.needLoader && rest?.config?.editorUrl) {
+    const isLoadingDocumentError = rest.error !== null;
+    const isLoadedDocument = !rest.error && rest?.config?.editorUrl;
+
+    if (
+      tempElm &&
+      !rest.props?.needLoader &&
+      (isLoadingDocumentError || isLoadedDocument)
+    )
       tempElm.outerHTML = "";
-    }
 
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });

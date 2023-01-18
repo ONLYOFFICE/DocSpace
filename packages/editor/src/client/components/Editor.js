@@ -19,6 +19,8 @@ import withDialogs from "../helpers/withDialogs";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import ErrorContainer from "@docspace/common/components/ErrorContainer";
+import styled from "styled-components";
 
 toast.configure();
 
@@ -45,6 +47,11 @@ const onSDKError = (event) => {
       event.data.errorDescription
   );
 };
+const ErrorContainerBody = styled(ErrorContainer)`
+  position: absolute;
+  height: 100%;
+  background: white;
+`;
 
 let documentIsReady = false;
 let docSaved = null;
@@ -626,6 +633,17 @@ function Editor({
     }
   };
 
+  const initAdditionalComponents =
+    error && !error?.unAuthorized ? (
+      <ErrorContainerBody />
+    ) : (
+      <>
+        {/* {sharingDialog} */}
+        {selectFileDialog}
+        {selectFolderDialog}
+      </>
+    );
+
   return (
     <EditorWrapper
     // isVisibleSharingDialog={isVisible}
@@ -641,9 +659,8 @@ function Editor({
         ></DocumentEditor>
       )}
 
-      {/* {sharingDialog} */}
-      {selectFileDialog}
-      {selectFolderDialog}
+      {initAdditionalComponents}
+
       <Toast />
     </EditorWrapper>
   );
