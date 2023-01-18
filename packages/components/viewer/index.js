@@ -92,6 +92,16 @@ export const Viewer = (props) => {
     }
   };
 
+  const nextClick = () => {
+    clearTimeout(imageTimer);
+    onNextClick();
+  };
+
+  const prevClick = () => {
+    clearTimeout(imageTimer);
+    onPrevClick();
+  };
+
   React.useEffect(() => {
     if (props.visible && !init) {
       setInit(true);
@@ -164,8 +174,8 @@ export const Viewer = (props) => {
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
       {...props}
-      onNextClick={onNextClick}
-      onPrevClick={onPrevClick}
+      onNextClick={nextClick}
+      onPrevClick={prevClick}
       isAudio={isAudio}
       audioIcon={audioIcon}
       contextModel={contextModel}
@@ -217,7 +227,7 @@ export const Viewer = (props) => {
       {playlist.length > 1 && !isFullscreen && displayUI && (
         <>
           {playlistPos !== 0 && (
-            <StyledSwitchToolbar left onClick={onPrevClick}>
+            <StyledSwitchToolbar left onClick={prevClick}>
               <StyledButtonScroll orientation="left">
                 <MediaPrevIcon />
               </StyledButtonScroll>
@@ -225,7 +235,7 @@ export const Viewer = (props) => {
           )}
           {playlistPos < playlist.length - 1 && (
             <>
-              <StyledSwitchToolbar onClick={onNextClick}>
+              <StyledSwitchToolbar onClick={nextClick}>
                 <StyledButtonScroll orientation="right">
                   <MediaNextIcon />
                 </StyledButtonScroll>
