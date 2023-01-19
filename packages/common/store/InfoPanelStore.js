@@ -143,6 +143,19 @@ class InfoPanelStore {
     this.setSelection(this.calculateSelection());
   };
 
+  updateRoomLogoCacheBreaker = () => {
+    const logo = this.selection.logo;
+    this.setSelection({
+      ...this.selection,
+      logo: {
+        small: logo.small.split("?")[0] + "?" + new Date().getTime(),
+        medium: logo.medium.split("?")[0] + "?" + new Date().getTime(),
+        large: logo.large.split("?")[0] + "?" + new Date().getTime(),
+        original: logo.original.split("?")[0] + "?" + new Date().getTime(),
+      },
+    });
+  };
+
   reloadSelectionParentRoom = async () => {
     if (!this.getIsRooms) return;
 

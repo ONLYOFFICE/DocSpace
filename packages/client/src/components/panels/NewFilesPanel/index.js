@@ -78,7 +78,7 @@ class NewFilesPanel extends React.Component {
       .then(() => {
         const { hasNew, refreshFiles } = this.props;
 
-        return hasNew ? refreshFiles() : Promise.resolve();
+        return Promise.resolve(); //hasNew ? refreshFiles() :
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -121,7 +121,7 @@ class NewFilesPanel extends React.Component {
         this.onFileClick(item);
       })
       .then(() => {
-        refreshFiles();
+        // refreshFiles();
       })
       .catch((err) => toastr.error(err));
   };
@@ -130,9 +130,13 @@ class NewFilesPanel extends React.Component {
     const { id, fileExst, webUrl, fileType, providerKey } = item;
     const {
       filter,
-      //setMediaViewerData,
+      setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      playlist,
+      setCurrentItem,
+      isMediaOrImage,
+      currentFolderId,
     } = this.props;
 
     if (!fileExst) {
@@ -141,7 +145,10 @@ class NewFilesPanel extends React.Component {
         .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
-      const isMedia = [2, 3, 4].includes(fileType);
+      // const isMedia = [2, 3, 4].includes(fileType);
+
+      const isMedia = isMediaOrImage(fileExst);
+      const isMediaActive = playlist.findIndex((el) => el.fileId === id) !== -1;
 
       if (canEdit && providerKey) {
         return addFileToRecentlyViewed(id)
@@ -160,8 +167,21 @@ class NewFilesPanel extends React.Component {
       }
 
       if (isMedia) {
-        //const mediaItem = { visible: true, id };
-        //setMediaViewerData(mediaItem);
+        if (currentFolderId !== item.folderId) {
+          fetchFiles(item.folderId, null)
+            .then(() => {
+              const mediaItem = { visible: true, id };
+              setMediaViewerData(mediaItem);
+            })
+            .catch((err) => toastr.error(err))
+            .finally(() => this.onClose());
+        } else {
+          const mediaItem = { visible: true, id };
+          setMediaViewerData(mediaItem);
+
+          return this.onClose();
+        }
+
         return;
       }
 
@@ -311,10 +331,14 @@ export default inject(
       refreshFiles,
     } = filesStore;
     //const { updateRootBadge } = treeFoldersStore;
-    const { setMediaViewerData } = mediaViewerDataStore;
-    const { getIcon, getFolderIcon } = settingsStore;
+    const {
+      playlist,
+      setMediaViewerData,
+      setCurrentItem,
+    } = mediaViewerDataStore;
+    const { getIcon, getFolderIcon, isMediaOrImage } = settingsStore;
     const { markAsRead } = filesActionsStore;
-    const { pathParts } = selectedFolderStore;
+    const { pathParts, id: currentFolderId } = selectedFolderStore;
 
     const {
       setNewFilesPanelVisible,
@@ -330,6 +354,11 @@ export default inject(
       newFiles,
       newFilesIds,
       isLoading,
+
+      playlist,
+      setCurrentItem,
+      isMediaOrImage,
+      currentFolderId,
 
       //setIsLoading,
       fetchFiles,
