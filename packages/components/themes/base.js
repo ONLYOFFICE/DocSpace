@@ -2089,6 +2089,7 @@ const Base = {
     details: {
       customLogoBorderColor: grayLightMid,
       commentEditorIconColor: "#333",
+      tagBackground: "#ECEEF1",
     },
 
     gallery: {
