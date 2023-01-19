@@ -632,7 +632,7 @@ function Editor({
   const additionalComponents =
     error && !error?.unAuthorized ? (
       <ErrorContainerBody
-        headerText={"Error"}
+        headerText={t("Error")}
         customizedBodyText={
           typeof error === "string" ? error : error.errorMessage
         }
