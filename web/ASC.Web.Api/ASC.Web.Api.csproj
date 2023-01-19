@@ -80,13 +80,13 @@
     <EmbeddedResource Update="Core\AuditResource.cs.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.el.resx">
+    <EmbeddedResource Update="Core\AuditResource.el-GR.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.fi.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.ja.resx">
+    <EmbeddedResource Update="Core\AuditResource.ja-JP.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.lv.resx">
@@ -110,7 +110,7 @@
     <EmbeddedResource Update="Core\AuditResource.tr.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.uk.resx">
+    <EmbeddedResource Update="Core\AuditResource.uk-UA.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.vi.resx">

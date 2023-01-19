@@ -42,7 +42,7 @@
       <LastGenOutput>BackupResource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="BackupResource.el.resx">
+    <EmbeddedResource Update="BackupResource.el-GR.resx">
       <DependentUpon>BackupResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="BackupResource.fr.resx">
