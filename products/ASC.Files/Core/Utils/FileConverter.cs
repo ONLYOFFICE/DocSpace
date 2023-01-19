@@ -112,7 +112,7 @@ public class FileConverterQueue<T>
                     var fileId = JsonDocument.Parse(x.Source).RootElement.GetProperty("id").Deserialize<T>();
                     var fileVersion = JsonDocument.Parse(x.Source).RootElement.GetProperty("version").Deserialize<int>();
 
-                    return file.Id.ToString() == fileId.ToString() && (file.Version == fileVersion || x.Progress == 100 && file.Version == fileVersion + 1);
+                    return String.Compare(file.Id.ToString(), fileId.ToString(), true) == 0;
                 });
     }
 
