@@ -1,6 +1,6 @@
 const path = require("path");
 
-const docSpacePath = "../../../";
+const docSpacePath = "../../../../";
 
 const imagesPattern = /\.(gif|jpe|jpeg|tiff?|png|webp|bmp|svg)$/i;
 const filesPattern = /\.(js|jsx|ts|tsx|html|css|scss|saas|json)$/i;
