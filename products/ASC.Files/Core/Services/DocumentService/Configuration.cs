@@ -630,6 +630,8 @@ public class FileReference<T>
     public string Error { get; set; }
     public string Path { get; set; }
     public string Url { get; set; }
+    public string FileType { get; set; }
+    public string Token { get; set; }
 }
 
 public class FileReferenceData<T>
