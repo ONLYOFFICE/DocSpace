@@ -37,16 +37,21 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  //position: fixed;
+  position: fixed;
   margin-top: -80px;
   margin-left: -20px;
-  width: 100%;
+  width: calc(100% - 40px);
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
+  @media ${tablet} {
+    padding: 24px 20px 24px 20px;
+  }
+
   @media ${mobile} {
-    padding: 24px -16px 24px 16px;
+    width: calc(100% - 32px);
+    padding: 24px 0 24px 16px;
   }
 
   display: flex;
@@ -153,8 +158,7 @@ const StyledProperties = styled.div`
         background: red;
         max-width: 195px;
         margin: 0;
-        background: ${(props) =>
-      props.theme.infoPanel.details.tagBackground};
+        background: ${(props) => props.theme.infoPanel.details.tagBackground};
         p {
           white-space: nowrap;
           overflow: hidden;
