@@ -410,28 +410,36 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
                             else
                             {
-                                if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
+                                try
                                 {
-                                    await _semaphore.WaitAsync();
-                                    await countRoomChecker.CheckAppend();
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                    _semaphore.Release();
-                                }
-                                else if (isRoom && toFolder.FolderType == FolderType.Archive)
-                                {
-                                    await _semaphore.WaitAsync();
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
-                                    if (pins.Count > 0)
+                                    if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
                                     {
-                                        await TagDao.RemoveTags(pins);
+                                        await _semaphore.WaitAsync();
+                                        await countRoomChecker.CheckAppend();
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     }
-                                    _semaphore.Release();
-
+                                    else if (isRoom && toFolder.FolderType == FolderType.Archive)
+                                    {
+                                        await _semaphore.WaitAsync();
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                        var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                        if (pins.Count > 0)
+                                        {
+                                            await TagDao.RemoveTags(pins);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    }
                                 }
-                                else
+                                catch(Exception)
                                 {
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    throw;
+                                }
+                                finally
+                                {
+                                    _semaphore.Release();
                                 }
                             }
 
