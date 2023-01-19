@@ -1211,8 +1211,7 @@ public class EntryManager
             {
                 throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
             }
-
-            var folderId = (TSource)Convert.ChangeType(properties.FormFilling.ToFolderId, typeof(TSource));
+            var folderId = IdConverter.Convert<TSource>(properties.FormFilling.ToFolderId);
             if (!Equals(folderId, default(TSource)))
             {
                 var folder = await folderSourceDao.GetFolderAsync(folderId);

@@ -306,9 +306,9 @@ public class ChunkedRequestHelper<T>
         return _authKey.Value;
     }
 
-    public T FolderId => (T)Convert.ChangeType(_request.Query[FilesLinkUtility.FolderId], typeof(T));
+    public T FolderId => IdConverter.Convert<T>(_request.Query[FilesLinkUtility.FolderId]);
 
-    public T FileId => (T)Convert.ChangeType(_request.Query[FilesLinkUtility.FileId], typeof(T));
+    public T FileId => IdConverter.Convert<T>(_request.Query[FilesLinkUtility.FileId]);
 
     public string FileName => _request.Query[FilesLinkUtility.FileTitle];
 

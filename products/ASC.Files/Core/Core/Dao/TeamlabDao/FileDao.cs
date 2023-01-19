@@ -849,12 +849,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFileAsync(fileId, tId));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFileAsync(fileId, tsId));
         }
 
         throw new NotImplementedException();
@@ -874,7 +874,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         List<DbFile> toUpdate;
 
-        var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
+        var trashIdTask = _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();

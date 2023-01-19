@@ -121,8 +121,11 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 _ => null,
             };
 
-            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
-                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
+            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms 
+                ? IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms())
+                : folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms 
+                    ? IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms())
+                    : folder.ParentId;
         }
 
         if (folder.RootFolderType == FolderType.USER

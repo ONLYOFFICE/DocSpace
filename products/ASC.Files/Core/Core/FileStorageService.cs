@@ -351,12 +351,12 @@ public class FileStorageService //: IFileStorageService
         {
             if (prevVisible is Folder<string> f1)
             {
-                parent.ParentId = (T)Convert.ChangeType(f1.Id, typeof(T));
+                parent.ParentId = IdConverter.Convert<T>(f1.Id);
             }
 
             if (prevVisible is Folder<int> f2)
             {
-                parent.ParentId = (T)Convert.ChangeType(f2.Id, typeof(T));
+                parent.ParentId = IdConverter.Convert<T>(f2.Id);
             }
         }
 
@@ -472,7 +472,7 @@ public class FileStorageService //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync<T>(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<int>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
@@ -491,7 +491,7 @@ public class FileStorageService //: IFileStorageService
             CheckEncryptionKeys(aces);
         }
 
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms();
 
         var room = roomType switch
         {
@@ -716,75 +716,6 @@ public class FileStorageService //: IFileStorageService
         }
 
         return file;
-    }
-
-    public async IAsyncEnumerable<FileEntry<T>> GetSiblingsFileAsync<T>(T fileId, T parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
-    {
-        var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
-
-        var fileDao = GetFileDao<T>();
-        var folderDao = GetFolderDao<T>();
-
-        var file = await fileDao.GetFileAsync(fileId);
-        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
-
-        var parent = await folderDao.GetFolderAsync(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.ParentId : parentId);
-        ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-        ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
-
-        if (filter == FilterType.FoldersOnly)
-        {
-            yield break;
-        }
-        if (filter == FilterType.None)
-        {
-            filter = FilterType.FilesOnly;
-        }
-
-        if (orderBy == null)
-        {
-            orderBy = _filesSettingsHelper.DefaultOrder;
-        }
-        if (Equals(parent.Id, await _globalFolderHelper.GetFolderShareAsync<T>()) && orderBy.SortedBy == SortedByType.DateAndTime)
-        {
-            orderBy.SortedBy = SortedByType.New;
-        }
-
-        var entries = Enumerable.Empty<FileEntry>();
-
-        if (!await _fileSecurity.CanReadAsync(parent))
-        {
-            file.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
-            entries = entries.Append(file);
-        }
-        else
-        {
-            try
-            {
-                (entries, _) = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
-            }
-            catch (Exception e)
-            {
-                if (parent.ProviderEntry)
-                {
-                    throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
-                }
-
-                throw GenerateException(e);
-            }
-        }
-
-        var previewedType = new[] { FileType.Image, FileType.Audio, FileType.Video };
-
-
-        await foreach (var f in _fileSecurity.FilterReadAsync(entries.OfType<File<T>>().ToAsyncEnumerable()))
-        {
-            if (f is File<T> && previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)))
-            {
-                yield return f;
-            }
-        }
     }
 
     public Task<File<T>> CreateNewFileAsync<T, TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
@@ -2260,70 +2191,6 @@ public class FileStorageService //: IFileStorageService
         await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userFrom.Id, userTo.Id, folderDao, fileDao);
     }
 
-    public async Task DeleteStorageAsync<T>(Guid userId)
-    {
-        //check current user have access
-        ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
-
-        //delete docuSign
-        _docuSignToken.DeleteToken(userId);
-
-        var providerDao = GetProviderDao();
-        if (providerDao != null)
-        {
-            //delete thirdparty storage
-            await foreach (var myProviderInfo in providerDao.GetProvidersInfoAsync(userId))
-            {
-                _logger.InformationDeleteProvider(myProviderInfo.ID, userId);
-                await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
-            }
-        }
-
-        var folderDao = GetFolderDao<T>();
-        var fileDao = GetFileDao<T>();
-        var linkDao = GetLinkDao<T>();
-
-        //delete all markAsNew
-        var rootFoldersId = new List<T>
-                {
-                    await _globalFolderHelper.GetFolderShareAsync<T>(),
-                    await _globalFolderHelper.GetFolderCommonAsync<T>(),
-                    await _globalFolderHelper.GetFolderProjectsAsync<T>(),
-                };
-
-        var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userId);
-        if (!Equals(folderIdFromMy, 0))
-        {
-            rootFoldersId.Add(folderIdFromMy);
-        }
-
-        var rootFolders = await folderDao.GetFoldersAsync(rootFoldersId).ToListAsync();
-        foreach (var rootFolder in rootFolders)
-        {
-            await _fileMarker.RemoveMarkAsNewAsync(rootFolder, userId);
-        }
-
-        //delete all from My
-        if (!Equals(folderIdFromMy, 0))
-        {
-            await _entryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
-
-            //delete My userFrom folder
-            await folderDao.DeleteFolderAsync(folderIdFromMy);
-            _globalFolderHelper.SetFolderMy(userId);
-        }
-
-        //delete all from Trash
-        var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
-        if (!Equals(folderIdFromTrash, 0))
-        {
-            await _entryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao, linkDao);
-            await folderDao.DeleteFolderAsync(folderIdFromTrash);
-            _globalFolderHelper.FolderTrash = userId;
-        }
-
-        await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userId, _authContext.CurrentAccount.ID, folderDao, fileDao);
-    }
     #region Favorites Manager
 
     public async Task<bool> ToggleFileFavoriteAsync<T>(T fileId, bool favorite)
