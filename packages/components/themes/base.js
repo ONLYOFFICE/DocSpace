@@ -3032,6 +3032,7 @@ const Base = {
 
   errorContainer: {
     background: white,
+    bodyText: "#A3A9AE",
   },
 
   editor: {
