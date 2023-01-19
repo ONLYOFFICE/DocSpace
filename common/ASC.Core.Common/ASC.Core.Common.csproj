@@ -53,7 +53,7 @@
     <PackageReference Include="AWSSDK.Core" Version="3.7.103.18" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.100.56" />
     <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.50.0">
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

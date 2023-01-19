@@ -281,6 +281,7 @@ public class MigrationCreator
                 {
                     NewAlias = $"DocSpace{NewAlias}";
                 }
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -293,6 +294,8 @@ public class MigrationCreator
                 {
                     NewAlias = NewAlias + 1;
                 }
+
+                Console.WriteLine(ex.Message);
             }
         }
         Console.WriteLine($"Alias is - {NewAlias}");

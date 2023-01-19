@@ -12,10 +12,10 @@
     <None Remove="protos\delete_schedule.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="2.46.5">
+    <PackageReference Include="Grpc" Version="2.46.6">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Grpc.Tools" Version="2.50.0">
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

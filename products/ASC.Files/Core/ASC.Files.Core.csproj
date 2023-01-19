@@ -20,8 +20,8 @@
     <PackageReference Include="Box.V2.Core" Version="4.6.0" />
     <PackageReference Include="DocuSign.eSign.dll" Version="6.0.0" />
     <PackageReference Include="Dropbox.Api" Version="6.33.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2859" />
-    <PackageReference Include="Grpc.Tools" Version="2.50.0">
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.59.0.2922" />
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
