@@ -2705,7 +2705,7 @@ public class FileStorageService<T> //: IFileStorageService
             };
         }
 
-        return new FileReference<T>
+        var fileReference = new FileReference<T>
         {
             Path = file.Title,
             ReferenceData = new FileReferenceData<T>
@@ -2713,8 +2713,11 @@ public class FileStorageService<T> //: IFileStorageService
                 FileKey = file.Id,
                 InstanceId = _tenantManager.GetCurrentTenant().Id.ToString()
             },
-            Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true))
+            Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true)),
+            FileType = file.ConvertedExtension.Trim('.')
         };
+        fileReference.Token = _documentServiceHelper.GetSignature(fileReference);
+        return fileReference;
     }
 
     public async Task<List<MentionWrapper>> InternalSharedUsersAsync(T fileId)
