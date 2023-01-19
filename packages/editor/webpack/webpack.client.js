@@ -42,7 +42,7 @@ const clientConfig = {
 
       let folder = result.join("/");
 
-      return `${folder}/[name].[contenthash][ext]`; //`${folder}/[name][ext]?hash=[contenthash]`;
+      return `${folder}/[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
     },
   },
 

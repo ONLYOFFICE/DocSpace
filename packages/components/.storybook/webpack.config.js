@@ -21,9 +21,7 @@ module.exports = ({ config }) => {
 
     let folder = result.join("/");
 
-    console.log("call " + folder);
-
-    return `${folder}/[name].[contenthash][ext]`; //`${folder}/[name][ext]?hash=[contenthash]`;
+    return `${folder}/[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`; ;
   };
 
   // rules.push({
