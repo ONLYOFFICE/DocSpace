@@ -64,16 +64,16 @@
     <EmbeddedResource Update="Resources\PeopleResource.cs.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.el.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.el-GR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.fi.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ja.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ja-JP.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ko.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ko-KR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.lv.resx">
@@ -103,7 +103,7 @@
     <EmbeddedResource Update="Resources\PeopleResource.tr.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.uk.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.uk-UA.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.vi.resx">

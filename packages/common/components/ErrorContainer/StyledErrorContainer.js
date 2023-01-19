@@ -51,7 +51,9 @@ const StyledErrorContainer = styled.div`
     display: inline-block;
     margin: 0 0 36px 0;
   }
-
+  #customized-text {
+    color: ${(props) => props.theme.errorContainer.bodyText};
+  }
   @media screen and (max-width: 960px) {
     body {
       padding: 24px 24px 0 24px;

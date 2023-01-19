@@ -669,10 +669,20 @@ public class UserController : PeopleControllerBase
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
-        var users = inDto.UserIds
-             .Where(userId => !_userManager.IsSystemUser(userId))
-             .Select(userId => _userManager.GetUsers(userId))
-             .ToList();
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+
+        IEnumerable<UserInfo> users = null;
+
+        if (inDto.ResendAll)
+        {
+            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        }
+        else
+        {
+            users = inDto.UserIds
+                .Where(userId => !_userManager.IsSystemUser(userId))
+                .Select(userId => _userManager.GetUsers(userId));
+        }
 
         foreach (var user in users)
         {
@@ -704,10 +714,15 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.IsDocSpaceAdmin(user) ? EmployeeType.DocSpaceAdmin :
-                    _userManager.IsUser(user) ? EmployeeType.User : EmployeeType.RoomAdmin;
+                var type = _userManager.GetUserType(user.Id);
 
-                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
+                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                {
+                    continue;
+                }
+
+                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             }
             else
             {

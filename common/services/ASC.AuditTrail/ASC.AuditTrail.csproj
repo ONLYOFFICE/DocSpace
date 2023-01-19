@@ -55,13 +55,13 @@
     <EmbeddedResource Update="AuditReportResource.cs.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.el.resx">
+    <EmbeddedResource Update="AuditReportResource.el-GR.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.fi.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.ja.resx">
+    <EmbeddedResource Update="AuditReportResource.ja-JP.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.lv.resx">
@@ -85,7 +85,7 @@
     <EmbeddedResource Update="AuditReportResource.tr.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.uk.resx">
+    <EmbeddedResource Update="AuditReportResource.uk-UA.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.vi.resx">

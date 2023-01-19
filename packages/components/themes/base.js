@@ -2087,6 +2087,7 @@ const Base = {
     details: {
       customLogoBorderColor: grayLightMid,
       commentEditorIconColor: "#333",
+      tagBackground: "#ECEEF1",
     },
 
     gallery: {
@@ -3032,6 +3033,7 @@ const Base = {
 
   errorContainer: {
     background: white,
+    bodyText: "#A3A9AE",
   },
 
   editor: {

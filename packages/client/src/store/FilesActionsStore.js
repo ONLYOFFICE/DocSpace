@@ -980,7 +980,20 @@ class FilesActionStore {
 
             console.log(pbData.label, { data, res });
 
-            await this.uploadDataStore.loopFilesOperations(data, pbData);
+            const operationData = await this.uploadDataStore.loopFilesOperations(
+              data,
+              pbData
+            );
+
+            if (
+              !operationData ||
+              operationData.error ||
+              !operationData.finished
+            ) {
+              return Promise.reject(
+                operationData?.error ? operationData.error : ""
+              );
+            }
 
             if (!isRoomsFolder) {
               setSelectedFolder(roomsFolder);

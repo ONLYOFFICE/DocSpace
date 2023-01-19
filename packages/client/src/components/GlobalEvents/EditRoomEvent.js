@@ -35,6 +35,7 @@ const EditRoomEvent = ({
 
   withPaging,
 
+  updateEditedSelectedRoom,
   addDefaultLogoPaths,
   updateLogoPathsCacheBreaker,
   removeLogoPaths,
@@ -131,13 +132,16 @@ const EditRoomEvent = ({
     } finally {
       if (withPaging) await updateCurrentFolder(null, currentFolderId);
 
-      if (item.logo.original && !roomParams.icon.uploadedFile) {
-        removeLogoPaths();
-        reloadInfoPanelSelection();
-      } else if (!item.logo.original && roomParams.icon.uploadedFile)
-        addDefaultLogoPaths();
-      else if (item.logo.original && roomParams.icon.uploadedFile)
-        updateLogoPathsCacheBreaker();
+      if (item.id === currentFolderId) {
+        updateEditedSelectedRoom(editRoomParams.title, tags);
+        if (item.logo.original && !roomParams.icon.uploadedFile) {
+          removeLogoPaths();
+          reloadInfoPanelSelection();
+        } else if (!item.logo.original && roomParams.icon.uploadedFile)
+          addDefaultLogoPaths();
+        else if (item.logo.original && roomParams.icon.uploadedFile)
+          updateLogoPathsCacheBreaker();
+      }
 
       setIsLoading(false);
       onClose();
@@ -211,6 +215,7 @@ export default inject(
     const { createTag, fetchTags } = tagsStore;
     const {
       id: currentFolderId,
+      updateEditedSelectedRoom,
       addDefaultLogoPaths,
       removeLogoPaths,
       updateLogoPathsCacheBreaker,
@@ -245,6 +250,7 @@ export default inject(
       withPaging,
       setCreateRoomDialogVisible,
 
+      updateEditedSelectedRoom,
       addDefaultLogoPaths,
       updateLogoPathsCacheBreaker,
       removeLogoPaths,
