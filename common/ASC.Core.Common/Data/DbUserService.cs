@@ -262,6 +262,15 @@ public class EFUserService : IUserService
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider);
     }
 
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var tenants = userDbContext.Users.Where(u => u.LastModified > from).Select(u => u.Tenant).Distinct().ToList();
+
+        return tenants;
+    }
+
     public void RemoveGroup(int tenant, Guid id)
     {
         RemoveGroup(tenant, id, false);

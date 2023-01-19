@@ -1568,7 +1568,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditHistoryAsync(fromFile) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1691,7 +1691,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && (!await _fileSecurity.CanEditHistoryAsync(fileVersion) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
