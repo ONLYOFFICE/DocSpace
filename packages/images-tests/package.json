@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "build": "echo 'skip it'",
+    "clean": "echo 'skip it'",
+    "deploy": "echo 'skip it'",
+    "start": "echo 'skip it'",
+    "start-prod": "echo 'skip it'"
+  },
   "dependencies": {
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1"

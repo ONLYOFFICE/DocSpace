@@ -24,12 +24,7 @@ import PresentationIcoUrl from "../../../../public/images/presentation.ico";
 import SpreadSheetIcoUrl from "../../../../public/images/spreadsheet.ico";
 import TextIcoUrl from "../../../../public/images/text.ico";
 
-const ThemeProviderWrapper = inject(({ auth }) => {
-  const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
-})(observer(ThemeProvider));
-
-const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
+const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
 
@@ -63,10 +58,18 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
 
   useEffect(() => {
     const tempElm = document.getElementById("loader");
+    const userTheme = rest.user?.theme;
+    if (userTheme) setTheme(userTheme);
 
-    if (tempElm && !rest.error && !rest.needLoader && rest?.config?.editorUrl) {
+    const isLoadingDocumentError = rest.error !== null;
+    const isLoadedDocument = !rest.error && rest?.config?.editorUrl;
+
+    if (
+      tempElm &&
+      !rest.props?.needLoader &&
+      (isLoadingDocumentError || isLoadedDocument)
+    )
       tempElm.outerHTML = "";
-    }
 
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
@@ -85,22 +88,37 @@ const App = ({ initialLanguage, initialI18nStoreASC, ...rest }) => {
 
   return (
     <ErrorBoundary onError={onError}>
-      <MobxProvider {...store}>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProviderWrapper>
-            <GlobalStyle fonts={fonts} />
-            <Editor
-              mfReady={isInitialized}
-              mfFailed={isErrorLoading}
-              isDesktopEditor={isDesktopEditor}
-              initDesktop={initDesktop}
-              {...rest}
-            />
-          </ThemeProviderWrapper>
-        </I18nextProvider>
-      </MobxProvider>
+      <GlobalStyle fonts={fonts} />
+      <Editor
+        mfReady={isInitialized}
+        mfFailed={isErrorLoading}
+        isDesktopEditor={isDesktopEditor}
+        initDesktop={initDesktop}
+        {...rest}
+      />
     </ErrorBoundary>
   );
 };
 
-export default App;
+const AppWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { setTheme } = settingsStore;
+  return {
+    setTheme,
+  };
+})(observer(App));
+
+const ThemeProviderWrapper = inject(({ auth }) => {
+  const { settingsStore } = auth;
+  return { theme: settingsStore.theme };
+})(observer(ThemeProvider));
+
+export default (props) => (
+  <MobxProvider {...store}>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProviderWrapper>
+        <AppWrapper {...props} />
+      </ThemeProviderWrapper>
+    </I18nextProvider>
+  </MobxProvider>
+);

@@ -3033,6 +3033,7 @@ const Dark = {
 
   errorContainer: {
     background: black,
+    bodyText: "#858585",
   },
 
   editor: {
