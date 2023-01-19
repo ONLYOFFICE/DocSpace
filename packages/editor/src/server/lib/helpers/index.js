@@ -144,7 +144,7 @@ export const initDocEditor = async (req) => {
     error = {
       errorMessage: message,
     };
-    return { error, user };
+    return { error, user, logoUrls };
   }
 };
 
