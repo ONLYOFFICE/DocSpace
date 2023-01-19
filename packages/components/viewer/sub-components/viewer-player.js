@@ -974,9 +974,10 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 })
               );
             }}
-            src={props.video.src}
+            src={`${props.video.src}#t=0.001`}
             style={imgStyle}
             onTimeUpdate={handleOnTimeUpdate}
+            playsInline
           ></video>
         </div>
         {!state.isPlaying && displayUI && !isAudio && (
