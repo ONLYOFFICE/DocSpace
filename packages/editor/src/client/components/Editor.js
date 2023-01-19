@@ -50,7 +50,6 @@ const onSDKError = (event) => {
 const ErrorContainerBody = styled(ErrorContainer)`
   position: absolute;
   height: 100%;
-
 `;
 
 let documentIsReady = false;
@@ -108,9 +107,6 @@ function Editor({
           "_self"
         );
       }
-      const errorText = typeof error === "string" ? error : error.errorMessage;
-
-      errorText && toastr.error(errorText, null, 0, true);
     }
   }, [mfReady, error]);
 
@@ -635,7 +631,12 @@ function Editor({
 
   const additionalComponents =
     error && !error?.unAuthorized ? (
-      <ErrorContainerBody />
+      <ErrorContainerBody
+        headerText={"Error"}
+        customizedBodyText={
+          typeof error === "string" ? error : error.errorMessage
+        }
+      />
     ) : (
       <>
         {/* {sharingDialog} */}
