@@ -18,7 +18,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  background: ${(props) => props.theme.filesBadges.color};
+  background: ${(props) => props.theme.filesBadges.backgroundColor};
   padding: 6px;
   border-radius: 4px;
   box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
@@ -58,11 +58,9 @@ const Badges = ({
   newItems,
   sectionWidth,
   item,
-  canWebEdit,
   isTrashFolder,
   isPrivacyFolder,
   isDesktopClient,
-  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -71,7 +69,6 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
-  canViewVersionFileHistory,
 }) => {
   const {
     id,
@@ -143,7 +140,7 @@ const Badges = ({
     "data-id": id,
   };
 
-  const onShowVersionHistoryProp = canViewVersionFileHistory
+  const onShowVersionHistoryProp = item.security?.ReadHistory
     ? { onClick: onShowVersionHistory }
     : {};
 
@@ -161,7 +158,7 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {canConvert && !isTrashFolder && (
+      {item.viewAccessability?.Convert && !isTrashFolder && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
@@ -176,7 +173,7 @@ const Badges = ({
           <Badge
             {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
-            backgroundColor={theme.filesBadges.backgroundColor}
+            backgroundColor={theme.filesBadges.badgeBackgroundColor}
             label={t("VersionBadge", { version: countVersions })}
             {...onShowVersionHistoryProp}
             noHover={true}

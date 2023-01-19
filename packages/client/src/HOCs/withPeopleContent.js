@@ -1,14 +1,10 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Link from "@docspace/components/link";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Avatar from "@docspace/components/avatar";
-
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 export default function withContent(WrappedContent) {
   const WithContent = (props) => {
@@ -95,7 +91,7 @@ export default function withContent(WrappedContent) {
     /*const redirectToProfile = () => {
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           `/accounts/view/${userName}`
         )
@@ -110,7 +106,7 @@ export default function withContent(WrappedContent) {
           clearTimeout(timer);
           if (
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               config.homepage,
               `/accounts/view/${userName}`
             ) !== window.location.pathname

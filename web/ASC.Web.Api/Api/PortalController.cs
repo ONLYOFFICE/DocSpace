@@ -143,9 +143,9 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
-        if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
+        if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
-            throw new SecurityException("Method not available");
+            return string.Empty;
         }
 
         return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
@@ -356,7 +356,8 @@ public class PortalController : ControllerBase
 
             tenant.Alias = alias;
             tenant = _tenantManager.SaveTenant(tenant);
-
+            _tenantManager.SetCurrentTenant(tenant);
+            _commonLinkUtility.ServerRootPath = null;
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {

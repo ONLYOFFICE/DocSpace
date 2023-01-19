@@ -1,13 +1,24 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { mobile } from "@docspace/components/utils/device";
+import { mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
-  padding: 80px 3px 0 20px;
-  @media ${mobile} {
-    padding: 80px 8px 0 16px;
-  }
+  ${({ isAccounts }) =>
+    isAccounts
+      ? css`
+          padding: 0px 3px 0 20px;
+          @media ${mobile} {
+            padding: 0px 8px 0 16px;
+          }
+        `
+      : css`
+          padding: 80px 3px 0 20px;
+          @media ${mobile} {
+            padding: 80px 8px 0 16px;
+          }
+        `}
+
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
@@ -26,17 +37,16 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  position: fixed;
+  //position: fixed;
   margin-top: -80px;
   margin-left: -20px;
-  width: calc(100% - 40px);
+  width: 100%;
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
   @media ${mobile} {
-    width: calc(100% - 32px);
-    padding: 24px 0 24px 16px;
+    padding: 24px -16px 24px 16px;
   }
 
   display: flex;
@@ -76,6 +86,7 @@ const StyledTitle = styled.div`
     }
     &.is-room {
       border-radius: 6px;
+      outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     }
   }
 

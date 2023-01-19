@@ -9,6 +9,7 @@ import Text from "@docspace/components/text";
 import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
+import api from "@docspace/common/api/index.js";
 
 const Details = ({
   t,
@@ -52,6 +53,11 @@ const Details = ({
     }
   }, [selection]);
 
+  const currentIcon =
+    !selection.isArchive && selection?.logo?.large
+      ? selection?.logo?.large
+      : getInfoPanelItemIcon(selection, 96);
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
@@ -68,9 +74,12 @@ const Details = ({
         <StyledNoThumbnail>
           <img
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom && selection.logo?.large && "custom-logo"
+              selection.isRoom &&
+              !selection.isArchive &&
+              selection.logo?.large &&
+              "custom-logo"
             }`}
-            src={getInfoPanelItemIcon(selection, 96)}
+            src={currentIcon}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>

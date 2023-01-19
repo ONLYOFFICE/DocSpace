@@ -125,12 +125,9 @@ public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISett
 public class StorageSettingsHelper
 {
     private readonly StorageFactoryConfig _storageFactoryConfig;
-    private readonly PathUtils _pathUtils;
     private readonly ICacheNotify<DataStoreCacheItem> _cache;
-    private readonly ILogger _options;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
     private readonly IServiceProvider _serviceProvider;
     private IDataStore _dataStore;
@@ -138,9 +135,7 @@ public class StorageSettingsHelper
     public StorageSettingsHelper(
         BaseStorageSettingsListener baseStorageSettingsListener,
         StorageFactoryConfig storageFactoryConfig,
-        PathUtils pathUtils,
         ICacheNotify<DataStoreCacheItem> cache,
-        ILogger<StorageSettingsHelper> options,
         TenantManager tenantManager,
         SettingsManager settingsManager,
         ConsumerFactory consumerFactory,
@@ -148,29 +143,11 @@ public class StorageSettingsHelper
     {
         baseStorageSettingsListener.Subscribe();
         _storageFactoryConfig = storageFactoryConfig;
-        _pathUtils = pathUtils;
         _cache = cache;
-        _options = options;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
         _serviceProvider = serviceProvider;
-    }
-
-    public StorageSettingsHelper(
-        BaseStorageSettingsListener baseStorageSettingsListener,
-        StorageFactoryConfig storageFactoryConfig,
-        PathUtils pathUtils,
-        ICacheNotify<DataStoreCacheItem> cache,
-        ILogger<StorageSettingsHelper> options,
-        TenantManager tenantManager,
-        SettingsManager settingsManager,
-        IHttpContextAccessor httpContextAccessor,
-        ConsumerFactory consumerFactory,
-        IServiceProvider serviceProvider)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory, serviceProvider)
-    {
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()

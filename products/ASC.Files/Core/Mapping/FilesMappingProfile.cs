@@ -32,13 +32,13 @@ public class FilesMappingProfile : AutoMapper.Profile
     {
         CreateMap(typeof(Configuration<>), typeof(ConfigurationDto<>));
 
+        CreateMap<DbFile, File<int>>();
+
         CreateMap<DbFileQuery, File<int>>()
                 .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
                 .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
                 .IncludeMembers(r => r.File)
                 .ConstructUsingServiceLocator();
-
-        CreateMap<DbFile, File<int>>();
 
         CreateMap<DbFolder, Folder<int>>();
 

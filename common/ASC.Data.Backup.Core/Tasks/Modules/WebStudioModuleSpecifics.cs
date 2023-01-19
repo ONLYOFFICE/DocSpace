@@ -32,8 +32,6 @@ public class WebStudioModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _relations;
 
-    private static readonly Guid _crmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
-
     private readonly TableInfo[] _tables = new[]
     {
             new TableInfo("webstudio_fckuploads", "TenantID") {InsertMethod = InsertMethod.None},

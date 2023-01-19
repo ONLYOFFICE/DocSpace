@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Hesap ekle",
-  "AddAuthor": "Yazar Ekle",
   "ArchivingData": "Veriler arşivleniyor",
-  "ButtonShareAccess": "Paylaşım Ayarları",
   "ConnectingAccount": "Hesap bağlanıyor",
   "Copy": "Kopyala",
   "CopyHere": "Buraya kopyala",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Google Play'de ONLYOFFICE Belgelerini Alın",
   "MobileIos": "ONLYOFFICE Belgelerini App Store'dan İndirin",
   "MobileLinux": "Linux için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
-  "MobileMac": "Mac OS için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
+  "MobileMac": "macOS için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
   "MobileWin": "Windows için ONLYOFFICE Masaüstü Düzenleyicilerini İndirin",
   "MoveHere": "Buraya taşı",
   "MoveToOperation": "Taşınıyor",
   "NewForm": "Form şablonu",
-  "NewFormFile": "Dosyadan form",
+  "Other": "Diğer",
   "OwnerChange": "Sahibi değiştir",
   "Presentations": "Sunumlar",
   "Spreadsheets": "Elektronik tablolar",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Diğer"
+  "TypeTitlekDrive": "kDrive"
 }

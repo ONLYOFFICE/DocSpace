@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
-import Link from "@docspace/components/link";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -75,11 +74,11 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
-    docSpaceLogo,
+    whiteLabelLogoUrls,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
-  const linkAppServer = "https://github.com/ONLYOFFICE/DocSpace";
+  const linkRepo = "https://github.com/ONLYOFFICE/DocSpace";
   const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
 
   const companyName = previewData
@@ -100,6 +99,10 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
+  const logo = !theme.isBase
+    ? whiteLabelLogoUrls[6]?.path.dark
+    : whiteLabelLogoUrls[6]?.path.light;
+
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -111,7 +114,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <img
-              src={docSpaceLogo}
+              src={logo}
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
@@ -129,14 +132,14 @@ const AboutContent = (props) => {
             className="row-el"
             fontSize="13px"
             fontWeight="600"
-            href={linkAppServer}
+            href={linkRepo}
             target="_blank"
           >
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
 
           <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.appServer}
+            v.{buildVersionInfo.docspace}
           </Text>
         </div>
 
@@ -236,7 +239,11 @@ const AboutContent = (props) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, companyInfoSettingsData, docSpaceLogo } = settingsStore;
+  const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
 
-  return { theme, companyInfoSettingsData, docSpaceLogo };
+  return {
+    theme,
+    companyInfoSettingsData,
+    whiteLabelLogoUrls,
+  };
 })(observer(AboutContent));

@@ -889,7 +889,7 @@
     <value>The number of rooms should not exceed {0}</value>
   </data>
   <data name="TariffsFeature_manager_exception" xml:space="preserve">
-    <value>The number of managers should not exceed {0}</value>
+    <value>The number of admins should not exceed {0}</value>
   </data>
   <data name="TariffsFeature_total_size_exception" xml:space="preserve">
     <value>The used storage size should not exceed {0}</value>
@@ -908,6 +908,12 @@
   </data>
   <data name="ErrorIpSecurity" xml:space="preserve">
     <value>The access to the portal is restricted</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unknown image file type</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Image size exceed the allowed parameters</value>
   </data>
   <data name="ConsumersTelegram" xml:space="preserve">
     <value>Telegram</value>

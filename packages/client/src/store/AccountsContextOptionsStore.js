@@ -2,18 +2,17 @@ import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
 
-import config from "PACKAGE_FILE";
-
 import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, EmployeeStatus } from "@docspace/common/constants";
+import { EmployeeStatus, FilterSubject } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 
-const { proxyURL } = AppServerConfig;
-
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 
@@ -78,7 +77,13 @@ class AccountsContextOptionsStore {
             label: t("Translations:OwnerChange"),
             onClick: () => this.toggleChangeOwnerDialog(item),
           };
-
+        case "room-list":
+          return {
+            key: option,
+            icon: "images/folder.react.svg",
+            label: "Room list",
+            onClick: () => this.openUserRoomList(item),
+          };
         case "enable":
           return {
             id: "option_enable",
@@ -94,15 +99,6 @@ class AccountsContextOptionsStore {
             icon: "images/remove.react.svg",
             label: t("PeopleTranslations:DisableUserButton"),
             onClick: () => this.onDisableClick(t, item),
-          };
-
-        case "reassign-data":
-          return {
-            id: "option_reassign-data",
-            key: option,
-            icon: "images/ressing_data.react.svg",
-            label: t("PeopleTranslations:ReassignData"),
-            onClick: () => this.onReassignDataClick(item),
           };
         case "delete-personal-data":
           return {
@@ -275,6 +271,24 @@ class AccountsContextOptionsStore {
     return contextOptionsProps;
   };
 
+  openUserRoomList = (user) => {
+    const filter = RoomsFilter.getDefault();
+
+    filter.subjectId = user.id;
+    filter.subjectFilter = FilterSubject.Member;
+
+    const filterParamsStr = filter.toUrlParams();
+    const url = getCategoryUrl(CategoryType.Shared);
+    const type = this.authStore.settingsStore.isDesktopClient
+      ? "_self"
+      : "_blank";
+
+    window.open(
+      combineUrl(PROXY_HOMEPAGE_URL, `${url}?${filterParamsStr}`),
+      type
+    );
+  };
+
   onProfileClick = () => {
     history.push(PROFILE_SELF_URL);
   };
@@ -333,20 +347,6 @@ class AccountsContextOptionsStore {
     const { changeStatus } = this.peopleStore;
 
     changeStatus(EmployeeStatus.Disabled, [id]);
-  };
-
-  onReassignDataClick = (item) => {
-    const { userName } = item;
-
-    toastr.warning("Work at progress");
-
-    // history.push(
-    //   combineUrl(
-    //     AppServerConfig.proxyURL,
-    //     config.homepage,
-    //     `/reassign/${userName}`
-    //   )
-    // );
   };
 
   onDeletePersonalDataClick = (t, item) => {

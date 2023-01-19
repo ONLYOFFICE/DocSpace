@@ -29,7 +29,7 @@ namespace ASC.Core.Tenants;
 [Singletone]
 public class TenantDomainValidator
 {
-    private static readonly Regex _validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
+    private readonly Regex _validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
                                                           RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     public readonly int MinLength;
@@ -54,7 +54,7 @@ public class TenantDomainValidator
         }
     }
 
-    public static void ValidateDomainCharacters(string domain)
+    public void ValidateDomainCharacters(string domain)
     {
         if (!_validDomain.IsMatch(domain))
         {

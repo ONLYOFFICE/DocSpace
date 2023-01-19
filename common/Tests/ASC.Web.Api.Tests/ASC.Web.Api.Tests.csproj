@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\migrations\mysql\ASC.Migrations.MySql.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Api\ASC.Web.Api.csproj" />
   </ItemGroup>
 

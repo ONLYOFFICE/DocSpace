@@ -20,7 +20,6 @@ class DialogsStore {
   deleteDialogVisible = false;
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
-  thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
@@ -138,10 +137,6 @@ class DialogsStore {
     this.deleteThirdPartyDialogVisible = deleteThirdPartyDialogVisible;
   };
 
-  setThirdPartyMoveDialogVisible = (thirdPartyMoveDialogVisible) => {
-    this.thirdPartyMoveDialogVisible = thirdPartyMoveDialogVisible;
-  };
-
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
@@ -172,10 +167,6 @@ class DialogsStore {
     this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
-  setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
-    this.thirdPartyDialogVisible = thirdPartyDialogVisible;
-  };
-
   setDestFolderId = (destFolderId) => {
     this.destFolderId = destFolderId;
   };
@@ -196,24 +187,24 @@ class DialogsStore {
         this.setNewFilesIds(newIds);
       } else {
         newFilesPanelVisible = false;
-        const {
-          getRootFolder,
-          updateRootBadge,
-          treeFolders,
-        } = this.treeFoldersStore;
-        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
+        //   const {
+        //     getRootFolder,
+        //     updateRootBadge,
+        //     treeFolders,
+        //   } = this.treeFoldersStore;
+        //   const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
 
-        if (item) {
-          const { rootFolderType, id } = item;
-          const rootFolder = getRootFolder(rootFolderType);
-          updateRootBadge(rootFolder.id, item.new);
-          updateFolderBadge(id, item.new);
-        } else {
-          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
-          updateRootBadge(rootFolder.id, rootFolder.new);
-          if (this.selectedFolderStore.id === rootFolder.id)
-            updateFoldersBadge();
-        }
+        //   if (item) {
+        //     const { rootFolderType, id } = item;
+        //     const rootFolder = getRootFolder(rootFolderType);
+        //     updateRootBadge(rootFolder.id, item.new);
+        //     updateFolderBadge(id, item.new);
+        //   } else {
+        //     const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+        //     updateRootBadge(rootFolder.id, rootFolder.new);
+        //     if (this.selectedFolderStore.id === rootFolder.id)
+        //       updateFoldersBadge();
+        //   }
       }
     } else {
       this.setNewFilesIds(null);
@@ -323,7 +314,6 @@ class DialogsStore {
       this.deleteDialogVisible ||
       this.downloadDialogVisible ||
       this.emptyTrashDialogVisible ||
-      this.thirdPartyDialogVisible ||
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||

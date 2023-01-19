@@ -18,7 +18,6 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
-import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -32,8 +31,8 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    rootFolderType,
-    canViewUsers,
+    // rootFolderType,
+    // selectionParentRoom,
   } = props;
 
   const isRooms = getIsRooms();
@@ -51,12 +50,12 @@ const InfoPanelHeaderContent = (props) => {
   const setHistory = () => setView("info_history");
   const setDetails = () => setView("info_details");
 
-  const isArchiveRoot = rootFolderType === FolderType.Archive;
+  //const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
       id: "info_members",
-      name: t("InfoPanel:SubmenuMembers"),
+      name: t("Common:Members"),
       onClick: setMembers,
       content: null,
     },
@@ -73,12 +72,12 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
+  // const selectionRoomRights = selectionParentRoom
+  //   ? selectionParentRoom.security?.Read
+  //   : selection?.security?.Read;
 
-  const roomsSubmenu = isArchiveRoot
-    ? canViewUsers(selection)
-      ? [{ ...submenuData[0] }, { ...submenuData[2] }]
-      : [{ ...submenuData[2] }]
-    : [...submenuData];
+  const roomsSubmenu = [...submenuData];
+
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   const isTablet =
@@ -133,7 +132,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
+export default inject(({ auth, selectedFolderStore }) => {
   const {
     selection,
     setIsVisible,
@@ -144,9 +143,12 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
+    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canViewUsers } = accessRightsStore;
+  const {
+    isRootFolder,
+    // rootFolderType
+  } = selectedFolderStore;
 
   return {
     selection,
@@ -160,13 +162,15 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
 
     isRootFolder,
-    rootFolderType,
-    canViewUsers,
+    //  rootFolderType,
+
+    //selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
-    withLoader(observer(InfoPanelHeaderContent))(
-      <Loaders.InfoPanelHeaderLoader />
-    )
+    InfoPanelHeaderContent
+    // withLoader(observer(InfoPanelHeaderContent))(
+    //   <Loaders.InfoPanelHeaderLoader />
+    // )
   )
 );

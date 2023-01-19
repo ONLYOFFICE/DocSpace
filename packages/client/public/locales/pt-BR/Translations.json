@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Adicionar conta",
-  "AddAuthor": "Adicionar Autor",
   "ArchivingData": "Arquivando dados",
-  "ButtonShareAccess": "Configurações de compartilhamento",
   "ConnectingAccount": "Conectando conta",
   "Copy": "Copiar",
   "CopyHere": "Copiar aqui",
@@ -38,7 +35,7 @@
   "MoveHere": "Mover aqui",
   "MoveToOperation": "Movendo",
   "NewForm": "Modelo de formulário",
-  "NewFormFile": "Formulário do arquivo",
+  "Other": "Outro",
   "OwnerChange": "Alterar proprietário",
   "Presentations": "Apresentações ",
   "Spreadsheets": "Planilhas",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Outro"
+  "TypeTitlekDrive": "kDrive"
 }

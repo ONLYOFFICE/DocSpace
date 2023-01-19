@@ -6,6 +6,15 @@ const StyledComponent = styled.div`
     margin-top: 3px;
     width: 100%;
     max-width: ${(props) => (props.maxWidth ? props.maxWidth : "350px")};
+    :hover {
+      .icon {
+        svg {
+          path {
+            fill: ${(props) => props.theme.iconButton.hoverColor};
+          }
+        }
+      }
+    }
   }
 
   .panel-loader-wrapper {

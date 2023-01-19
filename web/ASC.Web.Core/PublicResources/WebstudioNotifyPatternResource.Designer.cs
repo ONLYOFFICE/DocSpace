@@ -322,16 +322,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CONFIRM.
-        /// </summary>
-        public static string ButtonConfirmEmail {
-            get {
-                return ResourceManager.GetString("ButtonConfirmEmail", resourceCulture);
-            }
-        }
-
-        /// <summary>
-
         ///   Looks up a localized string similar to Confirm DocSpace Invite.
         /// </summary>
         public static string ButtonConfirmDocSpaceInvite {
@@ -339,7 +329,16 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("ButtonConfirmDocSpaceInvite", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONFIRM.
+        /// </summary>
+        public static string ButtonConfirmEmail {
+            get {
+                return ResourceManager.GetString("ButtonConfirmEmail", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Confirm Portal Address Change.
         /// </summary>
@@ -567,16 +566,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The link is valid for 7 days.
         ///
-        ///Don’t want to change your password? Just ignore this message&lt;/value&gt;
-        ///  &lt;/data&gt;
-        ///  &lt;data name=&quot;pattern_personal_change_password_v115&quot; xml:space=&quot;preserve&quot;&gt;
-        ///    &lt;value&gt;Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
-        ///
-        ///$GreenButton 
-        ///
-        ///The link is valid for 7 days.
-        ///
-        ///Don’t want to change your password? Just ignore  [rest of string was truncated]&quot;;.
+        ///Don’t want to change your password? Just ignore this message.
         /// </summary>
         public static string pattern_change_password_v115 {
             get {
@@ -1868,6 +1858,25 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///
+        ///$GreenButton
+        ///
+        ///After clicking on the invitation link, please set a new password for your account.
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_docspace_invite {
+            get {
+                return ResourceManager.GetString("pattern_saas_docspace_invite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello!
+        ///
         ///You are invited to join &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; as a guest user. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
@@ -1897,6 +1906,25 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("pattern_saas_guest_welcome_v115", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello!
+        ///
+        ///You are invited to join $Message room at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///
+        ///$GreenButton
+        ///
+        ///After clicking on the invitation link, please set a new password for your account.
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_room_invite {
+            get {
+                return ResourceManager.GetString("pattern_saas_room_invite", resourceCulture);
             }
         }
         
@@ -2705,6 +2733,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
+        /// </summary>
+        public static string subject_saas_docspace_invite {
+            get {
+                return ResourceManager.GetString("subject_saas_docspace_invite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
         /// </summary>
         public static string subject_saas_guest_activation_v115 {
@@ -2719,6 +2756,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
+        /// </summary>
+        public static string subject_saas_room_invite {
+            get {
+                return ResourceManager.GetString("subject_saas_room_invite", resourceCulture);
             }
         }
         

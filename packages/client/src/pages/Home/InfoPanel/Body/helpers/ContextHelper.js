@@ -87,7 +87,11 @@ class ContextHelper {
           this.selection.options || [],
           this.selection
         )
-      : this.getContextOptionActions(this.selection, this.t);
+      : this.getContextOptionActions(
+          this.selection,
+          this.t,
+          this.selection.isSelectedFolder
+        );
   };
 }
 

@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Thêm tài khoản",
-  "AddAuthor": "Thêm Tác giả",
   "ArchivingData": "Lưu trữ dữ liệu",
-  "ButtonShareAccess": "Cài đặt chia sẻ",
   "ConnectingAccount": "Đang kết nối tài khoản",
   "Copy": "Sao chép",
   "CopyHere": "Sao chép ở đây",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Nhận ONLYOFFICE Documents trên Google Play",
   "MobileIos": "Tải xuống ONLYOFFICE Documents trên App Store",
   "MobileLinux": "Tải xuống Trình chỉnh sửa ONLYOFFICE cho máy tính Linux",
-  "MobileMac": "Tải xuống Trình chỉnh sửa ONLYOFFICE cho máy tính Mac OS",
+  "MobileMac": "Tải xuống Trình chỉnh sửa ONLYOFFICE cho máy tính macOS",
   "MobileWin": "Tải xuống Trình chỉnh sửa ONLYOFFICE cho máy tính Windows",
   "MoveHere": "Chuyển vào đây",
   "MoveToOperation": "Đang di chuyển",
   "NewForm": "Mẫu biểu mẫu",
-  "NewFormFile": "Mẫu biểu mẫu từ tệp",
+  "Other": "Khác",
   "OwnerChange": "Thay đổi chủ sở hữu",
   "Presentations": "Bản trình bày",
   "Spreadsheets": "Bảng tính",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Khác"
+  "TypeTitlekDrive": "kDrive"
 }

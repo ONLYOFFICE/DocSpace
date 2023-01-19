@@ -5,11 +5,9 @@ import { getUser } from "@docspace/common/api/people";
 import {
   getSettings,
   getBuildVersion,
-  getCurrentCustomSchema,
   getAppearanceTheme,
+  getLogoUrls,
 } from "@docspace/common/api/settings";
-import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig } from "@docspace/common/constants";
 import {
   openEdit,
   getSettingsFiles,
@@ -17,7 +15,7 @@ import {
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
-export const getFavicon = (documentType) => {
+export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;
   let icon = null;
 
@@ -35,7 +33,9 @@ export const getFavicon = (documentType) => {
       break;
   }
 
-  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
+  const favicon = icon
+    ? `${homepage}/images/${icon}`
+    : logoUrls[2]?.path?.light;
   return favicon;
 };
 
@@ -69,27 +69,28 @@ export const initDocEditor = async (req) => {
       settings,
       filesSettings,
       versionInfo,
-      customNames,
       appearanceTheme,
+      logoUrls,
     ] = await Promise.all([
       getUser(),
       getSettings(),
       getSettingsFiles(),
       getBuildVersion(),
-      getCurrentCustomSchema("Common"),
       getAppearanceTheme(),
+      getLogoUrls(),
     ]);
 
     const successAuth = !!user;
+
     personal = settings?.personal;
 
     if (!successAuth && !doc) {
       error = {
         unAuthorized: true,
-        redirectPath: combineUrl(
-          AppServerConfig.proxyURL,
-          personal ? "/sign-in" : "/login"
-        ),
+        // redirectPath: combineUrl(
+        //   window?.DocSpaceConfig?.proxy?.url,
+        //   personal ? "/sign-in" : "/login"
+        // ),
       };
       return { error };
     }
@@ -108,15 +109,12 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
-    const actionLink = config?.editorConfig?.actionLink || null;
-
     return {
       config,
       personal,
       successAuth,
       user,
       error,
-      actionLink,
       //isSharingAccess,
       url,
       doc,
@@ -126,8 +124,8 @@ export const initDocEditor = async (req) => {
       //sharingSettings,
       portalSettings: settings,
       versionInfo,
-      customNames,
       appearanceTheme,
+      logoUrls,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };

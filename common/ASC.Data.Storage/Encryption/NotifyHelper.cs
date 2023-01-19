@@ -84,8 +84,10 @@ public class NotifyHelper
             Method = method,
             Tenant = tenantId
         };
-        notifyInvoke.Parameters = new List<string>();
-        notifyInvoke.Parameters.Add(_serverRootPath);
+        notifyInvoke.Parameters = new List<string>
+        {
+            _serverRootPath
+        };
 
         try
         {

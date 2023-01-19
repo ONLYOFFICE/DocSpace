@@ -40,7 +40,9 @@ const TagDropdown = ({
     e.preventDefault();
   };
 
-  const onClickOutside = () => {
+  const onClickOutside = (e) => {
+    if (!e) return;
+    if (e.target.id === "shared_tags-input") return;
     document.getElementById("shared_tags-input").blur();
   };
 
@@ -108,18 +110,18 @@ const TagDropdown = ({
       className="dropdown-content-wrapper"
       onMouseDown={preventDefault}
     >
-      {!!dropdownItems.length && (
-        <StyledDropDown
-          className="dropdown-content"
-          open={open}
-          forwardedRef={dropdownRef}
-          clickOutsideAction={onClickOutside}
-          maxHeight={dropdownMaxHeight}
-          showDisabledItems={false}
-        >
-          {dropdownItems}
-        </StyledDropDown>
-      )}
+      <StyledDropDown
+        className="dropdown-content"
+        open={open}
+        forwardedRef={dropdownRef}
+        maxHeight={dropdownMaxHeight}
+        showDisabledItems={false}
+        hasItems={!!dropdownItems.length}
+        clickOutsideAction={onClickOutside}
+        withBackdrop={false}
+      >
+        {dropdownItems}
+      </StyledDropDown>
     </StyledDropDownWrapper>
   );
 };

@@ -34,6 +34,10 @@ const ChangeNameDialog = (props) => {
     }
   };
 
+  const onKeyDown = (e) => {
+    if (e.keyCode === 13 || e.which === 13) onSaveClick();
+  };
+
   const onSaveClick = async () => {
     const newProfile = profile;
     newProfile.firstName = firstName;
@@ -43,7 +47,7 @@ const ChangeNameDialog = (props) => {
       setIsSaving(true);
       const currentProfile = await updateProfile(newProfile);
       fromList && (await updateProfileInUsers(currentProfile));
-      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      toastr.success(t("Common:ChangesSavedSuccessfully"));
     } catch (error) {
       console.error(error);
       toastr.error(error);
@@ -66,7 +70,7 @@ const ChangeNameDialog = (props) => {
       <ModalDialog.Body className="change-name-dialog-body">
         <FieldContainer
           isVertical
-          labelText={t("ProfileAction:FirstName")}
+          labelText={t("Common:FirstName")}
           className="field"
         >
           <TextInput
@@ -74,8 +78,10 @@ const ChangeNameDialog = (props) => {
             isAutoFocussed={true}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder={t("ProfileAction:FirstName")}
+            placeholder={t("Common:FirstName")}
             isDisabled={isSaving}
+            onKeyDown={onKeyDown}
+            tabIndex={1}
           />
         </FieldContainer>
 
@@ -90,6 +96,8 @@ const ChangeNameDialog = (props) => {
             onChange={(e) => setLastName(e.target.value)}
             placeholder={t("Common:LastName")}
             isDisabled={isSaving}
+            onKeyDown={onKeyDown}
+            tabIndex={2}
           />
         </FieldContainer>
       </ModalDialog.Body>
@@ -102,6 +110,7 @@ const ChangeNameDialog = (props) => {
           primary={true}
           onClick={onSaveClick}
           isLoading={isSaving}
+          tabIndex={3}
         />
         <Button
           key="CloseBtn"
@@ -110,6 +119,7 @@ const ChangeNameDialog = (props) => {
           scale
           onClick={onClose}
           isDisabled={isSaving}
+          tabIndex={4}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>

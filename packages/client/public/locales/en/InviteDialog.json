@@ -1,17 +1,10 @@
 {
-  "CopyToClipboard": "Copy the link",
-  "GetShortenLink": "Get shortened link",
-  "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
-  "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
-  "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link has been copied",
-  "InviteUsersToRoom": "Invite users to room",
-  "IndividualInvitation": "Individual invitation",
-  "SendInvitation": "Send invitation",
-  "SearchPlaceholder": "Invite people by name or email",
-  "Add": "Add",
-  "Invited": "Invited",
   "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
-  "СhooseFromList": "Сhoose from list",
-  "InviteUsers": "Invite users"
+  "IndividualInvitation": "Individual invitation",
+  "InviteAccountSearchPlaceholder": "Invite people by email",
+  "InviteRoomSearchPlaceholder": "Invite people by name or email",
+  "InviteUsersToRoom": "Invite users to room",
+  "Invited": "Invited",
+  "LinkCopySuccess": "Link has been copied",
+  "SendInvitation": "Send invitation"
 }

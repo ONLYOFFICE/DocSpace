@@ -1,8 +1,5 @@
 {
-  "AddAccount": "添加账户",
-  "AddAuthor": "添加作者",
   "ArchivingData": "归档数据",
-  "ButtonShareAccess": "共享设置",
   "ConnectingAccount": "连接账户",
   "Copy": "复制",
   "CopyHere": "在此复制",
@@ -33,12 +30,12 @@
   "MobileAndroid": "在Google Play上下载ONLYOFFICE Documents",
   "MobileIos": "在App Store上下载ONLYOFFICE Docs",
   "MobileLinux": "下载适用于Linux的ONLYOFFICE桌面编辑器",
-  "MobileMac": "下载适用于Mac OS的ONLYOFFICE桌面编辑器",
+  "MobileMac": "下载适用于macOS的ONLYOFFICE桌面编辑器",
   "MobileWin": "下载适用于Windows的ONLYOFFICE桌面编辑器",
   "MoveHere": "移到这里",
   "MoveToOperation": "移动中",
   "NewForm": "表单模板",
-  "NewFormFile": "来自文本文件的表格",
+  "Other": "其他",
   "OwnerChange": "变更所有者",
   "Presentations": "演示文稿",
   "Spreadsheets": "电子表格",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "其他"
+  "TypeTitlekDrive": "kDrive"
 }

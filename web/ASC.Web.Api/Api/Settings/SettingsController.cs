@@ -31,7 +31,6 @@ public class SettingsController : BaseSettingsController
     private static readonly object locked = new object();
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly MessageService _messageService;
     private readonly ConsumerFactory _consumerFactory;
     private readonly TimeZoneConverter _timeZoneConverter;
@@ -63,7 +62,6 @@ public class SettingsController : BaseSettingsController
     private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
-        IServiceScopeFactory serviceScopeFactory,
         ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
@@ -105,7 +103,6 @@ public class SettingsController : BaseSettingsController
         _customNamingPeople = customNamingPeople;
         _providerManager = providerManager;
         _firstTimeTenantSettings = firstTimeTenantSettings;
-        _serviceScopeFactory = serviceScopeFactory;
         _messageService = messageService;
         _userManager = userManager;
         _tenantManager = tenantManager;

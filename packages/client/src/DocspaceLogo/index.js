@@ -2,36 +2,39 @@ import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { hugeMobile } from "@docspace/components/utils/device";
-import { isMobileOnly } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const StyledWrapper = styled.div`
   .logo-wrapper {
-    width: 100%;
-    height: 46px;
+    width: 386px;
+    height: 44px;
+  }
 
-    svg {
-      path:last-child {
-        fill: ${(props) => props.theme.client.home.logoColor};
-      }
-    }
-    @media ${hugeMobile} {
-      display: none;
-    }
+  @media ${hugeMobile} {
+    display: none;
   }
 `;
 
 const DocspaceLogo = (props) => {
-  const { className } = props;
-  if (isMobileOnly) return <></>;
+  const { className, whiteLabelLogoUrls, theme } = props;
+
+  const logo = !theme.isBase
+    ? whiteLabelLogoUrls[1]?.path?.dark
+    : whiteLabelLogoUrls[1]?.path?.light;
 
   return (
     <StyledWrapper>
-      <ReactSVG
-        src="/static/images/docspace.big.react.svg"
-        className={`logo-wrapper ${className}`}
-      />
+      <ReactSVG src={logo} className={`logo-wrapper ${className}`} />
     </StyledWrapper>
   );
 };
 
-export default DocspaceLogo;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { whiteLabelLogoUrls, theme } = settingsStore;
+
+  return {
+    whiteLabelLogoUrls,
+    theme,
+  };
+})(observer(DocspaceLogo));

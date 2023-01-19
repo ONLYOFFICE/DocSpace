@@ -67,7 +67,7 @@ const AuditTrail = (props) => {
           storagePeriod={t("StoragePeriod")}
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
-          downloadText={t("AuditDownloadText")}
+          downloadText={t("DownloadStatisticsText")}
           securityLifetime={securityLifetime}
           lifetime={securityLifetime.auditTrailLifeTime}
           setLifetimeAuditSettings={setLifetimeAuditSettings}

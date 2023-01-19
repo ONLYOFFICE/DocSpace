@@ -49,7 +49,7 @@ export const HistoryBlockItemList = ({
               iconName="/static/images/folder-location.react.svg"
               size="16"
               isFill={true}
-              onClick={() => checkAndOpenLocationAction(item.ExtraLocation)}
+              onClick={() => checkAndOpenLocationAction(item)}
               title="Open Location"
             />
           </StyledHistoryBlockFile>
@@ -60,7 +60,7 @@ export const HistoryBlockItemList = ({
           <Trans
             t={t}
             ns="InfoPanel"
-            i18nKey={"AndMoreLabel"}
+            i18nKey="AndMoreLabel"
             values={{ count: items.length - 3 }}
             components={{ bold: <strong /> }}
           />

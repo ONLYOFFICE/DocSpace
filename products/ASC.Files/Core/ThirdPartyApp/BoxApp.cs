@@ -27,7 +27,7 @@
 
 namespace ASC.Web.Files.ThirdPartyApp;
 
-    [Scope]
+[Scope]
 public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 {
     public const string AppAttr = "box";
@@ -51,7 +51,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly UserManager _userManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly CookiesManager _cookiesManager;
-    private readonly MessageService _messageService;
     private readonly Global _global;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -79,7 +78,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         UserManager userManager,
         UserManagerWrapper userManagerWrapper,
         CookiesManager cookiesManager,
-        MessageService messageService,
         Global global,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FilesLinkUtility filesLinkUtility,
@@ -111,7 +109,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _userManager = userManager;
         _userManagerWrapper = userManagerWrapper;
         _cookiesManager = cookiesManager;
-        _messageService = messageService;
         _global = global;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _filesLinkUtility = filesLinkUtility;
@@ -285,34 +282,34 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId))
         };
 
-            StreamContent streamContent;
+        StreamContent streamContent;
 
-            using var multipartFormContent = new MultipartFormDataContent();
+        using var multipartFormContent = new MultipartFormDataContent();
 
-            if (stream != null)
+        if (stream != null)
+        {
+            streamContent = new StreamContent(stream);
+        }
+        else
+        {
+            var downloadRequest = new HttpRequestMessage
             {
-                streamContent = new StreamContent(stream);
-            }
-            else
-            {
-                var downloadRequest = new HttpRequestMessage
-                {
-                    RequestUri = new Uri(downloadUrl)
-                };
-                var response = await httpClient.SendAsync(downloadRequest);
-                var downloadStream = new ResponseStream(response);
+                RequestUri = new Uri(downloadUrl)
+            };
+            var response = await httpClient.SendAsync(downloadRequest);
+            var downloadStream = new ResponseStream(response);
 
-                streamContent = new StreamContent(downloadStream);
-            }
+            streamContent = new StreamContent(downloadStream);
+        }
 
-            streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
-            multipartFormContent.Add(streamContent, name: "filename", fileName: title);
+        streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
+        multipartFormContent.Add(streamContent, name: "filename", fileName: title);
 
-            request.Content = multipartFormContent;
-            request.Method = HttpMethod.Post;
-            request.Headers.Add("Authorization", "Bearer " + token);
-            //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
-            //_logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
+        request.Content = multipartFormContent;
+        request.Method = HttpMethod.Post;
+        request.Headers.Add("Authorization", "Bearer " + token);
+        //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
+        //_logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
 
         try
         {

@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Feed.Constants;
 using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core;
@@ -39,7 +40,6 @@ public class FoldersModule : FeedModule
     private const string SharedFolderItem = Constants.SharedFolderItem;
 
     private readonly FileSecurity _fileSecurity;
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
 
@@ -47,13 +47,11 @@ public class FoldersModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
     }
@@ -96,7 +94,7 @@ public class FoldersModule : FeedModule
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
+        return await _folderDao.GetTenantsWithFoldersFeedsAsync(fromTime).ToListAsync();
     }
 
     public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
@@ -109,7 +107,7 @@ public class FoldersModule : FeedModule
         var parentFolders = await _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync();
         var roomsIds = await _folderDao.GetParentRoomsAsync(parentFolderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
-        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)), 
+        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)),
             roomsIds.GetValueOrDefault(f.Folder.ParentId)), f));
     }
 

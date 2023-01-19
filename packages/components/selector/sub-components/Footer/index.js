@@ -15,10 +15,6 @@ const StyledComboBox = styled(Combobox)`
     min-height: 40px;
   }
 
-  .combo-buttons_arrow-icon {
-    margin-top: 16px;
-  }
-
   .combo-button-label,
   .combo-button-label:hover {
     font-size: 14px;

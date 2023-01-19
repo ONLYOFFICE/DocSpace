@@ -74,6 +74,12 @@ public class UserServiceCache
         {
             var key = GetUserCacheKey(userInfo.Tenant);
             Cache.Remove(key);
+
+            if (Guid.TryParse(userInfo.Id, out var userId))
+            {
+                var userKey = GetUserCacheKey(userInfo.Tenant, userId);
+                Cache.Remove(userKey);
+            }
         }
     }
     private void InvalidateCache(GroupCacheItem groupCacheItem)
@@ -236,6 +242,11 @@ public class CachedUserService : IUserService, ICachedService
         CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = user.Id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
 
         return user;
+    }
+
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        return Service.GetTenantsWithFeeds(from);
     }
 
     public void RemoveUser(int tenant, Guid id)

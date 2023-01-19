@@ -43,6 +43,10 @@ const FilterInput = React.memo(
     isPersonalRoom,
     isRooms,
     isAccounts,
+    filterTitle,
+
+    clearSearch,
+    setClearSearch,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -56,6 +60,14 @@ const FilterInput = React.memo(
 
       if (value) setViewSettings(value);
     }, [getViewSettingsData]);
+
+    React.useEffect(() => {
+      if (clearSearch) {
+        setInputValue("");
+        onClearSearch();
+        setClearSearch(false);
+      }
+    }, [clearSearch]);
 
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
@@ -136,6 +148,7 @@ const FilterInput = React.memo(
             isPersonalRoom={isPersonalRoom}
             isRooms={isRooms}
             isAccounts={isAccounts}
+            title={filterTitle}
           />
           {!isRecentFolder && (
             <SortButton
@@ -177,7 +190,7 @@ const FilterInput = React.memo(
               <SelectedItem
                 key={`${item.key}_${item.group}`}
                 propKey={item.key}
-                label={item.label}
+                label={item.selectedLabel ? item.selectedLabel : item.label}
                 group={item.group}
                 removeSelectedItem={removeSelectedItemAction}
               />

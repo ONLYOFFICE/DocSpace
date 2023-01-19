@@ -113,6 +113,7 @@ const Accounts = ({
         size="content"
         displaySelectedOption
         modernView
+        manualWidth={"fit-content"}
       />
     );
 

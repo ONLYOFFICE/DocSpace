@@ -38,7 +38,6 @@ public class StorageController : BaseSettingsController
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ConsumerFactory _consumerFactory;
     private readonly TenantManager _tenantManager;
-    private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -61,7 +60,6 @@ public class StorageController : BaseSettingsController
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         TenantManager tenantManager,
-        TenantExtra tenantExtra,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
@@ -86,7 +84,6 @@ public class StorageController : BaseSettingsController
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _tenantManager = tenantManager;
-        _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;

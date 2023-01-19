@@ -1,7 +1,6 @@
 import { isHugeMobile } from "@docspace/components/utils/device";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { roomTypes } from "../../data";
 import RoomType from "../RoomType";
 import DropdownDesktop from "./DropdownDesktop";
 import DropdownMobile from "./DropdownMobile";
@@ -10,11 +9,17 @@ const StyledRoomTypeDropdown = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  .backdrop-active {
+    top: -64px;
+    backdrop-filter: unset;
+    background: rgba(6, 22, 38, 0.2);
+  }
 `;
 
 const RoomTypeDropdown = ({
   t,
-  currentRoom,
+  currentRoomType,
   setRoomType,
   setIsScrollLocked,
   isDisabled,
@@ -41,9 +46,9 @@ const RoomTypeDropdown = ({
     <StyledRoomTypeDropdown isOpen={isOpen}>
       <RoomType
         t={t}
+        roomType={currentRoomType}
         id="shared_select-room"
-        selectedId={currentRoom.id}
-        room={currentRoom}
+        selectedId={currentRoomType}
         type="dropdownButton"
         isOpen={isOpen}
         onClick={toggleDropdown}
@@ -53,16 +58,10 @@ const RoomTypeDropdown = ({
           t={t}
           open={isOpen}
           onClose={toggleDropdown}
-          roomTypes={roomTypes}
           chooseRoomType={chooseRoomType}
         />
       ) : (
-        <DropdownDesktop
-          t={t}
-          open={isOpen}
-          roomTypes={roomTypes}
-          chooseRoomType={chooseRoomType}
-        />
+        <DropdownDesktop t={t} open={isOpen} chooseRoomType={chooseRoomType} />
       )}
     </StyledRoomTypeDropdown>
   );

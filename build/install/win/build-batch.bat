@@ -19,19 +19,14 @@ md build\install\win\Files\services\ASC.Data.Backup\service\temp
 md build\install\win\Files\services\ASC.Files.Service\service\temp
 md build\install\win\Files\services\ASC.Notify\service\temp
 md build\install\win\Files\services\ASC.Studio.Notify\service\temp
-md build\install\win\Files\services\ASC.TelegramService\service\temp
 md build\install\win\Files\services\ASC.Data.Backup.BackgroundTasks\service\temp
 md build\install\win\Files\services\ASC.ClearEvents\service\temp
-md build\install\win\Files\services\ASC.Migration\service\temp
-md build\install\win\Files\services\ASC.Webhooks.Service\service\temp
 md build\install\win\Files\services\ASC.Web.Api\service\temp
 md build\install\win\Files\services\ASC.Web.Studio\service\temp
 copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\Proxy.exe" /y
 copy build\install\win\tools\Proxy.xml "build\install\win\Files\tools\Proxy.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Socket.IO.exe" /y
 copy build\install\win\tools\Socket.IO.xml "build\install\win\Files\tools\Socket.IO.xml" /y
-copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\UrlShortener.exe" /y
-copy build\install\win\tools\UrlShortener.xml "build\install\win\Files\tools\UrlShortener.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\SsoAuth.exe" /y
 copy build\install\win\tools\SsoAuth.xml "build\install\win\Files\tools\SsoAuth.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\DocEditor.exe" /y

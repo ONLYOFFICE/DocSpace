@@ -66,8 +66,7 @@ const ConflictResolveDialog = (props) => {
     setActiveFiles,
     setMoveToPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
-    theme,
+    setRestoreAllPanelVisible,
   } = props;
 
   const {
@@ -88,7 +87,7 @@ const ConflictResolveDialog = (props) => {
     setConflictResolveDialogVisible(false);
     setMoveToPanelVisible(false);
     setCopyPanelVisible(false);
-    setThirdPartyMoveDialogVisible(false);
+    setRestoreAllPanelVisible(false);
   };
   const onCloseDialog = () => {
     let newActiveFiles = activeFiles;
@@ -164,7 +163,9 @@ const ConflictResolveDialog = (props) => {
     {
       label: (
         <div>
-          <Text className="radio-option-title">{t("CreateTitle")}</Text>
+          <Text className="radio-option-title">
+            {t("Common:CreateFileCopy")}
+          </Text>
           <Text className="radio-option-description">
             {t("CreateDescription")}
           </Text>
@@ -201,8 +202,6 @@ const ConflictResolveDialog = (props) => {
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="message">
-          {console.log(filesCount, folderTitle)}
-
           {singleFile ? (
             <Trans
               t={t}
@@ -261,8 +260,8 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     conflictResolveDialogData,
     conflictResolveDialogItems: items,
     setMoveToPanelVisible,
+    setRestoreAllPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
@@ -279,8 +278,8 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     activeFiles,
     setActiveFiles,
     setMoveToPanelVisible,
+    setRestoreAllPanelVisible,
     setCopyPanelVisible,
-    setThirdPartyMoveDialogVisible,
   };
 })(
   withRouter(

@@ -98,17 +98,6 @@ class PaymentStore {
   setPaymentLink = async (link) => {
     this.paymentLink = link;
   };
-  updatePayment = async (adminCount) => {
-    try {
-      const res = await api.portal.updatePayment(adminCount);
-      console.log("updatePayment", res);
-      if (res !== true) {
-        toastr.error("error");
-      }
-    } catch (e) {
-      toastr.error(e);
-    }
-  };
 
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
@@ -153,9 +142,13 @@ class PaymentStore {
     }
   };
 
-  setStartPaymentLink = async () => {
-    const link = await api.portal.getPaymentLink(this.managersCount);
-    this.setPaymentLink(link);
+  setStartPaymentLink = async (t) => {
+    try {
+      const link = await api.portal.getPaymentLink(this.managersCount);
+      this.setPaymentLink(link);
+    } catch (e) {
+      toastr.error(t("ErrorNotification"));
+    }
   };
 
   setTotalPrice = (value) => {
@@ -190,7 +183,7 @@ class PaymentStore {
   sendPaymentRequest = async (email, userName, message) => {
     try {
       await api.portal.sendPaymentRequest(email, userName, message);
-      toastr.success("Success");
+      toastr.success(t("SuccessfullySentMessage"));
     } catch (e) {
       toastr.error(e);
     }

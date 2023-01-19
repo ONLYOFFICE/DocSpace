@@ -1,9 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
-import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
 import { getUserById } from "@docspace/common/api/people";
-import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
+import { combineUrl, getUserRole } from "@docspace/common/utils";
+import { FolderType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
 import { getRoomInfo } from "../api/rooms";
@@ -19,12 +18,15 @@ const observedKeys = [
 
 class InfoPanelStore {
   isVisible = false;
+  isMobileHidden = false;
 
   selection = null;
   selectionParentRoom = null;
 
   roomsView = "info_details";
   fileView = "info_history";
+
+  updateRoomMembers = null;
 
   authStore = null;
   settingsStore = null;
@@ -39,7 +41,11 @@ class InfoPanelStore {
 
   // Setters
 
-  setIsVisible = (bool) => (this.isVisible = bool);
+  setIsVisible = (bool) => {
+    this.setView("info_details");
+    this.isVisible = bool;
+  };
+  setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
     if (this.getIsAccounts() && (!selection.email || !selection.displayName)) {
@@ -55,6 +61,10 @@ class InfoPanelStore {
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
+  };
+
+  setUpdateRoomMembers = (updateRoomMembers) => {
+    this.updateRoomMembers = updateRoomMembers;
   };
 
   // Selection helpers //
@@ -133,6 +143,19 @@ class InfoPanelStore {
     this.setSelection(this.calculateSelection());
   };
 
+  updateRoomLogoCacheBreaker = () => {
+    const logo = this.selection.logo;
+    this.setSelection({
+      ...this.selection,
+      logo: {
+        small: logo.small.split("?")[0] + "?" + new Date().getTime(),
+        medium: logo.medium.split("?")[0] + "?" + new Date().getTime(),
+        large: logo.large.split("?")[0] + "?" + new Date().getTime(),
+        original: logo.original.split("?")[0] + "?" + new Date().getTime(),
+      },
+    });
+  };
+
   reloadSelectionParentRoom = async () => {
     if (!this.getIsRooms) return;
 
@@ -144,6 +167,7 @@ class InfoPanelStore {
     if (!currentFolderRoomId || currentFolderRoomId === prevRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+
     if (prevRoomId === newSelectionParentRoom.id) return;
 
     this.setSelectionParentRoom(
@@ -163,7 +187,16 @@ class InfoPanelStore {
 
   getInfoPanelItemIcon = (item, size) => {
     return item.isRoom || !!item.roomType
-      ? item.logo && item.logo.medium
+      ? item.rootFolderType === FolderType.Archive
+        ? this.settingsStore.getIcon(
+            size,
+            null,
+            null,
+            null,
+            item.roomType,
+            true
+          )
+        : item.logo && item.logo.medium
         ? item.logo.medium
         : item.icon
         ? item.icon
@@ -187,7 +220,7 @@ class InfoPanelStore {
 
   openSelfProfile = (history) => {
     const path = [
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       "/accounts",
       "/view/@self",
@@ -201,7 +234,11 @@ class InfoPanelStore {
     const { getUsersList } = this.peopleStore.usersStore;
     const { setSelection } = this.peopleStore.selectionStore;
 
-    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
+    const path = [
+      window.DocSpaceConfig?.proxy?.url,
+      config.homepage,
+      "/accounts",
+    ];
 
     const newFilter = Filter.getDefault();
     newFilter.page = 0;

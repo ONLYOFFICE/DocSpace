@@ -1681,6 +1681,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown image file type.
+        /// </summary>
+        public static string ErrorFileNotImage {
+            get {
+                return ResourceManager.GetString("ErrorFileNotImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image size exceed the allowed parameters.
+        /// </summary>
+        public static string ErrorImageSize {
+            get {
+                return ResourceManager.GetString("ErrorImageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
         public static string ErrorImageWeightLimit {
@@ -2275,7 +2293,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of managers should not exceed {0}.
+        ///   Looks up a localized string similar to The number of admins should not exceed {0}.
         /// </summary>
         public static string TariffsFeature_manager_exception {
             get {

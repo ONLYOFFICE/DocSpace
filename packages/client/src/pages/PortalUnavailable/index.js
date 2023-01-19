@@ -56,7 +56,11 @@ const StyledBody = styled.div`
 `;
 
 const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
-  const { t, ready } = useTranslation(["PortalUnavailable", "Common"]);
+  const { t, ready } = useTranslation([
+    "Errors",
+    "PortalUnavailable",
+    "Common",
+  ]);
   const [isVisible, setIsVisible] = useState();
 
   const onClick = () => {
@@ -84,7 +88,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
       />
       <ErrorContainer
         className="portal-unavailable_container"
-        headerText={t("PortalUnavailable")}
+        headerText={t("ErrorUnavailableText")}
       >
         <StyledBodyContent>
           <Text

@@ -2,10 +2,11 @@ import { request } from "../client";
 import { decodeDisplayName } from "../../utils";
 import { FolderType } from "../../constants";
 
-export function getRooms(filter) {
+export function getRooms(filter, signal) {
   const options = {
     method: "get",
     url: `/files/rooms?${filter.toApiUrlParams()}`,
+    signal,
   };
 
   return request(options).then((res) => {
@@ -13,7 +14,9 @@ export function getRooms(filter) {
     res.folders = decodeDisplayName(res.folders);
 
     if (res.current.rootFolderType === FolderType.Archive) {
-      res.folders.forEach((room) => (room.isArchive = true));
+      res.folders.forEach((room) => {
+        room.isArchive = true;
+      });
     }
 
     return res;
@@ -27,6 +30,8 @@ export function getRoomInfo(id) {
   };
 
   return request(options).then((res) => {
+    if (res.rootFolderType === FolderType.Archive) res.isArchive = true;
+
     return res;
   });
 }

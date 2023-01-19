@@ -25,21 +25,6 @@ if ! [[ "$REV" =~ ^[0-9]+$ ]]; then
 	REV=7;
 fi
 
-read_unsupported_installation () {
-	read -p "$RES_CHOICE_INSTALLATION " CHOICE_INSTALLATION
-	case "$CHOICE_INSTALLATION" in
-		y|Y ) yum -y install $DIST*-release
-		;;
-
-		n|N ) exit 0;
-		;;
-
-		* ) echo $RES_CHOICE;
-			read_unsupported_installation
-		;;
-	esac
-}
-
 { yum check-update postgresql; PSQLExitCode=$?; } || true #Checking for postgresql update
 { yum check-update $DIST*-release; exitCode=$?; } || true #Checking for distribution update
 
@@ -57,34 +42,44 @@ if rpm -qa | grep mariadb.*config >/dev/null 2>&1; then
    echo $RES_MARIADB && exit 0
 fi
 
-# add epel repo
+#Add repositories: EPEL, REMI and RPMFUSION
 rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm || true
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
+yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$REV.noarch.rpm
+
+MONOREV=$REV
+if [ "$REV" = "9" ]; then
+	MONOREV="8"
+	yum localinstall -y --nogpgcheck https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/xorg-x11-font-utils-7.5-41.el8.x86_64.rpm
+elif [ "$REV" = "8" ]; then
+	POWERTOOLS_REPO="--enablerepo=powertools"
+fi
+
+#add rabbitmq & erlang repo
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | os=centos dist=$MONOREV bash
+curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$MONOREV bash
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_16.x | bash - || true
-
-#add yarn
-curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo || true
+curl -sL https://rpm.nodesource.com/setup_16.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
 
 #add dotnet repo
-rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
+if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
+	rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
+elif rpm -q packages-microsoft-prod; then
+	yum remove -y packages-microsoft-prod dotnet*
+fi
 
 #add mysql repo
-case $REV in
-	8) 	dnf remove -y @mysql
-		dnf module -y reset mysql && dnf module -y disable mysql
-		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm || true ;;
-	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm || true ;;
-	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-5.noarch.rpm || true ;;
-esac
+[ "$REV" != "7" ] && dnf remove -y @mysql && dnf module -y reset mysql && dnf module -y disable mysql
+MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP "mysql80-community-release-el${REV}-\K.*" | grep -o '^[^.]*' | sort | tail -n1)"
+yum localinstall -y https://repo.mysql.com/mysql80-community-release-el${REV}-${MYSQL_REPO_VERSION}.noarch.rpm || true
 
 if ! rpm -q mysql-community-server; then
 	MYSQL_FIRST_TIME_INSTALL="true";
 fi
 
 #add elasticsearch repo
-ELASTIC_VERSION="7.13.1"
+ELASTIC_VERSION="7.16.3"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END
@@ -109,45 +104,21 @@ gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true
 END
 
-if [ "$REV" = "8" ]; then
-	rabbitmq_version="-3.8.12"
-
-	cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
-[rabbitmq-server]
-name=rabbitmq-server
-baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/\$basearch
-repo_gpgcheck=1
-gpgcheck=0
-enabled=1
-gpgkey=https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
-sslverify=0
-sslcacert=/etc/pki/tls/certs/ca-bundle.crt
-metadata_expire=300
-END
-
-fi
-
 ${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
 ${package_manager} -y install epel-release \
 			python3 \
-			expect \
-			nano \
 			nodejs \
-			gcc-c++ \
-			make \
-			yarn \
 			dotnet-sdk-6.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
-			supervisor \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi \
-			java
+			SDL2 $POWERTOOLS_REPO
 	
 py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
 if [[ $py3_version -lt 6 ]]; then
@@ -171,4 +142,4 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx mysqld"
+package_services="rabbitmq-server postgresql redis nginx mysqld"

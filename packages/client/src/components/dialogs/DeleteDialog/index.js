@@ -35,9 +35,9 @@ const DeleteDialogComponent = (props) => {
     const item = props.selection[i];
 
     if (!item?.isEditing) {
-      if (item?.access === 0 || item?.access === 1 || unsubscribe) {
-        selection.push(item);
-      }
+      // if (item?.access === 0 || item?.access === 1 || unsubscribe) {
+      selection.push(item);
+      // }
     }
     i++;
   }
@@ -97,9 +97,9 @@ const DeleteDialogComponent = (props) => {
 
     const itemId = selection.map((s) => s.id);
 
-    await deleteRoomsAction(itemId, translations);
-
     onClose();
+
+    await deleteRoomsAction(itemId, translations);
   };
 
   const onClose = () => {

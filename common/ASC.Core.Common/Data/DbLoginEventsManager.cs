@@ -24,15 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.ComponentModel;
-
 namespace ASC.Core.Data;
 
 [Scope]
 public class DbLoginEventsManager
 {
     private const string GuidLoginEvent = "F4D8BBF6-EB63-4781-B55E-5885EAB3D759";
-    private static readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
     private static readonly List<int> _loginActions = new List<int>
     {
         (int)MessageAction.LoginSuccess,
@@ -69,7 +66,7 @@ public class DbLoginEventsManager
         if (id < 0) return null;
 
         using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
-            
+
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
@@ -126,7 +123,7 @@ public class DbLoginEventsManager
     public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
     {
         using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
-        
+
         var events = await loginEventContext.LoginEvents
               .Where(r => r.TenantId == tenantId && r.Active)
               .ToListAsync();
@@ -142,7 +139,7 @@ public class DbLoginEventsManager
     public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
     {
         using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
-        
+
         var events = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)
             .ToListAsync();

@@ -20,7 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MySql.Data" Version="8.0.31" />
-    <PackageReference Include="protobuf-net" Version="3.1.25" />
+    <PackageReference Include="protobuf-net" Version="3.1.26" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />

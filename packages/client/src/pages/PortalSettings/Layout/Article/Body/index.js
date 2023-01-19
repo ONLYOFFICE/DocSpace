@@ -28,15 +28,13 @@ const getTreeItems = (data, path, t) => {
       case "AccessRights":
         return t("AccessRights");
       case "ManagementCategoryCommon":
-        return t("ManagementCategoryCommon");
+        return t("Common:Common");
       case "Customization":
         return t("Customization");
       case "StudioTimeLanguageSettings":
         return t("StudioTimeLanguageSettings");
       case "CustomTitles":
         return t("CustomTitles");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
@@ -184,8 +182,6 @@ class ArticleBodyContent extends React.Component {
         return t("StudioTimeLanguageSettings");
       case "CustomTitlesWelcome":
         return t("CustomTitlesWelcome");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
@@ -252,18 +248,6 @@ class ArticleBodyContent extends React.Component {
         />
       );
     });
-
-    const settingsHeader = (
-      <CatalogItem
-        key={"settings-header"}
-        isHeader={true}
-        isFirstHeader={true}
-        showText={showText}
-        text={`${t("Common:Settings")}`}
-      />
-    );
-
-    items.unshift(settingsHeader);
 
     return items;
   };

@@ -4,11 +4,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import {
-  AppServerConfig,
-  FolderType,
-  RoomSearchArea,
-} from "@docspace/common/constants";
+import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -21,8 +17,8 @@ import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import withLoader from "../../../../HOCs/withLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -77,6 +73,14 @@ class SectionHeaderContent extends React.Component {
     this.state = { navigationItems: [] };
   }
 
+  componentDidMount() {
+    window.addEventListener("popstate", this.onBackToParentFolder);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.onBackToParentFolder);
+  }
+
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
@@ -111,7 +115,7 @@ class SectionHeaderContent extends React.Component {
     const { history, currentFolderId } = this.props;
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/form-gallery/${currentFolderId}/`
       )
@@ -138,21 +142,21 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-documnet",
             key: "new-document",
-            label: t("NewDocument"),
+            label: t("Common:NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
             id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
-            label: t("NewSpreadsheet"),
+            label: t("Common:NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
             id: "personal_new-presentation",
             key: "new-presentation",
-            label: t("NewPresentation"),
+            label: t("Common:NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
@@ -190,7 +194,7 @@ class SectionHeaderContent extends React.Component {
           {
             id: "personal_new-folder",
             key: "new-folder",
-            label: t("NewFolder"),
+            label: t("Common:NewFolder"),
             onClick: this.createFolder,
             icon: "images/catalog.folder.react.svg",
           },
@@ -340,12 +344,20 @@ class SectionHeaderContent extends React.Component {
     setIsInfoPanelVisible(!isInfoPanelVisible);
   };
 
+  onCopyLinkAction = () => {
+    const { t, selectedFolder, onCopyLink } = this.props;
+
+    onCopyLink && onCopyLink({ ...selectedFolder, isFolder: true }, t);
+  };
+
   getContextOptionsFolder = () => {
     const {
       t,
       isRoom,
       isRecycleBinFolder,
       isArchiveFolder,
+      isPersonalRoom,
+
       selectedFolder,
 
       onClickEditRoom,
@@ -399,6 +411,14 @@ class SectionHeaderContent extends React.Component {
         icon: "/static/images/invitation.link.react.svg",
       },
       {
+        id: "header_option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        onClick: this.onCopyLinkAction,
+        disabled: isRecycleBinFolder || isPersonalRoom,
+        icon: "/static/images/invitation.link.react.svg",
+      },
+      {
         id: "header_option_empty-trash",
         key: "empty-trash",
         label: t("RecycleBinAction"),
@@ -441,7 +461,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_invite-users-to-room",
         key: "invite-users-to-room",
-        label: t("InviteUsers"),
+        label: t("Common:InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: () => onClickInviteUsers(selectedFolder.id),
         disabled: !isRoom,
@@ -465,7 +485,7 @@ class SectionHeaderContent extends React.Component {
         key: "archive-room",
         label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => onClickArchive(e, selectedFolder, t),
+        onClick: (e) => onClickArchive(e),
         disabled: !isRoom,
         "data-action": "archive",
         action: "archive",
@@ -587,11 +607,8 @@ class SectionHeaderContent extends React.Component {
       setIsLoading,
 
       fetchRooms,
-      history,
 
       setAlreadyFetchingRooms,
-
-      categoryType,
 
       rootFolderType,
     } = this.props;
@@ -606,21 +623,9 @@ class SectionHeaderContent extends React.Component {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter)
-      .then(() => {
-        const filterParamsStr = filter.toUrlParams();
-
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    fetchRooms(null, filter).finally(() => {
+      setIsLoading(false);
+    });
   };
 
   render() {
@@ -649,6 +654,9 @@ class SectionHeaderContent extends React.Component {
       isEmptyPage,
       canCreateFiles,
       isEmptyArchive,
+      isVisitor,
+      isRoom,
+      isGroupMenuBlocked,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -668,6 +676,8 @@ class SectionHeaderContent extends React.Component {
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
+                isMobileView={isMobileOnly}
+                isBlocked={isGroupMenuBlocked}
               />
             ) : (
               <div className="header-container">
@@ -678,7 +688,11 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
+                    canCreate={
+                      canCreate &&
+                      !isVisitor &&
+                      (canCreateFiles || isRoomsFolder)
+                    }
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -704,6 +718,7 @@ class SectionHeaderContent extends React.Component {
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
                     isEmptyPage={isEmptyPage}
+                    isRoom={isRoom}
                   />
                 )}
               </div>
@@ -752,7 +767,6 @@ export default inject(
       roomsForRestore,
       roomsForDelete,
 
-      categoryType,
       isEmptyPage,
     } = filesStore;
 
@@ -775,6 +789,7 @@ export default inject(
       isPrivacyFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isPersonalRoom,
     } = treeFoldersStore;
 
     const {
@@ -782,6 +797,7 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       backToParentFolder,
+      isGroupMenuBlocked,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -807,6 +823,7 @@ export default inject(
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+      onCopyLink,
     } = contextOptionsStore;
 
     const { canCreateFiles } = accessRightsStore;
@@ -822,6 +839,7 @@ export default inject(
       isDesktop: auth.settingsStore.isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
+      isPersonalRoom,
       title,
       isRoom,
       currentFolderId: id,
@@ -876,8 +894,6 @@ export default inject(
 
       setAlreadyFetchingRooms,
 
-      categoryType,
-
       enablePlugins,
 
       setRestoreAllPanelVisible,
@@ -892,12 +908,14 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+      onCopyLink,
 
       rootFolderType,
 
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
+      isGroupMenuBlocked,
     };
   }
 )(
@@ -907,5 +925,9 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(withRouter(observer(SectionHeaderContent)))
+  ])(
+    withLoader(withRouter(observer(SectionHeaderContent)))(
+      <Loaders.SectionHeader />
+    )
+  )
 );

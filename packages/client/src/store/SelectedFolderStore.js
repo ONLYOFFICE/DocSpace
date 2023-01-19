@@ -24,10 +24,12 @@ class SelectedFolderStore {
   roomType = null;
   pinned = null;
   isRoom = null;
+  isArchive = null;
   logo = null;
   tags = null;
-
+  rootFolderId = null;
   settingsStore = null;
+  security = null;
 
   constructor(settingsStore) {
     makeAutoObservable(this);
@@ -64,23 +66,60 @@ class SelectedFolderStore {
     this.isRoom = null;
     this.logo = null;
     this.tags = null;
+    this.rootFolderId = null;
+    this.security = null;
   };
 
   setParentId = (parentId) => {
     this.parentId = parentId;
   };
 
+  addDefaultLogoPaths = () => {
+    const cachebreaker = new Date().getTime();
+    this.logo = {
+      small: `/storage/room_logos/root/${this.id}_small.png?` + cachebreaker,
+      medium: `/storage/room_logos/root/${this.id}_medium.png?` + cachebreaker,
+      large: `/storage/room_logos/root/${this.id}_large.png?` + cachebreaker,
+      original:
+        `/storage/room_logos/root/${this.id}_original.png?` + cachebreaker,
+    };
+  };
+
+  removeLogoPaths = () => {
+    this.logo = {
+      small: "",
+      medium: "",
+      large: "",
+      original: "",
+    };
+  };
+
+  updateLogoPathsCacheBreaker = () => {
+    if (!this.logo.original) return;
+
+    const cachebreaker = new Date().getTime();
+    this.logo = {
+      small: this.logo.small.split("?")[0] + "?" + cachebreaker,
+      medium: this.logo.medium.split("?")[0] + "?" + cachebreaker,
+      large: this.logo.large.split("?")[0] + "?" + cachebreaker,
+      original: this.logo.original.split("?")[0] + "?" + cachebreaker,
+    };
+  };
+
   setSelectedFolder = (selectedFolder) => {
     const { socketHelper } = this.settingsStore;
 
     if (this.id !== null) {
-      socketHelper.emit({ command: "unsubscribe", data: `DIR-${this.id}` });
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: { roomParts: `DIR-${this.id}`, individual: true },
+      });
     }
 
     if (selectedFolder) {
       socketHelper.emit({
         command: "subscribe",
-        data: `DIR-${selectedFolder.id}`,
+        data: { roomParts: `DIR-${selectedFolder.id}`, individual: true },
       });
     }
 

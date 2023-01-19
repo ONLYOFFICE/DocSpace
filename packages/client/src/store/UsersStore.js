@@ -214,6 +214,10 @@ class UsersStore {
           options.push("details");
         }
 
+        if (isAdmin || isOwner) {
+          options.push("room-list");
+        }
+
         if (isMySelf) {
           options.push("separator-1");
 
@@ -272,6 +276,10 @@ class UsersStore {
             options.push("details");
           }
 
+          if (isAdmin || isOwner) {
+            options.push("room-list");
+          }
+
           if (
             isOwner ||
             (isAdmin && (userRole === "manager" || userRole === "user"))
@@ -289,6 +297,10 @@ class UsersStore {
             options.push("profile");
           } else {
             options.push("details");
+          }
+
+          if (isAdmin || isOwner) {
+            options.push("room-list");
           }
         }
 
@@ -331,7 +343,7 @@ class UsersStore {
   }
 
   getUsersByQuery = async (query) => {
-    const filter = Filter.getDefault();
+    const filter = Filter.getFilterWithOutDisabledUser();
 
     filter.search = query;
     filter.pageCount = 100;
@@ -346,6 +358,7 @@ class UsersStore {
       id,
       displayName,
       avatar,
+      hasAvatar,
       email,
       isOwner,
       isAdmin: isAdministrator,
@@ -375,6 +388,10 @@ class UsersStore {
       status
     );
 
+    const currentAvatar = hasAvatar
+      ? avatar
+      : "/images/default_user_photo_size_32-32.png";
+
     return {
       id,
       status,
@@ -385,7 +402,8 @@ class UsersStore {
       isAdmin: isAdministrator,
       isVisitor,
       displayName,
-      avatar,
+      avatar: currentAvatar,
+      hasAvatar,
       email,
       userName,
       mobilePhone,

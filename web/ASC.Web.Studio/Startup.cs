@@ -42,12 +42,6 @@ public class Startup : BaseStartup
 
         app.UseRouting();
 
-        app.UseCors(builder =>
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
-
         app.UseAuthentication();
 
         app.UseEndpoints(endpoints =>
@@ -72,8 +66,6 @@ public class Startup : BaseStartup
 
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.AddCors();
-
         base.ConfigureServices(services);
 
         services.AddMemoryCache();

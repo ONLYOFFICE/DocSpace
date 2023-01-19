@@ -31,7 +31,7 @@ const ClientApp: React.FC<IClientApp> = ({
   useSSR(initialI18nStoreASC, initialLanguage);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter forceRefresh={true}>
       <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
           <ThemeProviderWrapper>

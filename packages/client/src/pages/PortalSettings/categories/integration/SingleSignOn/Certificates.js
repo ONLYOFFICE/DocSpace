@@ -108,8 +108,8 @@ const Certificates = (props) => {
           value={additionalParameters}
           label={
             prefix === "idp"
-              ? t("idpShowAdditionalParameters")
-              : t("spShowAdditionalParameters")
+              ? "idpShowAdditionalParameters"
+              : "spShowAdditionalParameters"
           }
           isAdditionalParameters
         />

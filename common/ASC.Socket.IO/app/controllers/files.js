@@ -26,5 +26,15 @@
     res.end();
   });
 
+  router.post("/markasnew-file", (req, res) => {
+    files.markAsNewFile(req.body);
+    res.end();
+  });
+  
+  router.post("/markasnew-folder", (req, res) => {
+    files.markAsNewFolder(req.body);
+    res.end();
+  });
+
   return router;
 };

@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Feed.Constants;
 using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core;
@@ -39,7 +40,6 @@ public class FilesModule : FeedModule
     private const string SharedFileItem = Constants.SharedFileItem;
 
     private readonly FileSecurity _fileSecurity;
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
@@ -48,7 +48,6 @@ public class FilesModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
@@ -56,7 +55,6 @@ public class FilesModule : FeedModule
         _fileDao = daoFactory.GetFileDao<int>();
         _folderDao = daoFactory.GetFolderDao<int>();
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
     }
 
@@ -140,17 +138,17 @@ public class FilesModule : FeedModule
             .Where(f => f.ShareRecord == null)
             .ToListAsync();
 
-        var folderIDs = files.Select(r => r.File.ParentId).ToList();
+        var folderIDs = files.Select(r => r.File.ParentId).Distinct().ToList();
         var folders = await _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync();
         var roomsIds = await _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
         return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)),
             roomsIds.GetValueOrDefault(f.File.ParentId)), f));
-    }
+        }
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return await _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync();
+        return await _fileDao.GetTenantsWithFeedsAsync(fromTime, false).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)

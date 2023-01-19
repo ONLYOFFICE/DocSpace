@@ -79,6 +79,7 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly RoomLogoManager _roomLogoManager;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -109,7 +110,8 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        RoomLogoManager roomLogoManager)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -139,7 +141,8 @@ public class FileHandlerService
         _userManager = userManager;
         _logger = logger;
         _clientFactory = clientFactory;
-        this._thumbnailSettings = thumbnailSettings;
+        _thumbnailSettings = thumbnailSettings;
+        _roomLogoManager = roomLogoManager;
     }
 
     public Task Invoke(HttpContext context)
@@ -212,7 +215,9 @@ public class FileHandlerService
             return;
         }
 
-        var filename = context.Request.Query["filename"]; if (String.IsNullOrEmpty(filename))
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+
+        if (String.IsNullOrEmpty(filename))
         {
             var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
             filename = FileConstant.DownloadTitle + ext;
@@ -236,7 +241,7 @@ public class FileHandlerService
         {
             var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
             var url = tmp.ToString();
-            context.Response.Redirect(url);
+            context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
         }
 
@@ -1120,7 +1125,7 @@ public class FileHandlerService
                 _ = int.TryParse(sizes[0], out width);
                 _ = int.TryParse(sizes[1], out height);
             }
-            
+
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 

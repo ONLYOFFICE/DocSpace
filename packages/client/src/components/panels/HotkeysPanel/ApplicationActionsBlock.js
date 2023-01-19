@@ -9,7 +9,7 @@ const ApplicationActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
         <>
           <Text {...textStyles}>{t("HotkeysShortcuts")}</Text>
           <Text {...keyTextStyles}>
-            {CtrlKey} + / {t("HotkeysOr")} ?
+            {CtrlKey} + / {t("Common:Or")} ?
           </Text>
         </>
       </Row>

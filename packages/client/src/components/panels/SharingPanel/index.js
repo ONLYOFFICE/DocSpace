@@ -8,7 +8,7 @@ import { withTranslation, Trans } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { ShareAccessRights } from "@docspace/common/constants";
 import { StyledAsidePanel } from "../StyledPanels";
-import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
+import { AddUsersPanel, EmbeddingPanel } from "../index";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import i18n from "./i18n";
@@ -39,7 +39,6 @@ class SharingPanelComponent extends React.Component {
       message: "",
       showAddUsersPanel: false,
       showEmbeddingPanel: false,
-      showAddGroupsPanel: false,
       showChangeOwnerPanel: false,
       shareLink: "",
       isLoadedShareData: false,
@@ -235,11 +234,6 @@ class SharingPanelComponent extends React.Component {
   onShowUsersPanel = () =>
     this.setState({
       showAddUsersPanel: !this.state.showAddUsersPanel,
-    });
-
-  onShowGroupsPanel = () =>
-    this.setState({
-      showAddGroupsPanel: !this.state.showAddGroupsPanel,
     });
 
   onShowChangeOwnerPanel = () => {
@@ -439,16 +433,9 @@ class SharingPanelComponent extends React.Component {
     const {
       showAddUsersPanel,
       showEmbeddingPanel,
-      showAddGroupsPanel,
       showChangeOwnerPanel,
     } = this.state;
-    if (
-      showAddUsersPanel ||
-      showEmbeddingPanel ||
-      showAddGroupsPanel ||
-      showChangeOwnerPanel
-    )
-      return;
+    if (showAddUsersPanel || showEmbeddingPanel || showChangeOwnerPanel) return;
     if (event.key === "Esc" || event.key === "Escape") {
       this.onClose();
     }
@@ -474,7 +461,6 @@ class SharingPanelComponent extends React.Component {
       isPersonal,
       isMyId,
       selection,
-      groupsCaption,
       canShareOwnerChange,
       uploadPanelVisible,
       documentTitle,
@@ -488,7 +474,6 @@ class SharingPanelComponent extends React.Component {
       shareDataItems,
       message,
       showAddUsersPanel,
-      showAddGroupsPanel,
       showEmbeddingPanel,
       showChangeOwnerPanel,
       shareLink,
@@ -778,22 +763,9 @@ class SharingPanelComponent extends React.Component {
                 visible={showAddUsersPanel}
                 shareDataItems={filteredShareDataItems}
                 setShareDataItems={this.setShareDataItems}
-                groupsCaption={groupsCaption}
                 accessOptions={accessOptions}
                 isMultiSelect
                 isEncrypted={isEncrypted}
-              />
-            )}
-
-            {showAddGroupsPanel && (
-              <AddGroupsPanel
-                onSharingPanelClose={this.onClose}
-                onClose={this.onShowGroupsPanel}
-                visible={showAddGroupsPanel}
-                shareDataItems={filteredShareDataItems}
-                setShareDataItems={this.setShareDataItems}
-                accessOptions={accessOptions}
-                isMultiSelect
               />
             )}
 
@@ -836,7 +808,7 @@ const SharingPanel = inject(
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { personal, customNames, isDesktopClient } = auth.settingsStore;
+    const { personal, isDesktopClient } = auth.settingsStore;
     const { setFilesSettings } = settingsStore;
 
     const { id, access } = selectedFolderStore;
@@ -880,7 +852,6 @@ const SharingPanel = inject(
       theme: auth.settingsStore.theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
-      groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
       selection: uploadPanelVisible

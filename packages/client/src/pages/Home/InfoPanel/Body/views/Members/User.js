@@ -11,12 +11,8 @@ const User = ({
   membersHelper,
   currentMember,
   updateRoomMemberRole,
-  currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
-  canChangeUserRoleInRoom,
-  rootFolderType,
-  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -24,9 +20,11 @@ const User = ({
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
 
+  const canChangeUserRole = user.canEditAccess;
+
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
-    currCanEditUsers
+    canChangeUserRole
   );
 
   const userRole = membersHelper.getOptionByUserAccess(user.access);
@@ -67,14 +65,6 @@ const User = ({
     }
   };
 
-  const isCanChangeUserRole =
-    user &&
-    canChangeUserRoleInRoom({
-      access,
-      rootFolderType,
-      currentUserInList: { id: user.id, access: user.access },
-    });
-
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -94,7 +84,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {isCanChangeUserRole ? (
+          {canChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
@@ -104,9 +94,13 @@ const User = ({
               withBackdrop={false}
               size="content"
               modernView
+              title={t("Common:Role")}
+              manualWidth={"fit-content"}
             />
           ) : (
-            <div className="disabled-role-combobox">{userRole.label}</div>
+            <div className="disabled-role-combobox" title={t("Common:Role")}>
+              {userRole.label}
+            </div>
           )}
         </div>
       )}

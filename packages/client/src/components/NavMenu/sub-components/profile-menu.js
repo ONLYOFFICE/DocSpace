@@ -49,7 +49,6 @@ const StyledDropDown = styled(DropDown)`
 `;
 
 const StyledControlContainer = styled.div`
-  background: ${(props) => props.theme.catalog.control.background};
   width: 24px;
   height: 24px;
   position: absolute;

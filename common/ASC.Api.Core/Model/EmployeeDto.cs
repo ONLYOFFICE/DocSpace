@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System;
+
 namespace ASC.Web.Api.Models;
 
 public class EmployeeDto
@@ -33,6 +35,7 @@ public class EmployeeDto
     public string Title { get; set; }
     public string AvatarSmall { get; set; }
     public string ProfileUrl { get; set; }
+    public bool HasAvatar { get; set; }
 
     public static EmployeeDto GetSample()
     {
@@ -100,17 +103,18 @@ public class EmployeeDtoHelper
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
+        result.HasAvatar = await _userPhotoManager.UserHasAvatar(userInfo.Id);
 
         if (!string.IsNullOrEmpty(userInfo.Title))
         {
             result.Title = userInfo.Title;
         }
 
-        var userInfoLM = userInfo.LastModified.GetHashCode();
+        var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
 
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = (await _userPhotoManager.GetSmallPhotoURL(userInfo.Id)) + $"?_={userInfoLM}";
+            result.AvatarSmall = await _userPhotoManager.GetSmallPhotoURL(userInfo.Id) + $"?_={cacheKey}";
         }
 
         if (result.Id != Guid.Empty)

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import StyledWrapper from "@docspace/client/src/components/IndicatorLoader/StyledWrapper";
+import StyledWrapper from "../../StyledWrapper";
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, theme }) =>

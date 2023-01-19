@@ -254,7 +254,7 @@ public class TariffService : ITariffService
             }
         }
 
-        if (tariffId.HasValue)
+        if (tariffId.HasValue && tariffId.Value != 0)
         {
             _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId.Value }, CacheNotifyAction.Insert);
         }
@@ -734,12 +734,12 @@ public class TariffService : ITariffService
                         efTariff.CustomerId = "";
                     }
 
-                    efTariff = dbContext.AddOrUpdate(r => r.Tariffs, efTariff);
+                    efTariff = dbContext.AddOrUpdate(dbContext.Tariffs, efTariff);
                     dbContext.SaveChanges();
 
                     foreach (var q in tariffInfo.Quotas)
                     {
-                        dbContext.AddOrUpdate(r => r.TariffRows, new DbTariffRow
+                        dbContext.AddOrUpdate(dbContext.TariffRows, new DbTariffRow
                         {
                             TariffId = efTariff.Id,
                             Quota = q.Id,

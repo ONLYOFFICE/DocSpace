@@ -1,15 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
-const { proxyURL } = AppServerConfig;
-
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+//const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
@@ -110,7 +107,9 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      window.location.replace(combineUrl(proxyURL, "/login"));
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+      );
     });
   };
 
@@ -137,7 +136,7 @@ class ProfileActionsStore {
       ? {
           key: "user-menu-settings",
           icon: "/static/images/catalog.settings.react.svg",
-          label: t("Common:Settings"),
+          label: t("Common:SettingsDocSpace"),
           onClick: () => this.onSettingsClick(settingsUrl),
         }
       : null;

@@ -11,6 +11,7 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+import { EmployeeType, PaymentsType } from "@docspace/common/constants";
 
 const getStatus = (filterValues) => {
   const employeeStatus = result(
@@ -27,6 +28,17 @@ const getRole = (filterValues) => {
   const employeeStatus = result(
     find(filterValues, (value) => {
       return value.group === "filter-type";
+    }),
+    "key"
+  );
+
+  return employeeStatus || null;
+};
+
+const getPayments = (filterValues) => {
+  const employeeStatus = result(
+    find(filterValues, (value) => {
+      return value.group === "filter-account";
     }),
     "key"
   );
@@ -54,7 +66,6 @@ const SectionFilterContent = ({
   fetchPeople,
   filter,
   groups,
-  customNames,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
@@ -64,6 +75,7 @@ const SectionFilterContent = ({
 
     const role = getRole(data);
     const group = getGroup(data);
+    const payments = getPayments(data);
 
     const newFilter = filter.clone();
 
@@ -80,6 +92,8 @@ const SectionFilterContent = ({
     newFilter.role = role;
 
     newFilter.group = group;
+
+    newFilter.payments = payments;
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
@@ -111,8 +125,6 @@ const SectionFilterContent = ({
 
   // TODO: change translation keys
   const getData = async () => {
-    const { userCaption } = customNames;
-
     const statusItems = [
       {
         id: "filter_status-user",
@@ -147,43 +159,42 @@ const SectionFilterContent = ({
         group: "filter-type",
         label: t("Common:Type"),
         isHeader: true,
-        isLast: true,
       },
       {
         id: "filter_type-docspace-admin",
-        key: "admin",
+        key: EmployeeType.Admin,
         group: "filter-type",
         label: t("Common:DocSpaceAdmin"),
       },
       {
         id: "filter_type-room-admin",
-        key: "manager",
+        key: EmployeeType.User,
         group: "filter-type",
         label: t("Common:RoomAdmin"),
       },
       {
         id: "filter_type-user",
-        key: "user",
+        key: EmployeeType.Guest,
         group: "filter-type",
-        label: userCaption,
+        label: t("Common:User"),
       },
     ];
 
-    const roleItems = [
-      {
-        key: "filter-role",
-        group: "filter-role",
-        label: "Role in room",
-        isHeader: true,
-      },
-      { key: "1", group: "filter-role", label: "Room manager" },
-      { key: "2", group: "filter-role", label: "Co-worker" },
-      { key: "3", group: "filter-role", label: "Editor" },
-      { key: "4", group: "filter-role", label: "Form filler" },
-      { key: "5", group: "filter-role", label: "Reviewer" },
-      { key: "6", group: "filter-role", label: "Commentator" },
-      { key: "7", group: "filter-role", label: "Viewer" },
-    ];
+    // const roleItems = [
+    //   {
+    //     key: "filter-role",
+    //     group: "filter-role",
+    //     label: "Role in room",
+    //     isHeader: true,
+    //   },
+    //   { key: "1", group: "filter-role", label: "Room manager" },
+    //   { key: "2", group: "filter-role", label: "Co-worker" },
+    //   { key: "3", group: "filter-role", label: "Editor" },
+    //   { key: "4", group: "filter-role", label: "Form filler" },
+    //   { key: "5", group: "filter-role", label: "Reviewer" },
+    //   { key: "6", group: "filter-role", label: "Commentator" },
+    //   { key: "7", group: "filter-role", label: "Viewer" },
+    // ];
 
     const accountItems = [
       {
@@ -191,33 +202,34 @@ const SectionFilterContent = ({
         group: "filter-account",
         label: "Account",
         isHeader: true,
+        isLast: true,
       },
-      { key: "paid", group: "filter-account", label: "Paid" },
-      { key: "free", group: "filter-account", label: "Free" },
+      { key: PaymentsType.Paid, group: "filter-account", label: "Paid" },
+      { key: PaymentsType.Free, group: "filter-account", label: "Free" },
     ];
 
-    const roomItems = [
-      {
-        key: "filter-status",
-        group: "filter-status",
-        label: t("UserStatus"),
-        isHeader: true,
-      },
-      {
-        key: "1",
-        group: "filter-status",
-        label: t("Common:Active"),
-        isSelector: true,
-        selectorType: "room",
-      },
-    ];
+    // const roomItems = [
+    //   {
+    //     key: "filter-status",
+    //     group: "filter-status",
+    //     label: t("UserStatus"),
+    //     isHeader: true,
+    //   },
+    //   {
+    //     key: "1",
+    //     group: "filter-status",
+    //     label: t("Common:Active"),
+    //     isSelector: true,
+    //     selectorType: "room",
+    //   },
+    // ];
 
     const filterOptions = [];
 
     filterOptions.push(...statusItems);
     filterOptions.push(...typeItems);
     // filterOptions.push(...roleItems);
-    // filterOptions.push(...accountItems);
+    filterOptions.push(...accountItems);
     // filterOptions.push(...roomItems);
 
     return filterOptions;
@@ -237,6 +249,18 @@ const SectionFilterContent = ({
         label: t("Common:ByLastNameSorting"),
         default: true,
       },
+      {
+        id: "sory-by_type",
+        key: "type",
+        label: t("Common:Type"),
+        default: true,
+      },
+      {
+        id: "sory-by_email",
+        key: "email",
+        label: t("Common:Email"),
+        default: true,
+      },
     ];
   }, [t]);
 
@@ -253,7 +277,6 @@ const SectionFilterContent = ({
 
   //TODO: add new options from filter after update backend
   const getSelectedFilterData = React.useCallback(async () => {
-    const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
 
     if (filter.employeeStatus || filter.activationStatus) {
@@ -282,24 +305,33 @@ const SectionFilterContent = ({
     if (filter.role) {
       let label = null;
 
-      switch (filter.role) {
-        case "admin":
+      switch (+filter.role) {
+        case EmployeeType.Admin:
           label = t("Common:DocSpaceAdmin");
           break;
-        case "manager":
+        case EmployeeType.User:
           label = t("Common:RoomAdmin");
           break;
-        case "user":
-          label = userCaption;
+        case EmployeeType.Guest:
+          label = t("Common:User");
           break;
         default:
           label = "";
       }
 
       filterValues.push({
-        key: filter.role,
+        key: +filter.role,
         label: label,
         group: "filter-type",
+      });
+    }
+
+    if (filter?.payments?.toString()) {
+      filterValues.push({
+        key: filter.payments.toString(),
+        label:
+          PaymentsType.Paid === filter.payments.toString() ? "Paid" : "Free",
+        group: "filter-account",
       });
     }
 
@@ -364,9 +396,9 @@ const SectionFilterContent = ({
     filter.employeeStatus,
     filter.activationStatus,
     filter.role,
+    filter.payments,
     filter.group,
     t,
-    customNames,
   ]);
 
   //TODO: add new options from filter after update backend
@@ -385,6 +417,10 @@ const SectionFilterContent = ({
 
     if (group === "filter-other") {
       newFilter.group = null;
+    }
+
+    if (group === "filter-account") {
+      newFilter.payments = null;
     }
 
     setIsLoading(true);
@@ -431,8 +467,7 @@ export default withRouter(
       groupsStore,
       viewAs,
     } = peopleStore;
-    const { settingsStore, userStore, isLoaded, isAdmin } = auth;
-    const { customNames } = settingsStore;
+    const { userStore, isLoaded, isAdmin } = auth;
     const { user } = userStore;
     const { groups } = groupsStore;
     const { getUsersList: fetchPeople } = usersStore;
@@ -440,7 +475,6 @@ export default withRouter(
     const { setIsLoading } = loadingStore;
 
     return {
-      customNames,
       isLoaded,
       isAdmin,
       user,
@@ -453,12 +487,9 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation([
-          "People",
-          "Common",
-          "PeopleTranslations",
-          "GroupSelector",
-        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
+        withTranslation(["People", "Common", "PeopleTranslations"])(
+          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
+        )
       )
     )
   )

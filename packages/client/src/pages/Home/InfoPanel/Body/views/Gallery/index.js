@@ -32,7 +32,7 @@ const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
 
       <StyledSubtitle>
         <Text fontWeight="600" fontSize="14px">
-          {t("SystemProperties")}
+          {t("InfoPanel:SystemProperties")}
         </Text>
       </StyledSubtitle>
 
@@ -76,8 +76,9 @@ export default inject(({ auth, settingsStore, oformsStore }) => {
   };
 })(
   withTranslation(["InfoPanel", "FormGallery", "Common", "Translations"])(
-    withLoader(observer(Gallery))(
-      <Loaders.InfoPanelViewLoader view="gallery" />
-    )
+    Gallery
+    // withLoader(observer(Gallery))(
+    //   <Loaders.InfoPanelViewLoader view="gallery" />
+    // )
   )
 );

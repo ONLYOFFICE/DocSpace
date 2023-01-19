@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -23,7 +23,8 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
-import { ReactSVG } from "react-svg";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -49,8 +50,9 @@ const Login: React.FC<ILoginProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -58,6 +60,11 @@ const Login: React.FC<ILoginProps> = ({
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -175,8 +182,8 @@ const Login: React.FC<ILoginProps> = ({
 
   const bgPattern = getBgPattern(currentColorScheme.id);
 
-  const loginLogo = Object.values(logoUrls)[1];
-  const isSvgLogo = loginLogo.includes(".svg");
+  const logo = Object.values(logoUrls)[1];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
 
   if (!mounted) return <></>;
 
@@ -189,11 +196,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        {isSvgLogo ? (
-          <ReactSVG src={loginLogo} className="logo-wrapper" />
-        ) : (
-          <img src={loginLogo} className="logo-wrapper" />
-        )}
+        <img src={logoUrl} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}

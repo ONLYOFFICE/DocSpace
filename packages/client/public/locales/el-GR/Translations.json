@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Προσθήκη λογαριασμού",
-  "AddAuthor": "Προσθήκη Συγγραφέα",
   "ArchivingData": "Αρχειοθέτηση δεδομένων",
-  "ButtonShareAccess": "Ρυθμίσεις Διαμοιρασμού",
   "ConnectingAccount": "Σύνδεση λογαριασμού",
   "Copy": "Αντιγραφή",
   "CopyHere": "Αντιγραφή εδώ",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Αποκτήστε το ONLYOFFICE Documents στο Google Play",
   "MobileIos": "Λήψη ONLYOFFICE Documents από App Store",
   "MobileLinux": "Λήψη ONLYOFFICE Desktop Editors για Linux",
-  "MobileMac": "Λήψη ONLYOFFICE Desktop Editors για Mac OS",
+  "MobileMac": "Λήψη ONLYOFFICE Desktop Editors για macOS",
   "MobileWin": "Λήψη ONLYOFFICE Desktop Editors για Windows",
   "MoveHere": "Μετακίνηση εδώ",
   "MoveToOperation": "Μετακίνηση",
   "NewForm": "Πρότυπο φόρμας",
-  "NewFormFile": "Φόρμας από αρχείο",
+  "Other": "Άλλο",
   "OwnerChange": "Αλλαγή κατόχου",
   "Presentations": "Παρουσιάσεις",
   "Spreadsheets": "Υπολογιστικά φύλλα",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Άλλο"
+  "TypeTitlekDrive": "kDrive"
 }

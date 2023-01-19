@@ -1,8 +1,10 @@
 {
-  "CopyToClipboard": "Копировать ссылку",
-  "GetShortenLink": "Получить сокращенную ссылку",
-  "HelpAnswerLinkInviteSettings": "Поделитесь ссылкой, чтобы пригласить коллег на портал.",
-  "InviteLinkValidInterval": "Эта ссылка действительна только в течение {{ count }} дней.",
-  "InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Ссылка скопирована"
+  "EmailErrorMessage": "Адрес электронной почты недействителен. Вы можете отредактировать адрес, нажав на него.",
+  "IndividualInvitation": "Индивидуальное приглашение",
+  "InviteAccountSearchPlaceholder": "Пригласить людей по электронной почте",
+  "InviteRoomSearchPlaceholder": "Приглашайте людей по имени или электронной почте",
+  "InviteUsersToRoom": "Пригласить пользователей в комнату",
+  "Invited": "Приглашен",
+  "LinkCopySuccess": "Ссылка скопирована",
+  "SendInvitation": "Выслать приглашение"
 }

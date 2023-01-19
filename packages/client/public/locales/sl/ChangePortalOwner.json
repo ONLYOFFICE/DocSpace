@@ -1,7 +1,7 @@
 {
-  "BackupPortal": "Varnostno kopirajte podatke portala",
+  "BackupPortal": "Varnostno kopirajte podatke DocSpace",
   "ChangeOwner": "Imenujte skrbnike modulov",
   "DeactivateOrDeletePortal": "Nastavite pravice dostopa do modulov",
-  "ManagePortal": "Upravljajte konfiguracijo portala",
+  "ManagePortal": "Upravljajte konfiguracijo DocSpace",
   "ManageUser": "Upravljajte uporabniške račune"
 }
