@@ -57,6 +57,7 @@ public interface IUserService
     UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash);
     UserInfo GetUserByUserName(int tenant, string userName);
     UserInfo SaveUser(int tenant, UserInfo user);
+    IEnumerable<int> GetTenantsWithFeeds(DateTime from);
     void RemoveGroup(int tenant, Guid id);
     void RemoveUser(int tenant, Guid id);
     IEnumerable<string> GetDavUserEmails(int tenant);

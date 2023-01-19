@@ -45,6 +45,11 @@ public class UserSecurityProvider : SecurityObject
         _employeeType = employeeType;
     }
 
+    public UserSecurityProvider(EmployeeType employeeType) : this(Guid.Empty)
+    {
+        _employeeType = employeeType;
+    }
+
     public override IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
     {
         var roles = new List<IRole>();

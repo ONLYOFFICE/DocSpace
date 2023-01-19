@@ -413,7 +413,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
             <Switch>
-              <Redirect from="/Products/Files/" to="/rooms/shared" />
+              <Redirect
+                exact
+                sensitive
+                from="/Products/Files/"
+                to="/rooms/shared"
+              />
               <PrivateRoute
                 exact
                 path={[
@@ -452,6 +457,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/settings",
                   "/settings/common",
                   "/settings/admin",
+                  "/products/files",
                   //"/settings/connected-clouds",
                 ]}
                 component={FilesRoute}

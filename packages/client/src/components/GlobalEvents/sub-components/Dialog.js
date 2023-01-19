@@ -145,7 +145,7 @@ const Dialog = ({
       <ModalDialog.Footer>
         <Button
           key="GlobalSendBtn"
-          label={isCreateDialog ? t("Common:Create") : t("Common:Save")}
+          label={isCreateDialog ? t("Common:Create") : t("Common:SaveButton")}
           size="normal"
           scale
           primary

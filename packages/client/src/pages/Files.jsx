@@ -118,6 +118,7 @@ const FilesSection = React.memo(() => {
 
           "/files/recent",
           "/files/recent/filter",
+          "/products/files/",
         ]}
         component={Home}
       />
