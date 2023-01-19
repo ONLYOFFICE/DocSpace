@@ -50,7 +50,7 @@ const onSDKError = (event) => {
 const ErrorContainerBody = styled(ErrorContainer)`
   position: absolute;
   height: 100%;
-  background: white;
+
 `;
 
 let documentIsReady = false;

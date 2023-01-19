@@ -47,7 +47,13 @@ export const initDocEditor = async (req) => {
   let personal = IS_PERSONAL || null;
   const { headers, url, query, type } = req;
   const { version, desktop: isDesktop } = query;
-  let error = null;
+  let error = null,
+    user,
+    settings,
+    filesSettings,
+    versionInfo,
+    appearanceTheme,
+    logoUrls;
   initSSR(headers);
 
   try {
@@ -67,7 +73,7 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [
+    [
       user,
       settings,
       filesSettings,
@@ -138,7 +144,7 @@ export const initDocEditor = async (req) => {
     error = {
       errorMessage: message,
     };
-    return { error };
+    return { error, user };
   }
 };
 
