@@ -23,6 +23,7 @@ const HistoryBlock = ({
   isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
+  const usedUsers = [];
 
   const isUserAction = json.Item === FeedItemTypes.User && target;
   const isItemAction =
@@ -76,15 +77,19 @@ const HistoryBlock = ({
         )}
 
         {isUserAction &&
-          [target, ...groupedFeeds].map((user, i) => (
-            <HistoryBlockUser
-              isVisitor={isVisitor}
-              key={user.id}
-              user={user}
-              withComma={i !== groupedFeeds.length}
-              openUser={openUser}
-            />
-          ))}
+          [target, ...groupedFeeds].map((user, i) => {
+            if (usedUsers.includes(user.id)) return null;
+            usedUsers.push(user.id);
+            return (
+              <HistoryBlockUser
+                isVisitor={isVisitor}
+                key={user.id}
+                user={user}
+                withComma={i !== groupedFeeds.length}
+                openUser={openUser}
+              />
+            );
+          })}
       </div>
     </StyledHistoryBlock>
   );
