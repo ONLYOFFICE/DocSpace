@@ -97,6 +97,10 @@ export const StyledInfo = styled.div`
   grid-template-columns: 83px 1fr;
   align-items: center;
   padding-bottom: 12px;
+
+  .machine-name {
+    padding-left: 16px;
+  }
 `;
 
 export const StyledAcceptTerms = styled.div`

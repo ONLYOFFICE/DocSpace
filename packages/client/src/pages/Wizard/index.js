@@ -52,8 +52,8 @@ const Wizard = (props) => {
     urlLicense,
     theme,
     cultureNames,
-    selectLanguage,
     culture,
+    timezone,
   } = props;
   const { t } = useTranslation(["Wizard", "Common"]);
 
@@ -63,9 +63,18 @@ const Wizard = (props) => {
   const [hasErrorPass, setHasErrorPass] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [timezones, setTimezones] = useState(null);
+  const [selectedTimezone, setSelectedTimezone] = useState(null);
+
   const refPassInput = useRef(null);
 
   const convertedCulture = convertLanguage(culture);
+
+  const mapTimezonesToArray = (timezones) => {
+    return timezones.map((timezone) => {
+      return { key: timezone.id, label: timezone.displayName };
+    });
+  };
 
   const fetchData = async () => {
     await axios
@@ -73,7 +82,16 @@ const Wizard = (props) => {
         getPortalPasswordSettings(wizardToken),
         getMachineName(wizardToken),
         getIsRequiredLicense(),
-        getPortalTimezones(wizardToken),
+        getPortalTimezones(wizardToken).then((data) => {
+          const zones = mapTimezonesToArray(data);
+          const select = zones.filter((zone) => zone.key === timezone);
+
+          setTimezones(zones);
+          setSelectedTimezone({
+            key: select[0].key,
+            label: select[0].label,
+          });
+        }),
       ])
       .then(() => {
         let select = cultureNames.filter(
@@ -108,11 +126,11 @@ const Wizard = (props) => {
   };
 
   const onLanguageSelect = (lang) => {
-    setSelectedLanguage({
-      key: lang.key,
-      label: lang.label,
-      icon: lang.icon,
-    });
+    setSelectedLanguage(lang);
+  };
+
+  const onTimezoneSelect = (timezone) => {
+    setSelectedTimezone(timezone);
   };
 
   if (!isWizardLoaded)
@@ -177,7 +195,9 @@ const Wizard = (props) => {
             <Text color="#A3A9AE" fontWeight={400}>
               {t("Domain")}
             </Text>
-            <Text fontWeight={600}>{machineName}</Text>
+            <Text fontWeight={600} className="machine-name">
+              {machineName}
+            </Text>
           </StyledInfo>
           <StyledInfo>
             <Text color="#A3A9AE" fontWeight={400}>
@@ -188,6 +208,28 @@ const Wizard = (props) => {
               options={cultureNames}
               selectedOption={selectedLanguage}
               onSelect={onLanguageSelect}
+              isDisabled={false}
+              scaled={isMobileOnly}
+              scaledOptions={false}
+              size="content"
+              showDisabledItems={true}
+              dropDownMaxHeight={364}
+              manualWidth="250px"
+              isDefaultMode={!isMobileOnly}
+              withBlur={isMobileOnly}
+              fillIcon={false}
+              modernView={true}
+            />
+          </StyledInfo>
+          <StyledInfo>
+            <Text color="#A3A9AE" fontWeight={400}>
+              {t("Timezone")}
+            </Text>
+            <ComboBox
+              directionY="both"
+              options={timezones}
+              selectedOption={selectedTimezone}
+              onSelect={onTimezoneSelect}
               isDisabled={false}
               scaled={isMobileOnly}
               scaledOptions={false}
@@ -242,7 +284,6 @@ export default inject(({ auth, wizard }) => {
   const {
     passwordSettings,
     wizardToken,
-    timezones,
     timezone,
     urlLicense,
     hashSettings,
@@ -273,7 +314,6 @@ export default inject(({ auth, wizard }) => {
     culture: language,
     wizardToken,
     passwordSettings,
-    timezones,
     timezone,
     urlLicense,
     hashSettings,
@@ -292,4 +332,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(withCultureNames(Wizard)));
+})(withRouter(withCultureNames(observer(Wizard))));
