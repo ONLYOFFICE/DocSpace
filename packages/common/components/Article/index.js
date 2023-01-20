@@ -36,6 +36,7 @@ const Article = ({
   isFreeTariff,
   isAvailableArticlePaymentAlert,
   currentColorScheme,
+  setArticleOpen,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -47,10 +48,10 @@ const Article = ({
 
   React.useEffect(() => {
     if (isMobileOnly) {
-      window.addEventListener("popstate", hideText);
-      return () => window.removeEventListener("popstate", hideText);
+      window.addEventListener("popstate", onMobileBack);
+      return () => window.removeEventListener("popstate", onMobileBack);
     }
-  }, [hideText]);
+  }, [onMobileBack]);
 
   React.useEffect(() => {
     window.addEventListener("resize", sizeChangeHandler);
@@ -100,13 +101,10 @@ const Article = ({
     }
   }, [setShowText, setIsMobileArticle]);
 
-  const hideText = React.useCallback(
-    (event) => {
-      event.preventDefault;
-      setShowText(false);
-    },
-    [setShowText]
-  );
+  const onMobileBack = React.useCallback(() => {
+    //close article
+    setArticleOpen(false);
+  }, [setArticleOpen]);
 
   const articleComponent = (
     <>
@@ -222,6 +220,7 @@ export default inject(({ auth }) => {
     toggleShowText,
     toggleArticleOpen,
     currentColorScheme,
+    setArticleOpen,
   } = settingsStore;
 
   return {
@@ -235,5 +234,6 @@ export default inject(({ auth }) => {
     isGracePeriod,
     isAvailableArticlePaymentAlert,
     currentColorScheme,
+    setArticleOpen,
   };
 })(observer(Article));

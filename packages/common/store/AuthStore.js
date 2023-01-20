@@ -231,7 +231,7 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      (this.settingsStore.isLoaded && this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
+      (this.settingsStore.isLoaded && !!this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
       this.settingsStore.tenantStatus === TenantStatus.PortalRestore
     );
   }
