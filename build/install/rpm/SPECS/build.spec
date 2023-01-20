@@ -14,4 +14,8 @@ json -I -f %{_builddir}/%{sourcename}/config/appsettings.services.json -e "this.
 
 find %{_builddir}/%{sourcename}/publish/ \
      %{_builddir}/%{sourcename}/ASC.Migration.Runner \
+     -depth -type f -regex '.*\(dll\|dylib\|so\)$' -exec chmod 755 {} \;
+
+find %{_builddir}/%{sourcename}/publish/ \
+     %{_builddir}/%{sourcename}/ASC.Migration.Runner \
      -depth -type f -regex '.*\(so\)$' -exec strip {} \;
