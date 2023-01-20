@@ -5,11 +5,13 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    backup
+Backup
 
 %package        common
 Summary:        Common
 Group:          Applications/Internet
 %description    common
+Common
 
 %package        files-services
 Summary:        Files-services
@@ -18,6 +20,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    files-services
+Files-services
 
 %package        notify
 Summary:        Notify
@@ -26,6 +29,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    notify
+Notify
 
 %package        files
 Summary:        Files
@@ -34,6 +38,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    files
+Files
 
 %package        proxy
 Summary:        Proxy
@@ -43,6 +48,7 @@ Requires:       nginx >= 1.9.5
 Requires:       mysql-community-client >= 5.7.0
 AutoReqProv:    no
 %description    proxy
+Proxy
 
 %package        studio-notify
 Summary:        Studio-notify
@@ -51,6 +57,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    studio-notify
+Studio-notify
 
 %package        people-server
 Summary:        People-server
@@ -59,6 +66,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    people-server
+People-server
 
 %package        socket
 Summary:        Socket
@@ -67,6 +75,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    socket
+Socket
 
 %package        studio
 Summary:        Studio
@@ -75,6 +84,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    studio
+Studio
 
 %package        api
 Summary:        Api
@@ -83,6 +93,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    api
+Api
 
 %package        api-system
 Summary:        Api-system
@@ -91,6 +102,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    api-system
+Api-system
 
 %package        ssoauth
 Summary:        Ssoauth
@@ -99,6 +111,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    ssoauth
+Ssoauth
 
 %package        clear-events
 Summary:        Clear-events
@@ -107,6 +120,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    clear-events
+Clear-events
 
 %package        backup-background
 Summary:        Backup-background
@@ -115,6 +129,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    backup-background
+Backup-background
 
 %package        radicale
 Summary:        Radicale
@@ -123,6 +138,7 @@ Requires:       %name-common  = %version-%release
 Requires:       python3 >= 3.6
 AutoReqProv:    no
 %description    radicale
+Radicale
 
 %package        doceditor
 Summary:        Doceditor
@@ -131,6 +147,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    doceditor
+Doceditor
 
 %package        migration-runner
 Summary:        Migration-runner
@@ -139,6 +156,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    migration-runner
+Migration-runner
 
 %package        login
 Summary:        Login
@@ -147,3 +165,4 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
+Login
