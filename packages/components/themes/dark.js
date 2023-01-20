@@ -2078,6 +2078,7 @@ const Dark = {
     details: {
       customLogoBorderColor: "#474747",
       commentEditorIconColor: "#eee",
+      tagBackground: "#242424",
     },
 
     gallery: {
@@ -3031,6 +3032,7 @@ const Dark = {
 
   errorContainer: {
     background: black,
+    bodyText: "#858585",
   },
 
   editor: {

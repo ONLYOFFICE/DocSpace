@@ -101,6 +101,7 @@ public class FileSecurity : IFileSecurity
     private readonly AuthManager _authManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
+    private readonly FileUtility _fileUtility;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -109,7 +110,8 @@ public class FileSecurity : IFileSecurity
         AuthContext authContext,
         AuthManager authManager,
         GlobalFolder globalFolder,
-        FileSecurityCommon fileSecurityCommon)
+        FileSecurityCommon fileSecurityCommon,
+        FileUtility fileUtility)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -118,6 +120,7 @@ public class FileSecurity : IFileSecurity
         _authManager = authManager;
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
+        _fileUtility = fileUtility;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -615,8 +618,16 @@ public class FileSecurity : IFileSecurity
             return false;
         }
 
+        var file = e as File<T>;
         var folder = e as Folder<T>;
         var isRoom = folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
+
+        if (file != null &&
+            action == FilesSecurityActions.Edit &&
+            _fileUtility.CanWebRestrictedEditing(file.Title))
+        {
+            return false;
+        }
 
         if ((action == FilesSecurityActions.ReadHistory ||
              action == FilesSecurityActions.EditHistory) &&
@@ -650,35 +661,21 @@ public class FileSecurity : IFileSecurity
                 {
                     if (folder.FolderType == FolderType.USER)
                     {
-                        if (action == FilesSecurityActions.Create ||
+                        return action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.CopyTo ||
-                            action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                            action == FilesSecurityActions.MoveTo ||
+                            action == FilesSecurityActions.FillForms;
                     }
 
                     if (folder.FolderType == FolderType.Archive)
                     {
-                        if (action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                        return action == FilesSecurityActions.MoveTo;
                     }
 
                     if (folder.FolderType == FolderType.VirtualRooms)
                     {
-                        if (action == FilesSecurityActions.Create ||
-                            action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                        return action == FilesSecurityActions.Create ||
+                            action == FilesSecurityActions.MoveTo;
                     }
 
                     if (folder.FolderType == FolderType.TRASH)
@@ -721,12 +718,7 @@ public class FileSecurity : IFileSecurity
                 var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
                 if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
                 {
-                    if (folder != null && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
                 }
                 break;
             case FolderType.USER:
@@ -783,8 +775,6 @@ public class FileSecurity : IFileSecurity
             default:
                 break;
         }
-
-        var file = e as File<T>;
 
         var subjects = new List<Guid>();
         if (shares == null)

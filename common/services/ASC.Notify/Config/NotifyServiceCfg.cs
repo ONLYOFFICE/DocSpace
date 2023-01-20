@@ -69,15 +69,19 @@ public class NotifyServiceCfg
 
             }
         }
-        foreach (var s in Schedulers)
-        {
-            try
-            {
-                s.Init();
-            }
-            catch (Exception)
-            {
 
+        if (Schedulers != null)
+        {
+            foreach (var s in Schedulers)
+            {
+                try
+                {
+                    s.Init();
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }

@@ -163,12 +163,13 @@ public class DbWorker
     {
         using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
-        using var tx = dbContext.Database.BeginTransaction();
-
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
         strategy.Execute(() =>
         {
+            using var scope = _serviceScopeFactory.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            using var tx = dbContext.Database.BeginTransaction();
             if (result == MailSendingState.Sended)
             {
                 var d = dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefault();

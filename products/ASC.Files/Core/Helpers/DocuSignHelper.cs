@@ -211,12 +211,12 @@ public class DocuSignHelper
         return account;
     }
 
-    private ApiClient GetApiClient(DocuSignAccount account, OAuth20Token token)
+    private DocuSignClient GetApiClient(DocuSignAccount account, OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(account);
         ArgumentNullException.ThrowIfNull(token);
 
-        var apiClient = new ApiClient(account.BaseUri + "/restapi");
+        var apiClient = new DocuSignClient(account.BaseUri + "/restapi");
 
         apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token));
 
@@ -279,7 +279,7 @@ public class DocuSignHelper
         return (document, file);
     }
 
-    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, ApiClient apiClient)
+    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSignClient apiClient)
     {
         var eventNotification = new EventNotification
         {

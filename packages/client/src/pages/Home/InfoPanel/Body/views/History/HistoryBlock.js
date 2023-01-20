@@ -24,6 +24,11 @@ const HistoryBlock = ({
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
 
+  const users = [target, ...groupedFeeds].filter(
+    (user, index, self) =>
+      self.findIndex((user2) => user2?.id === user?.id) === index
+  );
+
   const isUserAction = json.Item === FeedItemTypes.User && target;
   const isItemAction =
     json.Item === FeedItemTypes.File || json.Item === FeedItemTypes.Folder;
@@ -76,12 +81,12 @@ const HistoryBlock = ({
         )}
 
         {isUserAction &&
-          [target, ...groupedFeeds].map((user, i) => (
+          users.map((user, i) => (
             <HistoryBlockUser
               isVisitor={isVisitor}
               key={user.id}
               user={user}
-              withComma={i !== groupedFeeds.length}
+              withComma={i < users.length - 1}
               openUser={openUser}
             />
           ))}

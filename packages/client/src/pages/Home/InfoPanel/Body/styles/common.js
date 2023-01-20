@@ -1,20 +1,20 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { mobile, tablet } from "@docspace/components/utils/device";
+import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
   ${({ isAccounts }) =>
     isAccounts
       ? css`
           padding: 0px 3px 0 20px;
-          @media ${mobile} {
+          @media ${hugeMobile} {
             padding: 0px 8px 0 16px;
           }
         `
       : css`
           padding: 80px 3px 0 20px;
-          @media ${mobile} {
+          @media ${hugeMobile} {
             padding: 80px 8px 0 16px;
           }
         `}
@@ -37,16 +37,26 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
-  //position: fixed;
+  position: fixed;
   margin-top: -80px;
   margin-left: -20px;
-  width: 100%;
+  width: calc(100% - 40px);
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
-  @media ${mobile} {
-    padding: 24px -16px 24px 16px;
+  @media ${tablet} {
+    width: 440px;
+    padding: 24px 20px 24px 20px;
+  }
+
+  @media (max-width: 549px) {
+    width: calc(100vw - 69px - 40px);
+  }
+
+  @media ${hugeMobile} {
+    width: calc(100vw - 32px);
+    padding: 24px 0 24px 16px;
   }
 
   display: flex;
@@ -64,7 +74,7 @@ const StyledTitle = styled.div`
       border-bottom: ${(props) =>
         `solid 1px ${props.theme.infoPanel.borderColor}`};
 
-      @media ${mobile} {
+      @media ${hugeMobile} {
         width: calc(100% + 16px);
         padding: 23px 0 23px 16px;
         margin: 0 -16px 0 -16px;
@@ -150,8 +160,10 @@ const StyledProperties = styled.div`
       gap: 4px;
 
       .property-tag {
+        background: red;
         max-width: 195px;
         margin: 0;
+        background: ${(props) => props.theme.infoPanel.details.tagBackground};
         p {
           white-space: nowrap;
           overflow: hidden;

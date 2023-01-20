@@ -113,6 +113,9 @@ const StyledFileRow = styled(Row)`
       css`
         cursor: default;
       `}
+    :hover {
+      cursor: pointer;
+    }
   }
 `;
 class FileRow extends Component {

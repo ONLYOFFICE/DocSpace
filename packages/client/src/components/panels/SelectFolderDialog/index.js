@@ -191,7 +191,6 @@ class SelectFolderDialog extends React.Component {
   render() {
     const {
       t,
-      theme,
       isPanelVisible,
       zIndex,
       withoutProvider,
@@ -236,7 +235,6 @@ class SelectFolderDialog extends React.Component {
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
         selectionFiles={selectionFiles}
-        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
@@ -265,7 +263,6 @@ class SelectFolderDialog extends React.Component {
       <SelectionPanel
         selectionFiles={selectionFiles}
         t={t}
-        theme={theme}
         isPanelVisible={isPanelVisible}
         onClose={this.onClose}
         withoutProvider={withoutProvider}
@@ -321,7 +318,6 @@ export default inject(
       selectedFolderStore,
       selectFolderDialogStore,
       filesStore,
-      auth,
       filesActionsStore,
     },
     { selectedId }
@@ -347,12 +343,9 @@ export default inject(
       securityItem,
     } = selectFolderDialogStore;
 
-    const { settingsStore } = auth;
-    const { theme } = settingsStore;
     const selectedFolderId = selectedId ? selectedId : id;
 
     return {
-      theme: theme,
       storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,

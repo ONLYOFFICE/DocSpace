@@ -136,7 +136,7 @@
   "PortalIntegration": "Space integration",
   "PortalNameEmpty": "Account name is empty",
   "PortalNameIncorrect": "Incorrect account name",
-  "PortalNameLength": "The account name must be between 6 and 50 characters long",
+  "PortalNameLength": "The account name must be between 3 and 50 characters long",
   "PortalRenaming": "Space Renaming",
   "PortalRenamingDescription": "Here you can change your space address.",
   "PortalRenamingLabelText": "New space name",

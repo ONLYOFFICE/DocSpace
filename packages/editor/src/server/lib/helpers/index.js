@@ -33,9 +33,12 @@ export const getFavicon = (documentType, logoUrls) => {
       break;
   }
 
+  if (!icon && !logoUrls) return null;
+
   const favicon = icon
     ? `${homepage}/images/${icon}`
     : logoUrls[2]?.path?.light;
+
   return favicon;
 };
 
@@ -44,7 +47,13 @@ export const initDocEditor = async (req) => {
   let personal = IS_PERSONAL || null;
   const { headers, url, query, type } = req;
   const { version, desktop: isDesktop } = query;
-  let error = null;
+  let error = null,
+    user,
+    settings,
+    filesSettings,
+    versionInfo,
+    appearanceTheme,
+    logoUrls;
   initSSR(headers);
 
   try {
@@ -64,7 +73,7 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [
+    [
       user,
       settings,
       filesSettings,
@@ -128,8 +137,14 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
-    error = { errorMessage: typeof err === "string" ? err : err.message };
-    return { error };
+    let message = "";
+    if (typeof err === "string") message = err;
+    else message = err.response?.data?.error?.message || err.message;
+
+    error = {
+      errorMessage: message,
+    };
+    return { error, user, logoUrls };
   }
 };
 
