@@ -1,6 +1,6 @@
 # Textarea
 
-Textarea is used for displaying custom textarea
+Textarea is used for displaying custom textarea and beautified JSON object
 
 ### Usage
 
@@ -13,6 +13,7 @@ import Textarea from "@docspace/components/textarea";
   placeholder="Add comment"
   onChange={(event) => alert(event.target.value)}
   value="value"
+  isJSONField={false}
 />
 ```
 
@@ -32,3 +33,5 @@ import Textarea from "@docspace/components/textarea";
 | `value`          |    `string`    |    -     |   -    |    -    | Value for Textarea                                       |
 | `fontSize`       |    `number`    |    -     |   -    |   13    | Value for font-size                                      |
 | `heightTextArea` |    `number`    |    -     |   -    |    -    | Value for height text-area                               |
+| `isJSONField`    |    `bool`      |    -     |   -    | `false` | Indicates that the field is displaying JSON object       |
+| `copyInfoText`   |    `string`    |    -     |   -    | `Content was copied successfully!` | Indicates the text of toast/informational alarm |
