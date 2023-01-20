@@ -135,7 +135,7 @@ public class SecurityContext
 
             return false;
         }
-        
+
         if (tenant != _tenantManager.GetCurrentTenant().Id)
         {
             return false;
@@ -161,9 +161,9 @@ public class SecurityContext
                 return false;
             }
 
-            var loginEventById = await _dbLoginEventsManager.GetById(loginEventId); 
-           
-            if (loginEventById == null)
+            var loginEventById = await _dbLoginEventsManager.GetById(loginEventId);
+
+            if (loginEventById == null || !loginEventById.Active)
             {
                 return false;
             }
