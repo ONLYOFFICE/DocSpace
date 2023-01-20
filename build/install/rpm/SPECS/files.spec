@@ -1,5 +1,5 @@
 %files
-%config %attr(644, root, root) %{_bindir}/*
+%attr(744, root, root) %{_bindir}/*
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
