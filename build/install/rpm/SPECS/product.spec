@@ -23,6 +23,8 @@ BuildRequires:  nodejs >= 18.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-6.0
 
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}.%{arch}
+
 Requires:       %name-api = %version-%release
 Requires:       %name-backup = %version-%release
 Requires:       %name-backup-background = %version-%release
