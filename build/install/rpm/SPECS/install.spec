@@ -3,7 +3,6 @@ rm -rf %{buildroot}
 mkdir -p "%{buildroot}%{_bindir}/"
 mkdir -p "%{buildroot}%{_sysconfdir}/nginx/conf.d/"
 mkdir -p "%{buildroot}%{_sysconfdir}/nginx/includes/"
-mkdir -p "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/"
 mkdir -p "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/.private/"
 mkdir -p "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/data/"
 mkdir -p "%{buildroot}%{_var}/log/onlyoffice/%{product}/"

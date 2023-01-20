@@ -7,7 +7,7 @@ Summary:        Business productivity tools
 Group:          Applications/Internet
 Version:        %version
 Release:        %release
-ExclusiveArch:  x86_64
+
 AutoReqProv:    no
 
 URL:            http://onlyoffice.com
