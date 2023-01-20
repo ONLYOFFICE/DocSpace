@@ -105,4 +105,20 @@ StyledTextarea.defaultProps = {
   theme: Base,
 };
 
-export { StyledTextarea, StyledScrollbar };
+const StyledCopyIcon = styled.img`
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 16px;
+  height: 16px;
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+StyledCopyIcon.defaultProps = {
+  theme: Base,
+};
+
+export { StyledTextarea, StyledScrollbar, StyledCopyIcon };
