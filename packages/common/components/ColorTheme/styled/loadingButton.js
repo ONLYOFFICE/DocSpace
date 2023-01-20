@@ -3,7 +3,7 @@ import {
   StyledCircle,
   StyledLoadingButton,
   StyledCircleWrap,
-} from "@docspace/client/src/components/panels/UploadPanel/SubComponents/StyledLoadingButton";
+} from "../../StyledLoadingButton";
 import { Base } from "@docspace/components/themes";
 
 const getDefaultStyles = ({ $currentColorScheme, theme }) =>
@@ -11,16 +11,12 @@ const getDefaultStyles = ({ $currentColorScheme, theme }) =>
   css`
     ${StyledCircle} {
       .circle__mask .circle__fill {
-        background-color: ${theme.isBase
-          ? $currentColorScheme.accentColor
-          : theme.filesPanels.upload.loadingButton.color};
+        background-color: ${$currentColorScheme.main.accent};
       }
     }
 
     ${StyledLoadingButton} {
-      color: ${theme.isBase
-        ? $currentColorScheme.accentColor
-        : theme.filesPanels.upload.loadingButton.color};
+      color: ${$currentColorScheme.main.accent};
     }
   `;
 

@@ -11,7 +11,7 @@ import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
-import { combineUrl, updateTempContent } from "@docspace/common/utils";
+import { updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -20,41 +20,16 @@ import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AppLoader from "@docspace/common/components/AppLoader";
-import System from "./components/System";
-import { AppServerConfig } from "@docspace/common/constants";
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
-import { useThemeDetector } from "SRC_DIR/helpers/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
+import { Portal } from "@docspace/components";
 
-// const { proxyURL } = AppServerConfig;
-// const homepage = config.homepage;
-
-// const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
-// const HOME_URLS = [
-//   combineUrl(PROXY_HOMEPAGE_URL),
-//   combineUrl(PROXY_HOMEPAGE_URL, "/"),
-//   combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
-// ];
-// const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
-// const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-// const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
-
-// const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
-// const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/portal-settings");
-// const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
-// const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
-// const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
-// const PREPARATION_PORTAL = combineUrl(
-//   PROXY_HOMEPAGE_URL,
-//   "/preparation-portal"
-// );
-
-const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
 const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
@@ -75,13 +50,6 @@ const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-const PaymentsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Payments {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -188,6 +156,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     setSnackbarExist,
     userTheme,
     //user,
+    whiteLabelLogoUrls,
   } = rest;
 
   useEffect(() => {
@@ -199,9 +168,22 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, []);
 
   useEffect(() => {
+    if (!whiteLabelLogoUrls) return;
+    const favicon = whiteLabelLogoUrls[2]?.path?.light;
+
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    }
+    link.href = favicon;
+  }, [whiteLabelLogoUrls]);
+
+  useEffect(() => {
     socketHelper.emit({
       command: "subscribe",
-      data: "backup-restore",
+      data: { roomParts: "backup-restore" },
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
@@ -409,10 +391,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       setTheme(systemTheme);
   }, [systemTheme]);
 
+  const rootElement = document.getElementById("root");
+
+  const toast = isMobileOnly ? (
+    <Portal element={<Toast />} appendTo={rootElement} visible={true} />
+  ) : (
+    <Toast />
+  );
+
   return (
     <Layout>
       <Router history={history}>
-        <Toast />
+        {toast}
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
         {isMobileOnly && <MainBar />}
@@ -422,73 +412,79 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Main isDesktop={isDesktop}>
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
-          <Switch>
-            <PrivateRoute
-              exact
-              path={[
-                "/",
+            <Switch>
+              <Redirect
+                exact
+                sensitive
+                from="/Products/Files/"
+                to="/rooms/shared"
+              />
+              <PrivateRoute
+                exact
+                path={[
+                  "/",
 
-                "/rooms/personal",
-                "/rooms/personal/filter",
+                  "/rooms/personal",
+                  "/rooms/personal/filter",
 
-                "/rooms/shared",
-                "/rooms/shared/filter",
-                "/rooms/shared/:room",
-                "/rooms/shared/:room/filter",
+                  "/rooms/shared",
+                  "/rooms/shared/filter",
+                  "/rooms/shared/:room",
+                  "/rooms/shared/:room/filter",
 
-                "/rooms/archived",
-                "/rooms/archived/filter",
-                "/rooms/archived/:room",
-                "/rooms/archived/:room/filter",
+                  "/rooms/archived",
+                  "/rooms/archived/filter",
+                  "/rooms/archived/:room",
+                  "/rooms/archived/:room/filter",
 
-                "/files/favorite",
-                "/files/favorite/filter",
+                  "/files/favorite",
+                  "/files/favorite/filter",
 
-                "/files/recent",
-                "/files/recent/filter",
+                  "/files/recent",
+                  "/files/recent/filter",
 
-                "/files/trash",
-                "/files/trash/filter",
+                  "/files/trash",
+                  "/files/trash/filter",
 
-                "/accounts",
-                "/accounts/filter",
+                  "/accounts",
+                  "/accounts/filter",
 
-                "/accounts/create/:type",
-                "/accounts/edit/:userId",
-                "/accounts/view/:userId",
-                "/accounts/view/@self",
+                  "/accounts/create/:type",
+                  "/accounts/edit/:userId",
+                  "/accounts/view/:userId",
+                  "/accounts/view/@self",
 
-                "/settings",
-                "/settings/common",
-                "/settings/admin",
-                //"/settings/connected-clouds",
-              ]}
-              component={FilesRoute}
-            />
-            <PrivateRoute
-              path={"/form-gallery/:folderId"}
-              component={FormGalleryRoute}
-            />
-            <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-            <PrivateRoute path={"/about"} component={AboutRoute} />
-            <Route path={"/confirm"} component={ConfirmRoute} />
-            <PrivateRoute path={"/payments"} component={PaymentsRoute} />
-            <PrivateRoute
-              restricted
-              path={"/portal-settings"}
-              component={PortalSettingsRoute}
-            />
-            <PrivateRoute
-              path={"/preparation-portal"}
-              component={PreparationPortalRoute}
-            />
-            <PrivateRoute
-              path={"/portal-unavailable"}
-              component={PortalUnavailableRoute}
-            />
-            <PrivateRoute path={"/error401"} component={Error401Route} />
-            <PrivateRoute component={Error404Route} />
-          </Switch>
+                  "/settings",
+                  "/settings/common",
+                  "/settings/admin",
+                  "/products/files",
+                  //"/settings/connected-clouds",
+                ]}
+                component={FilesRoute}
+              />
+              <PrivateRoute
+                path={"/form-gallery/:folderId"}
+                component={FormGalleryRoute}
+              />
+              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
+              <PrivateRoute path={"/about"} component={AboutRoute} />
+              <Route path={"/confirm"} component={ConfirmRoute} />
+              <PrivateRoute
+                restricted
+                path={"/portal-settings"}
+                component={PortalSettingsRoute}
+              />
+              <PrivateRoute
+                path={"/preparation-portal"}
+                component={PreparationPortalRoute}
+              />
+              <PrivateRoute
+                path={"/portal-unavailable"}
+                component={PortalUnavailableRoute}
+              />
+              <PrivateRoute path={"/error401"} component={Error401Route} />
+              <PrivateRoute component={Error404Route} />
+            </Switch>
           </div>
         </Main>
       </Router>
@@ -510,6 +506,8 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
+    getWhiteLabelLogoUrls,
+    whiteLabelLogoUrls,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
@@ -544,6 +542,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
+    whiteLabelLogoUrls,
   };
 })(observer(Shell));
 

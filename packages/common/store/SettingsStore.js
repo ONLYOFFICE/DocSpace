@@ -3,7 +3,6 @@ import api from "../api";
 import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
-  AppServerConfig,
   ThemeKeys,
   COOKIE_EXPIRATION_YEAR,
   LANGUAGE,
@@ -13,8 +12,6 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
-
-const { proxyURL } = AppServerConfig;
 
 const themes = {
   Dark: Dark,
@@ -70,19 +67,8 @@ class SettingsStore {
   urlSupport = "https://helpdesk.onlyoffice.com/";
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
-  logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
-  customNames = {
-    id: "Common",
-    userCaption: "User",
-    usersCaption: "Users",
-    groupCaption: "Group",
-    groupsCaption: "Groups",
-    userPostCaption: "Title",
-    regDateCaption: "Registration Date",
-    groupHeadCaption: "Head",
-    guestCaption: "Guest",
-    guestsCaption: "Guests",
-  };
+  logoUrl = "";
+
   isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
@@ -124,7 +110,7 @@ class SettingsStore {
   };
   version = "";
   buildVersionInfo = {
-    appServer: version,
+    docspace: version,
     documentServer: "6.4.1",
   };
   debugInfo = false;
@@ -151,7 +137,6 @@ class SettingsStore {
   companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
-  docSpaceLogo = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -209,7 +194,10 @@ class SettingsStore {
     else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(proxyURL, "/products/files/");
+      const dp = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        "/products/files/"
+      );
       this.setDefaultPage(dp);
     }
 
@@ -218,7 +206,7 @@ class SettingsStore {
         this.setValue(
           key,
           key === "defaultPage"
-            ? combineUrl(proxyURL, newSettings[key])
+            ? combineUrl(window.DocSpaceConfig?.proxy?.url, newSettings[key])
             : newSettings[key]
         );
         if (key === "culture") {
@@ -229,12 +217,6 @@ class SettingsStore {
             });
           }
         }
-        // if (key === "personal") {
-        //   window.AppServer = {
-        //     ...window.AppServer,
-        //     personal: newSettings[key],
-        //   };
-        // }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
       }
@@ -247,15 +229,6 @@ class SettingsStore {
 
   getFolderPath = async (id) => {
     this.folderPath = await api.files.getFolderPath(id);
-  };
-
-  getCurrentCustomSchema = async (id) => {
-    let customNames = null;
-    if (window?.__ASC_INITIAL_EDITOR_STATE__?.customNames) {
-      customNames = window.__ASC_INITIAL_EDITOR_STATE__.customNames;
-      window.__ASC_INITIAL_EDITOR_STATE__.customNames = null;
-    } else customNames = await api.settings.getCurrentCustomSchema(id);
-    this.customNames = customNames;
   };
 
   getCustomSchemaList = async () => {
@@ -272,13 +245,6 @@ class SettingsStore {
       this.pluginOptions = origSettings.plugins.allow;
     }
 
-    if (
-      origSettings.nameSchemaId &&
-      this.tenantStatus !== TenantStatus.PortalRestore
-    ) {
-      this.getCurrentCustomSchema(origSettings.nameSchemaId);
-    }
-
     if (origSettings.tenantAlias) {
       this.setTenantAlias(origSettings.tenantAlias);
     }
@@ -288,7 +254,11 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
+    requests.push(
+      this.getPortalSettings(),
+      this.getAppearanceTheme(),
+      this.getWhiteLabelLogoUrls()
+    );
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -387,8 +357,8 @@ class SettingsStore {
     );
   };
 
-  setDocSpaceLogo = (urls) => {
-    this.docSpaceLogo = urls[1];
+  setLogoUrl = (url) => {
+    this.logoUrl = url[0];
   };
 
   setLogoUrls = (urls) => {
@@ -406,7 +376,7 @@ class SettingsStore {
     const res = await api.settings.getLogoUrls();
 
     this.setLogoUrls(Object.values(res));
-    this.setDocSpaceLogo(Object.values(res));
+    this.setLogoUrl(Object.values(res));
   };
 
   restoreCompanyInfoSettings = async () => {
@@ -443,7 +413,10 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+    return combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      `/login.ashx?p=${token}&code=${code}`
+    );
   };
 
   setModuleInfo = (homepage, productId) => {
@@ -562,7 +535,7 @@ class SettingsStore {
   setBuildVersionInfo = (versionInfo) => {
     this.buildVersionInfo = {
       ...this.buildVersionInfo,
-      appServer: version,
+      docspace: version,
       ...versionInfo,
     };
 
@@ -676,7 +649,10 @@ class SettingsStore {
   };
 
   getAppearanceTheme = async () => {
-    const res = await api.settings.getAppearanceTheme();
+    let res = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.appearanceTheme)
+      res = window.__ASC_INITIAL_EDITOR_STATE__.appearanceTheme;
+    else res = await api.settings.getAppearanceTheme();
 
     const currentColorScheme = res.themes.find((theme) => {
       return res.selected === theme.id;
@@ -689,6 +665,10 @@ class SettingsStore {
 
   sendAppearanceTheme = async (data) => {
     return api.settings.sendAppearanceTheme(data);
+  };
+
+  deleteAppearanceTheme = async (id) => {
+    return api.settings.deleteAppearanceTheme(id);
   };
 }
 

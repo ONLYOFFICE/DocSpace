@@ -21,6 +21,7 @@ import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 import { EmployeeStatus } from "@docspace/common/constants";
+import Filter from "@docspace/common/api/people/filter";
 
 class PeopleStore {
   contextOptionsStore = null;
@@ -39,10 +40,11 @@ class PeopleStore {
   loadingStore = null;
   infoPanelStore = null;
   setupStore = null;
+  accessRightsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
 
-  constructor(authStore, infoPanelStore, setupStore) {
+  constructor(authStore, infoPanelStore, setupStore, accessRightsStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -58,6 +60,7 @@ class PeopleStore {
     this.loadingStore = new LoadingStore();
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
+    this.accessRightsStore = accessRightsStore;
 
     this.contextOptionsStore = new AccountsContextOptionsStore(this);
 
@@ -84,19 +87,12 @@ class PeopleStore {
     this.loadingStore.setIsLoaded(false);
   };
 
-  resetFilter = (withoutGroup = false) => {
-    const { filter } = this.filterStore;
+  resetFilter = () => {
     const { getUsersList } = this.usersStore;
-    let newFilter;
 
-    if (withoutGroup) {
-      const { group } = filter;
-      newFilter = filter.reset(group);
-    } else {
-      newFilter = filter.clone(true);
-    }
+    const filter = Filter.getDefault();
 
-    return getUsersList(newFilter);
+    return getUsersList(filter, true);
   };
 
   onChangeType = (e) => {
@@ -191,7 +187,7 @@ class PeopleStore {
     const options = [];
 
     const adminOption = {
-      id: "group-menu_administrator",
+      id: "menu_change-user_administrator",
       className: "group-menu_drop-down",
       label: t("Common:DocSpaceAdmin"),
       title: t("Common:DocSpaceAdmin"),
@@ -200,7 +196,7 @@ class PeopleStore {
       key: "administrator",
     };
     const managerOption = {
-      id: "group-menu_manager",
+      id: "menu_change-user_manager",
       className: "group-menu_drop-down",
       label: t("Common:RoomAdmin"),
       title: t("Common:RoomAdmin"),
@@ -209,7 +205,7 @@ class PeopleStore {
       key: "manager",
     };
     const userOption = {
-      id: "group-menu_user",
+      id: "menu_change-user_user",
       className: "group-menu_drop-down",
       label: t("Common:User"),
       title: t("Common:User"),
@@ -226,6 +222,7 @@ class PeopleStore {
 
     const headerMenu = [
       {
+        id: "menu-change-type",
         key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: !hasUsersToMakeEmployees,
@@ -234,6 +231,7 @@ class PeopleStore {
         options: options,
       },
       {
+        id: "menu-info",
         key: "info",
         label: t("Common:Info"),
         disabled:
@@ -243,6 +241,7 @@ class PeopleStore {
         iconUrl: "images/info.react.svg",
       },
       {
+        id: "menu-invite",
         key: "invite",
         label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
@@ -250,6 +249,7 @@ class PeopleStore {
         iconUrl: "/static/images/invite.again.react.svg",
       },
       {
+        id: "menu-enable",
         key: "enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
@@ -257,6 +257,7 @@ class PeopleStore {
         iconUrl: "images/enable.react.svg",
       },
       {
+        id: "menu-disable",
         key: "disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
@@ -264,6 +265,7 @@ class PeopleStore {
         iconUrl: "images/disable.react.svg",
       },
       {
+        id: "menu-delete",
         key: "delete",
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,

@@ -32,25 +32,19 @@ namespace ASC.Data.Backup.Controllers;
 public class BackupController : ControllerBase
 {
     private readonly BackupAjaxHandler _backupHandler;
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantExtra _tenantExtra;
     private readonly IEventBus _eventBus;
     private readonly Guid _currentUserId;
     private readonly int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,
-        CoreBaseSettings coreBaseSettings,
         TenantManager tenantManager,
         SecurityContext securityContext,
-        TenantExtra tenantExtra,
         IEventBus eventBus)
     {
         _currentUserId = securityContext.CurrentAccount.ID;
         _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
-        _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
         _eventBus = eventBus;
     }
     /// <summary>
@@ -142,9 +136,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpGet("getbackuphistory")]
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
-        return _backupHandler.GetBackupHistory();
+        return await _backupHandler.GetBackupHistory();
     }
 
     /// <summary>
@@ -152,9 +146,9 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     [HttpDelete("deletebackup/{id}")]
-    public bool DeleteBackup(Guid id)
+    public async Task<bool> DeleteBackup(Guid id)
     {
-        _backupHandler.DeleteBackup(id);
+        await _backupHandler.DeleteBackup(id);
         return true;
     }
 
@@ -164,9 +158,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpDelete("deletebackuphistory")]
-    public bool DeleteBackupHistory()
+    public async Task<bool> DeleteBackupHistory()
     {
-        _backupHandler.DeleteAllBackups();
+        await _backupHandler.DeleteAllBackups();
         return true;
     }
 

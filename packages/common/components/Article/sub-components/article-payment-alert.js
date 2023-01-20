@@ -6,7 +6,6 @@ import Text from "@docspace/components/text";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import { StyledArticlePaymentAlert } from "../styled-article";
 import styled from "styled-components";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import Loaders from "../../Loaders";
@@ -18,7 +17,10 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
   }
 `;
 
-const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
+const PROXY_BASE_URL = combineUrl(
+  window.DocSpaceConfig?.proxy?.url,
+  "/portal-settings"
+);
 
 const ArticlePaymentAlert = ({
   pricePerManager,
@@ -27,6 +29,8 @@ const ArticlePaymentAlert = ({
   currencySymbol,
   setPortalPaymentQuotas,
   currentTariffPlanTitle,
+  toggleArticleOpen,
+  tariffPlanTitle,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -40,6 +44,7 @@ const ArticlePaymentAlert = ({
       "/payments/portal-payments"
     );
     history.push(paymentPageUrl);
+    toggleArticleOpen();
   };
 
   const isShowLoader = !ready;
@@ -51,6 +56,7 @@ const ArticlePaymentAlert = ({
       onClick={onClick}
       isFreeTariff={isFreeTariff}
       theme={theme}
+      id="document_catalog-payment-alert"
     >
       <div>
         <Text className="article-payment_border">
@@ -63,7 +69,9 @@ const ArticlePaymentAlert = ({
           )}
         </Text>
         <Text fontWeight={600}>
-          {isFreeTariff ? t("ActivateBusinessPlan") : t("GracePeriodActivated")}
+          {isFreeTariff
+            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
+            : t("GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
@@ -93,7 +101,11 @@ export default withRouter(
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
     const { theme } = auth;
-    const { setPortalPaymentQuotas, planCost } = paymentQuotasStore;
+    const {
+      setPortalPaymentQuotas,
+      planCost,
+      tariffPlanTitle,
+    } = paymentQuotasStore;
 
     return {
       setPortalPaymentQuotas,
@@ -101,6 +113,7 @@ export default withRouter(
       theme,
       currencySymbol: planCost.currencySymbol,
       currentTariffPlanTitle,
+      tariffPlanTitle,
     };
   })(observer(ArticlePaymentAlert))
 );

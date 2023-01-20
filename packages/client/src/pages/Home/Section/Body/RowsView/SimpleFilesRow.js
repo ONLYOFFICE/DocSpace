@@ -13,18 +13,9 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
-
+import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
-  ${marginStyles}
-`;
-
-const draggingStyle = css`
-  background: ${(props) =>
-    props.isDragOver
-      ? props.theme.dragAndDrop.acceptBackground
-      : props.theme.dragAndDrop.background};
-
   ${marginStyles}
 `;
 
@@ -38,7 +29,6 @@ const StyledWrapper = styled.div`
 
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
-  ${(props) => props.dragging && draggingStyle}
   height: 56px;
 
   ${(props) =>
@@ -49,8 +39,12 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -1px;
+        margin-top: -2px;
+        padding-top: 1px;
+        padding-bottom: 1px;
         border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
           `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     `};
@@ -123,7 +117,6 @@ const StyledSimpleFilesRow = styled(Row)`
   .badges {
     display: flex;
     align-items: center;
-    margin-top: 2px;
     margin-bottom: 26px;
   }
 
@@ -159,11 +152,25 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badges {
+    margin-top: ${(props) =>
+      props.isSmallContainer ? "1px" : props.isRooms ? "4px" : "2px"};
     margin-bottom: 0px;
+
+    ${(props) =>
+      props.isSmallContainer &&
+      css`
+        .tablet-pinned {
+          margin-top: 2px;
+        }
+      `}
+  }
+
+  .temp-badges {
+    margin-top: 0px;
   }
 
   .badge {
-    margin-right: 24px;
+    margin-right: ${(props) => (props.isSmallContainer ? "8px" : "24px")};
   }
 
   .lock-file {
@@ -173,8 +180,15 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
-    margin-left: 6px;
+    margin-left: ${(props) => (!props.folderCategory ? "6px" : "0")};
     padding-top: 0px;
+  }
+  .expandButton > div:first-child {
+    ${(props) =>
+      props.folderCategory &&
+      css`
+        padding-left: 0 !important;
+      `}
   }
 `;
 
@@ -197,6 +211,7 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     checkedProps,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isEdit,
     isActive,
@@ -206,19 +221,22 @@ const SimpleFilesRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
+
+    folderCategory,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
 
-  const withAccess = isAdmin || item.access === 0;
+  const withAccess = item.security?.Lock;
   const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
+      icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      defaultRoomIcon={item.defaultRoomIcon}
     />
   );
 
@@ -232,9 +250,24 @@ const SimpleFilesRow = (props) => {
     setIsDragOver(false);
   };
 
+  const dragStyles =
+    dragging && isDragging
+      ? {
+          marginLeft: "-16px",
+          marginRight: "-16px",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        }
+      : {};
+
+  const idWithFileExst = item.fileExst
+    ? `${item.id}_${item.fileExst}`
+    : item.id ?? "";
+
   return (
     <StyledWrapper
       id={id}
+      onDragOver={onDragOver}
       className={`row-wrapper ${
         showHotkeyBorder
           ? "row-hotkey-border"
@@ -246,12 +279,13 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.fileExst}`}
+        className={classNames("files-item", className, idWithFileExst)}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
+        style={dragStyles}
       >
         <StyledSimpleFilesRow
           key={item.id}
@@ -267,7 +301,7 @@ const SimpleFilesRow = (props) => {
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
@@ -282,6 +316,9 @@ const SimpleFilesRow = (props) => {
           showHotkeyBorder={showHotkeyBorder}
           isRoom={item.isRoom}
           isDragOver={isDragOver}
+          isSmallContainer={isSmallContainer}
+          isRooms={isRooms}
+          folderCategory={folderCategory}
         >
           <FilesRowContent
             item={item}

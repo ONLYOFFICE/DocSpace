@@ -45,6 +45,7 @@ public class SharePointProviderInfo : IProviderInfo
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
     public bool Private { get; set; }
+    public bool HasLogo { get; set; }
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -562,7 +563,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
-            result.FolderType = Core.FolderType.DEFAULT;
+            result.FolderType = FolderType.DEFAULT;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
@@ -576,6 +577,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.FoldersCount = 0;
             result.Error = errorFolder.Error;
             result.Private = Private;
+            result.HasLogo = HasLogo;
 
             return result;
         }
@@ -586,7 +588,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
-        result.FolderType = Core.FolderType.DEFAULT;
+        result.FolderType = FolderType.DEFAULT;
         result.ModifiedBy = Owner;
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;
@@ -599,6 +601,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.FilesCount = 0;
         result.FoldersCount = 0;
         result.Private = Private;
+        result.HasLogo = HasLogo;
 
         SetFolderType(result, isRoot);
 

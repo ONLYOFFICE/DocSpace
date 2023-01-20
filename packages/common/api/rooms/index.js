@@ -2,10 +2,11 @@ import { request } from "../client";
 import { decodeDisplayName } from "../../utils";
 import { FolderType } from "../../constants";
 
-export function getRooms(filter) {
+export function getRooms(filter, signal) {
   const options = {
     method: "get",
     url: `/files/rooms?${filter.toApiUrlParams()}`,
+    signal,
   };
 
   return request(options).then((res) => {
@@ -13,7 +14,9 @@ export function getRooms(filter) {
     res.folders = decodeDisplayName(res.folders);
 
     if (res.current.rootFolderType === FolderType.Archive) {
-      res.folders.forEach((room) => (room.isArchive = true));
+      res.folders.forEach((room) => {
+        room.isArchive = true;
+      });
     }
 
     return res;
@@ -27,6 +30,8 @@ export function getRoomInfo(id) {
   };
 
   return request(options).then((res) => {
+    if (res.rootFolderType === FolderType.Archive) res.isArchive = true;
+
     return res;
   });
 }
@@ -35,6 +40,18 @@ export function getRoomMembers(id) {
   const options = {
     method: "get",
     url: `/files/rooms/${id}/share`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function updateRoomMemberRole(id, data) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
   };
 
   return request(options).then((res) => {
@@ -147,8 +164,8 @@ export function archiveRoom(id, deleteAfter = false) {
   });
 }
 
-export function unarchiveRoom(id, deleteAfter = true) {
-  const data = { deleteAfter };
+export function unarchiveRoom(id) {
+  const data = { deleteAfter: false };
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,
@@ -263,7 +280,7 @@ export const setInvitationLinks = async (roomId, linkId, title, access) => {
 
 export const resendEmailInvitations = async (id, usersIds) => {
   const options = {
-    method: "put",
+    method: "post",
     url: `/files/rooms/${id}/resend`,
     data: {
       usersIds,

@@ -11,7 +11,6 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl, setCookie } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -164,8 +163,6 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
-      nameSchemaId,
-      getCurrentCustomSchema,
       cultureNames,
       rawTimezones,
       portalTimeZoneId,
@@ -254,18 +251,14 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     if (language !== prevProps.language) {
-      i18n
-        .changeLanguage(language)
-        .then(() => {
-          const newLocaleSelectedLanguage =
-            findSelectedItemByKey(cultureNames, this.state.language.key) ||
-            cultureNames[0];
-          this.setState({
-            language: languageFromSessionStorage || newLocaleSelectedLanguage,
-          });
-        })
-        //.then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(nameSchemaId));
+      i18n.changeLanguage(language).then(() => {
+        const newLocaleSelectedLanguage =
+          findSelectedItemByKey(cultureNames, this.state.language.key) ||
+          cultureNames[0];
+        this.setState({
+          language: languageFromSessionStorage || newLocaleSelectedLanguage,
+        });
+      });
     }
     if (timezoneDefault && languageDefault) {
       this.checkChanges();
@@ -386,7 +379,7 @@ class LanguageAndTimeZone extends React.Component {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )
@@ -414,6 +407,7 @@ class LanguageAndTimeZone extends React.Component {
       isLoadedPage,
       helpLink,
       organizationName,
+      currentColorScheme,
     } = this.props;
 
     const {
@@ -434,6 +428,7 @@ class LanguageAndTimeZone extends React.Component {
         t={t}
         helpLink={helpLink}
         organizationName={organizationName}
+        currentColorScheme={currentColorScheme}
       />
     );
 
@@ -493,6 +488,7 @@ class LanguageAndTimeZone extends React.Component {
               {t("StudioTimeLanguageSettings")}
             </div>
             <HelpButton
+              offsetRight={0}
               iconName="static/images/combined.shape.svg"
               size={12}
               tooltipContent={tooltipLanguageTimeSettings}
@@ -530,9 +526,9 @@ export default inject(({ auth, setup, common }) => {
     organizationName,
     greetingSettings,
     getPortalTimezones,
-    getCurrentCustomSchema,
     cultures,
     helpLink,
+    currentColorScheme,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -555,7 +551,6 @@ export default inject(({ auth, setup, common }) => {
     nameSchemaId,
     organizationName,
     setLanguageAndTime,
-    getCurrentCustomSchema,
     getPortalTimezones,
     isLoaded,
     setIsLoadedLngTZSettings,
@@ -563,6 +558,7 @@ export default inject(({ auth, setup, common }) => {
     helpLink,
     initSettings,
     setIsLoaded,
+    currentColorScheme,
   };
 })(
   withLoading(

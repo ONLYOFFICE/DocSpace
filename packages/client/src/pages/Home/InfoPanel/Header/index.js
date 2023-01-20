@@ -17,6 +17,7 @@ import {
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
+import { FolderType } from "@docspace/common/constants";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -30,6 +31,8 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
+    // rootFolderType,
+    // selectionParentRoom,
   } = props;
 
   const isRooms = getIsRooms();
@@ -43,32 +46,38 @@ const InfoPanelHeaderContent = (props) => {
 
   const closeInfoPanel = () => setIsVisible(false);
 
-  const setMembers = () => setView("members");
-  const setHistory = () => setView("history");
-  const setDetails = () => setView("details");
+  const setMembers = () => setView("info_members");
+  const setHistory = () => setView("info_history");
+  const setDetails = () => setView("info_details");
+
+  //const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
-      id: "members",
-      name: t("InfoPanel:SubmenuMembers"),
+      id: "info_members",
+      name: t("Common:Members"),
       onClick: setMembers,
       content: null,
     },
     {
-      id: "history",
+      id: "info_history",
       name: t("InfoPanel:SubmenuHistory"),
       onClick: setHistory,
       content: null,
     },
     {
-      id: "details",
+      id: "info_details",
       name: t("InfoPanel:SubmenuDetails"),
       onClick: setDetails,
       content: null,
     },
   ];
+  // const selectionRoomRights = selectionParentRoom
+  //   ? selectionParentRoom.security?.Read
+  //   : selection?.security?.Read;
 
   const roomsSubmenu = [...submenuData];
+
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   const isTablet =
@@ -90,6 +99,7 @@ const InfoPanelHeaderContent = (props) => {
           {!isTablet && (
             <div className="info-panel-toggle-bg">
               <IconButton
+                id="info-panel-toggle--close"
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
                 size="16"
@@ -133,8 +143,12 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
+    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const { isRootFolder } = selectedFolderStore;
+  const {
+    isRootFolder,
+    // rootFolderType
+  } = selectedFolderStore;
 
   return {
     selection,
@@ -148,11 +162,15 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsAccounts,
 
     isRootFolder,
+    //  rootFolderType,
+
+    //selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
-    withLoader(observer(InfoPanelHeaderContent))(
-      <Loaders.InfoPanelHeaderLoader />
-    )
+    InfoPanelHeaderContent
+    // withLoader(observer(InfoPanelHeaderContent))(
+    //   <Loaders.InfoPanelHeaderLoader />
+    // )
   )
 );

@@ -61,34 +61,6 @@ const StyledInfoPanelHeader = styled.div`
   }
 `;
 
-const StyledInfoPanelToggleWrapper = styled.div`
-  display: flex;
-
-  @media ${tablet} {
-    display: none;
-  }
-
-  align-items: center;
-  justify-content: center;
-  padding-right: 20px;
-
-  .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background-color: ${(props) =>
-      props.theme.infoPanel.sectionHeaderToggleBgActive};
-
-    path {
-      fill: ${(props) => props.theme.infoPanel.sectionHeaderToggleIconActive};
-    }
-  }
-`;
-
 StyledInfoPanelHeader.defaultProps = { theme: Base };
-StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-export { StyledInfoPanelHeader, StyledInfoPanelToggleWrapper };
+export { StyledInfoPanelHeader };

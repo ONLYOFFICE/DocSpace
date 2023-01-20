@@ -40,12 +40,10 @@ public sealed class UserManagerWrapper
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
-    private readonly MessageService _messageService;
     private readonly CustomNamingPeople _customNamingPeople;
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IPSecurity.IPSecurity _iPSecurity;
-    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
     private readonly CountRoomAdminChecker _countManagerChecker;
@@ -54,12 +52,10 @@ public sealed class UserManagerWrapper
         StudioNotifyService studioNotifyService,
         UserManager userManager,
         SecurityContext securityContext,
-        MessageService messageService,
         CustomNamingPeople customNamingPeople,
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         IPSecurity.IPSecurity iPSecurity,
-        DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
         UserFormatter userFormatter,
         CountRoomAdminChecker countManagerChecker)
@@ -67,12 +63,10 @@ public sealed class UserManagerWrapper
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
         _securityContext = securityContext;
-        _messageService = messageService;
         _customNamingPeople = customNamingPeople;
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _iPSecurity = iPSecurity;
-        _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
         _countManagerChecker = countManagerChecker;
@@ -117,12 +111,7 @@ public sealed class UserManagerWrapper
 
         if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
         {
-            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
-        }
-
-        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
-        {
-            await _countManagerChecker.CheckAppend();
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
         var user = new UserInfo
@@ -135,7 +124,9 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
-        var newUser = _userManager.SaveUserInfo(user);
+        user.UserName = MakeUniqueName(user);
+
+        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User);
 
         var groupId = type switch
         {
@@ -146,13 +137,13 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            _userManager.AddUserIntoGroup(newUser.Id, groupId);
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
 
         return newUser;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
         bool updateExising = false, bool isAdmin = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
@@ -181,7 +172,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -226,11 +217,11 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
         }
         else if (isAdmin)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
         }
 
         return newUserInfo;

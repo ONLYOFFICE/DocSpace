@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
-import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
@@ -15,7 +14,7 @@ import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
-import MoreLoginModal from "./sub-components/more-login";
+import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
@@ -24,6 +23,8 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -38,18 +39,20 @@ const Login: React.FC<ILoginProps> = ({
   currentColorScheme,
   theme,
   setTheme,
+  logoUrls,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin, greetingSettings } = portalSettings;
+  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -57,6 +60,11 @@ const Login: React.FC<ILoginProps> = ({
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -174,6 +182,9 @@ const Login: React.FC<ILoginProps> = ({
 
   const bgPattern = getBgPattern(currentColorScheme.id);
 
+  const logo = Object.values(logoUrls)[1];
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+
   if (!mounted) return <></>;
 
   return (
@@ -185,7 +196,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        <Logo className="logo-wrapper" />
+        <img src={logoUrl} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}
@@ -216,9 +227,7 @@ const Login: React.FC<ILoginProps> = ({
           )}
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
-              <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
-              </Text>
+              <Text className="or-label">{t("Or")}</Text>
             </div>
           )}
           <LoginForm
@@ -228,6 +237,7 @@ const Login: React.FC<ILoginProps> = ({
             setIsLoading={setIsLoading}
             onRecoverDialogVisible={onRecoverDialogVisible}
             match={match}
+            enableAdmMess={enableAdmMess}
           />
         </FormWrapper>
         <Toast />
@@ -246,10 +256,12 @@ const Login: React.FC<ILoginProps> = ({
           onClose={onRecoverDialogVisible}
           textBody={t("RecoverTextBody")}
           emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
+          id="recover-access-modal"
         />
       </ColorTheme>
       {!checkIsSSR() && enabledJoin && (
         <Register
+          id="login_register"
           enabledJoin={enabledJoin}
           currentColorScheme={currentColorScheme}
         />

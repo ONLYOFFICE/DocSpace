@@ -1,8 +1,5 @@
 {
-  "AddAccount": "ເພີ່ມບັນຊີ",
-  "AddAuthor": "ເພີ່ມຜູ້ຂຽນ",
   "ArchivingData": "ການເກັບກໍາຂໍ້ມູນ",
-  "ButtonShareAccess": "ການແບ່ງປັນ ການຕັ້ງຄ່າ",
   "ConnectingAccount": "ການເຊື່ອມໂຍງບັນຊີ",
   "Copy": "ສໍາເນົາ",
   "CopyHere": "ສຳເນົາ ນີ້",
@@ -25,12 +22,12 @@
   "MobileAndroid": "ເອົາ ເອ ກະສານສະເພາະ ໃນ Google Play",
   "MobileIos": "ດາວໂຫລດ ເອກະສານ ONLYOFFICE ໃນ App Store",
   "MobileLinux": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Linux",
-  "MobileMac": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Mac OS",
+  "MobileMac": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ macOS",
   "MobileWin": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Windows",
   "MoveHere": "ຍ້າຍ ນີ້",
   "MoveToOperation": "ກຳລັງເຄື່ອນຍ້າຍ",
   "NewForm": "ແບບຟອມ",
-  "NewFormFile": "ໄຟລ໌ແບບຟອມ",
+  "Other": "ອື່ນໆ",
   "OwnerChange": "ປ່ຽນເຈົ້າຂອງ",
   "Presentations": "ບົດສະເຫນີ",
   "SubNewForm": "ຟອມເປົ່າ",
@@ -45,6 +42,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "ອື່ນໆ"
+  "TypeTitlekDrive": "kDrive"
 }

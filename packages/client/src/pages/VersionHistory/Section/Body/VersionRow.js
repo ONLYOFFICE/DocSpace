@@ -41,12 +41,11 @@ const VersionRow = (props) => {
     versionsListLength,
     isEditing,
     theme,
+    canChangeVersionFileHistory,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
-
-  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
@@ -92,12 +91,17 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
-    canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && {
-      key: "restore",
-      label: t("Common:Restore"),
-      onClick: onRestoreClick,
+    canChangeVersionFileHistory && {
+      key: "edit",
+      label: t("EditComment"),
+      onClick: onEditComment,
     },
+    index !== 0 &&
+      canChangeVersionFileHistory && {
+        key: "restore",
+        label: t("Common:Restore"),
+        onClick: onRestoreClick,
+      },
     {
       key: "download",
       label: `${t("Common:Download")} (${info.contentLength})`,
@@ -105,7 +109,9 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+  const onClickProp = canChangeVersionFileHistory
+    ? { onClick: onVersionClick }
+    : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -119,7 +125,7 @@ const VersionRow = (props) => {
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
-      canEdit={canEdit}
+      canEdit={canChangeVersionFileHistory}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
@@ -215,7 +221,7 @@ const VersionRow = (props) => {
   );
 };
 
-export default inject(({ auth, versionHistoryStore }) => {
+export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
   const { user } = auth.userStore;
   const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en";
@@ -226,7 +232,11 @@ export default inject(({ auth, versionHistoryStore }) => {
     updateCommentVersion,
     isEditing,
     isEditingVersion,
+    fileSecurity,
   } = versionHistoryStore;
+
+  const isEdit = isEditingVersion || isEditing;
+  const canChangeVersionFileHistory = !isEdit && fileSecurity?.EditHistory;
 
   return {
     theme: auth.settingsStore.theme,
@@ -235,7 +245,8 @@ export default inject(({ auth, versionHistoryStore }) => {
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
-    isEditing: isEditingVersion || isEditing,
+    isEditing: isEdit,
+    canChangeVersionFileHistory,
   };
 })(
   withRouter(

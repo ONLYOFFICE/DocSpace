@@ -110,7 +110,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 result.Tags = folder.Tags.Select(t => t.Name);
             }
 
-            result.Logo = await _roomLogoManager.GetLogo(folder);
+            result.Logo = await _roomLogoManager.GetLogoAsync(folder);
             result.RoomType = folder.FolderType switch
             {
                 FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
@@ -120,6 +120,9 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 FolderType.CustomRoom => RoomType.CustomRoom,
                 _ => null,
             };
+
+            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
+                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
         }
 
         if (folder.RootFolderType == FolderType.USER

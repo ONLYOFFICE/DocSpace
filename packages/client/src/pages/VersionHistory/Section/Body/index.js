@@ -24,15 +24,15 @@ class SectionBodyContent extends React.Component {
     const fileId = match.params.fileId || this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
-      this.getFileVersions(fileId);
+      this.getFileVersions(fileId, this.props.fileSecurity);
       setFirstLoad(false);
     }
   }
 
-  getFileVersions = (fileId) => {
+  getFileVersions = (fileId, fileSecurity) => {
     const { fetchFileVersions, setIsLoading } = this.props;
     setIsLoading(true);
-    fetchFileVersions(fileId).then(() => setIsLoading(false));
+    fetchFileVersions(fileId, fileSecurity).then(() => setIsLoading(false));
   };
 
   onSetRestoreProcess = (restoring) => {
@@ -138,14 +138,19 @@ class SectionBodyContent extends React.Component {
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { setFirstLoad, setIsLoading, isLoading } = filesStore;
-  const { versions, fetchFileVersions, fileId } = versionHistoryStore;
+  const {
+    versions,
+    fetchFileVersions,
+    fileId,
+    fileSecurity,
+  } = versionHistoryStore;
 
   return {
     culture: auth.settingsStore.culture,
     isLoading,
     versions,
     fileId,
-
+    fileSecurity,
     setFirstLoad,
     setIsLoading,
     fetchFileVersions,

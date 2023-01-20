@@ -31,7 +31,6 @@ namespace ASC.Data.Storage.Encryption;
 [Transient(Additional = typeof(EncryptionOperationExtension))]
 public class EncryptionOperation : DistributedTaskProgress
 {
-    private const string ConfigPath = "";
     private const string ProgressFileName = "EncryptionProgress.tmp";
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -56,14 +55,14 @@ public class EncryptionOperation : DistributedTaskProgress
         _serverRootPath = serverRootPath;
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);
         _tenants = tenantManager.GetTenants(false);
-        _modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
+        _modules = storageFactoryConfig.GetModuleList(exceptDisabledMigration: true);
         _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
         Percentage = 10;
@@ -92,12 +91,12 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(tenant.Id, module));
                 }
 
-                Parallel.ForEach(dictionary, (elem) =>
+                await Parallel.ForEachAsync(dictionary, async (elem, token) =>
                 {
-                    EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log).Wait();
+                    await EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                 });
             }
 
@@ -106,28 +105,31 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (!_hasErrors)
             {
-                DeleteProgressFilesAsync(storageFactory).Wait();
+                await DeleteProgressFilesAsync(storageFactory);
                 SaveNewSettings(encryptionSettingsHelper, log);
             }
 
             Percentage = 90;
             PublishChanges();
-
             ActivateTenants(tenantManager, log, notifyHelper);
 
             Percentage = 100;
+
+            IsCompleted = true;
             PublishChanges();
         }
         catch (Exception e)
         {
             Exception = e;
             log.ErrorEncryptionOperation(e);
+            IsCompleted = true;
+            PublishChanges();
         }
     }
 
     private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILogger log)
     {
-        var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+        var domains = storageFactoryConfig.GetDomainList(module).ToList();
 
         domains.Add(string.Empty);
 
@@ -256,7 +258,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {

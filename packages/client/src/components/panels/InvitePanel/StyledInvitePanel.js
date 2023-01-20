@@ -49,7 +49,7 @@ const StyledSubHeader = styled(Heading)`
   font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  margin: 20px 0;
+  margin: 16px 0;
 
   ${(props) =>
     props.inline &&
@@ -83,6 +83,14 @@ const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
   margin-left: 16px;
   margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+
+  .input-link {
+    height: 32px;
+
+    > input {
+      height: 30px;
+    }
+  }
 `;
 
 const StyledAccessSelector = styled.div`
@@ -101,10 +109,12 @@ const StyledComboBox = styled(ComboBox)`
     text-decoration: none;
   }
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   .combo-buttons_arrow-icon {
-    margin-top: 12px;
-    margin-right: 8px;
-    margin-left: 0px;
+    margin-left: 2px;
   }
 
   padding: 0px;
@@ -120,6 +130,10 @@ const StyledInviteInputContainer = styled.div`
   align-items: center;
   ${fillAvailableWidth}
   margin-bottom: 20px;
+
+  .header_aside-panel {
+    max-width: 100% !important;
+  }
 `;
 
 const StyledDropDown = styled(DropDown)`

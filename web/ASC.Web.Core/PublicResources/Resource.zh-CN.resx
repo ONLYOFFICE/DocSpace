@@ -148,9 +148,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>密码格式不正确。新密码必须包含</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>它必须包含</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>数字</value>
   </data>

@@ -22,6 +22,8 @@ const TableGroupMenu = (props) => {
     isInfoPanelVisible,
     toggleInfoPanel,
     withoutInfoPanelToggler,
+    isMobileView,
+    isBlocked,
     ...rest
   } = props;
   const onCheckboxChange = (e) => {
@@ -36,6 +38,7 @@ const TableGroupMenu = (props) => {
         {...rest}
       >
         <Checkbox
+          id="menu-checkbox_selected-all-file"
           className="table-container_group-menu-checkbox"
           onChange={onCheckboxChange}
           isChecked={isChecked}
@@ -43,6 +46,7 @@ const TableGroupMenu = (props) => {
           title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
+          id="menu-combobox"
           comboIcon="/static/images/triangle.navigation.down.react.svg"
           noBorder
           advancedOptions={checkboxOptions}
@@ -52,17 +56,19 @@ const TableGroupMenu = (props) => {
           manualY="42px"
           manualX="-32px"
           title={t("Common:TitleSelectFile")}
+          isMobileView={isMobileView}
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
           {headerMenu.map((item, index) => (
-            <GroupMenuItem key={index} item={item} />
+            <GroupMenuItem key={index} item={item} isBlocked={isBlocked} />
           ))}
         </StyledScrollbar>
         {!withoutInfoPanelToggler && (
           <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
             <div className="info-panel-toggle-bg">
               <IconButton
+                id="info-panel-toggle--open"
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
                 size="16"

@@ -23,6 +23,7 @@ interface ILoginFormProps {
   isDesktop: boolean;
   match: MatchType;
   onRecoverDialogVisible: () => void;
+  enableAdmMess: boolean;
 }
 
 const settings = {
@@ -39,6 +40,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   match,
   setIsLoading,
   onRecoverDialogVisible,
+  enableAdmMess,
 }) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -68,10 +70,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         if (!response || !response.token) throw new Error("Empty API response");
 
         setWithCredentialsStatus(true);
-        const redirectPath = localStorage.getItem("redirectPath");
+        const redirectPath = sessionStorage.getItem("referenceUrl");
 
         if (redirectPath) {
-          localStorage.removeItem("redirectPath");
+          sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
         }
       })
@@ -151,9 +153,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     const session = !isChecked;
     login(user, hash, session)
       .then((res: string | object) => {
-        const redirectPath = localStorage.getItem("redirectPath");
+        const redirectPath = sessionStorage.getItem("referenceUrl");
         if (redirectPath) {
-          localStorage.removeItem("redirectPath");
+          sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
           return;
         }
@@ -162,9 +164,20 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         else window.location.replace("/"); //TODO: save { user, hash } for tfa
       })
       .catch((error) => {
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
         setIsEmailErrorShow(true);
-        setErrorText(error);
-        setPasswordValid(!error);
+        setErrorText(errorMessage);
+        setPasswordValid(!errorMessage);
         setIsLoading(false);
         focusInput();
       });
@@ -226,7 +239,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         } //TODO: Add wrong login server error
       >
         <EmailInput
-          id="login"
+          id="login_username"
           name="login"
           type="email"
           hasError={isEmailErrorShow}
@@ -256,7 +269,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
               className="password-input"
               simpleView={true}
               passwordSettings={settings}
-              id="password"
+              id="login_password"
               inputName="password"
               placeholder={t("Common:Password")}
               type="password"
@@ -276,7 +289,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             <div className="login-checkbox-wrapper">
               <div className="remember-wrapper">
                 <Checkbox
-                  id="login-checkbox"
+                  id="login_remember"
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={onChangeCheckbox}
@@ -284,6 +297,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   helpButton={
                     !checkIsSSR() && (
                       <HelpButton
+                        id="login_remember-hint"
                         className="help-button"
                         helpButtonHeaderContent={t("CookieSettingsTitle")}
                         tooltipContent={
@@ -302,6 +316,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 type="page"
                 isHovered={false}
                 onClick={onClick}
+                id="login_forgot-password-link"
               >
                 {t("ForgotPassword")}
               </Link>
@@ -319,7 +334,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
       )}
 
       <Button
-        id="submit"
+        id="login_submit"
         className="login-button"
         primary
         size="medium"
@@ -345,21 +360,25 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 >
                   {t("SignInWithCode")}
                 </Link>*/}
-
-          <Text color="#A3A9AE" className="login-or-access-text">
-            {t("Or")}
-          </Text>
-          <Link
-            fontWeight="600"
-            fontSize="13px"
-            color="#316DAA"
-            type="action"
-            isHovered={true}
-            className="login-link recover-link"
-            onClick={onRecoverDialogVisible}
-          >
-            {t("RecoverAccess")}
-          </Link>
+          {enableAdmMess && (
+            <>
+              <Text color="#A3A9AE" className="login-or-access-text">
+                {t("Or")}
+              </Text>
+              <Link
+                id="login_recover-link"
+                fontWeight="600"
+                fontSize="13px"
+                color="#316DAA"
+                type="action"
+                isHovered={true}
+                className="login-link recover-link"
+                onClick={onRecoverDialogVisible}
+              >
+                {t("RecoverAccess")}
+              </Link>
+            </>
+          )}
         </div>
       )}
 

@@ -45,23 +45,23 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
         _daoFactory = daoFactory;
     }
 
-    protected override bool BeforeIndex(DbFile data)
+    protected override async Task<bool> BeforeIndex(DbFile data)
     {
-        if (!base.BeforeIndex(data))
+        if (!(await base.BeforeIndex(data)))
         {
             return false;
         }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
         _tenantManager.SetCurrentTenant(data.TenantId);
-        fileDao.InitDocumentAsync(data).Wait();
+        await fileDao.InitDocumentAsync(data);
 
         return true;
     }
 
     protected override async Task<bool> BeforeIndexAsync(DbFile data)
     {
-        if (!base.BeforeIndex(data))
+        if (!(await base.BeforeIndex(data)))
         {
             return false;
         }
@@ -97,7 +97,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         _settings = settings;
     }
 
-    public override void IndexAll()
+    public override async Task IndexAll()
     {
         (int, int, int) getCount(DateTime lastIndexed)
         {
@@ -186,7 +186,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             {
                 if (_settings.Threads == 1)
                 {
-                    Index(data);
+                    await Index(data);
                 }
                 else
                 {

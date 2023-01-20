@@ -43,7 +43,7 @@ internal class S3BackupStorage : IBackupStorage
         _region = region;
     }
 
-    public string Upload(string storageBasePath, string localPath, Guid userId)
+    public async Task<string> Upload(string storageBasePath, string localPath, Guid userId)
     {
         string key;
 
@@ -58,7 +58,7 @@ internal class S3BackupStorage : IBackupStorage
 
         using (var fileTransferUtility = new TransferUtility(_accessKeyId, _secretAccessKey, RegionEndpoint.GetBySystemName(_region)))
         {
-            fileTransferUtility.Upload(
+            await fileTransferUtility.UploadAsync(
                 new TransferUtilityUploadRequest
                 {
                     BucketName = _bucket,
@@ -73,7 +73,7 @@ internal class S3BackupStorage : IBackupStorage
         return key;
     }
 
-    public void Download(string storagePath, string targetLocalPath)
+    public async Task Download(string storagePath, string targetLocalPath)
     {
         var request = new GetObjectRequest
         {
@@ -82,27 +82,27 @@ internal class S3BackupStorage : IBackupStorage
         };
 
         using var s3 = GetClient();
-        using var response = s3.GetObjectAsync(request).Result;
-        response.WriteResponseStreamToFileAsync(targetLocalPath, true, new CancellationToken());
+        using var response = await s3.GetObjectAsync(request);
+        await response.WriteResponseStreamToFileAsync(targetLocalPath, true, new CancellationToken());
     }
 
-    public void Delete(string storagePath)
+    public async Task Delete(string storagePath)
     {
         using var s3 = GetClient();
-        s3.DeleteObjectAsync(new DeleteObjectRequest
+        await s3.DeleteObjectAsync(new DeleteObjectRequest
         {
             BucketName = _bucket,
             Key = GetKey(storagePath)
         });
     }
 
-    public bool IsExists(string storagePath)
+    public async Task<bool> IsExists(string storagePath)
     {
         using var s3 = GetClient();
         try
         {
             var request = new ListObjectsRequest { BucketName = _bucket, Prefix = GetKey(storagePath) };
-            var response = s3.ListObjectsAsync(request).Result;
+            var response = await s3.ListObjectsAsync(request);
 
             return response.S3Objects.Count > 0;
         }
@@ -114,18 +114,18 @@ internal class S3BackupStorage : IBackupStorage
         }
     }
 
-    public string GetPublicLink(string storagePath)
+    public Task<string> GetPublicLink(string storagePath)
     {
         using var s3 = GetClient();
 
-        return s3.GetPreSignedURL(
+        return Task.FromResult(s3.GetPreSignedURL(
             new GetPreSignedUrlRequest
             {
                 BucketName = _bucket,
                 Key = GetKey(storagePath),
                 Expires = DateTime.UtcNow.AddDays(1),
                 Verb = HttpVerb.GET
-            });
+            }));
     }
 
     private string GetKey(string fileName)

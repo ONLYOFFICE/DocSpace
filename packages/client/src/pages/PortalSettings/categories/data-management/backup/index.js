@@ -3,7 +3,6 @@ import { withTranslation, Trans } from "react-i18next";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
@@ -16,11 +15,13 @@ const Backup = ({
   t,
   history,
   isNotPaidPeriod,
+  currentColorScheme,
 }) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
         <HelpButton
+          place="bottom"
           iconName={"/static/images/help.react.svg"}
           tooltipContent={
             <>
@@ -32,7 +33,7 @@ const Backup = ({
                   as="a"
                   href={helpUrlCreatingBackup}
                   target="_blank"
-                  color="#555F65"
+                  color={currentColorScheme.main.accent}
                   isBold
                   isHovered
                 >
@@ -66,7 +67,7 @@ const Backup = ({
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/backup/${e.id}`
       )
@@ -84,7 +85,11 @@ export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
-  const { helpUrlCreatingBackup, isTabletView } = settingsStore;
+  const {
+    helpUrlCreatingBackup,
+    isTabletView,
+    currentColorScheme,
+  } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 
@@ -92,5 +97,6 @@ export default inject(({ auth }) => {
     helpUrlCreatingBackup,
     buttonSize,
     isNotPaidPeriod,
+    currentColorScheme,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

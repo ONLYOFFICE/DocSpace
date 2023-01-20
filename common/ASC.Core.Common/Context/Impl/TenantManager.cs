@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.Net.Http.Headers;
+
 namespace ASC.Core;
 
 
@@ -191,6 +193,19 @@ public class TenantManager
             {
                 tenant = GetTenant(context.Request.GetUrlRewriter().Host);
                 context.Items[CurrentTenant] = tenant;
+            }
+
+            if (tenant == null && context.Request != null)
+            {
+                var origin = context.Request.Headers[HeaderNames.Origin].FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    var originUri = new Uri(origin);
+
+                    tenant = GetTenant(originUri.Host);
+                    context.Items[CurrentTenant] = tenant;
+                }
             }
         }
 

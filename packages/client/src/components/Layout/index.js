@@ -16,7 +16,8 @@ import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${(props) => props.contentHeight};
+  height: ${(props) =>
+    isMobileOnly && isIOS ? "calc(var(--vh, 1vh) * 100)" : props.contentHeight};
   /* height: ${(props) =>
     (props.isTabletView || isMobileOnly) && !isFirefox
       ? `${props.contentHeight}px`
@@ -31,7 +32,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView, isBannerVisible } = props;
+  const { children, isTabletView, setIsTabletView } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -73,10 +74,6 @@ const Layout = (props) => {
       }
     };
   }, [isTabletView]);
-
-  useEffect(() => {
-    changeRootHeight();
-  }, [isBannerVisible]);
 
   useEffect(() => {
     const htmlEl = document.getElementsByTagName("html")[0];
@@ -141,8 +138,7 @@ const Layout = (props) => {
       //   }
       // }
 
-      const bannerHeight = isBannerVisible ? 80 : 0;
-      let vh = (windowHeight - bannerHeight) * 0.01;
+      let vh = windowHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
       setContentHeight(height);
     };
@@ -186,6 +182,5 @@ export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
-    isBannerVisible: bannerStore.isBannerVisible,
   };
 })(observer(Layout));

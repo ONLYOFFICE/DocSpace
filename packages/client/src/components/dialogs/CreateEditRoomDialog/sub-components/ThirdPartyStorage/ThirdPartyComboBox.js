@@ -221,6 +221,7 @@ const ThirdPartyComboBox = ({
     <StyledStorageLocation isOpen={isOpen}>
       <div className="set_room_params-thirdparty">
         <div
+          id="shared_third-party-storage_combobox"
           className="set_room_params-thirdparty-combobox"
           onClick={toggleIsOpen}
         >
@@ -235,6 +236,7 @@ const ThirdPartyComboBox = ({
         </div>
 
         <Button
+          id="shared_third-party-storage_connect"
           isDisabled={
             !storageLocation?.provider ||
             !!storageLocation?.thirdpartyAccount ||
@@ -259,10 +261,12 @@ const ThirdPartyComboBox = ({
           maxHeight={isHugeMobile() ? 158 : 382}
           directionY={dropdownDirection}
           marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
+          hasItems={isOpen}
         >
           {thirdparties.map((thirdparty) => (
             <DropDownItem
-              className="dropdown-item"
+              id={thirdparty.id}
+              className={`dropdown-item ${thirdparty.className ?? ""}`}
               label={thirdparty.title}
               key={thirdparty.id}
               height={32}

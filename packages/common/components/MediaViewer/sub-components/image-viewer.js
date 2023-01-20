@@ -1,42 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Viewer from "react-viewer";
 import styled from "styled-components";
 
 import MediaZoomInIcon from "../../../../../public/images/media.zoomin.react.svg";
 import MediaZoomOutIcon from "../../../../../public/images/media.zoomout.react.svg";
 import MediaRotateLeftIcon from "../../../../../public/images/media.rotateleft.react.svg";
 import MediaRotateRightIcon from "../../../../../public/images/media.rotateright.react.svg";
-import MediaResetIcon from "../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
-import MediaDownloadIcon from "../../../../../public/images/media.download.react.svg";
+import MediaDownloadIcon from "../../../../../public/images/download.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import MediaScrollButton from "./scroll-button";
-import ControlBtn from "./control-btn";
+import MediaFavoriteIcon from "../../../../../public/images/favorite.react.svg";
+
+import ViewerSeparator from "../../../../../public/images/viewer.separator.react.svg";
+import MediaShare from "../../../../../public/images/share.react.svg";
+
+import DropDownItem from "@docspace/components/drop-down-item";
+import DropDown from "@docspace/components/drop-down";
 import equal from "fast-deep-equal/react";
 import { Base } from "@docspace/components/themes";
+import { Viewer } from "@docspace/components/viewer";
 
-const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaZoomOutIcon = styled(MediaZoomOutIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaRotateLeftIcon = styled(MediaRotateLeftIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaRotateRightIcon = styled(MediaRotateRightIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaResetIcon = styled(MediaResetIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
-  ${commonIconsStyles}
-`;
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
@@ -113,8 +96,8 @@ const StyledViewer = styled(Viewer)`
     right: 12px;
   }
   .iconContainer {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     line-height: 20px;
     margin: 3px auto;
 
@@ -152,85 +135,30 @@ const StyledViewer = styled(Viewer)`
   }
 `;
 
-StyledViewer.defaultProps = { theme: Base };
+const StyledDropDown = styled(DropDown)`
+  background: #333;
+`;
 
-var customToolbar = [
-  {
-    key: "zoomIn",
-    actionType: 1,
-    render: (
-      <div className="iconContainer zoomIn">
-        <StyledMediaZoomInIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "zoomOut",
-    actionType: 2,
-    render: (
-      <div className="iconContainer zoomOut">
-        <StyledMediaZoomOutIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "reset",
-    actionType: 7,
-    render: (
-      <div className="iconContainer reset">
-        <StyledMediaResetIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "rotateLeft",
-    actionType: 5,
-    render: (
-      <div className="iconContainer rotateLeft">
-        <StyledMediaRotateLeftIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "rotateRight",
-    actionType: 6,
-    render: (
-      <div className="iconContainer rotateRight">
-        <StyledMediaRotateRightIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "prev",
-    actionType: 3,
-    render: <MediaScrollButton orientation="right" className="scrollBtn" />,
-  },
-  {
-    key: "next",
-    actionType: 4,
-    render: <MediaScrollButton orientation="left" className="scrollBtn" />,
-  },
-  {
-    key: "delete",
-    render: (
-      <ControlBtn className="controlBtn">
-        <div className="btnContainer">
-          <StyledMediaDeleteIcon size="scale" />
-        </div>
-      </ControlBtn>
-    ),
-  },
-  {
-    key: "customDownload",
-    render: (
-      <ControlBtn className="controlBtn">
-        <div className="btnContainer">
-          <StyledMediaDownloadIcon size="scale" />
-        </div>
-      </ControlBtn>
-    ),
-  },
-];
+const StyledDropDownItem = styled(DropDownItem)`
+  color: #fff;
+
+  .drop-down-item_icon svg {
+    path {
+      fill: #fff !important;
+    }
+  }
+
+  /* .is-separator {
+    height: 1px;
+    background: #474747;
+  } */
+
+  &:hover {
+    background: #444;
+  }
+`;
+
+StyledViewer.defaultProps = { theme: Base };
 
 class ImageViewer extends React.Component {
   // componentDidUpdate() {
@@ -249,9 +177,164 @@ class ImageViewer extends React.Component {
       inactive,
       onClose,
       userAccess,
-
-      isFavoritesFolder,
+      title,
+      onPrevClick,
+      onNextClick,
+      playlist,
+      playlistPos,
+      isImage,
+      isAudio,
+      isVideo,
+      isPreviewFile,
+      contextModel,
+      audioIcon,
+      headerIcon,
+      onSetSelectionFile,
     } = this.props;
+
+    const generateContextMenu = (isOpen, right, bottom) => {
+      const model = contextModel();
+
+      const onItemClick = (e, item) => {
+        const { action, onClick } = item;
+
+        return onClick({ originalEvent: e, action: action, item });
+      };
+
+      return (
+        <StyledDropDown
+          open={isOpen}
+          isDefaultMode={false}
+          directionY="top"
+          directionX="right"
+          fixedDirection={true}
+          withBackdrop={false}
+          manualY={(bottom || "63") + "px"}
+          manualX={(right || "-31") + "px"}
+        >
+          {model.map((item) => {
+            const onClick = (e) => {
+              onClose();
+              onItemClick(e, item);
+            };
+            return (
+              <StyledDropDownItem
+                className={`${item.isSeparator ? "is-separator" : ""}`}
+                key={item.key}
+                label={item.label}
+                icon={item.icon ? item.icon : ""}
+                action={item.action}
+                onClick={onClick}
+              />
+            );
+          })}
+        </StyledDropDown>
+      );
+    };
+
+    var customToolbar = [
+      {
+        key: "zoomOut",
+        percent: true,
+        actionType: 2,
+        render: (
+          <div className="iconContainer zoomOut">
+            <MediaZoomOutIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "percent",
+        actionType: 999,
+      },
+      {
+        key: "zoomIn",
+        actionType: 1,
+        render: (
+          <div className="iconContainer zoomIn">
+            <MediaZoomInIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "rotateLeft",
+        actionType: 5,
+        render: (
+          <div className="iconContainer rotateLeft">
+            <MediaRotateLeftIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "rotateRight",
+        actionType: 6,
+        render: (
+          <div className="iconContainer rotateRight">
+            <MediaRotateRightIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "separator download-separator",
+        actionType: -1,
+        noHover: true,
+        render: (
+          <div className="separator" style={{ height: "16px" }}>
+            <ViewerSeparator size="scale" />
+          </div>
+        ),
+      },
+      // {
+      //   key: "share",
+      //   actionType: 101,
+      //   render: (
+      //     <div className="iconContainer share" style={{ height: "16px" }}>
+      //       <MediaShare size="scale" />
+      //     </div>
+      //   ),
+      // },
+      {
+        key: "download",
+        actionType: 102,
+        render: (
+          <div className="iconContainer download" style={{ height: "16px" }}>
+            <MediaDownloadIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "context-separator",
+        actionType: -1,
+        noHover: true,
+        render: (
+          <div className="separator" style={{ height: "16px" }}>
+            <ViewerSeparator size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "context-menu",
+        actionType: -1,
+      },
+      {
+        key: "delete",
+        actionType: 103,
+        render: (
+          <div className="iconContainer viewer-delete">
+            <MediaDeleteIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "favorite",
+        actionType: 104,
+        render: (
+          <div className="iconContainer viewer-favorite">
+            <MediaFavoriteIcon size="scale" />
+          </div>
+        ),
+      },
+    ];
 
     customToolbar.forEach((button) => {
       switch (button.key) {
@@ -264,7 +347,7 @@ class ImageViewer extends React.Component {
         case "delete":
           button.onClick = this.props.onDeleteClick;
           break;
-        case "customDownload":
+        case "download":
           button.onClick = this.props.onDownloadClick;
           break;
         default:
@@ -272,21 +355,37 @@ class ImageViewer extends React.Component {
       }
     });
 
+    const canShare = playlist[playlistPos].canShare;
     const toolbars =
-      userAccess && !isFavoritesFolder
-        ? customToolbar
+      !canShare && userAccess
+        ? customToolbar.filter(
+            (x) => x.key !== "share" && x.key !== "share-separator"
+          )
         : customToolbar.filter((x) => x.key !== "delete");
 
     return (
       <div className={className}>
-        <StyledViewer
+        <Viewer
           inactive={inactive}
           visible={visible}
-          zoomSpeed={0.1}
+          zoomSpeed={0.25}
+          title={title}
+          contextModel={contextModel}
+          generateContextMenu={generateContextMenu}
+          isImage={isImage}
+          headerIcon={headerIcon}
+          isAudio={isAudio}
+          isVideo={isVideo}
+          isPreviewFile={isPreviewFile}
+          audioIcon={audioIcon}
+          onSetSelectionFile={onSetSelectionFile}
           onMaskClick={onClose}
+          onNextClick={onNextClick}
+          onPrevClick={onPrevClick}
+          playlist={playlist}
+          playlistPos={playlistPos}
           customToolbar={() => toolbars}
           images={images}
-          disableKeyboardSupport={true}
         />
       </div>
     );

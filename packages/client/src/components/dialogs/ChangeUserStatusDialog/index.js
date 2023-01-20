@@ -44,11 +44,12 @@ class ChangeUserStatusDialogComponent extends React.Component {
           }
 
           usersCount = users.length;
+
+          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
             (!infoPanelVisible || usersCount !== 1) && setSelected("close");
             onClose();
           });
@@ -98,6 +99,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            id="change-user-status-modal_submit"
             label={t("ChangeUsersStatusButton")}
             size="normal"
             primary
@@ -107,6 +109,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             isDisabled={userIDs.length === 0}
           />
           <Button
+            id="change-user-status-modal_cancel"
             label={t("Common:CancelButton")}
             size="normal"
             scale

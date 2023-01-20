@@ -7,7 +7,7 @@ import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
-import { getUserRole } from "SRC_DIR/helpers/people-helpers";
+import { getUserRole } from "@docspace/common/utils";
 
 import LanguagesCombo from "./languagesCombo";
 import TimezoneCombo from "./timezoneCombo";
@@ -147,7 +147,7 @@ const MainProfile = (props) => {
           </div>
         </div>
         <LanguagesCombo t={t} />
-        <TimezoneCombo />
+        <TimezoneCombo title={t("Common:ComingSoon")} />
       </StyledInfo>
 
       {changeEmailVisible && (

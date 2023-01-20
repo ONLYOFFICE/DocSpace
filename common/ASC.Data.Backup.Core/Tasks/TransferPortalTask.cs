@@ -35,7 +35,7 @@ public class TransferPortalTask : PortalTaskBase
     public bool DeleteBackupFileAfterCompletion { get; set; }
     public bool BlockOldPortalAfterStart { get; set; }
     public bool DeleteOldPortalAfterCompletion { get; set; }
-    public string ToConfigPath { get; private set; }
+    public string ToRegion { get; private set; }
     public int ToTenantId { get; private set; }
     public int Limit { get; private set; }
 
@@ -65,20 +65,20 @@ public class TransferPortalTask : PortalTaskBase
         _serviceProvider = serviceProvider;
     }
 
-    public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
+    public void Init(int tenantId, string toRegion, int limit, string backupDirectory)
     {
         Limit = limit;
-        ToConfigPath = toConfigPath ?? throw new ArgumentNullException(nameof(toConfigPath));
-        Init(tenantId, fromConfigPath);
+        ToRegion = toRegion ?? throw new ArgumentNullException(nameof(toRegion));
+        Init(tenantId);
 
         BackupDirectory = backupDirectory;
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _logger.DebugBeginTransfer(TenantId);
-        var fromDbFactory = new DbFactory(null, null);
-        var toDbFactory = new DbFactory(null, null);
+        var fromDbFactory = new DbFactory(null, null, null, null);
+        var toDbFactory = new DbFactory(null, null, null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
         var backupFilePath = GetBackupFilePath(tenantAlias);
         var columnMapper = new ColumnMapper();
@@ -96,30 +96,30 @@ public class TransferPortalTask : PortalTaskBase
 
             //save db data to temporary file
             var backupTask = _serviceProvider.GetService<BackupPortalTask>();
-            backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
+            backupTask.Init(TenantId, backupFilePath, Limit);
             backupTask.ProcessStorage = false;
             backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
             foreach (var moduleName in _ignoredModules)
             {
                 backupTask.IgnoreModule(moduleName);
             }
-            backupTask.RunJob();
+            await backupTask.RunJob();
 
             //restore db data from temporary file
             var restoreTask = _serviceProvider.GetService<RestorePortalTask>();
-            restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
+            restoreTask.Init(ToRegion, backupFilePath, columnMapper: columnMapper);
             restoreTask.ProcessStorage = false;
             restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
             foreach (var moduleName in _ignoredModules)
             {
                 restoreTask.IgnoreModule(moduleName);
             }
-            restoreTask.RunJob();
+            await restoreTask.RunJob();
 
             //transfer files
             if (ProcessStorage)
             {
-                DoTransferStorage(columnMapper);
+                await DoTransferStorage(columnMapper);
             }
 
             SaveTenant(toDbFactory, tenantAlias, TenantStatus.Active);
@@ -153,15 +153,15 @@ public class TransferPortalTask : PortalTaskBase
         }
     }
 
-    private void DoTransferStorage(ColumnMapper columnMapper)
+    private async Task DoTransferStorage(ColumnMapper columnMapper)
     {
         _logger.DebugBeginTransferStorage();
-        var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
+        var fileGroups = (await GetFilesToProcess(TenantId)).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
         {
-            var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
-            var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
+            var baseStorage = StorageFactory.GetStorage(TenantId, group.Key);
+            var destStorage = StorageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, ToRegion);
             var utility = new CrossModuleTransferUtility(_logger, _tempStream, _tempPath, baseStorage, destStorage);
 
             foreach (var file in group)
@@ -173,7 +173,7 @@ public class TransferPortalTask : PortalTaskBase
                 {
                     try
                     {
-                        utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath).Wait();
+                        await utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath);
                     }
                     catch (Exception error)
                     {

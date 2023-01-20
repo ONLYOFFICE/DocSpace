@@ -31,7 +31,7 @@ global using ASC.Common.Caching;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Common;
-global using ASC.Core.Notify.Signalr;
+global using ASC.Core.Notify.Socket;
 global using ASC.Feed.Aggregator.Log;
 
 global using ASC.Feed.Aggregator.Modules;

@@ -45,7 +45,6 @@ public abstract class PortalTaskBase
     protected ILogger Logger { get; set; }
     public int Progress { get; private set; }
     public int TenantId { get; private set; }
-    public string ConfigPath { get; private set; }
     public bool ProcessStorage { get; set; }
     protected ModuleProvider ModuleProvider { get; set; }
     protected DbFactory DbFactory { get; set; }
@@ -63,10 +62,9 @@ public abstract class PortalTaskBase
         DbFactory = dbFactory;
     }
 
-    public void Init(int tenantId, string configPath)
+    public void Init(int tenantId)
     {
         TenantId = tenantId;
-        ConfigPath = configPath;
     }
 
     public void IgnoreModule(ModuleName moduleName)
@@ -85,30 +83,30 @@ public abstract class PortalTaskBase
         }
     }
 
-    public abstract void RunJob();
+    public abstract Task RunJob();
 
     internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
     {
         return ModuleProvider.AllModules.Where(module => !_ignoredModules.Contains(module.ModuleName));
     }
 
-    protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
+    protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(int tenantId)
     {
         var files = new List<BackupFileInfo>();
-        foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
+        foreach (var module in StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed))
         {
-            var store = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
+            var store = StorageFactory.GetStorage(tenantId, module);
+            var domains = StorageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)
             {
                 files.AddRange(
-                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
+                        (await store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync())
                     .Select(path => new BackupFileInfo(domain, module, path, tenantId)));
             }
 
             files.AddRange(
-                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                    (await store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync())
                      .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                      .Select(path => new BackupFileInfo(string.Empty, module, path, tenantId)));
         }

@@ -4,6 +4,9 @@ import { withTranslation } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
+import { Text } from "@docspace/components";
+import { ReactSVG } from "react-svg";
+import Loaders from "@docspace/common/components/Loaders";
 
 const EmptyFolderContainer = ({
   t,
@@ -15,6 +18,15 @@ const EmptyFolderContainer = ({
   linkStyles,
   isRooms,
   sectionWidth,
+  canCreateFiles,
+  canInviteUsers,
+  setIsEmptyPage,
+  onClickInviteUsers,
+  folderId,
+  tReady,
+  isLoadedFetchFiles,
+  viewAs,
+  setIsLoadedEmptyPage,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -24,15 +36,37 @@ const EmptyFolderContainer = ({
       : fetchFiles(parentId).finally(() => setIsLoading(false));
   };
 
-  const buttons = (
+  React.useEffect(() => {
+    if (isLoadedFetchFiles && tReady) {
+      setIsLoadedEmptyPage(true);
+    } else {
+      setIsLoadedEmptyPage(false);
+    }
+  }, [isLoadedFetchFiles, tReady]);
+
+  React.useEffect(() => {
+    setIsEmptyPage(true);
+
+    return () => {
+      setIsEmptyPage(false);
+      setIsLoadedEmptyPage(false);
+    };
+  }, []);
+
+  const onInviteUsersClick = () => {
+    if (!isRooms) return;
+
+    onClickInviteUsers && onClickInviteUsers(folderId);
+  };
+
+  const buttons = canCreateFiles ? (
     <>
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
           src="images/plus.svg"
           data-format="docx"
           onClick={onCreate}
-          alt="plus_icon"
         />
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
@@ -51,38 +85,74 @@ const EmptyFolderContainer = ({
       </div>
 
       <div className="empty-folder_container-links">
-        <img
+        <ReactSVG
           className="empty-folder_container_plus-image"
-          src="images/plus.svg"
           onClick={onCreate}
-          alt="plus_icon"
+          src="images/plus.svg"
         />
         <Link {...linkStyles} onClick={onCreate}>
           {t("Folder")}
         </Link>
       </div>
 
-      <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_up-image"
-          src="images/up.svg"
-          onClick={onBackToParentFolder}
-          alt="up_icon"
-        />
+      {isRooms ? (
+        canInviteUsers ? (
+          <>
+            <div className="empty-folder_container-links second-description">
+              <Text as="span" color="#6A7378" fontSize="12px" noSelect>
+                {t("AddMembersDescription")}
+              </Text>
+            </div>
 
-        <Link onClick={onBackToParentFolder} {...linkStyles}>
-          {t("BackToParentFolderButton")}
-        </Link>
-      </div>
+            <div className="empty-folder_container-links">
+              <ReactSVG
+                className="empty-folder_container_plus-image"
+                onClick={onInviteUsersClick}
+                src="images/plus.svg"
+              />
+              <Link onClick={onInviteUsersClick} {...linkStyles}>
+                {t("InviteUsersInRoom")}
+              </Link>
+            </div>
+          </>
+        ) : (
+          <></>
+        )
+      ) : (
+        <div className="empty-folder_container-links">
+          <ReactSVG
+            className="empty-folder_container_up-image"
+            onClick={onBackToParentFolder}
+            src="images/up.svg"
+          />
+          <Link onClick={onBackToParentFolder} {...linkStyles}>
+            {t("BackToParentFolderButton")}
+          </Link>
+        </div>
+      )}
     </>
+  ) : (
+    <></>
   );
+
+  if (!isLoadedFetchFiles || !tReady) {
+    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
+  }
 
   return (
     <EmptyContainer
-      headerText={t("EmptyScreenFolder")}
+      headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
       style={{ gridColumnGap: "39px" }}
-      descriptionText={t("EmptyFolderDecription")}
-      imageSrc="/static/images/empty_screen_alt.svg"
+      descriptionText={
+        canCreateFiles
+          ? t("EmptyFolderDecription")
+          : t("EmptyFolderDescriptionUser")
+      }
+      imageSrc={
+        isRooms
+          ? "images/empty_screen_corporate.svg"
+          : "/static/images/empty_screen_alt.svg"
+      }
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
@@ -90,24 +160,58 @@ const EmptyFolderContainer = ({
   );
 };
 
-export default inject(({ filesStore, selectedFolderStore }) => {
-  const { fetchFiles, fetchRooms } = filesStore;
-  const { navigationPath, parentId } = selectedFolderStore;
+export default inject(
+  ({
+    accessRightsStore,
+    filesStore,
+    selectedFolderStore,
+    contextOptionsStore,
+  }) => {
+    const {
+      fetchFiles,
+      fetchRooms,
+      setIsEmptyPage,
+      isLoadedFetchFiles,
+      viewAs,
+      setIsLoadedEmptyPage,
+    } = filesStore;
+    const {
+      navigationPath,
+      parentId,
+      access,
+      id: folderId,
+      roomType,
+      security,
+    } = selectedFolderStore;
 
-  let isRootRoom, isRoom, id;
-  if (navigationPath && navigationPath.length) {
-    const elem = navigationPath[0];
+    let id;
+    if (navigationPath?.length) {
+      const elem = navigationPath[0];
+      id = elem.id;
+    }
 
-    isRootRoom = elem.isRootRoom;
-    isRoom = elem.isRoom;
-    id = elem.id;
+    const isRooms = !!roomType;
+
+    const { canCreateFiles } = accessRightsStore;
+
+    const { onClickInviteUsers } = contextOptionsStore;
+
+    const canInviteUsers = isRooms && security?.EditAccess; // skip sub-folders
+
+    return {
+      fetchFiles,
+      fetchRooms,
+      setIsLoading: filesStore.setIsLoading,
+      parentId: id ?? parentId,
+      isRooms,
+      canCreateFiles,
+      canInviteUsers,
+      setIsEmptyPage,
+      onClickInviteUsers,
+      folderId,
+      isLoadedFetchFiles,
+      viewAs,
+      setIsLoadedEmptyPage,
+    };
   }
-
-  return {
-    fetchFiles,
-    fetchRooms,
-    setIsLoading: filesStore.setIsLoading,
-    parentId: id ?? parentId,
-    isRooms: isRoom || isRootRoom,
-  };
-})(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));
+)(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

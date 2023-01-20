@@ -37,8 +37,8 @@ const SelectFolderDialogAsideView = ({
   isDisableButton,
   parentId,
   selectionFiles,
-  folderSelectionDisabled,
 }) => {
+  const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
       theme={theme}
@@ -47,6 +47,7 @@ const SelectFolderDialogAsideView = ({
       withoutBodyScroll
       withFooterBorder
       displayType="aside"
+      isDoubleFooterLine
     >
       <ModalDialog.Header theme={theme}>
         <StyledAsideHeader>
@@ -59,7 +60,7 @@ const SelectFolderDialogAsideView = ({
               onClick={onClose}
             />
           )}
-          {dialogName ? dialogName : t("Translations:FolderSelection")}
+          {dialogName}
         </StyledAsideHeader>
       </ModalDialog.Header>
       <ModalDialog.Body theme={theme}>
@@ -67,13 +68,21 @@ const SelectFolderDialogAsideView = ({
           <div className="selection-panel_aside-body">
             <div className="selection-panel_aside-header">
               <div>{header}</div>
-              <Text fontWeight="700" fontSize="18px">
-                {t("Common:Documents")}
-              </Text>
+              {isLoaded ? (
+                <Text fontWeight="700" fontSize="18px">
+                  {t("Common:Rooms")}
+                </Text>
+              ) : (
+                <Loaders.Rectangle
+                  className="selection-panel_header-loader"
+                  width="83px"
+                  height="24px"
+                />
+              )}
             </div>
 
             <div className="selection-panel_aside-tree">
-              {folderId && resultingFolderTree ? (
+              {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   parentId={parentId}
@@ -97,29 +106,26 @@ const SelectFolderDialogAsideView = ({
         </StyledAsideBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-folder-dialog-buttons-save"
-          primary
-          scale
-          size="normalTouchscreen"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            !isAvailable
-          }
-        />
-        <Button
-          size="normalTouchscreen"
-          scale
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+        <div>
+          <Button
+            theme={theme}
+            className="select-folder-dialog-buttons-save"
+            primary
+            scale
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={isDisableButton}
+          />
+          <Button
+            size="normal"
+            scale
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

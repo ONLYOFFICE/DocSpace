@@ -39,6 +39,7 @@ const CreateRoomDialog = ({
 
   deleteThirdParty,
   fetchThirdPartyProviders,
+  enableThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
@@ -73,6 +74,7 @@ const CreateRoomDialog = ({
   };
 
   const [roomParams, setRoomParams] = useState({ ...startRoomParams });
+  const [isValidTitle, setIsValidTitle] = useState(true);
 
   const setRoomTags = (newTags) =>
     setRoomParams({ ...roomParams, tags: newTags });
@@ -87,6 +89,11 @@ const CreateRoomDialog = ({
   };
 
   const onCreateRoom = async () => {
+    if (!roomParams.title.trim()) {
+      setIsValidTitle(false);
+      return;
+    }
+
     await onCreate({ ...roomParams });
     if (isMountRef.current) {
       setRoomParams(startRoomParams);
@@ -142,6 +149,9 @@ const CreateRoomDialog = ({
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
             isDisabled={isLoading}
+            isValidTitle={isValidTitle}
+            setIsValidTitle={setIsValidTitle}
+            enableThirdParty={enableThirdParty}
           />
         )}
       </ModalDialog.Body>
@@ -149,6 +159,7 @@ const CreateRoomDialog = ({
       {!!roomParams.type && (
         <ModalDialog.Footer>
           <Button
+            id="shared_create-room-modal_submit"
             tabIndex={5}
             label={t("Common:Create")}
             size="normal"
@@ -158,6 +169,7 @@ const CreateRoomDialog = ({
             isLoading={isLoading}
           />
           <Button
+            id="shared_create-room-modal_cancel"
             tabIndex={5}
             label={t("Common:CancelButton")}
             size="normal"

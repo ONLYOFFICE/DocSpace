@@ -52,14 +52,19 @@ public class FileConverterQueue<T>
         {
             var task = PeekTask(file);
 
-            if (Contains(task))
+            if (task != null)
             {
-                return;
+                if (task.Progress != 100)
+                {
+                    return;
+                }
+
+                Dequeue(task);
             }
 
             var queueResult = new FileConverterOperationResult
             {
-                Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+                Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
                 OperationType = FileOperationType.Convert,
                 Error = string.Empty,
                 Progress = 0,
@@ -107,7 +112,7 @@ public class FileConverterQueue<T>
                     var fileId = JsonDocument.Parse(x.Source).RootElement.GetProperty("id").Deserialize<T>();
                     var fileVersion = JsonDocument.Parse(x.Source).RootElement.GetProperty("version").Deserialize<int>();
 
-                    return file.Id.ToString() == fileId.ToString() && (file.Version == fileVersion || x.Progress == 100 && file.Version == fileVersion + 1);
+                    return String.Compare(file.Id.ToString(), fileId.ToString(), true) == 0;
                 });
     }
 
@@ -137,15 +142,13 @@ public class FileConverterQueue<T>
     public async Task<FileConverterOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
     {
         var file = pair.Key;
-        var operation = PeekTask(pair.Key);
+        var operation = PeekTask(file);
 
         if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
         {
             if (operation.Progress == 100)
-            {
-                var task = PeekTask(file);
-
-                Dequeue(task);
+            {            
+                Dequeue(operation);
             }
 
             return operation;
@@ -183,18 +186,6 @@ public class FileConverterQueue<T>
             }, options);
     }
 
-    private bool Contains(FileConverterOperationResult val)
-    {
-        if (val == null) return false;
-
-        var queueTasks = LoadFromCache();
-
-        return queueTasks.Any(x =>
-        {
-            return String.Compare(x.Source, val.Source) == 0;
-        });
-    }
-
     private bool IsOrphanCacheItem(FileConverterOperationResult x)
     {
         return !string.IsNullOrEmpty(x.Processed)
@@ -210,7 +201,7 @@ public class FileConverterQueue<T>
 
         SaveToCache(listTasks);
 
-        return queueTasks;
+        return listTasks;
     }
 
     private void SaveToCache(IEnumerable<FileConverterOperationResult> queueTasks)
@@ -470,7 +461,7 @@ public class FileConverter
 
         var operationResult = new FileConverterOperationResult
         {
-            Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+            Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
             OperationType = FileOperationType.Convert,
             Error = string.Empty,
             Progress = 0,
@@ -645,12 +636,12 @@ public class FileConverter
         if (tags.Count > 0)
         {
             tags.ForEach(r => r.EntryId = newFile.Id);
-            tagDao.SaveTags(tags);
+            await tagDao.SaveTags(tags);
         }
 
         if (markAsTemplate)
         {
-            tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
+            await tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
         }
 
         return newFile;

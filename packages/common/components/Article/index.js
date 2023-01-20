@@ -17,6 +17,7 @@ import ArticleProfile from "./sub-components/article-profile";
 import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
+import Portal from "@docspace/components/portal";
 
 const Article = ({
   showText,
@@ -31,10 +32,10 @@ const Article = ({
 
   isGracePeriod,
 
-  isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
   isAvailableArticlePaymentAlert,
+  currentColorScheme,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -107,13 +108,12 @@ const Article = ({
     [setShowText]
   );
 
-  return (
+  const articleComponent = (
     <>
       <StyledArticle
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
-        isBannerVisible={isBannerVisible}
         {...rest}
       >
         <SubArticleHeader showText={showText}>
@@ -132,13 +132,19 @@ const Article = ({
           <HideArticleMenuButton
             showText={showText}
             toggleShowText={toggleShowText}
+            currentColorScheme={currentColorScheme}
           />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
           {isAvailableArticlePaymentAlert &&
             (isFreeTariff || isGracePeriod) &&
-            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
+            showText && (
+              <ArticlePaymentAlert
+                isFreeTariff={isFreeTariff}
+                toggleArticleOpen={toggleArticleOpen}
+              />
+            )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -153,6 +159,20 @@ const Article = ({
       ) : null}
     </>
   );
+
+  const renderPortalArticle = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={articleComponent}
+        appendTo={rootElement}
+        visible={true}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalArticle() : articleComponent;
 };
 
 Article.propTypes = {
@@ -180,7 +200,7 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth, bannerStore }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     currentQuotaStore,
@@ -189,7 +209,6 @@ export default inject(({ auth, bannerStore }) => {
   } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
-  const { isBannerVisible } = bannerStore;
 
   const { user } = userStore;
 
@@ -202,6 +221,7 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -212,8 +232,8 @@ export default inject(({ auth, bannerStore }) => {
     toggleShowText,
     toggleArticleOpen,
     isFreeTariff,
-    isBannerVisible,
     isGracePeriod,
     isAvailableArticlePaymentAlert,
+    currentColorScheme,
   };
 })(observer(Article));

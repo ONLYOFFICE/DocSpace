@@ -39,7 +39,6 @@ public class WhitelabelController : BaseSettingsController
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IMapper _mapper;
     private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -54,7 +53,7 @@ public class WhitelabelController : BaseSettingsController
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
-        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -65,12 +64,11 @@ public class WhitelabelController : BaseSettingsController
         _commonLinkUtility = commonLinkUtility;
         _mapper = mapper;
         _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
-        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
-    public bool SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
+    public async Task<bool> SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -80,14 +78,20 @@ public class WhitelabelController : BaseSettingsController
 
         if (inDto.Logo != null)
         {
-            var logoDict = new Dictionary<int, string>();
+            var logoDict = new Dictionary<int, KeyValuePair<string, string>>();
 
             foreach (var l in inDto.Logo)
             {
-                logoDict.Add(Int32.Parse(l.Key), l.Value);
+                var key = Int32.Parse(l.Key);
+                if (key == (int)WhiteLabelLogoTypeEnum.Favicon && !(l.Value.Light.EndsWith("ico") || l.Value.Light.EndsWith("svg")))
+                {
+                    throw new InvalidOperationException("Favicon must have .ico or .svg extension");
+                }
+
+                logoDict.Add(key, new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
 
-            _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
+            await _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
         }
 
         settings.SetLogoText(inDto.LogoText);
@@ -98,7 +102,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
-    public bool SaveWhiteLabelSettingsFromFiles()
+    public async Task<bool> SaveWhiteLabelSettingsFromFiles()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -113,10 +117,34 @@ public class WhitelabelController : BaseSettingsController
 
         foreach (var f in HttpContext.Request.Form.Files)
         {
-            var parts = f.FileName.Split('.');
-            var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
-            var fileExt = parts[1];
-            _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), null);
+            if (f.FileName.Contains("dark"))
+            {
+                GetParts(f.FileName, out var logoType, out var fileExt);
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}")))
+                {
+                    continue;
+                }
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
+            }
+            else
+            {
+                GetParts(f.FileName, out var logoType, out var fileExt);
+                IFormFile darkFile;
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}.dark.")))
+                {
+                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName.Contains($"{logoType}.dark."));
+                }
+                else
+                {
+                    darkFile = null;
+                }
+                if (darkFile != null && darkFile.FileName != f.FileName)
+                {
+                    throw new InvalidOperationException("logo light and logo dark have different extention");
+                }
+
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
+            }
         }
 
         _settingsManager.SaveForTenant(settings, Tenant.Id);
@@ -124,49 +152,66 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
-    ///<visible>false</visible>
-    [AllowNotPayment]
-    [HttpGet("whitelabel/sizes")]
-    public object GetWhiteLabelSizes()
+    private void GetParts(string fileName, out WhiteLabelLogoTypeEnum logoType, out string fileExt)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        return
-        new[]
-        {
-            new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.LogoLightSmallSize.Height, width = TenantWhiteLabelSettings.LogoLightSmallSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.LogoFaviconSize.Height, width = TenantWhiteLabelSettings.LogoFaviconSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.LogoDocsEditorSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name = nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.LeftMenu, name =  nameof(WhiteLabelLogoTypeEnum.LeftMenu), height = TenantWhiteLabelSettings.LogoLeftMenuSize.Height, width = TenantWhiteLabelSettings.LogoLeftMenuSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.AboutPage, name =  nameof(WhiteLabelLogoTypeEnum.AboutPage), height = TenantWhiteLabelSettings.LogoAboutPageSize.Height, width = TenantWhiteLabelSettings.LogoAboutPageSize.Width}
-        };
+        var parts = fileName.Split('.');
+        logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
+        fileExt = parts.Last();
     }
-
-
 
     ///<visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
-    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public async IAsyncEnumerable<WhiteLabelItemDto> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        Dictionary<string, string> result;
-
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        result = new Dictionary<string, string>
+        foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
+        {
+            var result = new WhiteLabelItemDto
             {
-                { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !inDto.IsRetina)) }
+                Name = logoType.ToString(),
+                Size = TenantWhiteLabelSettings.GetSize(logoType)
             };
 
-        return result;
+            if (inDto.IsDark.HasValue)
+            {
+                var path = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, inDto.IsDark.Value));
+
+                if (inDto.IsDark.Value)
+                {
+                    result.Path = new WhiteLabelItemPathDto
+                    {
+                        Dark = path
+                    };
+                }
+                else
+                {
+                    result.Path = new WhiteLabelItemPathDto
+                    {
+                        Light = path
+                    };
+                }
+            }
+            else
+            {
+                var lightPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, false));
+                var darkPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, true));
+
+                if (lightPath == darkPath)
+                {
+                    darkPath = null;
+                }
+
+                result.Path = new WhiteLabelItemPathDto
+                {
+                    Light = lightPath,
+                    Dark = darkPath
+                };
+            }
+
+            yield return result;
+        }
     }
 
     ///<visible>false</visible>
@@ -184,17 +229,17 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("whitelabel/restore")]
-    public bool RestoreWhiteLabelOptions()
+    public async Task<bool> RestoreWhiteLabelOptions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
+        await _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
 
         var tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
-        _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
+        await _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
         _settingsManager.Save(tenantInfoSettings);
 
         return true;

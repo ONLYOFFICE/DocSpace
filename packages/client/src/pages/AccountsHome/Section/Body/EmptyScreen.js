@@ -16,13 +16,13 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
 
   const onResetFilter = () => {
     setIsLoading(true);
-    resetFilter(true).finally(() => setIsLoading(false));
+    resetFilter().finally(() => setIsLoading(false));
   };
 
   return (
     <>
       <EmptyScreenContainer
-        imageSrc="/static/images/empty_screen_persons.png"
+        imageSrc="images/empty_screen_persons.svg"
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}

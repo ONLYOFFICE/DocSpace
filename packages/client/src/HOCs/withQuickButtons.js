@@ -1,7 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-
-import { ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import QuickButtons from "../components/QuickButtons";
 
@@ -12,15 +10,14 @@ export default function withQuickButtons(WrappedComponent) {
 
       this.state = {
         isLoading: false,
-        isCanWebEdit: props.canWebEdit(props.item.fileExst),
       };
     }
 
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, t } = this.props;
-      const { locked, id, access } = item;
+      const { item, lockFileAction, t } = this.props;
+      const { locked, id, security } = item;
 
-      if ((isAdmin || access === 0) && !this.state.isLoading) {
+      if (security?.Lock && !this.state.isLoading) {
         this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .then(() =>
@@ -28,8 +25,10 @@ export default function withQuickButtons(WrappedComponent) {
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
           )
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .catch(
+            (err) => toastr.error(err),
+            this.setState({ isLoading: false })
+          );
       }
       return;
     };
@@ -49,33 +48,18 @@ export default function withQuickButtons(WrappedComponent) {
         .catch((err) => toastr.error(err));
     };
 
-    onClickShare = () => {
-      const { item, onSelectItem, setSharingPanelVisible } = this.props;
-      const { id, isFolder } = item;
-
-      onSelectItem({ id, isFolder });
-      setSharingPanelVisible(true);
-    };
-
     render() {
-      const { isLoading, isCanWebEdit } = this.state;
+      const { isLoading } = this.state;
 
       const {
         t,
         theme,
         item,
-        isTrashFolder,
         isAdmin,
-        showShare,
         sectionWidth,
         viewAs,
+        folderCategory,
       } = this.props;
-
-      const { access, id, fileExst } = item;
-
-      const accessToEdit =
-        access === ShareAccessRights.FullAccess ||
-        access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
       const quickButtonsComponent = (
         <QuickButtons
@@ -84,15 +68,11 @@ export default function withQuickButtons(WrappedComponent) {
           item={item}
           sectionWidth={sectionWidth}
           isAdmin={isAdmin}
-          showShare={showShare}
-          isTrashFolder={isTrashFolder}
-          accessToEdit={accessToEdit}
           viewAs={viewAs}
           isDisabled={isLoading}
-          isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          onClickShare={this.onClickShare}
+          folderCategory={folderCategory}
         />
       );
 
@@ -108,30 +88,34 @@ export default function withQuickButtons(WrappedComponent) {
   return inject(
     ({
       auth,
-      treeFoldersStore,
       filesActionsStore,
-      filesStore,
       dialogsStore,
-      settingsStore,
+
+      treeFoldersStore,
     }) => {
-      const { isRecycleBinFolder } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
       } = filesActionsStore;
-
+      const {
+        isPersonalFolderRoot,
+        isArchiveFolderRoot,
+        isTrashFolder,
+      } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
-      const { canWebEdit } = settingsStore;
+
+      const folderCategory =
+        isTrashFolder || isArchiveFolderRoot || isPersonalFolderRoot;
+
       return {
         theme: auth.settingsStore.theme,
         isAdmin: auth.isAdmin,
-        isTrashFolder: isRecycleBinFolder,
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
-        canWebEdit,
+        folderCategory,
       };
     }
   )(observer(WithQuickButtons));

@@ -5,18 +5,17 @@ import { getUser } from "@docspace/common/api/people";
 import {
   getSettings,
   getBuildVersion,
-  getCurrentCustomSchema,
+  getAppearanceTheme,
+  getLogoUrls,
 } from "@docspace/common/api/settings";
-import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig } from "@docspace/common/constants";
 import {
   openEdit,
   getSettingsFiles,
-  getShareFiles,
+  // getShareFiles,
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
-export const getFavicon = (documentType) => {
+export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;
   let icon = null;
 
@@ -34,7 +33,12 @@ export const getFavicon = (documentType) => {
       break;
   }
 
-  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
+  if (!icon && !logoUrls) return null;
+
+  const favicon = icon
+    ? `${homepage}/images/${icon}`
+    : logoUrls[2]?.path?.light;
+
   return favicon;
 };
 
@@ -43,7 +47,13 @@ export const initDocEditor = async (req) => {
   let personal = IS_PERSONAL || null;
   const { headers, url, query, type } = req;
   const { version, desktop: isDesktop } = query;
-  let error = null;
+  let error = null,
+    user,
+    settings,
+    filesSettings,
+    versionInfo,
+    appearanceTheme,
+    logoUrls;
   initSSR(headers);
 
   try {
@@ -63,39 +73,42 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    const [
+    [
       user,
       settings,
       filesSettings,
       versionInfo,
-      customNames,
+      appearanceTheme,
+      logoUrls,
     ] = await Promise.all([
       getUser(),
       getSettings(),
       getSettingsFiles(),
       getBuildVersion(),
-      getCurrentCustomSchema("Common"),
+      getAppearanceTheme(),
+      getLogoUrls(),
     ]);
 
     const successAuth = !!user;
+
     personal = settings?.personal;
 
     if (!successAuth && !doc) {
       error = {
         unAuthorized: true,
-        redirectPath: combineUrl(
-          AppServerConfig.proxyURL,
-          personal ? "/sign-in" : "/login"
-        ),
+        // redirectPath: combineUrl(
+        //   window?.DocSpaceConfig?.proxy?.url,
+        //   personal ? "/sign-in" : "/login"
+        // ),
       };
       return { error };
     }
 
     const config = await openEdit(fileId, fileVersion, doc, view);
 
-    const sharingSettings = await getShareFiles([+fileId], []);
+    //const sharingSettings = await getShareFiles([+fileId], []);
 
-    const isSharingAccess = false; //TODO: temporary disable sharing (many errors). Restore => config?.file && config?.file?.canShare;
+    // const isSharingAccess = false; //TODO: temporary disable sharing (many errors). Restore => config?.file && config?.file?.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";
@@ -105,29 +118,33 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
-    const actionLink = config?.editorConfig?.actionLink || null;
-
     return {
       config,
       personal,
       successAuth,
       user,
       error,
-      actionLink,
-      isSharingAccess,
+      //isSharingAccess,
       url,
       doc,
       fileId,
       view,
       filesSettings,
-      sharingSettings,
+      //sharingSettings,
       portalSettings: settings,
       versionInfo,
-      customNames,
+      appearanceTheme,
+      logoUrls,
     };
   } catch (err) {
-    error = { errorMessage: typeof err === "string" ? err : err.message };
-    return { error };
+    let message = "";
+    if (typeof err === "string") message = err;
+    else message = err.response?.data?.error?.message || err.message;
+
+    error = {
+      errorMessage: message,
+    };
+    return { error, user, logoUrls };
   }
 };
 

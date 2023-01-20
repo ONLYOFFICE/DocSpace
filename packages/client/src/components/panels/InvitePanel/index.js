@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 
 import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
+import Portal from "@docspace/components/portal";
 
 import {
   StyledBlock,
@@ -35,6 +37,10 @@ const InvitePanel = ({
   adminLink,
   defaultAccess,
   inviteUsers,
+  setInfoPanelIsMobileHidden,
+  reloadSelectionParentRoom,
+  setUpdateRoomMembers,
+  roomsView,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -115,6 +121,7 @@ const InvitePanel = ({
   }, [inviteItems]);
 
   const onClose = () => {
+    setInfoPanelIsMobileHidden(false);
     setInvitePanelOptions({
       visible: false,
       hideSelector: false,
@@ -157,8 +164,11 @@ const InvitePanel = ({
       roomId === -1
         ? await inviteUsers(data)
         : await setRoomSecurity(roomId, data);
+
+      if (roomsView === "info_members") setUpdateRoomMembers(true);
       onClose();
-      toastr.success(`Users invited`);
+      toastr.success(t("Common:UsersInvited"));
+      reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
     }
@@ -166,23 +176,24 @@ const InvitePanel = ({
 
   const roomType = selectedRoom ? selectedRoom.roomType : -1;
 
-  return (
+  const invitePanelComponent = (
     <StyledInvitePanel>
       <Backdrop
         onClick={onClose}
         visible={visible}
         isAside={true}
-        zIndex={210}
+        zIndex={isMobileOnly ? 10 : 210}
       />
       <Aside
         className="invite_panel"
         visible={visible}
         onClose={onClose}
         withoutBodyScroll
+        zIndex={310}
       >
         <StyledBlock>
           <StyledHeading>
-            {roomId === -1 ? t("InviteUsers") : t("InviteUsersToRoom")}
+            {roomId === -1 ? t("Common:InviteUsers") : t("InviteUsersToRoom")}
           </StyledHeading>
         </StyledBlock>
 
@@ -219,12 +230,33 @@ const InvitePanel = ({
       </Aside>
     </StyledInvitePanel>
   );
+
+  const renderPortalInvitePanel = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={invitePanelComponent}
+        appendTo={rootElement}
+        visible={visible}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalInvitePanel() : invitePanelComponent;
 };
 
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
   const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
+  const {
+    setIsMobileHidden: setInfoPanelIsMobileHidden,
+    reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
+    filesView,
+  } = auth.infoPanelStore;
 
   const {
     getPortalInviteLinks,
@@ -265,6 +297,10 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     guestLink,
     adminLink,
     inviteUsers,
+    setInfoPanelIsMobileHidden,
+    reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
   };
 })(
   withTranslation([

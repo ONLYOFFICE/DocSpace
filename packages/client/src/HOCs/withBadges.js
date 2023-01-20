@@ -1,10 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import {
-  ShareAccessRights,
-  AppServerConfig,
-  FileStatus,
-} from "@docspace/common/constants";
+import { ShareAccessRights, FileStatus } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 import Badges from "../components/Badges";
@@ -12,6 +8,12 @@ import config from "PACKAGE_FILE";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = { disableBadgeClick: false, disableUnpinClick: false };
+    }
+
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -23,27 +25,47 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-      fetchFileVersions(item.id + "");
+      fetchFileVersions(item.id + "", item.security);
       setIsVerHistoryPanel(true);
     };
 
     onBadgeClick = () => {
+      if (this.state.disableBadgeClick) return;
+
       const { item, markAsRead, setNewFilesPanelVisible } = this.props;
+      this.setState(() => ({
+        disableBadgeClick: true,
+      }));
+
+      const enableBadgeClick = () => {
+        this.setState({ disableBadgeClick: false });
+      };
+
       if (item.fileExst) {
-        markAsRead([], [item.id], item);
+        markAsRead([], [item.id], item).then(() => {
+          enableBadgeClick();
+        });
       } else {
-        setNewFilesPanelVisible(true, null, item);
+        setNewFilesPanelVisible(true, null, item).then(() => {
+          enableBadgeClick();
+        });
       }
     };
 
     onUnpinClick = (e) => {
-      const { setPinAction } = this.props;
+      if (this.state.disableUnpinClick) return;
+
+      this.setState({ disableUnpinClick: true });
+
+      const { t, setPinAction } = this.props;
 
       const { action, id } = e.target.closest(".is-pinned").dataset;
 
       if (!action && !id) return;
 
-      setPinAction(action, id);
+      setPinAction(action, id, t).then(() => {
+        this.setState({ disableUnpinClick: false });
+      });
     };
 
     setConvertDialogVisible = () => {
@@ -56,10 +78,8 @@ export default function withBadges(WrappedComponent) {
         t,
         theme,
         item,
-        canWebEdit,
         isTrashFolder,
         isPrivacyFolder,
-        canConvert,
         onFilesClick,
         isAdmin,
         isDesktopClient,
@@ -85,8 +105,6 @@ export default function withBadges(WrappedComponent) {
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
-          canWebEdit={canWebEdit}
-          canConvert={canConvert}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
           isDesktopClient={isDesktopClient}
@@ -115,7 +133,6 @@ export default function withBadges(WrappedComponent) {
         versionHistoryStore,
         dialogsStore,
         filesStore,
-        settingsStore,
       },
       { item }
     ) => {
@@ -130,14 +147,10 @@ export default function withBadges(WrappedComponent) {
       } = dialogsStore;
       const { setIsLoading } = filesStore;
 
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canConvert = settingsStore.canConvert(item.fileExst);
-
       return {
         theme,
         isAdmin: auth.isAdmin,
-        canWebEdit,
-        canConvert,
+
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
         homepage: config.homepage,

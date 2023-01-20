@@ -42,6 +42,7 @@ public class RestorePortalTask : PortalTaskBase
     private readonly AscCacheNotify _ascCacheNotify;
     private readonly ILogger<RestorePortalTask> _options;
     private readonly ILogger<RestoreDbModuleTask> _logger;
+    private string _region;
 
     public RestorePortalTask(
         DbFactory dbFactory,
@@ -64,7 +65,7 @@ public class RestorePortalTask : PortalTaskBase
         _logger = logger;
     }
 
-    public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
+    public void Init(string region, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(fromFilePath);
 
@@ -76,10 +77,11 @@ public class RestorePortalTask : PortalTaskBase
         BackupFilePath = fromFilePath;
         UpgradesPath = upgradesPath;
         _columnMapper = columnMapper ?? new ColumnMapper();
-        Init(tenantId, toConfigPath);
+        _region = region;
+        Init(tenantId);
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _options.DebugBeginRestorePortal();
 
@@ -94,7 +96,7 @@ public class RestorePortalTask : PortalTaskBase
 
             if (Dump)
             {
-                RestoreFromDump(dataReader);
+                await RestoreFromDump(dataReader);
             }
             else
             {
@@ -103,7 +105,7 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var module in modulesToProcess)
                 {
-                    var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
+                    var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, _region, StorageFactory, StorageFactoryConfig, ModuleProvider);
                     restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
 
                     foreach (var tableName in _ignoredTables)
@@ -111,7 +113,7 @@ public class RestorePortalTask : PortalTaskBase
                         restoreTask.IgnoreTable(tableName);
                     }
 
-                    restoreTask.RunJob();
+                    await restoreTask.RunJob();
                 }
             }
 
@@ -125,7 +127,7 @@ public class RestorePortalTask : PortalTaskBase
                     _ascCacheNotify.ClearCache();
                 }
 
-                DoRestoreStorage(dataReader);
+                await DoRestoreStorage(dataReader);
             }
 
             if (UnblockPortalAfterCompleted)
@@ -153,7 +155,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestorePortal();
     }
 
-    private void RestoreFromDump(IDataReadOperator dataReader)
+    private async Task RestoreFromDump(IDataReadOperator dataReader)
     {
         var keyBase = KeyHelper.GetDatabaseSchema();
         var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
@@ -180,14 +182,14 @@ public class RestorePortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed);
+            var storageModules = StorageFactoryConfig.GetModuleList(_region).Where(IsStorageModuleAllowed);
             var tenants = _tenantManager.GetTenants(false);
 
             stepscount += storageModules.Count() * tenants.Count;
 
             SetStepsCount(stepscount + 1);
 
-            DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorage(storageModules, tenants);
         }
         else
         {
@@ -343,7 +345,7 @@ public class RestorePortalTask : PortalTaskBase
         }
     }
 
-    private void DoRestoreStorage(IDataReadOperator dataReader)
+    private async Task DoRestoreStorage(IDataReadOperator dataReader)
     {
         _options.DebugBeginRestoreStorage();
 
@@ -353,7 +355,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant.ToString() : _columnMapper.GetTenantMapping().ToString(), group.Key);
+                var storage = StorageFactory.GetStorage(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -371,7 +373,7 @@ public class RestorePortalTask : PortalTaskBase
                         using var stream = dataReader.GetEntry(key);
                         try
                         {
-                            storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
+                            await storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
                         }
                         catch (Exception error)
                         {
@@ -399,7 +401,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 
@@ -407,19 +409,19 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var storage = StorageFactory.GetStorage(tenant.Id, module, _region);
+                var domains = StorageFactoryConfig.GetDomainList(module, _region).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
 
                 foreach (var domain in domains)
                 {
-                    ActionInvoker.Try(
-                        state =>
+                    await ActionInvoker.Try(
+                        async state =>
                         {
-                            if (storage.IsDirectoryAsync((string)state).Result)
+                            if (await storage.IsDirectoryAsync((string)state))
                             {
-                                storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
+                                await storage.DeleteFilesAsync((string)state, "\\", "*.*", true);
                             }
                         },
                         domain,

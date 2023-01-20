@@ -31,7 +31,7 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class FileDao : AbstractDao, IFileDao<int>
 {
-    private static readonly object _syncRoot = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly ILogger<FileDao> _logger;
     private readonly FactoryIndexerFile _factoryIndexer;
     private readonly GlobalStore _globalStore;
@@ -115,7 +115,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -127,7 +127,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -147,7 +147,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -166,7 +166,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         query = query.OrderByDescending(r => r.Version);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -176,7 +176,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -192,7 +192,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => fileIds.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -255,7 +255,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in (checkShared ? FromQueryWithShared(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
+        await foreach (var e in (checkShared ? FromQuery(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -358,7 +358,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -393,21 +393,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return SaveFileAsync(file, fileStream, true);
     }
 
-    public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
+    public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
+        var maxChunkedUploadSize = await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
         }
 
-        return InternalSaveFileAsync(file, fileStream, checkQuota);
-    }
-
-    private async Task<File<int>> InternalSaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
-    {
         if (checkQuota && _coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
@@ -440,108 +435,108 @@ internal class FileDao : AbstractDao, IFileDao<int>
         List<int> parentFoldersIds;
         DbFile toInsert = null;
 
-        lock (_syncRoot)
+        await _semaphore.WaitAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            strategy.Execute(() =>
+            if (file.Id == default)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-
-                if (file.Id == default)
-                {
-                    file.Id = filesDbContext.Files.Any() ? filesDbContext.Files.Max(r => r.Id) + 1 : 1;
-                    file.Version = 1;
-                    file.VersionGroup = 1;
-                    isNew = true;
-                }
-
-                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-                //make lowerCase
-                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
-
-                file.ModifiedBy = _authContext.CurrentAccount.ID;
-                file.ModifiedOn = _tenantUtil.DateTimeNow();
-                if (file.CreateBy == default)
-                {
-                    file.CreateBy = _authContext.CurrentAccount.ID;
-                }
-
-                if (file.CreateOn == default)
-                {
-                    file.CreateOn = _tenantUtil.DateTimeNow();
-                }
-
-                var toUpdate = filesDbContext.Files
-                    .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
-
-                if (toUpdate != null)
-                {
-                    toUpdate.CurrentVersion = false;
-                    filesDbContext.SaveChanges();
-                }
-
-                toInsert = new DbFile
-                {
-                    Id = file.Id,
-                    Version = file.Version,
-                    VersionGroup = file.VersionGroup,
-                    CurrentVersion = true,
-                    ParentId = file.ParentId,
-                    Title = file.Title,
-                    ContentLength = file.ContentLength,
-                    Category = (int)file.FilterType,
-                    CreateBy = file.CreateBy,
-                    CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
-                    ModifiedBy = file.ModifiedBy,
-                    ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
-                    ConvertedType = file.ConvertedType,
-                    Comment = file.Comment,
-                    Encrypted = file.Encrypted,
-                    Forcesave = file.Forcesave,
-                    ThumbnailStatus = file.ThumbnailStatus,
-                    TenantId = TenantID
-                };
-
-                filesDbContext.AddOrUpdate(r => r.Files, toInsert);
-                filesDbContext.SaveChanges();
-
-                tx.Commit();
-            });
-
-            file.PureTitle = file.Title;
-
-            var parentFolders =
-                filesDbContext.Tree
-                .Where(r => r.FolderId == file.ParentId)
-                .OrderByDescending(r => r.Level)
-                .ToList();
-
-            parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
-
-            if (parentFoldersIds.Count > 0)
-            {
-                var folderToUpdate = filesDbContext.Folders
-                    .Where(r => parentFoldersIds.Contains(r.Id));
-
-                foreach (var f in folderToUpdate)
-                {
-                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                    f.ModifiedBy = file.ModifiedBy;
-                }
-
-                filesDbContext.SaveChanges();
+                file.Id = await filesDbContext.Files.AnyAsync() ? await filesDbContext.Files.MaxAsync(r => r.Id) + 1 : 1;
+                file.Version = 1;
+                file.VersionGroup = 1;
+                isNew = true;
             }
 
-            toInsert.Folders = parentFolders;
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+            //make lowerCase
+            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-            if (isNew)
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
+            if (file.CreateBy == default)
             {
-                RecalculateFilesCountAsync(file.ParentId).Wait();
+                file.CreateBy = _authContext.CurrentAccount.ID;
             }
+
+            if (file.CreateOn == default)
+            {
+                file.CreateOn = _tenantUtil.DateTimeNow();
+            }
+
+            var toUpdate = await filesDbContext.Files
+                .FirstOrDefaultAsync(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
+
+            if (toUpdate != null)
+            {
+                toUpdate.CurrentVersion = false;
+                await filesDbContext.SaveChangesAsync();
+            }
+
+            toInsert = new DbFile
+            {
+                Id = file.Id,
+                Version = file.Version,
+                VersionGroup = file.VersionGroup,
+                CurrentVersion = true,
+                ParentId = file.ParentId,
+                Title = file.Title,
+                ContentLength = file.ContentLength,
+                Category = (int)file.FilterType,
+                CreateBy = file.CreateBy,
+                CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
+                ModifiedBy = file.ModifiedBy,
+                ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
+                ConvertedType = file.ConvertedType,
+                Comment = file.Comment,
+                Encrypted = file.Encrypted,
+                Forcesave = file.Forcesave,
+                ThumbnailStatus = file.ThumbnailStatus,
+                TenantId = TenantID
+            };
+
+            await filesDbContext.AddOrUpdateAsync(r => r.Files, toInsert);
+            await filesDbContext.SaveChangesAsync();
+
+            await tx.CommitAsync();
+        });
+
+        file.PureTitle = file.Title;
+
+        var parentFolders = await
+            filesDbContext.Tree
+            .Where(r => r.FolderId == file.ParentId)
+            .OrderByDescending(r => r.Level)
+            .ToListAsync();
+
+        parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+        if (parentFoldersIds.Count > 0)
+        {
+            var folderToUpdate = filesDbContext.Folders
+                .Where(r => parentFoldersIds.Contains(r.Id));
+
+            foreach (var f in folderToUpdate)
+            {
+                f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+                f.ModifiedBy = file.ModifiedBy;
+            }
+
+            await filesDbContext.SaveChangesAsync();
         }
+
+        toInsert.Folders = parentFolders;
+
+        if (isNew)
+        {
+            await RecalculateFilesCountAsync(file.ParentId);
+        }
+
+        _semaphore.Release();
 
         if (fileStream != null)
         {
@@ -585,18 +580,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
+        return InternalReplaceFileVersionAsync(file, fileStream);
+    }
+
+    private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
+    {
+        var maxChunkedUploadSize = await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
 
         if (maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
         }
 
-        return InternalReplaceFileVersionAsync(file, fileStream);
-    }
-
-    private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
-    {
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
@@ -609,81 +604,80 @@ internal class FileDao : AbstractDao, IFileDao<int>
         DbFile toUpdate = null;
 
         List<int> parentFoldersIds;
-        lock (_syncRoot)
+        await _semaphore.WaitAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            strategy.Execute(() =>
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+            //make lowerCase
+            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
+
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
+            if (file.CreateBy == default)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-
-                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-                //make lowerCase
-                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
-
-                file.ModifiedBy = _authContext.CurrentAccount.ID;
-                file.ModifiedOn = _tenantUtil.DateTimeNow();
-                if (file.CreateBy == default)
-                {
-                    file.CreateBy = _authContext.CurrentAccount.ID;
-                }
-
-                if (file.CreateOn == default)
-                {
-                    file.CreateOn = _tenantUtil.DateTimeNow();
-                }
-
-                toUpdate = filesDbContext.Files
-                    .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
-
-                toUpdate.Version = file.Version;
-                toUpdate.VersionGroup = file.VersionGroup;
-                toUpdate.ParentId = file.ParentId;
-                toUpdate.Title = file.Title;
-                toUpdate.ContentLength = file.ContentLength;
-                toUpdate.Category = (int)file.FilterType;
-                toUpdate.CreateBy = file.CreateBy;
-                toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
-                toUpdate.ModifiedBy = file.ModifiedBy;
-                toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                toUpdate.ConvertedType = file.ConvertedType;
-                toUpdate.Comment = file.Comment;
-                toUpdate.Encrypted = file.Encrypted;
-                toUpdate.Forcesave = file.Forcesave;
-                toUpdate.ThumbnailStatus = file.ThumbnailStatus;
-
-                filesDbContext.SaveChanges();
-
-                tx.Commit();
-            });
-
-            file.PureTitle = file.Title;
-
-            var parentFolders = filesDbContext.Tree
-                .Where(r => r.FolderId == file.ParentId)
-                .OrderByDescending(r => r.Level)
-                .ToList();
-
-            parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
-
-            if (parentFoldersIds.Count > 0)
-            {
-                var folderToUpdate = filesDbContext.Folders
-                    .Where(r => parentFoldersIds.Contains(r.Id));
-
-                foreach (var f in folderToUpdate)
-                {
-                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                    f.ModifiedBy = file.ModifiedBy;
-                }
-
-                filesDbContext.SaveChanges();
+                file.CreateBy = _authContext.CurrentAccount.ID;
             }
 
-            toUpdate.Folders = parentFolders;
+            if (file.CreateOn == default)
+            {
+                file.CreateOn = _tenantUtil.DateTimeNow();
+            }
+
+            toUpdate = await filesDbContext.Files
+                .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+
+            toUpdate.Version = file.Version;
+            toUpdate.VersionGroup = file.VersionGroup;
+            toUpdate.ParentId = file.ParentId;
+            toUpdate.Title = file.Title;
+            toUpdate.ContentLength = file.ContentLength;
+            toUpdate.Category = (int)file.FilterType;
+            toUpdate.CreateBy = file.CreateBy;
+            toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
+            toUpdate.ModifiedBy = file.ModifiedBy;
+            toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+            toUpdate.ConvertedType = file.ConvertedType;
+            toUpdate.Comment = file.Comment;
+            toUpdate.Encrypted = file.Encrypted;
+            toUpdate.Forcesave = file.Forcesave;
+            toUpdate.ThumbnailStatus = file.ThumbnailStatus;
+
+            await filesDbContext.SaveChangesAsync();
+
+            await tx.CommitAsync();
+        });
+
+        file.PureTitle = file.Title;
+
+        var parentFolders = await filesDbContext.Tree
+            .Where(r => r.FolderId == file.ParentId)
+            .OrderByDescending(r => r.Level)
+            .ToListAsync();
+
+        parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+        if (parentFoldersIds.Count > 0)
+        {
+            var folderToUpdate = filesDbContext.Folders
+                .Where(r => parentFoldersIds.Contains(r.Id));
+
+            foreach (var f in folderToUpdate)
+            {
+                f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+                f.ModifiedBy = file.ModifiedBy;
+            }
+
+            await filesDbContext.SaveChangesAsync();
         }
+
+        toUpdate.Folders = parentFolders;
+        _semaphore.Release();
 
         if (fileStream != null)
         {
@@ -776,11 +770,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            var fromFolders = Query(filesDbContext.Files)
+            var fromFolders = await Query(filesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.ParentId)
                 .Distinct()
-                .AsAsyncEnumerable();
+                .ToListAsync();
 
             var toDeleteLinks = Query(filesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             filesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
@@ -809,7 +803,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             await tx.CommitAsync();
 
-            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId));
+            foreach (var folderId in fromFolders)
+            {
+                await RecalculateFilesCountAsync(folderId);
+            }
 
             if (deleteFolder)
             {
@@ -820,8 +817,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 await _factoryIndexer.DeleteAsync(toDeleteFile);
             }
-
-            await forEachTask;
         });
     }
 
@@ -1308,7 +1303,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1322,7 +1317,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = GetFileQuery(filesDbContext, r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
 
-            return FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable()
+            return FromQuery(filesDbContext, query).AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(
                     f =>
@@ -1335,7 +1330,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = BuildSearch(GetFileQuery(filesDbContext, r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
 
-            return FromQueryWithShared(filesDbContext, query)
+            return FromQuery(filesDbContext, query)
                 .AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(f =>
@@ -1467,30 +1462,31 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1Task = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Select(r => r.TenantId)
+            .Distinct();
 
         await foreach (var q in q1Task.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2Task = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2Task.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2Task = filesDbContext.Security
+            .Where(r => r.TimeStamp > fromTime)
+            .Select(r => r.TenantId)
+            .Distinct();
+
+            await foreach (var q in q2Task.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 
@@ -1667,10 +1663,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
         var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
         var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
 
         return from r in dbFiles
                select new DbFileQuery
@@ -1689,33 +1682,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    Shared = (from f in filesDbContext.Security
                              where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
                              select f
-                             ).Any(),
-                   IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                      select f)
-                             .Any(),
-                   Deny = (from f in filesDbContext.Security
-                           where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                           select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                             ).Any()
                };
     }
 
     protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
-        var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
-        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
-
         return dbFiles
             .Select(r => new DbFileQuery
             {
@@ -1729,23 +1701,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                          ).FirstOrDefault()
                         where f.TenantId == r.TenantId
                         select f
-                          ).FirstOrDefault(),
-                Shared = true,
-                IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                   select f)
-                             .Any(),
-                Deny = (from f in filesDbContext.Security
-                        where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                        select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                          ).FirstOrDefault()
             });
     }
 
@@ -1802,8 +1758,6 @@ public class DbFileQuery
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
-    public bool IsFillFormDraft { get; set; }
-    public DbFileDeny Deny { get; set; }
 }
 
 public class DbFileDeny

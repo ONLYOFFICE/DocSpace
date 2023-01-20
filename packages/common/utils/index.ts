@@ -1,11 +1,10 @@
-import { LANGUAGE, AppServerConfig } from "../constants";
+import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
 import { Encoder } from "./encoder";
 import FilesFilter from "../api/files/filter";
-
-const { proxyURL } = AppServerConfig;
+import combineUrlFunc from "./combineUrl";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -148,7 +147,7 @@ export function isMe(user, userName) {
   );
 }
 
-export function isAdmin(currentUser, currentProductId) {
+export function isAdmin(currentUser) {
   return (
     currentUser.isAdmin ||
     currentUser.isOwner ||
@@ -156,7 +155,17 @@ export function isAdmin(currentUser, currentProductId) {
   );
 }
 
-import combineUrlFunc from "./combineUrl";
+export const getUserRole = (user) => {
+  if (user.isOwner) return "owner";
+  else if (isAdmin(user))
+    //TODO: Change to People Product Id const
+    return "admin";
+  //TODO: Need refactoring
+  else if (user.isVisitor) return "user";
+  else return "manager";
+};
+
+
 
 export const combineUrl = combineUrlFunc;
 
@@ -327,24 +336,6 @@ export function convertLanguage(key) {
   return key;
 }
 
-export function getFolderOptions(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
-
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
-  return options;
-}
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -403,28 +394,32 @@ export function getOAuthToken(
 }
 
 export function getLoginLink(token: string, code: string) {
-  return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+  return combineUrl(
+    window.DocSpaceConfig?.proxy?.url,
+    `/login.ashx?p=${token}&code=${code}`
+  );
 }
 
 export function checkIsSSR() {
   return typeof window === "undefined";
 }
 
-export const frameCallbackData = (data) => {
+export const frameCallbackData = (methodReturnData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onMethodReturn",
-      methodReturnData: data,
+      methodReturnData,
     }),
     "*"
   );
 };
 
-export const frameCallCommand = (command) => {
+export const frameCallCommand = (commandName: string, commandData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onCallCommand",
-      commandName: command,
+      commandName,
+      commandData,
     }),
     "*"
   );

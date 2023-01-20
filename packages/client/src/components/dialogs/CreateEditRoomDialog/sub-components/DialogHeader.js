@@ -20,13 +20,13 @@ const DialogHeader = ({ t, isEdit, isChooseRoomType, onArrowClick }) => {
             className="sharing_panel-arrow"
             onClick={onArrowClick}
           />
-          <div>{t("CreateRoom")}</div>
+          <div>{t("Files:CreateRoom")}</div>
         </div>
       )}
     </>
   );
 };
 
-export default withTranslation(["CreateEditRoomDialog"])(
+export default withTranslation(["CreateEditRoomDialog", "Files"])(
   withLoader(DialogHeader)(<Loaders.CreateEditRoomDilogHeaderLoader />)
 );

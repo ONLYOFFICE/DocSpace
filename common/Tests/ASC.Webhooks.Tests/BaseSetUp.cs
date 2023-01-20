@@ -31,12 +31,16 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
+using ASC.Api.Core.Extensions;
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Webhooks.Core;
 using ASC.Webhooks.Core.EF.Context;
-using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,108 +51,119 @@ using Microsoft.Extensions.Hosting;
 
 using NUnit.Framework;
 
-namespace ASC.Webhooks.Tests
+namespace ASC.Webhooks.Tests;
+
+public class BaseSetUp
 {
-    public class BaseSetUp
+    private IServiceProvider _serviceProvider;
+    protected IHost _host;
+    protected WebhookSender _webhookSender;
+    protected RequestHistory _requestHistory;
+    protected Settings _settings;
+    protected IHttpClientFactory _httpClientFactory;
+    protected string _testConnection = "Server=localhost;Database=onlyoffice_test;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
+    protected static int _port = 8867;
+
+    [OneTimeSetUp]
+    public async Task CreateDb()
     {
-        private IServiceProvider serviceProvider;
-        protected IHost host;
-        protected WebhookSender webhookSender;
-        protected RequestHistory requestHistory;
-        protected Settings settings;
-        protected IHttpClientFactory httpClientFactory;
-        protected string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
-        protected static int port = 8867;
+        var args = new string[] {
+            "--pathToConf", Path.Combine( "..", "..", "..", "..", "..", "..", "config"),
+            "--ConnectionStrings:default:connectionString", _testConnection,
+            "--migration:enabled", "true"};
 
-        [OneTimeSetUp]
-        public async Task CreateDb()
-        {
-            var args = new string[] {
-                "--pathToConf", Path.Combine( "..", "..", "..", "..", "..", "..", "config"),
-                "--ConnectionStrings:default:connectionString", TestConnection,
-                "--migration:enabled", "true"};
+        await StartHost(args);
 
-            await StartHost(args);
+        Migrate(_serviceProvider, "ASC.Migrations.MySql");
+        Migrate(_serviceProvider, Assembly.GetExecutingAssembly().GetName().Name);
+    }
 
-            Migrate(serviceProvider);
-            Migrate(serviceProvider, Assembly.GetExecutingAssembly().GetName().Name);
-        }
+    [OneTimeTearDown]
+    public async Task DropDb()
+    {
+        var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
+        context.Database.EnsureDeleted();
+        await _host.StopAsync();
+    }
 
-        [OneTimeTearDown]
-        public async Task DropDb()
-        {
-            var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
-            context.Database.EnsureDeleted();
-            await host.StopAsync();
-        }
-
-        private async Task StartHost(string[] args)
-        {
-            host = await Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+    private async Task StartHost(string[] args)
+    {
+        IConfiguration configuration = null;
+        _host = await Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder
+                .UseKestrel(options =>
                 {
-                    webBuilder
-                    .UseKestrel(options =>
-                    {
-                        options.Listen(IPAddress.Loopback, port);
-                    })
-                    .ConfigureServices(services =>
-                    {
-                        services.AddControllers();
-                        services.AddMemoryCache();
-                        services.AddHttpClient();
-
-                        var dIHelper = new DIHelper();
-                        dIHelper.Configure(services);
-                        dIHelper.TryAdd<DbWorker>();
-                        dIHelper.TryAdd<TestController>();
-                        dIHelper.TryAdd<WebhookSender>();
-                        dIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-                    })
-                    .Configure(app =>
-                    {
-                        app.UseRouting();
-                        app.UseEndpoints(endpoints =>
-                        {
-                            endpoints.MapControllers();
-                        });
-                    });
+                    options.Listen(IPAddress.Loopback, _port);
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
+                    configuration = config.Build();
+                    var path = configuration["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostingContext.HostingEnvironment.ContentRootPath, path));
                     }
-
                     config.SetBasePath(path);
                     config
                     .AddJsonFile("appsettings.json")
                     .AddCommandLine(args);
                 })
-                .StartAsync();
+                    .ConfigureServices(services =>
+                {
+                    services.AddControllers();
+                    services.AddMemoryCache();
+                    services.AddHttpClient();
 
-            serviceProvider = host.Services;
-            webhookSender = serviceProvider.GetService<WebhookSender>();
-            requestHistory = serviceProvider.GetService<RequestHistory>();
-            settings = serviceProvider.GetService<Settings>();
-            httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-        }
+                    services.AddScoped<EFLoggerFactory>();
+                    services.AddBaseDbContextPool<WebhooksDbContext>();
+                    services.AddBaseDbContextPool<TenantDbContext>();
+                    services.AddBaseDbContextPool<UserDbContext>();
+                    services.AddBaseDbContextPool<CoreDbContext>();
 
-        private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+                    services.AddDistributedCache(configuration);
+                    services.AddDistributedTaskQueue();
+                    services.AddCacheNotify(configuration);
+                    services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
+
+
+                    var dIHelper = new DIHelper();
+                    dIHelper.Configure(services);
+                    dIHelper.TryAdd<DbWorker>();
+                    dIHelper.TryAdd<TestController>();
+                    dIHelper.TryAdd<WebhookSender>();
+                    dIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
+                })
+                .Configure(app =>
+                {
+                    app.UseRouting();
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapControllers();
+                    });
+                });
+            })
+            .StartAsync();
+
+        _serviceProvider = _host.Services;
+        _webhookSender = _serviceProvider.GetService<WebhookSender>();
+        _requestHistory = _serviceProvider.GetService<RequestHistory>();
+        _settings = _serviceProvider.GetService<Settings>();
+        _httpClientFactory = _serviceProvider.GetService<IHttpClientFactory>();
+    }
+
+    private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+    {
+
+        if (!string.IsNullOrEmpty(testAssembly))
         {
-
-            if (!string.IsNullOrEmpty(testAssembly))
-            {
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                configuration["testAssembly"] = testAssembly;
-            }
-
-            using var db = serviceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
-            db.Database.Migrate();
+            var configuration = serviceProvider.GetService<IConfiguration>();
+            configuration["testAssembly"] = testAssembly;
         }
+
+        using var db = serviceProvider.GetService<IDbContextFactory<WebhooksDbContext>>().CreateDbContext();
+        db.Database.Migrate();
     }
 }

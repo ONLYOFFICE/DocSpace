@@ -10,14 +10,13 @@ const getDefaultStyles = ({
   theme,
 }) =>
   $currentColorScheme &&
+  theme.isBase &&
   css`
     :focus {
       border-color: ${(hasError && theme.input.focusErrorBorderColor) ||
       (hasWarning && theme.input.focusWarningBorderColor) ||
       (isDisabled && theme.input.focusDisabledBorderColor) ||
-      (theme.isBase
-        ? $currentColorScheme.accentColor
-        : theme.input.focusBorderColor)};
+      $currentColorScheme.main.accent};
     }
   `;
 

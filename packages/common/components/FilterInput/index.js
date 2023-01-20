@@ -43,6 +43,10 @@ const FilterInput = React.memo(
     isPersonalRoom,
     isRooms,
     isAccounts,
+    filterTitle,
+
+    clearSearch,
+    setClearSearch,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -56,6 +60,14 @@ const FilterInput = React.memo(
 
       if (value) setViewSettings(value);
     }, [getViewSettingsData]);
+
+    React.useEffect(() => {
+      if (clearSearch) {
+        setInputValue("");
+        onClearSearch();
+        setClearSearch(false);
+      }
+    }, [clearSearch]);
 
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
@@ -123,9 +135,11 @@ const FilterInput = React.memo(
             value={inputValue}
             onChange={onSearch}
             onClearSearch={onClearSearch}
+            id="filter_search-input"
           />
           <FilterButton
             t={t}
+            id="filter-button"
             onFilter={onFilter}
             getFilterData={getFilterData}
             selectedFilterValue={selectedFilterValue}
@@ -134,10 +148,12 @@ const FilterInput = React.memo(
             isPersonalRoom={isPersonalRoom}
             isRooms={isRooms}
             isAccounts={isAccounts}
+            title={filterTitle}
           />
           {!isRecentFolder && (
             <SortButton
               t={t}
+              id="sort-by-button"
               onSort={onSort}
               getSortData={getSortData}
               getSelectedSortData={getSelectedSortData}
@@ -159,6 +175,7 @@ const FilterInput = React.memo(
             !isTabletUtils()) ||
             isRecentFolder) && (
             <ViewSelector
+              id={viewAs === "tile" ? "view-switch--row" : "view-switch--tile"}
               style={{ marginLeft: "8px" }}
               viewAs={viewAs === "table" ? "row" : viewAs}
               viewSettings={viewSettings}
@@ -173,7 +190,7 @@ const FilterInput = React.memo(
               <SelectedItem
                 key={`${item.key}_${item.group}`}
                 propKey={item.key}
-                label={item.label}
+                label={item.selectedLabel ? item.selectedLabel : item.label}
                 group={item.group}
                 removeSelectedItem={removeSelectedItemAction}
               />

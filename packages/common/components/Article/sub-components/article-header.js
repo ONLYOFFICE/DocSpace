@@ -6,7 +6,6 @@ import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -18,12 +17,21 @@ const ArticleHeader = ({
   children,
   onClick,
   isBurgerLoading,
+  whiteLabelLogoUrls,
+  theme,
   ...rest
 }) => {
   const history = useHistory();
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
   const onLogoClick = () => history.push("/");
+
+  const burgerLogo = !theme.isBase
+    ? whiteLabelLogoUrls[5].path.dark
+    : whiteLabelLogoUrls[5].path.light;
+  const logo = !theme.isBase
+    ? whiteLabelLogoUrls[0].path.dark
+    : whiteLabelLogoUrls[0].path.light;
 
   if (isMobileOnly) return <></>;
   return (
@@ -32,7 +40,7 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <img src="/static/images/logo.icon.react.svg" onClick={onLogoClick} />
+          <img src={burgerLogo} onClick={onLogoClick} />
         </StyledIconBox>
       )}
 
@@ -41,17 +49,10 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            <ReactSVG
-              className="logo-icon_svg"
-              src="/static/images/logo.docspace.react.svg"
-              onClick={onLogoClick}
-            />
+            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
           ) : (
             <Link to="/">
-              <ReactSVG
-                className="logo-icon_svg"
-                src="/static/images/logo.docspace.react.svg"
-              />
+              <img className="logo-icon_svg" src={logo} />
             </Link>
           )}
         </StyledHeading>
@@ -70,8 +71,11 @@ ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { isBurgerLoading } = settingsStore;
+  const { isBurgerLoading, whiteLabelLogoUrls, theme } = settingsStore;
+
   return {
     isBurgerLoading,
+    whiteLabelLogoUrls,
+    theme,
   };
 })(observer(ArticleHeader));

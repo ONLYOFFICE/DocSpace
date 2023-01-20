@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import StyledIcon from "@docspace/client/src/components/StyledIcon";
+import StyledIcon from "../../StyledIcon";
 import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({
@@ -17,15 +17,14 @@ const getDefaultStyles = ({
     svg {
       path {
         fill: ${(shared || locked || isFavorite || isEditing) &&
-        theme.isBase &&
-        $currentColorScheme.accentColor};
+        $currentColorScheme.main.accent};
       }
     }
 
     &:hover {
       svg {
         path {
-          fill: ${theme.isBase && $currentColorScheme.accentColor};
+          fill: ${$currentColorScheme.main.accent};
         }
       }
     }

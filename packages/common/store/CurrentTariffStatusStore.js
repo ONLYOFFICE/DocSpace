@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { TariffState } from "../constants";
 
@@ -59,7 +59,9 @@ class CurrentTariffStatusStore {
 
     if (!res) return;
 
-    this.portalTariffStatus = res;
+    runInAction(() => {
+      this.portalTariffStatus = res;
+    });
   };
 }
 

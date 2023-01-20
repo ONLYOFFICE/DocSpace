@@ -13,20 +13,18 @@ import {
   InvitePanel,
 } from "../panels";
 import {
-  ThirdPartyMoveDialog,
   ConnectDialog,
   DeleteThirdPartyDialog,
   EmptyTrashDialog,
   DeleteDialog,
   DownloadDialog,
-  ThirdPartyDialog,
   ConflictResolveDialog,
   ConvertDialog,
   CreateRoomDialog,
   InviteUsersWarningDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
-import RestoreAllArchiveDialog from "../dialogs/RestoreAllArchiveDialog";
+import ArchiveDialog from "../dialogs/ArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -42,7 +40,6 @@ const Panels = (props) => {
     deleteDialogVisible,
     downloadDialogVisible,
     emptyTrashDialogVisible,
-    thirdPartyDialogVisible,
     newFilesPanelVisible,
     conflictResolveDialogVisible,
     convertDialogVisible,
@@ -54,11 +51,11 @@ const Panels = (props) => {
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
-    restoreAllArchiveDialogVisible,
+    archiveDialogVisible,
     inviteUsersWarningDialogVisible,
   } = props;
 
-  const { t } = useTranslation(["Translations", "SelectFile"]);
+  const { t } = useTranslation(["Translations", "Common"]);
 
   const onClose = () => {
     setSelectFileDialogVisible(false);
@@ -80,9 +77,6 @@ const Panels = (props) => {
         isRestore={restoreAllPanelVisible}
       />
     ),
-    thirdPartyMoveDialogVisible && (
-      <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
-    ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
     deleteThirdPartyDialogVisible && (
       <DeleteThirdPartyDialog key="thirdparty-delete-dialog" />
@@ -93,7 +87,7 @@ const Panels = (props) => {
     deleteDialogVisible && <DeleteDialog key="delete-dialog" />,
     emptyTrashDialogVisible && <EmptyTrashDialog key="empty-trash-dialog" />,
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
-    thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
+
     newFilesPanelVisible && <NewFilesPanel key="new-files-panel" />,
     conflictResolveDialogVisible && (
       <ConflictResolveDialog key="conflict-resolve-dialog" />
@@ -111,7 +105,7 @@ const Panels = (props) => {
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("SelectFile:SelectDOCXFormat")}
+        filesListTitle={t("Common:SelectDOCXFormat")}
         creationButtonPrimary
         withSubfolders={false}
       />
@@ -121,9 +115,7 @@ const Panels = (props) => {
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
-    restoreAllArchiveDialogVisible && (
-      <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
-    ),
+    archiveDialogVisible && <ArchiveDialog key="archive-dialog" />,
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
@@ -143,7 +135,6 @@ export default inject(
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
-      thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
@@ -151,7 +142,7 @@ export default inject(
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
-      restoreAllArchiveDialogVisible,
+      archiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -177,7 +168,6 @@ export default inject(
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
-      thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
@@ -189,7 +179,7 @@ export default inject(
       hotkeyPanelVisible,
       restoreAllPanelVisible,
       invitePanelVisible: invitePanelOptions.visible,
-      restoreAllArchiveDialogVisible,
+      archiveDialogVisible,
       inviteUsersWarningDialogVisible,
     };
   }

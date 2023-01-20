@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Anna koodi todentamissovelluksesta",
   "EnterCodePlaceholder": "Syötä koodi",
   "EnterPhone": "Kirjoita matkapuhelimen numero",
-  "FirstName": "Etunimi",
   "GetCode": "Hanki koodi",
   "InviteTitle": "Sinut on kutsuttu liittymään tähän portaaliin!",
   "LoginRegistryButton": "Liity",
@@ -23,5 +22,5 @@
   "SetAppDescription": "Kaksivaiheinen todennus on käytössä. Määritä autentikointisovelluksesi jatkaaksesi työskentelyä portaalissa. Voit käyttää Google Authenticatoria <1> Android</1> ja <4> iOS</4>-järjestelmällä tai Authenticatoria <8> Windows-puhelimella</8>.",
   "SetAppInstallDescription": "Jos haluat yhdistää sovelluksen, skannaa QR-koodi tai kirjoita salainen avaimesi <1> {{secretKey}} </1> manuaalisesti ja kirjoita sitten 6-numeroinen koodi sovelluksestasi alla olevaan kenttään.",
   "SetAppTitle": "Määritä todennussovelluksesi",
-  "WelcomeUser": "Tervetuloa mukaan portaaliimme! Aloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
+  "WelcomeUser": "Tervetuloa mukaan portaaliimme!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
 }

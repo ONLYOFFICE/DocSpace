@@ -18,7 +18,6 @@ import {
   checkPropertyByLink,
 } from "../../../utils";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 
 const HeaderContainer = styled.div`
@@ -196,7 +195,9 @@ class SectionHeaderContent extends React.Component {
     let newArrayOfParams = this.getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/portal-settings/" + newArrayOfParams.join("/");
-    this.props.history.push(combineUrl(AppServerConfig.proxyURL, newPath));
+    this.props.history.push(
+      combineUrl(window.DocSpaceConfig?.proxy?.url, newPath)
+    );
   };
 
   getArrayOfParams = () => {
@@ -310,6 +311,7 @@ class SectionHeaderContent extends React.Component {
                     backgroundColor="#EDC409"
                     label="Paid"
                     className="settings-section_badge"
+                    isPaidBadge={true}
                   />
                 ) : (
                   ""
@@ -336,7 +338,6 @@ class SectionHeaderContent extends React.Component {
 
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore } = auth;
-  const { customNames } = auth.settingsStore;
   const {
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,
@@ -358,7 +359,6 @@ export default inject(({ auth, setup, common }) => {
   return {
     addUsers,
     removeAdmins,
-    groupsCaption: customNames.groupsCaption,
     selected,
     setSelected,
     admins,

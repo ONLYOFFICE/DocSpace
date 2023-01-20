@@ -38,7 +38,6 @@ public class StorageController : BaseSettingsController
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ConsumerFactory _consumerFactory;
     private readonly TenantManager _tenantManager;
-    private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -51,17 +50,16 @@ public class StorageController : BaseSettingsController
     private readonly EncryptionWorker _encryptionWorker;
     private readonly ILogger _log;
     private readonly IEventBus _eventBus;
-    private readonly ASC.Core.SecurityContext _securityContext;
+    private readonly SecurityContext _securityContext;
 
     public StorageController(
         ILoggerProvider option,
         ServiceClient serviceClient,
         MessageService messageService,
-        ASC.Core.SecurityContext securityContext,
+        SecurityContext securityContext,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         TenantManager tenantManager,
-        TenantExtra tenantExtra,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
@@ -86,7 +84,6 @@ public class StorageController : BaseSettingsController
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _tenantManager = tenantManager;
-        _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
@@ -234,7 +231,7 @@ public class StorageController : BaseSettingsController
 
         _encryptionSettingsHelper.Save(settings);
 
-        _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
+        _eventBus.Publish(new EncryptionDataStorageRequestedIntegrationEvent
         (
               encryptionSettings: new EncryptionSettings
               {

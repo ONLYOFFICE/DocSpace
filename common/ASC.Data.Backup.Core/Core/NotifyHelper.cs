@@ -124,7 +124,7 @@ public class NotifyHelper
         foreach (var user in users)
         {
             var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
             Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
 
@@ -158,7 +158,7 @@ public class NotifyHelper
 
                     var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.Id;
                     var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-                    var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
+                    var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
                     Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
@@ -195,7 +195,7 @@ public class NotifyHelper
         {
             args.Add(new TagValue(CommonTags.VirtualRootPath, url));
             args.Add(new TagValue(CommonTags.ProfileUrl, url + _commonLinkUtility.GetMyStaff()));
-            args.Add(new TagValue(CommonTags.LetterLogo, _tenantLogoManager.GetLogoDark(true)));
+            args.Add(new TagValue(CommonTags.LetterLogo, _tenantLogoManager.GetLogoDark(false)));
         }
 
         return args;

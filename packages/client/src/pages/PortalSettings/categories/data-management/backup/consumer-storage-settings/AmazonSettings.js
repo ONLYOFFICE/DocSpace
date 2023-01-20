@@ -257,6 +257,7 @@ class AmazonSettings extends React.Component {
       return (
         <>
           <HelpButton
+            offsetRight={0}
             iconName={"/static/images/help.react.svg"}
             tooltipContent={
               <>
@@ -321,6 +322,7 @@ class AmazonSettings extends React.Component {
             dropDownMaxHeight={300}
             isDisabled={this.isDisabled}
             tabIndex={2}
+            showDisabledItems
           />
         </StyledBody>
 
@@ -393,6 +395,7 @@ class AmazonSettings extends React.Component {
             dropDownMaxHeight={300}
             isDisabled={this.isDisabled}
             tabIndex={7}
+            showDisabledItems
           />
         </StyledBody>
 
@@ -436,6 +439,7 @@ class AmazonSettings extends React.Component {
                   dropDownMaxHeight={300}
                   isDisabled={this.isDisabled}
                   tabIndex={8}
+                  showDisabledItems
                 />
 
                 {managedKeys.label === this.customerManager && (

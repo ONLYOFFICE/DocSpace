@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	<ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\migrations\mysql\ASC.Migrations.MySql.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Api\ASC.Web.Api.csproj" />
   </ItemGroup>
 

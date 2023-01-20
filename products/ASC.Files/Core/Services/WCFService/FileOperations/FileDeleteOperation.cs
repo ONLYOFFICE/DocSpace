@@ -50,9 +50,8 @@ class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>
     public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
         : base(serviceProvider, f1, f2)
     {
+        this[OpType] = (int)FileOperationType.Delete;
     }
-
-    public override FileOperationType OperationType => FileOperationType.Delete;
 }
 
 class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
@@ -64,9 +63,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
 
-    public override FileOperationType OperationType => FileOperationType.Delete;
-
-
     public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
     : base(serviceProvider, fileOperationData)
     {
@@ -75,9 +71,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         _headers = fileOperationData.Headers;
         _isEmptyTrash = fileOperationData.IsEmptyTrash;
         _thumbnailSettings = thumbnailSettings;
+        this[OpType] = (int)FileOperationType.Delete;
     }
 
-    protected override async Task DoAsync(IServiceScope scope)
+    protected override async Task DoJob(IServiceScope scope)
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
         var messageService = scope.ServiceProvider.GetService<MessageService>();
@@ -94,7 +91,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         }
         if (root != null)
         {
-            Result += string.Format("folder_{0}{1}", root.Id, SplitChar);
+            this[Res] += string.Format("folder_{0}{1}", root.Id, SplitChar);
         }
         if (_isEmptyTrash)
         {
@@ -107,10 +104,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             await DeleteFilesAsync(Files, scope, true);
             await DeleteFoldersAsync(Folders, scope, true);
         }
-
     }
 
-    private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false)
+    private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
         var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
@@ -124,21 +120,23 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             T canCalculate = default;
             if (folder == null)
             {
-                Error = FilesCommonResource.ErrorMassage_FolderNotFound;
+                this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
             else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
                 && !DocSpaceHelper.IsRoom(folder.FolderType))
             {
-                Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
-            else if (!_ignoreException && !await FilesSecurity.CanDeleteAsync(folder))
+            else if (!_ignoreException && checkPermissions && !await FilesSecurity.CanDeleteAsync(folder))
             {
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
-                Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
             else
             {
+                checkPermissions = isRoom ? false : checkPermissions;
+
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                 await fileMarker.RemoveMarkAsNewForAllAsync(folder);
@@ -152,7 +150,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                             if (providerInfo.FolderId != null)
                             {
-                                await roomLogoManager.DeleteAsync(providerInfo.FolderId);
+                                await roomLogoManager.DeleteAsync(providerInfo.FolderId, checkPermissions);
                             }
                         }
 
@@ -171,16 +169,16 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
                         var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
-                        await DeleteFilesAsync(files, scope);
+                        await DeleteFilesAsync(files, scope, checkPermissions: checkPermissions);
 
                         var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
-                        await DeleteFoldersAsync(folders.Select(f => f.Id).ToList(), scope);
+                        await DeleteFoldersAsync(folders.Select(f => f.Id).ToList(), scope, checkPermissions: checkPermissions);
 
                         if (await FolderDao.IsEmptyAsync(folder.Id))
                         {
                             if (isRoom)
                             {
-                                await roomLogoManager.DeleteAsync(folder.Id);
+                                await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
                             }
 
                             await FolderDao.DeleteFolderAsync(folder.Id);
@@ -198,10 +196,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     else
                     {
                         var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
-                        var (isError, message) = await WithErrorAsync(scope, files, true);
+                        var (isError, message) = await WithErrorAsync(scope, files, true, checkPermissions);
                         if (!_ignoreException && isError)
                         {
-                            Error = message;
+                            this[Err] = message;
                         }
                         else
                         {
@@ -209,7 +207,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 if (isRoom)
                                 {
-                                    await roomLogoManager.DeleteAsync(folder.Id);
+                                    await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
                                 }
 
                                 await FolderDao.DeleteFolderAsync(folder.Id);
@@ -242,7 +240,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         }
     }
 
-    private async Task DeleteFilesAsync(IEnumerable<T> fileIds, IServiceScope scope, bool isNeedSendActions = false)
+    private async Task DeleteFilesAsync(IEnumerable<T> fileIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
@@ -253,14 +251,14 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             CancellationToken.ThrowIfCancellationRequested();
 
             var file = await FileDao.GetFileAsync(fileId);
-            var (isError, message) = await WithErrorAsync(scope, new[] { file }, false);
+            var (isError, message) = await WithErrorAsync(scope, new[] { file }, false, checkPermissions);
             if (file == null)
             {
-                Error = FilesCommonResource.ErrorMassage_FileNotFound;
+                this[Err] = FilesCommonResource.ErrorMassage_FileNotFound;
             }
             else if (!_ignoreException && isError)
             {
-                Error = message;
+                this[Err] = message;
             }
             else
             {
@@ -282,7 +280,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         }
                     }
 
-                    socketManager.DeleteFile(file);
+                    await socketManager.DeleteFile(file);
                 }
                 else
                 {
@@ -302,11 +300,11 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             filesMessageService.Send(file, MessageInitiator.AutoCleanUp, MessageAction.FileDeleted, file.Title);
                         }
 
-                        socketManager.DeleteFile(file);
+                        await socketManager.DeleteFile(file);
                     }
                     catch (Exception ex)
                     {
-                        Error = ex.Message;
+                        this[Err] = ex.Message;
                         Logger.ErrorWithException(ex);
                     }
 
@@ -320,7 +318,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         }
     }
 
-    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder)
+    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder, bool checkPermissions)
     {
         var entryManager = scope.ServiceProvider.GetService<EntryManager>();
         var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
@@ -328,13 +326,13 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         string error = null;
         foreach (var file in files)
         {
-            if (!await FilesSecurity.CanDeleteAsync(file))
+            if (checkPermissions && !await FilesSecurity.CanDeleteAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
 
                 return (true, error);
             }
-            if (await entryManager.FileLockedForMeAsync(file.Id))
+            if (checkPermissions && await entryManager.FileLockedForMeAsync(file.Id))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 

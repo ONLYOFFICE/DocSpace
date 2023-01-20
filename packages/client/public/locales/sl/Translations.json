@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Dodaj račun",
-  "AddAuthor": "Dodaj avtorja",
   "ArchivingData": "Arhiviraj podatke",
-  "ButtonShareAccess": "Nastavitve deljenja",
   "ConnectingAccount": "Povezovanje računa",
   "Copy": "Kopiraj",
   "CopyHere": "Kopiraj sem",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Dobi ONLYOFFICE dokumente na Google Play",
   "MobileIos": "Prenesi ONLYOFFICE dokumente na App Store",
   "MobileLinux": "Prenesi ONLYOFFICE namizne urejevalnike za Linux",
-  "MobileMac": "Prenesi ONLYOFFICE namizne urejevalnike za Mac OS",
+  "MobileMac": "Prenesi ONLYOFFICE namizne urejevalnike za macOS",
   "MobileWin": "Prenesi ONLYOFFICE namizne urejevalnike za Windows",
   "MoveHere": "Premakni sem",
   "MoveToOperation": "Premikanje",
   "NewForm": "Predloga obrazca",
-  "NewFormFile": "Datoteka s predlogo obrazca",
+  "Other": "Drugo",
   "OwnerChange": "Spremeni lastnika",
   "Presentations": "Predstavitve",
   "Spreadsheets": "Tabele",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Drugo"
+  "TypeTitlekDrive": "kDrive"
 }

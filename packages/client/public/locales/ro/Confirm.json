@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Introduceți codul din aplicația de autentificare",
   "EnterCodePlaceholder": "Introduceți codul",
   "EnterPhone": "Introduceți număr de telefon mobil",
-  "FirstName": "Prenume",
   "GetCode": "Obține codul",
   "InviteTitle": "Sunteți invitați să aderați la acest portal!",
   "LoginRegistryButton": "Înregistrați-vă",
@@ -23,5 +22,5 @@
   "SetAppDescription": "Autentificarea cu doi factori este activată. Configurați aplicația de autentificare dvs ca să lucrați mai departe în portal. Puteți utiliza Google Authenticator pentru <1>Android</1> și <4>iOS</4> sau Authenticator pentru <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Pentru a conecta aplicația, scanați codul QR sau introduceți manual cheia secretă <1>{{ secretKey }}</1>, și apoi introduceți codul din 6 cifre din aplicația în câmpul aflat dedesubt.",
   "SetAppTitle": "Configurarea aplicației de autentificare dvs.",
-  "WelcomeUser": "Bine ați venit pe portalul! Pentru a începe lucrul, vă înregistrați sau vă conectați prin intermediul rețelelor de socializare."
+  "WelcomeUser": "Bine ați venit pe portalul!\nPentru a începe lucrul, vă înregistrați sau vă conectați prin intermediul rețelelor de socializare."
 }

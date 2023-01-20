@@ -112,9 +112,6 @@
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>Prea multe descărcări.</value>
   </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Operațiunea a fost anulată</value>
-  </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
     <value>Nu se poate șterge folderul, deoarece unul dintre fișiere este deschis pentru editare</value>
   </data>
@@ -138,11 +135,5 @@
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documente</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} șters</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Caută</value>
   </data>
 </root>

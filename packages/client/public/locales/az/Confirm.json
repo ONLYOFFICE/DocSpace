@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Doğrulama tətbiqindən kodu daxil edin.",
   "EnterCodePlaceholder": "Kodu daxil edin.",
   "EnterPhone": "Mobil telefon nömrəsi daxil edin",
-  "FirstName": "Ad",
   "GetCode": "Kodu əldə edin",
   "InviteTitle": "Siz portala qoşulmaq üçün dəvət olunmusunuz!",
   "LoginRegistryButton": "Qoşulun",
@@ -23,5 +22,5 @@
   "SetAppDescription": "İki faktorlu avtorizasiya kodu aktivləşdirildi. Portalda işləməyə davam etmək üçün doğrulama tətbiqini quraşdırın. Doğrulama tətbiqini <1>Android</1> və <4>iOS</4> və ya <8>Windows Phone</8> üçün istifadə edə bilərsiniz.",
   "SetAppInstallDescription": "Tətbiqə qoşulmaq üçün QR kodu skan edin və ya manual olaraq öz gizli açarınızı <1>{{ secretKey }}</1>, daha sonra isə aşağıdakı xanada tətbiqdən əldə etdiyiz 6 rəqəmli kodu daxil edin.",
   "SetAppTitle": "Doğrulama tətbiqini quraşdırın",
-  "WelcomeUser": "Portalımıza xoş gəlmisiniz! Başlamaq üçün qeydiyyatdan keçin və ya sosial şəbəkə vasitəsilə giriş edin."
+  "WelcomeUser": "Portalımıza xoş gəlmisiniz!\nBaşlamaq üçün qeydiyyatdan keçin və ya sosial şəbəkə vasitəsilə giriş edin."
 }

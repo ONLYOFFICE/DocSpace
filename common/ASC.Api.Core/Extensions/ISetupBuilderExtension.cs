@@ -24,9 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using NLog.AWS.Logger;
-
 namespace ASC.Api.Core.Extensions;
+
 public static class ISetupBuilderExtension
 {
     public static ISetupBuilder LoadConfiguration(this ISetupBuilder loggingBuilder, IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -58,9 +57,17 @@ public static class ISetupBuilderExtension
                 awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
             }
 
-            if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+
+            var awsAccessKeyId = string.IsNullOrEmpty(settings.AWSAccessKeyId) ? configuration["aws:cloudWatch:accessKeyId"] : settings.AWSAccessKeyId;
+            var awsSecretAccessKey = string.IsNullOrEmpty(settings.AWSSecretAccessKey) ? configuration["aws:cloudWatch:secretAccessKey"] : settings.AWSSecretAccessKey;
+
+            if (!string.IsNullOrEmpty(awsAccessKeyId))
             {
-                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AWSAccessKeyId, settings.AWSSecretAccessKey);
+                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
+            }
+            else
+            {
+                conf.RemoveTarget(targetName);
             }
         }
 

@@ -26,34 +26,36 @@
 
 namespace ASC.Web.Files.Utils;
 
-[Scope]
-public class SocketManager
+public class SocketManager : SocketServiceClient
 {
-    private readonly SignalrServiceClient _signalrServiceClient;
     private readonly FileDtoHelper _filesWrapperHelper;
     private readonly TenantManager _tenantManager;
 
+    public override string Hub => "files";
+
     public SocketManager(
-        IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+        ILogger<SocketServiceClient> logger,
+        IHttpClientFactory clientFactory,
+        MachinePseudoKeys mashinePseudoKeys,
+        IConfiguration configuration,
         FileDtoHelper filesWrapperHelper,
         TenantManager tenantManager
-        )
+        ) : base(logger, clientFactory, mashinePseudoKeys, configuration)
     {
-        _signalrServiceClient = optionsSnapshot.Get("files");
         _filesWrapperHelper = filesWrapperHelper;
         _tenantManager = tenantManager;
     }
 
-    public void StartEdit<T>(T fileId)
+    public async Task StartEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        _signalrServiceClient.StartEdit(fileId, room);
+        await MakeRequest("start-edit", new { room, fileId });
     }
 
-    public void StopEdit<T>(T fileId)
+    public async Task StopEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        _signalrServiceClient.StopEdit(fileId, room);
+        await MakeRequest("stop-edit", new { room, fileId });
     }
 
     public async Task CreateFileAsync<T>(File<T> file)
@@ -69,7 +71,7 @@ public class SocketManager
         serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-        _signalrServiceClient.CreateFile(file.Id, room, data);
+        await MakeRequest("create-file", new { room, fileId = file.Id, data });
     }
 
     public async Task UpdateFileAsync<T>(File<T> file)
@@ -85,26 +87,40 @@ public class SocketManager
         serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-        _signalrServiceClient.UpdateFile(file.Id, room, data);
+        await MakeRequest("update-file", new { room, fileId = file.Id, data });
     }
 
-    public void DeleteFile<T>(File<T> file)
+    public async Task DeleteFile<T>(File<T> file)
     {
         var room = GetFolderRoom(file.ParentId);
-        _signalrServiceClient.DeleteFile(file.Id, room);
+        await MakeRequest("delete-file", new { room, fileId = file.Id });
     }
 
-    private string GetFileRoom<T>(T fileId)
+    public async Task ExecMarkAsNewFile(object fileId, int count, Guid owner)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
-
-        return $"{tenantId}-FILE-{fileId}";
+        var room = GetFileRoom(fileId, owner);
+        await MakeRequest("markasnew-file", new { room, fileId, count });
     }
 
-    private string GetFolderRoom<T>(T folderId)
+    public async Task ExecMarkAsNewFolder(object folderId, int count, Guid owner)
+    {
+        var room = GetFolderRoom(folderId, owner);
+        await MakeRequest("markasnew-folder", new { room, folderId, count });
+    }
+
+    private string GetFileRoom<T>(T fileId, Guid? owner = null)
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
-        return $"{tenantId}-DIR-{folderId}";
+        return $"{tenantId}-FILE-{fileId}{ownerData}";
+    }
+
+    private string GetFolderRoom<T>(T folderId, Guid? owner = null)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var ownerData = owner.HasValue ? "-" + owner.Value : "";
+
+        return $"{tenantId}-DIR-{folderId}{ownerData}";
     }
 }

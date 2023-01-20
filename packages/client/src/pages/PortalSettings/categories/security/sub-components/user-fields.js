@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import { TrashIcon } from "./svg";
+import TrashIcon from "PUBLIC_DIR/images/trash.react.svg";
 import PlusIcon from "@docspace/client/public/images/plus.react.svg";
 import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
@@ -41,6 +41,7 @@ const StyledAddWrapper = styled.div`
   gap: 6px;
   align-items: center;
   cursor: pointer;
+  margin-top: ${(props) => (props.inputsLength > 0 ? "16px" : "0px")};
 `;
 
 const usePrevious = (value) => {
@@ -126,9 +127,9 @@ const UserFields = (props) => {
         <></>
       )}
 
-      <StyledAddWrapper onClick={onClickAdd}>
+      <StyledAddWrapper onClick={onClickAdd} inputsLength={inputs.length}>
         <StyledPlusIcon size="small" />
-        <Link type="action" isHovered={true}>
+        <Link type="action" isHovered={true} fontWeight={600}>
           {buttonLabel}
         </Link>
       </StyledAddWrapper>

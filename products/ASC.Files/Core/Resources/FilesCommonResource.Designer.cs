@@ -349,15 +349,6 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notify when mentioned in document.
-        /// </summary>
-        public static string EditorMentions {
-            get {
-                return ResourceManager.GetString("EditorMentions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bad request..
         /// </summary>
         public static string ErrorMassage_BadRequest {
@@ -381,15 +372,6 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMassage_ConvertTimeout {
             get {
                 return ResourceManager.GetString("ErrorMassage_ConvertTimeout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are not allowed to create folders in the Recycle Bin.
-        /// </summary>
-        public static string ErrorMassage_CreateNewFolderInTrash {
-            get {
-                return ResourceManager.GetString("ErrorMassage_CreateNewFolderInTrash", resourceCulture);
             }
         }
         
@@ -475,11 +457,11 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File larger than {0} will not be archived.
+        ///   Looks up a localized string similar to The new version cannot be the same as the current one.
         /// </summary>
-        public static string ErrorMassage_FileSizeZip {
+        public static string ErrorMassage_FileUpdateToVersion {
             get {
-                return ResourceManager.GetString("ErrorMassage_FileSizeZip", resourceCulture);
+                return ResourceManager.GetString("ErrorMassage_FileUpdateToVersion", resourceCulture);
             }
         }
         
@@ -520,15 +502,6 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no available accounts to send the message. Go to Mail and connect a mailbox..
-        /// </summary>
-        public static string ErrorMassage_MailAccountNotFound {
-            get {
-                return ResourceManager.GetString("ErrorMassage_MailAccountNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to At least {0} mail messages could not be sent. Please visit the Mail module to see what the reason for the failure could be..
         /// </summary>
         public static string ErrorMassage_MailMergeCount {
@@ -552,15 +525,6 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMassage_NotSupportedFormat {
             get {
                 return ResourceManager.GetString("ErrorMassage_NotSupportedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The operation was canceled.
-        /// </summary>
-        public static string ErrorMassage_OperationCanceledException {
-            get {
-                return ResourceManager.GetString("ErrorMassage_OperationCanceledException", resourceCulture);
             }
         }
         
@@ -606,6 +570,24 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMassage_SecurityException_Auth {
             get {
                 return ResourceManager.GetString("ErrorMassage_SecurityException_Auth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the file.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFile {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the folder.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFolder {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFolder", resourceCulture);
             }
         }
         
@@ -790,20 +772,38 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
-        /// </summary>
-        public static string ErrorMessage_ArchiveRoom {
-            get {
-                return ResourceManager.GetString("ErrorMessage_ArchiveRoom", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The invitation link is invalid or it&apos;s validity has expired.
         /// </summary>
         public static string ErrorMessage_InvintationLink {
             get {
                 return ResourceManager.GetString("ErrorMessage_InvintationLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role is only available to a paid user.
+        /// </summary>
+        public static string ErrorMessage_PaidRole {
+            get {
+                return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to copy to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_CopyToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_CopyToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to move to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_MoveToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_MoveToFolder", resourceCulture);
             }
         }
         
@@ -822,6 +822,15 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMessage_UpdateArchivedRoom {
             get {
                 return ResourceManager.GetString("ErrorMessage_UpdateArchivedRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t pin a room.
+        /// </summary>
+        public static string ErrorrMessage_PinRoom {
+            get {
+                return ResourceManager.GetString("ErrorrMessage_PinRoom", resourceCulture);
             }
         }
         
@@ -940,78 +949,6 @@ namespace ASC.Files.Core.Resources {
         public static string ProductUserOpportunities {
             get {
                 return ResourceManager.GetString("ProductUserOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {!User} removed.
-        /// </summary>
-        public static string ProfileRemoved {
-            get {
-                return ResourceManager.GetString("ProfileRemoved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search.
-        /// </summary>
-        public static string Search {
-            get {
-                return ResourceManager.GetString("Search", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notify when a folder is shared.
-        /// </summary>
-        public static string ShareFolder {
-            get {
-                return ResourceManager.GetString("ShareFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notify when document signed via DocuSign.
-        /// </summary>
-        public static string SubscriptDocuSignComplete {
-            get {
-                return ResourceManager.GetString("SubscriptDocuSignComplete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notify when document in DocuSign changed status.
-        /// </summary>
-        public static string SubscriptDocuSignStatus {
-            get {
-                return ResourceManager.GetString("SubscriptDocuSignStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notify when a document is shared.
-        /// </summary>
-        public static string SubscriptForAccess {
-            get {
-                return ResourceManager.GetString("SubscriptForAccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notify when mailing is complete.
-        /// </summary>
-        public static string SubscriptForMailMerge {
-            get {
-                return ResourceManager.GetString("SubscriptForMailMerge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Documents of {!user} {0}.
-        /// </summary>
-        public static string TitleDeletedUserFolder {
-            get {
-                return ResourceManager.GetString("TitleDeletedUserFolder", resourceCulture);
             }
         }
         

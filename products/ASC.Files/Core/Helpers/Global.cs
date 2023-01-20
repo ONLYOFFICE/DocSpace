@@ -238,24 +238,24 @@ public class GlobalStore
 
     public IDataStore GetStore(bool currentTenant = true)
     {
-        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id.ToString() : string.Empty, FileConstant.StorageModule);
+        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id : null, FileConstant.StorageModule);
     }
 
     public IDataStore GetStoreTemplate()
     {
-        return _storageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
+        return _storageFactory.GetStorage(null, FileConstant.StorageTemplate);
     }
 }
 
 [Scope]
 public class GlobalSpace
 {
-    private readonly FilesUserSpaceUsage _filesUserSpaceUsage;
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly AuthContext _authContext;
 
-    public GlobalSpace(FilesUserSpaceUsage filesUserSpaceUsage, AuthContext authContext)
+    public GlobalSpace(FilesSpaceUsageStatManager filesSpaceUsageStatManager, AuthContext authContext)
     {
-        _filesUserSpaceUsage = filesUserSpaceUsage;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _authContext = authContext;
     }
 
@@ -266,7 +266,7 @@ public class GlobalSpace
 
     public Task<long> GetUserUsedSpaceAsync(Guid userId)
     {
-        return _filesUserSpaceUsage.GetUserSpaceUsageAsync(userId);
+        return _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(userId);
     }
 }
 
@@ -282,7 +282,6 @@ public class GlobalFolder
     private readonly SettingsManager _settingsManager;
     private readonly GlobalStore _globalStore;
     private readonly IServiceProvider _serviceProvider;
-    private readonly Global _global;
     private readonly ILogger _logger;
 
     public GlobalFolder(
@@ -295,9 +294,7 @@ public class GlobalFolder
         SettingsManager settingsManager,
         GlobalStore globalStore,
         ILoggerProvider options,
-        IServiceProvider serviceProvider,
-            Global global,
-            ThumbnailSettings thumbnailSettings
+        IServiceProvider serviceProvider
     )
     {
         _coreBaseSettings = coreBaseSettings;
@@ -309,9 +306,7 @@ public class GlobalFolder
         _settingsManager = settingsManager;
         _globalStore = globalStore;
         _serviceProvider = serviceProvider;
-        _global = global;
         _logger = options.CreateLogger("ASC.Files");
-        _thumbnailSettings = thumbnailSettings;
     }
 
     internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
@@ -623,7 +618,6 @@ public class GlobalFolder
 
     internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
-    private readonly ThumbnailSettings _thumbnailSettings;
 
     public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
     {

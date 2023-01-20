@@ -96,6 +96,11 @@ public static class UserExtensions
         return !string.IsNullOrEmpty(ui.SsoNameId);
     }
 
+    public static EmployeeType GetUserType(this UserManager userManager, Guid id)
+    {
+        return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : userManager.IsUser(id) ? EmployeeType.User : EmployeeType.RoomAdmin;
+    }
+
     private const string _extMobPhone = "extmobphone";
     private const string _mobPhone = "mobphone";
     private const string _extMail = "extmail";

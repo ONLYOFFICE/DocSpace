@@ -15,13 +15,6 @@ services:
       target: clear-events
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
   
-  onlyoffice-migration:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: migration
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration:${DOCKER_TAG}"
-
   onlyoffice-backup:
     build:
       context: ./
@@ -71,20 +64,6 @@ services:
       target: studio_notify
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}"
     
-  onlyoffice-telegram-service:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: telegram_service
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-telegram-service:${DOCKER_TAG}"
-
-  onlyoffice-urlshortener:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: urlshortener
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-urlshortener:${DOCKER_TAG}"
-   
   onlyoffice-api:
     build:
       context: ./
@@ -113,13 +92,6 @@ services:
       target: ssoauth
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
 
-  onlyoffice-webhooks-service:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: webhooks-service
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
-  
   onlyoffice-bin-share:
     build:
       context: ./
@@ -161,3 +133,10 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: onlyoffice-migration-runner
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
+
+  onlyoffice-healthchecks:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: healthchecks
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-healthchecks:${DOCKER_TAG}"

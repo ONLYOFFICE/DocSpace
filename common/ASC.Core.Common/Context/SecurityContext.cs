@@ -95,7 +95,7 @@ public class SecurityContext
         return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
     }
 
-    public bool AuthenticateMe(string cookie)
+    public async Task<bool> AuthenticateMe(string cookie)
     {
         if (string.IsNullOrEmpty(cookie)) return false;
 
@@ -161,8 +161,9 @@ public class SecurityContext
                 return false;
             }
 
-            var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
-            if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
+            var loginEventById = await _dbLoginEventsManager.GetById(loginEventId); 
+           
+            if (loginEventById == null)
             {
                 return false;
             }

@@ -3,7 +3,6 @@ import Submenu from "@docspace/components/submenu";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
@@ -41,7 +40,7 @@ const IntegrationWrapper = (props) => {
     },
     {
       id: "third-party-services",
-      name: t("ThirdPartyTitle"),
+      name: t("Translations:ThirdPartyTitle"),
       content: <ThirdParty />,
     },
   ];
@@ -52,10 +51,11 @@ const IntegrationWrapper = (props) => {
   }
 
   const load = async () => {
-    await loadBaseInfo();
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
+
+    await loadBaseInfo();
     setIsLoading(true);
   };
 
@@ -66,7 +66,7 @@ const IntegrationWrapper = (props) => {
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/integration/${e.id}`
       )
@@ -91,7 +91,7 @@ export default inject(({ setup, auth }) => {
     enablePlugins,
   };
 })(
-  withTranslation(["Settings", "SingleSignOn"])(
+  withTranslation(["Settings", "SingleSignOn", "Translations"])(
     withRouter(observer(IntegrationWrapper))
   )
 );

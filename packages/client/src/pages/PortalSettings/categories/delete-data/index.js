@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import Submenu from "@docspace/components/submenu";
-
+import { inject, observer } from "mobx-react";
 import PortalDeactivationSection from "./portalDeactivation";
 import PortalDeletionSection from "./portalDeletion";
 import DeleteDataLoader from "./DeleteDataLoader";
-
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "../../../../../package.json";
 
 const DeleteData = (props) => {
-  const { t, history } = props;
+  const { t, history, isNotPaidPeriod } = props;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +38,7 @@ const DeleteData = (props) => {
   const onSelect = (e) => {
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/portal-settings/delete-data/${e.id}`
       )
@@ -48,7 +46,9 @@ const DeleteData = (props) => {
   };
 
   if (!isLoading) return <DeleteDataLoader />;
-  return (
+  return isNotPaidPeriod ? (
+    <PortalDeletionSection />
+  ) : (
     <Submenu
       data={data}
       startSelect={currentTab}
@@ -57,4 +57,11 @@ const DeleteData = (props) => {
   );
 };
 
-export default withTranslation("Settings")(withRouter(DeleteData));
+export default inject(({ auth }) => {
+  const { currentTariffStatusStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
+
+  return {
+    isNotPaidPeriod,
+  };
+})(observer(withTranslation("Settings")(withRouter(DeleteData))));

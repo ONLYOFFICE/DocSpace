@@ -31,16 +31,12 @@ public class FeedAggregatorService : FeedBaseService
 {
     protected override string LoggerName { get; set; } = "ASC.Feed.Aggregator";
 
-    private readonly SignalrServiceClient _signalrServiceClient;
-
     public FeedAggregatorService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
-        ILoggerProvider optionsMonitor,
-        SignalrServiceClient signalrServiceClient)
+        ILoggerProvider optionsMonitor)
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
-        _signalrServiceClient = signalrServiceClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,7 +47,7 @@ public class FeedAggregatorService : FeedBaseService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            AggregateFeeds(cfg.AggregateInterval);
+            await AggregateFeeds(cfg.AggregateInterval);
 
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
@@ -59,14 +55,14 @@ public class FeedAggregatorService : FeedBaseService
         _logger.InformationAggregatorServiceStopping();
     }
 
-    private static T Attempt<T>(int count, Func<T> action)
+    private static async Task<T> Attempt<T>(int count, Func<Task<T>> action)
     {
         var counter = 0;
         while (true)
         {
             try
             {
-                return action();
+                return await action();
             }
             catch
             {
@@ -91,7 +87,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private void AggregateFeeds(object interval)
+    private async Task AggregateFeeds(object interval)
     {
         try
         {
@@ -112,6 +108,7 @@ public class FeedAggregatorService : FeedBaseService
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var authManager = scope.ServiceProvider.GetService<AuthManager>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var socketServiceClient = scope.ServiceProvider.GetRequiredService<SocketServiceClient>();
 
             foreach (var module in modules)
             {
@@ -124,7 +121,7 @@ public class FeedAggregatorService : FeedBaseService
 
                 var toTime = DateTime.UtcNow;
 
-                var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
+                var tenants = (await Attempt(10, async () => await module.GetTenantsWithFeeds(fromTime))).ToList();
                 _logger.DebugFindCountTenants(tenants.Count, module.GetType().Name);
 
                 foreach (var tenant in tenants)
@@ -145,7 +142,7 @@ public class FeedAggregatorService : FeedBaseService
                         tenantManager.SetCurrentTenant(tenant);
                         var users = userManager.GetUsers();
 
-                        var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
+                        var feeds = await Attempt(10, async () => (await module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant })).Where(r => r.Item1 != null).ToList());
                         _logger.DebugCountFeeds(feeds.Count, tenant);
 
                         var tenant1 = tenant;
@@ -165,7 +162,7 @@ public class FeedAggregatorService : FeedBaseService
                                 continue;
                             }
 
-                            module.VisibleFor(feedsRow, u.Id);
+                            await module.VisibleFor(feedsRow, u.Id);
                         }
 
                         result.AddRange(feedsRow.Select(r => r.Item1));
@@ -200,7 +197,7 @@ public class FeedAggregatorService : FeedBaseService
                 }
             }
 
-            _signalrServiceClient.SendUnreadUsers(unreadUsers);
+            await socketServiceClient.MakeRequest("sendUnreadUsers", unreadUsers);
 
             _logger.DebugTimeCollectingNews(DateTime.UtcNow - start);
         }

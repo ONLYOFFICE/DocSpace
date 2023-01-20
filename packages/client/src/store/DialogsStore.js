@@ -20,7 +20,6 @@ class DialogsStore {
   deleteDialogVisible = false;
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
-  thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
@@ -37,7 +36,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
-  restoreAllArchiveDialogVisible = false;
+  archiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -49,13 +48,16 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  isRoomDelete = false;
+  archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
   inviteItems = [];
-
+  restoreAllArchive = false;
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
+  createRoomDialogVisible = false;
 
   constructor(
     authStore,
@@ -73,8 +75,20 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
-  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
-    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  setIsRoomDelete = (isRoomDelete) => {
+    this.isRoomDelete = isRoomDelete;
+  };
+
+  setArchiveAction = (archiveAction) => {
+    this.archiveAction = archiveAction;
+  };
+
+  setRestoreAllArchive = (restoreAllArchive) => {
+    this.restoreAllArchive = restoreAllArchive;
+  };
+
+  setArchiveDialogVisible = (archiveDialogVisible) => {
+    this.archiveDialogVisible = archiveDialogVisible;
   };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -125,10 +139,6 @@ class DialogsStore {
     this.deleteThirdPartyDialogVisible = deleteThirdPartyDialogVisible;
   };
 
-  setThirdPartyMoveDialogVisible = (thirdPartyMoveDialogVisible) => {
-    this.thirdPartyMoveDialogVisible = thirdPartyMoveDialogVisible;
-  };
-
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
@@ -163,10 +173,6 @@ class DialogsStore {
     this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
-  setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
-    this.thirdPartyDialogVisible = thirdPartyDialogVisible;
-  };
-
   setDestFolderId = (destFolderId) => {
     this.destFolderId = destFolderId;
   };
@@ -187,24 +193,24 @@ class DialogsStore {
         this.setNewFilesIds(newIds);
       } else {
         newFilesPanelVisible = false;
-        const {
-          getRootFolder,
-          updateRootBadge,
-          treeFolders,
-        } = this.treeFoldersStore;
-        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
+        //   const {
+        //     getRootFolder,
+        //     updateRootBadge,
+        //     treeFolders,
+        //   } = this.treeFoldersStore;
+        //   const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
 
-        if (item) {
-          const { rootFolderType, id } = item;
-          const rootFolder = getRootFolder(rootFolderType);
-          updateRootBadge(rootFolder.id, item.new);
-          updateFolderBadge(id, item.new);
-        } else {
-          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
-          updateRootBadge(rootFolder.id, rootFolder.new);
-          if (this.selectedFolderStore.id === rootFolder.id)
-            updateFoldersBadge();
-        }
+        //   if (item) {
+        //     const { rootFolderType, id } = item;
+        //     const rootFolder = getRootFolder(rootFolderType);
+        //     updateRootBadge(rootFolder.id, item.new);
+        //     updateFolderBadge(id, item.new);
+        //   } else {
+        //     const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+        //     updateRootBadge(rootFolder.id, rootFolder.new);
+        //     if (this.selectedFolderStore.id === rootFolder.id)
+        //       updateFoldersBadge();
+        //   }
       }
     } else {
       this.setNewFilesIds(null);
@@ -298,6 +304,10 @@ class DialogsStore {
     this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
   };
 
+  setCreateRoomDialogVisible = (createRoomDialogVisible) => {
+    this.createRoomDialogVisible = createRoomDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -310,7 +320,6 @@ class DialogsStore {
       this.deleteDialogVisible ||
       this.downloadDialogVisible ||
       this.emptyTrashDialogVisible ||
-      this.thirdPartyDialogVisible ||
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
@@ -319,9 +328,10 @@ class DialogsStore {
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
-      this.restoreAllArchiveDialogVisible ||
+      this.archiveDialogVisible ||
       this.restoreAllPanelVisible ||
-      this.inviteUsersWarningDialogVisible
+      this.inviteUsersWarningDialogVisible ||
+      this.createRoomDialogVisible
     );
   }
 

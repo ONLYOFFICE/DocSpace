@@ -11,7 +11,8 @@ import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { Portal } from "@docspace/components";
 
 const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   id: id,
@@ -21,7 +22,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   width: auto;
   background: ${(props) => props.theme.infoPanel.blurColor};
   backdrop-filter: blur(3px);
-
+  z-index: 300;
   @media ${tablet} {
     z-index: 309;
     position: fixed;
@@ -82,11 +83,10 @@ const StyledInfoPanel = styled.div`
 const StyledControlContainer = styled.div`
   display: none;
 
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
 
-  border-radius: 100px;
   cursor: pointer;
 
   align-items: center;
@@ -96,22 +96,22 @@ const StyledControlContainer = styled.div`
   @media ${tablet} {
     display: flex;
 
-    top: 16px;
-    left: -34px;
+    top: 18px;
+    left: -27px;
   }
 
   ${isMobile &&
   css`
     display: flex;
 
-    top: 16px;
-    left: -34px;
+    top: 18px;
+    left: -27px;
   `}
 
   @media (max-width: 428px) {
     display: flex;
 
-    top: -34px;
+    top: -27px;
     right: 10px;
     left: unset;
   }
@@ -133,11 +133,14 @@ StyledCrossIcon.defaultProps = { theme: Base };
 const InfoPanel = ({
   children,
   isVisible,
+  isMobileHidden,
   setIsVisible,
   canDisplay,
   viewAs,
 }) => {
   if (!isVisible || !canDisplay) return null;
+  if ((isTablet() || isMobile || isMobileUtils()) && isMobileHidden)
+    return null;
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -153,10 +156,13 @@ const InfoPanel = ({
       if (!isDesktop() && isVisible) closeInfoPanel();
     };
 
-    return () => document.removeEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      closeInfoPanel();
+    };
   }, []);
 
-  return (
+  const infoPanelComponent = (
     <StyledInfoPanelWrapper
       isRowView={viewAs === "row"}
       className="info-panel"
@@ -174,6 +180,21 @@ const InfoPanel = ({
       </StyledInfoPanel>
     </StyledInfoPanelWrapper>
   );
+
+  const renderPortalInfoPanel = () => {
+    console.log(isMobileHidden);
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={infoPanelComponent}
+        appendTo={rootElement}
+        visible={isVisible && !isMobileHidden}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalInfoPanel() : infoPanelComponent;
 };
 
 InfoPanel.propTypes = {
@@ -189,13 +210,19 @@ StyledInfoPanelWrapper.defaultProps = { theme: Base };
 StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
-export default inject(({ auth, filesStore }) => {
-  const { isVisible, setIsVisible, getCanDisplay } = auth.infoPanelStore;
+export default inject(({ auth }) => {
+  const {
+    isVisible,
+    isMobileHidden,
+    setIsVisible,
+    getCanDisplay,
+  } = auth.infoPanelStore;
 
   const canDisplay = getCanDisplay();
 
   return {
     isVisible,
+    isMobileHidden,
     setIsVisible,
     canDisplay,
   };

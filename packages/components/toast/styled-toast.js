@@ -11,7 +11,7 @@ const StyledToastContainer = styled(ToastContainer)`
   width: ${(props) => props.theme.toast.width};
   box-sizing: border-box;
   color: ${(props) => props.theme.toast.color};
-  top: ${(props) => props.theme.toast.top};
+  top: ${(props) => parseInt(props.theme.toast.top) + props.$topOffset + "px"};
   right: ${(props) => props.theme.toast.right};
   margin-top: ${(props) => props.theme.toast.marginTop};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -57,7 +57,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   .SlideIn {
-    animation: SlideIn 0.7s ease-out both;
+    animation: SlideIn 0.7s ease-out;
   }
 
   @keyframes SlideOut {

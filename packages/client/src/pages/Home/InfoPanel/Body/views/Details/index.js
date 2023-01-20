@@ -16,8 +16,9 @@ const Details = ({
   personal,
   culture,
   createThumbnail,
-  getItemIcon,
+  getInfoPanelItemIcon,
   openUser,
+  isVisitor,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -27,6 +28,7 @@ const Details = ({
   const history = useHistory();
 
   const detailsHelper = new DetailsHelper({
+    isVisitor,
     t,
     item: selection,
     openUser,
@@ -50,6 +52,11 @@ const Details = ({
     }
   }, [selection]);
 
+  const currentIcon =
+    !selection.isArchive && selection?.logo?.large
+      ? selection?.logo?.large
+      : getInfoPanelItemIcon(selection, 96);
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
@@ -66,9 +73,12 @@ const Details = ({
         <StyledNoThumbnail>
           <img
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom && selection.logo?.large && "custom-logo"
+              selection.isRoom &&
+              !selection.isArchive &&
+              selection.logo?.large &&
+              "custom-logo"
             }`}
-            src={getItemIcon(selection, 96)}
+            src={currentIcon}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>
@@ -83,7 +93,11 @@ const Details = ({
       <StyledProperties>
         {itemProperties.map((property) => {
           return (
-            <div key={property.title} className="property">
+            <div
+              id={property.id}
+              key={property.title}
+              className={`property ${property.className}`}
+            >
               <Text className="property-title">{property.title}</Text>
               {property.content}
             </div>
@@ -95,16 +109,21 @@ const Details = ({
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { selection, getItemIcon, openUser } = auth.infoPanelStore;
+  const { userStore } = auth;
+  const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
+  const { user } = userStore;
+
+  const isVisitor = user.isVisitor;
 
   return {
     personal,
     culture,
     selection,
     createThumbnail,
-    getItemIcon,
+    getInfoPanelItemIcon,
     openUser,
+    isVisitor,
   };
-})(withTranslation(["InfoPanel", "Common", "Translations"])(Details));
+})(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

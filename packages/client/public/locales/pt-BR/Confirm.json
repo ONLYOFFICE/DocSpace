@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Insira o código do aplicativo de autenticação",
   "EnterCodePlaceholder": "Inserir código",
   "EnterPhone": "Inserir número de celular",
-  "FirstName": "Primeiro nome",
   "GetCode": "Obtenha código",
   "InviteTitle": "Você está convidado a participar deste portal!",
   "LoginRegistryButton": "Aderir",
@@ -23,5 +22,5 @@
   "SetAppDescription": "A autenticação de dois fatores está ativada. Configure seu aplicativo autenticador para continuar a trabalhar no portal. Você pode usar o Google Authenticator para <1> Android </1> e <4> iOS </4> ou o Authenticator para <8> Windows Phone </8>.",
   "SetAppInstallDescription": "Para conectar o aplicativo, leia o código QR ou insira manualmente sua chave secreta <1> {{secretKey}} </1> e, em seguida, insira um código de 6 dígitos do seu aplicativo no campo abaixo.",
   "SetAppTitle": "Configure seu aplicativo autenticador",
-  "WelcomeUser": "Bem-vindo ao nosso portal! Para começar a se registrar ou iniciar sessão via rede social."
+  "WelcomeUser": "Bem-vindo ao nosso portal!\nPara começar a se registrar ou iniciar sessão via rede social."
 }

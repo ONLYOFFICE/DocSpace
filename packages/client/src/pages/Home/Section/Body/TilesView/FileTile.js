@@ -34,6 +34,7 @@ const FileTile = (props) => {
     checkedProps,
     getIcon,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isActive,
     isEdit,
@@ -50,6 +51,9 @@ const FileTile = (props) => {
     onSelectTag,
     onSelectOption,
     columnCount,
+    isRooms,
+    withCtrlSelect,
+    withShiftSelect,
   } = props;
 
   const temporaryExtension =
@@ -67,9 +71,10 @@ const FileTile = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
+      icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      defaultRoomIcon={item.defaultRoomIcon}
     />
   );
 
@@ -101,9 +106,9 @@ const FileTile = (props) => {
           isPrivacy={isPrivacy}
           isDragging={dragging}
           dragging={dragging && isDragging}
-          onClick={onMouseClick}
+          // onClick={onMouseClick}
           thumbnailClick={onFilesClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
@@ -118,6 +123,9 @@ const FileTile = (props) => {
           selectTag={onSelectTag}
           selectOption={onSelectOption}
           columnCount={columnCount}
+          isRooms={isRooms}
+          withCtrlSelect={withCtrlSelect}
+          withShiftSelect={withShiftSelect}
         >
           <FilesTileContent
             item={item}
@@ -131,11 +139,15 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore, filesStore }) => {
+export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection } = filesStore;
+  const { setSelection, withCtrlSelect, withShiftSelect } = filesStore;
 
-  return { getIcon, setSelection };
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
+
+  return { getIcon, setSelection, isRooms, withCtrlSelect, withShiftSelect };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Feed.Constants;
 using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core;
@@ -33,7 +34,6 @@ public class RoomsModule : FeedModule
     public const string RoomItem = Constants.RoomItem;
     public const string SharedRoomItem = Constants.SharedRoomItem;
 
-    private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
@@ -42,13 +42,11 @@ public class RoomsModule : FeedModule
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
-        FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
-        _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
     }
@@ -94,16 +92,16 @@ public class RoomsModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
     }
 
-    public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var rooms = _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync().Result;
+        var rooms = await _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync();
 
         return rooms.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f), f));
     }
 
-    public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
+        return await _folderDao.GetTenantsWithRoomsFeedsAsync(fromTime).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)

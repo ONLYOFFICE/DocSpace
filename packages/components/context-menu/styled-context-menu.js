@@ -110,9 +110,7 @@ const StyledContextMenu = styled.div`
 
     .avatar-wrapper {
       min-width: 32px;
-
       box-sizing: border-box;
-
       margin-right: 8px;
     }
 
@@ -120,7 +118,6 @@ const StyledContextMenu = styled.div`
       width: 100%;
       font-size: ${(props) => props.theme.menuItem.text.header.fontSize};
       font-weight: 600;
-      line-height: 16px;
       ${(props) =>
         props.isIconExist &&
         css`

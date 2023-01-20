@@ -141,7 +141,7 @@ public class MigrateOperation : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         try
         {
@@ -159,9 +159,9 @@ public class MigrateOperation : DistributedTaskProgress
 
             foreach (var module in _modules)
             {
-                var oldStore = storageFactory.GetStorage(_configPath, _tenantId.ToString(), module);
-                var store = storageFactory.GetStorageFromConsumer(_configPath, _tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(_settings));
-                var domains = _storageFactoryConfig.GetDomainList(_configPath, module).ToList();
+                var oldStore = storageFactory.GetStorage(_tenantId, module);
+                var store = storageFactory.GetStorageFromConsumer(_tenantId, module, storageSettingsHelper.DataStoreConsumer(_settings));
+                var domains = _storageFactoryConfig.GetDomainList(module).ToList();
 
                 var crossModuleTransferUtility = new CrossModuleTransferUtility(options, _tempStream, tempPath, oldStore, store);
 
@@ -170,23 +170,23 @@ public class MigrateOperation : DistributedTaskProgress
                 {
                     //Status = module + domain;
                     _logger.DebugDomain(domain);
-                    files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
+                    files = await oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync();
 
                     foreach (var file in files)
                     {
                         _logger.DebugFile(file);
-                        crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
+                        await crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file);
                     }
                 }
 
-                files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                files = (await oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync())
                 .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                 .ToArray();
 
                 foreach (var file in files)
                 {
                     _logger.DebugFile(file);
-                    crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
+                    await crossModuleTransferUtility.CopyFileAsync("", file, "", file);
                 }
 
                 StepDone();

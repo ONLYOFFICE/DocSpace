@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 import Base from "../themes/base";
 import { tablet } from "../utils/device";
 
@@ -128,6 +129,7 @@ const StyledDropdownItem = styled.div`
       props.isActive &&
       css`
         transform: rotate(90deg);
+        height: auto;
       `}
   }
 
@@ -137,6 +139,10 @@ const StyledDropdownItem = styled.div`
       background-color: ${(props) =>
         props.theme.dropDownItem.hoverBackgroundColor} !important;
     `}
+
+  @media (max-width: 500px) {
+    max-width: 100vw;
+  }
 `;
 StyledDropdownItem.defaultProps = { theme: Base };
 

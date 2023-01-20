@@ -36,6 +36,7 @@ public class RestoreDbModuleTask : PortalTaskBase
     private readonly ColumnMapper _columnMapper;
     private readonly bool _replaceDate;
     private readonly bool _dump;
+    private readonly string _region;
 
     public RestoreDbModuleTask(
         ILogger<RestoreDbModuleTask> logger,
@@ -45,6 +46,7 @@ public class RestoreDbModuleTask : PortalTaskBase
         DbFactory factory,
         bool replaceDate,
         bool dump,
+        string region,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
@@ -57,15 +59,16 @@ public class RestoreDbModuleTask : PortalTaskBase
         _module = module;
         _replaceDate = replaceDate;
         _dump = dump;
-        Init(-1, null);
+        _region = region;
+        Init(-1);
     }
 
-    public override void RunJob()
+    public override Task RunJob()
     {
         _logger.DebugBeginRestoreDataForModule(_module.ModuleName);
         SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
 
-        using (var connection = DbFactory.OpenConnection())
+        using (var connection = DbFactory.OpenConnection(region:_region))
         {
             foreach (var table in _module.GetTablesOrdered().Where(t => !_ignoredTables.Contains(t.Name) && t.InsertMethod != InsertMethod.None))
             {
@@ -86,6 +89,7 @@ public class RestoreDbModuleTask : PortalTaskBase
         }
 
         _logger.DebugEndRestoreDataForModule(_module.ModuleName);
+        return Task.CompletedTask;
     }
 
     public string[] ExecuteArray(DbCommand command)

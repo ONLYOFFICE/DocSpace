@@ -6,8 +6,8 @@ const speed = 2;
 
 const SettingsHeaderLoader = () => (
   <RectangleLoader
-    height={24}
-    width={140}
+    height="24"
+    width="140"
     backgroundColor={LoaderStyle.backgroundColor}
     foregroundColor={LoaderStyle.foregroundColor}
     backgroundOpacity={LoaderStyle.backgroundOpacity}

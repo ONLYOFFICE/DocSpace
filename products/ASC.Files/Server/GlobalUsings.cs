@@ -25,11 +25,11 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Globalization;
+global using System.Security;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
@@ -59,10 +59,10 @@ global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.VirtualRooms;
+global using ASC.Files.Extension;
 global using ASC.Files.Helpers;
 global using ASC.Files.Log;
 global using ASC.MessagingSystem.Core;
-global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;
@@ -88,11 +88,10 @@ global using AutoMapper;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json.Linq;
-global using ASC.Files.Extension;
 
 global using SecurityContext = ASC.Core.SecurityContext;
 global using FileShare = ASC.Files.Core.Security.FileShare;

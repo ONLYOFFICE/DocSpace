@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { getConvertedSize } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
@@ -39,10 +39,10 @@ class PaymentQuotasStore {
   }
 
   get tariffTitle() {
-    return this.portalPaymentQuotas.title;
+    return this.portalPaymentQuotas?.title;
   }
 
-  replaceFeaturesValues = (t) => {
+  setReplacingValuesInTranslation = (t) => {
     this.replaceTotalSizeValue(t);
   };
 
@@ -82,9 +82,11 @@ class PaymentQuotasStore {
 
       if (!res) return;
 
-      this.portalPaymentQuotas = res[0];
+      runInAction(() => {
+        this.portalPaymentQuotas = res[0];
 
-      this.portalPaymentQuotasFeatures = res[0].features;
+        this.portalPaymentQuotasFeatures = res[0].features;
+      });
 
       this.setIsLoaded(true);
     } catch (e) {

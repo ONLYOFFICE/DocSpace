@@ -14,7 +14,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@docspace/components/scrollbar";
 import { ReactSVG } from "react-svg";
-
+import { classNames } from "../utils/classNames";
 class LinkWithDropdown extends React.Component {
   constructor(props) {
     super(props);
@@ -104,6 +104,7 @@ class LinkWithDropdown extends React.Component {
       theme,
       hasScroll,
       withExpander,
+      dropDownClassName,
       ...rest
     } = this.props;
 
@@ -113,6 +114,7 @@ class LinkWithDropdown extends React.Component {
     const dropDownItem = data.map((item) => (
       <DropDownItem
         className="drop-down-item"
+        id={item.key}
         key={item.key}
         {...item}
         onClick={this.onClickDropDownItem}
@@ -140,7 +142,13 @@ class LinkWithDropdown extends React.Component {
     );
 
     return (
-      <StyledSpan className={className} id={id} style={style} ref={this.ref}>
+      <StyledSpan
+        $isOpen={this.state.isOpen}
+        className={className}
+        id={id}
+        style={style}
+        ref={this.ref}
+      >
         <span onClick={this.onOpen}>
           <StyledLinkWithDropdown
             isSemitransparent={isSemitransparent}
@@ -162,7 +170,7 @@ class LinkWithDropdown extends React.Component {
           </StyledLinkWithDropdown>
         </span>
         <DropDown
-          className="fixed-max-width"
+          className={classNames("fixed-max-width", dropDownClassName)}
           manualWidth={showScroll ? this.onCheckManualWidth() : null}
           open={this.state.isOpen}
           withArrow={false}
@@ -217,6 +225,7 @@ LinkWithDropdown.propTypes = {
   children: PropTypes.any,
   /** Accepts css class */
   className: PropTypes.string,
+  dropDownClassName: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
   /** Accepts css style */

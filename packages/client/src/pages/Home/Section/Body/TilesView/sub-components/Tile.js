@@ -50,6 +50,13 @@ const roomsStyles = css`
     align-content: center;
 
     border-bottom: ${(props) => props.theme.filesSection.tilesView.tile.border};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
+
+    border-radius: ${({ theme, isRooms }) =>
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
+        : theme.filesSection.tilesView.tile.upperBorderRadius};
   }
 
   .room-tile_bottom-content {
@@ -60,6 +67,12 @@ const roomsStyles = css`
     box-sizing: border-box;
 
     padding: 16px;
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
+    border-radius: ${({ theme, isRooms }) =>
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
+        : theme.filesSection.tilesView.tile.bottomBorderRadius};
   }
 `;
 
@@ -72,8 +85,10 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: ${(props) =>
-    props.theme.filesSection.tilesView.tile.checkedColor} !important;
+  background: ${({ theme, isRooms }) =>
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsCheckedColor
+      : theme.filesSection.tilesView.tile.checkedColor};
 `;
 
 const bottomFileBorder = css`
@@ -93,9 +108,14 @@ const StyledTile = styled.div`
   box-sizing: border-box;
   width: 100%;
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
-  border-radius: 6px;
+
+  border-radius: ${({ isRooms, theme }) =>
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsBorderRadius
+      : theme.filesSection.tilesView.tile.borderRadius};
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
-  ${(props) => props.isFolder && "border-top-left-radius: 6px;"}
+  ${(props) =>
+    props.isFolder && !props.isRooms && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && (props.isRoom ? roomsStyles : FlexBoxStyles)};
@@ -104,7 +124,18 @@ const StyledTile = styled.div`
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
-    checkedStyle};
+    css`
+      .room-tile_top-content {
+        ${checkedStyle}
+      }
+      ${checkedStyle}
+    `};
+
+  :hover {
+    .room-tile_top-content {
+      ${checkedStyle}
+    }
+  }
 
   ${(props) =>
     !props.isDragging &&
@@ -170,7 +201,7 @@ const StyledTile = styled.div`
     margin-right: 14px;
   }
 
-  :hover {
+  .file-icon_container:hover {
     ${(props) =>
       !props.dragging &&
       !props.inProgress &&
@@ -265,6 +296,10 @@ const StyledContent = styled.div`
     word-break: break-word;
   }
 
+  .new-items {
+    margin-left: 12px;
+  }
+
   @media (max-width: 1024px) {
     white-space: nowrap;
     overflow: hidden;
@@ -341,7 +376,7 @@ const StyledIcons = styled.div`
     justify-content: center;
     padding: 8px;
     background: ${(props) =>
-      props.theme.filesSection.tilesView.tile.backgroundColor};
+      props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
@@ -402,11 +437,30 @@ class Tile extends React.PureComponent {
   };
 
   onFileClick = (e) => {
-    const { onSelect, item, checked, setSelection } = this.props;
+    const {
+      onSelect,
+      item,
+      checked,
+      setSelection,
+      withCtrlSelect,
+      withShiftSelect,
+    } = this.props;
+
+    if (e.ctrlKey || e.metaKey) {
+      withCtrlSelect(item);
+      e.preventDefault();
+      return;
+    }
+
+    if (e.shiftKey) {
+      withShiftSelect(item);
+      e.preventDefault();
+      return;
+    }
 
     if (
       e.detail === 1 &&
-      !e.target.closest(".badge") &&
+      !e.target.closest(".badges") &&
       !e.target.closest(".item-file-name") &&
       !e.target.closest(".tag")
     ) {
@@ -492,6 +546,35 @@ class Tile extends React.PureComponent {
       ? t("Translations:TitleShowFolderActions")
       : t("Translations:TitleShowActions");
 
+    const tags = [];
+
+    if (item.providerType) {
+      tags.push({
+        isThirdParty: true,
+        icon: item.thirdPartyIcon,
+        label: item.providerKey,
+        onClick: () =>
+          selectOption({
+            option: "typeProvider",
+            value: item.providerType,
+          }),
+      });
+    }
+
+    if (item?.tags?.length > 0) {
+      tags.push(...item.tags);
+    } else {
+      tags.push({
+        isDefault: true,
+        label: t(RoomsTypeTranslations[item.roomType]),
+        onClick: () =>
+          selectOption({
+            option: "defaultTypeRoom",
+            value: item.roomType,
+          }),
+      });
+    }
+
     return (
       <StyledTile
         ref={this.tile}
@@ -572,37 +655,37 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
-                {item.providerType && (
-                  <Tag
-                    icon={item.thirdPartyIcon}
-                    label={item.providerKey}
-                    onClick={() =>
-                      selectOption({
-                        option: "typeProvider",
-                        value: item.providerType,
-                      })
-                    }
-                  />
-                )}
+                <Tags
+                  columnCount={columnCount}
+                  onSelectTag={selectTag}
+                  tags={tags}
+                />
+                {/* {item.providerType && (
+                    <Tag
+                      icon={item.thirdPartyIcon}
+                      label={item.providerKey}
+                      onClick={() =>
+                        selectOption({
+                          option: "typeProvider",
+                          value: item.providerType,
+                        })
+                      }
+                    />
+                  )} */}
+                {/* {item.tags.length > 0 ? ( */}
 
-                {item.tags.length > 0 ? (
-                  <Tags
-                    columnCount={columnCount}
-                    onSelectTag={selectTag}
-                    tags={item.tags}
-                  />
-                ) : (
-                  <Tag
-                    isDefault
-                    label={t(RoomsTypeTranslations[item.roomType])}
-                    onClick={() =>
-                      selectOption({
-                        option: "defaultTypeRoom",
-                        value: item.roomType,
-                      })
-                    }
-                  />
-                )}
+                {/* ) : (
+                    <Tag
+                      isDefault
+                      label={t(RoomsTypeTranslations[item.roomType])}
+                      onClick={() =>
+                        selectOption({
+                          option: "defaultTypeRoom",
+                          value: item.roomType,
+                        })
+                      }
+                    />
+                  )} */}
               </div>
             </>
           ) : (

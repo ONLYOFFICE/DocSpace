@@ -65,7 +65,7 @@ const UploadXML = (props) => {
         />
 
         <Text className="or-text" noSelect>
-          {t("Or")}
+          {t("Common:Or")}
         </Text>
 
         <FileInput

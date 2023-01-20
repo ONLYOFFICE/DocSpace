@@ -54,7 +54,7 @@ const PureHome = ({
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
       //console.log("PEOPLE URL changed", pathname, newFilter);
-      getUsersList(newFilter).finally(() => {
+      getUsersList(newFilter, true).finally(() => {
         setFirstLoad(false);
         setIsLoading(false);
         setIsRefresh(false);

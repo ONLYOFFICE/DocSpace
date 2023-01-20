@@ -4,10 +4,14 @@ import StyledIconWrapper from "@docspace/common/components/Navigation/sub-compon
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
-  svg {
-    path:nth-child(2) {
-        fill: ${$currentColorScheme.accentColor};
+    svg {
+      path:nth-child(2) {
+        fill: ${$currentColorScheme.main.accent};
+      }
+      circle {
+        stroke: ${$currentColorScheme.main.accent};
+      }
     }
-`;
+  `;
 
 export default styled(StyledIconWrapper)(getDefaultStyles);

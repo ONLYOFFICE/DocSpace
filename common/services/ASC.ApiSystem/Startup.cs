@@ -28,16 +28,18 @@ namespace ASC.ApiSystem;
 
 public class Startup
 {
-
+    private const string CustomCorsPolicyName = "Basic";
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly DIHelper _diHelper;
+    private readonly string _corsOrigin;
 
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
         _diHelper = new DIHelper();
+        _corsOrigin = _configuration["core:cors"];
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -80,7 +82,6 @@ public class Startup
         services.AddSingleton(jsonOptions);
 
         _diHelper.AddControllers();
-        _diHelper.TryAdd<CultureMiddleware>();
         _diHelper.TryAdd<IpSecurityFilter>();
         _diHelper.TryAdd<PaymentFilter>();
         _diHelper.TryAdd<ProductSecurityFilter>();
@@ -89,6 +90,22 @@ public class Startup
         _diHelper.TryAdd<BasicAuthHandler>();
         _diHelper.TryAdd<CookieAuthHandler>();
         _diHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CustomCorsPolicyName,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(_corsOrigin)
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
+                                  });
+            });
+        }
 
         services.AddDistributedCache(_configuration);
         services.AddEventBus(_configuration);
@@ -118,15 +135,28 @@ public class Startup
     {
         app.UseRouting();
 
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            app.UseCors(CustomCorsPolicyName);
+        }
+
         app.UseAuthentication();
 
         app.UseAuthorization();
 
-        app.UseCultureMiddleware();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapCustom();
+
+            endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("self")
+            });
         });
     }
 }

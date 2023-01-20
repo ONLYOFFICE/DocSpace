@@ -1,4 +1,3 @@
-import { EmployeeStatus } from "../../constants";
 import { getObjectByLocation, toUrlParams } from "../../utils";
 
 const DEFAULT_PAGE = 0;
@@ -11,22 +10,41 @@ const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
+const DEFAULT_PAYMENTS = null;
+
+const ACTIVE_EMPLOYEE_STATUS = 1;
 
 const EMPLOYEE_STATUS = "employeestatus";
 const ACTIVATION_STATUS = "activationstatus";
-const ROLE = "role";
+const ROLE = "employeeType";
 const GROUP = "group";
 const SEARCH = "search";
 const SORT_BY = "sortby";
 const SORT_ORDER = "sortorder";
 const PAGE = "page";
 const PAGE_COUNT = "pagecount";
+const PAYMENTS = "payments";
 
 class Filter {
   static getDefault(total = DEFAULT_TOTAL) {
     return new Filter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
   }
 
+  static getFilterWithOutDisabledUser() {
+    return new Filter(
+      DEFAULT_PAGE,
+      DEFAULT_PAGE_COUNT,
+      DEFAULT_TOTAL,
+      DEFAULT_SORT_BY,
+      DEFAULT_SORT_ORDER,
+      ACTIVE_EMPLOYEE_STATUS,
+      DEFAULT_ACTIVATION_STATUS,
+      DEFAULT_ROLE,
+      DEFAULT_SEARCH,
+      DEFAULT_GROUP,
+      DEFAULT_PAYMENTS
+    );
+  }
   static getFilter(location) {
     if (!location) return this.getDefault();
 
@@ -52,6 +70,7 @@ class Filter {
     const pageCount =
       (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
       defaultFilter.pageCount;
+    const payments = urlFilter[PAYMENTS] || defaultFilter.payments;
 
     const newFilter = new Filter(
       page,
@@ -63,7 +82,8 @@ class Filter {
       activationStatus,
       role,
       search,
-      group
+      group,
+      payments
     );
 
     return newFilter;
@@ -79,7 +99,8 @@ class Filter {
     activationStatus = DEFAULT_ACTIVATION_STATUS,
     role = DEFAULT_ROLE,
     search = DEFAULT_SEARCH,
-    group = DEFAULT_GROUP
+    group = DEFAULT_GROUP,
+    payments = DEFAULT_PAYMENTS
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -91,6 +112,7 @@ class Filter {
     this.search = search;
     this.total = total;
     this.group = group;
+    this.payments = payments;
   }
 
   getStartIndex = () => {
@@ -115,6 +137,7 @@ class Filter {
       role,
       search,
       group,
+      payments,
     } = this;
 
     let dtoFilter = {
@@ -123,25 +146,13 @@ class Filter {
       sortby: sortBy,
       sortorder: sortOrder,
       employeestatus: employeeStatus,
+      employeetype: role,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
       groupId: group,
       fields: fields,
+      payments,
     };
-
-    switch (role) {
-      case "admin":
-        dtoFilter.isadministrator = true;
-        break;
-      case "manager":
-        dtoFilter.employeeType = 1;
-        break;
-      case "user":
-        dtoFilter.employeeType = 2;
-        break;
-      default:
-        break;
-    }
 
     const str = toUrlParams(dtoFilter, true);
     return str;
@@ -158,6 +169,7 @@ class Filter {
       search,
       group,
       page,
+      payments,
     } = this;
 
     const dtoFilter = {};
@@ -189,6 +201,7 @@ class Filter {
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
+    dtoFilter[PAYMENTS] = payments;
 
     const str = toUrlParams(dtoFilter, true);
 
@@ -214,7 +227,8 @@ class Filter {
           this.activationStatus,
           this.role,
           this.search,
-          this.group
+          this.group,
+          this.payments
         );
   }
 
@@ -230,7 +244,8 @@ class Filter {
         null,
         null,
         "",
-        idGroup
+        idGroup,
+        null
       );
     } else {
       this.clone(true);
@@ -247,7 +262,8 @@ class Filter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
-      this.pageCount === filter.pageCount;
+      this.pageCount === filter.pageCount &&
+      this.payments === filter.payments;
 
     return equals;
   }

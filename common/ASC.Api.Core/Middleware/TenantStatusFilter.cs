@@ -31,7 +31,7 @@ public class TenantStatusFilter : IResourceFilter
 {
     private readonly TenantManager _tenantManager;
     private readonly ILogger<TenantStatusFilter> _logger;
-    private readonly string[] _passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
+    private readonly string[] _passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json", "colortheme.json", "logos.json", "build.json", "@self.json" }; //TODO add or update when "preparation-portal" will be done
 
 
     public TenantStatusFilter(ILogger<TenantStatusFilter> logger, TenantManager tenantManager)

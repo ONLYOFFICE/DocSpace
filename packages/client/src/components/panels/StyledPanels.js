@@ -124,13 +124,6 @@ const StyledVersionHistoryPanel = styled.div`
 
 StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
-const StyledAddGroupsPanel = styled.div`
-  ${PanelStyles}
-  .combo-button-label {
-    font-size: 14px;
-  }
-`;
-
 const StyledEmbeddingPanel = styled.div`
   ${PanelStyles}
 `;
@@ -461,8 +454,12 @@ const StyledFooter = styled.div`
   .sharing_panel-button {
     margin-left: auto;
   }
-  .new_files_panel-button {
+
+  .new_file_panel-first-button {
     margin-right: 8px;
+  }
+  .new_files_panel-button {
+    width: 100%;
   }
 
   @media ${desktop} {
@@ -674,7 +671,6 @@ StyledModalRowContainer.defaultProps = { theme: Base };
 
 export {
   StyledAsidePanel,
-  StyledAddGroupsPanel,
   StyledEmbeddingPanel,
   StyledVersionHistoryPanel,
   StyledContent,

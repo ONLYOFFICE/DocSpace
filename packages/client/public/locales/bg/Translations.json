@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Добави профил",
-  "AddAuthor": "Добави автор",
   "ArchivingData": "Архивиране на данни",
-  "ButtonShareAccess": "Настройки за споделяне",
   "ConnectingAccount": "Свързване на профил",
   "Copy": "Копирай",
   "CopyHere": "Копирайте тук",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Вземете ONLYOFFICE Documents в Google Play",
   "MobileIos": "Изтеглете ONLYOFFICE Documents от App Store",
   "MobileLinux": "Изтеглете ONLYOFFICE настолни редактори за Linux",
-  "MobileMac": "Изтеглете ONLYOFFICE настолни редактори за Mac OS",
+  "MobileMac": "Изтеглете ONLYOFFICE настолни редактори за macOS",
   "MobileWin": "Изтеглете ONLYOFFICE настолни редактори за Windows",
   "MoveHere": "Премести се тук",
   "MoveToOperation": "Преместване",
   "NewForm": "Шаблон на формуляр",
-  "NewFormFile": "Шаблон от файл",
+  "Other": "Друг",
   "OwnerChange": "Смени собственик",
   "Presentations": "Презентации",
   "Spreadsheets": "Таблици",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Друг"
+  "TypeTitlekDrive": "kDrive"
 }

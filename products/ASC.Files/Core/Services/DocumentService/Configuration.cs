@@ -147,6 +147,7 @@ public class DocumentConfig<T>
     private string _title;
     public string FileType => Info.GetFile().ConvertedExtension.Trim('.');
     public InfoConfig<T> Info { get; set; }
+    public bool IsLinkedForMe { get; set; }
 
     public string Key
     {
@@ -617,7 +618,7 @@ public class CustomerConfig<T>
 
     public string Address => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Address;
 
-    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !_configuration.EditorConfig.Customization.IsRetina));
+    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LoginPage, false).Result);
 
     public string Mail => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Email;
 
@@ -768,8 +769,6 @@ public class CustomizationConfig<T>
         }
     }
 
-    public bool IsRetina { get; set; }
-
     public LogoConfig<T> Logo { get; set; }
 
     public bool MentionShare
@@ -792,7 +791,7 @@ public class CustomizationConfig<T>
         get
         {
             if (_configuration.EditorConfig.ModeWrite
-              && _configuration.Document.Info.GetFile().Access == ASC.Files.Core.Security.FileShare.FillForms)
+              && _configuration.Document.Info.GetFile().Access == FileShare.FillForms)
             {
                 var linkDao = _daoFactory.GetLinkDao();
                 var sourceId = linkDao.GetSourceAsync(_configuration.Document.Info.GetFile().Id.ToString()).Result;
@@ -933,16 +932,15 @@ public class LogoConfig<T>
 
             return _configuration.EditorType == EditorType.Embedded
                 || fillingForm
-                    ? _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina))
-                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+                    ? _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed).Result)
+                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor).Result);
         }
     }
 
     public string ImageDark
     {
         set { }
-        get => _commonLinkUtility.GetFullAbsolutePath(
-            _tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+        get => _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor).Result);
     }
 
     public string ImageEmbedded
@@ -951,7 +949,7 @@ public class LogoConfig<T>
         {
             return _configuration.EditorType != EditorType.Embedded
                     ? null
-                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina));
+                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed).Result);
         }
     }
 

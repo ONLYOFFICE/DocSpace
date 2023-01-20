@@ -4,7 +4,6 @@ import uniqueid from "lodash/uniqueId";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@docspace/common/constants";
 import {
-  getFolder,
   getFileInfo,
   getFolderInfo,
   getProgress,
@@ -653,6 +652,8 @@ class UploadDataStore {
             }
           }
         }
+
+        this.filesStore.setOperationAction(false);
       };
 
       const isFiltered =
@@ -694,6 +695,7 @@ class UploadDataStore {
     file,
     path
   ) => {
+    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (
@@ -757,6 +759,9 @@ class UploadDataStore {
 
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
+
+      if (!currentFile.fileId) return;
+
       if (!this.filesToConversion.length || this.converted) {
         this.filesToConversion.push(currentFile);
         this.startConversion();
@@ -895,7 +900,7 @@ class UploadDataStore {
           path
         );
       })
-      .catch((err) => {
+      .catch((error) => {
         if (this.files[indexOfFile] === undefined) {
           this.primaryProgressDataStore.setPrimaryProgressBarData({
             icon: "upload",
@@ -905,8 +910,18 @@ class UploadDataStore {
           });
           return Promise.resolve();
         }
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
 
-        this.files[indexOfFile].error = err;
+        this.files[indexOfFile].error = errorMessage;
 
         //dispatch(setUploadData(uploadData));
 
@@ -1065,9 +1080,7 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
 
     return fileCopyAs(fileId, title, folderId, enableExternalExt, password)
-      .then(() => {
-        fetchFiles(folderId, filter, true, true);
-      })
+      .then(() => fetchFiles(folderId, filter, true, true))
       .catch((err) => {
         return Promise.reject(err);
       });

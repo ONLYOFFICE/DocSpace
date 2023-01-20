@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Core.Data;
 
 [Singletone]
@@ -172,7 +170,7 @@ public class DbSettingsManager
                     Data = data
                 };
 
-                webstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
+                webstudioDbContext.AddOrUpdate(webstudioDbContext.WebstudioSettings, s);
 
                 webstudioDbContext.SaveChanges();
             }

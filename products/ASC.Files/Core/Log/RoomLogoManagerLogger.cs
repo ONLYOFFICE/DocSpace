@@ -30,4 +30,7 @@ public static partial class RoomLogoManagerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "RemoveRoomLogo")]
     public static partial void ErrorRemoveRoomLogo(this ILogger<RoomLogoManager> logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "RemoveTempPhoto")]
+    public static partial void ErrorRemoveTempPhoto(this ILogger<RoomLogoManager> logger, Exception exception);
 }

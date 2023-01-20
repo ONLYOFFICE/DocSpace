@@ -6,7 +6,6 @@ import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import history from "@docspace/common/history";
 import { Base } from "@docspace/components/themes";
@@ -68,6 +67,7 @@ const CustomizationNavbar = ({
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
+  currentColorScheme,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -90,7 +90,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             truncate={true}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/language-and-time-zone"
             )}
           >
@@ -104,7 +104,7 @@ const CustomizationNavbar = ({
         <Box paddingProp="10px 0 3px 0">
           <Link
             className="link-learn-more"
-            color={theme.client.settings.common.linkColorHelp}
+            color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
             href={helpUrlCommonSettings}
@@ -120,7 +120,7 @@ const CustomizationNavbar = ({
             className="inherit-title-link header"
             onClick={onClickLink}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/welcome-page-settings"
             )}
           >
@@ -141,13 +141,19 @@ const CustomizationNavbar = ({
               className="inherit-title-link header"
               onClick={onClickLink}
               href={combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 "/portal-settings/common/customization/dns-settings"
               )}
             >
               {t("DNSSettings")}
             </Link>
-            {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+            {!isSettingPaid && (
+              <Badge
+                backgroundColor="#EDC409"
+                label={t("Common:Paid")}
+                isPaidBadge={true}
+              />
+            )}
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
         </div>
@@ -156,7 +162,7 @@ const CustomizationNavbar = ({
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
-            color={theme.client.settings.common.linkColorHelp}
+            color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
             href={helpUrlCommonSettings}
@@ -173,7 +179,7 @@ const CustomizationNavbar = ({
             className="inherit-title-link header"
             onClick={onClickLink}
             href={combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/common/customization/portal-renaming"
             )}
           >
@@ -190,13 +196,18 @@ const CustomizationNavbar = ({
 };
 
 export default inject(({ auth, common }) => {
-  const { helpUrlCommonSettings, theme } = auth.settingsStore;
+  const {
+    helpUrlCommonSettings,
+    theme,
+    currentColorScheme,
+  } = auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
     helpUrlCommonSettings,
     isLoaded,
     setIsLoadedCustomizationNavbar,
+    currentColorScheme,
   };
 })(
   withRouter(

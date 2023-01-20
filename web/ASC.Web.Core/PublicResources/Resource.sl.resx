@@ -124,9 +124,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Novo geslo je nepravilno. Vsebovati mora</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Mora vsebovati</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>številke</value>
   </data>

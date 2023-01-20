@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Voer code in van authenticatie app",
   "EnterCodePlaceholder": "Voer code in",
   "EnterPhone": "Mobiel telefoonnummer invoeren",
-  "FirstName": "Voornaam",
   "GetCode": "Code ontvangen",
   "InviteTitle": "U bent uitgenodigd om lid te worden van dit portaal!",
   "LoginRegistryButton": "Lid worden van",
@@ -23,5 +22,5 @@
   "SetAppDescription": "Twee-factor authenticatie is ingeschakeld. Configureer uw authenticator app om op het portaal te kunnen blijven werken. U kunt Google Authenticator voor <1>Android</1> en <4>iOS</4> of Authenticator voor <8>Windows Phone</8> gebruiken.",
   "SetAppInstallDescription": "Om de app te verbinden scant u de QR-code of voert u handmatig uw geheime code in <1>{{ secretKey }}</1>, en voert u vervolgens een 6-cijferige code van uw app in het onderstaande veld in.",
   "SetAppTitle": "Configureer uw authenticatietoepassing",
-  "WelcomeUser": "Welkom bij ons portaal! Om te beginnen kunt u zich inschrijven, of inloggen via sociale netwerken."
+  "WelcomeUser": "Welkom bij ons portaal!\nOm te beginnen kunt u zich inschrijven, of inloggen via sociale netwerken."
 }

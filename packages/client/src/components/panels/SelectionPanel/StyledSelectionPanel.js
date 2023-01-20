@@ -50,7 +50,7 @@ const StyledModalDialog = styled(ModalDialog)`
 
 const StyledBody = styled.div`
   .selection-panel_body {
-    height: 434px;
+    height: ${(props) => (props.footer ? "395px" : "434px")};
     display: grid;
     grid-template-columns: 245px 1fr;
     grid-template-areas: "tree files" "footer footer";
@@ -79,8 +79,13 @@ const StyledBody = styled.div`
       .selection-panel_folder-title {
         padding: 12px 20px 14px 0px;
       }
+
+      .selection-panel_header-loader {
+        padding-bottom: 3px;
+      }
+
       .selection-panel_tree-folder {
-        height: 387px;
+        height: ${(props) => (props.footer ? "343px" : "387px")};
         max-height: 384px;
         margin-left: -17px;
       }
@@ -211,6 +216,10 @@ const StyledAsideBody = styled.div`
     margin-bottom: 12px;
     div:first-child {
       ${(props) => props.header && " margin-bottom: 12px;"}
+    }
+
+    .selection-panel_header-loader {
+      padding-bottom: 4px;
     }
   }
   .selection-panel_aside-folder-title {

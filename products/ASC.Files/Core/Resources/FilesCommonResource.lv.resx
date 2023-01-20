@@ -175,9 +175,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Fails patreiz izmantot cits lietotājs</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Nav pieejamu kontu, lai nosūtītu ziņu. Dodieties uz Pastu un pieslēdzieties pastkastei.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Neizdevās nosūtīt vismaz {0} ziņas. Lūdzu, dodieties uz moduli "Pasts", lai redzētu, kas varēja būt kļūdas iemesls.</value>
   </data>
@@ -279,30 +276,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Izveidot un rediģēt savus dokumentus, kā arī Koplietotie dokumenti ar pienācīgam piekļuves tiesībam|Sniegt lasīšanas/rediģēšanas tiesības citiem lietotājiem|Saistīt Dropbox, Box un citus kontus ar sadaļu "Mani dokumenti"</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} noņemts</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Meklēt</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Paziņot, kad mape tiek koplietota</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Paziņot, kad dokuments ir parakstīts ar DocuSign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Paziņot, kad DocuSign dokumentam ir mainīts statuss</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Paziņot, kad koplietots</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Paziņot, kad ir nosūtīts</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Lietotāja {!user} {0} dokumenti</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Vārds</value>

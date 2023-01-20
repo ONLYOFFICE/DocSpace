@@ -242,9 +242,9 @@ restart_services() {
 	echo "OK"
 
 	echo -n "Restarting services... "
-	for SVC in login api urlshortener socket studio-notify notify \
-	people-server files files-services studio backup telegram-service \
-	webhooks-service clear-events backup-background migration ssoauth doceditor
+	for SVC in login api socket studio-notify notify \
+	people-server files files-services studio backup \
+	clear-events backup-background ssoauth doceditor
 	do
 		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
 		systemctl restart ${PRODUCT}-$SVC
@@ -303,7 +303,7 @@ establish_mysql_conn(){
 SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
-	sed "s/Server=.*/$CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
+	sed "s/Server=.*/$CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 
 	change_mysql_config
 
@@ -449,15 +449,11 @@ setup_nginx(){
 					PORTS+=('5011') #ASC.Login
 					PORTS+=('5012') #ASC.Data.Backup
 					PORTS+=('5013') #ASC.Files/editor
-					PORTS+=('5018') #ASC.Migration
 					PORTS+=('5027') #ASC.ClearEvents
 					PORTS+=('5028') #ASC.Socket.IO
-					PORTS+=('5029') #ASC.UrlShortener
-					PORTS+=('5031') #ASC.Webhooks.Service
 					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
 					PORTS+=('8081') #Storybook
 					PORTS+=('9834') #ASC.SsoAuth
-					PORTS+=('51702') #ASC.TelegramService
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
@@ -500,16 +496,6 @@ setup_docs() {
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
 	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
-	
-	#Docs Database Migration
-	local DOCUMENT_SERVER_DB_HOST=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbHost)
-	local DOCUMENT_SERVER_DB_PORT=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPort)
-	local DOCUMENT_SERVER_DB_NAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbName)
-	local DOCUMENT_SERVER_DB_USERNAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbUser)
-	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
-	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
-
-	sed "s/Host=.*/$DS_CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 	
 	echo "OK"
 }

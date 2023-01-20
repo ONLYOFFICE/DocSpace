@@ -1,4 +1,6 @@
 import React from "react";
+import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 
 import Loaders from "../../Loaders";
 
@@ -6,11 +8,12 @@ import Backdrop from "@docspace/components/backdrop";
 import Button from "@docspace/components/button";
 import Heading from "@docspace/components/heading";
 import IconButton from "@docspace/components/icon-button";
+import Scrollbar from "@docspace/components/scrollbar";
+import Portal from "@docspace/components/portal";
 
 import FilterBlockItem from "./FilterBlockItem";
 
 import PeopleSelector from "client/PeopleSelector";
-import GroupSelector from "client/GroupSelector";
 
 import {
   StyledFilterBlock,
@@ -19,8 +22,6 @@ import {
   StyledControlContainer,
   StyledCrossIcon,
 } from "./StyledFilterBlock";
-import { withTranslation } from "react-i18next";
-import Scrollbar from "@docspace/components/scrollbar";
 
 //TODO: fix translate
 const FilterBlock = ({
@@ -337,28 +338,18 @@ const FilterBlock = ({
 
   const showFooter = isEqualFilter();
 
-  return (
+  const filterBlockComponent = (
     <>
       {showSelector.show ? (
         <>
           <StyledFilterBlock>
-            {showSelector.isAuthor ? (
-              <PeopleSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            ) : (
-              <GroupSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            )}
+            <PeopleSelector
+              className="people-selector"
+              isMultiSelect={false}
+              onAccept={selectOption}
+              onBackClick={onArrowClick}
+              headerLabel={selectorLabel}
+            />
 
             <StyledControlContainer onClick={hideFilterBlock}>
               <StyledCrossIcon />
@@ -371,6 +362,7 @@ const FilterBlock = ({
             <Heading size="medium">{filterHeader}</Heading>
             {showFooter && (
               <IconButton
+                id="filter_search-options-clear"
                 iconName="/static/images/clear.react.svg"
                 isFill={true}
                 onClick={onClearFilter}
@@ -380,11 +372,7 @@ const FilterBlock = ({
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (
-              <Loaders.FilterBlock
-                isPersonalRoom={isPersonalRoom}
-                isRooms={isRooms}
-                isAccounts={isAccounts}
-              />
+              <Loaders.FilterBlock isRooms={isRooms} isAccounts={isAccounts} />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
                 {filterData.map((item, index) => {
@@ -411,6 +399,7 @@ const FilterBlock = ({
           {showFooter && (
             <StyledFilterBlockFooter>
               <Button
+                id="filter_apply-button"
                 size="normal"
                 primary={true}
                 label={t("ApplyButton")}
@@ -418,6 +407,7 @@ const FilterBlock = ({
                 onClick={onFilterAction}
               />
               <Button
+                id="filter_cancel-button"
                 size="normal"
                 label={t("CancelButton")}
                 scale={true}
@@ -426,7 +416,7 @@ const FilterBlock = ({
             </StyledFilterBlockFooter>
           )}
 
-          <StyledControlContainer onClick={hideFilterBlock}>
+          <StyledControlContainer id="filter_close" onClick={hideFilterBlock}>
             <StyledCrossIcon />
           </StyledControlContainer>
         </StyledFilterBlock>
@@ -440,6 +430,20 @@ const FilterBlock = ({
       />
     </>
   );
+
+  const renderPortalFilterBlock = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={filterBlockComponent}
+        appendTo={rootElement}
+        visible={true}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalFilterBlock() : filterBlockComponent;
 };
 
 export default React.memo(withTranslation("Common")(FilterBlock));

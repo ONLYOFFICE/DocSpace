@@ -316,7 +316,7 @@ public class FileUploader
 
         if (chunkLength > _setupInfo.ChunkUploadSize)
         {
-            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
+            throw FileSizeComment.GetFileSizeException(await _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
         }
 
         var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);

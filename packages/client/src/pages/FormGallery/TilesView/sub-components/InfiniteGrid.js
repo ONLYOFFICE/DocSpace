@@ -11,12 +11,7 @@ const Card = ({ children, countTilesInRow, ...rest }) => {
   const cardHeight = fileHeight;
 
   return (
-    <StyledCard
-      className="Card"
-      cardHeight={cardHeight}
-      isSingle={countTilesInRow}
-      {...rest}
-    >
+    <StyledCard className="Card" cardHeight={cardHeight} {...rest}>
       {children}
     </StyledCard>
   );
@@ -133,7 +128,7 @@ const InfiniteGrid = (props) => {
   );
 };
 
-export default inject(({ filesStore, oformsStore }) => {
+export default inject(({ auth, filesStore, oformsStore }) => {
   const {
     oformFiles,
     hasMoreForms,
@@ -144,6 +139,7 @@ export default inject(({ filesStore, oformsStore }) => {
   const { getCountTilesInRow } = filesStore;
 
   const filesLength = oformFiles.length;
+  const { isVisible } = auth.infoPanelStore;
 
   return {
     filesList: oformFiles,
@@ -152,5 +148,6 @@ export default inject(({ filesStore, oformsStore }) => {
     fetchMoreFiles: loadMoreForms,
     filesLength,
     getCountTilesInRow,
+    isVisible,
   };
 })(observer(InfiniteGrid));

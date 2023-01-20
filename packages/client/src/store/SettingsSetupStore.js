@@ -5,7 +5,6 @@ import SelectionStore from "./SelectionStore";
 //import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
 
@@ -13,6 +12,8 @@ class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  logoutVisible = false;
+  logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
 
   security = {
@@ -140,7 +141,7 @@ class SettingsSetupStore {
       "",
       "",
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         `${config.homepage}/portal-settings/security/access-rights/admins`,
         `/filter?page=${filter.page}` //TODO: Change url by category
       )
@@ -216,10 +217,6 @@ class SettingsSetupStore {
     return Promise.resolve(response);
   };
 
-  restoreWhiteLabelSettings = async (isDefault) => {
-    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
-  };
-
   setLanguageAndTime = async (lng, timeZoneID) => {
     return api.settings.setLanguageAndTime(lng, timeZoneID);
   };
@@ -239,6 +236,7 @@ class SettingsSetupStore {
 
   setLifetimeAuditSettings = async (data) => {
     await api.settings.setLifetimeAuditSettings(data);
+    this.getLifetimeAuditSettings();
   };
 
   setSecurityLifeTime = (lifetime) => {
@@ -339,6 +337,26 @@ class SettingsSetupStore {
 
     this.setCommonThirdPartyList(res);
   };
+
+  getAllSessions = () => {
+    return api.settings.getAllActiveSessions();
+  };
+
+  removeAllSessions = () => {
+    return api.settings.removeAllActiveSessions();
+  };
+
+  removeAllExecptThis = () => {
+    return api.settings.removeAllExceptThisSession();
+  };
+
+  removeSession = (id) => {
+    return api.settings.removeActiveSession(id);
+  };
+
+  setLogoutVisible = (visible) => (this.logoutVisible = visible);
+
+  setLogoutAllVisible = (visible) => (this.logoutAllVisible = visible);
 }
 
 export default SettingsSetupStore;

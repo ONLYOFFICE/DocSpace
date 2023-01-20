@@ -41,7 +41,6 @@ const SelectionPanelBody = ({
   folderSelection = false,
   folderTitle,
   fileId,
-  canCreate = true,
   isLoadingData,
   expandedKeys,
   isDisableTree,
@@ -50,9 +49,8 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
-  folderSelectionDisabled,
-  isCurrentFolder,
 }) => {
+  const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
       theme={theme}
@@ -61,6 +59,7 @@ const SelectionPanelBody = ({
       displayType="modal"
       isLoading={isLoading}
       withFooterBorder
+      isDoubleFooterLine
       autoMaxWidth
     >
       <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>
@@ -70,15 +69,25 @@ const SelectionPanelBody = ({
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
-              <Text
-                fontWeight="700"
-                fontSize="18px"
-                className="selection-panel_folder-title"
-              >
-                {t("Common:Rooms")}
-              </Text>
+              {isLoaded ? (
+                <Text
+                  fontWeight="700"
+                  fontSize="18px"
+                  className="selection-panel_folder-title"
+                >
+                  {t("Common:Rooms")}
+                </Text>
+              ) : (
+                <div className="selection-panel_folder-title">
+                  <Loaders.Rectangle
+                    className="selection-panel_header-loader"
+                    width="83px"
+                    height="24px"
+                  />
+                </div>
+              )}
 
-              {folderId && resultingFolderTree ? (
+              {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   theme={theme}
@@ -121,7 +130,7 @@ const SelectionPanelBody = ({
                   folderSelection={folderSelection}
                   newFilter={newFilter}
                   fileId={fileId}
-                  maxHeight={!header ? 384 : 310}
+                  maxHeight={!header ? 384 : 269}
                 />
               </>
             </div>
@@ -129,33 +138,34 @@ const SelectionPanelBody = ({
         </StyledBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-file-modal-dialog-buttons-save"
-          primary
-          size="normalTouchscreen"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            (!fileId && !folderSelection) ||
-            !canCreate ||
-            !(folderId && resultingFolderTree) ||
-            isCurrentFolder
-          }
-          isLoading={isDisableTree}
-        />
-        <Button
-          theme={theme}
-          className="modal-dialog-button"
-          size="normalTouchscreen"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+
+        <div>
+          <Button
+            id="select-file-modal-submit"
+            theme={theme}
+            className="select-file-modal-dialog-buttons-save"
+            primary
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={
+              isDisableButton ||
+              (!fileId && !folderSelection) ||
+              !(folderId && resultingFolderTree)
+            }
+            isLoading={isDisableTree}
+          />
+          <Button
+            id="select-file-modal-cancel"
+            theme={theme}
+            className="modal-dialog-button"
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

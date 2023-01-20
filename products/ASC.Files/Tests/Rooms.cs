@@ -159,33 +159,6 @@ public partial class BaseFilesTests
         Assert.IsFalse(folder.Pinned);
     }
 
-    [TestCase(DataTests.RoomId, DataTests.Email)]
-    [Category("Room")]
-    [Order(13)]
-    [Description("put - rooms/{id}/links/send - send invitation links to email")]
-    public async Task SendLink(int id, string email)
-    {
-        var invites = await PutAsync<IEnumerable<InviteResultDto>>($"rooms/{id}/links/send", new { Emails = new List<string>() { email }, EmployeeType = EmployeeType.All, Access = Core.Security.FileShare.Read });
-        Assert.IsTrue(invites.First().Success);
-    }
-
-    [TestCase(DataTests.RoomId)]
-    [Category("Room")]
-    [Order(15)]
-    [Description("get - rooms/{id}/links - get invitation links /// put - rooms/{id}/share - share a room by link")]
-    public async Task GetLinkAndShareRoomByLink(int id)
-    {
-        var invite = await GetAsync<string>($"rooms/{id}/links?access=2");
-        Assert.IsNotNull(invite);
-        Assert.IsNotEmpty(invite);
-
-        var key = invite.Substring(invite.IndexOf("&key=") + 5);
-        key = key.Substring(0, key.IndexOf('&'));
-
-        var share = await PutAsync<IEnumerable<FileShareDto>>($"rooms/{id}/share", new { Access = Core.Security.FileShare.Read, Key = key });
-        Assert.IsNotNull(share);
-    }
-
     //[TestCase(DataTests.RoomId, DataTests.Image)]
     //[Category("Room")]
     //[Order(16)]

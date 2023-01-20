@@ -34,6 +34,22 @@ export const EmployeeType = Object.freeze({
   Owner: "Owner",
 });
 /**
+ * Enum for user payments type.
+ * @readonly
+ */
+export const PaymentsType = Object.freeze({
+  Paid: "0",
+  Free: "1",
+});
+/**
+ * Enum for filter subject.
+ * @readonly
+ */
+export const FilterSubject = Object.freeze({
+  Owner: "0",
+  Member: "1",
+});
+/**
  * Enum for filter type.
  * @readonly
  */
@@ -53,6 +69,7 @@ export const FilterType = Object.freeze({
   OFormTemplateOnly: 18,
   OFormOnly: 19,
 });
+
 /**
  * Enum for file type.
  * @readonly
@@ -84,7 +101,7 @@ export const RoomsType = Object.freeze({
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
   2: "Files:CollaborationRooms",
-  3: "Files:ReviewRooms",
+  3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
 });
@@ -150,6 +167,24 @@ export const FolderType = Object.freeze({
   Rooms: 14,
   Archive: 20,
 });
+
+// extends FolderType keys
+export const FolderNames = Object.freeze({
+  0: "default",
+  1: "common",
+  2: "bunch",
+  3: "trash",
+  5: "personal",
+  6: "share",
+  8: "projects",
+  10: "favorites",
+  11: "recent",
+  12: "templates",
+  13: "privacy",
+  14: "shared",
+  20: "archive",
+});
+
 export const ShareAccessRights = Object.freeze({
   None: 0,
   FullAccess: 1,
@@ -228,10 +263,6 @@ export const AutoBackupPeriod = Object.freeze({
   EveryWeekType: 1,
   EveryMonthType: 2,
 });
-
-import config from "./AppServerConfig";
-
-export const AppServerConfig = config;
 
 /**
  * Enum for Tenant trusted domains on registration.
@@ -313,6 +344,7 @@ export const FeedItemTypes = Object.freeze({
   File: "file",
   Folder: "folder",
   Room: "room",
+  Tag: "tag",
   User: "sharedRoom",
 });
 

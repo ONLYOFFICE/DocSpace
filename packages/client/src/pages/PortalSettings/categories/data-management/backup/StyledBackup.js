@@ -29,7 +29,6 @@ const commonStyles = css`
   }
   .radio-button_text {
     margin-right: 7px;
-    margin-left: 4px;
     font-size: 13px;
     font-weight: 600;
   }
@@ -104,6 +103,9 @@ const StyledAutoBackup = styled.div`
   .auto-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
+    button {
+      margin-bottom: 16px;
+    }
   }
   .automatic-backup_main {
     margin-bottom: 30px;
@@ -159,6 +161,7 @@ const StyledAutoBackup = styled.div`
   }
 
   .auto-backup_badge {
+    height: 16px;
     margin-left: 8px;
   }
   ${(props) => !props.isEnableAuto && UnavailableStyles}
@@ -173,6 +176,10 @@ const StyledRestoreBackup = styled.div`
   ${commonStyles}
   .restore-backup_third-party-module {
     margin-top: 16px;
+
+    button {
+      margin-bottom: 16px;
+    }
   }
   .restore-description {
     max-width: ${TEXT_LENGTH};
@@ -184,7 +191,7 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: #f21c0e;
+    color: ${(props) => props.theme.client.settings.backup.warningColor};
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -231,7 +238,7 @@ const StyledModules = styled.div`
   margin-bottom: 24px;
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`};
-    margin-left: 29px;
+    margin-left: 25px;
     max-width: 700px;
   }
 `;
@@ -327,17 +334,12 @@ const StyledBackup = styled.div`
     display: flex;
     margin-bottom: 12px;
     display: grid;
-    grid-template-columns: minmax(100px, 310px) 32px;
+
+    ${(props) =>
+      props.isConnectedAccount
+        ? "grid-template-columns:minmax(100px,  310px) 32px"
+        : "grid-template-columns:minmax(100px,  350px) 32px"};
     grid-gap: 8px;
-  }
-  .backup_third-party-combo {
-    .combo-button {
-      justify-content: flex-start;
-      .combo-button-label {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
   }
 
   .backup_modules-separation {
@@ -448,6 +450,7 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
     margin-left: 16px;
     margin-right: 16px;
+    color: ${(props) => props.theme.client.settings.backup.textColor};
   }
   #backup-list_help {
     display: flex;

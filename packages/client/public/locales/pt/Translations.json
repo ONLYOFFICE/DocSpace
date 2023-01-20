@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Adicionar conta",
-  "AddAuthor": "Adicionar autor",
   "ArchivingData": "Arquivar dados",
-  "ButtonShareAccess": "Configuração de partilha",
   "ConnectingAccount": "A ligar conta",
   "Copy": "Copiar",
   "CopyHere": "Copiar aqui",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Obtenha o ONLYOFFICE Documents na Google Play",
   "MobileIos": "Faça o download do ONLYOFFICE Documents na  App Store",
   "MobileLinux": "Faça o download do ONLYOFFICE Desktop Editors para Linux",
-  "MobileMac": "Faça o download do ONLYOFFICE Desktop Editors para Mac OS",
+  "MobileMac": "Faça o download do ONLYOFFICE Desktop Editors para macOS",
   "MobileWin": "Faça o download do ONLYOFFICE Desktop Editors para Windows",
   "MoveHere": "Mover para aqui",
   "MoveToOperation": "A mover",
   "NewForm": "Modelo de Formulário",
-  "NewFormFile": "Formulário a partir de um ficheiro",
+  "Other": "Outros",
   "OwnerChange": "Alterar dono",
   "Presentations": "Apresentações ",
   "Spreadsheets": "Folhas de cálculo",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Outros"
+  "TypeTitlekDrive": "kDrive"
 }

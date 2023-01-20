@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Thirdparty;
-
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -319,9 +317,11 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Room security info
     /// </returns>
     [HttpPut("rooms/{id}/share")]
-    public async Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
+    public async Task<RoomSecurityDto> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
     {
         ErrorIfNotDocSpace();
+
+        var result = new RoomSecurityDto();
 
         if (inDto.Invitations != null && inDto.Invitations.Any())
         {
@@ -335,10 +335,12 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
                 Message = inDto.Message
             };
 
-            await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
+            result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
         }
 
-        return await GetRoomSecurityInfoAsync(id).ToListAsync();
+        result.Members = await GetRoomSecurityInfoAsync(id).ToListAsync();
+
+        return result;
     }
 
     /// <summary>
@@ -655,7 +657,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </returns>
     [HttpGet("rooms")]
     public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
-        ProviderFilter? provider)
+        ProviderFilter? provider, SubjectFilter? subjectFilter)
     {
         ErrorIfNotDocSpace();
 
@@ -687,7 +689,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
 
         var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
-            provider ?? ProviderFilter.None);
+            provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 

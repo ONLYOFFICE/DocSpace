@@ -167,6 +167,16 @@ public class StudioNotifyService
     {
         var auditEventDate = DateTime.UtcNow;
 
+        auditEventDate = new DateTime(
+            auditEventDate.Year, 
+            auditEventDate.Month, 
+            auditEventDate.Day, 
+            auditEventDate.Hour, 
+            auditEventDate.Minute, 
+            auditEventDate.Second, 
+            0, 
+            DateTimeKind.Utc);
+
         var hash = auditEventDate.ToString("s");
 
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
@@ -225,24 +235,25 @@ public class StudioNotifyService
                     new TagValue(Tags.UserDisplayName, (user.DisplayUserName(_displayUserSettingsHelper) ?? string.Empty).Trim()));
     }
 
-    public void SendEmailRoomInvite(string email, string confirmationUrl)
+    public void SendEmailRoomInvite(string email, string roomTitle, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmRoomInvite;
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
-            Actions.RoomInvite,
+            Actions.SaasRoomInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.Message, roomTitle),
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
     public void SendDocSpaceInvite(string email, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmDocSpaceInvite;
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
-            Actions.DocSpaceInvite,
+            Actions.SaasDocSpaceInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
@@ -378,25 +389,23 @@ public class StudioNotifyService
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
             notifyAction = defaultRebranding
-                               ? Actions.EnterpriseUserWelcomeV10
+                               ? Actions.EnterpriseUserWelcomeV1
                                    : _coreBaseSettings.CustomMode
-                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomMode
-                                     : Actions.EnterpriseWhitelabelUserWelcomeV10;
+                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomModeV1
+                                     : Actions.EnterpriseWhitelabelUserWelcomeV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserWelcomeV11;
+            notifyAction = Actions.OpensourceUserWelcomeV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserWelcomeV115;
+            notifyAction = Actions.SaasUserWelcomeV1;
         }
 
-        string greenButtonText() => _tenantExtra.Enterprise
-                              ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
-                              : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+        string greenButtonText() => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -462,17 +471,17 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
+            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV1 : Actions.EnterpriseWhitelabelUserActivationV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserActivationV11;
+            notifyAction = Actions.OpensourceUserActivationV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserActivationV115;
+            notifyAction = Actions.SaasUserActivationV1;
         }
 
         var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -654,27 +663,21 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
-
-            tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl)));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
+            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceAdminWelcomeV11;
+            notifyAction = Actions.OpensourceAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
         }
         else
         {
-            notifyAction = Actions.SaasAdminWelcomeV115;
-            //tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
-
+            notifyAction = Actions.SaasAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "common"));
-            tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx")));
         }
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
+        tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/payments")));
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -720,7 +723,7 @@ public class StudioNotifyService
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
         _client.SendNoticeToAsync(
-                Actions.PortalDeleteSuccessV115,
+                Actions.PortalDeleteSuccessV1,
                 new IRecipient[] { owner },
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, url),
@@ -770,31 +773,29 @@ public class StudioNotifyService
             if (_tenantExtra.Enterprise)
             {
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV10 : Actions.EnterpriseWhitelabelAdminActivationV10;
+                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV1 : Actions.EnterpriseWhitelabelAdminActivationV1;
                 footer = null;
             }
             else if (_tenantExtra.Opensource)
             {
-                notifyAction = Actions.OpensourceAdminActivationV11;
+                notifyAction = Actions.OpensourceAdminActivationV1;
                 footer = "opensource";
             }
             else
             {
-                notifyAction = Actions.SaasAdminActivationV115;
+                notifyAction = Actions.SaasAdminActivationV1;
             }
 
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation);
             confirmationUrl += "&first=true";
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;
 
             _client.SendNoticeToAsync(
             notifyAction,
                 _studioNotifyHelper.RecipientFromEmail(u.Email, false),
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-            new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            new TagValue(Tags.ActivateUrl, confirmationUrl),
             TagValues.GreenButton(greenButtonText, confirmationUrl),
             new TagValue(CommonTags.Footer, footer));
         }

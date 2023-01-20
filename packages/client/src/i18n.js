@@ -28,6 +28,7 @@ newInstance
 
     ns: [
       "InfoPanel",
+      "FormGallery",
       "DownloadDialog",
       "DeleteDialog",
       "EmptyTrashDialog",
@@ -35,8 +36,8 @@ newInstance
       "ConnectDialog",
       "ConflictResolveDialog",
       "DeleteThirdPartyDialog",
-      "ThirdPartyMoveDialog",
       "PortalUnavailable",
+      "Errors",
     ],
 
     backend: {

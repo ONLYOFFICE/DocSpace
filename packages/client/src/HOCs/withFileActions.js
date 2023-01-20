@@ -121,13 +121,26 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseClick = (e) => {
-      const { viewAs } = this.props;
+      const { viewAs, withCtrlSelect, withShiftSelect, item } = this.props;
+
+      if (e.ctrlKey || e.metaKey) {
+        withCtrlSelect(item);
+        e.preventDefault();
+        return;
+      }
+
+      if (e.shiftKey) {
+        withShiftSelect(item);
+        e.preventDefault();
+        return;
+      }
 
       if (
         e.target.tagName === "INPUT" ||
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
         e.target.closest(".checkbox") ||
+        e.target.closest(".table-container_row-checkbox") ||
         e.button !== 0 ||
         e.target.closest(".expandButton") ||
         e.target.querySelector(".expandButton") ||
@@ -144,6 +157,14 @@ export default function withFileActions(WrappedFileItem) {
       } else this.fileContextClick();
     };
 
+    onDoubleClick = (e) => {
+      if (e.ctrlKey || e.shiftKey) {
+        return e;
+      }
+
+      this.onFilesClick(e);
+    };
+
     onFilesClick = (e) => {
       const {
         item,
@@ -156,10 +177,9 @@ export default function withFileActions(WrappedFileItem) {
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file") ||
-        !!e.target.closest(".additional-badges") ||
+        // !!e.target.closest(".additional-badges") ||
         e.target.closest(".tag") ||
-        isTrashFolder ||
-        isArchiveFolder
+        isTrashFolder
       )
         return;
 
@@ -202,10 +222,6 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        isDesktop,
-        personal,
-        canWebEdit,
-        canViewedDocs,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -215,7 +231,11 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : `_${item.providerKey}`;
+      value += draggable
+        ? "_draggable"
+        : item.providerKey
+        ? `_${item.providerKey}`
+        : "";
 
       const isShareable = allowShareIn && item.canShare;
 
@@ -227,13 +247,6 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const showShare =
-        !isShareable ||
-        (isPrivacy && (!isDesktop || !fileExst)) ||
-        (personal && !canWebEdit && !canViewedDocs)
-          ? false
-          : true;
-
       const checkedProps = id <= 0 ? false : checked;
 
       return (
@@ -243,6 +256,7 @@ export default function withFileActions(WrappedFileItem) {
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
+          onDoubleClick={this.onDoubleClick}
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
@@ -253,7 +267,6 @@ export default function withFileActions(WrappedFileItem) {
           value={value}
           displayShareButton={displayShareButton}
           isPrivacy={isPrivacy}
-          showShare={showShare}
           checkedProps={checkedProps}
           dragging={dragging}
           getContextModel={this.getContextModel}
@@ -266,14 +279,12 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
-        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
         selectedFolderStore,
         filesStore,
         uploadDataStore,
-        settingsStore,
         contextOptionsStore,
       },
       { item, t }
@@ -283,7 +294,7 @@ export default function withFileActions(WrappedFileItem) {
         selectTag,
         selectOption,
         onSelectItem,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         openFileAction,
         uploadEmptyFolders,
       } = filesActionsStore;
@@ -310,6 +321,8 @@ export default function withFileActions(WrappedFileItem) {
         activeFolders,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
+        withShiftSelect,
       } = filesStore;
 
       const { startUpload } = uploadDataStore;
@@ -321,8 +334,7 @@ export default function withFileActions(WrappedFileItem) {
       const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
+
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
         activeFolders.findIndex(
@@ -368,14 +380,10 @@ export default function withFileActions(WrappedFileItem) {
         checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
-        canWebEdit,
-        canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
         getFolderInfo,
         viewAs,
-        isDesktop: auth.settingsStore.isDesktopClient,
-        personal: auth.settingsStore.personal,
-        setNewBadgeCount,
+        //setNewBadgeCount,
         isActive,
         inProgress,
         setBufferSelection,
@@ -384,6 +392,8 @@ export default function withFileActions(WrappedFileItem) {
         openFileAction,
         setEnabledHotkeys,
         setSelected,
+        withCtrlSelect,
+        withShiftSelect,
       };
     }
   )(observer(WithFileActions));

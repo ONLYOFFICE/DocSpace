@@ -91,7 +91,7 @@ public class FeedReadedDataProvider
         };
 
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        feedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
+        feedDbContext.AddOrUpdate(feedDbContext.FeedReaded, feedReaded);
         feedDbContext.SaveChanges();
     }
 

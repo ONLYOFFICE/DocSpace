@@ -39,9 +39,7 @@ const sideInfoTabletStyle = css`
   margin: ${(props) => props.theme.rowContent.sideInfo.margin};
   ${commonCss};
   color: ${(props) => props.color && props.color};
-  white-space: nowrap;
-  overflow: ${(props) => props.theme.rowContent.sideInfo.overflow};
-  text-overflow: ${(props) => props.theme.rowContent.sideInfo.textOverflow};
+  ${truncateCss};
 `;
 
 const StyledRowContent = styled.div`
@@ -51,7 +49,7 @@ const StyledRowContent = styled.div`
   ${(props) =>
     (!props.disableSideInfo &&
       props.widthProp &&
-      props.widthProp < size.tablet) ||
+      props.widthProp <= size.tablet) ||
     props.isMobile
       ? `${containerTabletStyle}`
       : `
@@ -77,7 +75,7 @@ const MainContainerWrapper = styled.div`
   ${(props) =>
     (!props.disableSideInfo &&
       props.widthProp &&
-      props.widthProp < size.tablet) ||
+      props.widthProp <= size.tablet) ||
     props.isMobile
       ? css`
           ${mainWrapperTabletStyle}
@@ -88,6 +86,7 @@ const MainContainerWrapper = styled.div`
     ${mainWrapperTabletStyle}
   }
 `;
+
 MainContainerWrapper.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
@@ -96,7 +95,7 @@ const MainContainer = styled.div`
   max-width: 100%;
 
   ${(props) =>
-    (props.widthProp && props.widthProp < size.tablet) || props.isMobile
+    (props.widthProp && props.widthProp <= size.tablet) || props.isMobile
       ? `${mainContainerTabletStyle}`
       : `
     @media ${tablet} {
@@ -117,7 +116,7 @@ const SideContainerWrapper = styled.div`
   ${commonCss};
 
   ${(props) =>
-    (props.widthProp && props.widthProp < size.tablet) || props.isMobile
+    (props.widthProp && props.widthProp <= size.tablet) || props.isMobile
       ? `${truncateCss}`
       : `
     @media ${tablet} {
@@ -140,7 +139,7 @@ const SideContainerWrapper = styled.div`
   ${(props) =>
     (!props.disableSideInfo &&
       props.widthProp &&
-      props.widthProp < size.tablet) ||
+      props.widthProp <= size.tablet) ||
     props.isMobile
       ? `display: none;`
       : `
@@ -155,7 +154,7 @@ const TabletSideInfo = styled.div`
   display: none;
   ${(props) => (props.color ? `color: ${props.color};` : null)}
   ${(props) =>
-    (props.widthProp && props.widthProp < size.tablet) || props.isMobile
+    (props.widthProp && props.widthProp <= size.tablet) || props.isMobile
       ? `${sideInfoTabletStyle}`
       : `
     @media ${tablet} {

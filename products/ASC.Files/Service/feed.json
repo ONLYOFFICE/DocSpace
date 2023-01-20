@@ -26,6 +26,15 @@
         }
       ],
       "instanceScope": "perlifetimescope"
+    },
+    {
+      "type": "ASC.Files.Service.Core.UsersModule, ASC.Files.Service",
+      "services": [
+        {
+          "type": "ASC.Feed.Aggregator.Modules.IFeedModule, ASC.Feed.Aggregator"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
     }
   ]
 }

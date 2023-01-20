@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { inject } from "mobx-react";
 import { ReactSVG } from "react-svg";
 
@@ -9,13 +9,22 @@ import infoPanel from "@docspace/common/components/Section/sub-components/info-p
 const CommentEditor = ({
   t,
   item,
-
+  editing,
   setSelection,
-  isRecycleBinFolder,
   fetchFileVersions,
   updateCommentVersion,
+
+  setVerHistoryFileId,
+  setVerHistoryFileSecurity,
 }) => {
-  const { id, comment, version } = item;
+  const { id, comment, version, security } = item;
+
+  const changeVersionHistoryAbility = !editing && security?.EditHistory;
+
+  useEffect(() => {
+    setVerHistoryFileId(id);
+    setVerHistoryFileSecurity(security);
+  }, []);
 
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +40,7 @@ const CommentEditor = ({
   const onSave = async () => {
     setIsLoading(true);
 
-    await fetchFileVersions(id).catch((err) => {
+    await fetchFileVersions(id, security).catch((err) => {
       toastr.error(err);
       setIsLoading(false);
     });
@@ -60,7 +69,7 @@ const CommentEditor = ({
               {comment}
             </Text>
           )}
-          {!isRecycleBinFolder && (
+          {changeVersionHistoryAbility && (
             <div className="edit_toggle" onClick={onOpenEditor}>
               <ReactSVG
                 className="edit_toggle-icon"
@@ -103,15 +112,28 @@ const CommentEditor = ({
   );
 };
 
-export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
+export default inject(({ auth, versionHistoryStore }) => {
   const { setSelection } = auth.infoPanelStore;
 
-  const { fetchFileVersions, updateCommentVersion } = versionHistoryStore;
-  const { isRecycleBinFolder } = treeFoldersStore;
-  return {
-    setSelection,
-    isRecycleBinFolder,
+  const {
     fetchFileVersions,
     updateCommentVersion,
+    isEditingVersion,
+    isEditing,
+    fileId,
+    setVerHistoryFileId,
+    setVerHistoryFileSecurity,
+  } = versionHistoryStore;
+
+  const editing = isEditingVersion || isEditing;
+
+  return {
+    setSelection,
+    fetchFileVersions,
+    updateCommentVersion,
+
+    editing,
+    setVerHistoryFileId,
+    setVerHistoryFileSecurity,
   };
 })(CommentEditor);

@@ -63,8 +63,6 @@ public class BackupProgressItem : BaseBackupProgressItem
     private Guid _userId;
     private BackupStorageType _storageType;
     private string _storageBasePath;
-    private string _currentRegion;
-    private Dictionary<string, string> _configPaths;
     private int _limit;
 
     private TenantManager _tenantManager;
@@ -87,7 +85,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _notifyHelper = notifyHelper;
     }
 
-    public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
+    public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit)
     {
         _userId = Guid.Empty;
         TenantId = schedule.TenantId;
@@ -97,11 +95,9 @@ public class BackupProgressItem : BaseBackupProgressItem
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
         _limit = limit;
-        _currentRegion = currentRegion;
-        _configPaths = configPaths;
     }
 
-    public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
+    public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit)
     {
         _userId = request.UserId;
         TenantId = request.TenantId;
@@ -111,11 +107,9 @@ public class BackupProgressItem : BaseBackupProgressItem
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
         _limit = limit;
-        _currentRegion = currentRegion;
-        _configPaths = configPaths;
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
         {
@@ -139,7 +133,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         {
             var backupTask = _backupPortalTask;
 
-            backupTask.Init(TenantId, _configPaths[_currentRegion], tempFile, _limit);
+            backupTask.Init(TenantId, tempFile, _limit);
 
             backupTask.ProgressChanged += (sender, args) =>
             {
@@ -147,13 +141,13 @@ public class BackupProgressItem : BaseBackupProgressItem
                 PublishChanges();
             };
 
-            backupTask.RunJob();
+            await backupTask.RunJob();
 
             var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
             if (backupStorage != null)
             {
-                storagePath = backupStorage.Upload(_storageBasePath, tempFile, _userId);
-                Link = backupStorage.GetPublicLink(storagePath);
+                storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
+                Link = await backupStorage.GetPublicLink(storagePath);
             }
 
             var repo = _backupRepository;

@@ -9,6 +9,7 @@ import {
   size,
 } from "@docspace/components/utils/device";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import { classNames } from "@docspace/components/utils/classNames";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -53,9 +54,18 @@ const EmptyFolderWrapper = styled.div`
       grid-column-gap: 8px;
     }
 
+    .second-description {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      margin: 32px 0 26px !important;
+    }
+
     .flex-wrapper_container {
       display: flex;
       flex-wrap: wrap;
+
+      row-gap: 16px;
     }
 
     .empty-folder_container-image {
@@ -67,6 +77,8 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_plus-image {
       margin: 4px 8px 0 0;
       cursor: pointer;
+      width: 10px;
+      height: 10px;
     }
 
     .empty-folder_container_plus-image {
@@ -111,6 +123,10 @@ const EmptyFolderWrapper = styled.div`
         }
       `}
   }
+
+  .empty-folder_room-not-found {
+    margin-top: 70px;
+  }
 `;
 
 const EmptyFoldersContainer = (props) => {
@@ -127,6 +143,7 @@ const EmptyFoldersContainer = (props) => {
     isEmptyPage,
     sectionWidth,
     isEmptyFolderContainer,
+    className,
   } = props;
 
   return (
@@ -137,7 +154,7 @@ const EmptyFoldersContainer = (props) => {
     >
       <EmptyScreenContainer
         sectionWidth={sectionWidth}
-        className="empty-folder_container"
+        className={classNames("empty-folder_container", className)}
         style={style}
         imageStyle={imageStyle}
         imageSrc={imageSrc}

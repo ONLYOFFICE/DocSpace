@@ -1150,6 +1150,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Telegram.
+        /// </summary>
+        public static string ConsumersTelegram {
+            get {
+                return ResourceManager.GetString("ConsumersTelegram", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot username.
+        /// </summary>
+        public static string ConsumersTelegramBotName {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot token.
+        /// </summary>
+        public static string ConsumersTelegramBotToken {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Telegram account to receive portal notifications via Telegram..
+        /// </summary>
+        public static string ConsumersTelegramDescription {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below..
+        /// </summary>
+        public static string ConsumersTelegramInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twilio.
         /// </summary>
         public static string ConsumersTwilio {
@@ -1636,6 +1681,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown image file type.
+        /// </summary>
+        public static string ErrorFileNotImage {
+            get {
+                return ResourceManager.GetString("ErrorFileNotImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image size exceed the allowed parameters.
+        /// </summary>
+        public static string ErrorImageSize {
+            get {
+                return ResourceManager.GetString("ErrorImageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
         public static string ErrorImageWeightLimit {
@@ -1650,6 +1713,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorIncorrectUserName {
             get {
                 return ResourceManager.GetString("ErrorIncorrectUserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The access to the portal is restricted.
+        /// </summary>
+        public static string ErrorIpSecurity {
+            get {
+                return ResourceManager.GetString("ErrorIpSecurity", resourceCulture);
             }
         }
         
@@ -2221,7 +2293,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of managers should not exceed {0}.
+        ///   Looks up a localized string similar to The number of admins should not exceed {0}.
         /// </summary>
         public static string TariffsFeature_manager_exception {
             get {
@@ -2230,7 +2302,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of managers.
+        ///   Looks up a localized string similar to Number of admins.
         /// </summary>
         public static string TariffsFeature_manager_price_count {
             get {
@@ -2302,7 +2374,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managers added:.
+        ///   Looks up a localized string similar to Admins added:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {
@@ -2311,7 +2383,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room:.
+        ///   Looks up a localized string similar to Rooms:.
         /// </summary>
         public static string TariffsFeature_used_room {
             get {

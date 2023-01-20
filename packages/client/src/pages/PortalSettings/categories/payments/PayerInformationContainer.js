@@ -14,7 +14,7 @@ const StyledContainer = styled.div`
   padding: 16px;
   box-sizing: border-box;
   margin-top: 16px;
-
+  border-radius: 6px;
   .change-payer,
   .payer-info {
     margin-left: 3px;
@@ -34,14 +34,13 @@ const StyledContainer = styled.div`
     grid-gap: 4px;
 
     .payer-info_description {
-
-
       p {
         margin-right: 3px;
       }
       div {
         display: inline-block;
         margin: auto 0;
+        height: 14px;
       }
     }
     .payer-info_account-link {
@@ -92,6 +91,7 @@ const PayerInformationContainer = ({
           className="change-payer"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("ChangePayer")}
         </ColorTheme>
@@ -114,6 +114,7 @@ const PayerInformationContainer = ({
           className="payer-info_account-link"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("StripeCustomerPortal")}
         </ColorTheme>
@@ -130,25 +131,31 @@ const PayerInformationContainer = ({
     </>
   );
 
-  const payerName = (
-    <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
-      {payerInfo ? (
-        payerInfo.displayName
-      ) : (
-        <Trans t={t} i18nKey="UserNotFound" ns="Payments">
-          User
-          <Text
-            as="span"
-            color={theme.client.settings.payment.warningColor}
-            fontWeight={600}
-          >
-            {{ email }}
-          </Text>
-          is not found
-        </Trans>
-      )}
-    </Text>
-  );
+  const payerName = () => {
+    let emailUnfoundedUser = email;
+
+    if (email) emailUnfoundedUser = "«" + emailUnfoundedUser + "»";
+
+    return (
+      <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
+        {payerInfo ? (
+          payerInfo.displayName
+        ) : (
+          <Trans t={t} i18nKey="UserNotFound" ns="Payments">
+            User
+            <Text
+              as="span"
+              color={theme.client.settings.payment.warningColor}
+              fontWeight={600}
+            >
+              {{ email: emailUnfoundedUser }}
+            </Text>
+            is not found
+          </Trans>
+        )}
+      </Text>
+    );
+  };
 
   const avatarUrl = payerInfo ? { source: payerInfo.avatar } : {};
 
@@ -165,7 +172,7 @@ const PayerInformationContainer = ({
 
       <div className="payer-info_wrapper">
         <div className="payer-info_description">
-          {payerName}
+          {payerName()}
 
           <Text as="span" className="payer-info">
             {" (" + t("Payer") + ") "}

@@ -120,7 +120,8 @@ class ContextMenuButton extends React.Component {
     if (
       this.props.opened === nextProps.opened &&
       this.state.isOpen === nextState.isOpen &&
-      this.props.displayType === nextProps.displayType
+      this.props.displayType === nextProps.displayType &&
+      this.props.isDisabled === nextProps.isDisabled
     ) {
       return false;
     }
@@ -222,6 +223,7 @@ class ContextMenuButton extends React.Component {
                 (item.label || item.icon || item.key) && (
                   <DropDownItem
                     {...item}
+                    id={item.id}
                     key={item.key || index}
                     onClick={this.onDropDownItemClick.bind(this, item)}
                   />

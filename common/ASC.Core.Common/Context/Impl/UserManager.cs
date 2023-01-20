@@ -61,9 +61,10 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _countRoomAdminChecker;
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
+    private readonly UserFormatter _userFormatter;
 
     private Tenant _tenant;
     private Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant();
@@ -85,8 +86,9 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
+        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> countRoomAdrminChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
+        UserFormatter userFormatter
         )
     {
         _userService = service;
@@ -100,9 +102,10 @@ public class UserManager
         _cardDavAddressbook = cardDavAddressbook;
         _log = log;
         _cache = cache;
-        _tenantQuotaFeatureChecker = tenantQuotaFeatureChecker;
+        _countRoomAdminChecker = countRoomAdrminChecker;
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
+        _userFormatter = userFormatter;
     }
 
     public UserManager(
@@ -119,8 +122,9 @@ public class UserManager
         ICache cache,
         TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
-        IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
+        IHttpContextAccessor httpContextAccessor,
+        UserFormatter userFormatter)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker, userFormatter)
     {
         _accessor = httpContextAccessor;
     }
@@ -312,21 +316,53 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo SaveUserInfo(UserInfo u, bool isUser = false, bool syncCardDav = false)
+    public UserInfo UpdateUserInfo(UserInfo u)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        if (u.Id == Guid.Empty)
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+
+        if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
         {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            throw new InvalidOperationException("Can not disable tenant owner.");
         }
-        else
+
+        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        if (oldUserData == null || Equals(oldUserData, Constants.LostUser))
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+            throw new InvalidOperationException("User not found.");
         }
+
+        return _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+    }
+
+    public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
+    {
+        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        var newUser = UpdateUserInfo(u);
+        
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            await SyncCardDavAsync(u, oldUserData, newUser);
+        }
+
+        return newUser;
+    }
+
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    {
+        if (IsSystemUser(u.Id))
+        {
+            return SystemUsers[u.Id];
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, isVisitor ? EmployeeType.User : EmployeeType.RoomAdmin), 
+            Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -336,97 +372,101 @@ public class UserManager
             }
         }
 
-        if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
-        {
-            throw new InvalidOperationException("Can not disable tenant owner.");
-        }
-
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
 
-        if (Equals(oldUserData, Constants.LostUser))
+        if (oldUserData != null && !Equals(oldUserData, Constants.LostUser))
         {
-            if (isUser)
-            {
-                _activeUsersFeatureChecker.CheckAppend().Wait();
-            }
-            else
-            {
-                _tenantQuotaFeatureChecker.CheckAppend().Wait();
-            }
+            throw new InvalidOperationException("User already exist.");
+        }
+
+        if (isVisitor)
+        {
+            await _activeUsersFeatureChecker.CheckAppend();
+        }
+        else
+        {
+            await _countRoomAdminChecker.CheckAppend();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
-
         if (syncCardDav)
         {
-            var tenant = _tenantManager.GetCurrentTenant();
-            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
-                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
-                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+            await SyncCardDavAsync(u, oldUserData, newUser);
+        }
 
-            var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
-            var allUserEmails = GetDavUserEmails().ToList();
+        return newUser;
+    }
 
-            if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+    private async Task SyncCardDavAsync(UserInfo u, UserInfo oldUserData, UserInfo newUser)
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+        var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+                    (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
+                    new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+
+        var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
+        var allUserEmails = GetDavUserEmails().ToList();
+
+        if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+        {
+            var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
+            var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
+            var collection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
+            if (collection.Completed && collection.StatusCode != 404)
             {
-                var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
-                var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
-                var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
-                if (collection.Completed && collection.StatusCode != 404)
-                {
-                    _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
-                }
-                foreach (var email in allUserEmails)
-                {
-                    var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
-                    try
-                    {
-                        var davItemRequest = new DavRequest()
-                        {
-                            Url = requestUrlItem,
-                            Authorization = rootAuthorization,
-                            Header = myUri
-                        };
-                        _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.ErrorWithException(ex);
-                    }
-                }
+                await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);
             }
-            else
+            foreach (var email in allUserEmails)
             {
-
+                var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
                 try
                 {
-                    var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
-
-                    try
+                    var davItemRequest = new DavRequest()
                     {
-                        _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.ErrorWithException(ex);
-                    }
-
+                        Url = requestUrlItem,
+                        Authorization = rootAuthorization,
+                        Header = myUri
+                    };
+                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _log.ErrorWithException(ex);
                 }
             }
-
         }
-        return newUser;
+        else
+        {
+            try
+            {
+                var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
+                try
+                {
+                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorWithException(ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorWithException(ex);
+            }
+        }
     }
+
     public IEnumerable<string> GetDavUserEmails()
     {
         return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
     }
 
-    public void DeleteUser(Guid id)
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        return _userService.GetTenantsWithFeeds(from);
+    }
+
+    public async Task DeleteUser(Guid id)
     {
         if (IsSystemUser(id))
         {
@@ -454,7 +494,7 @@ public class UserManager
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = GetDavUserEmails();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
-            var addBookCollection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+            var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
 
 
             if (addBookCollection.Completed && addBookCollection.StatusCode != 404)
@@ -465,7 +505,7 @@ public class UserManager
                     Authorization = rootAuthorization,
                     Header = myUri
                 };
-                _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
+                await _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
             }
 
             foreach (var email in davUsersEmails)
@@ -479,14 +519,13 @@ public class UserManager
                         Authorization = rootAuthorization,
                         Header = myUri
                     };
-                    _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _log.ErrorWithException(ex);
                 }
             }
-
         }
         catch (Exception ex)
         {
@@ -540,7 +579,7 @@ public class UserManager
 
         var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(_accessor?.HttpContext, "GroupInfo");
         var result = httpRequestDictionary.Get(userID.ToString());
-        if (result != null)
+        if (result != null && result.Count > 0)
         {
             if (categoryId.HasValue)
             {
@@ -600,25 +639,32 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public void AddUserIntoGroup(Guid userId, Guid groupId)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
             return;
         }
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+
+        var user = GetUsers(userId);
+
+        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+            Constants.Action_EditGroups);
 
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
         ResetGroupCache(userId);
-        var user = GetUsers(userId);
         if (groupId == Constants.GroupUser.ID)
         {
             var tenant = _tenantManager.GetCurrentTenant();
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id).Wait(); //todo
+
+            if (!dontClearAddressBook)
+            {
+                await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id);
+            }
         }
     }
 
@@ -629,7 +675,10 @@ public class UserManager
             return;
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        var user = GetUsers(userId);
+
+        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+            Constants.Action_EditGroups);
 
         _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 

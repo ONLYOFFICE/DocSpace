@@ -29,7 +29,5 @@ pushd $dir/common/ASC.SsoAuth/
 yarn install
 pushd $dir/common/ASC.WebDav/
 yarn install
-pushd $dir/common/ASC.UrlShortener/
-yarn install
 pushd $dir/common/ASC.WebPlugins/
 yarn install

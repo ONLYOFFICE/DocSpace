@@ -52,7 +52,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper,
         PathProvider pathProvider)
         : base(
             filesSettingsHelper,
@@ -247,6 +246,8 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             var result = await _fileStorageService.UpdateToVersionAsync(fileId, lastVersion);
             file = result.Key;
         }
+
+        await _socketManager.UpdateFileAsync(file);
 
         return await GetFileInfoAsync(file.Id);
     }

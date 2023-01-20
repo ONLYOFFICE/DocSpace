@@ -28,6 +28,7 @@ const StyledWrapper = styled.div`
   .system-theme-description {
     padding: 4px 0 4px 24px;
     max-width: 295px;
+    color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
 
   .themes-container {
@@ -84,6 +85,11 @@ const InterfaceTheme = (props) => {
   };
 
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
+  const systemThemeValue =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? ThemeKeys.DarkStr
+      : ThemeKeys.BaseStr;
 
   return (
     <StyledWrapper>
@@ -98,7 +104,7 @@ const InterfaceTheme = (props) => {
           isChecked={isSystemTheme}
           onChange={onChangeSystemTheme}
         />
-        <Text as="div" className="system-theme-description" color="#A3A9AE">
+        <Text as="div" className="system-theme-description">
           {t("SystemThemeDescription")}
         </Text>
       </div>
@@ -107,20 +113,26 @@ const InterfaceTheme = (props) => {
           label={t("LightTheme")}
           isDisabled={isSystemTheme}
           theme="Light"
-          accentColor={currentColorScheme.accentColor}
+          accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.BaseStr}
-          isChecked={currentTheme === ThemeKeys.BaseStr}
+          isChecked={
+            currentTheme === ThemeKeys.BaseStr ||
+            (isSystemTheme && systemThemeValue === ThemeKeys.BaseStr)
+          }
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
           label={t("DarkTheme")}
           isDisabled={isSystemTheme}
           theme="Dark"
-          accentColor={currentColorScheme.accentColor}
+          accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.DarkStr}
-          isChecked={currentTheme === ThemeKeys.DarkStr}
+          isChecked={
+            currentTheme === ThemeKeys.DarkStr ||
+            (isSystemTheme && systemThemeValue === ThemeKeys.DarkStr)
+          }
           onChangeTheme={onChangeTheme}
         />
       </div>

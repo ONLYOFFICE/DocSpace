@@ -36,10 +36,8 @@ public class BackupAjaxHandler
     private readonly PermissionContext _permissionContext;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
-    private readonly TenantExtra _tenantExtra;
     private readonly ConsumerFactory _consumerFactory;
     private readonly BackupService _backupService;
-    private readonly TempPath _tempPath;
     private readonly StorageFactory _storageFactory;
 
     private const string BackupTempModule = "backup_temp";
@@ -56,9 +54,7 @@ public class BackupAjaxHandler
         PermissionContext permissionContext,
         SecurityContext securityContext,
         UserManager userManager,
-        TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        TempPath tempPath,
         StorageFactory storageFactory)
     {
         _tenantManager = tenantManager;
@@ -68,10 +64,8 @@ public class BackupAjaxHandler
         _permissionContext = permissionContext;
         _securityContext = securityContext;
         _userManager = userManager;
-        _tenantExtra = tenantExtra;
         _consumerFactory = consumerFactory;
         _backupService = backupService;
-        _tempPath = tempPath;
         _storageFactory = storageFactory;
     }
 
@@ -122,25 +116,25 @@ public class BackupAjaxHandler
         return _backupService.GetBackupProgress(tenantId);
     }
 
-    public void DeleteBackup(Guid id)
+    public async Task DeleteBackup(Guid id)
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteBackup(id);
+        await _backupService.DeleteBackup(id);
     }
 
-    public void DeleteAllBackups()
+    public async Task DeleteAllBackups()
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteAllBackups(GetCurrentTenantId());
+        await _backupService.DeleteAllBackups(GetCurrentTenantId());
     }
 
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
         DemandPermissionsBackup();
 
-        return _backupService.GetBackupHistory(GetCurrentTenantId());
+        return await _backupService.GetBackupHistory(GetCurrentTenantId());
     }
 
     public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
@@ -388,7 +382,7 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id.ToString(), BackupTempModule, null) as DiscDataStore;
+        var discStore = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, BackupTempModule, (IQuotaController)null) as DiscDataStore;
         var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))

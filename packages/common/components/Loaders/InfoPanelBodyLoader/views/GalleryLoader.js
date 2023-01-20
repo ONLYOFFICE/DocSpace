@@ -61,14 +61,16 @@ const GalleryLoader = () => {
       </StyledSubtitleLoader>
 
       <StyledProperty>
-        {propertyDimensions.map((property) => [
+        {propertyDimensions.map((property, i) => [
           <RectangleLoader
+            key={`title-${i}`}
             className="property-title"
             width={property.propertyTitle}
             height={"20px"}
             borderRadius={"3px"}
           />,
           <RectangleLoader
+            key={`content-${i}`}
             className="property-content"
             width={property.propertyContent}
             height={"20px"}

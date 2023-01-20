@@ -7,7 +7,6 @@ import Text from "@docspace/components/text";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import Row from "@docspace/components/row";
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -22,7 +21,6 @@ import {
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
@@ -33,6 +31,7 @@ class NewFilesPanel extends React.Component {
   state = { readingFiles: [], inProgress: false };
 
   onClose = () => {
+    if (this.state.inProgress) return;
     this.props.setNewFilesPanelVisible(false);
   };
 
@@ -52,23 +51,34 @@ class NewFilesPanel extends React.Component {
   };
 
   onMarkAsRead = () => {
-    const fileIds = [];
-    const folderIds = [];
-
-    for (let item of this.props.newFiles) {
-      if (item.fileExst) fileIds.push(item.id);
-      else folderIds.push(item.id);
-    }
+    const { inProgress, readingFiles } = this.state;
+    if (inProgress) return;
 
     this.setState({ inProgress: true });
 
+    const files = [];
+    const folders = [];
+
+    for (let item of this.props.newFiles) {
+      if (item.fileExst) files.push(item);
+      else folders.push(item);
+    }
+
+    const fileIds = files
+      .filter((f) => !readingFiles.includes(f.id.toString()))
+      .map((f) => f.id);
+
+    const folderIds = folders
+      .filter((f) => !readingFiles.includes(f.id.toString()))
+      .map((f) => f.id);
+
     this.props
       .markAsRead(folderIds, fileIds)
-      .then(() => this.setNewBadgeCount())
+      //.then(() => this.setNewBadgeCount())
       .then(() => {
         const { hasNew, refreshFiles } = this.props;
 
-        return hasNew ? refreshFiles() : Promise.resolve();
+        return Promise.resolve(); //hasNew ? refreshFiles() :
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -78,22 +88,40 @@ class NewFilesPanel extends React.Component {
   };
 
   onNewFileClick = (e) => {
+    if (this.state.inProgress) return;
+
+    this.setState({ inProgress: true });
+
     const { id, extension: fileExst } = e.target.dataset;
 
-    const { /* updateFolderBadge, */ markAsRead } = this.props;
+    const {
+      /* updateFolderBadge, */ markAsRead,
+      newFiles,
+      refreshFiles,
+    } = this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
     const folderIds = fileExst ? [] : [id];
 
-    if (readingFiles.includes(id)) return this.onFileClick(item);
+    const item = newFiles.find((file) => file.id.toString() === id);
+
+    if (readingFiles.includes(id)) {
+      this.setState({ inProgress: false });
+      return this.onFileClick(item);
+    }
+
     markAsRead(folderIds, fileIds, item)
       .then(() => {
         //updateFolderBadge(folderId, 1);
 
         readingFiles.push(id);
-        this.setState({ readingFiles });
+        this.setState({ readingFiles, inProgress: false });
+
         this.onFileClick(item);
+      })
+      .then(() => {
+        // refreshFiles();
       })
       .catch((err) => toastr.error(err));
   };
@@ -102,9 +130,13 @@ class NewFilesPanel extends React.Component {
     const { id, fileExst, webUrl, fileType, providerKey } = item;
     const {
       filter,
-      //setMediaViewerData,
+      setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      playlist,
+      setCurrentItem,
+      isMediaOrImage,
+      currentFolderId,
     } = this.props;
 
     if (!fileExst) {
@@ -113,7 +145,10 @@ class NewFilesPanel extends React.Component {
         .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
-      const isMedia = [2, 3, 4].includes(fileType);
+      // const isMedia = [2, 3, 4].includes(fileType);
+
+      const isMedia = isMediaOrImage(fileExst);
+      const isMediaActive = playlist.findIndex((el) => el.fileId === id) !== -1;
 
       if (canEdit && providerKey) {
         return addFileToRecentlyViewed(id)
@@ -122,7 +157,7 @@ class NewFilesPanel extends React.Component {
           .finally(
             window.open(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 config.homepage,
                 `/doceditor?fileId=${id}`
               ),
@@ -132,8 +167,21 @@ class NewFilesPanel extends React.Component {
       }
 
       if (isMedia) {
-        //const mediaItem = { visible: true, id };
-        //setMediaViewerData(mediaItem);
+        if (currentFolderId !== item.folderId) {
+          fetchFiles(item.folderId, null)
+            .then(() => {
+              const mediaItem = { visible: true, id };
+              setMediaViewerData(mediaItem);
+            })
+            .catch((err) => toastr.error(err))
+            .finally(() => this.onClose());
+        } else {
+          const mediaItem = { visible: true, id };
+          setMediaViewerData(mediaItem);
+
+          return this.onClose();
+        }
+
         return;
       }
 
@@ -141,33 +189,38 @@ class NewFilesPanel extends React.Component {
     }
   };
 
-  setNewBadgeCount = () => {
-    const {
-      newFilesIds,
-      updateFoldersBadge,
-      updateFilesBadge,
-      updateRootBadge,
-      updateFolderBadge,
-      pathParts,
-      newFiles,
-    } = this.props;
+  // setNewBadgeCount = () => {
+  //   const {
+  //     newFilesIds,
+  //     updateFoldersBadge,
+  //     updateFilesBadge,
+  //     updateRootBadge,
+  //     updateFolderBadge,
+  //     pathParts,
+  //     newFiles,
+  //   } = this.props;
 
-    const filesCount = newFiles.length;
-    updateRootBadge(+newFilesIds[0], filesCount);
+  //   const { readingFiles } = this.state;
 
-    if (newFilesIds.length <= 1) {
-      if (pathParts[0] === +newFilesIds[0]) {
-        updateFoldersBadge();
-        updateFilesBadge();
-      }
-    } else {
-      updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
-    }
-  };
+  //   const filesCount = newFiles.filter(
+  //     (f) => !readingFiles.includes(f.id.toString())
+  //   ).length;
+  // updateRootBadge(+newFilesIds[0], filesCount);
+
+  // if (newFilesIds.length <= 1) {
+  //   if (pathParts[0] === +newFilesIds[0]) {
+  //     updateFoldersBadge();
+  //     updateFilesBadge();
+  //   }
+  // } else {
+  //   updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
+  // }
+  //};
 
   render() {
     //console.log("NewFiles panel render");
     const { t, visible, isLoading, newFiles, theme } = this.props;
+    const { inProgress } = this.state;
     const zIndex = 310;
 
     return (
@@ -198,6 +251,7 @@ class NewFilesPanel extends React.Component {
                 <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
                   {newFiles.map((file) => {
                     const element = this.getItemIcon(file);
+
                     return (
                       <Row key={file.id} element={element}>
                         <Link
@@ -205,7 +259,7 @@ class NewFilesPanel extends React.Component {
                           containerWidth="100%"
                           type="page"
                           fontWeight={600}
-                          color="#333"
+                          color={theme.filesPanels.color}
                           isTextOverflow
                           truncate
                           title={file.title}
@@ -214,19 +268,7 @@ class NewFilesPanel extends React.Component {
                           data-id={file.id}
                           data-extension={file.fileExst}
                         >
-                          <Link
-                            containerWidth="100%"
-                            type="page"
-                            fontWeight="bold"
-                            color={theme.filesPanels.color}
-                            isTextOverflow
-                            truncate
-                            title={file.title}
-                            fontSize="14px"
-                            className="files-new-link"
-                          >
-                            {file.title}
-                          </Link>
+                          {file.title}
                         </Link>
                       </Row>
                     );
@@ -243,17 +285,18 @@ class NewFilesPanel extends React.Component {
             )}
             <StyledFooter>
               <Button
-                className="new_files_panel-button"
+                className="new_files_panel-button new_file_panel-first-button"
                 label={t("MarkAsRead")}
                 size="normal"
                 primary
                 onClick={this.onMarkAsRead}
-                isLoading={this.state.inProgress}
+                isLoading={inProgress}
               />
               <Button
-                className="sharing_panel-button"
+                className="new_files_panel-button"
                 label={t("Common:CloseButton")}
                 size="normal"
+                isDisabled={inProgress}
                 onClick={this.onClose}
               />
             </StyledFooter>
@@ -281,17 +324,21 @@ export default inject(
       addFileToRecentlyViewed,
       //setIsLoading,
       isLoading,
-      updateFilesBadge,
-      updateFolderBadge,
-      updateFoldersBadge,
+      //updateFilesBadge,
+      //updateFolderBadge,
+      //updateFoldersBadge,
       hasNew,
       refreshFiles,
     } = filesStore;
-    const { updateRootBadge } = treeFoldersStore;
-    const { setMediaViewerData } = mediaViewerDataStore;
-    const { getIcon, getFolderIcon } = settingsStore;
+    //const { updateRootBadge } = treeFoldersStore;
+    const {
+      playlist,
+      setMediaViewerData,
+      setCurrentItem,
+    } = mediaViewerDataStore;
+    const { getIcon, getFolderIcon, isMediaOrImage } = settingsStore;
     const { markAsRead } = filesActionsStore;
-    const { pathParts } = selectedFolderStore;
+    const { pathParts, id: currentFolderId } = selectedFolderStore;
 
     const {
       setNewFilesPanelVisible,
@@ -308,6 +355,11 @@ export default inject(
       newFilesIds,
       isLoading,
 
+      playlist,
+      setCurrentItem,
+      isMediaOrImage,
+      currentFolderId,
+
       //setIsLoading,
       fetchFiles,
       setMediaViewerData,
@@ -316,10 +368,10 @@ export default inject(
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-      updateRootBadge,
-      updateFolderBadge,
-      updateFoldersBadge,
-      updateFilesBadge,
+      // updateRootBadge,
+      // updateFolderBadge,
+      // updateFoldersBadge,
+      // updateFilesBadge,
 
       theme: auth.settingsStore.theme,
       hasNew,

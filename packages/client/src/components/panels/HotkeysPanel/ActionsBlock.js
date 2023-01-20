@@ -14,7 +14,7 @@ const ActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysRemove")}</Text>
-          <Text {...keyTextStyles}># {t("HotkeysOr")} Delete</Text>
+          <Text {...keyTextStyles}># {t("Common:Or")} Delete</Text>
         </>
       </Row>
       {/* <Row className="hotkeys_row">

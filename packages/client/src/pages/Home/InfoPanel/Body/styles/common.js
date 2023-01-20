@@ -1,13 +1,24 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { mobile } from "@docspace/components/utils/device";
+import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
-  padding: 0 3px 0 20px;
-  @media ${mobile} {
-    padding: 0 8px 0 16px;
-  }
+  ${({ isAccounts }) =>
+    isAccounts
+      ? css`
+          padding: 0px 3px 0 20px;
+          @media ${hugeMobile} {
+            padding: 0px 8px 0 16px;
+          }
+        `
+      : css`
+          padding: 80px 3px 0 20px;
+          @media ${hugeMobile} {
+            padding: 80px 8px 0 16px;
+          }
+        `}
+
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
   color: ${(props) => props.theme.infoPanel.textColor};
@@ -26,13 +37,33 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
+  position: fixed;
+  margin-top: -80px;
+  margin-left: -20px;
+  width: calc(100% - 40px);
+  padding: 24px 0 24px 20px;
+  background: ${(props) => props.theme.infoPanel.backgroundColor};
+  z-index: 100;
+
+  @media ${tablet} {
+    width: 440px;
+    padding: 24px 20px 24px 20px;
+  }
+
+  @media (max-width: 549px) {
+    width: calc(100vw - 69px - 40px);
+  }
+
+  @media ${hugeMobile} {
+    width: calc(100vw - 32px);
+    padding: 24px 0 24px 16px;
+  }
+
   display: flex;
   flex-wrap: no-wrap;
   flex-direction: row;
   align-items: center;
-  width: 100%;
   height: 32px;
-  padding: 24px 0;
 
   ${(props) =>
     props.withBottomBorder &&
@@ -43,7 +74,7 @@ const StyledTitle = styled.div`
       border-bottom: ${(props) =>
         `solid 1px ${props.theme.infoPanel.borderColor}`};
 
-      @media ${mobile} {
+      @media ${hugeMobile} {
         width: calc(100% + 16px);
         padding: 23px 0 23px 16px;
         margin: 0 -16px 0 -16px;
@@ -65,6 +96,7 @@ const StyledTitle = styled.div`
     }
     &.is-room {
       border-radius: 6px;
+      outline: 1px solid ${(props) => props.theme.itemIcon.borderColor};
     }
   }
 
@@ -128,8 +160,10 @@ const StyledProperties = styled.div`
       gap: 4px;
 
       .property-tag {
+        background: red;
         max-width: 195px;
         margin: 0;
+        background: ${(props) => props.theme.infoPanel.details.tagBackground};
         p {
           white-space: nowrap;
           overflow: hidden;

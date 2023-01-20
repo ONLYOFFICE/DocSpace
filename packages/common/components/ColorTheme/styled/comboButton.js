@@ -4,20 +4,13 @@ import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, isOpen, theme }) =>
   $currentColorScheme &&
+  theme.isBase &&
   css`
-    border-color: ${isOpen &&
-    (theme.isBase
-      ? $currentColorScheme.accentColor
-      : theme.comboBox.button.openBorderColor)};
+    border-color: ${isOpen && $currentColorScheme.main.accent};
 
     :focus {
-      border-color: ${isOpen &&
-      (theme.isBase
-        ? $currentColorScheme.accentColor
-        : theme.comboBox.button.hoverBorderColor)};
+      border-color: ${isOpen && $currentColorScheme.main.accent};
     }
   `;
-
-StyledComboButton.defaultProps = { theme: Base };
 
 export default styled(StyledComboButton)(getDefaultStyles);

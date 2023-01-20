@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-
+import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
@@ -11,45 +12,75 @@ import { ShareAccessRights } from "@docspace/common/constants";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
+import MembersHelper from "../../helpers/MembersHelper";
 
 const Members = ({
   t,
   selfId,
   isOwner,
   isAdmin,
-
   selection,
+
+  setIsMobileHidden,
+  updateRoomMembers,
+  setUpdateRoomMembers,
 
   selectionParentRoom,
   setSelectionParentRoom,
 
   getRoomMembers,
-  changeUserType,
+  updateRoomMemberRole,
+  setView,
+  roomsView,
+  resendEmailInvitations,
   setInvitePanelOptions,
 }) => {
+  const membersHelper = new MembersHelper({ t });
+
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const security = selectionParentRoom ? selectionParentRoom.security : {};
+
+  const canInviteUserInRoomAbility = security?.EditAccess;
+
   const fetchMembers = async (roomId) => {
     let timerId;
-    if (members) timerId = setTimeout(() => setShowLoader(true), 1500);
-    let fetchedMembers = await getRoomMembers(roomId);
-    fetchedMembers = fetchedMembers.filter(
-      (m) => m.sharedTo.email || m.sharedTo.displayName
-    );
+    if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
+    let data = await getRoomMembers(roomId);
+
+    data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);
-    setMembers(fetchedMembers);
+
+    let inRoomMembers = [];
+    let expectedMembers = [];
+    data.map((fetchedMember) => {
+      const member = {
+        access: fetchedMember.access,
+        canEditAccess: fetchedMember.canEditAccess,
+        ...fetchedMember.sharedTo,
+      };
+      if (member.activationStatus !== 2) inRoomMembers.push(member);
+      else expectedMembers.push(member);
+    });
+
     setShowLoader(false);
-    return fetchedMembers;
+    setUpdateRoomMembers(false);
+    return {
+      inRoom: inRoomMembers,
+      expected: expectedMembers,
+    };
   };
 
   useEffect(async () => {
     if (!selectionParentRoom) return;
+
     if (selectionParentRoom.members) {
       setMembers(selectionParentRoom.members);
       return;
     }
-    const fetchedMembers = await fetchMembers(selection.id);
+
+    const fetchedMembers = await fetchMembers(selectionParentRoom.id);
     setSelectionParentRoom({
       ...selectionParentRoom,
       members: fetchedMembers,
@@ -58,79 +89,180 @@ const Members = ({
 
   useEffect(async () => {
     if (!selection.isRoom) return;
-    if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
-    setMembers(null);
+
     const fetchedMembers = await fetchMembers(selection.id);
     setSelectionParentRoom({
       ...selection,
       members: fetchedMembers,
     });
+    if (roomsView === "info_members" && !selection?.security?.Read)
+      setView("info_details");
   }, [selection]);
 
-  const onAddUsers = () => {
+  useEffect(async () => {
+    if (!updateRoomMembers) return;
+
+    const fetchedMembers = await fetchMembers(selection.id);
+
+    setSelectionParentRoom({
+      ...selectionParentRoom,
+      members: fetchedMembers,
+    });
+    setMembers(fetchedMembers);
+  }, [selectionParentRoom, selection?.id, updateRoomMembers]);
+
+  const onClickInviteUsers = () => {
+    setIsMobileHidden(true);
+    const parentRoomId = selectionParentRoom.id;
+
     setInvitePanelOptions({
       visible: true,
-      roomId: selection.id,
+      roomId: parentRoomId,
       hideSelector: false,
       defaultAccess: ShareAccessRights.ReadOnly,
     });
   };
 
+  const onRepeatInvitation = async () => {
+    const userIds = members.expected.map((user) => user.id);
+    resendEmailInvitations(selectionParentRoom.id, userIds)
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
+  };
+
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
-  if (!members) return null;
+  if (!selectionParentRoom || !members) return null;
+
+  const [currentMember] = members.inRoom.filter(
+    (member) => member.id === selfId
+  );
 
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("UsersInRoom")} : {members.length}
+          {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        <IconButton
-          className={"icon"}
-          title={t("Common:AddUsers")}
-          iconName="/static/images/person+.react.svg"
-          isFill={true}
-          onClick={onAddUsers}
-          size={16}
-        />
+        {canInviteUserInRoomAbility && (
+          <IconButton
+            id="info_add-user"
+            className={"icon"}
+            title={t("Common:AddUsers")}
+            iconName="/static/images/person+.react.svg"
+            isFill={true}
+            onClick={onClickInviteUsers}
+            size={16}
+          />
+        )}
       </StyledUserTypeHeader>
 
       <StyledUserList>
-        {Object.values(members).map((user) => (
+        {Object.values(members.inRoom).map((user) => (
           <User
-            key={user.sharedTo.id}
+            security={security}
+            key={user.id}
             t={t}
-            user={user.sharedTo}
-            isOwner={isOwner}
-            isAdmin={isAdmin}
-            selfId={selfId}
-            changeUserType={changeUserType}
+            user={user}
+            membersHelper={membersHelper}
+            currentMember={currentMember}
+            updateRoomMemberRole={updateRoomMemberRole}
+            roomId={selectionParentRoom.id}
+            roomType={selectionParentRoom.roomType}
+            selectionParentRoom={selectionParentRoom}
+            setSelectionParentRoom={setSelectionParentRoom}
           />
         ))}
       </StyledUserList>
 
-      {/* <StyledUserTypeHeader>
-        <Text className="title">{`${t("Expect people")}:`}</Text>
-        <IconButton
-          className={"icon"}
-          title={t("Repeat invitation")}
-          iconName="/static/images/e-mail+.react.svg"
-          isFill={true}
-          onClick={() => {}}
-          size={16}
-        />
-      </StyledUserTypeHeader>
+      {!!members.expected.length && (
+        <StyledUserTypeHeader isExpect>
+          <Text className="title">{t("ExpectPeople")}</Text>
+          {canInviteUserInRoomAbility && (
+            <IconButton
+              className={"icon"}
+              title={t("Common:RepeatInvitation")}
+              iconName="/static/images/e-mail+.react.svg"
+              isFill={true}
+              onClick={onRepeatInvitation}
+              size={16}
+            />
+          )}
+        </StyledUserTypeHeader>
+      )}
 
-      <UserList t={t} users={data.members.expect} isExpect /> */}
+      <StyledUserList>
+        {Object.values(members.expected).map((user) => (
+          <User
+            security={security}
+            isExpect
+            key={user.id}
+            t={t}
+            user={user}
+            membersHelper={membersHelper}
+            currentMember={currentMember}
+            updateRoomMemberRole={updateRoomMemberRole}
+            roomId={selectionParentRoom.id}
+            roomType={selectionParentRoom.roomType}
+            selectionParentRoom={selectionParentRoom}
+            setSelectionParentRoom={setSelectionParentRoom}
+          />
+        ))}
+      </StyledUserList>
     </>
   );
 };
 
-export default withTranslation([
-  "InfoPanel",
-  "Common",
-  "Translations",
-  "People",
-  "PeopleTranslations",
-  "Settings",
-])(Members);
+export default inject(
+  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+    const {
+      setIsMobileHidden,
+      selectionParentRoom,
+
+      setSelectionParentRoom,
+      setView,
+      roomsView,
+
+      updateRoomMembers,
+      setUpdateRoomMembers,
+    } = auth.infoPanelStore;
+    const {
+      getRoomMembers,
+      updateRoomMemberRole,
+      resendEmailInvitations,
+    } = filesStore;
+    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+    const { setInvitePanelOptions } = dialogsStore;
+
+    return {
+      setView,
+      roomsView,
+      setIsMobileHidden,
+      selectionParentRoom,
+      setSelectionParentRoom,
+
+      getRoomMembers,
+      updateRoomMemberRole,
+
+      updateRoomMembers,
+      setUpdateRoomMembers,
+
+      isOwner,
+      isAdmin,
+      selfId,
+
+      setInvitePanelOptions,
+      resendEmailInvitations,
+    };
+  }
+)(
+  withTranslation([
+    "InfoPanel",
+    "Common",
+    "Translations",
+    "People",
+    "PeopleTranslations",
+    "Settings",
+  ])(observer(Members))
+);

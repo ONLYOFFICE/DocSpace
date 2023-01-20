@@ -16,6 +16,7 @@ const StyledLink = styled(Link)`
 
 const QuotasBar = ({
   t,
+  tReady,
   isRoomQuota,
   currentValue,
   maxValue,
@@ -47,7 +48,7 @@ const QuotasBar = ({
   const storageQuota = {
     header: t("StorageQuotaHeader", { currentValue, maxValue }),
     description: (
-      <Trans i18nKey="StorageQuotaQuotaDescription" t={t}>
+      <Trans i18nKey="StorageQuotaDescription" t={t}>
         You can remove the unnecessary files or{" "}
         <StyledLink onClick={onClickAction}>
           {{ clickHere: t("ClickHere") }}
@@ -57,24 +58,28 @@ const QuotasBar = ({
     ),
   };
 
-  return isRoomQuota ? (
-    <SnackBar
-      headerText={roomQuota.header}
-      text={roomQuota.description}
-      isCampaigns={false}
-      opacity={1}
-      onLoad={onLoad}
-      clickAction={onCloseAction}
-    />
+  return tReady ? (
+    isRoomQuota ? (
+      <SnackBar
+        headerText={roomQuota.header}
+        text={roomQuota.description}
+        isCampaigns={false}
+        opacity={1}
+        onLoad={onLoad}
+        clickAction={onCloseAction}
+      />
+    ) : (
+      <SnackBar
+        headerText={storageQuota.header}
+        text={storageQuota.description}
+        isCampaigns={false}
+        opacity={1}
+        onLoad={onLoad}
+        clickAction={onCloseAction}
+      />
+    )
   ) : (
-    <SnackBar
-      headerText={storageQuota.header}
-      text={storageQuota.description}
-      isCampaigns={false}
-      opacity={1}
-      onLoad={onLoad}
-      clickAction={onCloseAction}
-    />
+    <></>
   );
 };
 

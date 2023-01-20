@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Migration.Core;
+namespace ASC.Migration;
 
 public class Startup : BaseStartup
 {
@@ -41,16 +41,5 @@ public class Startup : BaseStartup
         services.AddMemoryCache();
 
         base.ConfigureServices(services);
-    }
-
-    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        app.UseCors(builder =>
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
-
-        base.Configure(app, env);
     }
 }

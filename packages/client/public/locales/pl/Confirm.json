@@ -13,7 +13,6 @@
   "EnterAppCodeTitle": "Wpisz kod z aplikacji uwierzytelniającej",
   "EnterCodePlaceholder": "Wpisz kod",
   "EnterPhone": "Wpisz numer telefonu komórkowego",
-  "FirstName": "Imię",
   "GetCode": "Uzyskaj kod",
   "InviteTitle": "Zaproszono Cię, aby dołączyć do tego portalu!",
   "LoginRegistryButton": "Dołącz",
@@ -23,5 +22,5 @@
   "SetAppDescription": "Weryfikacja dwuetapowa jest włączona. Skonfiguruj swoją aplikację uwierzytelniającą, aby kontynuować pracę w portalu. Możesz użyć aplikacji Google Authenticator dla systemów <1>Android</1> i <4>iOS</4> lub Authenticator dla <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Aby podłączyć aplikację, zeskanuj kod QR lub ręcznie wpisz swój tajny klucz <1>{{ secretKey }}</1>, a następnie wprowadź 6-cyfrowy kod ze swojej aplikacji w poniższym polu.",
   "SetAppTitle": "Skonfiguruj swoją aplikację uwierzytelniającą",
-  "WelcomeUser": "Witaj na naszym portalu! Aby rozpocząć pracę, zarejestruj się lub zaloguj za pośrednictwem mediów społecznościowych."
+  "WelcomeUser": "Witaj na naszym portalu!\nAby rozpocząć pracę, zarejestruj się lub zaloguj za pośrednictwem mediów społecznościowych."
 }

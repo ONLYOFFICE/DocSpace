@@ -1,11 +1,5 @@
 import pkg from "../../../package.json";
 
-export const canConvert = (extension, filesSettings) => {
-  const array = filesSettings?.extsMustConvert || [];
-  const result = array.findIndex((item) => item === extension);
-  return result === -1 ? false : true;
-};
-
 export const initI18n = (initialI18nStoreASC) => {
   if (!initialI18nStoreASC || window.i18n) return;
 

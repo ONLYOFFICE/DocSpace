@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
 import toastr from "@docspace/components/toast/toastr";
 
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import {
+  SectionHeaderContent,
+  SectionBodyContent,
+  SectionFooterContent,
+} from "./Section";
+
 import { withRouter } from "react-router";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
@@ -80,7 +85,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    //console.log("Profile render");
+    // console.log("Profile render");
 
     const { profile, showCatalog } = this.props;
 
@@ -93,6 +98,10 @@ class Profile extends React.Component {
         <Section.SectionBody>
           <SectionBodyContent profile={profile} />
         </Section.SectionBody>
+
+        <Section.SectionFooter>
+          <SectionFooterContent profile={profile} />
+        </Section.SectionFooter>
       </Section>
     );
   }

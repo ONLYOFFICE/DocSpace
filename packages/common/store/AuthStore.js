@@ -7,17 +7,12 @@ import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin, setCookie, getCookie } from "../utils";
+import { isAdmin, setCookie, getCookie } from "../utils";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
-import {
-  AppServerConfig,
-  LANGUAGE,
-  COOKIE_EXPIRATION_YEAR,
-  TenantStatus,
-} from "../constants";
-const { proxyURL } = AppServerConfig;
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR, TenantStatus } from "../constants";
+
 class AuthStore {
   userStore = null;
 
@@ -29,6 +24,7 @@ class AuthStore {
   version = null;
 
   providers = [];
+  capabilities = [];
   isInit = false;
 
   quota = {};
@@ -38,6 +34,7 @@ class AuthStore {
   pricePerManager = null;
   currencies = [];
 
+  isLogout = false;
   constructor() {
     this.userStore = new UserStore();
 
@@ -50,20 +47,23 @@ class AuthStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
+  init = async (skipRequest = false) => {
     if (this.isInit) return;
     this.isInit = true;
 
-    try {
-      await this.userStore.init();
-    } catch (e) {
-      console.error(e);
-    }
+    this.skipRequest = skipRequest;
+
+    await this.settingsStore.init();
 
     const requests = [];
-    requests.push(this.settingsStore.init());
 
-    if (this.isAuthenticated) {
+    if (this.settingsStore.isLoaded && this.settingsStore.socketUrl) {
+      requests.push(this.userStore.init());
+    } else {
+      this.userStore.setIsLoaded(true);
+    }
+
+    if (this.isAuthenticated && !skipRequest) {
       requests.push(
         this.currentQuotaStore.init(),
         this.currentTariffStatusStore.init()
@@ -122,6 +122,14 @@ class AuthStore {
     if (!user || !user.id) return false;
 
     return isAdmin(user, currentProductId);
+  }
+
+  get isRoomAdmin() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return !user.isAdmin && !user.isOwner && !user.isVisitor;
   }
 
   login = async (user, hash, session = true) => {
@@ -190,6 +198,7 @@ class AuthStore {
   logout = async () => {
     await api.user.logout();
 
+    this.isLogout = true;
     //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
@@ -212,7 +221,7 @@ class AuthStore {
     //     this.reset(true);
     //     this.userStore.setUser(null);
     //     this.init();
-    //     return history.push(combineUrl(proxyURL, "/login"));
+    //     return history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
     //   }
     // } else {
     //   this.reset();
@@ -222,7 +231,7 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      this.userStore.isAuthenticated ||
+      (this.settingsStore.isLoaded && this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
       this.settingsStore.tenantStatus === TenantStatus.PortalRestore
     );
   }
@@ -297,6 +306,10 @@ class AuthStore {
     this.providers = providers;
   };
 
+  setCapabilities = (capabilities) => {
+    this.capabilities = capabilities;
+  };
+
   getOforms = (filter) => {
     const culture =
       this.userStore.user.cultureName || this.settingsStore.culture;
@@ -332,6 +345,16 @@ class AuthStore {
   setQuota = async () => {
     const res = await api.settings.getPortalQuota();
     if (res) this.quota = res;
+  };
+
+  getAuthProviders = async () => {
+    const providers = await api.settings.getAuthProviders();
+    if (providers) this.setProviders(providers);
+  };
+
+  getCapabilities = async () => {
+    const capabilities = await api.settings.getCapabilities();
+    if (capabilities) this.setCapabilities(capabilities);
   };
 }
 

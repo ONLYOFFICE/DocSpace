@@ -24,9 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Web.Files.ThirdPartyApp;
 
-    [Scope]
+[Scope]
 public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 {
     public const string AppAttr = "box";
@@ -50,7 +51,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly UserManager _userManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly CookiesManager _cookiesManager;
-    private readonly MessageService _messageService;
     private readonly Global _global;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -78,7 +78,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         UserManager userManager,
         UserManagerWrapper userManagerWrapper,
         CookiesManager cookiesManager,
-        MessageService messageService,
         Global global,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FilesLinkUtility filesLinkUtility,
@@ -110,7 +109,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _userManager = userManager;
         _userManagerWrapper = userManagerWrapper;
         _cookiesManager = cookiesManager;
-        _messageService = messageService;
         _global = global;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _filesLinkUtility = filesLinkUtility;
@@ -140,7 +138,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!string.IsNullOrEmpty(context.Request.Query["code"]))
         {
-            RequestCode(context);
+            await RequestCode(context);
 
             return true;
         }
@@ -284,34 +282,34 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId))
         };
 
-            StreamContent streamContent;
+        StreamContent streamContent;
 
-            using var multipartFormContent = new MultipartFormDataContent();
+        using var multipartFormContent = new MultipartFormDataContent();
 
-            if (stream != null)
+        if (stream != null)
+        {
+            streamContent = new StreamContent(stream);
+        }
+        else
+        {
+            var downloadRequest = new HttpRequestMessage
             {
-                streamContent = new StreamContent(stream);
-            }
-            else
-            {
-                var downloadRequest = new HttpRequestMessage
-                {
-                    RequestUri = new Uri(downloadUrl)
-                };
-                var response = await httpClient.SendAsync(downloadRequest);
-                var downloadStream = new ResponseStream(response);
+                RequestUri = new Uri(downloadUrl)
+            };
+            var response = await httpClient.SendAsync(downloadRequest);
+            var downloadStream = new ResponseStream(response);
 
-                streamContent = new StreamContent(downloadStream);
-            }
+            streamContent = new StreamContent(downloadStream);
+        }
 
-            streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
-            multipartFormContent.Add(streamContent, name: "filename", fileName: title);
+        streamContent.Headers.TryAddWithoutValidation("Content-Type", MimeMapping.GetMimeMapping(title));
+        multipartFormContent.Add(streamContent, name: "filename", fileName: title);
 
-            request.Content = multipartFormContent;
-            request.Method = HttpMethod.Post;
-            request.Headers.Add("Authorization", "Bearer " + token);
-            //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
-            //_logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
+        request.Content = multipartFormContent;
+        request.Method = HttpMethod.Post;
+        request.Headers.Add("Authorization", "Bearer " + token);
+        //request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data; boundary=" + boundary);
+        //_logger.DebugBoxAppSaveFileTotalSize(tmpStream.Length);
 
         try
         {
@@ -339,7 +337,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     }
 
 
-    private void RequestCode(HttpContext context)
+    private async Task RequestCode(HttpContext context)
     {
         var token = GetToken(context.Request.Query["code"]);
         if (token == null)
@@ -363,7 +361,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!_authContext.IsAuthenticated)
         {
-            var userInfo = GetUserInfo(token, out var isNew);
+            var wrapper = await GetUserInfo(token);
+            var userInfo = wrapper.UserInfo;
+            var isNew = wrapper.IsNew;
 
             if (userInfo == null)
             {
@@ -477,9 +477,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
 
-    private UserInfo GetUserInfo(Token token, out bool isNew)
+    private async Task<UserInfoWrapper> GetUserInfo(Token token)
     {
-        isNew = false;
+        var wrapper = new UserInfoWrapper();
         if (token == null)
         {
             _logger.ErrorBoxAppTokenIsNull();
@@ -546,19 +546,20 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
+                userInfo = await _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {
                 _authContext.Logout();
             }
 
-            isNew = true;
+            wrapper.IsNew = true;
 
             _logger.DebugBoxAppNewUser(userInfo.Id);
         }
 
-        return userInfo;
+        wrapper.UserInfo = userInfo;
+        return wrapper;
     }
 
     private string GetBoxFile(string boxFileId, Token token)

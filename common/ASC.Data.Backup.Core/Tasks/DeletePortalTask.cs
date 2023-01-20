@@ -34,17 +34,16 @@ public class DeletePortalTask : PortalTaskBase
         DbFactory dbFactory,
         ILogger<DeletePortalTask> logger,
         int tenantId,
-        string configPath,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
         : base(dbFactory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
-        Init(tenantId, configPath);
+        Init(tenantId);
         _logger = logger;
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _logger.DebugBeginDelete(TenantId);
         var modulesToProcess = GetModulesToProcess().Reverse().ToList();
@@ -57,7 +56,7 @@ public class DeletePortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            DoDeleteStorage();
+            await DoDeleteStorage();
         }
 
         _logger.DebugEndDelete(TenantId);
@@ -84,21 +83,21 @@ public class DeletePortalTask : PortalTaskBase
         _logger.DebugEndDeleteDataForModule(module.ModuleName);
     }
 
-    private void DoDeleteStorage()
+    private async Task DoDeleteStorage()
     {
         _logger.DebugBeginDeleteStorage();
-        var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed).ToList();
+        var storageModules = StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed).ToList();
         var modulesProcessed = 0;
         foreach (var module in storageModules)
         {
-            var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
-            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
+            var storage = StorageFactory.GetStorage(TenantId, module);
+            var domains = StorageFactoryConfig.GetDomainList(module);
             foreach (var domain in domains)
             {
-                ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
+                await ActionInvoker.Try(async state => await storage.DeleteFilesAsync((string)state, "\\", "*.*", true), domain, 5,
                               onFailure: error => _logger.WarningCanNotDeleteFilesForDomain(domain, error));
             }
-            storage.DeleteFilesAsync("\\", "*.*", true).Wait();
+            await storage.DeleteFilesAsync("\\", "*.*", true);
             SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
         }
 

@@ -1,8 +1,5 @@
 {
-  "AddAccount": "Lisää tili",
-  "AddAuthor": "Lisää kirjoittaja",
   "ArchivingData": "Tietojen arkistointi",
-  "ButtonShareAccess": "Jakamisen asetukset",
   "ConnectingAccount": "Yhdistetään tili",
   "Copy": "Kopio",
   "CopyHere": "Kopioi tähän",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Hanki ONLYOFFICE-dokumentteja Google Playsta",
   "MobileIos": "Lataa ONLYOFFICE-asiakirjat App Storesta",
   "MobileLinux": "Lataa ONLYOFFICE Desktop Editors Linuxille",
-  "MobileMac": "Lataa ONLYOFFICE Desktop Editors Mac OS:ille",
+  "MobileMac": "Lataa ONLYOFFICE Desktop Editors macOS:ille",
   "MobileWin": "Lataa ONLYOFFICE Desktop Editors Windowsille",
   "MoveHere": "Siirrä tänne",
   "MoveToOperation": "Siirretään",
   "NewForm": "Lomakemalli",
-  "NewFormFile": "Lomake tekstitiedostosta",
+  "Other": "Muu",
   "OwnerChange": "Vaihda omistaja",
   "Presentations": "Esitykset",
   "Spreadsheets": "Laskentataulukot",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Muu"
+  "TypeTitlekDrive": "kDrive"
 }

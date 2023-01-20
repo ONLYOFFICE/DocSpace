@@ -2,14 +2,12 @@ import React from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
-import {
-  StyledPreparationPortal,
-  StyledBodyPreparationPortal,
-} from "./StyledPreparationPortal";
+import { StyledPreparationPortal } from "./StyledPreparationPortal";
 import Text from "@docspace/components/text";
 import { getRestoreProgress } from "@docspace/common/api/portal";
 import { observer, inject } from "mobx-react";
 import PropTypes from "prop-types";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const baseSize = 1073741824; //number of bytes in one GB
 const unSizeMultiplicationFactor = 3;
@@ -49,11 +47,22 @@ class PreparationPortal extends React.Component {
           }
         }
       })
-      .catch((err) =>
+      .catch((err) => {
+        let errorMessage = "";
+        if (typeof err === "object") {
+          errorMessage =
+            err?.response?.data?.error?.message ||
+            err?.statusText ||
+            err?.message ||
+            "";
+        } else {
+          errorMessage = err;
+        }
+
         this.setState({
-          errorMessage: err,
-        })
-      );
+          errorMessage: errorMessage,
+        });
+      });
   }
   componentWillUnmount() {
     clearInterval(this.timerId);
@@ -193,7 +202,8 @@ class PreparationPortal extends React.Component {
           headerText={withoutHeader ? "" : t("Common:PreparationPortalTitle")}
           style={style}
         >
-          <StyledBodyPreparationPortal
+          <ColorTheme
+            themeId={ThemeType.Progress}
             percent={percent}
             errorMessage={errorMessage}
             className="preparation-portal_body-wrapper"
@@ -209,17 +219,14 @@ class PreparationPortal extends React.Component {
                   <div className="preparation-portal_progress-bar">
                     <div className="preparation-portal_progress-line"></div>
                   </div>
-                  <Text
-                    className="preparation-portal_percent"
-                    color="#a3a9ae"
-                  >{`${percent}%`}</Text>
+                  <Text className="preparation-portal_percent">{`${percent} %`}</Text>
                 </div>
                 <Text className="preparation-portal_text">
                   {t("PreparationPortalDescription")}
                 </Text>
               </>
             )}
-          </StyledBodyPreparationPortal>
+          </ColorTheme>
         </ErrorContainer>
       </StyledPreparationPortal>
     );

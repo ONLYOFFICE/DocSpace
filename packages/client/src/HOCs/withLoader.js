@@ -11,6 +11,7 @@ let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const {
+      isInit,
       tReady,
       firstLoad,
       isLoaded,
@@ -56,7 +57,8 @@ const withLoader = (WrappedComponent) => (Loader) => {
       !isLoaded ||
       (isMobile && inLoad) ||
       (isLoadingFilesFind && !Loader) ||
-      !tReady ? (
+      !tReady ||
+      !isInit ? (
       Loader ? (
         Loader
       ) : viewAs === "tile" ? (
@@ -72,7 +74,13 @@ const withLoader = (WrappedComponent) => (Loader) => {
   };
 
   return inject(({ auth, filesStore }) => {
-    const { firstLoad, isLoading, viewAs, isLoadingFilesFind } = filesStore;
+    const {
+      firstLoad,
+      isLoading,
+      viewAs,
+      isLoadingFilesFind,
+      isInit,
+    } = filesStore;
     const { settingsStore } = auth;
     const { setIsBurgerLoading } = settingsStore;
     return {
@@ -82,6 +90,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       viewAs,
       setIsBurgerLoading,
       isLoadingFilesFind,
+      isInit,
     };
   })(observer(withLoader));
 };

@@ -85,8 +85,9 @@ const StyledMainButton = styled.div`
   }
 
   .main-button_img {
-    padding-top: 9px;
-    height: 5px;
+    svg {
+      padding-bottom: 1px;
+    }
   }
 `;
 StyledMainButton.defaultProps = { theme: Base };

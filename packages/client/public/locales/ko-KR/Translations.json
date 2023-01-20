@@ -1,8 +1,5 @@
 {
-  "AddAccount": "계정 추가",
-  "AddAuthor": "작성자추가",
   "ArchivingData": "데이터 아카이브 중",
-  "ButtonShareAccess": "설정 공유",
   "ConnectingAccount": "계정 연결 중",
   "Copy": "복사",
   "CopyHere": "여기에 복사",
@@ -33,12 +30,12 @@
   "MobileAndroid": "Google Play에서 ONLYOFFICE Documents를 받으세요",
   "MobileIos": "App Store에서 ONLYOFFICE Documents를 다운로드 받으세요",
   "MobileLinux": "Linux용 ONLYOFFICE Desktop Editors를 다운로드 받으세요",
-  "MobileMac": "Mac OS용 ONLYOFFICE Desktop Editors를 다운로드 받으세요",
+  "MobileMac": "macOS용 ONLYOFFICE Desktop Editors를 다운로드 받으세요",
   "MobileWin": "Windows용 ONLYOFFICE Desktop Editors를 다운로드 받으세요",
   "MoveHere": "여기로 이동",
   "MoveToOperation": "이동 중",
   "NewForm": "양식 템플릿",
-  "NewFormFile": "파일에서 양식 템플릿",
+  "Other": "기타",
   "OwnerChange": "소유자 변경",
   "Presentations": "프레젠테이션",
   "Spreadsheets": "스프레드시트",
@@ -55,6 +52,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "기타"
+  "TypeTitlekDrive": "kDrive"
 }

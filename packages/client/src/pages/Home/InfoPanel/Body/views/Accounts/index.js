@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
@@ -16,7 +17,7 @@ const Accounts = ({
   isOwner,
   isAdmin,
   changeUserType,
-  selfId,
+  canChangeUserType,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
@@ -57,18 +58,21 @@ const Accounts = ({
     const options = [];
 
     const adminOption = {
+      id: "info-account-type_docspace-admin",
       key: "admin",
       title: t("Common:DocSpaceAdmin"),
       label: t("Common:DocSpaceAdmin"),
       action: "admin",
     };
     const managerOption = {
+      id: "info-account-type_room-admin",
       key: "manager",
       title: t("Common:RoomAdmin"),
       label: t("Common:RoomAdmin"),
       action: "manager",
     };
     const userOption = {
+      id: "info-account-type_user",
       key: "user",
       title: t("Common:User"),
       label: t("Common:User"),
@@ -98,6 +102,7 @@ const Accounts = ({
 
     const combobox = (
       <ComboBox
+        id="info-account-type-select"
         className="type-combobox"
         selectedOption={
           typesOptions.find((option) => option.key === role) || {}
@@ -108,6 +113,7 @@ const Accounts = ({
         size="content"
         displaySelectedOption
         modernView
+        manualWidth={"fit-content"}
       />
     );
 
@@ -126,26 +132,9 @@ const Accounts = ({
 
     const status = getUserStatus(selection);
 
-    if (selfId === id || status === "disabled") return text;
+    const canChange = canChangeUserType({ ...selection, statusType: status });
 
-    switch (role) {
-      case "owner":
-        return text;
-
-      case "admin":
-      case "manager":
-        if (isOwner) {
-          return combobox;
-        } else {
-          return text;
-        }
-
-      case "user":
-        return combobox;
-
-      default:
-        return text;
-    }
+    return canChange ? combobox : text;
   };
 
   const typeData = renderTypeData();
@@ -201,15 +190,33 @@ const Accounts = ({
   );
 };
 
-export default withTranslation([
-  "People",
-  "InfoPanel",
-  "ConnectDialog",
-  "Common",
-  "PeopleTranslations",
-  "People",
-  "Settings",
-  "SmartBanner",
-  "DeleteProfileEverDialog",
-  "Translations",
-])(withLoader(Accounts)(<Loaders.InfoPanelViewLoader view="accounts" />));
+export default inject(({ auth, peopleStore, accessRightsStore }) => {
+  const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+  const { changeType: changeUserType } = peopleStore;
+  const { canChangeUserType } = accessRightsStore;
+
+  return {
+    isOwner,
+    isAdmin,
+    changeUserType,
+    selfId,
+    canChangeUserType,
+  };
+})(
+  withTranslation([
+    "People",
+    "InfoPanel",
+    "ConnectDialog",
+    "Common",
+    "PeopleTranslations",
+    "People",
+    "Settings",
+    "SmartBanner",
+    "DeleteProfileEverDialog",
+    "Translations",
+  ])(
+    withLoader(observer(Accounts))(
+      <Loaders.InfoPanelViewLoader view="accounts" />
+    )
+  )
+);

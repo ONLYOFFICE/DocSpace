@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
@@ -31,7 +32,7 @@ const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
 
       <StyledSubtitle>
         <Text fontWeight="600" fontSize="14px">
-          {t("SystemProperties")}
+          {t("InfoPanel:SystemProperties")}
         </Text>
       </StyledSubtitle>
 
@@ -63,9 +64,21 @@ const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
   );
 };
 
-export default withTranslation([
-  "InfoPanel",
-  "FormGallery",
-  "Common",
-  "Translations",
-])(withLoader(Gallery)(<Loaders.InfoPanelViewLoader view="gallery" />));
+export default inject(({ auth, settingsStore, oformsStore }) => {
+  const { personal, culture } = auth.settingsStore;
+  const { gallerySelected } = oformsStore;
+  const { getIcon } = settingsStore;
+  return {
+    getIcon,
+    gallerySelected,
+    personal,
+    culture,
+  };
+})(
+  withTranslation(["InfoPanel", "FormGallery", "Common", "Translations"])(
+    Gallery
+    // withLoader(observer(Gallery))(
+    //   <Loaders.InfoPanelViewLoader view="gallery" />
+    // )
+  )
+);

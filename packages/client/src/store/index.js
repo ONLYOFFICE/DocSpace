@@ -30,8 +30,12 @@ import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
+import AccessRightsStore from "./AccessRightsStore";
+import TableStore from "./TableStore";
 
 const oformsStore = new OformsStore(authStore);
+
+const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -43,25 +47,27 @@ const bannerStore = new BannerStore();
 
 const ssoStore = new SsoFormStore();
 
-const peopleStore = new PeopleStore(
-  authStore,
-  authStore.infoPanelStore,
-  setupStore
-);
-
 const tagsStore = new TagsStore();
-
-const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
+const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
+
+const peopleStore = new PeopleStore(
+  authStore,
+  authStore.infoPanelStore,
+  setupStore,
+  accessRightsStore
+);
 
 const filesStore = new FilesStore(
   authStore,
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
-  thirdPartyStore
+  thirdPartyStore,
+  accessRightsStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -97,7 +103,8 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore
+  mediaViewerDataStore,
+  accessRightsStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -109,7 +116,8 @@ const contextOptionsStore = new ContextOptionsStore(
   treeFoldersStore,
   uploadDataStore,
   versionHistoryStore,
-  settingsStore
+  settingsStore,
+  selectedFolderStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -129,8 +137,11 @@ const profileActionsStore = new ProfileActionsStore(
   selectedFolderStore
 );
 
+const tableStore = new TableStore(authStore, treeFoldersStore);
+
 authStore.infoPanelStore.authStore = authStore;
 authStore.infoPanelStore.settingsStore = settingsStore;
+authStore.infoPanelStore.filesStore = filesStore;
 authStore.infoPanelStore.peopleStore = peopleStore;
 authStore.infoPanelStore.selectedFolderStore = selectedFolderStore;
 authStore.infoPanelStore.treeFoldersStore = treeFoldersStore;
@@ -162,10 +173,13 @@ const store = {
   hotkeyStore,
   selectFileDialogStore,
   oformsStore,
+  tableStore,
 
   tagsStore,
 
   peopleStore,
+
+  accessRightsStore,
 };
 
 export default store;

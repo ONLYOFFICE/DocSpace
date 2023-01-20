@@ -157,7 +157,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         return lambda;
     }
-    public EmployeeFullDto GetSimple(UserInfo userInfo)
+    public async Task<EmployeeFullDto> GetSimple(UserInfo userInfo)
     {
         var result = new EmployeeFullDto
         {
@@ -167,7 +167,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         FillGroups(result, userInfo);
 
-        var photoData = _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
+        var photoData = await _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
 
         if (photoData != null)
         {
@@ -239,21 +239,22 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         FillConacts(result, userInfo);
         FillGroups(result, userInfo);
 
-        var userInfoLM = userInfo.LastModified.GetHashCode();
+        var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
+
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={cacheKey}";
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={cacheKey}";
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
+            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={cacheKey}";
         }
 
         if (_context.Check("listAdminModules"))

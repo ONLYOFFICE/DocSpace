@@ -59,6 +59,10 @@ public class PortalController : ControllerBase
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly IMapper _mapper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -86,8 +90,11 @@ public class PortalController : ControllerBase
         StudioNotifyService studioNotifyService,
         MessageService messageService,
         MessageTarget messageTarget,
-        DisplayUserSettingsHelper displayUserSettingsHelper
-        )
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
+        IMapper mapper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -115,12 +122,16 @@ public class PortalController : ControllerBase
         _messageService = messageService;
         _messageTarget = messageTarget;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
+        _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
+        _mapper = mapper;
     }
 
     [HttpGet("")]
-    public Tenant Get()
+    public TenantDto Get()
     {
-        return Tenant;
+        return _mapper.Map<TenantDto>(Tenant);
     }
 
     [HttpGet("users/{userID}")]
@@ -132,9 +143,9 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
-        if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
+        if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
-            throw new SecurityException("Method not available");
+            return string.Empty;
         }
 
         return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
@@ -345,7 +356,8 @@ public class PortalController : ControllerBase
 
             tenant.Alias = alias;
             tenant = _tenantManager.SaveTenant(tenant);
-
+            _tenantManager.SetCurrentTenant(tenant);
+            _commonLinkUtility.ServerRootPath = null;
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {
@@ -397,10 +409,16 @@ public class PortalController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
@@ -411,10 +429,17 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    [AllowNotPayment]
     [HttpPost("delete")]
     public void SendDeleteInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
@@ -444,10 +469,16 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
+    [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
     public async Task<object> DeletePortal()
     {
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         _tenantManager.RemoveTenant(Tenant.Id);
 
         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
@@ -457,7 +488,7 @@ public class PortalController : ControllerBase
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var redirectLink = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
-        var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+        var parameters = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                 "\",\"lastname\":\"" + owner.LastName +
                                                                                 "\",\"alias\":\"" + Tenant.Alias +
                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
@@ -478,11 +509,46 @@ public class PortalController : ControllerBase
         }
         finally
         {
-            if (authed) _securityContext.Logout();
+            if (authed)
+            {
+                _securityContext.Logout();
+            }
         }
 
         _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
 
         return redirectLink;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("sendcongratulations")]
+    public void SendCongratulations([FromQuery] SendCongratulationsDto inDto)
+    {
+        var authInterval = TimeSpan.FromHours(1);
+        var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(inDto.Userid.ToString() + ConfirmType.Auth, inDto.Key, authInterval);
+
+        switch (checkKeyResult)
+        {
+            case ValidationResult.Ok:
+                var currentUser = _userManager.GetUsers(inDto.Userid);
+
+                _studioNotifyService.SendCongratulations(currentUser);
+                _studioNotifyService.SendRegData(currentUser);
+
+                if (!SetupInfo.IsSecretEmail(currentUser.Email))
+                {
+                    if (_setupInfo.TfaRegistration == "sms")
+                    {
+                        _studioSmsNotificationSettingsHelper.Enable = true;
+                    }
+                    else if (_setupInfo.TfaRegistration == "code")
+                    {
+                        _tfaAppAuthSettingsHelper.Enable = true;
+                    }
+                }
+                break;
+            default:
+                throw new SecurityException("Access Denied.");
+        }
     }
 }

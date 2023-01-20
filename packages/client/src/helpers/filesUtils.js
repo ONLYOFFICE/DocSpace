@@ -1,9 +1,5 @@
 import authStore from "@docspace/common/store/AuthStore";
-import {
-  AppServerConfig,
-  FileType,
-  RoomsType,
-} from "@docspace/common/constants";
+import { FileType, RoomsType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
 import { addFileToRecentlyViewed } from "@docspace/common/api/files";
@@ -24,13 +20,15 @@ export const getFileTypeName = (fileType, t) => {
     case FileType.Image:
       return t("Common:Image");
     case FileType.Spreadsheet:
-      return t("Home:Spreadsheet");
+      return t("Files:Spreadsheet");
     case FileType.Presentation:
-      return t("Home:Presentation");
+      return t("Files:Presentation");
     case FileType.Document:
-      return t("Home:Document");
+    case FileType.OFormTemplate:
+    case FileType.OForm:
+      return t("Files:Document");
     default:
-      return t("Home:Folder");
+      return t("Files:Folder");
   }
 };
 
@@ -46,7 +44,7 @@ export const getDefaultRoomName = (room, t) => {
       return t("Files:CollaborationRooms");
 
     case RoomsType.ReviewRoom:
-      return t("Files:ReviewRooms");
+      return t("Common:Review");
 
     case RoomsType.ReadOnlyRoom:
       return t("Files:ViewOnlyRooms");
@@ -76,15 +74,15 @@ export const setDocumentTitle = (subTitle = null) => {
 export const getDefaultFileName = (format) => {
   switch (format) {
     case "docx":
-      return i18n.t("NewDocument");
+      return i18n.t("Common:NewDocument");
     case "xlsx":
-      return i18n.t("NewSpreadsheet");
+      return i18n.t("Common:NewSpreadsheet");
     case "pptx":
-      return i18n.t("NewPresentation");
+      return i18n.t("Common:NewPresentation");
     case "docxf":
-      return i18n.t("NewMasterForm");
+      return i18n.t("Common:NewMasterForm");
     default:
-      return i18n.t("NewFolder");
+      return i18n.t("Common:NewFolder");
   }
 };
 
@@ -109,7 +107,7 @@ export const openDocEditor = async (
 
   if (!url && id) {
     url = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       `/doceditor?fileId=${encodeURIComponent(id)}`
     );
@@ -127,9 +125,9 @@ export const openDocEditor = async (
 export const getDataSaveAs = async (params) => {
   try {
     const data = await request({
-      baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+      baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url),
       method: "get",
-      url: `/products/files/httphandlers/filehandler.ashx?${params}`,
+      url: `/filehandler.ashx?${params}`,
       responseType: "text",
     });
 
@@ -153,9 +151,9 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
   } else {
     window.open(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/httphandlers/filehandler.ashx?${params}`
+        `/filehandler.ashx?${params}`
       ),
       "_blank"
     );

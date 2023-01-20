@@ -3,7 +3,7 @@ import { observer, inject } from "mobx-react";
 import Loader from "@docspace/components/loader";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
+import ConfirmWrapper from "./ConfirmWrapper";
 
 let loadTimeout = null;
 export default function withLoader(WrappedComponent) {
@@ -16,6 +16,8 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       getPortalPasswordSettings,
       history,
+      getAuthProviders,
+      getCapabilities,
     } = props;
     const [inLoad, setInLoad] = useState(false);
 
@@ -32,16 +34,51 @@ export default function withLoader(WrappedComponent) {
         axios
           .all([getSettings(), getPortalPasswordSettings(confirmHeader)])
           .catch((error) => {
-            console.error(error);
+            let errorMessage = "";
+            if (typeof error === "object") {
+              errorMessage =
+                error?.response?.data?.error?.message ||
+                error?.statusText ||
+                error?.message ||
+                "";
+            } else {
+              errorMessage = error;
+            }
+
+            console.error(errorMessage);
             history.push(
               combineUrl(
-                AppServerConfig.proxyURL,
-                `/login/error?message=${error}`
+                window.DocSpaceConfig?.proxy?.url,
+                `/login/error?message=${errorMessage}`
               )
             );
           });
       }
     }, [passwordSettings]);
+
+    useEffect(() => {
+      if (type === "LinkInvite") {
+        axios.all([getAuthProviders(), getCapabilities()]).catch((error) => {
+          let errorMessage = "";
+          if (typeof error === "object") {
+            errorMessage =
+              error?.response?.data?.error?.message ||
+              error?.statusText ||
+              error?.message ||
+              "";
+          } else {
+            errorMessage = error;
+          }
+          console.error(errorMessage);
+          history.push(
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              `/login/error?message=${errorMessage}`
+            )
+          );
+        });
+      }
+    }, []);
 
     const isLoaded =
       type === "TfaActivation" || type === "TfaAuth"
@@ -76,7 +113,9 @@ export default function withLoader(WrappedComponent) {
     return !isLoaded || !tReady ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <WrappedComponent {...props} />
+      <ConfirmWrapper>
+        <WrappedComponent {...props} />
+      </ConfirmWrapper>
     );
   };
 
@@ -87,6 +126,7 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       getPortalPasswordSettings,
     } = auth.settingsStore;
+    const { getAuthProviders, getCapabilities } = auth;
 
     return {
       isLoaded,
@@ -94,6 +134,8 @@ export default function withLoader(WrappedComponent) {
       getSettings,
       passwordSettings,
       getPortalPasswordSettings,
+      getAuthProviders,
+      getCapabilities,
     };
   })(observer(withLoader));
 }
