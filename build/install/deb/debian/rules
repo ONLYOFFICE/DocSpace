@@ -47,7 +47,7 @@ override_dh_auto_install:
 	dh_systemd_start --no-start
 
 override_dh_strip:
-#	dh_strip --exclude=/site-packages/
+	dh_strip -Xarm --no-automatic-dbgsym
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info -Xarm -Xkafka
