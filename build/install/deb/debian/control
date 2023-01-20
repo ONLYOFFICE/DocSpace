@@ -28,6 +28,9 @@ Depends: debconf,
          {{product}}-studio (= {{package_header_tag_version}}),
          {{product}}-studio-notify (= {{package_header_tag_version}})
 Description: Description
+	ONLYOFFICE {{product}} is a new way to collaborate on documents with teams, 
+	clients, partners, etc., based on the concept of rooms - special spaces with 
+	predefined permissions. Dependency package.
 
 Package: {{product}}-common
 Architecture: any
