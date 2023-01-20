@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 import { isIOS, isFirefox, isMobileOnly } from "react-device-detect";
 
