@@ -22,6 +22,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
   "ThirdPartyStorageNoStorageAlert": "Before, you need to connect the corresponding service in the “Integration” section. Otherwise, the connection will not be possible.",
+  "ThirdPartyStorageRoomAdminNoStorageAlert": "To connect a third-party storage, you need to add the corresponding service in the Integration section of DocSpace settings. Contact DocSpace owner or administrator to enable the integration.",
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageTitle": "Third-party storage",
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",

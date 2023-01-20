@@ -9,7 +9,6 @@ import Text from "@docspace/components/text";
 import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
-import api from "@docspace/common/api/index.js";
 
 const Details = ({
   t,

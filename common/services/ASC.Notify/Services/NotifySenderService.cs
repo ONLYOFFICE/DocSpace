@@ -55,7 +55,7 @@ public class NotifySenderService : BackgroundService
 
         stoppingToken.Register(() => _logger.Debug("NotifySenderService background task is stopping."));
 
-        if (0 < _notifyServiceCfg.Schedulers.Count)
+        if (_notifyServiceCfg.Schedulers != null && _notifyServiceCfg.Schedulers.Any())
         {
             InitializeNotifySchedulers();
         }

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
     <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
     <AssemblyVersion>1.0.1</AssemblyVersion>
@@ -50,18 +50,20 @@
     <None Remove="protos\user_photo_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.100.33" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.103.18" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.100.56" />
     <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MailKit" Version="3.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="MailKit" Version="3.4.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\create_client_proto.proto" />
