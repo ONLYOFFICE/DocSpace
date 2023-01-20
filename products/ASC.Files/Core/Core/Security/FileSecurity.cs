@@ -661,35 +661,21 @@ public class FileSecurity : IFileSecurity
                 {
                     if (folder.FolderType == FolderType.USER)
                     {
-                        if (action == FilesSecurityActions.Create ||
+                        return action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.CopyTo ||
-                            action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                            action == FilesSecurityActions.MoveTo ||
+                            action == FilesSecurityActions.FillForms;
                     }
 
                     if (folder.FolderType == FolderType.Archive)
                     {
-                        if (action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                        return action == FilesSecurityActions.MoveTo;
                     }
 
                     if (folder.FolderType == FolderType.VirtualRooms)
                     {
-                        if (action == FilesSecurityActions.Create ||
-                            action == FilesSecurityActions.MoveTo)
-                        {
-                            return true;
-                        }
-
-                        return false;
+                        return action == FilesSecurityActions.Create ||
+                            action == FilesSecurityActions.MoveTo;
                     }
 
                     if (folder.FolderType == FolderType.TRASH)
@@ -732,12 +718,7 @@ public class FileSecurity : IFileSecurity
                 var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
                 if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
                 {
-                    if (folder != null && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
                 }
                 break;
             case FolderType.USER:
