@@ -28,12 +28,12 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
 
-  console.log(rest);
+  //console.log(rest);
 
   useEffect(() => {
     let icon = "";
 
-    switch (rest.config.documentType) {
+    switch (rest?.config?.documentType) {
       case "word":
         icon = TextIcoUrl;
         break;
@@ -54,7 +54,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
     }
 
     console.log(icon);
-  }, [rest.config.documentType]);
+  }, [rest?.config?.documentType]);
 
   useEffect(() => {
     const tempElm = document.getElementById("loader");
