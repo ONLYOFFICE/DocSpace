@@ -27,15 +27,16 @@ Depends: debconf,
          {{product}}-ssoauth (= {{package_header_tag_version}}),
          {{product}}-studio (= {{package_header_tag_version}}),
          {{product}}-studio-notify (= {{package_header_tag_version}})
-Description: Description
+Description: {{product}}
 	ONLYOFFICE {{product}} is a new way to collaborate on documents with teams, 
 	clients, partners, etc., based on the concept of rooms - special spaces with 
 	predefined permissions. Dependency package.
 
 Package: {{product}}-common
 Architecture: any
-Description: Description
 Depends: adduser, ${misc:Depends}, ${shlibs:Depends}
+Description: {{product}}-common
+	{{product}}-common
 
 Package: {{product}}-backup
 Architecture: any
@@ -43,7 +44,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-backup
+	{{product}}-backup
 
 Package: {{product}}-files
 Architecture: any
@@ -51,7 +53,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-files
+	{{product}}-files
 
 Package: {{product}}-files-services
 Architecture: any
@@ -59,7 +62,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-files-services
+	{{product}}-files-services
 
 Package: {{product}}-notify
 Architecture: any
@@ -67,7 +71,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-notify
+	{{product}}-notify
 
 Package: {{product}}-people-server
 Architecture: any
@@ -75,7 +80,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-people-server
+	{{product}}-people-server
 
 Package: {{product}}-socket
 Architecture: any
@@ -83,7 +89,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-socket
+	{{product}}-socket
 
 Package: {{product}}-studio-notify
 Architecture: any
@@ -91,7 +98,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-studio-notify
+	{{product}}-studio-notify
 
 Package: {{product}}-api
 Architecture: any
@@ -99,7 +107,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-api
+	{{product}}-api
 
 Package: {{product}}-api-system
 Architecture: any
@@ -107,7 +116,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-api-system
+	{{product}}-api-system
 
 Package: {{product}}-studio
 Architecture: any
@@ -115,12 +125,14 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-studio
+	{{product}}-studio
 
 Package: {{product}}-proxy
 Architecture: any
 Depends: nginx, ${misc:Depends}, ${shlibs:Depends}
-Description: Description
+Description: {{product}}-proxy
+	{{product}}-proxy
 
 Package: {{product}}-ssoauth
 Architecture: any
@@ -128,7 +140,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-ssoauth
+	{{product}}-ssoauth
 
 Package: {{product}}-backup-background
 Architecture: any
@@ -136,7 +149,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-backup-background
+	{{product}}-backup-background
 
 Package: {{product}}-clear-events
 Architecture: any
@@ -144,7 +158,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-clear-events
+	{{product}}-clear-events
 
 Package: {{product}}-migration-runner
 Architecture: any
@@ -152,7 +167,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-migration-runner
+	{{product}}-migration-runner
 
 Package: {{product}}-radicale
 Architecture: any
@@ -160,7 +176,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  python3-pip,
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-radicale
+	{{product}}-radicale
 
 Package: {{product}}-doceditor
 Architecture: any
@@ -168,7 +185,8 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-doceditor
+	{{product}}-doceditor
 
 Package: {{product}}-login
 Architecture: any
@@ -176,4 +194,5 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=16),
  ${misc:Depends},
  ${shlibs:Depends}
-Description: Description
+Description: {{product}}-login
+	{{product}}-login
