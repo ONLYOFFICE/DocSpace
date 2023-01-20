@@ -110,7 +110,7 @@ ${package_manager} versionlock clear
 ${package_manager} -y install epel-release \
 			python3 \
 			nodejs \
-			dotnet-sdk-6.0 \
+			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
