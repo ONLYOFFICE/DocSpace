@@ -38,7 +38,7 @@ const Template = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  imageSrc: { EmptyScreenFilterPng },
+  imageSrc: EmptyScreenFilterPng,
   imageAlt: "Empty Screen Filter image",
   headerText: "No results matching your search could be found",
   subheadingText: "No files to be displayed in this section",
