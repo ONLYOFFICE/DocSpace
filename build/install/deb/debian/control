@@ -16,6 +16,7 @@ Depends: {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-doceditor(= {{package_header_tag_version}}),
          {{product}}-files (= {{package_header_tag_version}}),
          {{product}}-files-services (= {{package_header_tag_version}}),
+         {{product}}-healthchecks (= {{package_header_tag_version}}),
          {{product}}-login (= {{package_header_tag_version}}),
          {{product}}-migration-runner (= {{package_header_tag_version}}),
          {{product}}-notify (= {{package_header_tag_version}}),
@@ -173,3 +174,12 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
+
+Package: {{product}}-healthchecks
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: {{product}}-healthchecks
+	{{product}}-healthchecks

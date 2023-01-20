@@ -147,3 +147,12 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
+
+%package        healthchecks
+Summary:        Healthchecks
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    healthchecks
+Healthchecks
