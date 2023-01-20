@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Tu môžete vytvoriť pre používateľov bezpečné a pohodlné spôsoby prístupu na portál.",
   "PortalNameEmpty": "Názov účtu je prázdny",
   "PortalNameIncorrect": "Nesprávny názov účtu",
-  "PortalNameLength": "Názov účtu musí mať 6 až 50 znakov",
+  "PortalNameLength": "Názov účtu musí mať 3 až 50 znakov",
   "PortalRenaming": "Premenovanie portálu",
   "PortalRenamingDescription": "Tu môžete zmeniť adresu portálu.",
   "PortalRenamingLabelText": "Nový názov portálu",
