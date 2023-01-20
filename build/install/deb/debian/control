@@ -1,7 +1,7 @@
 Source: {{product}}
 Section: web
 Priority: optional
-Maintainer: onlyoffice
+Maintainer: Ascensio System SIA <support@onlyoffice.com>
 Build-Depends: debhelper (>= 10), nodejs (>=18), dotnet-sdk-6.0, yarn
 Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
