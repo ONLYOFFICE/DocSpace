@@ -419,7 +419,7 @@ public class FileHandlerService
                             var fullLength = await store.GetFileSizeAsync(string.Empty, mp4Path);
 
                             length = ProcessRangeHeader(context, fullLength, ref offset);
-                            fileStream = await store.GetReadStreamAsync(string.Empty, mp4Path, (int)offset);
+                            fileStream = await store.GetReadStreamAsync(string.Empty, mp4Path, offset);
 
                             title = FileUtility.ReplaceFileExtension(title, ".mp4");
                         }

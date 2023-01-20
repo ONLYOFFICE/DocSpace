@@ -366,7 +366,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset);
+        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), offset);
     }
 
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
