@@ -1,4 +1,5 @@
 %install
+rm -rf %{buildroot} 
 mkdir -p "%{buildroot}%{_bindir}/"
 mkdir -p "%{buildroot}%{_sysconfdir}/nginx/conf.d/"
 mkdir -p "%{buildroot}%{_sysconfdir}/nginx/includes/"
