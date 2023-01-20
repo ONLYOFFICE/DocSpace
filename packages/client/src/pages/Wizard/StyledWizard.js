@@ -94,7 +94,9 @@ export const StyledLink = styled.div`
 export const StyledInfo = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 83px 1fr; ;
+  grid-template-columns: 83px 1fr;
+  align-items: center;
+  padding-bottom: 12px;
 `;
 
 export const StyledAcceptTerms = styled.div`
@@ -102,7 +104,8 @@ export const StyledAcceptTerms = styled.div`
   display: flex;
   align-items: center;
   gap: 0.3em;
-  padding: 24px 0;
+  padding-top: 12px;
+  padding-bottom: 24px;
 
   .wizard-checkbox svg {
     margin-right: 8px;

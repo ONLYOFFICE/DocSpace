@@ -3,12 +3,14 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
 import Text from "@docspace/components/text";
 import FormWrapper from "@docspace/components/form-wrapper";
 import EmailInput from "@docspace/components/email-input";
 import PasswordInput from "@docspace/components/password-input";
 import IconButton from "@docspace/components/icon-button";
+import ComboBox from "@docspace/components/combobox";
 import Link from "@docspace/components/link";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
@@ -17,6 +19,11 @@ import Loader from "@docspace/components/loader";
 
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { EmailSettings } from "@docspace/components/utils/email";
+import {
+  combineUrl,
+  createPasswordHash,
+  convertLanguage,
+} from "@docspace/common/utils";
 
 import {
   Wrapper,
@@ -44,6 +51,9 @@ const Wizard = (props) => {
     machineName,
     urlLicense,
     theme,
+    cultureNames,
+    selectLanguage,
+    culture,
   } = props;
   const { t } = useTranslation(["Wizard", "Common"]);
 
@@ -52,8 +62,10 @@ const Wizard = (props) => {
   const [password, setPassword] = useState("");
   const [hasErrorPass, setHasErrorPass] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const refPassInput = useRef(null);
+
+  const convertedCulture = convertLanguage(culture);
 
   const fetchData = async () => {
     await axios
@@ -64,6 +76,17 @@ const Wizard = (props) => {
         getPortalTimezones(wizardToken),
       ])
       .then(() => {
+        let select = cultureNames.filter(
+          (lang) => lang.key === convertedCulture
+        );
+        if (!select.length)
+          select = cultureNames.filter((lang) => lang.key === "en");
+
+        setSelectedLanguage({
+          key: select[0].key,
+          label: select[0].label,
+          icon: select[0].icon,
+        });
         setIsWizardLoaded(true);
       });
   };
@@ -82,6 +105,14 @@ const Wizard = (props) => {
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
+  };
+
+  const onLanguageSelect = (lang) => {
+    setSelectedLanguage({
+      key: lang.key,
+      label: lang.label,
+      icon: lang.icon,
+    });
   };
 
   if (!isWizardLoaded)
@@ -147,6 +178,28 @@ const Wizard = (props) => {
               {t("Domain")}
             </Text>
             <Text fontWeight={600}>{machineName}</Text>
+          </StyledInfo>
+          <StyledInfo>
+            <Text color="#A3A9AE" fontWeight={400}>
+              {t("Common:Language")}
+            </Text>
+            <ComboBox
+              directionY="both"
+              options={cultureNames}
+              selectedOption={selectedLanguage}
+              onSelect={onLanguageSelect}
+              isDisabled={false}
+              scaled={isMobileOnly}
+              scaledOptions={false}
+              size="content"
+              showDisabledItems={true}
+              dropDownMaxHeight={364}
+              manualWidth="250px"
+              isDefaultMode={!isMobileOnly}
+              withBlur={isMobileOnly}
+              fillIcon={false}
+              modernView={true}
+            />
           </StyledInfo>
 
           <StyledAcceptTerms>
