@@ -51,7 +51,7 @@ predefined permissions.
 %prep
 
 rm -rf %{_rpmdir}/%{_arch}/%{name}-*
-%setup -b1 -b2 -n %{sourcename}
+%setup -b1 -b2 -n %{sourcename} -q
 mv -f %{_builddir}/document-templates-main-community-server/*  %{_builddir}/%{sourcename}/products/ASC.Files/Server/DocStore/
 mv -f %{_builddir}/dictionaries-master/*  %{_builddir}/%{sourcename}/common/Tests/Frontend.Translations.Tests/dictionaries/
 

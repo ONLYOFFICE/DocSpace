@@ -77,8 +77,8 @@
 
 %files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_sysconfdir}/nginx/includes/*
-%{_sysconfdir}/nginx/conf.d/*
+%config %{_sysconfdir}/nginx/includes/*
+%config %{_sysconfdir}/nginx/conf.d/*
 %{buildpath}/public/
 %{buildpath}/client/
 
