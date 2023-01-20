@@ -45,6 +45,8 @@ class UploadDataStore {
   isUploading = false;
   isUploadingAndConversion = false;
 
+  isConvertSingleFile = false;
+
   constructor(
     authStore,
     treeFoldersStore,
@@ -81,6 +83,10 @@ class UploadDataStore {
         this[key] = uploadData[key];
       }
     }
+  };
+
+  setIsConvertSingleFile = (isConvertSingleFile) => {
+    this.isConvertSingleFile = isConvertSingleFile;
   };
 
   updateUploadedFile = (id, info) => {
@@ -230,9 +236,11 @@ class UploadDataStore {
     const secondConvertingWithPassword = file.hasOwnProperty("password");
     const conversionPositionIndex = file.hasOwnProperty("index");
 
-    const alreadyConverting = this.files.some(
+    let alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
     );
+
+    if (this.isConvertSingleFile) alreadyConverting = false;
 
     if (this.converted && !alreadyConverting) {
       this.filesToConversion = [];
@@ -261,6 +269,8 @@ class UploadDataStore {
           this.uploadedFilesHistory.push(file);
       }
     }
+
+    this.setIsConvertSingleFile(false);
   };
 
   getNewPercent = (uploadedSize, indexOfFile) => {
