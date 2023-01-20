@@ -42,7 +42,9 @@ Requires:       %name-studio = %version-%release
 Requires:       %name-studio-notify = %version-%release
 
 %description
-App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
+ONLYOFFICE DocSpace is a new way to collaborate on documents with teams, 
+clients, partners, etc., based on the concept of rooms - special spaces with 
+predefined permissions. 
 
 %include package.spec
 
