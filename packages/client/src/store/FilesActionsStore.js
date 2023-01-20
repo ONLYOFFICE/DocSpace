@@ -1902,7 +1902,7 @@ class FilesActionStore {
               )
             : null;
 
-        return openDocEditor(id, providerKey, tab);
+        return openDocEditor(id, providerKey, tab, null, !canWebEdit);
       }
 
       if (isMediaOrImage) {
