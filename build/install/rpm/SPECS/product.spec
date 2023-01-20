@@ -3,7 +3,7 @@
 %global         sourcename DocSpace-%GIT_BRANCH
 
 Name:           onlyoffice-docspace
-Summary:        Business productivity tools.
+Summary:        Business productivity tools
 Group:          Applications/Internet
 Version:        %version
 Release:        %release
