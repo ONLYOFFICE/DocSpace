@@ -50,7 +50,7 @@ override_dh_strip:
 #	dh_strip --exclude=/site-packages/
 
 override_dh_shlibdeps:
-#	dh_shlibdeps --exclude=/site-packages/
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info -Xarm -Xkafka
 
 override_dh_installinit:
 # don't do anything, silences lintian warnings "init.d-script-not-included-in-package"
