@@ -1,7 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { StyledTextarea, StyledScrollbar } from "./styled-textarea";
+import {
+  StyledTextarea,
+  StyledScrollbar,
+  StyledCopyIcon,
+} from "./styled-textarea";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { isJSON, beautifyJSON } from "./utils";
+
+import copy from "copy-to-clipboard";
+
+import copyIcon from "./svg/copyIcon.svg";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
@@ -25,10 +34,24 @@ const Textarea = ({
   theme,
   autoFocus,
   areaSelect,
+  isJSONField,
+  copyInfoText,
 }) => {
   const areaRef = useRef(null);
+  const [isError, setIsError] = useState(hasError);
+  const [modifiedValue, setModifiedValue] = useState(value);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (isJSONField) {
+      if (modifiedValue && isJSON(modifiedValue)) {
+        setModifiedValue(beautifyJSON(modifiedValue));
+      } else {
+        setIsError(true);
+      }
+    }
+  }, [isJSONField]);
+
+  useEffect(() => {
     if (areaSelect && areaRef.current) {
       areaRef.current.select();
     }
@@ -41,10 +64,13 @@ const Textarea = ({
       style={style}
       stype="preMediumBlack"
       isDisabled={isDisabled}
-      hasError={hasError}
+      hasError={isError}
       heightScale={heightScale}
       heighttextarea={heightTextArea}
     >
+      {isJSONField && (
+        <StyledCopyIcon src={copyIcon} onClick={() => copy(modifiedValue)} />
+      )}
       <StyledTextarea
         id={id}
         placeholder={placeholder}
@@ -100,6 +126,10 @@ Textarea.propTypes = {
   color: PropTypes.string,
   autoFocus: PropTypes.bool,
   areaSelect: PropTypes.bool,
+  /** Prettifies Json and adds lines numeration */
+  isJSONField: PropTypes.bool,
+  /** Indicates the text of toast/informational alarm */
+  copyInfoText: PropTypes.string,
 };
 
 Textarea.defaultProps = {
@@ -114,6 +144,8 @@ Textarea.defaultProps = {
   fontSize: 13,
   isAutoFocussed: false,
   areaSelect: false,
+  isJSONField: false,
+  copyInfoText: "Content was copied successfully!",
 };
 
 export default Textarea;
