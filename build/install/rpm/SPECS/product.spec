@@ -83,9 +83,9 @@ rm -rf %{_builddir} %{buildroot}
 %triggerin radicale -- python3, python36
 
 if ! which python3; then
-	if rpm -q python36; then
-		update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
-	fi
+   if rpm -q python36; then
+      update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+   fi
 fi
 
 python3 -m pip install --upgrade pip
