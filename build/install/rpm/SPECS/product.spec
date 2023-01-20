@@ -81,6 +81,8 @@ getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin
 rm -rf %{_builddir} %{buildroot} 
 
 %changelog
+*Mon Jan 16 2023 %packager - 1.2.0-999
+- Initial build.
 
 %triggerin radicale -- python3, python36
 
