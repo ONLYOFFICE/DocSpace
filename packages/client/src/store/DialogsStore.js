@@ -26,7 +26,6 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   inviteUsersWarningDialogVisible = false;
-  manageNotificationsPanelVisible = false;
 
   isFolderActions = false;
   roomCreation = false;
@@ -155,10 +154,6 @@ class DialogsStore {
 
   setEmptyTrashDialogVisible = (emptyTrashDialogVisible) => {
     this.emptyTrashDialogVisible = emptyTrashDialogVisible;
-  };
-
-  setManageNotificationsPanelVisible = (manageNotificationsPanelVisible) => {
-    this.manageNotificationsPanelVisible = manageNotificationsPanelVisible;
   };
 
   setConnectItem = (connectItem) => {
