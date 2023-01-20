@@ -453,6 +453,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/accounts/edit/:userId",
                   "/accounts/view/:userId",
                   "/accounts/view/@self",
+                  "/accounts/view/@self/notification",
 
                   "/settings",
                   "/settings/common",

@@ -137,7 +137,7 @@ const FilesSection = React.memo(() => {
 
       <PrivateRoute
         exact
-        path={["/accounts/view/@self"]}
+        path={["/accounts/view/@self", "/accounts/view/@self/notification"]}
         component={Accounts}
       />
 

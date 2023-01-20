@@ -1,27 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import ManageNotificationsPanel from "../../../../../../components/panels/ManageNotificationsPanel";
+
 import { StyledWrapper } from "./styled-subscriptions";
 
+import config from "PACKAGE_FILE";
+import { combineUrl } from "@docspace/common/utils";
 const Subscription = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
-
-  const { theme } = props;
-
-  const [
-    isManageNotificationsPanelVisible,
-    setIsManageNotificationsPanelVisible,
-  ] = useState(false);
+  const { history } = props;
 
   const onButtonClick = () => {
-    setIsManageNotificationsPanelVisible(true);
-  };
-
-  const onClosePanel = () => {
-    setIsManageNotificationsPanelVisible(false);
+    history.push(
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/accounts/view/@self/notification"
+      )
+    );
   };
 
   return (
@@ -29,22 +27,11 @@ const Subscription = (props) => {
       <Text fontSize="16px" fontWeight={700}>
         {t("Notifications")}
       </Text>
-
       <Button
-        theme={theme}
-        scale
         size="normalDesktop"
         label={t("ManageNotifications")}
         onClick={onButtonClick}
       />
-
-      {isManageNotificationsPanelVisible && (
-        <ManageNotificationsPanel
-          t={t}
-          isPanelVisible={isManageNotificationsPanelVisible}
-          onClosePanel={onClosePanel}
-        />
-      )}
     </StyledWrapper>
   );
 };

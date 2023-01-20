@@ -1,13 +1,11 @@
 {
   "ActiveSessions": "Active Sessions",
-  "Badges": "Badges",
   "BotConnection": "To connect TelegramBot to your account follow secret link:",
   "ChangeEmailSuccess": "Email has been changed successfully",
   "ChangePasswordAfterLoggingOut": "Change password after logging out",
   "ConnectSocialNetworks": "Сonnect your social networks",
   "DarkTheme": "Dark theme",
   "DescriptionForSecurity": "For more security, you need to change your password.",
-  "DailyFeed": "Daily feed",
   "EditPhoto": "Edit photo",
   "EmailNotVerified": "Email not verified",
   "InterfaceTheme": "Interface theme",
@@ -22,8 +20,6 @@
   "ManageNotifications": "Manage",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
-  "Notifications": "Notifications",
-  "RoomsActions": "DocSpace Actions in rooms",
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
@@ -36,8 +32,5 @@
   "SystemTheme": "Use system theme",
   "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
   "TfaLoginSettings": "Login settings",
-  "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin.",
-  "TelegramConnection": "Telegram connection",
-  "Telegram": "Telegram",
-  "UsefulTips": "Useful DocSpace tips"
+  "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }
