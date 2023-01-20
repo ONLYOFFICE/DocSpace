@@ -92,11 +92,11 @@ const Wizard = (props) => {
       <WizardContainer>
         <DocspaceLogo className="docspace-logo" />
         <Text fontWeight={700} fontSize="23px" className="welcome-text">
-          Welcome to your portal!
+          {t("WelcomeTitle")}
         </Text>
         <FormWrapper>
           <Text fontWeight={600} fontSize="16px" className="form-header">
-            Please setup the portal registration data
+            {t("WizardTitle")}
           </Text>
           <EmailInput
             name="wizard-email"
