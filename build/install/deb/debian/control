@@ -30,8 +30,8 @@ Description: Description
 
 Package: {{product}}-common
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Description
+Depends: adduser, ${misc:Depends}, ${shlibs:Depends}
 
 Package: {{product}}-backup
 Architecture: any
