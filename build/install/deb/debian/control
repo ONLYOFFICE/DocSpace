@@ -9,7 +9,8 @@ Architecture: any
 
 Package: {{product}}
 Architecture: any
-Depends: {{product}}-api (= {{package_header_tag_version}}),
+Depends: debconf,
+         {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-backup (= {{package_header_tag_version}}),
          {{product}}-backup-background (= {{package_header_tag_version}}),
          {{product}}-clear-events (= {{package_header_tag_version}}),
