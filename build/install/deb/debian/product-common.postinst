@@ -19,3 +19,5 @@ fi
 
 usermod -aG onlyoffice,nginx onlyoffice
 chown -R onlyoffice:onlyoffice /var/log/onlyoffice/{{product}} /var/www/{{product}} /etc/onlyoffice/{{product}}
+
+#DEBHELPER#
