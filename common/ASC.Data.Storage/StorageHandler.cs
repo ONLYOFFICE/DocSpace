@@ -28,6 +28,7 @@ using System.IO;
 
 using ASC.Common.Web;
 
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Storage.DiscStorage;
@@ -165,6 +166,9 @@ public class StorageHandler
 
         using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
         {
+            var responseBufferingFeature = context.Features.Get<IHttpResponseBodyFeature>();
+            responseBufferingFeature?.DisableBuffering();
+
             await stream.CopyToAsync(context.Response.Body);
         }
 
