@@ -16,6 +16,11 @@ import {
   fileCopyAs,
 } from "@docspace/common/api/files";
 import toastr from "@docspace/components/toast/toastr";
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@docspace/components/utils/device";
 class UploadDataStore {
   authStore;
   treeFoldersStore;
@@ -406,7 +411,16 @@ class UploadDataStore {
           }
 
           const percent = this.getConversationPercent(index + 1);
-          this.setConversionPercent(percent);
+          const numberFiles = this.files.filter((f) => f.needConvert).length;
+
+          if (
+            numberFiles === 1 &&
+            !(isMobile || isMobileUtils() || isTabletUtils())
+          ) {
+            this.setConversionPercent(progress);
+          } else {
+            this.setConversionPercent(percent);
+          }
         }
 
         if (progress === 100) {
