@@ -3014,6 +3014,7 @@ const Base = {
 
     wizard: {
       linkColor: "#116d9d",
+      generatePasswordColor: "#657077",
     },
   },
 
