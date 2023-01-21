@@ -81,12 +81,12 @@ export const StyledLink = styled.div`
   padding-bottom: 20px;
 
   .generate-password-link {
-    color: #657077;
+    color: ${(props) => props.theme.client.wizard.generatePasswordColor};
   }
 
   .icon-button_svg {
     svg > g > path {
-      fill: #657077;
+      fill: ${(props) => props.theme.client.wizard.generatePasswordColor};
     }
   }
 `;
