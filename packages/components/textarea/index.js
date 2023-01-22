@@ -6,6 +6,8 @@ import {
   StyledCopyIcon,
 } from "./styled-textarea";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import Toast from "@docspace/components/toast";
+import toastr from "@docspace/components/toast/toastr";
 import { isJSON, beautifyJSON } from "./utils";
 
 import copy from "copy-to-clipboard";
@@ -40,6 +42,7 @@ const Textarea = ({
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
   const [modifiedValue, setModifiedValue] = useState(value);
+  const toastRef = useRef(null);
 
   useEffect(() => {
     if (isJSONField) {
@@ -68,9 +71,17 @@ const Textarea = ({
       heightScale={heightScale}
       heighttextarea={heightTextArea}
     >
+      <Toast />
       {isJSONField && (
-        <StyledCopyIcon src={copyIcon} onClick={() => copy(modifiedValue)} />
+        <StyledCopyIcon
+          src={copyIcon}
+          onClick={() => {
+            copy(modifiedValue);
+            toastr.success(copyInfoText);
+          }}
+        />
       )}
+
       <StyledTextarea
         id={id}
         placeholder={placeholder}
