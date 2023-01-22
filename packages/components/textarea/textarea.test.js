@@ -64,4 +64,32 @@ describe("<Textarea />", () => {
 
     expect(wrapper.prop("heightTextArea")).toEqual(54);
   });
+
+  it("accepts copyInfoText", () => {
+    const wrapper = mount(
+      <Textarea
+        placeholder="Add comment"
+        onChange={jest.fn()}
+        value="value"
+        className="test"
+        copyInfoText='text was copied'
+      />
+    );
+
+    expect(wrapper.prop("copyInfoText")).toEqual('text was copied');
+  });
+
+  it("accepts isJSONField", () => {
+    const wrapper = mount(
+      <Textarea
+        placeholder="Add comment"
+        onChange={jest.fn()}
+        value="value"
+        className="test"
+        isJSONField={true}
+      />
+    );
+
+    expect(wrapper.prop("isJSONField")).toEqual(true);
+  });
 });
