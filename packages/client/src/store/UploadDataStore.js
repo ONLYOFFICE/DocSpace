@@ -1047,9 +1047,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -1085,9 +1091,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({
