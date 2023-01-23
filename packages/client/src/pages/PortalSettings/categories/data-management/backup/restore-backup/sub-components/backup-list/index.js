@@ -20,6 +20,7 @@ import HelpButton from "@docspace/components/help-button";
 import config from "PACKAGE_FILE";
 import { StyledBackupList } from "../../../StyledBackup";
 import BackupListBody from "./BackupListBody";
+import { TenantStatus } from "@docspace/common/constants";
 
 class BackupListModalDialog extends React.Component {
   constructor(props) {
@@ -88,7 +89,7 @@ class BackupListModalDialog extends React.Component {
   };
   onRestorePortal = () => {
     const { selectedFileId } = this.state;
-    const { isNotify, history, socketHelper, t } = this.props;
+    const { isNotify, history, socketHelper, t, setTenantStatus } = this.props;
 
     if (!selectedFileId) {
       toastr.error(t("RecoveryFileNotSelected"));
@@ -105,6 +106,7 @@ class BackupListModalDialog extends React.Component {
       ];
 
       startRestore(backupId, storageType, storageParams, isNotify)
+        .then(() => setTenantStatus(TenantStatus.PortalRestore))
         .then(() => {
           socketHelper.emit({
             command: "restore-backup",
@@ -267,9 +269,10 @@ BackupListModalDialog.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { socketHelper, theme } = settingsStore;
+  const { socketHelper, theme, setTenantStatus } = settingsStore;
 
   return {
+    setTenantStatus,
     theme,
     socketHelper,
   };

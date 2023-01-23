@@ -8,7 +8,7 @@ import RadioButton from "@docspace/components/radio-button";
 import toastr from "@docspace/components/toast/toastr";
 import { startRestore } from "@docspace/common/api/portal";
 import { combineUrl } from "@docspace/common/utils";
-import { BackupStorageType } from "@docspace/common/constants";
+import { BackupStorageType, TenantStatus } from "@docspace/common/constants";
 import { request } from "@docspace/common/api/client";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
@@ -187,7 +187,12 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
     } = this.state;
-    const { history, socketHelper, getStorageParams } = this.props;
+    const {
+      history,
+      socketHelper,
+      getStorageParams,
+      setTenantStatus,
+    } = this.props;
 
     if (!this.canRestore()) {
       this.setState({
@@ -251,6 +256,7 @@ class RestoreBackup extends React.Component {
     }
 
     startRestore(backupId, storageType, storageParams, isNotify)
+      .then(() => setTenantStatus(TenantStatus.PortalRestore))
       .then(() => {
         socketHelper.emit({
           command: "restore-backup",
@@ -480,7 +486,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { socketHelper, theme, isTabletView } = settingsStore;
+  const { socketHelper, theme, isTabletView, setTenantStatus } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -495,6 +501,7 @@ export default inject(({ auth, backup }) => {
   const buttonSize = isTabletView ? "normal" : "small";
   const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   return {
+    setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,
