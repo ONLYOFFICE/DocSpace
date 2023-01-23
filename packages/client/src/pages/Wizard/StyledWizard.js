@@ -66,9 +66,8 @@ export const WizardContainer = styled.div`
     width: 100%;
   }
 
-  .wizard-password {
+  .wizard-field {
     width: 100%;
-    padding-top: 16px;
   }
 `;
 

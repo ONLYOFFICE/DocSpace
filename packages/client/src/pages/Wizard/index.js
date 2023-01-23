@@ -14,6 +14,7 @@ import ComboBox from "@docspace/components/combobox";
 import Link from "@docspace/components/link";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
+import FieldContainer from "@docspace/components/field-container";
 
 import Loader from "@docspace/components/loader";
 
@@ -129,6 +130,10 @@ const Wizard = (props) => {
     setPassword(e.target.value);
   };
 
+  const isValidPassHandler = (value) => {
+    setHasErrorPass(!value);
+  };
+
   const generatePassword = () => {
     if (isCreated) return;
     refPassInput.current.onGeneratePassword();
@@ -142,7 +147,24 @@ const Wizard = (props) => {
     setSelectedTimezone(timezone);
   };
 
+  const validateFields = () => {
+    const emptyEmail = email.trim() === "";
+    const emptyPassword = password.trim() === "";
+
+    if (emptyEmail || emptyPassword) {
+      emptyEmail && setHasErrorEmail(true);
+      emptyPassword && setHasErrorPass(true);
+      return false;
+    }
+
+    if (hasErrorEmail || hasErrorPass || !agreeTerms) return false;
+
+    return true;
+  };
+
   const onContinueClick = async () => {
+    if (!validateFields()) return;
+
     setIsCreated(true);
 
     const emailTrim = email.trim();
@@ -181,35 +203,51 @@ const Wizard = (props) => {
           <Text fontWeight={600} fontSize="16px" className="form-header">
             {t("Desc")}
           </Text>
-          <EmailInput
-            name="wizard-email"
-            tabIndex={1}
-            size="large"
-            scale={true}
-            placeholder={t("Common:Email")}
-            emailSettings={emailSettings}
+          <FieldContainer
+            className="wizard-field"
+            isVertical={true}
+            labelVisible={false}
             hasError={hasErrorEmail}
-            onValidateInput={onEmailChangeHandler}
-            isDisabled={isCreated}
-          />
-          <PasswordInput
-            className="wizard-password"
-            ref={refPassInput}
-            tabIndex={2}
-            size="large"
-            scale={true}
-            inputValue={password}
-            passwordSettings={passwordSettings}
-            isDisabled={isCreated}
-            placeholder={t("Common:Password")}
-            hideNewPasswordButton={true}
-            isDisableTooltip={true}
-            isTextTooltipVisible={false}
+            errorMessage={t("ErrorEmail")}
+          >
+            <EmailInput
+              name="wizard-email"
+              tabIndex={1}
+              size="large"
+              scale={true}
+              placeholder={t("Common:Email")}
+              emailSettings={emailSettings}
+              hasError={hasErrorEmail}
+              onValidateInput={onEmailChangeHandler}
+              isDisabled={isCreated}
+            />
+          </FieldContainer>
+
+          <FieldContainer
+            className="wizard-field"
+            isVertical={true}
+            labelVisible={false}
             hasError={hasErrorPass}
-            onChange={onChangePassword}
-            autoComplete="current-password"
-            //onValidateInput={isValidPassHandler}
-          />
+            errorMessage={t("ErrorPassword")}
+          >
+            <PasswordInput
+              ref={refPassInput}
+              tabIndex={2}
+              size="large"
+              scale={true}
+              inputValue={password}
+              passwordSettings={passwordSettings}
+              isDisabled={isCreated}
+              placeholder={t("Common:Password")}
+              hideNewPasswordButton={true}
+              isDisableTooltip={true}
+              isTextTooltipVisible={false}
+              hasError={hasErrorPass}
+              onChange={onChangePassword}
+              autoComplete="current-password"
+              onValidateInput={isValidPassHandler}
+            />
+          </FieldContainer>
           <StyledLink>
             <IconButton
               size="12"
