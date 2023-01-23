@@ -9,7 +9,7 @@ import { StyledWrapper } from "./styled-subscriptions";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 const Subscription = (props) => {
-  const { t } = useTranslation(["Profile", "Common"]);
+  const { t } = useTranslation(["Notifications", "Common"]);
   const { history } = props;
 
   const onButtonClick = () => {

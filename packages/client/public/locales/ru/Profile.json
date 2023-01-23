@@ -16,7 +16,6 @@
   "LogoutBtn": "Выйти",
   "LogoutDescription": "Внимание. Все активные подключения, кроме этого подключения, будут отключены, так как оно используется в данный момент.",
   "LogoutFrom": "Выйти из {{platform}} {{browser}} ?",
-  "ManageNotifications": "Управление",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "MyProfile": "Мой профайл",
   "PhoneLbl": "Основной телефон",

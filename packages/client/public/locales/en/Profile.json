@@ -16,7 +16,6 @@
   "LogoutBtn": "Log out",
   "LogoutDescription": "Note. All active connections except this connection will be logged out, as it is currently in use.",
   "LogoutFrom": "Log out from {{platform}} {{browser}} ?",
-  "ManageNotifications": "Manage",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
   "PhoneLbl": "Phone",
