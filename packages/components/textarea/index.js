@@ -12,7 +12,7 @@ import { isJSON, beautifyJSON } from "./utils";
 
 import copy from "copy-to-clipboard";
 
-import copyIcon from "./svg/copyIcon.svg";
+import { copyIcon } from "./svg";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
