@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
-const UsefulTipsContainer = ({ t, isEnable }) => {
-  const [isEnableEmail, setIsEnableEmail] = useState(isEnable);
+import { inject, observer } from "mobx-react";
 
-  const onChangeEmailSubscription = (e) => {
+const UsefulTipsContainer = ({
+  t,
+  changeTipsSubscription,
+  tipsSubscription,
+}) => {
+  const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
-    setIsEnableEmail(checked);
+    changeTipsSubscription(checked);
   };
 
   return (
@@ -25,9 +29,19 @@ const UsefulTipsContainer = ({ t, isEnable }) => {
       <ToggleButton
         className="toggle-btn"
         onChange={onChangeEmailSubscription}
-        isChecked={isEnableEmail}
+        isChecked={tipsSubscription}
       />
     </div>
   );
 };
-export default UsefulTipsContainer;
+
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { changeTipsSubscription, tipsSubscription } = targetUserStore;
+
+  return {
+    changeTipsSubscription,
+    tipsSubscription,
+  };
+})(observer(UsefulTipsContainer));

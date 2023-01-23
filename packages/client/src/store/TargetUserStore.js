@@ -10,22 +10,10 @@ class TargetUserStore {
 
   tipsSubscription = null;
 
-  roomsActionsSubscription = {
-    isEmailEnable: false,
-    isTelegramEnable: false,
-    isBadgeEnable: false,
-  };
-
-  dailyFeedSubscription = {
-    isEmailEnable: false,
-    isTelegramEnable: false,
-  };
-
   changeEmailVisible = false;
   changePasswordVisible = false;
   changeNameVisible = false;
   changeAvatarVisible = false;
-  isTelegramConnected = false;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -126,11 +114,13 @@ class TargetUserStore {
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 
-  getTipsSubscription = async () => {
-    const tipsSubscription = await api.settings.getTipsSubscription();
-    this.tipsSubscription = tipsSubscription;
+  setSubscriptions = async () => {
+    this.tipsSubscription = await api.settings.getTipsSubscription();
+  };
 
-    return this.tipsSubscription;
+  changeTipsSubscription = async (enabled) => {
+    this.tipsSubscription = enabled;
+    this.tipsSubscription = await api.settings.toggleTipsSubscription();
   };
 }
 

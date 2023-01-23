@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
 import styled from "styled-components";
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
+import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
 import Text from "@docspace/components/text";
+import { inject, observer } from "mobx-react";
+
 const StyledBodyContent = styled.div`
   .notification-container {
     display: grid;
@@ -24,7 +27,11 @@ const StyledTextContent = styled.div`
   height: 39px;
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 `;
-const SectionBodyContent = ({ t }) => {
+const SectionBodyContent = ({ t, setSubscriptions }) => {
+  useEffect(async () => {
+    await setSubscriptions();
+  }, []);
+
   return (
     <StyledBodyContent>
       <StyledTextContent>
@@ -40,10 +47,19 @@ const SectionBodyContent = ({ t }) => {
           {t("Common:Email")}
         </Text>
       </StyledTextContent>
+      <RoomsActivityContainer isEnable={true} t={t} />
       <DailyFeedContainer isEnable={true} t={t} />
-      <UsefulTipsContainer isEnable={true} t={t} />
+      <UsefulTipsContainer t={t} />
     </StyledBodyContent>
   );
 };
 
-export default SectionBodyContent;
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { setSubscriptions } = targetUserStore;
+
+  return {
+    setSubscriptions,
+  };
+})(observer(SectionBodyContent));
