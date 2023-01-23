@@ -54,6 +54,10 @@ const Wizard = (props) => {
     cultureNames,
     culture,
     timezone,
+    hashSettings,
+    setPortalOwner,
+    setWizardComplete,
+    getPortalSettings,
   } = props;
   const { t } = useTranslation(["Wizard", "Common"]);
 
@@ -65,6 +69,7 @@ const Wizard = (props) => {
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [timezones, setTimezones] = useState(null);
   const [selectedTimezone, setSelectedTimezone] = useState(null);
+  const [isCreated, setIsCreated] = useState(false);
 
   const refPassInput = useRef(null);
 
@@ -116,7 +121,6 @@ const Wizard = (props) => {
   }, []);
 
   const onEmailChangeHandler = (result) => {
-    console.log(result);
     setEmail(result.value);
     setHasErrorEmail(!result.isValid);
   };
@@ -125,12 +129,42 @@ const Wizard = (props) => {
     setPassword(e.target.value);
   };
 
+  const generatePassword = () => {
+    if (isCreated) return;
+    refPassInput.current.onGeneratePassword();
+  };
+
   const onLanguageSelect = (lang) => {
     setSelectedLanguage(lang);
   };
 
   const onTimezoneSelect = (timezone) => {
     setSelectedTimezone(timezone);
+  };
+
+  const onContinueClick = async () => {
+    setIsCreated(true);
+
+    const emailTrim = email.trim();
+    const analytics = true;
+    const hash = createPasswordHash(password, hashSettings);
+
+    try {
+      await setPortalOwner(
+        emailTrim,
+        hash,
+        selectedLanguage.key,
+        selectedTimezone.key,
+        wizardToken,
+        analytics
+      );
+      setWizardComplete();
+      getPortalSettings();
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+    } catch (error) {
+      console.error(error);
+      setIsCreated(false);
+    }
   };
 
   if (!isWizardLoaded)
@@ -156,6 +190,7 @@ const Wizard = (props) => {
             emailSettings={emailSettings}
             hasError={hasErrorEmail}
             onValidateInput={onEmailChangeHandler}
+            isDisabled={isCreated}
           />
           <PasswordInput
             className="wizard-password"
@@ -165,7 +200,7 @@ const Wizard = (props) => {
             scale={true}
             inputValue={password}
             passwordSettings={passwordSettings}
-            isDisabled={false}
+            isDisabled={isCreated}
             placeholder={t("Common:Password")}
             hideNewPasswordButton={true}
             isDisableTooltip={true}
@@ -179,14 +214,14 @@ const Wizard = (props) => {
             <IconButton
               size="12"
               iconName="/static/images/refresh.react.svg"
-              onClick={() => refPassInput.current.onGeneratePassword()}
+              onClick={generatePassword}
             />
             <Link
               className="generate-password-link"
               type="action"
               fontWeight={600}
               isHovered={true}
-              onClick={() => refPassInput.current.onGeneratePassword()}
+              onClick={generatePassword}
             >
               {t("GeneratePassword")}
             </Link>
@@ -208,7 +243,7 @@ const Wizard = (props) => {
               options={cultureNames}
               selectedOption={selectedLanguage}
               onSelect={onLanguageSelect}
-              isDisabled={false}
+              isDisabled={isCreated}
               scaled={isMobileOnly}
               scaledOptions={false}
               size="content"
@@ -230,7 +265,7 @@ const Wizard = (props) => {
               options={timezones}
               selectedOption={selectedTimezone}
               onSelect={onTimezoneSelect}
-              isDisabled={false}
+              isDisabled={isCreated}
               scaled={isMobileOnly}
               scaledOptions={false}
               size="content"
@@ -252,6 +287,7 @@ const Wizard = (props) => {
               label={t("License")}
               isChecked={agreeTerms}
               onChange={() => setAgreeTerms(!agreeTerms)}
+              isDisabled={isCreated}
             />
             <Link
               type="page"
@@ -272,7 +308,8 @@ const Wizard = (props) => {
             scale={true}
             primary
             label={t("Common:ContinueButton")}
-            //onClick={onContinueHandler}
+            isLoading={isCreated}
+            onClick={onContinueClick}
           />
         </FormWrapper>
       </WizardContainer>
