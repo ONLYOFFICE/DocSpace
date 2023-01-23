@@ -179,7 +179,7 @@ const Wizard = (props) => {
         </Text>
         <FormWrapper>
           <Text fontWeight={600} fontSize="16px" className="form-header">
-            {t("WizardTitle")}
+            {t("Desc")}
           </Text>
           <EmailInput
             name="wizard-email"
