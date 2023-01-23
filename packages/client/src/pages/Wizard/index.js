@@ -15,6 +15,7 @@ import Link from "@docspace/components/link";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
 import FieldContainer from "@docspace/components/field-container";
+import ErrorContainer from "@docspace/common/components/ErrorContainer";
 
 import Loader from "@docspace/components/loader";
 
@@ -71,6 +72,7 @@ const Wizard = (props) => {
   const [timezones, setTimezones] = useState(null);
   const [selectedTimezone, setSelectedTimezone] = useState(null);
   const [isCreated, setIsCreated] = useState(false);
+  const [errorInitWizard, setErrorInitWizard] = useState(false);
 
   const refPassInput = useRef(null);
 
@@ -112,6 +114,20 @@ const Wizard = (props) => {
           icon: select[0].icon,
         });
         setIsWizardLoaded(true);
+      })
+      .catch((error) => {
+        let errorMessage = "";
+        if (typeof err === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+        console.error(errorMessage);
+        setErrorInitWizard(true);
       });
   };
 
@@ -191,6 +207,16 @@ const Wizard = (props) => {
 
   if (!isWizardLoaded)
     return <Loader className="pageLoader" type="rombs" size="40px" />;
+
+  if (errorInitWizard)
+    return (
+      <ErrorContainer
+        headerText={t("Common:SomethingWentWrong")}
+        bodyText={t("ErrorInitWizard")}
+        buttonText={t("ErrorInitWizardButton")}
+        buttonUrl="/"
+      />
+    );
 
   return (
     <Wrapper>
