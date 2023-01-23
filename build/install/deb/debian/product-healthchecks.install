@@ -1,1 +1,1 @@
-../../../services/ASC.Web.HealthChecks.UI/service var/www/{{product}}/services/ASC.Web.HealthChecks.UI
+../../../publish/services/ASC.Web.HealthChecks.UI/service/* var/www/{{product}}/services/ASC.Web.HealthChecks.UI

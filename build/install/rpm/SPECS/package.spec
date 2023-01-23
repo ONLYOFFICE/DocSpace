@@ -152,7 +152,7 @@ AutoReqProv:    no
 Summary:        Healthchecks
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    healthchecks
 Healthchecks

@@ -178,7 +178,7 @@ Description: Description
 Package: {{product}}-healthchecks
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-healthchecks
