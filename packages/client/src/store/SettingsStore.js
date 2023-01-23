@@ -199,16 +199,16 @@ class SettingsStore {
 
   canConvert = (extension) => presentInArray(this.extsMustConvert, extension);
 
-  isMediaOrImage = (fileExst) => {
-    if (
-      this.extsVideo.includes(fileExst) ||
-      this.extsImage.includes(fileExst) ||
-      this.extsAudio.includes(fileExst)
-    ) {
-      return true;
-    }
-    return false;
-  };
+  // isMediaOrImage = (fileExst) => { TODO: no need, use the data from item
+  //   if (
+  //     this.extsVideo.includes(fileExst) ||
+  //     this.extsImage.includes(fileExst) ||
+  //     this.extsAudio.includes(fileExst)
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   isArchive = (extension) => presentInArray(this.extsArchive, extension);
 

@@ -288,6 +288,7 @@ class PasswordInput extends React.Component {
       <TooltipStyle>
         <StyledTooltipContainer
           forwardedAs="div"
+          fontSize="12px"
           title={this.props.tooltipPasswordTitle}
         >
           {this.props.tooltipPasswordTitle}
