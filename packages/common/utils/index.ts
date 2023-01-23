@@ -5,7 +5,7 @@ import DocseditorSvgUrl from "../../../public/images/logo/docseditor.svg?url";
 import LightSmallSvgUrl from "../../../public/images/logo/lightsmall.svg?url";
 import DocsEditoRembedSvgUrl from "../../../public/images/logo/docseditorembed.svg?url";
 import DarkLightSmallSvgUrl from "../../../public/images/logo/dark_lightsmall.svg?url";
-import FaviconIcoUrl from "../../../public/images/logo/favicon.ico?url";
+import FaviconIcoUrl from "../../../public/favicon.ico?url";
 
 import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
 import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
