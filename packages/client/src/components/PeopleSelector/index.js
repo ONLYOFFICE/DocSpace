@@ -164,9 +164,7 @@ const PeopleSelector = ({
       items={itemsList}
       isMultiSelect={isMultiSelect}
       selectedItems={selectedItems}
-      acceptButtonLabel={
-        acceptButtonLabel || t("PeopleTranslations:AddMembers")
-      }
+      acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
       onAccept={onAccept}
       withSelectAll={withSelectAll}
       selectAllLabel={selectAllLabel || t("AllAccounts")}

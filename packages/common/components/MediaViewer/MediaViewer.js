@@ -30,16 +30,26 @@ class MediaViewer extends React.Component {
   constructor(props) {
     super(props);
 
-    const item = props.playlist.find(
-      (file) => String(file.fileId) === String(props.currentFileId)
+    const { playlist, currentFileId, visible } = props;
+
+    const item = playlist.find(
+      (file) => String(file.fileId) === String(currentFileId)
     );
+
+    if (!item) {
+      console.error("MediaViewer: file not found in playlist", {
+        playlist,
+        currentFileId,
+      });
+      return;
+    }
 
     const playlistPos = item ? item.id : 0;
 
     this.state = {
-      visible: props.visible,
+      visible,
       allowConvert: true,
-      playlist: props.playlist,
+      playlist,
       playlistPos,
       fileUrl: item.src,
       canSwipeImage: true,
