@@ -5,6 +5,8 @@
   "DailyFeedDescription": "Читайте новости и события из вашего DocSpace в ежедневной ленте",
   "Notifications": "Уведомления",
   "RoomsActions": "Действия с файлами в комнатах",
+  "RoomsActivity": "Активность в комнатах",
+  "RoomsActivityDescription": "Ежечасные уведомления. Будьте в курсе всех событий в ваших комнатах",
   "UsefulTips": "Полезные советы DocSpace",
   "UsefulTipsDescription": "Получите полезные руководства о DocSpace"
 }
