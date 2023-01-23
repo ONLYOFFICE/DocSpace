@@ -73,7 +73,7 @@
   "PortalAccessSubTitle": "这一部分允许您为用户提供安全又方便的方式来访问门户网站。",
   "PortalNameEmpty": "账户名称为空",
   "PortalNameIncorrect": "账户名称不正确",
-  "PortalNameLength": "账户名称的长度必须在6至50个字符之间",
+  "PortalNameLength": "账户名称的长度必须在3至50个字符之间",
   "PortalRenaming": "门户重命名",
   "PortalRenamingDescription": "在此处，您可以更改您的门户地址。",
   "PortalRenamingLabelText": "新门户名称",

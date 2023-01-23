@@ -17,7 +17,6 @@ const StyledModalDialog = styled(ModalDialog)`
   }
 `;
 const SelectFolderDialogAsideView = ({
-  theme,
   t,
   isPanelVisible,
   onClose,
@@ -41,7 +40,6 @@ const SelectFolderDialogAsideView = ({
   const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
-      theme={theme}
       visible={isPanelVisible}
       onClose={onClose}
       withoutBodyScroll
@@ -49,11 +47,10 @@ const SelectFolderDialogAsideView = ({
       displayType="aside"
       isDoubleFooterLine
     >
-      <ModalDialog.Header theme={theme}>
+      <ModalDialog.Header>
         <StyledAsideHeader>
           {withFileSelectDialog && (
             <IconButton
-              theme={theme}
               className="selection-panel_aside-header-icon"
               size="16"
               iconName="/static/images/arrow.path.react.svg"
@@ -63,8 +60,8 @@ const SelectFolderDialogAsideView = ({
           {dialogName}
         </StyledAsideHeader>
       </ModalDialog.Header>
-      <ModalDialog.Body theme={theme}>
-        <StyledAsideBody theme={theme} header={!!header} footer={!!footer}>
+      <ModalDialog.Body>
+        <StyledAsideBody header={!!header} footer={!!footer}>
           <div className="selection-panel_aside-body">
             <div className="selection-panel_aside-header">
               <div>{header}</div>
@@ -86,7 +83,6 @@ const SelectFolderDialogAsideView = ({
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   parentId={parentId}
-                  theme={theme}
                   folderTree={resultingFolderTree}
                   onSelect={onSelectFolder}
                   withoutProvider={withoutProvider}
@@ -109,7 +105,6 @@ const SelectFolderDialogAsideView = ({
         {footer}
         <div>
           <Button
-            theme={theme}
             className="select-folder-dialog-buttons-save"
             primary
             scale

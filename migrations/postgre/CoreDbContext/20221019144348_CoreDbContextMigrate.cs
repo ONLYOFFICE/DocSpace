@@ -111,19 +111,19 @@ public partial class CoreDbContextMigrate : Migration
             schema: "onlyoffice",
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "visible" },
-            values: new object[] { -3, null, "free,thirdparty,total_size:2147483648,manager:1,room:12,usersInRoom:3", "startup", false });
+            values: new object[] { -3, null, "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3", "startup", false });
 
         migrationBuilder.InsertData(
             schema: "onlyoffice",
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "price", "product_id", "visible" },
-            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,thirdparty,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
+            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
 
         migrationBuilder.InsertData(
             schema: "onlyoffice",
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "visible" },
-            values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,restore,thirdparty,total_size:107374182400,file_size:100,manager:1", "trial", false });
+            values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1", "trial", false });
 
         migrationBuilder.CreateIndex(
             name: "last_modified_tenants_quotarow",
