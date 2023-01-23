@@ -107,29 +107,76 @@ const config = {
 
   module: {
     rules: [
-      /*{
-        test: /\.html$/i,
-        loader: "html-loader",
-        options: {
-          sources: {
-            urlFilter: (attribute, value, resourcePath) => {
-              // The `attribute` argument contains a name of the HTML attribute.
-              // The `value` argument contains a value of the HTML attribute.
-              // The `resourcePath` argument contains a path to the loaded HTML file.
+      // {
+      //   test: /\.html$/i,
+      //   loader: "html-loader",
+      //   options: {
+      //     // Disables attributes processing
+      //     // sources: true,
 
-              if (
-                /manifest\.json$/.test(value) ||
-                /favicon\.ico$/.test(value) ||
-                /appIcon-180\.png$/.test(value)
-              ) {
-                return false;
-              }
+      //     sources: {
+      //       list: [
+      //         // All default supported tags and attributes
+      //         "...",
+      //         {
+      //           tag: "link",
+      //           attribute: "href",
+      //           type: "src",
+      //           filter: (tag, attribute, attributes, resourcePath) => {
+      //             // The `tag` argument contains a name of the HTML tag.
+      //             // The `attribute` argument contains a name of the HTML attribute.
+      //             // The `attributes` argument contains all attributes of the tag.
+      //             // The `resourcePath` argument contains a path to the loaded HTML file.
 
-              return true;
-            },
-          },
-        },
-      },*/
+      //             const relValue = attributes.find((a) => a.name === "rel")
+      //               .value;
+
+      //             if (
+      //               relValue === "shortcut icon" ||
+      //               relValue === "manifest" ||
+      //               relValue === "apple-touch-icon" ||
+      //               relValue === "android-touch-icon"
+      //             ) {
+      //               return true;
+      //             }
+
+      //             if (/my-html\.html$/.test(resourcePath)) {
+      //               return false;
+      //             }
+
+      //             if (!/stylesheet/i.test(attributes.rel)) {
+      //               return false;
+      //             }
+
+      //             if (
+      //               attributes.type &&
+      //               attributes.type.trim().toLowerCase() !== "text/css"
+      //             ) {
+      //               return false;
+      //             }
+
+      //             return true;
+      //           },
+      //         },
+      //       ],
+      //       urlFilter: (attribute, value, resourcePath) => {
+      //         // The `attribute` argument contains a name of the HTML attribute.
+      //         // The `value` argument contains a value of the HTML attribute.
+      //         // The `resourcePath` argument contains a path to the loaded HTML file.
+
+      //         if (
+      //           // /manifest\.json$/.test(value) ||
+      //           /favicon\.ico$/.test(value) ||
+      //           /appIcon-180\.png$/.test(value)
+      //         ) {
+      //           return true;
+      //         }
+
+      //         return false;
+      //       },
+      //     },
+      //   },
+      // },
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
@@ -328,6 +375,8 @@ module.exports = (env, argv) => {
         publicPath: homepage,
         title: title,
         base: `${homepage}/`,
+        favicon: "../../public/favicon.ico",
+        hash: true,
       })
     );
   }
