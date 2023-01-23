@@ -16,6 +16,11 @@ import {
   fileCopyAs,
 } from "@docspace/common/api/files";
 import toastr from "@docspace/components/toast/toastr";
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@docspace/components/utils/device";
 class UploadDataStore {
   authStore;
   treeFoldersStore;
@@ -44,6 +49,8 @@ class UploadDataStore {
 
   isUploading = false;
   isUploadingAndConversion = false;
+
+  isConvertSingleFile = false;
 
   constructor(
     authStore,
@@ -81,6 +88,10 @@ class UploadDataStore {
         this[key] = uploadData[key];
       }
     }
+  };
+
+  setIsConvertSingleFile = (isConvertSingleFile) => {
+    this.isConvertSingleFile = isConvertSingleFile;
   };
 
   updateUploadedFile = (id, info) => {
@@ -230,9 +241,11 @@ class UploadDataStore {
     const secondConvertingWithPassword = file.hasOwnProperty("password");
     const conversionPositionIndex = file.hasOwnProperty("index");
 
-    const alreadyConverting = this.files.some(
+    let alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
     );
+
+    if (this.isConvertSingleFile) alreadyConverting = false;
 
     if (this.converted && !alreadyConverting) {
       this.filesToConversion = [];
@@ -261,6 +274,8 @@ class UploadDataStore {
           this.uploadedFilesHistory.push(file);
       }
     }
+
+    this.setIsConvertSingleFile(false);
   };
 
   getNewPercent = (uploadedSize, indexOfFile) => {
@@ -396,7 +411,16 @@ class UploadDataStore {
           }
 
           const percent = this.getConversationPercent(index + 1);
-          this.setConversionPercent(percent);
+          const numberFiles = this.files.filter((f) => f.needConvert).length;
+
+          if (
+            numberFiles === 1 &&
+            !(isMobile || isMobileUtils() || isTabletUtils())
+          ) {
+            this.setConversionPercent(progress);
+          } else {
+            this.setConversionPercent(percent);
+          }
         }
 
         if (progress === 100) {
@@ -1023,9 +1047,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -1061,9 +1091,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({

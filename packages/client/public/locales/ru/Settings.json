@@ -136,7 +136,7 @@
   "PortalIntegration": "Интеграция с порталом",
   "PortalNameEmpty": "Поле имя аккаунта не заполнено",
   "PortalNameIncorrect": "Неверное имя портала",
-  "PortalNameLength": "Имя учетной записи должно быть от 6 до 50 символов",
+  "PortalNameLength": "Имя учетной записи должно быть от 3 до 50 символов",
   "PortalRenaming": "Изменение имени портала",
   "PortalRenamingDescription": "Здесь вы можете изменить адрес портала.",
   "PortalRenamingLabelText": "Новое имя портала",

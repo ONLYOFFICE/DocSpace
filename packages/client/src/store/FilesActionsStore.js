@@ -967,6 +967,7 @@ class FilesActionStore {
 
     switch (action) {
       case "archive":
+        this.setGroupMenuBlocked(true);
         return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
             const lastResult = res && res[res.length - 1];
@@ -1022,8 +1023,12 @@ class FilesActionStore {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
-          .finally(() => clearActiveOperations(null, items));
+          .finally(() => {
+            clearActiveOperations(null, items);
+            this.setGroupMenuBlocked(false);
+          });
       case "unarchive":
+        this.setGroupMenuBlocked(true);
         return moveToFolder(myRoomsId, items)
           .then(async (res) => {
             const lastResult = res && res[res.length - 1];
@@ -1062,7 +1067,10 @@ class FilesActionStore {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
-          .finally(() => clearActiveOperations(null, items));
+          .finally(() => {
+            clearActiveOperations(null, items);
+            this.setGroupMenuBlocked(false);
+          });
       default:
         return;
     }
@@ -1894,7 +1902,7 @@ class FilesActionStore {
               )
             : null;
 
-        return openDocEditor(id, providerKey, tab);
+        return openDocEditor(id, providerKey, tab, null, !canWebEdit);
       }
 
       if (isMediaOrImage) {

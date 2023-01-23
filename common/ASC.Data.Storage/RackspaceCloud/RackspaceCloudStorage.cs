@@ -162,7 +162,7 @@ public class RackspaceCloudStorage : BaseStorage
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         return GetReadStreamAsync(domain, path, offset);
     }
