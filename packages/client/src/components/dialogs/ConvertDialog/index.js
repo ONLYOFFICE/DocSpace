@@ -27,6 +27,7 @@ const ConvertDialogComponent = (props) => {
     isRecentFolder,
     isFavoritesFolder,
     isShareFolder,
+    setIsConvertSingleFile,
   } = props;
 
   let rootFolderTitle = "";
@@ -50,6 +51,7 @@ const ConvertDialogComponent = (props) => {
     onClose();
 
     if (convertSingleFile) {
+      setIsConvertSingleFile(true);
       const item = {
         fileId: convertItem.id,
         toFolderId: folderId,
@@ -160,7 +162,11 @@ export default inject(
       isFavoritesFolder,
       isShareFolder,
     } = treeFoldersStore;
-    const { convertUploadedFiles, convertFile } = uploadDataStore;
+    const {
+      convertUploadedFiles,
+      convertFile,
+      setIsConvertSingleFile,
+    } = uploadDataStore;
     const {
       storeOriginalFiles,
       setStoreOriginal,
@@ -187,6 +193,7 @@ export default inject(
       isRecentFolder,
       isFavoritesFolder,
       isShareFolder,
+      setIsConvertSingleFile,
     };
   }
 )(withRouter(observer(ConvertDialog)));

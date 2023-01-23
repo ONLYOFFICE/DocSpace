@@ -72,7 +72,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,thirdparty,total_size:107374182400,file_size:100,manager:1",
+                            Features = "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0m,
                             Visible = false
@@ -80,7 +80,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,thirdparty,total_size:107374182400,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",
@@ -89,7 +89,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -3,
-                            Features = "free,thirdparty,total_size:2147483648,manager:1,room:12,usersInRoom:3",
+                            Features = "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                             Name = "startup",
                             Price = 0m,
                             Visible = false

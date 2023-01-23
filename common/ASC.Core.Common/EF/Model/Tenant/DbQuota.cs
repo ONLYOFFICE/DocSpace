@@ -59,7 +59,7 @@ public static class DbQuotaExtension
                     Tenant = -1,
                     Name = "trial",
                     Description = null,
-                    Features = "trial,audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:100,manager:1",
+                    Features = "trial,audit,ldap,sso,whitelabel,thirdparty,audit,restore,total_size:107374182400,file_size:100,manager:1",
                     Price = 0,
                     ProductId = null,
                     Visible = false
@@ -69,7 +69,7 @@ public static class DbQuotaExtension
                     Tenant = -2,
                     Name = "admin",
                     Description = null,
-                    Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
+                    Features = "audit,ldap,sso,whitelabel,thirdparty,audit,restore,total_size:107374182400,file_size:1024,manager:1",
                     Price = 30,
                     ProductId = "1002",
                     Visible = true
@@ -79,7 +79,7 @@ public static class DbQuotaExtension
                     Tenant = -3,
                     Name = "startup",
                     Description = null,
-                    Features = "free,thirdparty,total_size:2147483648,manager:1,room:12,usersInRoom:3",
+                    Features = "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                     Price = 0,
                     ProductId = null,
                     Visible = false

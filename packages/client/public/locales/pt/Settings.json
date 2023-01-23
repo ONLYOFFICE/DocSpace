@@ -68,7 +68,7 @@
   "PortalAccessSubTitle": "Esta secção permite-lhe fornecer aos utilizadores formas seguras e convenientes de aceder ao portal.",
   "PortalNameEmpty": "Não colocou um nome para a conta",
   "PortalNameIncorrect": "Nome de conta incorreto",
-  "PortalNameLength": "O nome da conta tem de ter entre 6 e 50 caracteres",
+  "PortalNameLength": "O nome da conta tem de ter entre 3 e 50 caracteres",
   "PortalRenaming": "Renomeação do Portal",
   "PortalRenamingDescription": "Aqui pode mudar o endereço do seu portal.",
   "PortalRenamingLabelText": "Novo nome de portal",
