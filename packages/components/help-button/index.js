@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Text from "@docspace/components/text";
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../utils/event";
@@ -80,7 +79,6 @@ class HelpButton extends React.Component {
           dataTip={dataTip}
           onClick={this.onClick}
         />
-
         {getContent ? (
           <Tooltip
             tooltipProps={tooltipProps}
@@ -145,7 +143,6 @@ HelpButton.propTypes = {
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   size: PropTypes.number,
-  label: PropTypes.string,
 };
 
 HelpButton.defaultProps = {
