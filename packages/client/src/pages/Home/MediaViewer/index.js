@@ -15,8 +15,6 @@ const FilesMediaViewer = (props) => {
     currentMediaFileId,
     deleteItemAction,
     setMediaViewerData,
-    mediaViewerMediaFormats,
-    mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
     userAccess,
@@ -29,7 +27,6 @@ const FilesMediaViewer = (props) => {
     setScrollToItem,
     setCurrentId,
     setBufferSelection,
-    mediaViewerAudioFormats,
     isFavoritesFolder,
     onClickFavorite,
     onShowInfoPanel,
@@ -41,6 +38,8 @@ const FilesMediaViewer = (props) => {
     onCopyAction,
     getIcon,
     onDuplicate,
+    extsImagePreviewed,
+    extsMediaPreviewed,
   } = props;
 
   useEffect(() => {
@@ -151,8 +150,6 @@ const FilesMediaViewer = (props) => {
     }
   };
 
-  const mediaFormats = [...mediaViewerMediaFormats, ...mediaViewerAudioFormats];
-
   return (
     visible && (
       <MediaViewer
@@ -181,8 +178,8 @@ const FilesMediaViewer = (props) => {
         getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
-        extsMediaPreviewed={mediaFormats} //TODO:
-        extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        extsMediaPreviewed={extsMediaPreviewed}
+        extsImagePreviewed={extsImagePreviewed}
         errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={!!previewFile}
         onChangeUrl={onChangeUrl}
@@ -221,7 +218,7 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage, extsAudio, getIcon } = settingsStore;
+    const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
     const { isFavoritesFolder } = treeFoldersStore;
 
     const {
@@ -244,9 +241,8 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: extsImage,
-      mediaViewerMediaFormats: extsVideo,
-      mediaViewerAudioFormats: extsAudio,
+      extsImagePreviewed,
+      extsMediaPreviewed,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,
