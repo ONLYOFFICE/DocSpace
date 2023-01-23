@@ -42,7 +42,6 @@ const Textarea = ({
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
   const [modifiedValue, setModifiedValue] = useState(value);
-  const toastRef = useRef(null);
 
   useEffect(() => {
     if (isJSONField) {
