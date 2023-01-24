@@ -29,7 +29,7 @@ using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
-[Scope]
+[Transient]
 internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 {
     private readonly CrossDao _crossDao;

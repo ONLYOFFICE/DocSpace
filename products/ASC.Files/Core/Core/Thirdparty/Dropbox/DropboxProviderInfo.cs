@@ -26,193 +26,13 @@
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-[Transient]
-[DebuggerDisplay("{CustomerTitle}")]
-internal class DropboxProviderInfo : IProviderInfo
-{
-    public OAuth20Token Token { get; set; }
-
-    internal Task<DropboxStorage> StorageAsync
-    {
-        get
-        {
-            if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
-            {
-                return _wrapper.CreateStorageAsync(Token, ID);
-            }
-
-            return Task.FromResult(_wrapper.Storage);
-        }
-    }
-
-    internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
-    public int ID { get; set; }
-    public Guid Owner { get; set; }
-    public string CustomerTitle { get; set; }
-    public DateTime CreateOn { get; set; }
-    public string RootFolderId => "dropbox-" + ID;
-    public string ProviderKey { get; set; }
-    public FolderType RootFolderType { get; set; }
-    public FolderType FolderType { get; set; }
-    public string FolderId { get; set; }
-    public bool Private { get; set; }
-    public bool HasLogo { get; set; }
-
-    private readonly DropboxStorageDisposableWrapper _wrapper;
-    private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;
-
-    public DropboxProviderInfo(
-        DropboxStorageDisposableWrapper wrapper,
-        DropboxProviderInfoHelper dropboxProviderInfoHelper
-        )
-    {
-        _wrapper = wrapper;
-        _dropboxProviderInfoHelper = dropboxProviderInfoHelper;
-    }
-
-    public void Dispose()
-    {
-        if (StorageOpened)
-        {
-            StorageAsync.Result.Close();
-        }
-    }
-
-    public async Task<bool> CheckAccessAsync()
-    {
-        try
-        {
-            await (await StorageAsync).GetUsedSpaceAsync();
-        }
-        catch (AggregateException)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public Task InvalidateStorageAsync()
-    {
-        if (_wrapper != null)
-        {
-            _wrapper.Dispose();
-        }
-
-        return CacheResetAsync();
-    }
-
-    public void UpdateTitle(string newtitle)
-    {
-        CustomerTitle = newtitle;
-    }
-
-    internal async Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
-    {
-        var storage = await StorageAsync;
-        return await _dropboxProviderInfoHelper.GetDropboxFolderAsync(storage, ID, dropboxFolderPath);
-    }
-
-    internal async Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
-    {
-        var storage = await StorageAsync;
-        return await _dropboxProviderInfoHelper.GetDropboxFileAsync(storage, ID, dropboxFilePath);
-    }
-
-    internal async Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
-    {
-        var storage = await StorageAsync;
-        return await _dropboxProviderInfoHelper.GetDropboxItemsAsync(storage, ID, dropboxFolderPath);
-    }
-
-    internal Task CacheResetAsync(Metadata dropboxItem)
-    {
-        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
-    }
-
-    internal Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
-    {
-        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
-    }
-
-    internal async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
-    {
-        var storage = await StorageAsync;
-        return await _dropboxProviderInfoHelper.GetThumbnailsAsync(storage, filePath, width, height);
-    }
-}
-
-[Scope(Additional = typeof(DropboxStorageDisposableWrapperExtention))]
-internal class DropboxStorageDisposableWrapper : IDisposable
-{
-    public DropboxStorage Storage { get; private set; }
-    private readonly IServiceProvider _serviceProvider;
-    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
-    private readonly ConsumerFactory _consumerFactory;
-
-    public DropboxStorageDisposableWrapper(IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper, ConsumerFactory consumerFactory)
-    {
-        _serviceProvider = serviceProvider;
-        _oAuth20TokenHelper = oAuth20TokenHelper;
-        _consumerFactory = consumerFactory;
-    }
-
-    public Task<DropboxStorage> CreateStorageAsync(OAuth20Token token, int id)
-    {
-        if (Storage != null && Storage.IsOpened)
-        {
-            return Task.FromResult(Storage);
-        }
-
-        return InternalCreateStorageAsync(token, id);
-    }
-
-    public async Task<DropboxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
-    {
-        var dropboxStorage = _serviceProvider.GetRequiredService<DropboxStorage>();
-
-        await CheckTokenAsync(token, id);
-
-        dropboxStorage.Open(token);
-
-        return Storage = dropboxStorage;
-    }
-
-    private Task CheckTokenAsync(OAuth20Token token, int id)
-    {
-        if (token == null)
-        {
-            throw new UnauthorizedAccessException("Cannot create Dropbox session with given token");
-        }
-
-        return InternalCheckTokenAsync(token, id);
-    }
-
-    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
-    {
-        if (token.IsExpired)
-        {
-            token = _oAuth20TokenHelper.RefreshToken<DropboxLoginProvider>(_consumerFactory, token);
-            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-            var authData = new AuthData(token: token.ToJson());
-            await dbDao.UpdateProviderInfoAsync(id, authData);
-        }
-    }
-
-    public void Dispose()
-    {
-        Storage?.Close();
-        Storage = null;
-    }
-}
-
 [Singletone]
 public class DropboxProviderInfoHelper
 {
+    private readonly ICache _cacheChildItems;
     private readonly TimeSpan _cacheExpiration;
     private readonly ICache _cacheFile;
     private readonly ICache _cacheFolder;
-    private readonly ICache _cacheChildItems;
     private readonly ICacheNotify<DropboxCacheItem> _cacheNotify;
 
     public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
@@ -252,49 +72,6 @@ public class DropboxProviderInfoHelper
         }, CacheNotifyAction.Remove);
     }
 
-    internal async Task<FolderMetadata> GetDropboxFolderAsync(DropboxStorage storage, int id, string dropboxFolderPath)
-    {
-        var folder = _cacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
-        if (folder == null)
-        {
-            folder = await storage.GetFolderAsync(dropboxFolderPath);
-            if (folder != null)
-            {
-                _cacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(_cacheExpiration));
-            }
-        }
-
-        return folder;
-    }
-
-    internal async ValueTask<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)
-    {
-        var file = _cacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
-        if (file == null)
-        {
-            file = await storage.GetFileAsync(dropboxFilePath);
-            if (file != null)
-            {
-                _cacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(_cacheExpiration));
-            }
-        }
-
-        return file;
-    }
-
-    internal async Task<List<Metadata>> GetDropboxItemsAsync(DropboxStorage storage, int id, string dropboxFolderPath)
-    {
-        var items = _cacheChildItems.Get<List<Metadata>>("dropbox-" + id + "-" + dropboxFolderPath);
-
-        if (items == null)
-        {
-            items = await storage.GetItemsAsync(dropboxFolderPath);
-            _cacheChildItems.Insert("dropbox-" + id + "-" + dropboxFolderPath, items, DateTime.UtcNow.Add(_cacheExpiration));
-        }
-
-        return items;
-    }
-
     internal async Task CacheResetAsync(int id, Metadata dropboxItem)
     {
         if (dropboxItem != null)
@@ -318,9 +95,239 @@ public class DropboxProviderInfoHelper
         }
     }
 
+    internal async ValueTask<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)
+    {
+        var file = _cacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
+        if (file == null)
+        {
+            file = await storage.GetFileAsync(dropboxFilePath);
+            if (file != null)
+            {
+                _cacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(_cacheExpiration));
+            }
+        }
+
+        return file;
+    }
+
+    internal async Task<FolderMetadata> GetDropboxFolderAsync(DropboxStorage storage, int id, string dropboxFolderPath)
+    {
+        var folder = _cacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
+        if (folder == null)
+        {
+            folder = await storage.GetFolderAsync(dropboxFolderPath);
+            if (folder != null)
+            {
+                _cacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(_cacheExpiration));
+            }
+        }
+
+        return folder;
+    }
+    internal async Task<List<Metadata>> GetDropboxItemsAsync(DropboxStorage storage, int id, string dropboxFolderPath)
+    {
+        var items = _cacheChildItems.Get<List<Metadata>>("dropbox-" + id + "-" + dropboxFolderPath);
+
+        if (items == null)
+        {
+            items = await storage.GetItemsAsync(dropboxFolderPath);
+            _cacheChildItems.Insert("dropbox-" + id + "-" + dropboxFolderPath, items, DateTime.UtcNow.Add(_cacheExpiration));
+        }
+
+        return items;
+    }
     internal Task<Stream> GetThumbnailsAsync(DropboxStorage storage, string filePath, int width, int height)
     {
         return storage.GetThumbnailsAsync(filePath, width, height);
+    }
+}
+
+[Transient]
+[DebuggerDisplay("{CustomerTitle}")]
+internal class DropboxProviderInfo : IProviderInfo
+{
+    private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;
+    private readonly DropboxStorageDisposableWrapper _wrapper;
+
+    public DropboxProviderInfo(
+        DropboxStorageDisposableWrapper wrapper,
+        DropboxProviderInfoHelper dropboxProviderInfoHelper
+        )
+    {
+        _wrapper = wrapper;
+        _dropboxProviderInfoHelper = dropboxProviderInfoHelper;
+    }
+
+    public DateTime CreateOn { get; set; }
+    public string CustomerTitle { get; set; }
+    public string FolderId { get; set; }
+    public FolderType FolderType { get; set; }
+    public bool HasLogo { get; set; }
+    public int ID { get; set; }
+    public Guid Owner { get; set; }
+    public bool Private { get; set; }
+    public string ProviderKey { get; set; }
+    public string RootFolderId => "dropbox-" + ID;
+    public FolderType RootFolderType { get; set; }
+    public OAuth20Token Token { get; set; }
+    internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
+
+    internal Task<DropboxStorage> StorageAsync
+    {
+        get
+        {
+            if (!_wrapper.TryGetStorage(ID, out var storage) || !storage.IsOpened)
+            {
+                return _wrapper.CreateStorageAsync(Token, ID);
+            }
+
+            return Task.FromResult(storage);
+        }
+    }
+
+    public async Task<bool> CheckAccessAsync()
+    {
+        try
+        {
+            await (await StorageAsync).GetUsedSpaceAsync();
+        }
+        catch (AggregateException)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void Dispose()
+    {
+        if (StorageOpened)
+        {
+            StorageAsync.Result.Close();
+        }
+    }
+    public Task InvalidateStorageAsync()
+    {
+        if (_wrapper != null)
+        {
+            _wrapper.Dispose();
+        }
+
+        return CacheResetAsync();
+    }
+
+    public void UpdateTitle(string newtitle)
+    {
+        CustomerTitle = newtitle;
+    }
+
+    internal Task CacheResetAsync(Metadata dropboxItem)
+    {
+        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
+    }
+
+    internal Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
+    {
+        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
+    }
+
+    internal async Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
+    {
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxFileAsync(storage, ID, dropboxFilePath);
+    }
+
+    internal async Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
+    {
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxFolderAsync(storage, ID, dropboxFolderPath);
+    }
+
+    internal async Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
+    {
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetDropboxItemsAsync(storage, ID, dropboxFolderPath);
+    }
+
+    internal async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _dropboxProviderInfoHelper.GetThumbnailsAsync(storage, filePath, width, height);
+    }
+}
+
+[Scope(Additional = typeof(DropboxStorageDisposableWrapperExtention))]
+internal class DropboxStorageDisposableWrapper : IDisposable
+{
+    private readonly ConsumerFactory _consumerFactory;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ConcurrentDictionary<int, DropboxStorage> _storages =
+        new ConcurrentDictionary<int, DropboxStorage>();
+
+    public DropboxStorageDisposableWrapper(IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper, ConsumerFactory consumerFactory)
+    {
+        _serviceProvider = serviceProvider;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+        _consumerFactory = consumerFactory;
+    }
+
+    public Task<DropboxStorage> CreateStorageAsync(OAuth20Token token, int id)
+    {
+        if (TryGetStorage(id, out var storage) && storage.IsOpened)
+        {
+            return Task.FromResult(storage);
+        }
+
+        return InternalCreateStorageAsync(token, id);
+    }
+
+    public bool TryGetStorage(int id, out DropboxStorage storage)
+    {
+        return _storages.TryGetValue(id, out storage);
+    }
+
+    public void Dispose()
+    {
+        foreach (var (key, storage) in _storages)
+        {
+            storage.Close();
+            _storages.Remove(key, out _);
+        }
+    }
+
+    public async Task<DropboxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+    {
+        var dropboxStorage = ActivatorUtilities.CreateInstance<DropboxStorage>(_serviceProvider);
+
+        await CheckTokenAsync(token, id);
+
+        dropboxStorage.Open(token);
+
+        _storages.TryAdd(id, dropboxStorage);
+
+        return dropboxStorage;
+    }
+
+    private Task CheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token == null)
+        {
+            throw new UnauthorizedAccessException("Cannot create Dropbox session with given token");
+        }
+
+        return InternalCheckTokenAsync(token, id);
+    }
+
+    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token.IsExpired)
+        {
+            token = _oAuth20TokenHelper.RefreshToken<DropboxLoginProvider>(_consumerFactory, token);
+            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+            var authData = new AuthData(token: token.ToJson());
+            await dbDao.UpdateProviderInfoAsync(id, authData);
+        }
     }
 }
 
