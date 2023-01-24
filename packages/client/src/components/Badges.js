@@ -1,3 +1,8 @@
+﻿import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
+import AccessEditFormReactSvgUrl from "PUBLIC_DIR/images/access.edit.form.react.svg?url";
+import FileActionsConvertEditDocReactSvgUrl from "PUBLIC_DIR/images/file.actions.convert.edit.doc.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Badge from "@docspace/components/badge";
@@ -102,17 +107,13 @@ const Badges = ({
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
   const iconForm =
-    sizeBadge === "medium"
-      ? "/static/images/access.edit.form.medium.react.svg"
-      : "/static/images/access.edit.form.react.svg";
+    sizeBadge === "medium" ? FormFillRectSvgUrl : AccessEditFormReactSvgUrl;
 
-  const iconEdit = !isForm
-    ? "/static/images/file.actions.convert.edit.doc.react.svg"
-    : iconForm;
+  const iconEdit = !isForm ? FileActionsConvertEditDocReactSvgUrl : iconForm;
 
-  const iconRefresh = "/static/images/refresh.react.svg";
+  const iconRefresh = RefreshReactSvgUrl;
 
-  const iconPin = "images/unpin.react.svg";
+  const iconPin = UnpinReactSvgUrl;
 
   const unpinIconProps = {
     "data-id": id,

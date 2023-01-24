@@ -1,3 +1,4 @@
+﻿import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 
@@ -17,7 +18,7 @@ const SecondaryInfoButton = ({ content }) => {
     <StyledHelpButton
       displayType="auto"
       className="set_room_params-info-title-help"
-      iconName="/static/images/info.react.svg"
+      iconName={InfoReactSvgUrl}
       tooltipProps={{ globalEventOff: "click" }}
       tooltipContent={content}
       offsetRight={0}

@@ -1,3 +1,7 @@
+import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
+import EmptyScreenPersonsSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
+
 import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -80,14 +84,16 @@ const PeopleSelector = ({
   }, [isLoading]);
 
   const toListItem = (item) => {
-    const { id, email, avatar, icon, displayName } = item;
+    const { id, email, avatar, icon, displayName, hasAvatar } = item;
 
     const role = getUserRole(item);
+
+    const userAvatar = hasAvatar ? avatar : DefaultUserPhoto;
 
     return {
       id,
       email,
-      avatar,
+      avatar: userAvatar,
       icon,
       label: displayName || email,
       role,
@@ -204,9 +210,9 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 
 PeopleSelector.defaultProps = {
   excludeItems: [],
-  selectAllIcon: "/static/images/catalog.accounts.react.svg",
-  emptyScreenImage: "images/empty_screen_persons.svg",
-  searchEmptyScreenImage: "images/empty_screen_persons.svg",
+  selectAllIcon: CatalogAccountsReactSvgUrl,
+  emptyScreenImage: EmptyScreenPersonsSvgUrl,
+  searchEmptyScreenImage: EmptyScreenPersonsSvgUrl,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {

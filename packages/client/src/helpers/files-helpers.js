@@ -1,3 +1,11 @@
+﻿import CatalogQuestionReactSvgUrl from "PUBLIC_DIR/images/catalog.question.react.svg?url";
+import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
+import AccessReviewReactSvgUrl from "PUBLIC_DIR/images/access.review.react.svg?url";
+import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
+import AccessFormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
+import CustomFilterReactSvgUrl from "PUBLIC_DIR/images/custom.filter.react.svg?url";
 import { EDITOR_PROTOCOL } from "./filesConstants";
 import { combineUrl } from "@docspace/common/utils";
 import { homepage } from "PACKAGE_FILE";
@@ -11,21 +19,21 @@ export const presentInArray = (array, search, caseInsensitive = false) => {
 export const getAccessIcon = (access) => {
   switch (access) {
     case 1:
-      return "/static/images/access.edit.react.svg";
+      return AccessEditReactSvgUrl;
     case 2:
-      return "/static/images/eye.react.svg";
+      return EyeReactSvgUrl;
     case 3:
-      return "/static/images/access.none.react.svg";
+      return AccessNoneReactSvgUrl;
     case 4:
-      return "images/catalog.question.react.svg";
+      return CatalogQuestionReactSvgUrl;
     case 5:
-      return "/static/images/access.review.react.svg";
+      return AccessReviewReactSvgUrl;
     case 6:
-      return "/static/images/access.comment.react.svg";
+      return AccessCommentReactSvgUrl;
     case 7:
-      return "/static/images/access.form.react.svg";
+      return AccessFormReactSvgUrl;
     case 8:
-      return "/static/images/custom.filter.react.svg";
+      return CustomFilterReactSvgUrl;
     default:
       return;
   }

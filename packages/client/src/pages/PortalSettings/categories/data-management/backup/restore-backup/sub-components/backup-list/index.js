@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -229,7 +230,7 @@ class BackupListModalDialog extends React.Component {
                         <HelpButton
                           className="backup-list_tooltip"
                           offsetLeft={100}
-                          iconName={"/static/images/help.react.svg"}
+                          iconName={HelpReactSvgUrl}
                           getContent={helpContent}
                           tooltipMaxWidth={"286px"}
                         />

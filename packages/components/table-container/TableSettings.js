@@ -7,6 +7,7 @@ import {
   StyledSettingsIcon,
 } from "./StyledTableContainer";
 import Checkbox from "../checkbox";
+import SettingsDeskReactSvgUrl from "../../../public/images/settings.desc.react.svg?url";
 
 const TableSettings = ({ columns, infoPanelVisible }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +34,7 @@ const TableSettings = ({ columns, infoPanelVisible }) => {
       <StyledSettingsIcon
         size={12}
         isFill
-        iconName="/static/images/settings.desc.react.svg"
+        iconName={SettingsDeskReactSvgUrl}
         onClick={onClick}
         isDisabled={infoPanelVisible}
       />

@@ -1,3 +1,5 @@
+﻿import InfoEditReactSvgUrl from "PUBLIC_DIR/images/info.edit.react.svg?url";
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg";
 import React, { useState, useEffect } from "react";
 
 import Text from "@docspace/components/text";
@@ -29,7 +31,7 @@ const Item = ({
   const { avatar, displayName, email, id, errors, access } = item;
 
   const name = !!avatar ? (displayName !== "" ? displayName : email) : email;
-  const source = !!avatar ? avatar : "/static/images/@.react.svg";
+  const source = !!avatar ? avatar : AtReactSvgUrl;
 
   const [edit, setEdit] = useState(false);
   const [inputValue, setInputValue] = useState(name);
@@ -114,7 +116,7 @@ const Item = ({
       {hasError ? (
         <>
           <StyledHelpButton
-            iconName="/static/images/info.edit.react.svg"
+            iconName={InfoEditReactSvgUrl}
             displayType="auto"
             offsetRight={0}
             tooltipContent={t("EmailErrorMessage")}

@@ -18,6 +18,8 @@ import {
   StyledOuter,
 } from "./styled-context-menu-button";
 
+import VerticalDotsReactSvgUrl from "../../../public/images/vertical-dots.react.svg?url";
+
 class ContextMenuButton extends React.Component {
   constructor(props) {
     super(props);
@@ -340,7 +342,7 @@ ContextMenuButton.defaultProps = {
   opened: false,
   data: [],
   title: "",
-  iconName: "/static/images/vertical-dots.react.svg",
+  iconName: VerticalDotsReactSvgUrl,
   size: 16,
   isDisabled: false,
   directionX: "left",

@@ -2,6 +2,12 @@ import firebase from "firebase/app";
 import "firebase/remote-config";
 import "firebase/storage";
 
+import CampaignsCloudPngUrl from "../../../public/images/campaigns.cloud.png?url";
+import CampaignsDesktopPngUrl from "../../../public/images/campaigns.desktop.png?url";
+import CampaignsEducationPngUrl from "../../../public/images/campaigns.education.png?url";
+import CampaignsEnterprisePngUrl from "../../../public/images/campaigns.enterprise.png?url";
+import CampaignsIntegrationPngUrl from "../../../public/images/campaigns.integration.png?url";
+
 class FirebaseHelper {
   remoteConfig = null;
   firebaseConfig = null;
@@ -115,8 +121,24 @@ class FirebaseHelper {
   }
 
   async getCampaignsImages(banner) {
-    const domain = this.config["authDomain"];
-    return `https://${domain}/images/campaigns.${banner}.png`;
+    // const domain = this.config["authDomain"];
+
+    switch (banner) {
+      case "cloud":
+        return CampaignsCloudPngUrl;
+      case "desktop":
+        return CampaignsDesktopPngUrl;
+      case "education":
+        return CampaignsEducationPngUrl;
+      case "enterprise":
+        return CampaignsEnterprisePngUrl;
+      case "integration":
+        return CampaignsIntegrationPngUrl;
+      default:
+        return "";
+    }
+
+    // return `https://${domain}/images/campaigns.${banner}.png`;
   }
 
   async getCampaignsTranslations(banner, lng) {
