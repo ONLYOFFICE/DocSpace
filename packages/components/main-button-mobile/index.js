@@ -22,14 +22,14 @@ import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
-import ButtonAlertIcon from "../../../public/images/button.alert.react.svg";
+import ButtonAlertReactSvg from "../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
+const StyledButtonAlertIcon = styled(ButtonAlertReactSvg)`
   cursor: pointer;
   ${commonIconsStyles};
 `;

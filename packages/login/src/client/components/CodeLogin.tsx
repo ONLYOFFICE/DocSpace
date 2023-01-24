@@ -9,7 +9,7 @@ import { ReactSVG } from "react-svg";
 import { LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
-import { getBgPattern } from "@docspace/common/utils";
+import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import LoginContainer from "@docspace/common/components/LoginContainer";
@@ -72,7 +72,9 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   };
 
   const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+  const logoUrl = !theme?.isBase
+    ? getLogoFromPath(logo?.path?.dark)
+    : getLogoFromPath(logo?.path?.light);
 
   return (
     <LoginContainer id="code-page" theme={theme}>

@@ -6,9 +6,9 @@ import ReactDOMServer from "react-dom/server";
 import PropTypes from "prop-types";
 import NoUserSelect from "../../utils/commonStyles";
 import Base from "../../themes/base";
-import CatalogFolderIcon from "../../../../public/images/catalog.folder.react.svg";
-import CheckboxCheckedIcon from "../../../../public/images/checkbox.checked.react.svg";
-import CheckboxIndeterminateIcon from "../../../../public/images/checkbox.indeterminate.react.svg";
+import CatalogFolderReactSvg from "../../../../public/images/catalog.folder.react.svg";
+import CheckboxCheckedReactSvg from "../../../../public/images/checkbox.checked.react.svg";
+import CheckboxIndeterminateReactSvg from "../../../../public/images/checkbox.indeterminate.react.svg";
 import CheckboxIcon from "../../../../public/images/checkbox.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
@@ -19,14 +19,14 @@ const StyledCheckboxIcon = styled(CheckboxIcon)`
 
 StyledCheckboxIcon.defaultProps = { theme: Base };
 
-const StyledCheckboxCheckedIcon = styled(CheckboxCheckedIcon)`
+const StyledCheckboxCheckedIcon = styled(CheckboxCheckedReactSvg)`
   color: ${(props) => props.theme.checkbox.arrowColor};
   ${commonIconsStyles}
 `;
 
 StyledCheckboxCheckedIcon.defaultProps = { theme: Base };
 
-const StyledCheckboxIndeterminateIcon = styled(CheckboxIndeterminateIcon)`
+const StyledCheckboxIndeterminateIcon = styled(CheckboxIndeterminateReactSvg)`
   color: ${(props) => props.theme.checkbox.indeterminateColor};
   ${commonIconsStyles}
 `;
@@ -101,7 +101,7 @@ var checkboxIcon,
   );
 
   treeIcon = getCssFromSvg(
-    ReactDOMServer.renderToString(<CatalogFolderIcon />)
+    ReactDOMServer.renderToString(<CatalogFolderReactSvg />)
   );
 })();
 

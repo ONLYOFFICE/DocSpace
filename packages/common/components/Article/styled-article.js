@@ -8,8 +8,8 @@ import {
 } from "@docspace/components/utils/device";
 
 import { Base } from "@docspace/components/themes";
-import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import MenuIcon from "../../../../public/images/menu.react.svg";
+import CrossIcon from "../../../../public/images/cross.react.svg";
 
 const StyledArticle = styled.article`
   position: relative;

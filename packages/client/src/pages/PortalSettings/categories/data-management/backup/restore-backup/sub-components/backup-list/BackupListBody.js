@@ -7,6 +7,7 @@ import Text from "@docspace/components/text";
 import RadioButton from "@docspace/components/radio-button";
 import TrashIcon from "PUBLIC_DIR/images/delete.react.svg";
 import { StyledBackupList } from "../../../StyledBackup";
+import FileArchive24SvgUrl from "PUBLIC_DIR/images/icons/24/file_archive.svg?url";
 
 const BackupListBody = ({
   filesList,
@@ -37,7 +38,7 @@ const BackupListBody = ({
           <StyledBackupList isChecked={isChecked}>
             <div className="backup-list_item">
               <ReactSVG
-                src={" /static/images/icons/24/file_archive.svg"}
+                src={FileArchive24SvgUrl}
                 className="backup-list_icon"
               />
 

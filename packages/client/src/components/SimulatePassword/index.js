@@ -1,3 +1,5 @@
+﻿import EyeOffReactSvgUrl from "PUBLIC_DIR/images/eye.off.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import React, { useState, useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -97,8 +99,8 @@ const SimulatePassword = memo(
 
     const iconName =
       inputType === "password"
-        ? "/static/images/eye.off.react.svg"
-        : "/static/images/eye.react.svg";
+        ? EyeOffReactSvgUrl
+        : EyeReactSvgUrl;
 
     useEffect(() => {
       onChange && onChange(password);

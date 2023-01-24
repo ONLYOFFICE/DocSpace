@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import CrossReactSvgUrl from "../../../../../public/images/cross.react.svg?url";
 
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
@@ -50,7 +51,7 @@ const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
       </Text>
       <IconButton
         className="selected-tag-removed"
-        iconName={"/static/images/cross.react.svg"}
+        iconName={CrossReactSvgUrl}
         size={12}
         onClick={onRemove}
         isFill

@@ -1253,9 +1253,12 @@ public class EntryManager
                 if (folder == null)
                 {
                     folder = new Folder<TSource> { Title = newFolderTitle, ParentId = folderId };
-                    folderId = await folderSourceDao.SaveFolderAsync(folder);
 
+                    folderId = await folderSourceDao.SaveFolderAsync(folder);
                     folder = await folderSourceDao.GetFolderAsync(folderId);
+
+                    await _socketManager.CreateFolderAsync(folder);
+
                     _filesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
                 }
 

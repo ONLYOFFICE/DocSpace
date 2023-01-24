@@ -1,3 +1,4 @@
+﻿import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
@@ -195,7 +196,7 @@ const ChangePortalOwnerDialog = ({
               <ReactSVG
                 className="cross-icon"
                 onClick={onClearSelectedItem}
-                src="/static/images/cross.react.svg"
+                src={CrossReactSvgUrl}
               />
             </StyledSelectedOwner>
 

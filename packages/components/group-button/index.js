@@ -12,11 +12,11 @@ import {
   StyledDropdownToggle,
   StyledGroupButton,
 } from "./styled-group-button";
-import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 import Base from "../themes/base";
 
-const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+const StyledExpanderDownIcon = styled(ExpanderDownReactSvg)`
   ${commonIconsStyles}
   path {
     color: ${(props) =>

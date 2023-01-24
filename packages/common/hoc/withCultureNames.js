@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import Loader from "@docspace/components/loader";
+import { flagsIcons } from "../utils/image-helpers";
 
 export default function withCultureNames(WrappedComponent) {
   const withCultureNames = (props) => {
@@ -19,7 +20,7 @@ export default function withCultureNames(WrappedComponent) {
         return {
           key: culture,
           label: t(`Culture_${culture}`),
-          icon: `/static/images/flags/${culture}.react.svg`,
+          icon: flagsIcons.get(`${culture}.react.svg`),
         };
       });
     };

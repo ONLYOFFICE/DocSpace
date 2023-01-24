@@ -1,2 +1,2 @@
-export { default as WarningIcon } from "./Warning.svg";
-export { default as DeleteIcon } from "./Delete.svg";
+export { default as WarningIconSvgUrl } from "../../../../public/images/Warning.svg?url";
+export { default as DeleteIconSvgUrl } from "../../../../public/images/Delete.svg?url";

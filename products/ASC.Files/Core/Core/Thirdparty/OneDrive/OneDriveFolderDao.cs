@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.OneDrive;
 
-[Scope]
+[Transient]
 internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 {
     private readonly CrossDao _crossDao;

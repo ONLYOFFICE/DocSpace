@@ -29,6 +29,7 @@ namespace ASC.Web.Files.Utils;
 public class SocketManager : SocketServiceClient
 {
     private readonly FileDtoHelper _filesWrapperHelper;
+    private readonly FolderDtoHelper _folderDtoHelper;
     private readonly TenantManager _tenantManager;
 
     public override string Hub => "files";
@@ -39,11 +40,12 @@ public class SocketManager : SocketServiceClient
         MachinePseudoKeys mashinePseudoKeys,
         IConfiguration configuration,
         FileDtoHelper filesWrapperHelper,
-        TenantManager tenantManager
-        ) : base(logger, clientFactory, mashinePseudoKeys, configuration)
+        TenantManager tenantManager,
+        FolderDtoHelper folderDtoHelper) : base(logger, clientFactory, mashinePseudoKeys, configuration)
     {
         _filesWrapperHelper = filesWrapperHelper;
         _tenantManager = tenantManager;
+        _folderDtoHelper = folderDtoHelper;
     }
 
     public async Task StartEdit<T>(T fileId)
@@ -72,6 +74,22 @@ public class SocketManager : SocketServiceClient
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
         await MakeRequest("create-file", new { room, fileId = file.Id, data });
+    }
+
+    public async Task CreateFolderAsync<T>(Folder<T> folder)
+    {
+        var room = GetFolderRoom(folder.ParentId);
+        var serializerSettings = new JsonSerializerOptions()
+        {
+            WriteIndented = false,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        serializerSettings.Converters.Add(new ApiDateTimeConverter());
+        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+        var data = JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), serializerSettings);
+
+        await MakeRequest("create-folder", new { room, folderId = folder.Id, data });
     }
 
     public async Task UpdateFileAsync<T>(File<T> file)

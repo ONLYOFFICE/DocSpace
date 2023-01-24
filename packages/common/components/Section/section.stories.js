@@ -17,6 +17,8 @@ import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";
 import { Router } from "react-router-dom";
+import ActionsHeaderTouchReactSvgUrl from "../../../../public/images/actions.header.touch.react.svg?url";
+
 const { authStore } = store;
 
 const HeaderContent = styled.div`
@@ -63,7 +65,7 @@ const sectionHeaderContent = (
     />
     <Headline type="content">Section Header</Headline>
     <IconButton
-      iconName={"static/images/actions.header.touch.react.svg"}
+      iconName={ActionsHeaderTouchReactSvgUrl}
       size="16"
       onClick={(e) => action("PlusIcon Clicked")(e)}
     />

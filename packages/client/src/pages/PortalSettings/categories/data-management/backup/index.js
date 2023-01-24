@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { withTranslation, Trans } from "react-i18next";
 import Submenu from "@docspace/components/submenu";
@@ -22,7 +23,7 @@ const Backup = ({
       <>
         <HelpButton
           place="bottom"
-          iconName={"/static/images/help.react.svg"}
+          iconName={HelpReactSvgUrl}
           tooltipContent={
             <>
               <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">

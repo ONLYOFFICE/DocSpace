@@ -1,3 +1,5 @@
+﻿import EmptyScreenFilterAltSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt.svg?url";
+import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -52,7 +54,7 @@ const EmptyFilterContainer = ({
         className="empty-folder_container-icon"
         size="12"
         onClick={onResetFilter}
-        iconName="/static/images/clear.empty.filter.svg"
+        iconName={ClearEmptyFilterSvgUrl}
         isFill
       />
       <Link onClick={onResetFilter} {...linkStyles}>
@@ -65,7 +67,7 @@ const EmptyFilterContainer = ({
     <EmptyContainer
       headerText={t("Common:NotFoundTitle")}
       descriptionText={descriptionText}
-      imageSrc="images/empty_screen_filter_alt.svg"
+      imageSrc={EmptyScreenFilterAltSvgUrl}
       buttons={buttons}
     />
   );

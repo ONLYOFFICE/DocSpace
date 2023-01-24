@@ -13,7 +13,7 @@ import Selector from "@docspace/components/selector";
   cancelButtonLabel="Cancel"
   emptyScreenDescription="The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time."
   emptyScreenHeader="No other accounts here yet"
-  emptyScreenImage="static/images/empty_screen_filter.png"
+  emptyScreenImage={EmptyScreenFilterPng}
   hasNextPage={false}
   headerLabel="Room list"
   items={[]}
@@ -30,11 +30,11 @@ import Selector from "@docspace/components/selector";
   rowLoader={<></>}
   searchEmptyScreenDescription=" SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time."
   searchEmptyScreenHeader="No other accounts here yet search"
-  searchEmptyScreenImage="static/images/empty_screen_filter.png"
+  searchEmptyScreenImage={EmptyScreenFilterPng}
   searchLoader={<></>}
   searchPlaceholder="Search"
   searchValue=""
-  selectAllIcon="static/images/room.archive.svg"
+  selectAllIcon={RoomArchiveSvgUrl}
   selectAllLabel="All accounts"
   selectedAccessRight={{}}
   selectedItems={[]}

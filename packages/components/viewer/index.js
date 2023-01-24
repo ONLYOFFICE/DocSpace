@@ -13,6 +13,7 @@ import IconButton from "@docspace/components/icon-button";
 
 import { isMobileOnly } from "react-device-detect";
 
+import ViewerMediaCloseSvgUrl from "../../../public/images/viewer.media.close.svg?url";
 import MediaNextIcon from "../../../public/images/viewer.next.react.svg";
 import MediaPrevIcon from "../../../public/images/viewer.prew.react.svg";
 import ViewerPlayer from "./sub-components/viewer-player";
@@ -215,7 +216,7 @@ export const Viewer = (props) => {
             >
               <IconButton
                 color={"#fff"}
-                iconName="/static/images/viewer.media.close.svg"
+                iconName={ViewerMediaCloseSvgUrl}
                 size={28}
                 isClickable
               />

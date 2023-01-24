@@ -20,9 +20,39 @@ import ThemeProvider from "@docspace/components/theme-provider";
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
+import PresentationIcoUrl from "../../../../public/images/presentation.ico";
+import SpreadSheetIcoUrl from "../../../../public/images/spreadsheet.ico";
+import TextIcoUrl from "../../../../public/images/text.ico";
+
 const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
+
+  //console.log(rest);
+
+  useEffect(() => {
+    let icon = "";
+
+    switch (rest?.config?.documentType) {
+      case "word":
+        icon = TextIcoUrl;
+        break;
+      case "slide":
+        icon = PresentationIcoUrl;
+        break;
+      case "cell":
+        icon = SpreadSheetIcoUrl;
+        break;
+      default:
+        break;
+    }
+
+    if (icon) {
+      const el = document.getElementById("favicon");
+
+      el.href = icon;
+    }
+  }, [rest?.config?.documentType]);
 
   useEffect(() => {
     const tempElm = document.getElementById("loader");
