@@ -51,7 +51,7 @@ public class BuilderQueue<T>
             new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
                 async (fileData, token) =>
             {
-                using var scope = _serviceScopeFactory.CreateScope();
+                await using var scope = _serviceScopeFactory.CreateAsyncScope();
                 var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                 commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
 

@@ -57,7 +57,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
     protected override async Task DoJob()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);

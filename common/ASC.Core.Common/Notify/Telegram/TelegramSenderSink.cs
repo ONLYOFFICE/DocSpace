@@ -45,7 +45,7 @@ class TelegramSenderSink : Sink
         {
             const SendResult result = SendResult.OK;
 
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<TelegramSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             await _sender.Send(m);
 
