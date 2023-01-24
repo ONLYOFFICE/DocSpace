@@ -360,7 +360,35 @@ class UploadDataStore {
       );
       if (historyFile) runInAction(() => (historyFile.inConversion = true));
 
-      const data = await convertFile(fileId, itemPassword);
+      const numberFiles = this.files.filter((f) => f.needConvert).length;
+
+      const res = convertFile(fileId, itemPassword)
+        .then((res) => res)
+        .catch(() => {
+          runInAction(() => {
+            const error = t("Failed to convert");
+
+            if (file) file.error = error;
+            if (historyFile) historyFile.error = error;
+          });
+
+          if (this.uploaded) {
+            const primaryProgressData = {
+              icon: "file",
+              alert: true,
+            };
+
+            this.primaryProgressDataStore.setPrimaryProgressBarData(
+              numberFiles === 1
+                ? { ...primaryProgressData, ...{ percent: 100 } }
+                : primaryProgressData
+            );
+          }
+
+          return null;
+        });
+
+      const data = await res;
 
       if (data && data[0]) {
         let progress = data[0].progress;
@@ -411,7 +439,6 @@ class UploadDataStore {
           }
 
           const percent = this.getConversationPercent(index + 1);
-          const numberFiles = this.files.filter((f) => f.needConvert).length;
 
           if (
             numberFiles === 1 &&
