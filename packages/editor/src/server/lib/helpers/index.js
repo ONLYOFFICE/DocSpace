@@ -14,6 +14,7 @@ import {
   // getShareFiles,
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
+import { TenantStatus } from "@docspace/common/constants";
 
 export const getFavicon = (documentType, logoUrls) => {
   const { homepage } = pkg;
@@ -73,20 +74,25 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    [
-      user,
-      settings,
-      filesSettings,
-      versionInfo,
-      appearanceTheme,
-      logoUrls,
-    ] = await Promise.all([
+    const baseSettings = [
       getUser(),
       getSettings(),
-      getSettingsFiles(),
-      getBuildVersion(),
       getAppearanceTheme(),
       getLogoUrls(),
+    ];
+
+    [user, settings, appearanceTheme, logoUrls] = await Promise.all(
+      baseSettings
+    );
+
+    if (settings.tenantStatus === TenantStatus.PortalRestore) {
+      error = "restore-backup";
+      return { error, logoUrls };
+    }
+
+    [filesSettings, versionInfo] = await Promise.all([
+      getSettingsFiles(),
+      getBuildVersion(),
     ]);
 
     const successAuth = !!user;
