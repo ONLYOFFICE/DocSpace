@@ -17,7 +17,6 @@ import { inject, observer } from "mobx-react";
 
 import MainButton from "@docspace/components/main-button";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
 import Loaders from "@docspace/common/components/Loaders";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { withRouter } from "react-router";
@@ -32,6 +31,8 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import toastr from "@docspace/components/toast/toastr";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
+
+import { resendInvitesAgain } from "@docspace/common/api/people";
 
 const StyledButton = styled(Button)`
   font-weight: 700;
@@ -202,9 +203,12 @@ const ArticleMainButtonContent = (props) => {
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
-    console.log("invite again");
-    toastr.warning("Work in progress (invite again)");
-  }, []);
+    resendInvitesAgain()
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
+  }, [resendInvitesAgain]);
 
   React.useEffect(() => {
     const isSettingFolder =
@@ -576,7 +580,14 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
+  withTranslation([
+    "Article",
+    "UploadPanel",
+    "Common",
+    "Files",
+    "People",
+    "PeopleTranslations",
+  ])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton height="28px" />
     )

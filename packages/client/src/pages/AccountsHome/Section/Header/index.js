@@ -27,6 +27,7 @@ import IconButton from "@docspace/components/icon-button";
 import toastr from "@docspace/components/toast/toastr";
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 import { EmployeeType } from "@docspace/common/constants";
+import { resendInvitesAgain } from "@docspace/common/api/people";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -223,9 +224,12 @@ const SectionHeaderContent = (props) => {
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
-    toastr.warning("Work in progress (invite again)");
-    console.log("invite again");
-  }, []);
+    resendInvitesAgain()
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
+  }, [resendInvitesAgain]);
 
   const onSetInfoPanelVisible = () => {
     setInfoPanelIsVisible(true);
