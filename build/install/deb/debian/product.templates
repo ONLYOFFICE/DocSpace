@@ -1,7 +1,7 @@
 Template: {{product}}/environment
 Type: string
 Default: production
-Description: Select environment for {{product}} configuration:
+_Description: Select environment for {{product}} configuration:
 
 Template: {{product}}/host
 Type: string
