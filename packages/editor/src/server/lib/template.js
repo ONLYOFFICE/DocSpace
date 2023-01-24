@@ -14,6 +14,8 @@ export default function template(
   const editorUrl = initialEditorState?.config?.editorUrl;
   const faviconHref = getFavicon(initialEditorState?.logoUrls);
 
+  console.log(faviconHref);
+
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
@@ -85,7 +87,8 @@ export default function template(
           <link rel="manifest" href="/manifest.json" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
-          <link rel="apple-touch-icon" href="/appIcon.png" />
+          <link rel="apple-touch-icon" href=${faviconHref} />
+          <link rel="android-touch-icon" href=${faviconHref} />
           ${styleTags}   
           <style type="text/css">
             .loadmask {

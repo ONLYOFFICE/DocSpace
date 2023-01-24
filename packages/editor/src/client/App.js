@@ -52,8 +52,6 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
 
       el.href = icon;
     }
-
-    console.log(icon);
   }, [rest?.config?.documentType]);
 
   useEffect(() => {
