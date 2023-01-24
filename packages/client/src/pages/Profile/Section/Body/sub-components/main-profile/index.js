@@ -10,7 +10,7 @@ import IconButton from "@docspace/components/icon-button";
 import { getUserRole } from "@docspace/common/utils";
 
 import LanguagesCombo from "./languagesCombo";
-import TimezoneCombo from "./timezoneCombo";
+//import TimezoneCombo from "./timezoneCombo";
 
 import {
   AvatarEditorDialog,
@@ -147,7 +147,7 @@ const MainProfile = (props) => {
           </div>
         </div>
         <LanguagesCombo t={t} />
-        <TimezoneCombo title={t("Common:ComingSoon")} />
+        {/* <TimezoneCombo title={t("Common:ComingSoon")} /> */}
       </StyledInfo>
 
       {changeEmailVisible && (

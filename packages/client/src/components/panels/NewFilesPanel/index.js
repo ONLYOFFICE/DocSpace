@@ -135,7 +135,6 @@ class NewFilesPanel extends React.Component {
       addFileToRecentlyViewed,
       playlist,
       setCurrentItem,
-      isMediaOrImage,
       currentFolderId,
     } = this.props;
 
@@ -145,10 +144,12 @@ class NewFilesPanel extends React.Component {
         .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
-      // const isMedia = [2, 3, 4].includes(fileType);
 
-      const isMedia = isMediaOrImage(fileExst);
       const isMediaActive = playlist.findIndex((el) => el.fileId === id) !== -1;
+
+      const isMedia =
+        item?.viewAccessability?.ImageView ||
+        item?.viewAccessability?.MediaView;
 
       if (canEdit && providerKey) {
         return addFileToRecentlyViewed(id)
@@ -336,7 +337,7 @@ export default inject(
       setMediaViewerData,
       setCurrentItem,
     } = mediaViewerDataStore;
-    const { getIcon, getFolderIcon, isMediaOrImage } = settingsStore;
+    const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts, id: currentFolderId } = selectedFolderStore;
 
@@ -357,7 +358,6 @@ export default inject(
 
       playlist,
       setCurrentItem,
-      isMediaOrImage,
       currentFolderId,
 
       //setIsLoading,

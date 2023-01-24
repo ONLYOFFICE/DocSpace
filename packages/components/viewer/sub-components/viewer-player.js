@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isIOS } from "react-device-detect";
 import { tablet } from "@docspace/components/utils/device";
 
 import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
@@ -577,7 +577,7 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleScreen = () => {
-    handleFullScreen(!state.isFullScreen);
+    !isIOS && handleFullScreen(!state.isFullScreen);
     setIsFullScreen(!state.isFullScreen);
 
     dispatch(

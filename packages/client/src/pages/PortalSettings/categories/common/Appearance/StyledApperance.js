@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledComponent = styled.div`
   padding-top: 3px;
   width: 100%;
+  max-width: 575px;
 
   .header {
     font-weight: 700;

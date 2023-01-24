@@ -16,6 +16,11 @@
     res.end();
   });
 
+  router.post("/create-folder", (req, res) => {
+    files.createFolder(req.body);
+    res.end();
+  });
+
   router.post("/update-file", (req, res) => {
     files.updateFile(req.body);
     res.end();
