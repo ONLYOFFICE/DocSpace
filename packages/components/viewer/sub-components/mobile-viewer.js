@@ -45,6 +45,7 @@ function MobileViewer({
     width: width,
     height: height,
     touchAction: "none",
+    willChange: "transform, opacity, contents",
   }));
   React.useEffect(() => {
     const point = maybeAdjustImage({
@@ -218,7 +219,6 @@ function MobileViewer({
         const x = memo[0] - (mScale - 1) * memo[2];
         const y = memo[1] - (mScale - 1) * memo[3];
 
-        setScale(style.scale.get());
         api.start({
           x,
           y,
