@@ -30,7 +30,6 @@ const template: Template = (
 
   const favicon = getLogoFromPath(initLoginState.logoUrls[2]?.path?.light);
 
-  console.log(favicon);
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
@@ -100,7 +99,12 @@ const template: Template = (
         <!-- <meta name="mobile-web-app-capable" content="yes" /> -->
         <!-- Tell iOS it's a PWA -->
         <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
-        <link rel="apple-touch-icon" href="/appIcon-180.png" />
+        <!-- <link rel="apple-touch-icon" href="/appIcon-180.png" /> -->
+
+        <link rel="apple-touch-icon" href=${favicon} />
+        <link rel="android-touch-icon" href=${favicon} />
+
+
         ${styleTags}   
 
         <style>
