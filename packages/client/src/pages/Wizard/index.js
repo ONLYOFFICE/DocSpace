@@ -77,7 +77,13 @@ const Wizard = (props) => {
 
   const refPassInput = useRef(null);
 
-  const convertedCulture = convertLanguage(culture);
+  const userCulture = window.navigator
+    ? window.navigator.language ||
+      window.navigator.systemLanguage ||
+      window.navigator.userLanguage
+    : culture;
+
+  const convertedCulture = convertLanguage(userCulture);
 
   const mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
