@@ -29,7 +29,9 @@ const serverConfig = {
 
       let folder = result.join("/");
 
-      return `${folder}/[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
+      folder += result.length === 0 ? "" : "/";
+
+      return `${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
     },
   },
 

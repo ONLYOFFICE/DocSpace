@@ -5,7 +5,7 @@ import DocseditorSvgUrl from "../../../public/images/logo/docseditor.svg?url";
 import LightSmallSvgUrl from "../../../public/images/logo/lightsmall.svg?url";
 import DocsEditoRembedSvgUrl from "../../../public/images/logo/docseditorembed.svg?url";
 import DarkLightSmallSvgUrl from "../../../public/images/logo/dark_lightsmall.svg?url";
-import FaviconIcoUrl from "../../../public/favicon.ico?url";
+import FaviconIco from "../../../public/favicon.ico";
 
 import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
 import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
@@ -519,7 +519,7 @@ export const getLogoFromPath = (path) => {
     case "docseditorembed.svg":
       return DocsEditoRembedSvgUrl;
     case "favicon.ico":
-      return FaviconIcoUrl;
+      return FaviconIco;
     default:
       break;
   }
