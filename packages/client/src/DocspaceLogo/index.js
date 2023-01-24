@@ -1,8 +1,9 @@
-import React from "react";
+﻿import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { hugeMobile } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledWrapper = styled.div`
   .logo-wrapper {
@@ -18,9 +19,11 @@ const StyledWrapper = styled.div`
 const DocspaceLogo = (props) => {
   const { className, whiteLabelLogoUrls, theme } = props;
 
-  const logo = !theme.isBase
-    ? whiteLabelLogoUrls[1]?.path?.dark
-    : whiteLabelLogoUrls[1]?.path?.light;
+  const logo = getLogoFromPath(
+    !theme.isBase
+      ? whiteLabelLogoUrls[1]?.path?.dark
+      : whiteLabelLogoUrls[1]?.path?.light
+  );
 
   return (
     <StyledWrapper>

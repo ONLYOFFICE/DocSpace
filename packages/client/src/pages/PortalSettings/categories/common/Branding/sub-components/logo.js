@@ -1,4 +1,6 @@
 import React from "react";
+import { getLogoFromPath } from "@docspace/common/utils";
+
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 
@@ -14,6 +16,8 @@ const Logo = (props) => {
     isEditor,
   } = props;
 
+  const currentLogo = getLogoFromPath(src);
+
   return (
     <div>
       <div className="logo-item">
@@ -24,12 +28,21 @@ const Logo = (props) => {
         )}
         {isEditor ? (
           <div className="logos-editor-wrapper">
-            <img className="logo-docs-editor background-green" src={src} />
-            <img className="logo-docs-editor background-blue" src={src} />
-            <img className="logo-docs-editor background-orange" src={src} />
+            <img
+              className="logo-docs-editor background-green"
+              src={currentLogo}
+            />
+            <img
+              className="logo-docs-editor background-blue"
+              src={currentLogo}
+            />
+            <img
+              className="logo-docs-editor background-orange"
+              src={currentLogo}
+            />
           </div>
         ) : (
-          <img className={imageClass} src={src} />
+          <img className={imageClass} src={currentLogo} />
         )}
       </div>
       <label>

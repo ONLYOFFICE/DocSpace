@@ -15,6 +15,8 @@ import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@docspace/components/scrollbar";
 import { ReactSVG } from "react-svg";
 import { classNames } from "../utils/classNames";
+import ExpanderDownReactSvgUrl from "../../../public/images/expander-down.react.svg?url";
+
 class LinkWithDropdown extends React.Component {
   constructor(props) {
     super(props);
@@ -159,10 +161,7 @@ class LinkWithDropdown extends React.Component {
             {withExpander ? (
               <StyledTextWithExpander isOpen={this.state.isOpen}>
                 {styledText}
-                <ReactSVG
-                  className="expander"
-                  src={"/static/images/expander-down.react.svg"}
-                />
+                <ReactSVG className="expander" src={ExpanderDownReactSvgUrl} />
               </StyledTextWithExpander>
             ) : (
               styledText

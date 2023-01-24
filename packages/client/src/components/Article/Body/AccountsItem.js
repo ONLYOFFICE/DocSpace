@@ -1,3 +1,4 @@
+﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import React from "react";
 import { withRouter } from "react-router";
 import CatalogItem from "@docspace/components/catalog-item";
@@ -7,7 +8,7 @@ import { combineUrl } from "@docspace/common/utils";
 import withLoader from "../../../HOCs/withLoader";
 import config from "PACKAGE_FILE";
 
-const iconUrl = "/static/images/catalog.accounts.react.svg";
+const iconUrl = CatalogAccountsReactSvgUrl;
 
 const PureAccountsItem = ({
   showText,

@@ -1,3 +1,4 @@
+﻿import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import React from "react";
 import ShareButton from "./ShareButton";
 import IconButton from "@docspace/components/icon-button";
@@ -26,7 +27,7 @@ const ActionsUploadedFile = ({ item, isPersonal, onCancelCurrentUpload }) => {
             percent={item.convertProgress}
           />
           <IconButton
-            iconName="/static/images/refresh.react.svg"
+            iconName={RefreshReactSvgUrl}
             className="convert_icon"
             size="medium"
             isfill={true}

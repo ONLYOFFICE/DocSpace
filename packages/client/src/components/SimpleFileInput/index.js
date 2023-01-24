@@ -1,3 +1,4 @@
+﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -66,7 +67,7 @@ const SimpleFileInput = ({
       <div className="icon" onClick={!isDisabled ? onClickInput : null}>
         <IconButton
           className="icon-button"
-          iconName={"/static/images/catalog.folder.react.svg"}
+          iconName={CatalogFolderReactSvgUrl}
           // color={"#A3A9AE"}
           isDisabled={isDisabled}
           size={iconSize}

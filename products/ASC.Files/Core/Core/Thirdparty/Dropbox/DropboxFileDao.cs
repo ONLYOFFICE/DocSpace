@@ -28,7 +28,7 @@ using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-[Scope]
+[Transient]
 internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 {
     private readonly CrossDao _crossDao;

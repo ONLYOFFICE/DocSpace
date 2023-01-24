@@ -543,7 +543,7 @@ function Editor({
       }
 
       if (successAuth) {
-        const documentType = config.documentType;
+        const documentType = config?.documentType;
 
         const fileExt =
           documentType === "word"

@@ -26,188 +26,12 @@
 
 namespace ASC.Files.Thirdparty.OneDrive;
 
-[Transient]
-[DebuggerDisplay("{CustomerTitle}")]
-internal class OneDriveProviderInfo : IProviderInfo
-{
-    public OAuth20Token Token { get; set; }
-
-    internal Task<OneDriveStorage> StorageAsync
-    {
-        get
-        {
-            if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
-            {
-                return _wrapper.CreateStorageAsync(Token, ID);
-            }
-
-            return Task.FromResult(_wrapper.Storage);
-        }
-    }
-
-    internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
-
-    public int ID { get; set; }
-    public Guid Owner { get; set; }
-    public string CustomerTitle { get; set; }
-    public DateTime CreateOn { get; set; }
-    public string RootFolderId => "onedrive-" + ID;
-    public string ProviderKey { get; set; }
-    public FolderType RootFolderType { get; set; }
-    public FolderType FolderType { get; set; }
-    public string FolderId { get; set; }
-    public bool Private { get; set; }
-    public bool HasLogo { get; set; }
-
-    private readonly OneDriveStorageDisposableWrapper _wrapper;
-    private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;
-
-    public OneDriveProviderInfo(
-        OneDriveStorageDisposableWrapper wrapper,
-        OneDriveProviderInfoHelper oneDriveProviderInfoHelper)
-    {
-        _wrapper = wrapper;
-        _oneDriveProviderInfoHelper = oneDriveProviderInfoHelper;
-    }
-
-    public void Dispose()
-    {
-        if (StorageOpened)
-        {
-            StorageAsync.Result.Close();
-        }
-    }
-
-    public async Task<bool> CheckAccessAsync()
-    {
-        try
-        {
-            var storage = await StorageAsync;
-
-            return await storage.CheckAccessAsync();
-        }
-        catch (AggregateException)
-        {
-            return false;
-        }
-    }
-
-    public Task InvalidateStorageAsync()
-    {
-        if (_wrapper != null)
-        {
-            _wrapper.Dispose();
-        }
-
-        return CacheResetAsync();
-    }
-
-    public void UpdateTitle(string newtitle)
-    {
-        CustomerTitle = newtitle;
-    }
-
-    internal async Task<Item> GetOneDriveItemAsync(string itemId)
-    {
-        var storage = await StorageAsync;
-
-        return await _oneDriveProviderInfoHelper.GetOneDriveItemAsync(storage, ID, itemId);
-    }
-
-    internal async Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
-    {
-        var storage = await StorageAsync;
-
-        return await _oneDriveProviderInfoHelper.GetOneDriveItemsAsync(storage, ID, onedriveFolderId);
-    }
-
-    internal Task CacheResetAsync(string onedriveId = null)
-    {
-        return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
-    }
-
-    internal async Task<Stream> GetThumbnailAsync(string onedriveId, int width, int height)
-    {
-        var storage = await StorageAsync;
-        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId, width, height);
-    }
-}
-
-[Scope(Additional = typeof(OneDriveProviderInfoExtention))]
-internal class OneDriveStorageDisposableWrapper : IDisposable
-{
-    internal OneDriveStorage Storage { get; private set; }
-    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
-
-    internal readonly ConsumerFactory ConsumerFactory;
-    internal readonly IServiceProvider ServiceProvider;
-
-    public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
-    {
-        ConsumerFactory = consumerFactory;
-        ServiceProvider = serviceProvider;
-        _oAuth20TokenHelper = oAuth20TokenHelper;
-    }
-
-    public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
-    {
-        if (Storage != null && Storage.IsOpened)
-        {
-            return Task.FromResult(Storage);
-        }
-
-        return InternalCreateStorageAsync(token, id);
-    }
-
-    private async Task<OneDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
-    {
-        var onedriveStorage = ServiceProvider.GetService<OneDriveStorage>();
-
-        await CheckTokenAsync(token, id);
-
-        onedriveStorage.Open(token);
-
-        return Storage = onedriveStorage;
-    }
-
-    private Task CheckTokenAsync(OAuth20Token token, int id)
-    {
-        if (token == null)
-        {
-            throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
-        }
-
-        return InternalCheckTokenAsync(token, id);
-    }
-
-    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
-    {
-        if (token.IsExpired)
-        {
-            token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
-
-            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
-            var authData = new AuthData(token: token.ToJson());
-            await dbDao.UpdateProviderInfoAsync(id, authData);
-        }
-    }
-
-    public void Dispose()
-    {
-        if (Storage != null && Storage.IsOpened)
-        {
-            Storage.Close();
-            Storage = null;
-        }
-    }
-}
-
 [Singletone]
 public class OneDriveProviderInfoHelper
 {
+    private readonly ICache _cacheChildItems;
     private readonly TimeSpan _cacheExpiration;
     private readonly ICache _cacheItem;
-    private readonly ICache _cacheChildItems;
     private readonly ICacheNotify<OneDriveCacheItem> _cacheNotify;
 
     public OneDriveProviderInfoHelper(ICacheNotify<OneDriveCacheItem> cacheNotify, ICache cache)
@@ -231,6 +55,24 @@ public class OneDriveProviderInfoHelper
                 _cacheItem.Remove("onedrive-" + i.Key);
             }
         }, CacheNotifyAction.Remove);
+    }
+
+    internal async Task CacheResetAsync(int id, string onedriveId = null)
+    {
+        var key = id + "-";
+        var item = new OneDriveCacheItem { Key = key };
+
+        if (string.IsNullOrEmpty(onedriveId))
+        {
+            item.ResetAll = true;
+        }
+        else
+        {
+            item.Key += onedriveId;
+        }
+
+        ResetMemoryCache(item);
+        await _cacheNotify.PublishAsync(item, CacheNotifyAction.Remove);
     }
 
     internal async Task<Item> GetOneDriveItemAsync(OneDriveStorage storage, int id, string itemId)
@@ -260,23 +102,9 @@ public class OneDriveProviderInfoHelper
 
         return items;
     }
-
-    internal async Task CacheResetAsync(int id, string onedriveId = null)
+    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
     {
-        var key = id + "-";
-        var item = new OneDriveCacheItem { Key = key };
-
-        if (string.IsNullOrEmpty(onedriveId))
-        {
-            item.ResetAll = true;
-        }
-        else
-        {
-            item.Key += onedriveId;
-        }
-
-        ResetMemoryCache(item);
-        await _cacheNotify.PublishAsync(item, CacheNotifyAction.Remove);
+        return await storage.GetThumbnailAsync(onedriveId, width, height);
     }
 
     private void ResetMemoryCache(OneDriveCacheItem i)
@@ -292,10 +120,189 @@ public class OneDriveProviderInfoHelper
             _cacheItem.Remove("onedrive-" + i.Key);
         }
     }
+}
 
-    internal async Task<Stream> GetThumbnailAsync(OneDriveStorage storage, string onedriveId, int width, int height)
+[Transient]
+[DebuggerDisplay("{CustomerTitle}")]
+internal class OneDriveProviderInfo : IProviderInfo
+{
+    private readonly OneDriveProviderInfoHelper _oneDriveProviderInfoHelper;
+    private readonly OneDriveStorageDisposableWrapper _wrapper;
+
+    public OneDriveProviderInfo(
+        OneDriveStorageDisposableWrapper wrapper,
+        OneDriveProviderInfoHelper oneDriveProviderInfoHelper)
     {
-        return await storage.GetThumbnailAsync(onedriveId, width, height);
+        _wrapper = wrapper;
+        _oneDriveProviderInfoHelper = oneDriveProviderInfoHelper;
+    }
+
+    public DateTime CreateOn { get; set; }
+    public string CustomerTitle { get; set; }
+    public string FolderId { get; set; }
+    public FolderType FolderType { get; set; }
+    public bool HasLogo { get; set; }
+    public int ID { get; set; }
+    public Guid Owner { get; set; }
+    public bool Private { get; set; }
+    public string ProviderKey { get; set; }
+    public string RootFolderId => "onedrive-" + ID;
+    public FolderType RootFolderType { get; set; }
+    public OAuth20Token Token { get; set; }
+    internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
+
+    internal Task<OneDriveStorage> StorageAsync
+    {
+        get
+        {
+            if (!_wrapper.TryGetStorage(ID, out var storage) || !storage.IsOpened)
+            {
+                return _wrapper.CreateStorageAsync(Token, ID);
+            }
+
+            return Task.FromResult(storage);
+        }
+    }
+
+    public async Task<bool> CheckAccessAsync()
+    {
+        try
+        {
+            var storage = await StorageAsync;
+
+            return await storage.CheckAccessAsync();
+        }
+        catch (AggregateException)
+        {
+            return false;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (StorageOpened)
+        {
+            StorageAsync.Result.Close();
+        }
+    }
+
+    public Task InvalidateStorageAsync()
+    {
+        if (_wrapper != null)
+        {
+            _wrapper.Dispose();
+        }
+
+        return CacheResetAsync();
+    }
+
+    public void UpdateTitle(string newtitle)
+    {
+        CustomerTitle = newtitle;
+    }
+
+    internal Task CacheResetAsync(string onedriveId = null)
+    {
+        return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
+    }
+
+    internal async Task<Item> GetOneDriveItemAsync(string itemId)
+    {
+        var storage = await StorageAsync;
+
+        return await _oneDriveProviderInfoHelper.GetOneDriveItemAsync(storage, ID, itemId);
+    }
+
+    internal async Task<List<Item>> GetOneDriveItemsAsync(string onedriveFolderId)
+    {
+        var storage = await StorageAsync;
+
+        return await _oneDriveProviderInfoHelper.GetOneDriveItemsAsync(storage, ID, onedriveFolderId);
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(string onedriveId, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _oneDriveProviderInfoHelper.GetThumbnailAsync(storage, onedriveId, width, height);
+    }
+}
+
+[Scope(Additional = typeof(OneDriveProviderInfoExtention))]
+internal class OneDriveStorageDisposableWrapper : IDisposable
+{
+    internal readonly ConsumerFactory ConsumerFactory;
+    internal readonly IServiceProvider ServiceProvider;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly ConcurrentDictionary<int, OneDriveStorage> _storages =
+        new ConcurrentDictionary<int, OneDriveStorage>();
+
+    public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
+    {
+        ConsumerFactory = consumerFactory;
+        ServiceProvider = serviceProvider;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+    }
+
+    public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
+    {
+        if (TryGetStorage(id, out var storage) && storage.IsOpened)
+        {
+            return Task.FromResult(storage);
+        }
+
+        return InternalCreateStorageAsync(token, id);
+    }
+
+    public bool TryGetStorage(int id, out OneDriveStorage storage)
+    {
+        return _storages.TryGetValue(id, out storage);
+    }
+
+    public void Dispose()
+    {
+        foreach (var (key, storage) in _storages)
+        {
+            if (storage.IsOpened)
+            {
+                storage.Close();
+                _storages.Remove(key, out _);
+            }
+        }
+    }
+
+    private Task CheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token == null)
+        {
+            throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
+        }
+
+        return InternalCheckTokenAsync(token, id);
+    }
+
+    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token.IsExpired)
+        {
+            token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
+
+            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
+            var authData = new AuthData(token: token.ToJson());
+            await dbDao.UpdateProviderInfoAsync(id, authData);
+        }
+    }
+
+    private async Task<OneDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+    {
+        var onedriveStorage = ActivatorUtilities.CreateInstance<OneDriveStorage>(ServiceProvider);
+
+        await CheckTokenAsync(token, id);
+
+        onedriveStorage.Open(token);
+
+        _storages.TryAdd(id, onedriveStorage);
+
+        return onedriveStorage;
     }
 }
 public static class OneDriveProviderInfoExtention

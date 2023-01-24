@@ -5,6 +5,9 @@ import toastr from "@docspace/components/toast/toastr";
 import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
+import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg";
+import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg";
+
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
 import { ShareAccessRights } from "@docspace/common/constants";
@@ -150,7 +153,7 @@ const Members = ({
             id="info_add-user"
             className={"icon"}
             title={t("Common:AddUsers")}
-            iconName="/static/images/person+.react.svg"
+            iconName={PersonPlusReactSvgUrl}
             isFill={true}
             onClick={onClickInviteUsers}
             size={16}
@@ -183,7 +186,7 @@ const Members = ({
             <IconButton
               className={"icon"}
               title={t("Common:RepeatInvitation")}
-              iconName="/static/images/e-mail+.react.svg"
+              iconName={EmailPlusReactSvgUrl}
               isFill={true}
               onClick={onRepeatInvitation}
               size={16}

@@ -1,5 +1,5 @@
 import Tooltip from "@docspace/components/tooltip";
-import LoadErrorIcon from "@docspace/client/public/images/load.error.react.svg";
+import LoadErrorIcon from "PUBLIC_DIR/images/load.error.react.svg";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
 import React from "react";
