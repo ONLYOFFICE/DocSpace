@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: {{product}}\n"
-"Report-Msgid-Bugs-To: {{product}}@packages.debian.org\n"
+"Report-Msgid-Bugs-To: support@onlyoffice.com\n"
 "POT-Creation-Date: 2023-01-24 18:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
