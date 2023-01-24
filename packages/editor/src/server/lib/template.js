@@ -14,8 +14,6 @@ export default function template(
   const editorUrl = initialEditorState?.config?.editorUrl;
   const faviconHref = getFavicon(initialEditorState?.logoUrls);
 
-  console.log(faviconHref);
-
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
       ? `<script defer="defer" src='${assets["client.js"]}'></script>`
