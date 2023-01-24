@@ -137,6 +137,7 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
+    console.error("initDocEditor failed", err);
     let message = "";
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;
