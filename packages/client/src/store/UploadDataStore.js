@@ -366,7 +366,7 @@ class UploadDataStore {
         .then((res) => res)
         .catch(() => {
           runInAction(() => {
-            const error = t("Failed to convert");
+            const error = t("FailedToConvert");
 
             if (file) file.error = error;
             if (historyFile) historyFile.error = error;
