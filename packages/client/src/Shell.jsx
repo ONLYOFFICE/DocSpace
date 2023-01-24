@@ -178,6 +178,20 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       document.getElementsByTagName("head")[0].appendChild(link);
     }
     link.href = favicon;
+
+    const shortcutIconLink = document.querySelector("#favicon");
+    shortcutIconLink.href = favicon;
+
+    const appleIconLink = document.querySelector(
+      "link[rel~='apple-touch-icon']"
+    );
+
+    if (appleIconLink) appleIconLink.href = favicon;
+
+    const androidIconLink = document.querySelector(
+      "link[rel~='android-touch-icon']"
+    );
+    if (androidIconLink) androidIconLink.href = favicon;
   }, [whiteLabelLogoUrls]);
 
   useEffect(() => {
