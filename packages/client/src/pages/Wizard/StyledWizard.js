@@ -108,7 +108,7 @@ export const StyledAcceptTerms = styled.div`
   align-items: center;
   gap: 0.3em;
   padding-top: 12px;
-  padding-bottom: 24px;
+  padding-bottom: 8px;
 
   .wizard-checkbox svg {
     margin-right: 8px;

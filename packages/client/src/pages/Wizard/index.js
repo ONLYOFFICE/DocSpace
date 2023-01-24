@@ -68,6 +68,7 @@ const Wizard = (props) => {
   const [password, setPassword] = useState("");
   const [hasErrorPass, setHasErrorPass] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [hasErrorAgree, setHasErrorAgree] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [timezones, setTimezones] = useState(null);
   const [selectedTimezone, setSelectedTimezone] = useState(null);
@@ -163,6 +164,11 @@ const Wizard = (props) => {
     setSelectedTimezone(timezone);
   };
 
+  const onAgreeTermsChange = () => {
+    if (hasErrorAgree && !agreeTerms) setHasErrorAgree(false);
+    setAgreeTerms(!agreeTerms);
+  };
+
   const validateFields = () => {
     const emptyEmail = email.trim() === "";
     const emptyPassword = password.trim() === "";
@@ -170,10 +176,20 @@ const Wizard = (props) => {
     if (emptyEmail || emptyPassword) {
       emptyEmail && setHasErrorEmail(true);
       emptyPassword && setHasErrorPass(true);
-      return false;
     }
 
-    if (hasErrorEmail || hasErrorPass || !agreeTerms) return false;
+    if (!agreeTerms) {
+      setHasErrorAgree(true);
+    }
+
+    if (
+      emptyEmail ||
+      emptyPassword ||
+      hasErrorEmail ||
+      hasErrorPass ||
+      !agreeTerms
+    )
+      return false;
 
     return true;
   };
@@ -343,30 +359,39 @@ const Wizard = (props) => {
             />
           </StyledInfo>
 
-          <StyledAcceptTerms>
-            <Checkbox
-              className="wizard-checkbox"
-              id="license"
-              name="confirm"
-              label={t("License")}
-              isChecked={agreeTerms}
-              onChange={() => setAgreeTerms(!agreeTerms)}
-              isDisabled={isCreated}
-            />
-            <Link
-              type="page"
-              color={theme.client.wizard.linkColor}
-              fontSize="13px"
-              target="_blank"
-              href={
-                urlLicense
-                  ? urlLicense
-                  : "https://gnu.org/licenses/gpl-3.0.html"
-              }
-            >
-              {t("LicenseLink")}
-            </Link>
-          </StyledAcceptTerms>
+          <FieldContainer
+            className="wizard-field"
+            isVertical={true}
+            labelVisible={false}
+            hasError={hasErrorAgree}
+            errorMessage={t("ErrorLicenseRead")}
+          >
+            <StyledAcceptTerms>
+              <Checkbox
+                className="wizard-checkbox"
+                id="license"
+                name="confirm"
+                label={t("License")}
+                isChecked={agreeTerms}
+                onChange={onAgreeTermsChange}
+                isDisabled={isCreated}
+              />
+              <Link
+                type="page"
+                color={theme.client.wizard.linkColor}
+                fontSize="13px"
+                target="_blank"
+                href={
+                  urlLicense
+                    ? urlLicense
+                    : "https://gnu.org/licenses/gpl-3.0.html"
+                }
+              >
+                {t("LicenseLink")}
+              </Link>
+            </StyledAcceptTerms>
+          </FieldContainer>
+
           <Button
             size="medium"
             scale={true}
