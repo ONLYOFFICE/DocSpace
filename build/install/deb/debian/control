@@ -9,7 +9,7 @@ Architecture: any
 
 Package: {{product}}
 Architecture: any
-Depends: debconf,
+Depends: debconf, po-debconf,
          ${misc:Depends}, ${shlibs:Depends},
          {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-backup (= {{package_header_tag_version}}),

@@ -1,0 +1,63 @@
+#: ../templates:4
+msgid "Select environment for {{product}} configuration:"
+msgstr "Выберите наименование среды для конфигурации {{product}}:"
+
+#: ../templates:9
+msgid "{{product}} host:"
+msgstr "{{product}} хост:"
+
+#: ../templates:14
+msgid "{{product}} listening port:"
+msgstr "Порт прослушивания {{product}}:"
+
+#: ../templates:19
+msgid "Database host:"
+msgstr "Хост базы данных:"
+
+#: ../templates:24
+msgid "Database user:"
+msgstr "Пользователь базы данных:"
+
+#: ../templates:29
+msgid "Database password:"
+msgstr "Пароль базы данных:"
+
+#: ../templates:33
+msgid "Database name:"
+msgstr "Наименование базы данных:"
+
+#: ../templates:39
+msgid "Elasticsearch protocol:"
+msgstr "Протокол для подключения к Elasticsearch:"
+
+#: ../templates:44
+msgid "Elasticsearch host:"
+msgstr "Хост для подключения к Elasticsearch:"
+
+#: ../templates:49
+msgid "Elasticsearch port:"
+msgstr "Порт для подключения к Elasticsearch:"
+
+#: ../templates:54
+msgid "Redis host:"
+msgstr "Хост для подключения к Redis:"
+
+#: ../templates:59
+msgid "Redis port:"
+msgstr "Порт для подключения к Redis:"
+
+#: ../templates:64
+msgid "RabbitMQ host:"
+msgstr "Хост для подключения к RabbitMQ:"
+
+#: ../templates:69
+msgid "RabbitMQ port:"
+msgstr "Порт для подключения к RabbitMQ:"
+
+#: ../templates:74
+msgid "RabbitMQ user:"
+msgstr "Пользователь RabbitMQ:"
+
+#: ../templates:79
+msgid "RabbitMQ password:"
+msgstr "Пароль RabbitMQ:"
