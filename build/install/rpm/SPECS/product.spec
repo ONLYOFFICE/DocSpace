@@ -4,7 +4,7 @@
 %global         buildpath %{_var}/www/%{product}
 %global         sourcename DocSpace-%GIT_BRANCH
 
-Name:           onlyoffice-docspace
+Name:           %{product}
 Summary:        Business productivity tools
 Group:          Applications/Internet
 Version:        %version
