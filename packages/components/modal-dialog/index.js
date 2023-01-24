@@ -42,6 +42,7 @@ const ModalDialog = ({
   isScrollLocked,
   containerVisible,
   isDoubleFooterLine,
+  withoutCloseButton,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -111,6 +112,7 @@ const ModalDialog = ({
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
           containerVisible={containerVisible}
+          withoutCloseButton={withoutCloseButton}
         />
       }
     />
@@ -136,6 +138,9 @@ ModalDialog.propTypes = {
 
   /** Show loader in body */
   isLoading: PropTypes.bool,
+
+  /**Don't display the close dialog button */
+  withoutCloseButton: PropTypes.bool,
 
   /** **`MODAL-ONLY`**  
 
