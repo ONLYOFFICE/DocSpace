@@ -74,7 +74,12 @@ const ExternalLinks = ({
 
   const copyLink = (link) => {
     if (link) {
-      toastr.success(t("Translations:LinkCopySuccess"));
+      toastr.success(
+        `${t("Translations:LinkCopySuccess")}. ${t(
+          "Translations:LinkValidTime",
+          { days_count: 7 }
+        )}`
+      );
       copy(link);
     }
   };

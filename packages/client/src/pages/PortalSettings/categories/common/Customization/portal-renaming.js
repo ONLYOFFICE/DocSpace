@@ -181,7 +181,7 @@ const PortalRenaming = (props) => {
         setErrorValue(t("PortalNameEmpty"));
         saveToSessionStorage("errorValue", t("PortalNameEmpty"));
         break;
-      case value.length < 6 || value.length > 50:
+      case value.length < 3 || value.length > 50:
         setErrorValue(t("PortalNameLength"));
         saveToSessionStorage("errorValue", t("PortalNameLength"));
         break;

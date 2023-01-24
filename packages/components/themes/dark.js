@@ -782,7 +782,7 @@ const Dark = {
   },
   textInput: {
     fontWeight: "normal",
-    placeholderColor: "#474747",
+    placeholderColor: "rgba(255, 255, 255, 0.2)",
     disablePlaceholderColor: "#6c6c6c",
 
     transition: "all 0.2s ease 0s",

@@ -146,7 +146,7 @@ public class UserController : PeopleControllerBase
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -186,7 +186,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
+            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 

@@ -29,7 +29,6 @@ const SelectionPanelBody = ({
   filesListTitle,
   dialogName,
   primaryButtonName,
-  theme,
   isLoading,
   onButtonClick,
   folderId,
@@ -53,7 +52,6 @@ const SelectionPanelBody = ({
   const isLoaded = folderId && resultingFolderTree;
   return (
     <StyledModalDialog
-      theme={theme}
       visible={isPanelVisible}
       onClose={onClose}
       displayType="modal"
@@ -62,10 +60,10 @@ const SelectionPanelBody = ({
       isDoubleFooterLine
       autoMaxWidth
     >
-      <ModalDialog.Header theme={theme} className={"select-panel-modal-header"}>
+      <ModalDialog.Header className={"select-panel-modal-header"}>
         {dialogName}
       </ModalDialog.Header>
-      <ModalDialog.Body theme={theme} className="select-file_body-modal-dialog">
+      <ModalDialog.Body className="select-file_body-modal-dialog">
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
@@ -90,7 +88,6 @@ const SelectionPanelBody = ({
               {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
-                  theme={theme}
                   folderTree={resultingFolderTree}
                   onSelect={onSelectFolder}
                   withoutProvider={withoutProvider}
@@ -111,11 +108,7 @@ const SelectionPanelBody = ({
                 <div className="selection-panel_files-header">
                   {header}
 
-                  <Text
-                    color="#A3A9AE"
-                    theme={theme}
-                    className="selection-panel_title"
-                  >
+                  <Text color="#A3A9AE" className="selection-panel_title">
                     {folderSelection
                       ? t("FolderContents", { folderTitle })
                       : filesListTitle}
@@ -123,7 +116,6 @@ const SelectionPanelBody = ({
                 </div>
 
                 <FilesListWrapper
-                  theme={theme}
                   onSelectFile={onSelectFile}
                   folderId={folderId}
                   displayType={"modal"}
@@ -143,7 +135,6 @@ const SelectionPanelBody = ({
         <div>
           <Button
             id="select-file-modal-submit"
-            theme={theme}
             className="select-file-modal-dialog-buttons-save"
             primary
             size="normal"
@@ -158,7 +149,6 @@ const SelectionPanelBody = ({
           />
           <Button
             id="select-file-modal-cancel"
-            theme={theme}
             className="modal-dialog-button"
             size="normal"
             label={t("Common:CancelButton")}

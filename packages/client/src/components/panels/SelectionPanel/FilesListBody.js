@@ -23,7 +23,6 @@ const FilesListBody = ({
   displayType,
   folderId,
   fileId,
-  theme,
   page,
   folderSelection,
   getIcon,
@@ -93,13 +92,8 @@ const FilesListBody = ({
     return (
       <div style={style}>
         <StyledItemsLoader key="loader">
-          <Loader
-            theme={theme}
-            type="oval"
-            size="16px"
-            className="panel-loader"
-          />
-          <Text theme={theme} as="span">
+          <Loader type="oval" size="16px" className="panel-loader" />
+          <Text as="span">
             {t("Common:LoadingProcessing")} {t("Common:LoadingDescription")}
           </Text>
         </StyledItemsLoader>
@@ -146,7 +140,6 @@ const FilesListBody = ({
       return (
         <div style={style}>
           <FilesListRow
-            theme={theme}
             displayType={displayType}
             index={index}
             onSelectFile={onSelectFile}
@@ -170,7 +163,6 @@ const FilesListBody = ({
       <AutoSizer>
         {({ width, height }) => (
           <InfiniteLoader
-            theme={theme}
             ref={filesListRef}
             isItemLoaded={isItemLoaded}
             itemCount={itemCount}
@@ -178,7 +170,6 @@ const FilesListBody = ({
           >
             {({ onItemsRendered, ref }) => (
               <List
-                theme={theme}
                 height={maxHeight}
                 itemCount={itemCount}
                 itemSize={48}
@@ -197,7 +188,6 @@ const FilesListBody = ({
       {!hasNextPage && itemCount === 0 && (
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
-            theme={theme}
             headerText={t("Files:EmptyFolderHeader")}
             imageSrc={EmptyScreenReactSvgUrl}
           />

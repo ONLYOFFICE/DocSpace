@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "In dit gedeelte kunt u gebruikers veilige en handige manieren bieden om toegang te krijgen tot het portaal.",
   "PortalNameEmpty": "Accountnaam is leeg",
   "PortalNameIncorrect": "Onjuiste accountnaam",
-  "PortalNameLength": "De naam van de account moet tussen 6 en 50 tekens lang zijn",
+  "PortalNameLength": "De naam van de account moet tussen 3 en 50 tekens lang zijn",
   "PortalRenaming": "Hernoemen Portaal",
   "PortalRenamingDescription": "Hier kunt u uw portaaladres veranderen.",
   "PortalRenamingLabelText": "Nieuwe portaalnaam",
