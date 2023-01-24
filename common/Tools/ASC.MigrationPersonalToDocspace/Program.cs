@@ -113,7 +113,7 @@ if (!string.IsNullOrEmpty(migrationCreator.NewAlias))
 }
 public sealed class Options
 {
-    [Option('a', "FromAlias", Required = true)]
+    [Option('a', "fromAlias", Required = true)]
     public string FromAlias { get; set; }
 
     [Option('u', "username", Required = false, HelpText = "enter username or mail for find user")]
@@ -122,12 +122,12 @@ public sealed class Options
     [Option('m', "mail", Required = false, HelpText = "enter username or mail for find user")]
     public string Mail { get; set; }
 
-    [Option('t' ,"toregion", Required = true)]
+    [Option('t' ,"toRegion", Required = true)]
     public string ToRegion { get; set; }
 
-    [Option('f' ,"fromregion", Required = false, Default = "personal")]
+    [Option('f' ,"fromRegion", Required = false, Default = "personal")]
     public string FromRegion { get; set; }
 
-    [Option("ToAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
+    [Option("toAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
     public string ToAlias { get; set; }
 }
