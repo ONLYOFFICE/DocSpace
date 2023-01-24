@@ -474,7 +474,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-settings"}
                 component={PortalSettingsRoute}
               />
-              <PrivateRoute
+              <PublicRoute
                 path={"/preparation-portal"}
                 component={PreparationPortalRoute}
               />
