@@ -203,7 +203,7 @@ class FilesStore {
           }
           break;
         case "update":
-          if (opt?.type == "file" && opt?.data) {
+          if (opt?.type === "file" && opt?.data) {
             const file = JSON.parse(opt?.data);
 
             if (!file || !file.id) return;
@@ -230,6 +230,36 @@ class FilesStore {
               if (foundIndex > -1) {
                 runInAction(() => {
                   this.bufferSelection[foundIndex] = file;
+                });
+              }
+            }
+          } else if (opt?.type === "folder" && opt?.data) {
+            const folder = JSON.parse(opt?.data);
+
+            if (!folder || !folder.id) return;
+
+            this.getFolderInfo(folder.id);
+
+            console.log("[WS] update folder", folder.id, folder.title);
+
+            if (this.selection) {
+              const foundIndex = this.selection?.findIndex(
+                (x) => x.id === folder.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = folder;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = [this.bufferSelection].findIndex(
+                (x) => x.id === folder.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = folder;
                 });
               }
             }
