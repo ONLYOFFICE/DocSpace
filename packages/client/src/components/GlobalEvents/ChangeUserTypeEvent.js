@@ -12,8 +12,6 @@ const ChangeUserTypeEvent = ({
   peopleFilter,
   updateUserType,
   getUsersList,
-  setOperationRunning,
-  operationRunning,
 }) => {
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common"]);
 
@@ -26,14 +24,11 @@ const ChangeUserTypeEvent = ({
   }, [peopleDialogData]);
 
   const onChangeUserType = async () => {
-    setOperationRunning(true);
+    onClose();
     updateUserType(toType, userIDs, peopleFilter, fromType)
       .then(() => toastr.success(t("SuccessChangeUserType")))
       .catch((err) => toastr.error(err))
-      .finally(() => {
-        setOperationRunning(false);
-        onClose();
-      });
+      .finally(() => callback && callback(false));
   };
 
   const onClose = () => {
@@ -41,10 +36,8 @@ const ChangeUserTypeEvent = ({
   };
 
   const onCloseAction = async () => {
-    if (!isRequestRunning) {
-      await getUsersList(peopleFilter);
-      onClose();
-    }
+    await getUsersList(peopleFilter);
+    onClose();
   };
 
   const getType = (type) => {
@@ -59,7 +52,7 @@ const ChangeUserTypeEvent = ({
     }
   };
 
-  const { toType, fromType, userIDs } = peopleDialogData;
+  const { toType, fromType, userIDs, callback } = peopleDialogData;
 
   const firstType =
     fromType.length === 1 && fromType[0] ? getType(fromType[0]) : null;
@@ -72,7 +65,6 @@ const ChangeUserTypeEvent = ({
       secondType={secondType}
       onCloseAction={onCloseAction}
       onChangeUserType={onChangeUserType}
-      isRequestRunning={operationRunning}
     />
   );
 };
@@ -87,12 +79,7 @@ export default inject(({ dialogsStore, peopleStore }) => {
 
   const { data: peopleDialogData } = dialogStore;
   const { filter: peopleFilter } = filterStore;
-  const {
-    updateUserType,
-    getUsersList,
-    operationRunning,
-    setOperationRunning,
-  } = usersStore;
+  const { updateUserType, getUsersList } = usersStore;
 
   return {
     visible,
@@ -101,7 +88,5 @@ export default inject(({ dialogsStore, peopleStore }) => {
     peopleFilter,
     updateUserType,
     getUsersList,
-    operationRunning,
-    setOperationRunning,
   };
 })(observer(ChangeUserTypeEvent));

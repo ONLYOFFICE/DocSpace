@@ -19,6 +19,7 @@ const User = ({
   if (!user.displayName && !user.email) return null;
 
   const [userIsRemoved, setUserIsRemoved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   if (userIsRemoved) return null;
 
   const canChangeUserRole = user.canEditAccess;
@@ -41,15 +42,15 @@ const User = ({
         ? "manager"
         : "user";
 
-    changeUserType(userType, [user]);
+    setIsLoading(true);
 
-    //TODO: add loader
+    changeUserType(userType, [user]);
 
     updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
       notify: false,
       sharingMessage: "",
-    });
+    }).then(() => setIsLoading(false));
 
     const inRoomMembers = selectionParentRoom.members.inRoom;
     const expectedMembers = selectionParentRoom.members.expected;
@@ -110,6 +111,7 @@ const User = ({
               modernView
               title={t("Common:Role")}
               manualWidth={"fit-content"}
+              isLoading={isLoading}
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

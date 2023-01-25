@@ -18,9 +18,9 @@ const Accounts = ({
   isAdmin,
   changeUserType,
   canChangeUserType,
-  loading,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { role, id, isVisitor } = selection;
 
@@ -91,7 +91,8 @@ const Accounts = ({
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [selection], t, false);
+      setIsLoading(true);
+      changeUserType(action, [selection], setIsLoading);
     },
     [selection, changeUserType, t]
   );
@@ -115,7 +116,7 @@ const Accounts = ({
         displaySelectedOption
         modernView
         manualWidth={"fit-content"}
-        isLoading={loading}
+        isLoading={isLoading}
       />
     );
 
