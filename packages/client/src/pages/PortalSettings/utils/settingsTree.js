@@ -210,19 +210,19 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-single-sign-on",
-        key: "3-0",
-        icon: "",
-        link: "single-sign-on",
-        tKey: "SingleSignOn",
-        isCategory: true,
-      },
-      {
         id: "portal-settings_catalog-third-party-services",
-        key: "3-1",
+        key: "3-0",
         icon: "",
         link: "third-party-services",
         tKey: "ThirdPartyAuthorization",
+        isCategory: true,
+      },
+      {
+        id: "portal-settings_catalog-single-sign-on",
+        key: "3-1",
+        icon: "",
+        link: "single-sign-on",
+        tKey: "SingleSignOn",
         isCategory: true,
       },
       {

@@ -16,6 +16,8 @@ class SettingsSetupStore {
   logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
 
+  isLoadingDownloadReport = false;
+
   security = {
     accessRight: {
       options: [],
@@ -69,6 +71,10 @@ class SettingsSetupStore {
       await authStore.settingsStore.getIpRestrictions();
       await authStore.settingsStore.getSessionLifetime();
     }
+  };
+
+  setIsLoadingDownloadReport = (state) => {
+    this.isLoadingDownloadReport = state;
   };
 
   setIsInit = (isInit) => {
@@ -268,9 +274,16 @@ class SettingsSetupStore {
   };
 
   getAuditTrailReport = async () => {
-    const res = await api.settings.getAuditTrailReport();
-    window.open(res);
-    return this.setAuditTrailReport(res);
+    try {
+      this.setIsLoadingDownloadReport(true);
+      const res = await api.settings.getAuditTrailReport();
+      window.open(res);
+      return this.setAuditTrailReport(res);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.setIsLoadingDownloadReport(false);
+    }
   };
 
   setGreetingTitle = async (greetingTitle) => {

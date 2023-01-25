@@ -19,7 +19,6 @@ class PeopleTableHeader extends React.Component {
         title: t("Common:User"),
         resizable: true,
         enable: true,
-        default: true,
         sortBy: "AZ",
         active: true,
         minWidth: 180,
@@ -44,6 +43,7 @@ class PeopleTableHeader extends React.Component {
         title: t("Common:Action"),
         enable: true,
         resizable: true,
+        default: true,
         onChange: this.onColumnChange,
       },
     ];

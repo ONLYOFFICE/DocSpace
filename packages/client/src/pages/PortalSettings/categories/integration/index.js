@@ -34,14 +34,14 @@ const IntegrationWrapper = (props) => {
 
   const data = [
     {
-      id: "single-sign-on",
-      name: t("SingleSignOn"),
-      content: <SSO />,
-    },
-    {
       id: "third-party-services",
       name: t("Translations:ThirdPartyTitle"),
       content: <ThirdParty />,
+    },
+    {
+      id: "single-sign-on",
+      name: t("SingleSignOn"),
+      content: <SSO />,
     },
   ];
 
