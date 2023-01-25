@@ -146,7 +146,7 @@ class FilesStore {
 
       switch (opt?.cmd) {
         case "create":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex > -1) return;
 
@@ -170,6 +170,35 @@ class FilesStore {
             runInAction(() => {
               this.setFilter(newFilter);
               this.setFiles(newFiles);
+            });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex > -1) return;
+
+            const folder = JSON.parse(opt?.data);
+
+            //if (this.selectedFolderStore.id !== folder.folderId) return;
+
+            const folderInfo = await api.files.getFolderInfo(folder.id);
+
+            console.log(
+              "[WS] create new folder",
+              folderInfo.id,
+              folderInfo.title
+            );
+
+            const newFolders = [folderInfo, ...this.folders];
+
+            if (newFolders.length > this.filter.pageCount && withPaging) {
+              newFolders.pop(); // Remove last
+            }
+
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFolders(newFolders);
             });
           }
           break;
