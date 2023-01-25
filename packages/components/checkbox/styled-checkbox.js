@@ -38,6 +38,16 @@ const StyledLabel = styled.label`
 
   svg {
     ${(props) =>
+      props.hasError &&
+      css`
+        rect {
+          stroke: ${(props) => props.theme.checkbox.errorColor} !important;
+        }
+        path {
+          fill: ${(props) => props.theme.checkbox.errorColor} !important;
+        }
+      `}
+    ${(props) =>
       !props.isIndeterminate && !props.isDisabled
         ? css`
             rect {
@@ -148,6 +158,8 @@ const StyledLabel = styled.label`
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor
+        : props.hasError
+        ? props.theme.checkbox.errorColor
         : props.theme.text.color};
     margin-top: -2px;
   }

@@ -450,6 +450,8 @@ const Dark = {
     pressedFillColor: black,
 
     focusColor: "#858585",
+
+    errorColor: "#E06451",
   },
 
   // slider: {
@@ -2942,6 +2944,9 @@ const Dark = {
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
         },
+        auditTrail: {
+          downloadReportDescriptionColor: "#858585",
+        },
       },
 
       common: {
@@ -3015,6 +3020,7 @@ const Dark = {
 
     wizard: {
       linkColor: "#E06A1B",
+      generatePasswordColor: "#a9a9a9",
     },
   },
 
