@@ -69,6 +69,10 @@ export const WizardContainer = styled.div`
   .wizard-field {
     width: 100%;
   }
+
+  .password-field {
+    margin: 0 0 10px 0 !important;
+  }
 `;
 
 export const StyledLink = styled.div`
@@ -76,7 +80,6 @@ export const StyledLink = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-top: 10px;
   padding-bottom: 20px;
 
   .generate-password-link {
@@ -95,9 +98,11 @@ export const StyledInfo = styled.div`
   display: grid;
   grid-template-columns: 83px 1fr;
   align-items: center;
-  padding-bottom: 12px;
+  padding-bottom: 4px;
 
   .machine-name {
+    padding-bottom: 4px;
+    padding-top: 4px;
     padding-left: 16px;
   }
 `;

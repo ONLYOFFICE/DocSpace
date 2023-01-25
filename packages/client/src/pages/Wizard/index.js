@@ -272,7 +272,7 @@ const Wizard = (props) => {
           </FieldContainer>
 
           <FieldContainer
-            className="wizard-field"
+            className="wizard-field password-field"
             isVertical={true}
             labelVisible={false}
             hasError={hasErrorPass}
