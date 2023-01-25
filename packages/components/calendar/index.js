@@ -12,9 +12,26 @@ import {
   ComboBoxDateStyle,
   ComboBoxMonthStyle,
   ComboBoxStyle,
+  StyledRoundButton,
+  StyledNextIcon,
+  StyledPrevIcon,
+  StyledCalendarHeader,
+  StyledTitle,
 } from "./styled-calendar.js";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+import {
+  compareDates,
+  compareMonths,
+  getFirstMonthDay,
+  getArrayYears,
+  getCurrentMonth,
+  getCurrentYear,
+  getDays,
+  getListMonth,
+  getWeekDays,
+} from "./utils";
 
 class Calendar extends Component {
   constructor(props) {
@@ -28,24 +45,14 @@ class Calendar extends Component {
     const { minDate, maxDate, openToDate, selectedDate } = props;
     const months = moment.months();
     const arrayWeekdays = moment.weekdaysMin();
-    const optionsMonth = this.getListMonth(
-      minDate,
-      maxDate,
-      openToDate,
-      months
-    );
-    const optionsYear = this.getArrayYears(minDate, maxDate);
-    const optionsDays = this.getDays(
-      minDate,
-      maxDate,
-      openToDate,
-      selectedDate
-    );
-    const optionsWeekdays = this.getWeekDays(arrayWeekdays);
+    const optionsMonth = getListMonth(minDate, maxDate, openToDate, months);
+    const optionsYear = getArrayYears(minDate, maxDate);
+    const optionsDays = getDays(minDate, maxDate, openToDate, selectedDate);
+    const optionsWeekdays = getWeekDays(arrayWeekdays, this.props);
     let newOpenToDate = openToDate;
     if (
-      this.compareDates(openToDate, maxDate) > 0 ||
-      this.compareDates(openToDate, minDate) < 0
+      compareDates(openToDate, maxDate) > 0 ||
+      compareDates(openToDate, minDate) < 0
     ) {
       newOpenToDate = minDate;
     }
@@ -57,9 +64,9 @@ class Calendar extends Component {
       openToDate: newOpenToDate,
       selectedDate,
       optionsMonth,
-      selectedOptionMonth: this.getCurrentMonth(optionsMonth, newOpenToDate),
+      selectedOptionMonth: getCurrentMonth(optionsMonth, newOpenToDate),
       optionsYear,
-      selectedOptionYear: this.getCurrentYear(optionsYear, newOpenToDate),
+      selectedOptionYear: getCurrentYear(optionsYear, newOpenToDate),
       optionsDays,
       optionsWeekdays,
     };
@@ -71,7 +78,7 @@ class Calendar extends Component {
   onSelectYear = (value) => {
     const openToDate = new Date(value.key, this.state.openToDate.getMonth());
 
-    const optionsMonth = this.getListMonth(
+    const optionsMonth = getListMonth(
       this.state.minDate,
       this.state.maxDate,
       openToDate,
@@ -139,327 +146,28 @@ class Calendar extends Component {
     this.props.onChange && this.props.onChange(newState.selectedDate);
   };
 
-  getListMonth = (minDate, maxDate, openToDate, months) => {
-    const minDateYear = minDate.getFullYear();
-    const minDateMonth = minDate.getMonth();
-
-    const maxDateYear = maxDate.getFullYear();
-    const maxDateMonth = maxDate.getMonth();
-
-    const openToDateYear = openToDate.getFullYear();
-
-    const listMonths = [];
-
-    let i = 0;
-    while (i <= 11) {
-      listMonths.push({
-        key: `${i}`,
-        label: `${months[i]}`,
-        disabled: false,
-      });
-      i++;
-    }
-
-    if (openToDateYear < minDateYear) {
-      i = 0;
-      while (i != 12) {
-        if (i != minDateMonth) listMonths[i].disabled = true;
-        i++;
-      }
-    }
-
-    if (openToDateYear === minDateYear) {
-      i = 0;
-      while (i != minDateMonth) {
-        listMonths[i].disabled = true;
-        i++;
-      }
-    }
-
-    if (openToDateYear === maxDateYear) {
-      i = 11;
-      while (i != maxDateMonth) {
-        listMonths[i].disabled = true;
-        i--;
-      }
-    }
-
-    return listMonths;
-  };
-
-  getCurrentMonth = (months, openToDate) => {
-    const openToDateMonth = openToDate.getMonth();
-    let selectedMonth = months.find((x) => x.key == openToDateMonth);
-
-    if (selectedMonth.disabled === true) {
-      selectedMonth = months.find((x) => x.disabled === false);
-    }
-    return selectedMonth;
-  };
-
-  getArrayYears = (minDate, maxDate) => {
-    const minYear = minDate.getFullYear();
-    const maxYear = maxDate.getFullYear();
-    const yearList = [];
-
-    let i = minYear;
-    while (i <= maxYear) {
-      let newDate = new Date(i, 0, 1);
-      const label = moment(newDate).format("YYYY");
-      const key = i;
-      yearList.push({ key, label: label });
-      i++;
-    }
-    return yearList.reverse();
-  };
-
-  getCurrentYear = (arrayYears, openToDate) => {
-    const openToDateYear = openToDate.getFullYear();
-    let currentYear = arrayYears.find((x) => x.key == openToDateYear);
-    if (!currentYear) {
-      const newDate = this.props.minDate.getFullYear();
-      currentYear = { key: newDate, label: `${newDate}` };
-    }
-    return currentYear;
-  };
-
-  firstDayOfMonth = (openToDate) => {
-    const firstDay = moment(openToDate)
-      .locale("en")
-      .startOf("month")
-      .format("d");
-    let day = firstDay - 1;
-    if (day < 0) {
-      day = 6;
-    }
-    return day;
-  };
-
-  getWeekDays = (weekdays) => {
-    let arrayWeekDays = [];
-    weekdays.push(weekdays.shift());
-    for (let i = 0; i < weekdays.length; i++) {
-      arrayWeekDays.push({
-        key: `${this.props.locale}_${i}`,
-        value: weekdays[i],
-        disabled: i >= 5 ? true : false,
-      });
-    }
-    return arrayWeekDays;
-  };
-
-  getDays = (minDate, maxDate, openToDate, selectedDate) => {
-    const currentYear = openToDate.getFullYear();
-    const currentMonth = openToDate.getMonth() + 1;
-    const countDaysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-    let countDaysInPrevMonth = new Date(
-      currentYear,
-      currentMonth - 1,
-      0
-    ).getDate();
-    const arrayDays = [];
-    let className = "calendar-month_neighboringMonth";
-
-    const openToDateMonth = openToDate.getMonth();
-    const openToDateYear = openToDate.getFullYear();
-
-    const maxDateMonth = maxDate.getMonth();
-    const maxDateYear = maxDate.getFullYear();
-    const maxDateDay = maxDate.getDate();
-
-    const minDateMonth = minDate.getMonth();
-    const minDateYear = minDate.getFullYear();
-    const minDateDay = minDate.getDate();
-
-    //Disable preview month
-    let disableClass = null;
-    if (openToDateYear === minDateYear && openToDateMonth === minDateMonth) {
-      disableClass = "calendar-month_disabled";
-    }
-
-    //Prev month
-    let prevMonthDay = null;
-    if (
-      openToDateYear === minDateYear &&
-      openToDateMonth - 1 === minDateMonth
-    ) {
-      prevMonthDay = minDateDay;
-    }
-
-    //prev month + year
-    let prevYearDay = null;
-    if (
-      openToDateYear === minDateYear + 1 &&
-      openToDateMonth === 0 &&
-      minDateMonth === 11
-    ) {
-      prevYearDay = minDateDay;
-    }
-
-    // Show neighboring days in prev month
-    const firstDayOfMonth = this.firstDayOfMonth(openToDate);
-
-    for (let i = firstDayOfMonth; i != 0; i--) {
-      if (countDaysInPrevMonth + 1 === prevMonthDay) {
-        disableClass = "calendar-month_disabled";
-      }
-      if (countDaysInPrevMonth + 1 === prevYearDay) {
-        disableClass = "calendar-month_disabled";
-      }
-      arrayDays.unshift({
-        value: countDaysInPrevMonth--,
-        disableClass,
-        className,
-        dayState: "prev",
-      });
-    }
-
-    //Disable max days in month
-    let maxDay, minDay;
-    disableClass = null;
-    if (openToDateYear === maxDateYear && openToDateMonth >= maxDateMonth) {
-      if (openToDateMonth === maxDateMonth) {
-        maxDay = maxDateDay;
-      } else {
-        maxDay = null;
-      }
-    }
-
-    //Disable min days in month
-    if (openToDateYear === minDateYear && openToDateMonth >= minDateMonth) {
-      if (openToDateMonth === minDateMonth) {
-        minDay = minDateDay;
-      } else {
-        minDay = null;
-      }
-    }
-
-    // Show days in month and weekend days
-    let seven = 7;
-    const dateNow = selectedDate.getDate();
-
-    for (let i = 1; i <= countDaysInMonth; i++) {
-      if (i === seven - firstDayOfMonth - 1) {
-        className = "calendar-month_weekend";
-      } else if (i === seven - firstDayOfMonth) {
-        seven += 7;
-        className = "calendar-month_weekend";
-      } else {
-        className = "calendar-month";
-      }
-      if (i === dateNow && this.compareMonths(openToDate, selectedDate) === 0) {
-        className = "calendar-month_selected-day";
-      }
-      if (i > maxDay || i < minDay) {
-        disableClass = "calendar-month_disabled";
-        className = "calendar-month_disabled";
-      } else {
-        disableClass = null;
-      }
-
-      arrayDays.push({
-        value: i,
-        disableClass,
-        className,
-        dayState: "now",
-      });
-    }
-
-    //Calculating neighboring days in next month
-    let maxDaysInMonthTable = 42;
-    const maxDaysInMonth = 42;
-    if (firstDayOfMonth > 5 && countDaysInMonth >= 30) {
-      maxDaysInMonthTable += 7;
-    } else if (firstDayOfMonth >= 5 && countDaysInMonth > 30) {
-      maxDaysInMonthTable += 7;
-    }
-    if (maxDaysInMonthTable > maxDaysInMonth) {
-      maxDaysInMonthTable -= 7;
-    }
-
-    //Disable next month days
-    disableClass = null;
-    if (openToDateYear === maxDateYear && openToDateMonth >= maxDateMonth) {
-      disableClass = "calendar-month_disabled";
-    }
-
-    //next month + year
-    let nextYearDay = null;
-    if (
-      openToDateYear === maxDateYear - 1 &&
-      openToDateMonth === 11 &&
-      maxDateMonth === 0
-    ) {
-      nextYearDay = maxDateDay;
-    }
-
-    //next month
-    let nextMonthDay = null;
-    if (
-      openToDateYear === maxDateYear &&
-      openToDateMonth === maxDateMonth - 1
-    ) {
-      nextMonthDay = maxDateDay;
-    }
-
-    //Show neighboring days in next month
-    let dayInNextMonth = 1;
-    className = "calendar-month_neighboringMonth";
-    for (
-      let i = countDaysInMonth;
-      i < maxDaysInMonthTable - firstDayOfMonth;
-      i++
-    ) {
-      if (i - countDaysInMonth === nextYearDay) {
-        disableClass = "calendar-month_disabled";
-      }
-      if (i - countDaysInMonth === nextMonthDay) {
-        disableClass = "calendar-month_disabled";
-      }
-      arrayDays.push({
-        value: dayInNextMonth++,
-        disableClass,
-        className,
-        dayState: "next",
-      });
-    }
-    return arrayDays;
-  };
-
-  compareDates = (date1, date2) => {
-    return moment(date1)
-      .startOf("day")
-      .diff(moment(date2).startOf("day"), "days");
-  };
-
-  compareMonths = (date1, date2) => {
-    return moment(date1)
-      .startOf("months")
-      .diff(moment(date2).startOf("months"), "months");
-  };
-
   componentDidUpdate(prevProps) {
     const { selectedDate, openToDate, minDate, maxDate, locale } = this.props;
 
     let newState = {};
 
-    if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
+    if (compareDates(selectedDate, prevProps.selectedDate) !== 0) {
       newState = { selectedDate };
     }
 
-    if (this.compareDates(openToDate, prevProps.openToDate) !== 0) {
+    if (compareDates(openToDate, prevProps.openToDate) !== 0) {
       newState = Object.assign({}, newState, {
         openToDate,
       });
     }
 
-    if (this.compareDates(minDate, prevProps.minDate) !== 0) {
+    if (compareDates(minDate, prevProps.minDate) !== 0) {
       newState = Object.assign({}, newState, {
         minDate,
       });
     }
 
-    if (this.compareDates(maxDate, prevProps.maxDate) !== 0) {
+    if (compareDates(maxDate, prevProps.maxDate) !== 0) {
       newState = Object.assign({}, newState, {
         maxDate,
       });
@@ -502,7 +210,19 @@ class Calendar extends Component {
       >
         <ColorTheme size={size} color={themeColor} themeId={ThemeType.Calendar}>
           <ComboBoxStyle>
-            <ComboBoxMonthStyle size={size}>
+            <StyledCalendarHeader>
+              <StyledRoundButton>
+                <StyledPrevIcon />
+              </StyledRoundButton>
+
+              <StyledTitle>March 2021</StyledTitle>
+
+              <StyledRoundButton>
+                <StyledNextIcon />
+              </StyledRoundButton>
+            </StyledCalendarHeader>
+
+            {/* <ComboBoxMonthStyle size={size}>
               <ComboBox
                 isDefaultMode={false}
                 scaled={true}
@@ -534,7 +254,7 @@ class Calendar extends Component {
                 fixedDirection={true}
                 directionY="bottom"
               />
-            </ComboBoxDateStyle>
+            </ComboBoxDateStyle> */}
           </ComboBoxStyle>
 
           <Month size={size}>
