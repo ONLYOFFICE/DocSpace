@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-
 using Image = SixLabors.ImageSharp.Image;
 
 namespace ASC.Files.Core.VirtualRooms;
@@ -169,7 +167,7 @@ public class RoomLogoManager
                 Original = string.Empty,
                 Large = string.Empty,
                 Medium = string.Empty,
-                Small = string.Empty, 
+                Small = string.Empty,
             };
         }
 
@@ -216,7 +214,7 @@ public class RoomLogoManager
         {
             await DataStore.DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             _logger.ErrorRemoveTempPhoto(e);
         }
@@ -321,7 +319,7 @@ public class RoomLogoManager
 
     private T GetId<T>(Folder<T> room)
     {
-        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox") 
+        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox")
             || room.RootId.ToString().Contains("spoint")) ? room.RootId : room.Id;
     }
 }

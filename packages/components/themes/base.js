@@ -456,6 +456,8 @@ const Base = {
     pressedFillColor: grayLightMid,
 
     focusColor: gray,
+
+    errorColor: "#F21C0E",
   },
 
   // slider: {
@@ -2941,6 +2943,9 @@ const Base = {
           departmentColor: gray,
           tooltipColor: lightCumulus,
         },
+        auditTrail: {
+          downloadReportDescriptionColor: gray,
+        },
       },
 
       common: {
@@ -3016,6 +3021,7 @@ const Base = {
 
     wizard: {
       linkColor: "#116d9d",
+      generatePasswordColor: "#657077",
     },
   },
 

@@ -1,5 +1,5 @@
 ﻿import InfoEditReactSvgUrl from "PUBLIC_DIR/images/info.edit.react.svg?url";
-import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg";
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import React, { useState, useEffect } from "react";
 
 import Text from "@docspace/components/text";

@@ -526,21 +526,21 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: { DownloadReactSvgUrl },
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: { RenameReactSvgUrl },
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
           disabled: false,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: { TrashReactSvgUrl },
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
           disabled: false,
         },
@@ -551,7 +551,7 @@ class MediaViewer extends React.Component {
           id: "option_room-info",
           key: "room-info",
           label: t("Common:Info"),
-          icon: { InfoOutlineReactSvgUrl },
+          icon: InfoOutlineReactSvgUrl,
           onClick: () => {
             return onShowInfoPanel(targetFile);
           },
@@ -560,21 +560,21 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: { DownloadReactSvgUrl },
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "move-to",
           label: t("MoveTo"),
-          icon: { MoveReactSvgUrl },
+          icon: MoveReactSvgUrl,
           onClick: onMoveAction,
           disabled: isPreviewFile,
         },
         // {
         //   key: "download-as",
         //   label: t("Translations:DownloadAs"),
-        //   icon: {DownloadAsReactSvgUrl}, // TODO: uncomment when we can download media by changing the format
+        //   icon: DownloadAsReactSvgUrl, // TODO: uncomment when we can download media by changing the format
         //   onClick: onClickDownloadAs,
         //   disabled: false,
         // },
@@ -582,7 +582,7 @@ class MediaViewer extends React.Component {
           id: "option_copy-to",
           key: "copy-to",
           label: t("Translations:Copy"),
-          icon: { CopyReactSvgUrl },
+          icon: CopyReactSvgUrl,
           onClick: onCopyAction,
           disabled: isPreviewFile,
         },
@@ -590,14 +590,14 @@ class MediaViewer extends React.Component {
           id: "option_create-copy",
           key: "copy",
           label: t("Common:Duplicate"),
-          icon: { DuplicateReactSvgUrl },
+          icon: DuplicateReactSvgUrl,
           onClick: () => onDuplicate(targetFile, t),
           disabled: isPreviewFile,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: { RenameReactSvgUrl },
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
           disabled: isPreviewFile,
         },
@@ -610,7 +610,7 @@ class MediaViewer extends React.Component {
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: { TrashReactSvgUrl },
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
           disabled: isPreviewFile,
         },
