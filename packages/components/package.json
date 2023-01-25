@@ -62,6 +62,8 @@
     "@storybook/addon-essentials": "6.5.13",
     "@storybook/addon-links": "6.5.13",
     "@storybook/addon-viewport": "6.5.13",
+    "@storybook/builder-webpack5": "^6.5.15",
+    "@storybook/manager-webpack5": "^6.5.15",
     "@storybook/react": "6.5.13",
     "@svgr/rollup": "^5.5.0",
     "@svgr/webpack": "^5.5.0",

@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { ArrowContentIcon } from "./svg";
+import { ArrowContentReactSvg } from "./svg";
 import Heading from "../heading";
 import { StyledContent, StyledContainer } from "./styled-toggle-content";
 import commonIconsStyles from "../utils/common-icons-style";
 
-const StyledArrowContentIcon = styled(ArrowContentIcon)`
+const StyledArrowContentIcon = styled(ArrowContentReactSvg)`
   ${commonIconsStyles}
 `;
 // eslint-disable-next-line react/prop-types, no-unused-vars

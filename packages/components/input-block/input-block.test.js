@@ -2,14 +2,14 @@ import React from "react";
 import { mount } from "enzyme";
 import InputBlock from ".";
 import Button from "../button";
-
+import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
 describe("<IconButton />", () => {
   it("renders without error", () => {
     const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
     const wrapper = mount(
       <InputBlock
         mask={mask}
-        iconName={"static/images/search.react.svg"}
+        iconName={SearchReactSvgUrl}
         onIconClick={(event) => alert(event.target.value)}
         onChange={(event) => alert(event.target.value)}
       >
@@ -27,10 +27,7 @@ describe("<IconButton />", () => {
 
   it("test base size props", () => {
     const wrapper = mount(
-      <InputBlock
-        iconName="static/images/search.react.svg"
-        size="base"
-      ></InputBlock>
+      <InputBlock iconName={SearchReactSvgUrl} size="base"></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("base");
@@ -38,10 +35,7 @@ describe("<IconButton />", () => {
 
   it("test middle size props", () => {
     const wrapper = mount(
-      <InputBlock
-        iconName="static/images/search.react.svg"
-        size="middle"
-      ></InputBlock>
+      <InputBlock iconName={SearchReactSvgUrl} size="middle"></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("middle");
@@ -49,10 +43,7 @@ describe("<IconButton />", () => {
 
   it("test big size props", () => {
     const wrapper = mount(
-      <InputBlock
-        iconName="static/images/search.react.svg"
-        size="big"
-      ></InputBlock>
+      <InputBlock iconName={SearchReactSvgUrl} size="big"></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("big");
@@ -60,10 +51,7 @@ describe("<IconButton />", () => {
 
   it("test huge size props", () => {
     const wrapper = mount(
-      <InputBlock
-        iconName="static/images/search.react.svg"
-        size="huge"
-      ></InputBlock>
+      <InputBlock iconName={SearchReactSvgUrl} size="huge"></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("huge");
@@ -71,10 +59,7 @@ describe("<IconButton />", () => {
 
   it("test iconSize props", () => {
     const wrapper = mount(
-      <InputBlock
-        iconName="static/images/search.react.svg"
-        iconSize={18}
-      ></InputBlock>
+      <InputBlock iconName={SearchReactSvgUrl} iconSize={18}></InputBlock>
     );
 
     expect(wrapper.prop("iconSize")).toBe(18);

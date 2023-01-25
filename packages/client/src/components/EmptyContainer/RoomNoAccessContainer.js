@@ -1,3 +1,5 @@
+﻿import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
+import ManageAccessRightsReactSvgUrl from "PUBLIC_DIR/images/manage.access.rights.react.svg?url";
 import React from "react";
 
 import { inject, observer } from "mobx-react";
@@ -62,7 +64,7 @@ const RoomNoAccessContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/empty-folder-image.svg"
+        src={EmptyFolderImageSvgUrl}
         onClick={onGoToShared}
         alt="folder_icon"
       />
@@ -75,7 +77,7 @@ const RoomNoAccessContainer = (props) => {
   const propsRoomNotFoundOrMoved = {
     headerText: titleRoomNoAccess,
     descriptionText: descriptionRoomNoAccess,
-    imageSrc: "static/images/manage.access.rights.react.svg",
+    imageSrc: ManageAccessRightsReactSvgUrl,
     buttons: goToButtons,
   };
 

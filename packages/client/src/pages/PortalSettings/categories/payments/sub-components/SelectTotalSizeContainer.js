@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";

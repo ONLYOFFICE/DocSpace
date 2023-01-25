@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
@@ -34,7 +35,7 @@ const SectionHeaderContent = (props) => {
   return (
     <StyledContainer>
       <IconButton
-        iconName="/static/images/arrow.path.react.svg"
+        iconName={ArrowPathReactSvgUrl}
         size="17"
         // color="#A3A9AE"
         // hoverColor="#657077"

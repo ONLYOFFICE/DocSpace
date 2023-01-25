@@ -625,6 +625,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
             else
             {
+                await _socketManager.CreateFolderAsync(folder);
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
             }
 
@@ -1550,7 +1551,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                 if (currentProperies.FormFilling == null)
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
+                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     currentProperies.FormFilling = scope.ServiceProvider.GetService<FormFillingProperties>();
                 }
 
@@ -2253,6 +2254,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFolder.ParentId = folderIdToMy;
 
                 var newFolderTo = await folderDao.SaveFolderAsync(newFolder);
+                await _socketManager.CreateFolderAsync(newFolder);
 
                 //move items from userFrom to userTo
                 await _entryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
@@ -2909,11 +2911,12 @@ public class FileStorageService<T> //: IFileStorageService
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
-                var newFolderID = await folderDao.SaveFolderAsync(newFolder);
 
+                var newFolderID = await folderDao.SaveFolderAsync(newFolder);
                 newFolder = await folderDao.GetFolderAsync(newFolderID);
                 newFolder.Access = folderAccess;
 
+                await _socketManager.CreateFolderAsync(newFolder);
                 await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
                 _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });

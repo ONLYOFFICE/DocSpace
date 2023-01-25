@@ -1,3 +1,4 @@
+﻿import BreakpointWarningSvgUrl from "PUBLIC_DIR/images/breakpoint-warning.svg?url";
 import React from "react";
 import { Trans, withTranslation } from "react-i18next";
 import StyledBreakpointWarning from "./sub-components/StyledBreakpointWarning";
@@ -8,7 +9,7 @@ const BreakpointWarning = ({ t, sectionName, tReady }) => {
     <Loader />
   ) : (
     <StyledBreakpointWarning>
-      <img src="/static/images/breakpoint-warning.svg" />
+      <img src={BreakpointWarningSvgUrl} />
 
       <div className="description">
         <div className="text-breakpoint">{t("BreakpointWarningText")}</div>

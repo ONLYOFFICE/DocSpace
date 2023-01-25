@@ -1,3 +1,4 @@
+﻿import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React from "react";
 import Text from "@docspace/components/text";
 import HelpButton from "@docspace/components/help-button";
@@ -37,7 +38,7 @@ const CategoryWrapper = (props) => {
         {title}
       </Text>
       <HelpButton
-        iconName="/static/images/info.react.svg"
+        iconName={InfoReactSvgUrl}
         displayType="dropdown"
         place="right"
         offsetRight={0}

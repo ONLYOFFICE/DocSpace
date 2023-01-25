@@ -6,6 +6,8 @@ import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import Base from "@docspace/components/themes/base";
+import ArticleHideMenuReactSvgUrl from "../../../../../public/images/article-hide-menu.react.svg?url";
+import ArticleShowMenuReactSvgUrl from "../../../../../public/images/article-show-menu.react.svg?url";
 
 const StyledHideArticleMenuButton = styled.div`
   display: flex;
@@ -114,7 +116,7 @@ const HideArticleMenuButton = ({
         >
           <ReactSVG
             className="article-hide-menu-icon_svg"
-            src="/static/images/article-hide-menu.react.svg"
+            src={ArticleHideMenuReactSvgUrl}
           />
           <Text
             className="article-hide-menu-text"
@@ -133,7 +135,7 @@ const HideArticleMenuButton = ({
         >
           <ReactSVG
             className="article-show-menu-icon_svg"
-            src="/static/images/article-show-menu.react.svg"
+            src={ArticleShowMenuReactSvgUrl}
           />
         </div>
       )}

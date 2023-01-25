@@ -34,25 +34,7 @@ WithDropDown.args = {
   isDisabled: false,
   onDelete: (tag) => console.log(tag),
   onClick: (tag) => console.log(tag),
-  advancedOptions: [
-    {
-      key: "0",
-      value: "0",
-      label: "Option 1",
-      onClick: (e) => {
-        console.log(e.target);
-      },
-    },
-    {
-      key: "1",
-      value: "1",
-      label: "Option 2",
-      onClick: (e) => {
-        console.log(e.target);
-        ``;
-      },
-    },
-  ],
+  advancedOptions: ["Option 1", "Option 2"],
 };
 
 export const NewTag = Template.bind({});

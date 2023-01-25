@@ -1,3 +1,11 @@
+﻿import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import CustomFilterReactSvgUrl from "PUBLIC_DIR/images/custom.filter.react.svg?url";
+import AccessReviewReactSvgUrl from "PUBLIC_DIR/images/access.review.react.svg?url";
+import AccessFormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
+import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import React from "react";
 import ComboBox from "@docspace/components/combobox";
 import { ShareAccessRights } from "@docspace/common/constants";
@@ -73,7 +81,7 @@ const AccessComboBox = (props) => {
         key: FullAccess,
         title: t("Common:FullAccess"),
         label: t("Common:FullAccess"),
-        icon: "/static/images/access.edit.react.svg",
+        icon: AccessEditReactSvgUrl,
         itemId: itemId,
         dataAccess: FullAccess,
       };
@@ -90,7 +98,7 @@ const AccessComboBox = (props) => {
         key: CustomFilter,
         title: t("CustomFilter"),
         label: t("CustomFilter"),
-        icon: "/static/images/custom.filter.react.svg",
+        icon: CustomFilterReactSvgUrl,
         itemId: itemId,
         dataAccess: CustomFilter,
       };
@@ -107,7 +115,7 @@ const AccessComboBox = (props) => {
         key: Review,
         title: t("Common:Review"),
         label: t("Common:Review"),
-        icon: "/static/images/access.review.react.svg",
+        icon: AccessReviewReactSvgUrl,
         itemId: itemId,
         dataAccess: Review,
       };
@@ -124,7 +132,7 @@ const AccessComboBox = (props) => {
         key: FormFilling,
         title: t("FormFilling"),
         label: t("FormFilling"),
-        icon: "/static/images/access.form.react.svg",
+        icon: AccessFormReactSvgUrl,
         itemId: itemId,
         dataAccess: FormFilling,
       };
@@ -141,7 +149,7 @@ const AccessComboBox = (props) => {
         key: Comment,
         title: t("Comment"),
         label: t("Comment"),
-        icon: "/static/images/access.comment.react.svg",
+        icon: AccessCommentReactSvgUrl,
         itemId: itemId,
         dataAccess: Comment,
       };
@@ -158,7 +166,7 @@ const AccessComboBox = (props) => {
         key: ReadOnly,
         title: t("ReadOnly"),
         label: t("ReadOnly"),
-        icon: "/static/images/eye.react.svg",
+        icon: EyeReactSvgUrl,
         itemId: itemId,
         dataAccess: ReadOnly,
       };
@@ -175,7 +183,7 @@ const AccessComboBox = (props) => {
         key: DenyAccess,
         title: t("DenyAccess"),
         label: t("DenyAccess"),
-        icon: "/static/images/access.none.react.svg",
+        icon: AccessNoneReactSvgUrl,
         itemId: itemId,
         dataAccess: DenyAccess,
       };
@@ -193,7 +201,7 @@ const AccessComboBox = (props) => {
         key: "delete",
         title: t("Common:Delete"),
         label: t("Common:Delete"),
-        icon: "/static/images/delete.react.svg",
+        icon: DeleteReactSvgUrl,
         dataFor: itemId,
         onClick: onRemoveUserClick,
       });

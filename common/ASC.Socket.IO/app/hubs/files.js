@@ -138,6 +138,11 @@
     modifyFolder(room, "create", fileId, "file", data);
   }
 
+  function createFolder({ folderId, room, data } = {}) {
+    logger.info(`create new folder ${folderId} in room ${room}`);
+    modifyFolder(room, "create", folderId, "folder", data);
+  }
+
   function updateFile({ fileId, room, data } = {}) {
     logger.info(`update file ${fileId} in room ${room}`);
     modifyFolder(room, "update", fileId, "file", data);
@@ -158,5 +163,5 @@
     filesIO.to(room).emit("s:markasnew-folder", { folderId, count });
   }
 
-  return { startEdit, stopEdit, createFile, deleteFile, updateFile, markAsNewFile, markAsNewFolder };
+  return { startEdit, stopEdit, createFile, createFolder, deleteFile, updateFile, markAsNewFile, markAsNewFolder };
 };

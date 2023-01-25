@@ -96,6 +96,7 @@ const SetRoomParams = ({
         isDisabled={isDisabled}
         isValidTitle={isValidTitle}
         errorMessage={t("Common:RequiredField")}
+        isAutoFocussed={true}
       />
 
       <TagInput
