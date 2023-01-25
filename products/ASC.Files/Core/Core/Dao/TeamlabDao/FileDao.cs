@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.OneDrive.Sdk;
+
 using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
@@ -1491,6 +1493,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
     }
 
     private const string ThumbnailTitle = "thumb";
+
+    public async Task CopyThumbnailAsync(File<int> fromFile, File<int> toFile, int width, int height)
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var thumnailName = GetThumnailName(width, height);
+
+        await _globalStore.GetStore().CopyAsync(String.Empty, GetUniqFilePath(fromFile, thumnailName), String.Empty, GetUniqFilePath(toFile, thumnailName));
+    }
 
     public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
     {

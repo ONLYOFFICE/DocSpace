@@ -53,7 +53,7 @@ public class Worker
 
         List<TenantUserSettings> activeTenantsUsers;
 
-        using (var scope = _serviceScopeFactory.CreateScope())
+        await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
             using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
             activeTenantsUsers = GetTenantsUsers(dbContext);
@@ -79,7 +79,7 @@ public class Worker
 
         try
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
             {
                 var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();

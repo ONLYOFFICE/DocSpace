@@ -129,7 +129,7 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
     protected async Task<File<int>> PerformCrossDaoFileCopyAsync(string fromFileId, int toFolderId, bool deleteSourceFile)
     {
         var fromSelector = GetSelector(fromFileId);
-        using var scope = _serviceProvider.CreateScope();
+        await using var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(TenantID);
 

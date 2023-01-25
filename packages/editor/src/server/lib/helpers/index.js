@@ -119,10 +119,12 @@ export const initDocEditor = async (req) => {
       "doceditor/" +
       getLogoFromPath(config.editorConfig.customization.logo.imageDark);
 
-    config.editorConfig.customization.customer.logo =
-      config.editorConfig.customization.logo.url +
-      "doceditor/" +
-      getLogoFromPath(config.editorConfig.customization.customer.logo);
+    if (config.editorConfig.customization.customer) {
+      config.editorConfig.customization.customer.logo =
+        config.editorConfig.customization.logo.url +
+        "doceditor/" +
+        getLogoFromPath(config.editorConfig.customization.customer.logo);
+    }
 
     return {
       config,
@@ -143,6 +145,7 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
+    console.error("initDocEditor failed", err);
     let message = "";
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;
