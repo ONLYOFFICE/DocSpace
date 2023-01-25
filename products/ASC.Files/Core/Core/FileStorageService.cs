@@ -532,15 +532,8 @@ public class FileStorageService<T> //: IFileStorageService
         var parent = await folderDao.GetFolderAsync(parentId);
         var providerInfo = await providerDao.GetProviderInfoAsync(parent.ProviderId);
 
-        if (providerInfo.RootFolderType != FolderType.VirtualRooms)
-        {
-            throw new InvalidDataException("Invalid provider type");
-        }
-
-        if (providerInfo.FolderId != null)
-        {
-            throw new InvalidOperationException("This provider already corresponds to the virtual room");
-        }
+        ErrorIf(providerInfo.RootFolderType != FolderType.VirtualRooms, FilesCommonResource.ErrorMessage_InvalidProvider);
+        ErrorIf(providerInfo.FolderId != null, FilesCommonResource.ErrorMessage_ProviderAlreadyConnect);
 
         List<AceWrapper> aces = null;
 
@@ -559,6 +552,8 @@ public class FileStorageService<T> //: IFileStorageService
             RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, @private), FolderType.ReadOnlyRoom),
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
+
+        ErrorIf(result.Item1.Id.Equals(result.Item1.RootId), FilesCommonResource.ErrorMessage_InvalidThirdPartyFolder);
 
         if (@private)
         {
