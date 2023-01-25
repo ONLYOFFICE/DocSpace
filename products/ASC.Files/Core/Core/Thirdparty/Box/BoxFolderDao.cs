@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.Box;
 
-[Transient]
+[Scope]
 internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 {
     private readonly CrossDao _crossDao;

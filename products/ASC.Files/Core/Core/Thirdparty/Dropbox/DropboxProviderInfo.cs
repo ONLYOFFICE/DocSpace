@@ -298,7 +298,7 @@ internal class DropboxStorageDisposableWrapper : IDisposable
 
     public async Task<DropboxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var dropboxStorage = ActivatorUtilities.CreateInstance<DropboxStorage>(_serviceProvider);
+        var dropboxStorage = _serviceProvider.GetRequiredService<DropboxStorage>();
 
         await CheckTokenAsync(token, id);
 

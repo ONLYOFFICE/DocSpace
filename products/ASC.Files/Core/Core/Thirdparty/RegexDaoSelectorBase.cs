@@ -35,7 +35,7 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
     public Regex Selector => _selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
     private Regex _selector;
 
-    private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
+    private Dictionary<string, BaseProviderInfo<T>> Providers { get; set; }
 
     protected RegexDaoSelectorBase(
         IServiceProvider serviceProvider,
@@ -43,7 +43,7 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
     {
         _serviceProvider = serviceProvider;
         _daoFactory = daoFactory;
-        Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
+        Providers = new Dictionary<string, BaseProviderInfo<T>>();
     }
 
     public virtual string ConvertId(string id)
@@ -110,17 +110,20 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
 
     private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
     {
-        var providerKey = $"{id}{typeof(T1)}";
-        if (Providers.TryGetValue(providerKey, out var provider))
-        {
-            return (T1)provider;
-        }
-
+        var providerKey = $"{id}";
+        var info = Providers.Get(providerKey);
         var res = _serviceProvider.GetService<T1>();
 
-        res.Init(GetInfo(id), this);
+        if (info != null)
+        {
+            res.Init(info, this);
+            return res;
+        }
 
-        Providers.Add(providerKey, res);
+        info = GetInfo(id);
+        res.Init(info, this);
+
+        Providers.Add(providerKey, info);
 
         return res;
     }
@@ -175,9 +178,9 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
 
     public void Dispose()
     {
-        foreach (var p in Providers)
+        foreach (var p in Providers.Values)
         {
-            p.Value.Dispose();
+            p.ProviderInfo.Dispose();
         }
     }
 }

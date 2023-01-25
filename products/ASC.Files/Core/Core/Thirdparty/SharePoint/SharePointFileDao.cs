@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.SharePoint;
 
-[Transient]
+[Scope]
 internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 {
     private readonly CrossDao _crossDao;
