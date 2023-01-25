@@ -9,7 +9,7 @@ import { Base } from "@docspace/components/themes";
 import Selector from "./sub-components/Selector";
 import Backdrop from "@docspace/components/backdrop";
 
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossIcon from "../../../../public/images/cross.react.svg";
 
 const StyledBlock = styled.div`
   position: fixed;

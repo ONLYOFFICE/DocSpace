@@ -7,6 +7,12 @@ import { RoomsType } from "@docspace/common/constants";
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
+import {
+  iconSize24,
+  iconSize32,
+  iconSize64,
+  iconSize96,
+} from "@docspace/common/utils/image-helpers";
 
 class SettingsStore {
   thirdPartyStore;
@@ -260,147 +266,229 @@ class SettingsStore {
     }
   };
 
-  getRoomsIcon = (roomType, isArchive, size = 32) => {
-    const reviewPath = `images/icons/${size}`;
-
-    if (isArchive) return `${reviewPath}/room/archive.svg`;
-
-    switch (roomType) {
-      case RoomsType.CustomRoom:
-        return `${reviewPath}/room/custom.svg`;
-      case RoomsType.FillingFormsRoom:
-        return `${reviewPath}/room/filling.form.svg`;
-      case RoomsType.EditingRoom:
-        return `${reviewPath}/room/editing.svg`;
-      case RoomsType.ReadOnlyRoom:
-        return `${reviewPath}/room/view.only.svg`;
-      case RoomsType.ReviewRoom:
-        return `${reviewPath}/room/review.svg`;
+  getIconBySize = (size, path) => {
+    switch (+size) {
+      case 24:
+        return iconSize24.get(path);
+      case 32:
+        return iconSize32.get(path);
+      case 64:
+        return iconSize64.get(path);
+      case 96:
+        return iconSize96.get(path);
     }
   };
 
+  getRoomsIcon = (roomType, isArchive, size = 32) => {
+    let path = "";
+
+    if (isArchive) {
+      path = "archive.svg";
+    } else {
+      switch (roomType) {
+        case RoomsType.CustomRoom:
+          path = "custom.svg";
+          break;
+        case RoomsType.FillingFormsRoom:
+          path = "filling.form.svg";
+          break;
+        case RoomsType.EditingRoom:
+          path = "editing.svg";
+          break;
+        case RoomsType.ReadOnlyRoom:
+          path = "view.only.svg";
+          break;
+        case RoomsType.ReviewRoom:
+          path = "review.svg";
+          break;
+      }
+    }
+
+    return this.getIconBySize(size, path);
+  };
+
   getFolderIcon = (providerKey, size = 32) => {
-    const folderPath = `images/icons/${size}`;
+    let path = "";
 
     switch (providerKey) {
       case "Box":
       case "BoxNet":
-        return `${folderPath}/folder/box.svg`;
+        path = "box.svg";
+        break;
       case "DropBox":
       case "DropboxV2":
-        return `${folderPath}/folder/dropbox.svg`;
+        path = "dropbox.svg";
+        break;
       case "Google":
       case "GoogleDrive":
-        return `${folderPath}/folder/google.svg`;
+        path = "google.svg";
+        break;
       case "OneDrive":
-        return `${folderPath}/folder/onedrive.svg`;
+        path = "onedrive.svg";
+        break;
       case "SharePoint":
-        return `${folderPath}/folder/sharepoint.svg`;
+        path = "sharepoint.svg";
+        break;
       case "Yandex":
-        return `${folderPath}/folder/yandex.svg`;
+        path = "yandex.svg";
+        break;
       case "kDrive":
-        return `${folderPath}/folder/kdrive.svg`;
+        path = "kdrive.svg";
+        break;
       case "WebDav":
-        return `${folderPath}/folder/webdav.svg`;
+        path = "webdav.svg";
+        break;
       default:
-        return `${folderPath}/folder.svg`;
+        path = "folder.svg";
+        break;
     }
+
+    return this.getIconBySize(size, path);
   };
 
-  getIconUrl = (extension, folderPath) => {
+  getIconUrl = (extension, size) => {
+    let path = "";
+
     switch (extension) {
       case ".avi":
-        return `${folderPath}/avi.svg`;
+        path = "avi.svg";
+        break;
       case ".csv":
-        return `${folderPath}/csv.svg`;
+        path = "csv.svg";
+        break;
       case ".djvu":
-        return `${folderPath}/djvu.svg`;
+        path = "djvu.svg";
+        break;
       case ".doc":
-        return `${folderPath}/doc.svg`;
+        path = "doc.svg";
+        break;
       case ".docm":
-        return `${folderPath}/docm.svg`;
+        path = "docm.svg";
+        break;
       case ".docx":
-        return `${folderPath}/docx.svg`;
+        path = "docx.svg";
+        break;
       case ".dotx":
-        return `${folderPath}/dotx.svg`;
+        path = "dotx.svg";
+        break;
       case ".dvd":
-        return `${folderPath}/dvd.svg`;
+        path = "dvd.svg";
+        break;
       case ".epub":
-        return `${folderPath}/epub.svg`;
+        path = "epub.svg";
+        break;
       case ".pb2":
       case ".fb2":
-        return `${folderPath}/fb2.svg`;
+        path = "fb2.svg";
+        break;
       case ".flv":
-        return `${folderPath}/flv.svg`;
+        path = "flv.svg";
+        break;
       case ".fodt":
-        return `${folderPath}/fodt.svg`;
+        path = "fodt.svg";
+        break;
       case ".iaf":
-        return `${folderPath}/iaf.svg`;
+        path = "iaf.svg";
+        break;
       case ".ics":
-        return `${folderPath}/ics.svg`;
+        path = "ics.svg";
+        break;
       case ".m2ts":
-        return `${folderPath}/m2ts.svg`;
+        path = "m2ts.svg";
+        break;
       case ".mht":
-        return `${folderPath}/mht.svg`;
+        path = "mht.svg";
+        break;
       case ".mkv":
-        return `${folderPath}/mkv.svg`;
+        path = "mkv.svg";
+        break;
       case ".mov":
-        return `${folderPath}/mov.svg`;
+        path = "mov.svg";
+        break;
       case ".mp4":
-        return `${folderPath}/mp4.svg`;
+        path = "mp4.svg";
+        break;
       case ".mpg":
-        return `${folderPath}/mpg.svg`;
+        path = "mpg.svg";
+        break;
       case ".odp":
-        return `${folderPath}/odp.svg`;
+        path = "odp.svg";
+        break;
       case ".ods":
-        return `${folderPath}/ods.svg`;
+        path = "ods.svg";
+        break;
       case ".odt":
-        return `${folderPath}/odt.svg`;
+        path = "odt.svg";
+        break;
       case ".otp":
-        return `${folderPath}/otp.svg`;
+        path = "otp.svg";
+        break;
       case ".ots":
-        return `${folderPath}/ots.svg`;
+        path = "ots.svg";
+        break;
       case ".ott":
-        return `${folderPath}/ott.svg`;
+        path = "ott.svg";
+        break;
       case ".pdf":
-        return `${folderPath}/pdf.svg`;
+        path = "pdf.svg";
+        break;
       case ".pot":
-        return `${folderPath}/pot.svg`;
+        path = "pot.svg";
+        break;
       case ".pps":
-        return `${folderPath}/pps.svg`;
+        path = "pps.svg";
+        break;
       case ".ppsx":
-        return `${folderPath}/ppsx.svg`;
+        path = "ppsx.svg";
+        break;
       case ".ppt":
-        return `${folderPath}/ppt.svg`;
+        path = "ppt.svg";
+        break;
       case ".pptm":
-        return `${folderPath}/pptm.svg`;
+        path = "pptm.svg";
+        break;
       case ".pptx":
-        return `${folderPath}/pptx.svg`;
+        path = "pptx.svg";
+        break;
       case ".rtf":
-        return `${folderPath}/rtf.svg`;
+        path = "rtf.svg";
+        break;
       case ".svg":
-        return `${folderPath}/svg.svg`;
+        path = "svg.svg";
+        break;
       case ".txt":
-        return `${folderPath}/txt.svg`;
+        path = "txt.svg";
+        break;
       case ".webm":
-        return `${folderPath}/webm.svg`;
+        path = "webm.svg";
+        break;
       case ".xls":
-        return `${folderPath}/xls.svg`;
+        path = "xls.svg";
+        break;
       case ".xlsm":
-        return `${folderPath}/xlsm.svg`;
+        path = "xlsm.svg";
+        break;
       case ".xlsx":
-        return `${folderPath}/xlsx.svg`;
+        path = "xlsx.svg";
+        break;
       case ".xps":
-        return `${folderPath}/xps.svg`;
+        path = "xps.svg";
+        break;
       case ".xml":
-        return `${folderPath}/xml.svg`;
+        path = "xml.svg";
+        break;
       case ".oform":
-        return `${folderPath}/oform.svg`;
+        path = "oform.svg";
+        break;
       case ".docxf":
-        return `${folderPath}/docxf.svg`;
+        path = "docxf.svg";
+        break;
       default:
-        return `${folderPath}/file.svg`;
+        path = "file.svg";
+        break;
     }
+
+    return this.getIconBySize(size, path);
   };
 
   getFileIcon = (
@@ -411,36 +499,37 @@ class SettingsStore {
     sound = false,
     html = false
   ) => {
-    const folderPath = `/static/images/icons/${size}`;
+    let path = "";
 
-    if (archive) return `${folderPath}/file_archive.svg`;
+    if (archive) path = "file_archive.svg";
 
-    if (image) return `${folderPath}/image.svg`;
+    if (image) path = "image.svg";
 
-    if (sound) return `${folderPath}/sound.svg`;
+    if (sound) path = "sound.svg";
 
-    if (html) return `${folderPath}/html.svg`;
+    if (html) path = "html.svg";
 
-    return this.getIconUrl(extension, folderPath);
+    if (path) return this.getIconBySize(size, path);
+
+    return this.getIconUrl(extension, size);
   };
 
   getIconSrc = (ext, size = 24) => {
-    const folderPath = `/static/images/icons/${size}`;
+    let path = "";
 
-    if (presentInArray(this.extsArchive, ext, true))
-      return `${folderPath}/file_archive.svg`;
+    if (presentInArray(this.extsArchive, ext, true)) path = "file_archive.svg";
 
-    if (presentInArray(this.extsImage, ext, true))
-      return `${folderPath}/image.svg`;
+    if (presentInArray(this.extsImage, ext, true)) path = "image.svg";
 
-    if (presentInArray(this.extsAudio, ext, true))
-      return `${folderPath}/sound.svg`;
+    if (presentInArray(this.extsAudio, ext, true)) path = "sound.svg";
 
-    if (presentInArray(this.html, ext, true)) return `${folderPath}/html.svg`;
+    if (presentInArray(this.html, ext, true)) path = "html.svg";
+
+    if (path) return this.getIconBySize(size, path);
 
     const extension = ext.toLowerCase();
 
-    return this.getIconUrl(extension, folderPath);
+    return this.getIconUrl(extension, size);
   };
 }
 

@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarDarkReactSvgUrl from "../../../public/images/avatar.dark.react.svg?url";
+
 const {
   black,
   white,
@@ -1010,7 +1012,7 @@ const Dark = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
+    defaultImage: `url("${AvatarDarkReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2939,6 +2941,9 @@ const Dark = {
           linkColor: "#E06A1B",
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
+        },
+        auditTrail: {
+          downloadReportDescriptionColor: "#858585",
         },
       },
 

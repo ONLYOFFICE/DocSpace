@@ -1,6 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import DropDownItem from ".";
+import NavLogoReactSvgUrl from "../../../public/images/nav.logo.react.svg?url";
 
 const baseProps = {
   isSeparator: false,
@@ -8,7 +9,7 @@ const baseProps = {
   tabIndex: -1,
   label: "test",
   disabled: false,
-  icon: "static/images/nav.logo.react.svg",
+  icon: NavLogoReactSvgUrl,
   noHover: false,
   onClick: jest.fn(),
 };

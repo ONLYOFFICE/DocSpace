@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 
-namespace Frontend.Translations.Tests;
+namespace Frontend.Tests;
 
 public class ModuleFolder
 {

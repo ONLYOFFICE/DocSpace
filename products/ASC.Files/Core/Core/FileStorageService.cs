@@ -1546,7 +1546,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                 if (currentProperies.FormFilling == null)
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
+                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     currentProperies.FormFilling = scope.ServiceProvider.GetService<FormFillingProperties>();
                 }
 

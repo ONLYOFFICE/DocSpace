@@ -1,5 +1,6 @@
 import React from "react";
 import MainButton from ".";
+import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
 
 export default {
   title: "Components/MainButton",
@@ -27,19 +28,19 @@ const Template = ({
   const itemsModel = [
     {
       label: "New document",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "New spreadsheet",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "New presentation",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Master form",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
       items: [
         {
           label: "From blank",
@@ -51,12 +52,12 @@ const Template = ({
     },
     {
       label: "New folder",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     { separator: true },
     {
       label: "Upload",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
   ];
 
@@ -78,5 +79,5 @@ Default.args = {
   isDisabled: false,
   isDropdown: true,
   text: "Actions",
-  iconName: "static/images/people.react.svg",
+  iconName: CatalogFolderReactSvgUrl,
 };

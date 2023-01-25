@@ -6,11 +6,11 @@ List of all available icons
 
 ```js
 import Icons from "@docspace/components/icons";
-import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
+import NavLogoReactSvg from "../../../public/images/nav.logo.react.svg";
 ```
 
 ```jsx
-<NavLogoIcon color="#333333" isfill={false} isStroke={false} size="small" />
+<NavLogoReactSvg color="#333333" isfill={false} isStroke={false} size="small" />
 ```
 
 ### Properties

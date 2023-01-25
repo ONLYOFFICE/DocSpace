@@ -6,6 +6,7 @@ InputBlock description
 
 ```js
 import InputBlock from "@docspace/components/input-block";
+import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
 ```
 
 ```js
@@ -15,7 +16,7 @@ const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 ```jsx
 <InputBlock
   mask={mask}
-  iconName={"static/images/search.react.svg"}
+  iconName={SearchReactSvgUrl}
   onIconClick={(event) => alert(event.target.value)}
   onChange={(event) => alert(event.target.value)}
 >

@@ -1,3 +1,4 @@
+﻿import ManageAccessRightsReactSvgUrl from "PUBLIC_DIR/images/manage.access.rights.react.svg?url";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +12,7 @@ const ForbiddenPage = () => {
       descriptionText={t("ForbiddenPageDescription")}
       headerText={t("ForbiddenPageHeader")}
       imageAlt="Empty screen image"
-      imageSrc="/static/images/manage.access.rights.react.svg"
+      imageSrc={ManageAccessRightsReactSvgUrl}
     />
   );
 };

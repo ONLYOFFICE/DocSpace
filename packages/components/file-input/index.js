@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
+import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
 
 import IconButton from "../icon-button";
 import Button from "../button";
@@ -142,7 +143,7 @@ class FileInput extends Component {
           <div className="icon" onClick={this.onIconFileClick}>
             <IconButton
               className="icon-button"
-              iconName={"/static/images/catalog.folder.react.svg"}
+              iconName={CatalogFolderReactSvgUrl}
               color={"#A3A9AE"}
               size={iconSize}
               isDisabled={isDisabled}

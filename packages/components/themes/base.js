@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarBaseReactSvgUrl from "../../../public/images/avatar.base.react.svg?url";
+
 const {
   black,
   white,
@@ -1020,7 +1022,7 @@ const Base = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.base.react.svg")`,
+    defaultImage: `url("${AvatarBaseReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2938,6 +2940,9 @@ const Base = {
           linkColor: link,
           departmentColor: gray,
           tooltipColor: lightCumulus,
+        },
+        auditTrail: {
+          downloadReportDescriptionColor: gray,
         },
       },
 

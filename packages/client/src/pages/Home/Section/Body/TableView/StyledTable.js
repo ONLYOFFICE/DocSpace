@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 import TableRow from "@docspace/components/table-container/TableRow";
 import DragAndDrop from "@docspace/components/drag-and-drop";
+import CursorPalmSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -76,7 +77,7 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(/static/images/cursor.palm.react.svg), auto !important"};
+      `url(${CursorPalmSvgUrl}), auto !important`};
 
     ${(props) =>
       props.inProgress &&

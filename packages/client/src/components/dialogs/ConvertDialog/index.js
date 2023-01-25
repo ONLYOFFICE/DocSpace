@@ -78,11 +78,6 @@ const ConvertDialogComponent = (props) => {
           : t("FileUploadTitle")}
       </ModalDialog.Header>
       <ModalDialog.Body>
-        {/* <img
-            className="convert_dialog_image"
-            src="images/convert_alert.png"
-            alt="convert alert"
-          /> */}
         <Text>
           {convertSingleFile ? t("OpenFileMessage") : t("ConversionMessage")}
         </Text>

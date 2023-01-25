@@ -116,7 +116,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
         }
 
-        using var scope = _serviceScopeProvider.CreateScope();
+        await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
         _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();

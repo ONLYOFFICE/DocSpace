@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import RowContent from "./";
 import Link from "../link";
 import Checkbox from "../checkbox";
-import SendClockIcon from "../public/static/images/send.clock.react.svg";
-import CatalogSpamIcon from "../public/static/images/catalog.spam.react.svg";
+import SendClockReactSvg from "../../../public/images/send.clock.react.svg";
+import CatalogSpamReactSvg from "../../../public/images/catalog.spam.react.svg";
 
 const Template = (args) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -22,8 +22,8 @@ const Template = (args) => {
           Demo
         </Link>
         <>
-          <SendClockIcon size="small" isfill={true} color="#3B72A7" />
-          <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo
@@ -61,7 +61,7 @@ const Template = (args) => {
           Demo Demo
         </Link>
         <>
-          <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
         </>
         <></>
         <Link
@@ -131,7 +131,7 @@ const Template = (args) => {
           Demo Demo Demo Demo
         </Link>
         <>
-          <SendClockIcon size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo
