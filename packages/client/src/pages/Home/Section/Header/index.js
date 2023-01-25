@@ -1,3 +1,26 @@
+﻿import FolderLockedReactSvgUrl from "PUBLIC_DIR/images/folder.locked.react.svg?url";
+import ActionsDocumentsReactSvgUrl from "PUBLIC_DIR/images/actions.documents.react.svg?url";
+import SpreadsheetReactSvgUrl from "PUBLIC_DIR/images/spreadsheet.react.svg?url";
+import ActionsPresentationReactSvgUrl from "PUBLIC_DIR/images/actions.presentation.react.svg?url";
+import FormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
+import FormBlankReactSvgUrl from "PUBLIC_DIR/images/form.blank.react.svg?url";
+import FormFileReactSvgUrl from "PUBLIC_DIR/images/form.file.react.svg?url";
+import FormGalleryReactSvgUrl from "PUBLIC_DIR/images/form.gallery.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg?url";
+import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
+import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
+import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
+import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
+import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
+import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
@@ -135,7 +158,7 @@ class SectionHeaderContent extends React.Component {
             key: "new-room",
             label: t("NewRoom"),
             onClick: this.onCreateRoom,
-            icon: "images/folder.locked.react.svg",
+            icon: FolderLockedReactSvgUrl,
           },
         ]
       : [
@@ -144,25 +167,25 @@ class SectionHeaderContent extends React.Component {
             key: "new-document",
             label: t("Common:NewDocument"),
             onClick: this.createDocument,
-            icon: "images/actions.documents.react.svg",
+            icon: ActionsDocumentsReactSvgUrl,
           },
           {
             id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
             label: t("Common:NewSpreadsheet"),
             onClick: this.createSpreadsheet,
-            icon: "images/spreadsheet.react.svg",
+            icon: SpreadsheetReactSvgUrl,
           },
           {
             id: "personal_new-presentation",
             key: "new-presentation",
             label: t("Common:NewPresentation"),
             onClick: this.createPresentation,
-            icon: "images/actions.presentation.react.svg",
+            icon: ActionsPresentationReactSvgUrl,
           },
           {
             id: "personal_form-template",
-            icon: "images/form.react.svg",
+            icon: FormReactSvgUrl,
             label: t("Translations:NewForm"),
             key: "new-form-base",
             items: [
@@ -170,14 +193,14 @@ class SectionHeaderContent extends React.Component {
                 id: "personal_template_black",
                 key: "new-form",
                 label: t("Translations:SubNewForm"),
-                icon: "images/form.blank.react.svg",
+                icon: FormBlankReactSvgUrl,
                 onClick: this.createForm,
               },
               {
                 id: "personal_template_new-form-file",
                 key: "new-form-file",
                 label: t("Translations:SubNewFormFile"),
-                icon: "images/form.file.react.svg",
+                icon: FormFileReactSvgUrl,
                 onClick: this.createFormFromFile,
                 disabled: isPrivacyFolder,
               },
@@ -185,7 +208,7 @@ class SectionHeaderContent extends React.Component {
                 id: "personal_template_oforms-gallery",
                 key: "oforms-gallery",
                 label: t("Common:OFORMsGallery"),
-                icon: "images/form.gallery.react.svg",
+                icon: FormGalleryReactSvgUrl,
                 onClick: this.onShowGallery,
                 disabled: isPrivacyFolder || (isMobile && isTablet),
               },
@@ -196,7 +219,7 @@ class SectionHeaderContent extends React.Component {
             key: "new-folder",
             label: t("Common:NewFolder"),
             onClick: this.createFolder,
-            icon: "images/catalog.folder.react.svg",
+            icon: CatalogFolderReactSvgUrl,
           },
           /*{ key: "separator", isSeparator: true },
       {
@@ -204,7 +227,7 @@ class SectionHeaderContent extends React.Component {
         label: t("UploadToFolder"),
         onClick: this.uploadToFolder,
         disabled: true,
-        icon: "images/actions.upload.react.svg",
+        icon: ActionsUploadReactSvgUrl,
       },*/
         ];
 
@@ -380,7 +403,7 @@ class SectionHeaderContent extends React.Component {
           label: t("ArchiveAction"),
           onClick: this.onEmptyTrashAction,
           disabled: !canDeleteAll,
-          icon: "images/clear.trash.react.svg",
+          icon: ClearTrashReactSvgUrl,
         },
         {
           id: "header_option_restore-all",
@@ -388,7 +411,7 @@ class SectionHeaderContent extends React.Component {
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
           disabled: !canRestoreAll,
-          icon: "images/subtract.react.svg",
+          icon: MoveReactSvgUrl,
         },
       ];
     }
@@ -400,7 +423,7 @@ class SectionHeaderContent extends React.Component {
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
         disabled: true,
-        icon: "/static/images/share.react.svg",
+        icon: ShareReactSvgUrl,
       },
       {
         id: "header_option_link-portal-users",
@@ -408,7 +431,7 @@ class SectionHeaderContent extends React.Component {
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
         disabled: true,
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
       },
       {
         id: "header_option_link-for-room-members",
@@ -416,7 +439,7 @@ class SectionHeaderContent extends React.Component {
         label: t("LinkForRoomMembers"),
         onClick: this.onCopyLinkAction,
         disabled: isRecycleBinFolder || isPersonalRoom,
-        icon: "/static/images/invitation.link.react.svg",
+        icon: InvitationLinkReactSvgUrl,
       },
       {
         id: "header_option_empty-trash",
@@ -424,7 +447,7 @@ class SectionHeaderContent extends React.Component {
         label: t("RecycleBinAction"),
         onClick: this.onEmptyTrashAction,
         disabled: !isRecycleBinFolder,
-        icon: "images/clear.trash.react.svg",
+        icon: ClearTrashReactSvgUrl,
       },
       {
         id: "header_option_restore-all",
@@ -432,7 +455,7 @@ class SectionHeaderContent extends React.Component {
         label: t("RestoreAll"),
         onClick: this.onRestoreAllAction,
         disabled: !isRecycleBinFolder,
-        icon: "images/subtract.react.svg",
+        icon: MoveReactSvgUrl,
       },
       {
         id: "header_option_show-info",
@@ -440,13 +463,13 @@ class SectionHeaderContent extends React.Component {
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
         disabled: isDisabled,
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
       },
       {
         id: "header_option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
-        icon: "images/reconnect.svg",
+        icon: ReconnectSvgUrl,
         onClick: () => onClickReconnectStorage(selectedFolder, t),
         disabled: !selectedFolder.providerKey || !isRoom,
       },
@@ -454,7 +477,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_edit-room",
         key: "edit-room",
         label: t("EditRoom"),
-        icon: "images/settings.react.svg",
+        icon: SettingsReactSvgUrl,
         onClick: () => onClickEditRoom(selectedFolder),
         disabled: !isRoom,
       },
@@ -462,7 +485,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_invite-users-to-room",
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
-        icon: "/static/images/person.react.svg",
+        icon: PersonReactSvgUrl,
         onClick: () => onClickInviteUsers(selectedFolder.id),
         disabled: !isRoom,
       },
@@ -470,7 +493,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_room-info",
         key: "room-info",
         label: t("Common:Info"),
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         onClick: this.onToggleInfoPanel,
         disabled: !isRoom,
       },
@@ -484,7 +507,7 @@ class SectionHeaderContent extends React.Component {
         id: "header_option_archive-room",
         key: "archive-room",
         label: t("Archived"),
-        icon: "/static/images/room.archive.svg",
+        icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e),
         disabled: !isRoom,
         "data-action": "archive",
@@ -496,7 +519,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: isDisabled,
-        icon: "images/download.react.svg",
+        icon: DownloadReactSvgUrl,
       },
       {
         id: "header_option_move-to",
@@ -504,7 +527,7 @@ class SectionHeaderContent extends React.Component {
         label: t("MoveTo"),
         onClick: this.onMoveAction,
         disabled: isDisabled,
-        icon: "images/move.react.svg",
+        icon: MoveReactSvgUrl,
       },
       {
         id: "header_option_copy",
@@ -512,7 +535,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: isDisabled,
-        icon: "/static/images/copy.react.svg",
+        icon: CopyReactSvgUrl,
       },
       {
         id: "header_option_rename",
@@ -520,7 +543,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Rename"),
         onClick: this.renameAction,
         disabled: isDisabled,
-        icon: "images/rename.react.svg",
+        icon: RenameReactSvgUrl,
       },
       {
         id: "header_option_separator-3",
@@ -534,7 +557,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: isDisabled,
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: CatalogTrashReactSvgUrl,
       },
     ];
   };
@@ -656,6 +679,7 @@ class SectionHeaderContent extends React.Component {
       isEmptyArchive,
       isVisitor,
       isRoom,
+      isGroupMenuBlocked,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -676,6 +700,7 @@ class SectionHeaderContent extends React.Component {
                 isInfoPanelVisible={isInfoPanelVisible}
                 toggleInfoPanel={this.onToggleInfoPanel}
                 isMobileView={isMobileOnly}
+                isBlocked={isGroupMenuBlocked}
               />
             ) : (
               <div className="header-container">
@@ -795,6 +820,7 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       backToParentFolder,
+      isGroupMenuBlocked,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -912,6 +938,7 @@ export default inject(
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
+      isGroupMenuBlocked,
     };
   }
 )(

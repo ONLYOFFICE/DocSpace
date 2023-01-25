@@ -1,6 +1,11 @@
 import React from "react";
 import DropDown from "../drop-down";
 import DropDownItem from ".";
+import QuestionReactSvgUrl from "../../../public/images/question.react.svg?url";
+import EyeReactSvgUrl from "../../../public/images/eye.react.svg?url";
+import CopyReactSvgUrl from "../../../public/images/copy.react.svg?url";
+import ChatReactSvgUrl from "../../../public/images/chat.react.svg?url";
+import NavLogoReactSvgUrl from "../../../public/images/nav.logo.react.svg?url";
 
 export default {
   title: "Components/DropDownItem",
@@ -39,28 +44,28 @@ const Template = (args) => {
           noHover={noHover}
         />
         <DropDownItem
-          icon={"/static/images/question.react.svg"}
+          icon={QuestionReactSvgUrl}
           label="Button 1"
           disabled={disabled}
           onClick={() => onClick("Button 1 clicked")}
           noHover={noHover}
         />
         <DropDownItem
-          icon={"/static/images/eye.react.svg"}
+          icon={EyeReactSvgUrl}
           label="Button 2"
           onClick={() => onClick("Button 2 clicked")}
           noHover={noHover}
         />
         <DropDownItem
           disabled
-          icon={"/static/images/copy.react.svg"}
+          icon={CopyReactSvgUrl}
           label={args.label || "Button 3"}
           disabled={disabled}
           onClick={() => onClick("Button 3 clicked")}
           noHover={noHover}
         />
         <DropDownItem
-          icon={"/static/images/chat.react.svg"}
+          icon={ChatReactSvgUrl}
           label="Button 4"
           onClick={() => onClick("Button 4 clicked")}
           noHover={noHover}
@@ -72,14 +77,14 @@ const Template = (args) => {
           noHover={noHover}
         />
         <DropDownItem
-          icon={"/static/images/nav.logo.react.svg"}
+          icon={NavLogoReactSvgUrl}
           label="Button 5"
           onClick={() => onClick("Button 5 clicked")}
           noHover={noHover}
         />
         <DropDownItem
           disabled
-          icon={"static/images/nav.logo.react.svg"}
+          icon={NavLogoReactSvgUrl}
           label="Button 6"
           onClick={() => console.log("Button 6 clicked")}
           noHover={noHover}

@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
-    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AssemblyTitle>ASC.People</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
@@ -64,16 +63,16 @@
     <EmbeddedResource Update="Resources\PeopleResource.cs.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.el.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.el-GR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.fi.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ja.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ja-JP.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ko.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ko-KR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.lv.resx">
@@ -103,7 +102,7 @@
     <EmbeddedResource Update="Resources\PeopleResource.tr.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.uk.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.uk-UA.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.vi.resx">

@@ -45,7 +45,6 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
-  isAdmin,
   enableThirdParty,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
@@ -97,6 +96,7 @@ const SetRoomParams = ({
         isDisabled={isDisabled}
         isValidTitle={isValidTitle}
         errorMessage={t("Common:RequiredField")}
+        isAutoFocussed={true}
       />
 
       <TagInput
@@ -114,7 +114,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (enableThirdParty || isAdmin) && (
+      {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}

@@ -48,7 +48,7 @@ public class EmailSenderSink : Sink
         var responce = new SendResponse(message, _senderName, default(SendResult));
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             var result = await _sender.Send(m);
 

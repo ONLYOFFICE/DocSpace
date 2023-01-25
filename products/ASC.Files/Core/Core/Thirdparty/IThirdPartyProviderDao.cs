@@ -71,6 +71,13 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(false);
     }
 
+    public Task CopyThumbnailAsync(File<string> fromFile, File<string> toFile, int width, int height)
+    {
+        //Do nothing
+        return Task.CompletedTask;
+    }
+
+
     public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
     {
         //Do nothing

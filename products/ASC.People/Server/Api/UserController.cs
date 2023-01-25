@@ -146,7 +146,7 @@ public class UserController : PeopleControllerBase
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -186,7 +186,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
+            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -669,10 +670,20 @@ public class UserController : PeopleControllerBase
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
-        var users = inDto.UserIds
-             .Where(userId => !_userManager.IsSystemUser(userId))
-             .Select(userId => _userManager.GetUsers(userId))
-             .ToList();
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+
+        IEnumerable<UserInfo> users = null;
+
+        if (inDto.ResendAll)
+        {
+            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        }
+        else
+        {
+            users = inDto.UserIds
+                .Where(userId => !_userManager.IsSystemUser(userId))
+                .Select(userId => _userManager.GetUsers(userId));
+        }
 
         foreach (var user in users)
         {
@@ -704,10 +715,15 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.IsDocSpaceAdmin(user) ? EmployeeType.DocSpaceAdmin :
-                    _userManager.IsUser(user) ? EmployeeType.User : EmployeeType.RoomAdmin;
+                var type = _userManager.GetUserType(user.Id);
 
-                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
+                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                {
+                    continue;
+                }
+
+                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             }
             else
             {

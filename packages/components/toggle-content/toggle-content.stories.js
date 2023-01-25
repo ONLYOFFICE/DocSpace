@@ -4,7 +4,7 @@ import Button from "../button";
 import TextInput from "../button";
 import Text from "../text";
 //import { Icons } from "../icons";
-import CheckIcon from "../public/static/images/check.react.svg";
+import CheckReactSvg from "../../../public/images/check.react.svg";
 
 const optionsChildren = [
   "button",
@@ -68,7 +68,7 @@ const Template = ({
         );
         break;
       case "icon":
-        children.push(<CheckIcon key={indx} />);
+        children.push(<CheckReactSvg key={indx} />);
         break;
       case "text":
         children.push(<Text key={indx}>{text}</Text>);

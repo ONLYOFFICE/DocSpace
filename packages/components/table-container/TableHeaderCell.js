@@ -4,6 +4,7 @@ import Text from "../text";
 import IconButton from "../icon-button";
 import globalColors from "../utils/globalColors";
 import { StyledTableHeaderCell } from "./StyledTableContainer";
+import SortDescReactSvgUrl from "../../../public/images/sort.desc.react.svg?url";
 
 const TableHeaderCell = ({
   column,
@@ -54,7 +55,7 @@ const TableHeaderCell = ({
           {sortingVisible && (
             <IconButton
               onClick={column.onIconClick ? onIconClick : onClick}
-              iconName="/static/images/sort.desc.react.svg"
+              iconName={SortDescReactSvgUrl}
               className="header-container-text-icon"
               size="small"
               color={isActive ? globalColors.grayMain : globalColors.gray}
@@ -92,7 +93,7 @@ const TableHeaderCell = ({
           {sortingVisible && (
             <IconButton
               onClick={column.onIconClick ? onIconClick : onClick}
-              iconName="/static/images/sort.desc.react.svg"
+              iconName={SortDescReactSvgUrl}
               className="header-container-text-icon"
               size="small"
               color={isActive ? globalColors.grayMain : globalColors.gray}

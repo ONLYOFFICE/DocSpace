@@ -124,6 +124,14 @@ class AuthStore {
     return isAdmin(user, currentProductId);
   }
 
+  get isRoomAdmin() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return !user.isAdmin && !user.isOwner && !user.isVisitor;
+  }
+
   login = async (user, hash, session = true) => {
     try {
       const response = await api.user.login(user, hash, session);
@@ -223,7 +231,7 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      (this.settingsStore.isLoaded && this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
+      (this.settingsStore.isLoaded && !!this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
       this.settingsStore.tenantStatus === TenantStatus.PortalRestore
     );
   }

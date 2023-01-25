@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarBaseReactSvgUrl from "../../../public/images/avatar.base.react.svg?url";
+
 const {
   black,
   white,
@@ -1020,7 +1022,7 @@ const Base = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.base.react.svg")`,
+    defaultImage: `url("${AvatarBaseReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2087,6 +2089,7 @@ const Base = {
     details: {
       customLogoBorderColor: grayLightMid,
       commentEditorIconColor: "#333",
+      tagBackground: "#ECEEF1",
     },
 
     gallery: {
@@ -3032,6 +3035,7 @@ const Base = {
 
   errorContainer: {
     background: white,
+    bodyText: "#A3A9AE",
   },
 
   editor: {

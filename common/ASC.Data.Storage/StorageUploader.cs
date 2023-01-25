@@ -148,7 +148,7 @@ public class MigrateOperation : DistributedTaskProgress
             _logger.DebugTenant(_tenantId);
             Status = DistributedTaskStatus.Running;
 
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var tempPath = scope.ServiceProvider.GetService<TempPath>();
             var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
             var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;

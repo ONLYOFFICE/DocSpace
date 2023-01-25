@@ -608,13 +608,13 @@ class TableHeader extends React.Component {
       const firstColumnPercent = 40;
       const percent = 60 / enableColumns.length;
 
-      const firstColumnSize =
-        (containerWidth * firstColumnPercent) / 100 + "px";
+      const wideColumnSize = (containerWidth * firstColumnPercent) / 100 + "px";
       const otherColumns = (containerWidth * percent) / 100 + "px";
 
-      str = `${firstColumnSize} `;
       for (let col of columns) {
-        if (!col.default)
+        if (col.default) {
+          str += `${wideColumnSize} `;
+        } else
           str += col.enable
             ? col.defaultSize
               ? `${col.defaultSize}px `
@@ -638,6 +638,8 @@ class TableHeader extends React.Component {
           : "0px ";
       }
     }
+
+    console.log("str", str);
 
     str += `${settingsSize}px`;
 

@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarDarkReactSvgUrl from "../../../public/images/avatar.dark.react.svg?url";
+
 const {
   black,
   white,
@@ -780,7 +782,7 @@ const Dark = {
   },
   textInput: {
     fontWeight: "normal",
-    placeholderColor: "#474747",
+    placeholderColor: "rgba(255, 255, 255, 0.2)",
     disablePlaceholderColor: "#6c6c6c",
 
     transition: "all 0.2s ease 0s",
@@ -1010,7 +1012,7 @@ const Dark = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
+    defaultImage: `url("${AvatarDarkReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2078,6 +2080,7 @@ const Dark = {
     details: {
       customLogoBorderColor: "#474747",
       commentEditorIconColor: "#eee",
+      tagBackground: "#242424",
     },
 
     gallery: {
@@ -3031,6 +3034,7 @@ const Dark = {
 
   errorContainer: {
     background: black,
+    bodyText: "#858585",
   },
 
   editor: {

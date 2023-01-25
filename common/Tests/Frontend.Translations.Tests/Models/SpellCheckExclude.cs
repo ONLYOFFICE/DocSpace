@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 
-namespace Frontend.Translations.Tests.Models;
+namespace Frontend.Tests.Models;
 
 public class SpellCheckExclude
 {

@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
@@ -197,7 +198,7 @@ const PaymentsPage = ({
       <>
         <HelpButton
           offsetRight={0}
-          iconName={"/static/images/help.react.svg"}
+          iconName={HelpReactSvgUrl}
           tooltipContent={
             <>
               <Text isBold>{t("ManagerTypesDescription")}</Text>

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import CrossIconReactSvgUrl from "../../../public/images/cross.react.svg?url";
 import IconButton from "../icon-button";
 import {
   StyledCloseButton,
@@ -27,7 +27,7 @@ const SelectedItem = (props) => {
       <StyledCloseButton onClick={onCloseClick} isDisabled={isDisabled}>
         <IconButton
           size={10}
-          iconName="/static/images/cross.react.svg"
+          iconName={CrossIconReactSvgUrl}
           isFill={true}
           isDisabled={isDisabled}
         />

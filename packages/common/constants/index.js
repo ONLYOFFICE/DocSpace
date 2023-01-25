@@ -1,3 +1,8 @@
+import ShareGoogleReactSvgUrl from "../../../public/images/share.google.react.svg?url";
+import ShareFacebookReactSvgUrl from "../../../public/images/share.facebook.react.svg?url";
+import ShareTwitterReactSvgUrl from "../../../public/images/share.twitter.react.svg?url";
+import ShareLinkedinReactSvgUrl from "../../../public/images/share.linkedin.react.svg?url";
+
 export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
@@ -206,20 +211,20 @@ export const ConflictResolveType = Object.freeze({
 export const providersData = Object.freeze({
   google: {
     label: "google",
-    icon: "/static/images/share.google.react.svg",
+    icon: ShareGoogleReactSvgUrl,
   },
   facebook: {
     label: "facebook",
-    icon: "/static/images/share.facebook.react.svg",
+    icon: ShareFacebookReactSvgUrl,
   },
   twitter: {
     label: "twitter",
-    icon: "/static/images/share.twitter.react.svg",
+    icon: ShareTwitterReactSvgUrl,
     iconOptions: { color: "#2AA3EF" },
   },
   linkedin: {
     label: "linkedin",
-    icon: "/static/images/share.linkedin.react.svg",
+    icon: ShareLinkedinReactSvgUrl,
   },
 });
 export const LoaderStyle = {

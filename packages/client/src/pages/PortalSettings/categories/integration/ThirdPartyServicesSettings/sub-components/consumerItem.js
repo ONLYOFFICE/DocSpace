@@ -6,6 +6,7 @@ import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import ConsumerToggle from "./consumerToggle";
 import { Base } from "@docspace/components/themes";
+import { thirdpartiesLogo } from "@docspace/common/utils/image-helpers";
 
 const StyledBox = styled(Box)`
   .consumer-icon {
@@ -43,7 +44,7 @@ class ConsumerItem extends React.Component {
       t,
     } = this.props;
 
-    const logo = `/images/thirdparties/${consumer.name.toLowerCase()}.svg`;
+    const logo = thirdpartiesLogo.get(`${consumer.name.toLowerCase()}.svg`);
 
     return (
       <>
