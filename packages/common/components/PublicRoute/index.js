@@ -88,7 +88,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (!isAuthenticated && !isPortalRestoring)
+    if (wizardCompleted && !isAuthenticated && !isPortalRestoring)
       return window.location.replace("/login");
 
     return <Component {...props} {...rest} />;
