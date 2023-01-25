@@ -27,43 +27,52 @@ class PreparationPortal extends React.Component {
     this.timerId = null;
     this.progressTimerId = null;
   }
-  componentDidMount() {
-    getRestoreProgress()
-      .then((response) => {
-        if (response) {
-          if (!response.error) {
-            if (response.progress === 100)
-              this.setState({
-                percent: 100,
-              });
-            if (response.progress !== 100) {
-              this.timerId = setInterval(() => this.getProgress(), 1000);
-              this.progressInitiationFirstBound();
-            }
-          } else {
-            this.setState({
-              errorMessage: response.error,
-            });
-          }
-        }
-      })
-      .catch((err) => {
-        let errorMessage = "";
-        if (typeof err === "object") {
-          errorMessage =
-            err?.response?.data?.error?.message ||
-            err?.statusText ||
-            err?.message ||
-            "";
-        } else {
-          errorMessage = err;
-        }
+  async componentDidMount() {
+    const errorMessage = (error) => {
+      if (typeof error !== "object") return error;
 
+      return (
+        err?.response?.data?.error?.message ||
+        err?.statusText ||
+        err?.message ||
+        ""
+      );
+    };
+
+    try {
+      const response = await getRestoreProgress();
+
+      if (!response) {
+        setTimeout(() => {
+          window.location.replace("/");
+        }, 5000);
+
+        return;
+      }
+
+      if (response.error) {
         this.setState({
-          errorMessage: errorMessage,
+          errorMessage: response.error,
         });
+
+        return;
+      }
+
+      if (response.progress === 100) {
+        this.setState({
+          percent: 100,
+        });
+      } else {
+        this.timerId = setInterval(() => this.getProgress(), 1000);
+        this.progressInitiationFirstBound();
+      }
+    } catch (err) {
+      this.setState({
+        errorMessage: errorMessage(err),
       });
+    }
   }
+
   componentWillUnmount() {
     clearInterval(this.timerId);
     clearInterval(this.progressTimerId);
@@ -134,53 +143,12 @@ class PreparationPortal extends React.Component {
         }
       }, common);
   };
-  getProgress = () => {
+  getProgress = async () => {
     const { secondBound } = this.state;
-    getRestoreProgress()
-      .then((response) => {
-        if (response) {
-          if (!response.error) {
-            const percentProgress = response.progress;
+    try {
+      const response = await getRestoreProgress();
 
-            percentProgress !== this.state.percent &&
-              this.state.percent < percentProgress &&
-              this.setState(
-                {
-                  percent: percentProgress,
-                },
-                () => {
-                  clearInterval(this.progressTimerId);
-                  this.progressTimerId = null;
-
-                  if (percentProgress < secondBound) {
-                    this.progressInitiationSecondBound();
-                  } else {
-                    this.progressInitiationThirdBound();
-                  }
-                }
-              );
-
-            if (percentProgress === 100) {
-              clearInterval(this.timerId);
-              clearInterval(this.progressTimerId);
-
-              this.progressTimerId = null;
-              this.timerId = null;
-            }
-          } else {
-            clearInterval(this.timerId);
-            clearInterval(this.progressTimerId);
-
-            this.progressTimerId = null;
-            this.timerId = null;
-
-            this.setState({
-              errorMessage: response.error,
-            });
-          }
-        }
-      })
-      .catch((e) => {
+      if (response.error) {
         clearInterval(this.timerId);
         clearInterval(this.progressTimerId);
 
@@ -188,9 +156,50 @@ class PreparationPortal extends React.Component {
         this.timerId = null;
 
         this.setState({
-          percent: 100,
+          errorMessage: response.error,
         });
+
+        return;
+      }
+
+      const percentProgress = response.progress;
+
+      percentProgress !== this.state.percent &&
+        this.state.percent < percentProgress &&
+        this.setState(
+          {
+            percent: percentProgress,
+          },
+          () => {
+            clearInterval(this.progressTimerId);
+            this.progressTimerId = null;
+
+            if (percentProgress < secondBound) {
+              this.progressInitiationSecondBound();
+            } else {
+              this.progressInitiationThirdBound();
+            }
+          }
+        );
+
+      if (percentProgress === 100) {
+        clearInterval(this.timerId);
+        clearInterval(this.progressTimerId);
+
+        this.progressTimerId = null;
+        this.timerId = null;
+      }
+    } catch (e) {
+      clearInterval(this.timerId);
+      clearInterval(this.progressTimerId);
+
+      this.progressTimerId = null;
+      this.timerId = null;
+
+      this.setState({
+        percent: 100,
       });
+    }
   };
   render() {
     const { t, withoutHeader, style } = this.props;
