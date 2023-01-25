@@ -7,6 +7,15 @@ import Hammer from "hammerjs";
 import { isMobileOnly } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
+import InfoOutlineReactSvgUrl from "../../../../public/images/info.outline.react.svg?url";
+import CopyReactSvgUrl from "../../../../public/images/copy.react.svg?url";
+import DuplicateReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
+import DownloadReactSvgUrl from "../../../../public/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "../../../../public/images/download-as.react.svg?url";
+import RenameReactSvgUrl from "../../../../public/images/rename.react.svg?url";
+import TrashReactSvgUrl from "../../../../public/images/trash.react.svg?url";
+import MoveReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
+
 const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
@@ -517,21 +526,21 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: "images/download.react.svg",
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: "images/rename.react.svg",
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
           disabled: false,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
           disabled: false,
         },
@@ -542,7 +551,7 @@ class MediaViewer extends React.Component {
           id: "option_room-info",
           key: "room-info",
           label: t("Common:Info"),
-          icon: "/static/images/info.outline.react.svg",
+          icon: InfoOutlineReactSvgUrl,
           onClick: () => {
             return onShowInfoPanel(targetFile);
           },
@@ -551,21 +560,21 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: "images/download.react.svg",
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "move-to",
           label: t("MoveTo"),
-          icon: "images/move.react.svg",
+          icon: MoveReactSvgUrl,
           onClick: onMoveAction,
           disabled: isPreviewFile,
         },
         // {
         //   key: "download-as",
         //   label: t("Translations:DownloadAs"),
-        //   icon: "images/download-as.react.svg", // TODO: uncomment when we can download media by changing the format
+        //   icon: DownloadAsReactSvgUrl, // TODO: uncomment when we can download media by changing the format
         //   onClick: onClickDownloadAs,
         //   disabled: false,
         // },
@@ -573,7 +582,7 @@ class MediaViewer extends React.Component {
           id: "option_copy-to",
           key: "copy-to",
           label: t("Translations:Copy"),
-          icon: "/static/images/copy.react.svg",
+          icon: CopyReactSvgUrl,
           onClick: onCopyAction,
           disabled: isPreviewFile,
         },
@@ -581,14 +590,14 @@ class MediaViewer extends React.Component {
           id: "option_create-copy",
           key: "copy",
           label: t("Common:Duplicate"),
-          icon: "/static/images/duplicate.react.svg",
+          icon: DuplicateReactSvgUrl,
           onClick: () => onDuplicate(targetFile, t),
           disabled: isPreviewFile,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: "images/rename.react.svg",
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
           disabled: isPreviewFile,
         },
@@ -601,7 +610,7 @@ class MediaViewer extends React.Component {
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
           disabled: isPreviewFile,
         },

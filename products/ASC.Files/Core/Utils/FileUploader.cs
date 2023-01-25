@@ -47,6 +47,7 @@ public class FileUploader
     private readonly IServiceProvider _serviceProvider;
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly FileTrackerHelper _fileTracker;
+    private readonly SocketManager _socketManager;
 
     public FileUploader(
         FilesSettingsHelper filesSettingsHelper,
@@ -66,7 +67,8 @@ public class FileUploader
         EntryManager entryManager,
         IServiceProvider serviceProvider,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-        FileTrackerHelper fileTracker)
+        FileTrackerHelper fileTracker,
+        SocketManager socketManager)
     {
         _filesSettingsHelper = filesSettingsHelper;
         _fileUtility = fileUtility;
@@ -86,6 +88,7 @@ public class FileUploader
         _serviceProvider = serviceProvider;
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
         _fileTracker = fileTracker;
+        _socketManager = socketManager;
     }
 
     public Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
@@ -213,8 +216,8 @@ public class FileUploader
                     newFolder.ParentId = folderId;
 
                     folderId = await folderDao.SaveFolderAsync(newFolder);
-
                     folder = await folderDao.GetFolderAsync(folderId);
+                    await _socketManager.CreateFolderAsync(folder);
                     _filesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                 }
 

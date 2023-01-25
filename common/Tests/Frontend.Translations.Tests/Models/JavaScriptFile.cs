@@ -26,7 +26,9 @@
 
 using System.Collections.Generic;
 
-namespace Frontend.Translations.Tests;
+using Frontend.Tests;
+
+namespace Frontend.Tests;
 
 public class JavaScriptFile
 {

@@ -1,3 +1,4 @@
+﻿import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
 import React from "react";
 import IconButton from "@docspace/components/icon-button";
 import { inject, observer } from "mobx-react";
@@ -21,7 +22,7 @@ const ShareButton = (props) => {
 
   return (
     <IconButton
-      iconName="/static/images/catalog.shared.react.svg"
+      iconName={CatalogSharedReactSvgUrl}
       className="upload_panel-icon"
       color={color}
       isClickable

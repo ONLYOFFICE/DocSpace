@@ -81,7 +81,7 @@ public class ThumbnailBuilderService : BackgroundService
             return;
         }
 
-        using (var scope = _serviceScopeFactory.CreateScope())
+        await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
             var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
             var premiumTenants = fileDataProvider.GetPremiumTenants();

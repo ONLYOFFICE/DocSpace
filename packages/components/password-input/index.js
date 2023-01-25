@@ -7,6 +7,9 @@ import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
 
+import EyeReactSvgUrl from "../../../public/images/eye.react.svg";
+import EyeOffReactSvgUrl from "../../../public/images/eye.off.react.svg";
+
 import {
   PasswordProgress,
   StyledInput,
@@ -360,10 +363,7 @@ class PasswordInput extends React.Component {
     } = this.props;
 
     const { type, inputValue } = this.state;
-    const iconName =
-      type === "password"
-        ? "/static/images/eye.off.react.svg"
-        : "/static/images/eye.react.svg";
+    const iconName = type === "password" ? EyeOffReactSvgUrl : EyeReactSvgUrl;
     const iconButtonClassName = `password_eye--${
       type === "password" ? "close" : "open"
     }`;

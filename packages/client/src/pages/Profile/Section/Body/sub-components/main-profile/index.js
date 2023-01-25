@@ -1,3 +1,6 @@
+﻿import SendClockReactSvgUrl from "PUBLIC_DIR/images/send.clock.react.svg?url";
+import PencilOutlineReactSvgUrl from "PUBLIC_DIR/images/pencil.outline.react.svg?url";
+import DefaultUserAvatarMax from "PUBLIC_DIR/images/default_user_photo_size_200-200.png";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
@@ -45,13 +48,17 @@ const MainProfile = (props) => {
     sendActivationLink && sendActivationLink(t);
   };
 
+  const userAvatar = profile.hasAvatar
+    ? profile.avatarMax
+    : DefaultUserAvatarMax;
+
   return (
     <StyledWrapper>
       <Avatar
         className={"avatar"}
         size="max"
         role={role}
-        source={profile.avatarMax}
+        source={userAvatar}
         userName={profile.displayName}
         editing={true}
         editAction={() => setChangeAvatarVisible(true)}
@@ -67,7 +74,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeNameVisible(true)}
             />
@@ -88,7 +95,7 @@ const MainProfile = (props) => {
                     className="send-again-icon"
                     color={"#316daa"}
                     tooltipContent={t("EmailNotVerified")}
-                    iconName={"images/send.clock.react.svg"}
+                    iconName={SendClockReactSvgUrl}
                   />
                 )}
               </Text>
@@ -107,7 +114,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeEmailVisible(true)}
             />
@@ -117,7 +124,7 @@ const MainProfile = (props) => {
                   className="send-again-icon"
                   color={"#316daa"}
                   tooltipContent={t("EmailNotVerified")}
-                  iconName={"images/send.clock.react.svg"}
+                  iconName={SendClockReactSvgUrl}
                 />
                 <Text
                   className="send-again-text"
@@ -140,7 +147,7 @@ const MainProfile = (props) => {
             </div>
             <IconButton
               className="edit-button"
-              iconName="/static/images/pencil.outline.react.svg"
+              iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangePasswordVisible(true)}
             />

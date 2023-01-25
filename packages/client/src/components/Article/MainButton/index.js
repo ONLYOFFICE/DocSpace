@@ -1,3 +1,16 @@
+﻿import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg?url";
+import FormReactSvgUrl from "PUBLIC_DIR/images/access.form.react.svg?url";
+import FormBlankReactSvgUrl from "PUBLIC_DIR/images/form.blank.react.svg?url";
+import FormFileReactSvgUrl from "PUBLIC_DIR/images/form.file.react.svg?url";
+import FormGalleryReactSvgUrl from "PUBLIC_DIR/images/form.gallery.react.svg?url";
+import ActionsDocumentsReactSvgUrl from "PUBLIC_DIR/images/actions.documents.react.svg?url";
+import SpreadsheetReactSvgUrl from "PUBLIC_DIR/images/spreadsheet.react.svg?url";
+import ActionsPresentationReactSvgUrl from "PUBLIC_DIR/images/actions.presentation.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
+import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
 
 import { inject, observer } from "mobx-react";
@@ -229,14 +242,14 @@ const ArticleMainButtonContent = (props) => {
       {
         id: "actions_template",
         className: "main-button_drop-down",
-        icon: "images/form.react.svg",
+        icon: FormReactSvgUrl,
         label: t("Translations:NewForm"),
         key: "new-form",
         items: [
           {
             id: "actions_template_blank",
             className: "main-button_drop-down_sub",
-            icon: "images/form.blank.react.svg",
+            icon: FormBlankReactSvgUrl,
             label: t("Translations:SubNewForm"),
             onClick: onCreate,
             action: "docxf",
@@ -245,7 +258,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_template_from-file",
             className: "main-button_drop-down_sub",
-            icon: "images/form.file.react.svg",
+            icon: FormFileReactSvgUrl,
             label: t("Translations:SubNewFormFile"),
             onClick: onShowSelectFileDialog,
             disabled: isPrivacy,
@@ -254,7 +267,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_template_oforms-gallery",
             className: "main-button_drop-down_sub",
-            icon: "images/form.gallery.react.svg",
+            icon: FormGalleryReactSvgUrl,
             label: t("Common:OFORMsGallery"),
             onClick: onShowGallery,
             disabled: isPrivacy,
@@ -269,7 +282,7 @@ const ArticleMainButtonContent = (props) => {
           isOwner && {
             id: "invite_doc-space-administrator",
             className: "main-button_drop-down",
-            icon: "/static/images/person.admin.react.svg",
+            icon: PersonAdminReactSvgUrl,
             label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
             action: EmployeeType.Admin,
@@ -278,7 +291,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_room-admin",
             className: "main-button_drop-down",
-            icon: "/static/images/person.manager.react.svg",
+            icon: PersonManagerReactSvgUrl,
             label: t("Common:RoomAdmin"),
             onClick: onInvite,
             action: EmployeeType.User,
@@ -287,7 +300,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_user",
             className: "main-button_drop-down",
-            icon: "/static/images/person.user.react.svg",
+            icon: PersonUserReactSvgUrl,
             label: t("Common:User"),
             onClick: onInvite,
             action: EmployeeType.Guest,
@@ -298,7 +311,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_new-document",
             className: "main-button_drop-down",
-            icon: "images/actions.documents.react.svg",
+            icon: ActionsDocumentsReactSvgUrl,
             label: t("Common:NewDocument"),
             onClick: onCreate,
             action: "docx",
@@ -307,7 +320,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_new-spreadsheet",
             className: "main-button_drop-down",
-            icon: "images/spreadsheet.react.svg",
+            icon: SpreadsheetReactSvgUrl,
             label: t("Common:NewSpreadsheet"),
             onClick: onCreate,
             action: "xlsx",
@@ -316,7 +329,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_new-presentation",
             className: "main-button_drop-down",
-            icon: "images/actions.presentation.react.svg",
+            icon: ActionsPresentationReactSvgUrl,
             label: t("Common:NewPresentation"),
             onClick: onCreate,
             action: "pptx",
@@ -326,7 +339,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_new-folder",
             className: "main-button_drop-down",
-            icon: "images/catalog.folder.react.svg",
+            icon: CatalogFolderReactSvgUrl,
             label: t("Common:NewFolder"),
             onClick: onCreate,
             key: "new-folder",
@@ -338,7 +351,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_again",
             className: "main-button_drop-down",
-            icon: "/static/images/invite.again.react.svg",
+            icon: InviteAgainReactSvgUrl,
             label: t("People:LblInviteAgain"),
             onClick: onInviteAgain,
             action: "invite-again",
@@ -349,7 +362,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_upload-files",
             className: "main-button_drop-down",
-            icon: "images/actions.upload.react.svg",
+            icon: ActionsUploadReactSvgUrl,
             label: t("UploadFiles"),
             onClick: onUploadFileClick,
             key: "upload-files",
@@ -357,7 +370,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "actions_upload-folders",
             className: "main-button_drop-down",
-            icon: "images/actions.upload.react.svg",
+            icon: ActionsUploadReactSvgUrl,
             label: t("UploadFolder"),
             disabled: isPrivacy,
             onClick: onUploadFolderClick,

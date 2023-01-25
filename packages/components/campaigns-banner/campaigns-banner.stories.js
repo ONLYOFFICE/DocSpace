@@ -1,5 +1,6 @@
 import React from "react";
 import CampaignsBanner from "./";
+import CampaignsCloudPng from "../../../public/images/campaigns.cloud.png";
 
 export default {
   title: "Components/CampaignsBanner",
@@ -20,7 +21,7 @@ export const Default = Template.bind({});
 Default.args = {
   headerLabel: "ONLYOFFICE for business",
   subHeaderLabel: "Docs, projects, clients & emails",
-  img: "static/images/campaigns.cloud.png",
+  img: CampaignsCloudPng,
   btnLabel: "START FREE TRIAL",
   link:
     "https://www.onlyoffice.com/ru/registration.aspx?utm_source=personal&utm_campaign=BannerPersonalCloud",

@@ -1,3 +1,4 @@
+﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -26,7 +27,7 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
         isDisabled
         name={name}
         placeholder={placeholder}
-        iconName="/static/images/copy.react.svg"
+        iconName={CopyReactSvgUrl}
         iconSize={16}
         onIconClick={onCopyClick}
       />
