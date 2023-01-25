@@ -34,7 +34,7 @@ cp -rf %{_builddir}/%{sourcename}/build/deploy/public/* "%{buildroot}%{buildpath
 cp -rf %{_builddir}/%{sourcename}/build/deploy/client/* "%{buildroot}%{buildpath}/client/"
 cp -rf %{_builddir}/%{sourcename}/build/deploy/login/* "%{buildroot}%{buildpath}/products/ASC.Login/login/"
 cp -rf %{_builddir}/%{sourcename}/build/install/RadicalePlugins/* "%{buildroot}%{buildpath}/Tools/radicale/plugins/"
-cp -rf %{_builddir}/%{sourcename}/build/install/common/%{product}-configuration.sh "%{buildroot}%{_bindir}/"
+cp -rf %{_builddir}/%{sourcename}/build/install/common/%{product}-configuration "%{buildroot}%{_bindir}/"
 cp -rf %{_builddir}/%{sourcename}/build/install/common/systemd/modules/* "%{buildroot}/usr/lib/systemd/system/"
 cp -rf %{_builddir}/%{sourcename}/config/* "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/"
 cp -rf %{_builddir}/%{sourcename}/config/nginx/includes/onlyoffice*.conf "%{buildroot}%{_sysconfdir}/nginx/includes/"
