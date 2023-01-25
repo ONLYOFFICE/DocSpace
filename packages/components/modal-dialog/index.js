@@ -42,8 +42,11 @@ const ModalDialog = ({
   isScrollLocked,
   containerVisible,
   isDoubleFooterLine,
-  withoutCloseButton,
+  isCloseable,
 }) => {
+  const onCloseEvent = () => {
+    isCloseable && onClose();
+  };
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
   );
@@ -60,7 +63,7 @@ const ModalDialog = ({
     const onSwipe = (e) => setModalSwipeOffset(handleTouchMove(e, onClose));
     const onSwipeEnd = () => setModalSwipeOffset(0);
     const onKeyPress = (e) => {
-      if ((e.key === "Esc" || e.key === "Escape") && visible) onClose();
+      if ((e.key === "Esc" || e.key === "Escape") && visible) onCloseEvent();
     };
 
     window.addEventListener("resize", onResize);
@@ -103,7 +106,7 @@ const ModalDialog = ({
           autoMaxHeight={autoMaxHeight}
           autoMaxWidth={autoMaxWidth}
           withFooterBorder={withFooterBorder}
-          onClose={onClose}
+          onClose={onCloseEvent}
           isLoading={isLoading}
           header={header}
           body={body}
@@ -112,7 +115,7 @@ const ModalDialog = ({
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
           containerVisible={containerVisible}
-          withoutCloseButton={withoutCloseButton}
+          isCloseable={isCloseable}
         />
       }
     />
@@ -139,8 +142,8 @@ ModalDialog.propTypes = {
   /** Show loader in body */
   isLoading: PropTypes.bool,
 
-  /**Don't display the close dialog button */
-  withoutCloseButton: PropTypes.bool,
+  /**The displayed dialog can be closed or not */
+  isCloseable: PropTypes.bool,
 
   /** **`MODAL-ONLY`**  
 
@@ -185,7 +188,7 @@ ModalDialog.defaultProps = {
   zIndex: 310,
   isLarge: false,
   isLoading: false,
-  withoutCloseButton: false,
+  isCloseable: true,
   withBodyScroll: false,
   withFooterBorder: false,
   containerVisible: false,

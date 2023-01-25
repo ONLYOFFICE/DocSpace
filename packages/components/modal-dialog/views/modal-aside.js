@@ -39,7 +39,7 @@ const Modal = ({
   modalSwipeOffset,
   containerVisible,
   isDoubleFooterLine,
-  withoutCloseButton,
+  isCloseable,
 }) => {
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
@@ -83,7 +83,7 @@ const Modal = ({
             autoMaxWidth={autoMaxWidth}
             modalSwipeOffset={modalSwipeOffset}
           >
-            {!withoutCloseButton && (
+            {isCloseable && (
               <CloseButton
                 currentDisplayType={currentDisplayType}
                 onClick={onClose}

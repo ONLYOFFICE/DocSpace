@@ -16,7 +16,7 @@ const PreparationPortalDialog = (props) => {
       visible={preparationPortalVisible}
       onClose={onClose}
       displayType="modal"
-      withoutCloseButton
+      isCloseable={false}
       isLarge
     >
       <ModalDialog.Header>{t("PortalRestoring")}</ModalDialog.Header>
