@@ -31,7 +31,7 @@ public class FileOperationsManager
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "files_operation";
     private readonly ThumbnailSettings _thumbnailSettings;
-
+    private readonly SocketManager _socketManager;
     private readonly DistributedTaskQueue _tasks;
     private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;
@@ -40,12 +40,14 @@ public class FileOperationsManager
         TempStream tempStream,
         IDistributedTaskQueueFactory queueFactory,
         IServiceProvider serviceProvider,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        SocketManager socketManager)
     {
         _tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempStream = tempStream;
         _serviceProvider = serviceProvider;
         _thumbnailSettings = thumbnailSettings;
+        _socketManager = socketManager;
     }
 
     public List<FileOperationResult> GetOperationResults(Guid userId)
@@ -141,8 +143,8 @@ public class FileOperationsManager
         var (folderIntIds, folderStringIds) = GetIds(folders);
         var (fileIntIds, fileStringIds) = GetIds(files);
 
-        var op1 = new FileMoveCopyOperation<int>(_serviceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings);
-        var op2 = new FileMoveCopyOperation<string>(_serviceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings);
+        var op1 = new FileMoveCopyOperation<int>(_serviceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings, _socketManager);
+        var op2 = new FileMoveCopyOperation<string>(_serviceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers), _thumbnailSettings, _socketManager);
         var op = new FileMoveCopyOperation(_serviceProvider, op2, op1);
 
         return QueueTask(userId, op);
@@ -150,7 +152,7 @@ public class FileOperationsManager
 
     public List<FileOperationResult> Delete<T>(Guid userId, Tenant tenant, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers, bool isEmptyTrash = false)
     {
-        var op = new FileDeleteOperation<T>(_serviceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings);
+        var op = new FileDeleteOperation<T>(_serviceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings, _socketManager);
         return QueueTask(userId, op);
     }
 
@@ -159,8 +161,8 @@ public class FileOperationsManager
         var (folderIntIds, folderStringIds) = GetIds(folders);
         var (fileIntIds, fileStringIds) = GetIds(files);
 
-        var op1 = new FileDeleteOperation<int>(_serviceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings);
-        var op2 = new FileDeleteOperation<string>(_serviceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings);
+        var op1 = new FileDeleteOperation<int>(_serviceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings, _socketManager);
+        var op2 = new FileDeleteOperation<string>(_serviceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers, isEmptyTrash), _thumbnailSettings, _socketManager);
         var op = new FileDeleteOperation(_serviceProvider, op2, op1);
 
         return QueueTask(userId, op);

@@ -485,6 +485,7 @@ class SettingsStore {
   getPortalTimezones = async (token = undefined) => {
     const timezones = await api.settings.getPortalTimezones(token);
     this.setTimezones(timezones);
+    return timezones;
   };
 
   setHeaderVisible = (isHeaderVisible) => {

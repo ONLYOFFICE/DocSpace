@@ -614,13 +614,14 @@ public class FileStorageService<T> //: IFileStorageService
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
 
+            await _socketManager.CreateFolderAsync(folder);
+
             if (isRoom)
             {
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
             }
             else
             {
-                await _socketManager.CreateFolderAsync(folder);
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
             }
 
@@ -689,6 +690,8 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+
+        await _socketManager.UpdateFolderAsync(folder);
 
         return folder;
     }
@@ -2309,8 +2312,11 @@ public class FileStorageService<T> //: IFileStorageService
         {
             await _entryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
 
+            var folderFromMy = await folderDao.GetFolderAsync(folderIdFromMy);
+
             //delete My userFrom folder
             await folderDao.DeleteFolderAsync(folderIdFromMy);
+            await _socketManager.DeleteFolder(folderFromMy);
             _globalFolderHelper.SetFolderMy(userId);
         }
 
