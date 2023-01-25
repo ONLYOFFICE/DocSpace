@@ -30,7 +30,7 @@ Description: Description
 
 Package: {{product}}-common
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: logrotate, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: {{product}}-backup
