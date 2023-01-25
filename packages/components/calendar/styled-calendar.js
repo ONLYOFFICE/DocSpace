@@ -156,6 +156,47 @@ StyledWeekday.defaultProps = { theme: Base };
 
 StyledWeekday.defaultProps = { theme: Base };
 
+const StyledRoundButton = styled.button`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #eceef1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+`;
+
+const StyledArrowIcon = styled.span`
+  border-left: 2px solid #333;
+  border-bottom: 2px solid #333;
+  width: 5px;
+  height: 5px;
+`;
+
+const StyledPrevIcon = styled(StyledArrowIcon)`
+  transform: rotate(45deg);
+  right: -5%;
+`;
+
+const StyledNextIcon = styled(StyledArrowIcon)`
+  transform: rotate(-135deg);
+`;
+
+const StyledTitle = styled.h2`
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 28px;
+  color: #333;
+`;
+
+const StyledCalendarHeader = styled.header`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export {
   Month,
   CalendarStyle,
@@ -168,4 +209,9 @@ export {
   StyledDays,
   StyledWeekdays,
   StyledWeekday,
+  StyledRoundButton,
+  StyledPrevIcon,
+  StyledNextIcon,
+  StyledCalendarHeader,
+  StyledTitle,
 };
