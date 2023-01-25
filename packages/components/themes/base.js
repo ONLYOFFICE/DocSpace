@@ -454,6 +454,8 @@ const Base = {
     pressedFillColor: grayLightMid,
 
     focusColor: gray,
+
+    errorColor: "#F21C0E",
   },
 
   // slider: {

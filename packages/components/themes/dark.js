@@ -448,6 +448,8 @@ const Dark = {
     pressedFillColor: black,
 
     focusColor: "#858585",
+
+    errorColor: "#E06451",
   },
 
   // slider: {
