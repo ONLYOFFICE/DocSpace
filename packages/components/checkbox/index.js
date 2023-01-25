@@ -90,6 +90,7 @@ class Checkbox extends React.Component {
       onChange,
       isChecked,
       tabIndex,
+      hasError,
       ...rest
     } = this.props;
 
@@ -102,6 +103,7 @@ class Checkbox extends React.Component {
           isIndeterminate={isIndeterminate}
           className={className}
           title={title}
+          hasError={hasError}
         >
           <HiddenInput
             name={name}
@@ -167,12 +169,14 @@ Checkbox.propTypes = {
   /** Help button render */
   helpButton: PropTypes.any,
   tabIndex: PropTypes.number,
+  hasError: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isChecked: false,
   truncate: false,
   tabIndex: -1,
+  hasError: false,
 };
 
 export default React.memo(Checkbox);
