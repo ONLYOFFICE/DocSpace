@@ -636,11 +636,21 @@ class FilesStore {
     }
   };
 
-  setFolder = (folder) => {
-    const index = this.folders.findIndex((x) => x.id === folder.id);
+  getFolderIndex = (id) => {
+    const index = this.folders.findIndex((x) => x.id === id);
+    return index;
+  };
+
+  updateFolder = (index, folder) => {
     if (index !== -1) this.folders[index] = folder;
 
     this.updateSelection(folder.id);
+  };
+
+  setFolder = (folder) => {
+    const index = this.getFolderIndex(folder.id);
+
+    this.updateFolder(index, folder);
   };
 
   getFilesChecked = (file, selected) => {
