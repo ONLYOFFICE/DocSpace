@@ -44,6 +44,7 @@ export const WizardContainer = styled.div`
   }
 
   @media ${hugeMobile} {
+    margin-top: 32px;
     width: calc(100% - 32px);
   }
 
