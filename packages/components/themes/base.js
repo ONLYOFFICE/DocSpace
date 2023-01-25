@@ -2939,6 +2939,9 @@ const Base = {
           departmentColor: gray,
           tooltipColor: lightCumulus,
         },
+        auditTrail: {
+          downloadReportDescriptionColor: gray,
+        },
       },
 
       common: {
