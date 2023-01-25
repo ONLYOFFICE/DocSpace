@@ -365,38 +365,35 @@ const Wizard = (props) => {
             />
           </StyledInfo>
 
-          <FieldContainer
-            className="wizard-field"
-            isVertical={true}
-            labelVisible={false}
-            hasError={hasErrorAgree}
-            errorMessage={t("ErrorLicenseRead")}
-          >
-            <StyledAcceptTerms>
-              <Checkbox
-                className="wizard-checkbox"
-                id="license"
-                name="confirm"
-                label={t("License")}
-                isChecked={agreeTerms}
-                onChange={onAgreeTermsChange}
-                isDisabled={isCreated}
-              />
-              <Link
-                type="page"
-                color={theme.client.wizard.linkColor}
-                fontSize="13px"
-                target="_blank"
-                href={
-                  urlLicense
-                    ? urlLicense
-                    : "https://gnu.org/licenses/gpl-3.0.html"
-                }
-              >
-                {t("LicenseLink")}
-              </Link>
-            </StyledAcceptTerms>
-          </FieldContainer>
+          <StyledAcceptTerms>
+            <Checkbox
+              className="wizard-checkbox"
+              id="license"
+              name="confirm"
+              label={t("License")}
+              isChecked={agreeTerms}
+              onChange={onAgreeTermsChange}
+              isDisabled={isCreated}
+              hasError={hasErrorAgree}
+            />
+            <Link
+              type="page"
+              color={
+                hasErrorAgree
+                  ? theme.checkbox.errorColor
+                  : theme.client.wizard.linkColor
+              }
+              fontSize="13px"
+              target="_blank"
+              href={
+                urlLicense
+                  ? urlLicense
+                  : "https://gnu.org/licenses/gpl-3.0.html"
+              }
+            >
+              {t("LicenseLink")}
+            </Link>
+          </StyledAcceptTerms>
 
           <Button
             size="medium"
