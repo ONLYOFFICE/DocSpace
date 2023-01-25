@@ -41,12 +41,10 @@ override_dh_auto_build:
 
 	json -I -f ${SRC_PATH}/config/appsettings.services.json -e "this.logPath=\"/var/log/onlyoffice/${PRODUCT}\"" -e "this.socket={ 'path': '../ASC.Socket.IO/' }" \
 	-e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.core={ 'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }"
-	
-	if [ -n ${CURRENT_PATH}/debian/source/lintian-overrides ]; then
-		for i in $(ls ${CURRENT_PATH}/debian/*.install | grep -oP 'debian/\K.*' | grep -o '^[^.]*'); do
-			cp ${CURRENT_PATH}/debian/source/lintian-overrides ${CURRENT_PATH}/debian/${i}.lintian-overrides
-		done
-	fi
+
+	for i in $(ls ${CURRENT_PATH}/debian/*.install | grep -oP 'debian/\K.*' | grep -o '^[^.]*'); do
+		cp ${CURRENT_PATH}/debian/source/lintian-overrides ${CURRENT_PATH}/debian/${i}.lintian-overrides
+	done
 
 override_dh_fixperms:
 	dh_fixperms
