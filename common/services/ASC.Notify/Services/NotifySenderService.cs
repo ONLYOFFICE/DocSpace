@@ -62,7 +62,7 @@ public class NotifySenderService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var serviceScope = _scopeFactory.CreateScope();
+            await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
             var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<NotifySenderService>>();
 

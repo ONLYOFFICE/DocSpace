@@ -255,7 +255,7 @@ public class UploadOperationProgress : DistributedTaskProgress
 
     protected override async Task DoJob()
     {
-        using var scope = _serviceProvider.CreateScope();
+        await using var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
         var tenant = tenantManager.GetTenant(TenantId);

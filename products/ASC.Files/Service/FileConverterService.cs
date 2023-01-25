@@ -49,7 +49,7 @@ internal class FileConverterService<T> : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var serviceScope = _serviceScopeFactory.CreateScope();
+            await using var serviceScope = _serviceScopeFactory.CreateAsyncScope();
 
             var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<FileConverterService<T>>>();
 
