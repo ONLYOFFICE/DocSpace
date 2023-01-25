@@ -26,8 +26,18 @@
     res.end();
   });
 
+  router.post("/update-folder", (req, res) => {
+    files.updateFolder(req.body);
+    res.end();
+  });
+
   router.post("/delete-file", (req, res) => {
     files.deleteFile(req.body);
+    res.end();
+  });
+
+  router.post("/delete-folder", (req, res) => {
+    files.deleteFolder(req.body);
     res.end();
   });
 
