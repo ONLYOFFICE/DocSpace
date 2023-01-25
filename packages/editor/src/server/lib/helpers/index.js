@@ -13,33 +13,13 @@ import {
   getSettingsFiles,
   // getShareFiles,
 } from "@docspace/common/api/files";
-import pkg from "../../../../package.json";
 
-export const getFavicon = (documentType, logoUrls) => {
-  const { homepage } = pkg;
-  let icon = null;
+import { getLogoFromPath } from "@docspace/common/utils";
 
-  switch (documentType) {
-    case "word":
-      icon = "text.ico";
-      break;
-    case "slide":
-      icon = "presentation.ico";
-      break;
-    case "cell":
-      icon = "spreadsheet.ico";
-      break;
-    default:
-      break;
-  }
+export const getFavicon = (logoUrls) => {
+  if (!logoUrls) return null;
 
-  if (!icon && !logoUrls) return null;
-
-  const favicon = icon
-    ? `${homepage}/images/${icon}`
-    : logoUrls[2]?.path?.light;
-
-  return favicon;
+  return getLogoFromPath(logoUrls[2]?.path?.light);
 };
 
 export const initDocEditor = async (req) => {
@@ -118,6 +98,28 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
+    // logoUrls.forEach((logo, index) => {
+    //   logoUrls[index].path.dark = getLogoFromPath(logo.path.dark);
+    //   logoUrls[index].path.light = getLogoFromPath(logo.path.dark);
+    // });
+
+    config.editorConfig.customization.logo.image =
+      config.editorConfig.customization.logo.url +
+      "doceditor/" +
+      getLogoFromPath(config.editorConfig.customization.logo.image);
+
+    config.editorConfig.customization.logo.imageDark =
+      config.editorConfig.customization.logo.url +
+      "doceditor/" +
+      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+
+    if (config.editorConfig.customization.customer) {
+      config.editorConfig.customization.customer.logo =
+        config.editorConfig.customization.logo.url +
+        "doceditor/" +
+        getLogoFromPath(config.editorConfig.customization.customer.logo);
+    }
+
     return {
       config,
       personal,
@@ -137,6 +139,7 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
+    console.error("initDocEditor failed", err);
     let message = "";
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;

@@ -1,7 +1,7 @@
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
-const imageExtensions = /\.(bmp|gif|jpg|jpeg|png)$/;
+const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
 const fontsExtension = /\.(eot|otf|ttf|woff|woff2)$/;
 
 module.exports = {
@@ -41,12 +41,17 @@ module.exports = {
       {
         test: /\.svg/,
         //type: "asset/inline",
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: ["@svgr/webpack"],
       },
-
       {
         test: imageExtensions,
         type: "asset/resource",
+      },
+      {
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
       },
     ],
   },

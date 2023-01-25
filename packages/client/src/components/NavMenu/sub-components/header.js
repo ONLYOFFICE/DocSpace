@@ -1,3 +1,4 @@
+﻿import PersonalLogoReactSvgUrl from "PUBLIC_DIR/images/personal.logo.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -11,6 +12,7 @@ import { combineUrl } from "@docspace/common/utils";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@docspace/components/themes";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const Header = styled.header`
   display: flex;
@@ -196,7 +198,9 @@ const HeaderComponent = ({
     });
   }, [history]);
 
-  const logo = !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light;
+  const logo = getLogoFromPath(
+    !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light
+  );
 
   return (
     <>
@@ -222,7 +226,7 @@ const HeaderComponent = ({
               className="header-logo-icon"
               src={combineUrl(
                 window.DocSpaceConfig?.proxy?.url,
-                "/static/images/personal.logo.react.svg"
+                PersonalLogoReactSvgUrl
               )}
             />
           )}

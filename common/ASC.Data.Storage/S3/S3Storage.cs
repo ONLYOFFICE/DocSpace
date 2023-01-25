@@ -148,7 +148,7 @@ public class S3Storage : BaseStorage
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         var request = new GetObjectRequest
         {

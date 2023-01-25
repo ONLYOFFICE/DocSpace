@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import Base from "../themes/base";
-import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
 import { transform } from "lodash";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
@@ -46,7 +46,7 @@ const ExpanderDownIconWrapper = ({
   isOpen,
   isDisabled,
   ...props
-}) => <ExpanderDownIcon {...props} />;
+}) => <ExpanderDownReactSvg {...props} />;
 
 const Caret = styled(ExpanderDownIconWrapper)`
   position: absolute;

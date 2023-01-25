@@ -1,3 +1,11 @@
+﻿import CommonSettingsSvgUrl from "PUBLIC_DIR/images/common-settings.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SecuritySettingsIconUrl from "PUBLIC_DIR/images/security-settings.svg?url";
+import IntegrationSettingsIconUrl from "PUBLIC_DIR/images/integration-settings.svg?url";
+import PaymentIconUrl from "PUBLIC_DIR/images/payment.react.svg?url";
+import DataManagementIconUrl from "PUBLIC_DIR/images/data-management.react.svg?url";
+import RestoreIconUrl from "PUBLIC_DIR/images/restore.react.svg?url";
+import TrashIconUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 /**
  * Array for generation current settings tree.
  */
@@ -6,7 +14,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-common",
     key: "0",
-    icon: "/static/images/common-settings.svg",
+    icon: CommonSettingsSvgUrl,
     link: "common",
     tKey: "Common:Common",
     isHeader: true,
@@ -102,7 +110,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-security",
     key: "1",
-    icon: "/images/security-settings.svg",
+    icon: SecuritySettingsIconUrl,
     link: "security",
     tKey: "ManagementCategorySecurity",
     isHeader: true,
@@ -196,25 +204,25 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-integration",
     key: "3",
-    icon: "/images/integration-settings.svg",
+    icon: IntegrationSettingsIconUrl,
     link: "integration",
     tKey: "ManagementCategoryIntegration",
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-single-sign-on",
-        key: "3-0",
-        icon: "",
-        link: "single-sign-on",
-        tKey: "SingleSignOn",
-        isCategory: true,
-      },
-      {
         id: "portal-settings_catalog-third-party-services",
-        key: "3-1",
+        key: "3-0",
         icon: "",
         link: "third-party-services",
         tKey: "ThirdPartyAuthorization",
+        isCategory: true,
+      },
+      {
+        id: "portal-settings_catalog-single-sign-on",
+        key: "3-1",
+        icon: "",
+        link: "single-sign-on",
+        tKey: "SingleSignOn",
         isCategory: true,
       },
       {
@@ -238,7 +246,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-payments",
     key: "4",
-    icon: "/images/payment.react.svg",
+    icon: PaymentIconUrl,
     link: "payments",
     tKey: "Payments",
     isHeader: true,
@@ -256,7 +264,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-backup",
     key: "5",
-    icon: "/images/data-management.react.svg",
+    icon: DataManagementIconUrl,
     link: "backup",
     tKey: "Backup",
     isHeader: true,
@@ -283,7 +291,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-restore",
     key: "6",
-    icon: "/images/restore.react.svg",
+    icon: RestoreIconUrl,
     link: "restore",
     tKey: "RestoreBackup",
     isHeader: true,
@@ -300,7 +308,7 @@ export const settingsTree = [
   {
     id: "portal-settings_catalog-delete",
     key: "7",
-    icon: "/images/trash.react.svg",
+    icon: TrashIconUrl,
     link: "delete-data",
     tKey: "PortalDeletion",
     isHeader: true,
@@ -332,7 +340,7 @@ export const settingsTreeFull = [
   {
     title: "Common",
     key: "0",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "common",
     children: [
       {
@@ -358,7 +366,7 @@ export const settingsTreeFull = [
   {
     title: "Security",
     key: "1",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "security",
     children: [
       {
@@ -390,7 +398,7 @@ export const settingsTreeFull = [
   {
     title: "Data Management",
     key: "2",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "data-management",
     children: [
       {
@@ -416,7 +424,7 @@ export const settingsTreeFull = [
   {
     title: "Integration",
     key: "3",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "integration",
     children: [
       {
@@ -442,7 +450,7 @@ export const settingsTreeFull = [
   {
     title: "Statistics",
     key: "4",
-    icon: "/static/images/settings.react.svg",
+    icon: SettingsReactSvgUrl,
     link: "statistics",
   },
 ];

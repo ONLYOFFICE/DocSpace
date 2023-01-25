@@ -110,7 +110,7 @@ public class DiscDataStore : BaseStorage
         throw new FileNotFoundException("File not found", Path.GetFullPath(target));
     }
 
-    public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         ArgumentNullException.ThrowIfNull(path);
 
@@ -123,13 +123,16 @@ public class DiscDataStore : BaseStorage
             {
                 stream.Seek(offset, SeekOrigin.Begin);
             }
+            else if (0 < offset)
+            {
+                throw new InvalidOperationException("Seek stream is not impossible");
+            }
 
             return Task.FromResult(stream);
         }
 
         throw new FileNotFoundException("File not found", Path.GetFullPath(target));
     }
-
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType, string contentDisposition)
     {

@@ -89,7 +89,7 @@ class FieldContainer extends React.Component {
         <div className="field-body">
           {children}
           {hasError ? (
-            <Text className="error-label" fontSize="10px" color={errorColor}>
+            <Text className="error-label" fontSize="12px" color={errorColor}>
               {errorMessage}
             </Text>
           ) : null}

@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -180,7 +181,7 @@ const PortalRenaming = (props) => {
         setErrorValue(t("PortalNameEmpty"));
         saveToSessionStorage("errorValue", t("PortalNameEmpty"));
         break;
-      case value.length < 6 || value.length > 50:
+      case value.length < 3 || value.length > 50:
         setErrorValue(t("PortalNameLength"));
         saveToSessionStorage("errorValue", t("PortalNameLength"));
         break;
@@ -274,7 +275,7 @@ const PortalRenaming = (props) => {
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
             offsetRight={0}
-            iconName="static/images/combined.shape.svg"
+            iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipPortalRenamingTooltip}
           />

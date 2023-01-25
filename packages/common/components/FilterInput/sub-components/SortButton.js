@@ -13,6 +13,7 @@ import { mobile } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
 import SortDesc from "../../../../../public/images/sort.desc.react.svg";
+import SortReactSvgUrl from "../../../../../public/images/sort.react.svg?url";
 import Backdrop from "@docspace/components/backdrop";
 import { Events } from "@docspace/common/constants";
 
@@ -323,7 +324,7 @@ const SortButton = ({
           manualY={"102%"}
           advancedOptionsCount={advancedOptionsCount}
         >
-          <IconButton iconName="/static/images/sort.react.svg" size={16} />
+          <IconButton iconName={SortReactSvgUrl} size={16} />
         </ComboBox>
       </StyledSortButton>
     </>

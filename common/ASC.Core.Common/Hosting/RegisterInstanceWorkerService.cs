@@ -74,7 +74,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
         {
             try
             {
-                using var scope = _serviceProvider.CreateScope();
+                await using var scope = _serviceProvider.CreateAsyncScope();
 
                 var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
 
@@ -96,7 +96,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
 
             var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
 

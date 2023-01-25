@@ -455,7 +455,7 @@ public class FilesControllerCommon : ApiControllerBase
 
         async Task AddProps<T>(T fileId)
         {
-            using var scope = _serviceScopeFactory.CreateScope();
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
             var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService<T>>();
             var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(batchEntryPropertiesRequestDto.FileProperties);
             if (batchEntryPropertiesRequestDto.CreateSubfolder)

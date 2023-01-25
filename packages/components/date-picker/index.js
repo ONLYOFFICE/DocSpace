@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import CalendarReactSvgUrl from "../../../public/images/calendar.react.svg?url";
+
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
 import Calendar from "../calendar";
@@ -335,7 +337,7 @@ class DatePicker extends Component {
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          iconName="/static/images/calendar.react.svg"
+          iconName={CalendarReactSvgUrl}
           // iconColor="#A3A9AE"
           // hoverColor="#A3A9AE"
           onIconClick={this.onClick}

@@ -1,3 +1,4 @@
+﻿import ArrowReactSvgUrl from "PUBLIC_DIR/images/arrow.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -176,7 +177,7 @@ const RoomType = ({
 
       <IconButton
         className={arrowClassName}
-        iconName="images/arrow.react.svg"
+        iconName={ArrowReactSvgUrl}
         size={16}
         onClick={() => {}}
       />
