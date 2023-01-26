@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-[Transient]
+[Scope]
 internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 {
     private readonly CrossDao _crossDao;
