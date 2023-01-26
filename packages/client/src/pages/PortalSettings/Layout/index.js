@@ -8,7 +8,7 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 //import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 const ArticleSettings = React.memo(() => {
   return (
-    <Article>
+    <Article articleBodyclassName="article-settings_body">
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>

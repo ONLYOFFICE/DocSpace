@@ -1,9 +1,13 @@
 import React from "react";
 import Scrollbar from "@docspace/components/scrollbar";
+import { classNames } from "@docspace/components/utils/classNames";
 
-const ArticleBody = ({ children }) => {
+const ArticleBody = ({ children, className }) => {
   return (
-    <Scrollbar className="article-body__scrollbar" stype="mediumBlack">
+    <Scrollbar
+      className={classNames(className, "article-body__scrollbar")}
+      stype="mediumBlack"
+    >
       {children}
     </Scrollbar>
   );

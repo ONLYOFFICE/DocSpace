@@ -37,6 +37,7 @@ const Article = ({
   isAvailableArticlePaymentAlert,
   currentColorScheme,
   setArticleOpen,
+  articleBodyclassName,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -125,7 +126,7 @@ const Article = ({
             {articleMainButtonContent.props.children}
           </SubArticleMainButton>
         ) : null}
-        <SubArticleBody showText={showText}>
+        <SubArticleBody showText={showText} className={articleBodyclassName}>
           {articleBodyContent ? articleBodyContent.props.children : null}
           <HideArticleMenuButton
             showText={showText}

@@ -105,6 +105,20 @@ const StyledArticle = styled.article`
       `}
     }
   }
+
+  .article-settings_body {
+    .scroll-body {
+      height: calc(100% - 150px);
+      @media ${mobile} {
+        height: calc(100% - 20px) !important;
+      }
+
+      ${isMobileOnly &&
+      css`
+        height: calc(100% - 20px) !important;
+      `}
+    }
+  }
 `;
 
 StyledArticle.defaultProps = { theme: Base };
