@@ -426,11 +426,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                        var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
-                                        if (pins.Count > 0)
-                                        {
-                                            await TagDao.RemoveTags(pins);
-                                        }
                                     }
                                     else
                                     {
@@ -451,6 +446,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 if (toFolder.FolderType == FolderType.Archive)
                                 {
+                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                    if (pins.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(pins);
+                                    }
+
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
                                 }
                                 else
