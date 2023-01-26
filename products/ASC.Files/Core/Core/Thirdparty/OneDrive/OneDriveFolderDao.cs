@@ -532,4 +532,12 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return null;
+    }
 }

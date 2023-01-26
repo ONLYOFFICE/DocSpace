@@ -331,7 +331,7 @@ public class FileUploader
         var dao = _daoFactory.GetFileDao<T>();
         await dao.UploadChunkAsync(uploadSession, stream, chunkLength);
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             var linkDao = _daoFactory.GetLinkDao();
             await linkDao.DeleteAllLinkAsync(uploadSession.File.Id.ToString());
