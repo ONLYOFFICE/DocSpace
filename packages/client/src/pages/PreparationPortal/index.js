@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
@@ -15,10 +15,12 @@ const baseFirstMultiplicationFactor = 700;
 const baseSecondMultiplicationFactor = 400;
 const baseThirdMultiplicationFactor = 180;
 const firstBound = 10,
-  secondBound = 63;
+  secondBound = 63,
+  thirdBound = 98;
 
 let timerId = null,
-  progressTimerId = null;
+  progressTimerId = null,
+  prevProgress;
 
 const PreparationPortal = (props) => {
   const { multiplicationFactor, t, withoutHeader, style } = props;
@@ -40,32 +42,38 @@ const PreparationPortal = (props) => {
     }, 5000);
   };
 
-  const progressInitiationFirstBound = () => {
+  const reachingFirstBoundary = (percent) => {
     let progress = percent;
-
     const delay = baseFirstMultiplicationFactor * multiplicationFactor;
 
     if (progressTimerId) return;
+
     progressTimerId = setInterval(() => {
       progress += 1;
-
-      if (progress !== firstBound) percent < progress && setPercent(progress);
+      console.log(
+        "reachingFirstBoundary percent",
+        percent,
+        progress,
+        firstBound
+      );
+      if (progress !== firstBound) setPercent(progress);
       else {
         clearInterval(progressTimerId);
         progressTimerId = null;
       }
     }, delay);
   };
-
-  const progressInitiationSecondBound = () => {
+  const reachingSecondBoundary = (percent) => {
     let progress = percent;
-
+    console.log("SecondBoundary percent", percent, progressTimerId);
     const delay = baseSecondMultiplicationFactor * multiplicationFactor;
 
     if (progressTimerId) return;
+
     progressTimerId = setInterval(() => {
       progress += 1;
-      if (progress !== secondBound) percent < progress && setPercent(progress);
+
+      if (progress !== secondBound) setPercent(progress);
       else {
         clearInterval(progressTimerId);
         progressTimerId = null;
@@ -73,22 +81,31 @@ const PreparationPortal = (props) => {
     }, delay);
   };
 
-  const progressInitiationThirdBound = () => {
+  const reachingThirdBoundary = (percent) => {
     let progress = percent;
     const delay = baseThirdMultiplicationFactor * multiplicationFactor;
-
     if (progressTimerId) return;
 
     progressTimerId = setInterval(() => {
       progress += 1;
 
-      if (progress < 98) percent < progress && setPercent(progress);
+      if (progress < thirdBound) setPercent(progress);
       else {
         clearInterval(progressTimerId);
         progressTimerId = null;
       }
     }, delay);
   };
+  useEffect(() => {
+    console.log("percent", percent);
+
+    if (percent >= firstBound) {
+      if (percent < secondBound) {
+        reachingSecondBoundary(percent);
+        return;
+      } else reachingThirdBoundary(percent);
+    }
+  }, [percent]);
 
   const getIntervalProgress = async () => {
     try {
@@ -105,22 +122,19 @@ const PreparationPortal = (props) => {
         return;
       }
 
-      const percentProgress = response.progress;
+      const currProgress = response.progress;
+      console.log("prevProgress", prevProgress, currProgress);
 
-      if (percentProgress !== percent && percent < percentProgress) {
-        setPercent(percentProgress);
+      if (currProgress > 0 && prevProgress !== currProgress) {
+        setPercent(currProgress);
 
         clearInterval(progressTimerId);
         progressTimerId = null;
-
-        if (percentProgress < secondBound) {
-          progressInitiationSecondBound();
-        } else {
-          progressInitiationThirdBound();
-        }
       }
 
-      if (percentProgress === 100) {
+      prevProgress = currProgress;
+
+      if (currProgress === 100) {
         clearAllIntervals();
         returnToPortal();
       }
@@ -138,7 +152,7 @@ const PreparationPortal = (props) => {
         err?.response?.data?.error?.message ||
         err?.statusText ||
         err?.message ||
-        ""
+        t("Common:ErrorInternalServer")
       );
     };
 
@@ -149,20 +163,22 @@ const PreparationPortal = (props) => {
         setErrorMessage(t("Common:ErrorInternalServer"));
         return;
       }
+      const { error, progress } = response;
 
-      if (response.error) {
+      if (error) {
         setErrorMessage(response.error);
 
         return;
       }
 
-      if (response.progress === 100) {
-        setPercent(100);
+      if (progress === 100) {
         returnToPortal();
       } else {
         timerId = setInterval(() => getIntervalProgress(), 1000);
-        progressInitiationFirstBound();
+        if (progress < firstBound) reachingFirstBoundary(progress);
       }
+
+      setPercent(progress);
     } catch (err) {
       setErrorMessage(errorMessage(err));
     }
