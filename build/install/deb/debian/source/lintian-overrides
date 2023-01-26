@@ -30,3 +30,6 @@ script-not-executable
 
 # first number (major version) must be at least 2, but we currently version 1
 invalid-standards-version
+
+# Temporary ignoring of translation errors
+untranslatable-debconf-templates
