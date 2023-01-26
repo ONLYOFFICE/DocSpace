@@ -114,6 +114,7 @@ global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Helpers;
 global using ASC.Web.Core.Mobile;
+global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Sms;
