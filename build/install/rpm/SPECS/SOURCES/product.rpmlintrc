@@ -40,8 +40,5 @@ addFilter(r'E: no-dependency-on locales-api')
 # Scripts are not designed to be run manually
 addFilter(r'E: non-executable-script')
 
-# If do not specify packager-tag, the error no-packager-tag occurs
-addFilter(r'W: hardcoded-packager-tag')
-
 # docspace-configuration.sh has a permission of 744, so that users do not have the opportunity to run the script
-addFilter(r'W: non-standard-executable-perm')
+addFilter(r'non-standard-executable-perm')
