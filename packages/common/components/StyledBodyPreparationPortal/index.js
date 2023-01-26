@@ -8,6 +8,9 @@ const StyledBodyPreparationPortal = styled.div`
   box-sizing: border-box;
   align-items: center;
 
+  .preparation-portal_error {
+    text-align: center;
+  }
   .preparation-portal_progress {
     display: flex;
     margin-bottom: 16px;
