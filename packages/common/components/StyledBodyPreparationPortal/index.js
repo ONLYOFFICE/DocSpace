@@ -2,15 +2,6 @@ import styled from "styled-components";
 import { Base } from "@docspace/components/themes";
 
 const StyledBodyPreparationPortal = styled.div`
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: ${(props) => (props.errorMessage ? "560px" : "480px")};
-  box-sizing: border-box;
-  align-items: center;
-
-  .preparation-portal_error {
-    text-align: center;
-  }
   .preparation-portal_progress {
     display: flex;
     margin-bottom: 16px;
@@ -42,11 +33,6 @@ const StyledBodyPreparationPortal = styled.div`
       top: 2px;
       left: calc(50% - 9px);
     }
-  }
-
-  .preparation-portal_text {
-    text-align: center;
-    color: ${(props) => props.theme.text.disableColor};
   }
 `;
 

@@ -3096,6 +3096,7 @@ const Dark = {
     backgroundColor: "#282828",
     colorPercentSmall: "#FFFFFF",
     colorPercentBig: "#333333",
+    errorTextColor: "#E06451",
   },
 
   codeInput: {

@@ -201,24 +201,21 @@ const PreparationPortal = (props) => {
     : t("Common:PreparationPortalTitle");
 
   return (
-    <StyledPreparationPortal>
+    <StyledPreparationPortal errorMessage={errorMessage}>
       <ErrorContainer
         headerText={withoutHeader ? "" : headerText}
         style={style}
       >
-        <ColorTheme
-          themeId={ThemeType.Progress}
-          percent={percent}
-          errorMessage={errorMessage}
-          className="preparation-portal_body-wrapper"
-        >
+        <div className="preparation-portal_body-wrapper">
           {errorMessage ? (
-            <Text
-              className="preparation-portal_error"
-              color="#F21C0E"
-            >{`${errorMessage}`}</Text>
+            <Text className="preparation-portal_error">{`${errorMessage}`}</Text>
           ) : (
-            <>
+            <ColorTheme
+              themeId={ThemeType.Progress}
+              percent={percent}
+              errorMessage={errorMessage}
+              className="preparation-portal_body-wrapper"
+            >
               <div className="preparation-portal_progress">
                 <div className="preparation-portal_progress-bar">
                   <div className="preparation-portal_progress-line"></div>
@@ -228,9 +225,9 @@ const PreparationPortal = (props) => {
               <Text className="preparation-portal_text">
                 {t("PreparationPortalDescription")}
               </Text>
-            </>
+            </ColorTheme>
           )}
-        </ColorTheme>
+        </div>
       </ErrorContainer>
     </StyledPreparationPortal>
   );

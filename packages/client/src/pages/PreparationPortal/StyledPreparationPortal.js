@@ -17,6 +17,23 @@ const StyledPreparationPortal = styled.div`
     line-height: 20px;
     max-width: 480px;
   }
+
+  .preparation-portal_body-wrapper {
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: ${(props) => (props.errorMessage ? "560px" : "480px")};
+    box-sizing: border-box;
+    align-items: center;
+    .preparation-portal_error {
+      text-align: center;
+      color: ${(props) => props.theme.preparationPortalProgress.errorTextColor};
+    }
+
+    .preparation-portal_text {
+      text-align: center;
+      color: ${(props) => props.theme.text.disableColor};
+    }
+  }
 `;
 
 export { StyledPreparationPortal };
