@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Base } from "@docspace/components/themes";
 
-const StyledBodyPreparationPortal = styled.div`
+const StyledPreparationPortalProgress = styled.div`
   .preparation-portal_progress {
     display: flex;
     margin-bottom: 16px;
@@ -36,6 +36,6 @@ const StyledBodyPreparationPortal = styled.div`
   }
 `;
 
-StyledBodyPreparationPortal.defaultProps = { theme: Base };
+StyledPreparationPortalProgress.defaultProps = { theme: Base };
 
-export default StyledBodyPreparationPortal;
+export default StyledPreparationPortalProgress;
