@@ -2090,6 +2090,11 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
 
+    public List<FileOperationResult> DeleteItems(string action, List<T> files, List<T> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+    {
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+    }
+
     public async Task<List<FileOperationResult>> EmptyTrashAsync()
     {
         var folderDao = GetFolderDao();
