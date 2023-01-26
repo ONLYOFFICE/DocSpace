@@ -17,6 +17,7 @@ package-has-unnecessary-activation-of-ldconfig-trigger
 description-is-pkg-name
 description-starts-with-package-name
 description-too-short
+description-synopsis-is-duplicated
 
 # There is no manual page for {{product}}-configuration.sh
 binary-without-manpage
