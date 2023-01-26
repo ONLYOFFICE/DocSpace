@@ -455,4 +455,12 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         return Task.FromResult(2L * 1024L * 1024L * 1024L);
     }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return null;
+    }
 }

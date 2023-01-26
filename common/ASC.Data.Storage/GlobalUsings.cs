@@ -66,6 +66,7 @@ global using ASC.Data.Storage.GoogleCloud;
 global using ASC.Data.Storage.Log;
 global using ASC.Data.Storage.RackspaceCloud;
 global using ASC.Data.Storage.S3;
+global using ASC.Data.Storage.ZipOperators;
 global using ASC.EventBus.Events;
 global using ASC.Notify.Messages;
 global using ASC.Protos.Migration;
@@ -73,6 +74,9 @@ global using ASC.Security.Cryptography;
 
 global using Google.Apis.Auth.OAuth2;
 global using Google.Cloud.Storage.V1;
+
+global using ICSharpCode.SharpZipLib.GZip;
+global using ICSharpCode.SharpZipLib.Tar;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;

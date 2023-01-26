@@ -47,6 +47,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
+    private readonly GlobalStore _globalStore;
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -66,7 +67,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         IDaoFactory daoFactory,
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
-        IMapper mapper)
+        IMapper mapper,
+        GlobalStore globalStore)
         : base(
               dbContextManager,
               userManager,
@@ -87,6 +89,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _providerFolderDao = providerFolderDao;
         _crossDao = crossDao;
         _mapper = mapper;
+        _globalStore = globalStore;
     }
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
@@ -1584,6 +1587,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.CustomRooms => FolderType.CustomRoom,
             _ => FolderType.CustomRoom,
         };
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+           int folderId,
+           CommonChunkedUploadSession chunkedUploadSession,
+           CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return _globalStore.GetStore().CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
 
     private string GetProjectTitle(object folderID)

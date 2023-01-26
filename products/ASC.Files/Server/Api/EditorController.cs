@@ -255,6 +255,13 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         return _fileStorageService.SharedUsersAsync(fileId);
     }
+
+    [HttpPost("file/referencedata")]
+    public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
+    {
+
+        return  _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
+    }
 }
 
 public class EditorController : ApiControllerBase

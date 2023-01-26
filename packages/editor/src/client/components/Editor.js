@@ -12,6 +12,7 @@ import {
   updateFile,
   checkFillFormDraft,
   convertFile,
+  getReferenceData,
 } from "@docspace/common/api/files";
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
@@ -227,6 +228,14 @@ function Editor({
       history.pushState({}, null, convertUrl);
       document.location.reload();
     }
+  };
+
+  const onSDKRequestReferenceData = async (event) => {
+    const referenceData = await getReferenceData(
+      event.data.referenceData ?? event.data
+    );
+
+    docEditor.setReferenceData(referenceData);
   };
 
   const onMakeActionLink = (event) => {
@@ -568,7 +577,8 @@ function Editor({
         onRequestMailMergeRecipients,
         onRequestCompareFile,
         onRequestRestore,
-        onRequestHistory;
+        onRequestHistory,
+        onRequestReferenceData;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -596,8 +606,13 @@ function Editor({
         onRequestRestore = onSDKRequestRestore;
       }
 
+      if (!fileInfo?.providerKey) {
+        onRequestReferenceData = onSDKRequestReferenceData;
+      }
+
       const events = {
         events: {
+          onRequestReferenceData,
           onAppReady: onSDKAppReady,
           onDocumentStateChange: onDocumentStateChange,
           onMetaChange: onMetaChange,
