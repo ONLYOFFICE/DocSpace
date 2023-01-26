@@ -31,7 +31,8 @@ const StyledPreparationPortal = styled.div`
 
     .preparation-portal_text {
       text-align: center;
-      color: ${(props) => props.theme.text.disableColor};
+      color: ${(props) =>
+        props.theme.preparationPortalProgress.descriptionTextColor};
     }
   }
 `;
