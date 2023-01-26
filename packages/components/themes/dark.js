@@ -2942,6 +2942,9 @@ const Dark = {
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
         },
+        auditTrail: {
+          downloadReportDescriptionColor: "#858585",
+        },
       },
 
       common: {
