@@ -50,12 +50,7 @@ const PreparationPortal = (props) => {
 
     progressTimerId = setInterval(() => {
       progress += 1;
-      console.log(
-        "reachingFirstBoundary percent",
-        percent,
-        progress,
-        firstBound
-      );
+
       if (progress !== firstBound) setPercent(progress);
       else {
         clearInterval(progressTimerId);
@@ -65,7 +60,7 @@ const PreparationPortal = (props) => {
   };
   const reachingSecondBoundary = (percent) => {
     let progress = percent;
-    console.log("SecondBoundary percent", percent, progressTimerId);
+
     const delay = baseSecondMultiplicationFactor * multiplicationFactor;
 
     if (progressTimerId) return;
@@ -110,6 +105,14 @@ const PreparationPortal = (props) => {
   const getIntervalProgress = async () => {
     try {
       const response = await getRestoreProgress();
+      console.log("getIntervalProgress response", response);
+      if (!response) {
+        //setErrorMessage(t("Common:ErrorInternalServer"));
+        clearAllIntervals();
+        // setPercent(100);
+        // returnToPortal();
+        return;
+      }
 
       if (response.error) {
         clearInterval(timerId);
