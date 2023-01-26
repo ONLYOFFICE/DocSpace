@@ -330,6 +330,16 @@ class RestoreBackup extends React.Component {
             {t("RestoreBackupDescription")}
           </Text>
         </div>
+
+        <RadioButton
+          label={t("LocalFile")}
+          name={"isCheckedLocalFile"}
+          key={4}
+          isChecked={isCheckedLocalFile}
+          isDisabled={!isEnableRestore}
+          {...commonRadioButtonProps}
+        />
+
         <RadioButton
           label={t("RoomsModule")}
           name={"isCheckedDocuments"}
@@ -353,15 +363,6 @@ class RestoreBackup extends React.Component {
           name={"isCheckedThirdPartyStorage"}
           key={3}
           isChecked={isCheckedThirdPartyStorage}
-          isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
-        />
-
-        <RadioButton
-          label={t("LocalFile")}
-          name={"isCheckedLocalFile"}
-          key={4}
-          isChecked={isCheckedLocalFile}
           isDisabled={!isEnableRestore}
           {...commonRadioButtonProps}
         />
