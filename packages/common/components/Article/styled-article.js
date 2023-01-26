@@ -80,7 +80,8 @@ const StyledArticle = styled.article`
 
     .scroll-body {
       overflow-x: hidden !important;
-      height: calc(100% - 200px);
+      height: ${(props) =>
+        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
       padding: 0 20px !important;
 
       @media ${tablet} {
