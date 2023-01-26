@@ -80,7 +80,8 @@ const StyledArticle = styled.article`
 
     .scroll-body {
       overflow-x: hidden !important;
-      height: calc(100% - 200px);
+      height: ${(props) =>
+        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
       padding: 0 20px !important;
 
       @media ${tablet} {
@@ -102,20 +103,6 @@ const StyledArticle = styled.article`
       css`
         height: calc(100% - 20px) !important;
         padding-bottom: 20px;
-      `}
-    }
-  }
-
-  .article-settings_body {
-    .scroll-body {
-      height: calc(100% - 150px);
-      @media ${mobile} {
-        height: calc(100% - 20px) !important;
-      }
-
-      ${isMobileOnly &&
-      css`
-        height: calc(100% - 20px) !important;
       `}
     }
   }
