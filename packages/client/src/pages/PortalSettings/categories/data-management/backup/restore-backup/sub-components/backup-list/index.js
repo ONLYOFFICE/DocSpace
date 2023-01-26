@@ -247,7 +247,7 @@ class BackupListModalDialog extends React.Component {
                   )
                 ) : (
                   <div className="loader" key="loader">
-                    <Loaders.ListLoader />
+                    <Loaders.ListLoader count={7} />
                   </div>
                 )}
               </div>
