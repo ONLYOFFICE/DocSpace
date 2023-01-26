@@ -73,8 +73,8 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
 
   const logo = Object.values(logoUrls)[1];
   const logoUrl = !theme?.isBase
-    ? getLogoFromPath(logo?.path?.dark)
-    : getLogoFromPath(logo?.path?.light);
+    ? getLogoFromPath(logo?.path?.dark).replace("client/", "/login/")
+    : getLogoFromPath(logo?.path?.light).replace("client/", "/login/");
 
   return (
     <LoginContainer id="code-page" theme={theme}>
@@ -135,7 +135,10 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
 };
 
 const CodeLogin: React.FC<ICodeProps> = (props) => {
-  const bgPattern = getBgPattern(props.currentColorScheme.id);
+  const bgPattern = getBgPattern(props.currentColorScheme.id).replace(
+    "client/",
+    "/login/"
+  );
   const mounted = useMounted();
 
   if (!mounted) return <></>;

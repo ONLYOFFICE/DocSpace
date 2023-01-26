@@ -180,12 +180,15 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
-  const bgPattern = getBgPattern(currentColorScheme.id);
+  const bgPattern = getBgPattern(currentColorScheme.id).replace(
+    "client/",
+    "login/"
+  );
 
   const logo = Object.values(logoUrls)[1];
   const logoUrl = !theme.isBase
-    ? getLogoFromPath(logo.path.dark)
-    : getLogoFromPath(logo.path.light);
+    ? getLogoFromPath(logo.path.dark).replace("client/", "login/")
+    : getLogoFromPath(logo.path.light).replace("client/", "login/");
 
   if (!mounted) return <></>;
 
