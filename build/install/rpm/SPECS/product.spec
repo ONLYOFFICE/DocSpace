@@ -7,8 +7,8 @@
 Name:           %{product}
 Summary:        Business productivity tools
 Group:          Applications/Internet
-Version:        %version
-Release:        %release
+Version:        %{version}
+Release:        %{release}
 
 AutoReqProv:    no
 
@@ -25,7 +25,7 @@ BuildRequires:  nodejs >= 18.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-6.0
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}.%{arch}
+BuildRoot:      %_tmppath/%name-%version-%release.%arch
 
 Requires:       %name-api = %version-%release
 Requires:       %name-backup = %version-%release
@@ -83,7 +83,7 @@ getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin
 rm -rf %{_builddir} %{buildroot} 
 
 %changelog
-*Mon Jan 16 2023 %packager - 1.2.0-999
+*Mon Jan 16 2023 %{packager} - %{version}-%{release}
 - Initial build.
 
 %triggerin radicale -- python3, python36
