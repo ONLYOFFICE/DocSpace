@@ -471,6 +471,11 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         throw new NotImplementedException();
     }
 
+    public Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
     {
         return Task.FromResult(0);

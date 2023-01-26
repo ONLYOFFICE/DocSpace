@@ -33,6 +33,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
     private readonly GoogleDriveDaoSelector _googleDriveDaoSelector;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
+    private readonly TempStream _tempStream;
 
     public GoogleDriveFolderDao(
         IServiceProvider serviceProvider,
@@ -48,13 +49,14 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempPath tempPath,
-        AuthContext authContext
-        ) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        TempStream tempStream) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _googleDriveDaoSelector = googleDriveDaoSelector;
         _fileDao = fileDao;
         _folderDao = folderDao;
+        _tempStream = tempStream;
     }
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -520,5 +522,13 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new ChunkZipWriteOperator(_tempStream ,chunkedUploadSession, sessionHolder);
     }
 }

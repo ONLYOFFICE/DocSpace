@@ -191,6 +191,13 @@ public abstract class BaseStorage : IDataStore
         throw new NotImplementedException();
     }
 
+    public virtual IDataWriteOperator CreateDataWriteOperator(
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+    }
+
     #endregion
 
     public abstract Task DeleteAsync(string domain, string path);

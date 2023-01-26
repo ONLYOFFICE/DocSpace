@@ -383,6 +383,12 @@ public class S3Storage : BaseStorage
         await s3.AbortMultipartUploadAsync(request);
     }
 
+    public override IDataWriteOperator CreateDataWriteOperator(CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new S3ZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+    }
+
     #endregion
 
     public override async Task DeleteAsync(string domain, string path)

@@ -37,11 +37,6 @@ global using System.Xml;
 global using System.Xml.Linq;
 global using System.Xml.XPath;
 
-global using Amazon;
-global using Amazon.S3;
-global using Amazon.S3.Model;
-global using Amazon.S3.Transfer;
-
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -50,6 +45,7 @@ global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Billing;
+global using ASC.Core.ChunkedUploader;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
@@ -73,6 +69,7 @@ global using ASC.Data.Backup.Utils;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
 global using ASC.Data.Storage.DiscStorage;
+global using ASC.Data.Storage.ZipOperators;
 global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.MessagingSystem.Core;
@@ -90,9 +87,6 @@ global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
 global using Autofac;
-
-global using ICSharpCode.SharpZipLib.GZip;
-global using ICSharpCode.SharpZipLib.Tar;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;

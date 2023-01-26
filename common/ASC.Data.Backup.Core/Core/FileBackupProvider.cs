@@ -75,7 +75,7 @@ public class FileBackupProvider : IBackupProvider
                     try
                     {
                         using var stream = await storage.GetReadStreamAsync(file.Domain, file.Path);
-                        writer.WriteEntry(backupPath, stream);
+                        await writer.WriteEntryAsync(backupPath, stream);
                         break;
                     }
                     catch (Exception error)
