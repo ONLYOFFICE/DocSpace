@@ -1,6 +1,6 @@
 import globalColors from "../utils/globalColors";
 
-import AvatarBaseReactSvgUrl from "../../../public/images/avatar.base.react.svg?url";
+import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
 
 const {
   black,
@@ -3100,6 +3100,8 @@ const Base = {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
+    errorTextColor: "#F21C0E",
+    descriptionTextColor: "#A3A9AE",
   },
 
   codeInput: {

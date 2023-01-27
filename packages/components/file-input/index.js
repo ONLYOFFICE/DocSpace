@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
-import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 
 import IconButton from "../icon-button";
 import Button from "../button";

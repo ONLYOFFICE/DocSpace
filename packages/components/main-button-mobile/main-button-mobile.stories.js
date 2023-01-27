@@ -1,9 +1,9 @@
 import React from "react";
 import MainButtonMobile from ".";
 import { useEffect, useReducer, useState } from "react";
-import MobileActionsFolderReactSvgUrl from "../../../public/images/mobile.actions.folder.react.svg?url";
-import MobileActionsRemoveReactSvgUrl from "../../../public/images/mobile.actions.remove.react.svg?url";
-import MobileStartReactSvgUrl from "../../../public/images/mobile.star.react.svg?url";
+import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
+import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
+import MobileStartReactSvgUrl from "PUBLIC_DIR/images/mobile.star.react.svg?url";
 
 export default {
   title: "Components/MainButtonMobile",

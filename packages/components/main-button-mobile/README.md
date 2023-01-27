@@ -4,7 +4,7 @@
 
 ```js
 import MainButtonMobile from "@docspace/components/main-button-mobile";
-import MobileActionsFolderReactSvgUrl from "../../../public/images/mobile.actions.folder.react.svg?url";
+import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
 ```
 
 ```jsx

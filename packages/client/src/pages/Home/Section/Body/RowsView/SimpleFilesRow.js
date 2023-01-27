@@ -13,7 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
-import CursorPalmReactSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg";
+import CursorPalmReactSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};

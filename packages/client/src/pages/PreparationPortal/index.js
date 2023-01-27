@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
@@ -14,233 +14,237 @@ const unSizeMultiplicationFactor = 3;
 const baseFirstMultiplicationFactor = 700;
 const baseSecondMultiplicationFactor = 400;
 const baseThirdMultiplicationFactor = 180;
+const firstBound = 10,
+  secondBound = 63,
+  thirdBound = 98;
 
-class PreparationPortal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      percent: 0,
-      errorMessage: "",
-      firstBound: 10,
-      secondBound: 63,
+let timerId = null,
+  progressTimerId = null,
+  prevProgress;
+
+const PreparationPortal = (props) => {
+  const {
+    multiplicationFactor,
+    t,
+    withoutHeader,
+    style,
+    clearLocalStorage,
+  } = props;
+
+  const [percent, setPercent] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const clearAllIntervals = () => {
+    clearInterval(timerId);
+    clearInterval(progressTimerId);
+
+    progressTimerId = null;
+    timerId = null;
+  };
+
+  const returnToPortal = () => {
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 5000);
+  };
+
+  const reachingFirstBoundary = (percent) => {
+    let progress = percent;
+    const delay = baseFirstMultiplicationFactor * multiplicationFactor;
+
+    if (progressTimerId) return;
+
+    progressTimerId = setInterval(() => {
+      progress += 1;
+
+      if (progress !== firstBound) setPercent(progress);
+      else {
+        clearInterval(progressTimerId);
+        progressTimerId = null;
+      }
+    }, delay);
+  };
+  const reachingSecondBoundary = (percent) => {
+    let progress = percent;
+
+    const delay = baseSecondMultiplicationFactor * multiplicationFactor;
+
+    if (progressTimerId) return;
+
+    progressTimerId = setInterval(() => {
+      progress += 1;
+
+      if (progress !== secondBound) setPercent(progress);
+      else {
+        clearInterval(progressTimerId);
+        progressTimerId = null;
+      }
+    }, delay);
+  };
+
+  const reachingThirdBoundary = (percent) => {
+    let progress = percent;
+    const delay = baseThirdMultiplicationFactor * multiplicationFactor;
+    if (progressTimerId) return;
+
+    progressTimerId = setInterval(() => {
+      progress += 1;
+
+      if (progress < thirdBound) setPercent(progress);
+      else {
+        clearInterval(progressTimerId);
+        progressTimerId = null;
+      }
+    }, delay);
+  };
+  useEffect(() => {
+    if (percent >= firstBound) {
+      if (percent < secondBound) {
+        reachingSecondBoundary(percent);
+        return;
+      } else reachingThirdBoundary(percent);
+    }
+  }, [percent]);
+
+  const getIntervalProgress = async () => {
+    try {
+      const response = await getRestoreProgress();
+
+      if (!response) {
+        setErrorMessage(t("Common:ErrorInternalServer"));
+        clearAllIntervals();
+        return;
+      }
+
+      if (response.error) {
+        clearInterval(timerId);
+        clearInterval(progressTimerId);
+
+        progressTimerId = null;
+        timerId = null;
+        setErrorMessage(response.error);
+
+        return;
+      }
+
+      const currProgress = response.progress;
+
+      if (currProgress > 0 && prevProgress !== currProgress) {
+        setPercent(currProgress);
+
+        clearInterval(progressTimerId);
+        progressTimerId = null;
+      }
+
+      prevProgress = currProgress;
+
+      if (currProgress === 100) {
+        clearAllIntervals();
+        clearLocalStorage();
+        returnToPortal();
+      }
+    } catch (error) {
+      clearAllIntervals();
+      setErrorMessage(error);
+    }
+  };
+
+  const getRecoveryProgress = async () => {
+    const errorMessage = (error) => {
+      if (typeof error !== "object") return error;
+
+      return (
+        err?.response?.data?.error?.message ||
+        err?.statusText ||
+        err?.message ||
+        t("Common:ErrorInternalServer")
+      );
     };
-    this.timerId = null;
-    this.progressTimerId = null;
-  }
-  componentDidMount() {
-    getRestoreProgress()
-      .then((response) => {
-        if (response) {
-          if (!response.error) {
-            if (response.progress === 100)
-              this.setState({
-                percent: 100,
-              });
-            if (response.progress !== 100) {
-              this.timerId = setInterval(() => this.getProgress(), 1000);
-              this.progressInitiationFirstBound();
-            }
-          } else {
-            this.setState({
-              errorMessage: response.error,
-            });
-          }
-        }
-      })
-      .catch((err) => {
-        let errorMessage = "";
-        if (typeof err === "object") {
-          errorMessage =
-            err?.response?.data?.error?.message ||
-            err?.statusText ||
-            err?.message ||
-            "";
-        } else {
-          errorMessage = err;
-        }
 
-        this.setState({
-          errorMessage: errorMessage,
-        });
-      });
-  }
-  componentWillUnmount() {
-    clearInterval(this.timerId);
-    clearInterval(this.progressTimerId);
-  }
+    try {
+      const response = await getRestoreProgress();
 
-  progressInitiationFirstBound = () => {
-    const { multiplicationFactor } = this.props;
-    const { percent, firstBound } = this.state;
+      if (!response) {
+        setErrorMessage(t("Common:ErrorInternalServer"));
+        return;
+      }
+      const { error, progress } = response;
 
-    let progress = percent;
+      if (error) {
+        setErrorMessage(response.error);
 
-    const common = baseFirstMultiplicationFactor * multiplicationFactor;
+        return;
+      }
 
-    if (!this.progressTimerId)
-      this.progressTimerId = setInterval(() => {
-        progress += 1;
-        if (progress !== firstBound && percent < progress)
-          percent < progress &&
-            this.setState({
-              percent: progress,
-            });
-        else {
-          clearInterval(this.progressTimerId);
-          this.progressTimerId = null;
-        }
-      }, common);
+      if (progress === 100) {
+        returnToPortal();
+        clearLocalStorage();
+      } else {
+        timerId = setInterval(() => getIntervalProgress(), 1000);
+        if (progress < firstBound) reachingFirstBoundary(progress);
+      }
+
+      setPercent(progress);
+    } catch (err) {
+      setErrorMessage(errorMessage(err));
+    }
   };
-  progressInitiationSecondBound = () => {
-    const { multiplicationFactor } = this.props;
-    const { percent, secondBound } = this.state;
+  useEffect(async () => {
+    setTimeout(() => {
+      getRecoveryProgress();
+    }, 4000);
 
-    let progress = percent;
+    return () => {
+      clearAllIntervals();
+    };
+  }, []);
 
-    const common = baseSecondMultiplicationFactor * multiplicationFactor;
+  const headerText = errorMessage
+    ? t("Common:Error")
+    : t("Common:PreparationPortalTitle");
 
-    if (!this.progressTimerId)
-      this.progressTimerId = setInterval(() => {
-        progress += 1;
-        if (progress !== secondBound)
-          percent < progress &&
-            this.setState({
-              percent: progress,
-            });
-        else {
-          clearInterval(this.progressTimerId);
-          this.progressTimerId = null;
-        }
-      }, common);
-  };
-
-  progressInitiationThirdBound = () => {
-    const { multiplicationFactor } = this.props;
-    const { percent } = this.state;
-    let progress = percent;
-    const common = baseThirdMultiplicationFactor * multiplicationFactor;
-    if (!this.progressTimerId)
-      this.progressTimerId = setInterval(() => {
-        progress += 1;
-
-        if (progress < 98)
-          percent < progress &&
-            this.setState({
-              percent: progress,
-            });
-        else {
-          clearInterval(this.progressTimerId);
-          this.progressTimerId = null;
-        }
-      }, common);
-  };
-  getProgress = () => {
-    const { secondBound } = this.state;
-    getRestoreProgress()
-      .then((response) => {
-        if (response) {
-          if (!response.error) {
-            const percentProgress = response.progress;
-
-            percentProgress !== this.state.percent &&
-              this.state.percent < percentProgress &&
-              this.setState(
-                {
-                  percent: percentProgress,
-                },
-                () => {
-                  clearInterval(this.progressTimerId);
-                  this.progressTimerId = null;
-
-                  if (percentProgress < secondBound) {
-                    this.progressInitiationSecondBound();
-                  } else {
-                    this.progressInitiationThirdBound();
-                  }
-                }
-              );
-
-            if (percentProgress === 100) {
-              clearInterval(this.timerId);
-              clearInterval(this.progressTimerId);
-
-              this.progressTimerId = null;
-              this.timerId = null;
-            }
-          } else {
-            clearInterval(this.timerId);
-            clearInterval(this.progressTimerId);
-
-            this.progressTimerId = null;
-            this.timerId = null;
-
-            this.setState({
-              errorMessage: response.error,
-            });
-          }
-        }
-      })
-      .catch((e) => {
-        clearInterval(this.timerId);
-        clearInterval(this.progressTimerId);
-
-        this.progressTimerId = null;
-        this.timerId = null;
-
-        this.setState({
-          percent: 100,
-        });
-      });
-  };
-  render() {
-    const { t, withoutHeader, style } = this.props;
-    const { percent, errorMessage } = this.state;
-
-    return (
-      <StyledPreparationPortal>
-        <ErrorContainer
-          headerText={withoutHeader ? "" : t("Common:PreparationPortalTitle")}
-          style={style}
-        >
-          <ColorTheme
-            themeId={ThemeType.Progress}
-            percent={percent}
-            errorMessage={errorMessage}
-            className="preparation-portal_body-wrapper"
-          >
-            {errorMessage ? (
-              <Text
-                className="preparation-portal_error"
-                color="#F21C0E"
-              >{`${errorMessage}`}</Text>
-            ) : (
-              <>
-                <div className="preparation-portal_progress">
-                  <div className="preparation-portal_progress-bar">
-                    <div className="preparation-portal_progress-line"></div>
-                  </div>
-                  <Text className="preparation-portal_percent">{`${percent} %`}</Text>
+  return (
+    <StyledPreparationPortal errorMessage={errorMessage}>
+      <ErrorContainer
+        headerText={withoutHeader ? "" : headerText}
+        style={style}
+      >
+        <div className="preparation-portal_body-wrapper">
+          {errorMessage ? (
+            <Text className="preparation-portal_error">{`${errorMessage}`}</Text>
+          ) : (
+            <ColorTheme
+              themeId={ThemeType.Progress}
+              percent={percent}
+              errorMessage={errorMessage}
+              className="preparation-portal_body-wrapper"
+            >
+              <div className="preparation-portal_progress">
+                <div className="preparation-portal_progress-bar">
+                  <div className="preparation-portal_progress-line"></div>
                 </div>
-                <Text className="preparation-portal_text">
-                  {t("PreparationPortalDescription")}
-                </Text>
-              </>
-            )}
-          </ColorTheme>
-        </ErrorContainer>
-      </StyledPreparationPortal>
-    );
-  }
-}
+                <Text className="preparation-portal_percent">{`${percent} %`}</Text>
+              </div>
+              <Text className="preparation-portal_text">
+                {t("PreparationPortalDescription")}
+              </Text>
+            </ColorTheme>
+          )}
+        </div>
+      </ErrorContainer>
+    </StyledPreparationPortal>
+  );
+};
 
 const PreparationPortalWrapper = inject(({ backup }) => {
-  const { backupSize } = backup;
+  const { backupSize, clearLocalStorage } = backup;
 
   const multiplicationFactor = backupSize
     ? backupSize / baseSize
     : unSizeMultiplicationFactor;
 
   return {
+    clearLocalStorage,
     multiplicationFactor,
   };
 })(

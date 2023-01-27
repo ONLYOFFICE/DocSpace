@@ -7,14 +7,14 @@ import Hammer from "hammerjs";
 import { isMobileOnly } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
-import InfoOutlineReactSvgUrl from "../../../../public/images/info.outline.react.svg?url";
-import CopyReactSvgUrl from "../../../../public/images/copy.react.svg?url";
-import DuplicateReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
-import DownloadReactSvgUrl from "../../../../public/images/download.react.svg?url";
-import DownloadAsReactSvgUrl from "../../../../public/images/download-as.react.svg?url";
-import RenameReactSvgUrl from "../../../../public/images/rename.react.svg?url";
-import TrashReactSvgUrl from "../../../../public/images/trash.react.svg?url";
-import MoveReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/download-as.react.svg?url";
+import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 
 const mediaTypes = Object.freeze({
   audio: 1,

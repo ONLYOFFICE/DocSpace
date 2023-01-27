@@ -6,8 +6,8 @@ Actions with a button.
 
 ```js
 import { ViewSelector } from "app-components";
-import ViewRowsReactSvgUrl from "../../../public/images/view-rows.react.svg?url";
-import ViewTilesReactSvgUrl from "../../../public/images/view-tiles.react.svg?url";
+import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 ```
 
 ### View Settings
