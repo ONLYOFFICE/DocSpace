@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
@@ -23,7 +23,13 @@ let timerId = null,
   prevProgress;
 
 const PreparationPortal = (props) => {
-  const { multiplicationFactor, t, withoutHeader, style } = props;
+  const {
+    multiplicationFactor,
+    t,
+    withoutHeader,
+    style,
+    clearLocalStorage,
+  } = props;
 
   const [percent, setPercent] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
@@ -92,8 +98,6 @@ const PreparationPortal = (props) => {
     }, delay);
   };
   useEffect(() => {
-    console.log("percent", percent);
-
     if (percent >= firstBound) {
       if (percent < secondBound) {
         reachingSecondBoundary(percent);
@@ -105,12 +109,10 @@ const PreparationPortal = (props) => {
   const getIntervalProgress = async () => {
     try {
       const response = await getRestoreProgress();
-      console.log("getIntervalProgress response", response);
+
       if (!response) {
-        //setErrorMessage(t("Common:ErrorInternalServer"));
+        setErrorMessage(t("Common:ErrorInternalServer"));
         clearAllIntervals();
-        // setPercent(100);
-        // returnToPortal();
         return;
       }
 
@@ -126,7 +128,6 @@ const PreparationPortal = (props) => {
       }
 
       const currProgress = response.progress;
-      console.log("prevProgress", prevProgress, currProgress);
 
       if (currProgress > 0 && prevProgress !== currProgress) {
         setPercent(currProgress);
@@ -139,6 +140,7 @@ const PreparationPortal = (props) => {
 
       if (currProgress === 100) {
         clearAllIntervals();
+        clearLocalStorage();
         returnToPortal();
       }
     } catch (error) {
@@ -176,6 +178,7 @@ const PreparationPortal = (props) => {
 
       if (progress === 100) {
         returnToPortal();
+        clearLocalStorage();
       } else {
         timerId = setInterval(() => getIntervalProgress(), 1000);
         if (progress < firstBound) reachingFirstBoundary(progress);
@@ -234,13 +237,14 @@ const PreparationPortal = (props) => {
 };
 
 const PreparationPortalWrapper = inject(({ backup }) => {
-  const { backupSize } = backup;
+  const { backupSize, clearLocalStorage } = backup;
 
   const multiplicationFactor = backupSize
     ? backupSize / baseSize
     : unSizeMultiplicationFactor;
 
   return {
+    clearLocalStorage,
     multiplicationFactor,
   };
 })(
