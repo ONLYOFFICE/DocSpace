@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Bu bölüm, kullanıcılara portala erişmeleri için güvenli ve uygun yollar sağlamanıza olanak tanır.",
   "PortalNameEmpty": "Hesap adı boş",
   "PortalNameIncorrect": "Yanlış hesap adı",
-  "PortalNameLength": "Hesap adı 3 ila 50 karakter uzunluğunda olmalıdır",
+  "PortalNameLength": "Hesap adı {{minLength}} ila {{maxLength}} karakter uzunluğunda olmalıdır",
   "PortalRenaming": "Portal Yeniden Adlandırma",
   "PortalRenamingDescription": "Buradan portal adresinizi değiştirebilirsiniz.",
   "PortalRenamingLabelText": "Yeni portal adı",

@@ -257,11 +257,9 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls()
+      this.getWhiteLabelLogoUrls(),
+      this.getBuildVersionInfo()
     );
-
-    this.tenantStatus !== TenantStatus.PortalRestore &&
-      requests.push(this.getBuildVersionInfo());
 
     await Promise.all(requests);
 
