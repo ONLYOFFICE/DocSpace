@@ -39,10 +39,10 @@ class RestoreBackup extends React.Component {
       isNotify: true,
       isVisibleDialog: false,
       isPanelVisible: false,
-      isCheckedDocuments: true,
+      isCheckedDocuments: false,
       isCheckedThirdParty: false,
       isCheckedThirdPartyStorage: false,
-      isCheckedLocalFile: false,
+      isCheckedLocalFile: true,
       selectedFileId: "",
       selectedFile: "",
 
