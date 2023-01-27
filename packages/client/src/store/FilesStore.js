@@ -1,3 +1,4 @@
+import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
@@ -1090,7 +1091,11 @@ class FilesStore {
             this.isErrorRoomNotAvailable = true;
           });
         } else {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         }
       })
       .finally(() => {
@@ -1204,7 +1209,11 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         });
 
     return request();
