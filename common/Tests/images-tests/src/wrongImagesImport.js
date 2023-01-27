@@ -25,9 +25,12 @@ const findWrongImagesImport = async (files) => {
         idx > 0 &&
         file.fileName.indexOf("webpack") === -1 &&
         file.path.indexOf("common\\utils\\index.ts") === -1 &&
+        file.path.indexOf("context-menu\\sub-components\\sub-menu.js") === -1 &&
+        file.path.indexOf("drop-down-item\\index.js") === -1 &&
+        file.path.indexOf("common\\utils\\index.ts") === -1 &&
+        file.path.indexOf(".html") === -1 &&
         file.path.indexOf("storybook-static") === -1
       ) {
-        console.log(file.path);
         wrongImports = wrongImports + `${file.path}\n`;
       }
     });

@@ -62,10 +62,10 @@ const runAllTests = async () => {
     fs.mkdirSync(resultDir);
   }
 
-  // findUselessImages(allImgs, allFiles);
-  // findImagesWithDifferentMD5ButEqualName(allImgs);
-  // findImagesWithDifferentNameButEqualMD5(allImgs);
-  // findImagesWithEqualMD5AndEqualName(allImgs);
+  findUselessImages(allImgs, allFiles);
+  findImagesWithDifferentMD5ButEqualName(allImgs);
+  findImagesWithDifferentNameButEqualMD5(allImgs);
+  findImagesWithEqualMD5AndEqualName(allImgs);
   findWrongImagesImport(allFiles);
 };
 
