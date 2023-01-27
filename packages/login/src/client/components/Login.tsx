@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -26,7 +26,7 @@ import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import { getLogoFromPath } from "@docspace/common/utils";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
-
+import { TenantStatus } from "@docspace/common/constants";
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
 }
@@ -42,13 +42,20 @@ const Login: React.FC<ILoginProps> = ({
   setTheme,
   logoUrls,
 }) => {
+  const isRestoringPortal =
+    portalSettings.tenantStatus === TenantStatus.PortalRestore;
+
+  useEffect(() => {
+    isRestoringPortal && window.location.replace("/preparation-portal");
+  }, []);
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
   const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
-  const { ssoLabel, ssoUrl } = capabilities;
 
+  const ssoLabel = capabilities?.ssoLabel;
+  const ssoUrl = capabilities?.ssoUrl;
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
   const systemTheme = typeof window !== "undefined" && useThemeDetector();
@@ -191,6 +198,7 @@ const Login: React.FC<ILoginProps> = ({
     : getLogoFromPath(logo.path.light).replace("client/", "login/");
 
   if (!mounted) return <></>;
+  if (isRestoringPortal) return <></>;
 
   return (
     <LoginFormWrapper

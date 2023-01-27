@@ -39,6 +39,7 @@ const Modal = ({
   modalSwipeOffset,
   containerVisible,
   isDoubleFooterLine,
+  isCloseable,
 }) => {
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
@@ -82,11 +83,13 @@ const Modal = ({
             autoMaxWidth={autoMaxWidth}
             modalSwipeOffset={modalSwipeOffset}
           >
-            <CloseButton
-              currentDisplayType={currentDisplayType}
-              onClick={onClose}
-              id={id}
-            />
+            {isCloseable && (
+              <CloseButton
+                currentDisplayType={currentDisplayType}
+                onClick={onClose}
+                id={id}
+              />
+            )}
             {isLoading ? (
               currentDisplayType === "modal" ? (
                 <Loaders.DialogLoader

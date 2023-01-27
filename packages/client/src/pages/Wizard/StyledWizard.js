@@ -73,7 +73,7 @@ export const WizardContainer = styled.div`
   }
 
   .password-field {
-    margin: 0 0 10px 0 !important;
+    margin: 0px !important;
   }
 `;
 
@@ -82,7 +82,8 @@ export const StyledLink = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
+  padding-top: 8px;
 
   .generate-password-link {
     color: ${(props) => props.theme.client.wizard.generatePasswordColor};
@@ -98,14 +99,21 @@ export const StyledLink = styled.div`
 export const StyledInfo = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 83px 1fr;
+  grid-template-columns: 59px 1fr;
   align-items: center;
-  padding-bottom: 4px;
+  gap: 16px;
+
+  margin-bottom: 4px;
 
   .machine-name {
     padding-bottom: 4px;
     padding-top: 4px;
-    padding-left: 16px;
+    padding-left: 8px;
+    line-height: 20px;
+  }
+
+  .combo-button {
+    padding-left: 8px;
   }
 `;
 
@@ -114,7 +122,7 @@ export const StyledAcceptTerms = styled.div`
   display: flex;
   align-items: center;
   gap: 0.3em;
-  padding-top: 12px;
+  padding-top: 20px;
   padding-bottom: 24px;
 
   .wizard-checkbox svg {

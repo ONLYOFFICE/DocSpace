@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Dana sekcja umożliwia zapewnienie użytkownikom bezpiecznych i wygodnych metod dostępu do portalu.",
   "PortalNameEmpty": "Nazwa konta jest pusta",
   "PortalNameIncorrect": "Nieprawidłowa nazwa konta",
-  "PortalNameLength": "Nazwa konta musi zawierać od 3 do 50 znaków",
+  "PortalNameLength": "Nazwa konta musi zawierać od {{minLength}} do {{maxLength}} znaków",
   "PortalRenaming": "Zmiana nazwy portalu",
   "PortalRenamingDescription": "Tutaj możesz zmienić adres portalu.",
   "PortalRenamingLabelText": "Nowa nazwa portalu",
