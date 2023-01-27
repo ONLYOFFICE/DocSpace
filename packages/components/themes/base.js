@@ -3100,6 +3100,8 @@ const Base = {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
+    errorTextColor: "#F21C0E",
+    descriptionTextColor: "#A3A9AE",
   },
 
   codeInput: {
