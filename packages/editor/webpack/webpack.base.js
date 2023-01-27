@@ -1,3 +1,4 @@
+const path = require("path");
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
