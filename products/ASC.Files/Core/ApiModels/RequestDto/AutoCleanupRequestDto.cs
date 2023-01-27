@@ -24,50 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Api.Core.Middleware;
-
-public class CultureMiddleware
+namespace ASC.Files.Core.ApiModels.RequestDto;
+public class AutoCleanupRequestDto
 {
-    private readonly RequestDelegate _next;
-
-    public CultureMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public async Task Invoke(HttpContext context, UserManager userManager, TenantManager tenantManager, AuthContext authContext)
-    {
-        CultureInfo culture = null;
-
-        if (authContext.IsAuthenticated)
-        {
-            var user = userManager.GetUsers(authContext.CurrentAccount.ID);
-
-            if (!string.IsNullOrEmpty(user.CultureName))
-            {
-                culture = user.GetCulture();
-            }
-        }
-
-        if (culture == null)
-        {
-            culture = tenantManager.GetCurrentTenant(false)?.GetCulture();
-        }
-
-        if (culture != null)
-        {
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-        }
-
-        await _next.Invoke(context);
-    }
-}
-
-public static class CultureMiddlewareExtensions
-{
-    public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<CultureMiddleware>();
-    }
+    public bool Set { get; set; }
+    public DateToAutoCleanUp Gap { get; set; }
 }

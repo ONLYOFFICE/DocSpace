@@ -57,7 +57,7 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
     {
             new RelationInfo("tenants_tenants", "id", "tenants_quota", "tenant"),
             new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tenant"),
-            new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tariff", x => Convert.ToInt32(x["tariff"]) > 0),
+            new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tariff"),
             new RelationInfo("core_user", "id", "tenants_tenants", "owner_id", null, null, RelationImportance.Low)
         };
 

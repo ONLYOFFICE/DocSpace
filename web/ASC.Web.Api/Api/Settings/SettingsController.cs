@@ -59,6 +59,7 @@ public class SettingsController : BaseSettingsController
     private readonly AdditionalWhiteLabelSettingsHelperInit _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
     private readonly QuotaUsageManager _quotaUsageManager;
+    private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
@@ -94,7 +95,8 @@ public class SettingsController : BaseSettingsController
         AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper,
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
-        QuotaUsageManager quotaUsageManager
+        QuotaUsageManager quotaUsageManager,
+        TenantDomainValidator tenantDomainValidator
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -126,6 +128,7 @@ public class SettingsController : BaseSettingsController
         _quotaSyncOperation = quotaSyncOperation;
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
         _quotaUsageManager = quotaUsageManager;
+        _tenantDomainValidator = tenantDomainValidator;
     }
 
     [HttpGet("")]
@@ -157,6 +160,7 @@ public class SettingsController : BaseSettingsController
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
             settings.SocketUrl = _configuration["web:hub:url"] ?? "";
+            settings.DomainValidator = _tenantDomainValidator;
 
             settings.Firebase = new FirebaseDto
             {

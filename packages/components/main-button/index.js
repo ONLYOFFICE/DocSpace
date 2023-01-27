@@ -6,7 +6,7 @@ import { GroupMainButton } from "./styled-main-button";
 import ContextMenu from "../context-menu";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-import TriangleNavigationDownReactSvgUrl from "../../../public/images/triangle.navigation.down.react.svg?url";
+import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
 
 const MainButton = (props) => {
   const { text, model, isDropdown, isDisabled, clickAction } = props;

@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 import Selector from "./";
-import CustomSvgUrl from "../../../public/images/icons/32/room/custom.svg?url";
-import ArchiveSvgUrl from "../../../public/images/room.archive.svg?url";
-import EmptyScreenFilter from "../../../public/images/empty_screen_filter.png";
+import CustomSvgUrl from "PUBLIC_DIR/images/icons/32/room/custom.svg?url";
+import ArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import EmptyScreenFilter from "PUBLIC_DIR/images/empty_screen_filter.png";
 
 const StyledRowLoader = styled.div`
   width: 100%;

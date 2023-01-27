@@ -12,7 +12,7 @@ import {
   StyledDropdownToggle,
   StyledGroupButton,
 } from "./styled-group-button";
-import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
+import ExpanderDownReactSvg from "PUBLIC_DIR/images/expander-down.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 import Base from "../themes/base";
 

@@ -15,7 +15,7 @@ import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@docspace/components/scrollbar";
 import { ReactSVG } from "react-svg";
 import { classNames } from "../utils/classNames";
-import ExpanderDownReactSvgUrl from "../../../public/images/expander-down.react.svg?url";
+import ExpanderDownReactSvgUrl from "PUBLIC_DIR/images/expander-down.react.svg?url";
 
 class LinkWithDropdown extends React.Component {
   constructor(props) {

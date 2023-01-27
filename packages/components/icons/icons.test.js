@@ -1,6 +1,6 @@
 import React from "react";
 import { mount } from "enzyme";
-import AZSortingReactSvg from "../../../public/images/a-z.sorting.react.svg";
+import AZSortingReactSvg from "PUBLIC_DIR/images/a-z.sorting.react.svg";
 describe("<Icons />", () => {
   it("renders without error", () => {
     const wrapper = mount(<AZSortingReactSvg />);

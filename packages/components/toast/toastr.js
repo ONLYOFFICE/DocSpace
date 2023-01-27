@@ -2,10 +2,10 @@ import React from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 
-import CheckToastReactSvg from "../../../public/images/check.toast.react.svg";
-import DangerToastReactSvg from "../../../public/images/danger.toast.react.svg";
-import InfoToastReactSvg from "../../../public/images/info.toast.react.svg";
-import CrossIconReactSvgUrl from "../../../public/images/cross.react.svg?url";
+import CheckToastReactSvg from "PUBLIC_DIR/images/check.toast.react.svg";
+import DangerToastReactSvg from "PUBLIC_DIR/images/danger.toast.react.svg";
+import InfoToastReactSvg from "PUBLIC_DIR/images/info.toast.react.svg";
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 
 import Text from "../text";
 import {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SettingsReactSvgUrl from "../../../public/images/settings.react.svg?url";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 import InputBlock from ".";
 import Button from "../button";
 import IconButton from "../icon-button";

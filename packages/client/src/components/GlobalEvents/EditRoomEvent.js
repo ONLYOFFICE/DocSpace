@@ -87,7 +87,7 @@ const EditRoomEvent = ({
       return updateFolder(index, newRoom);
     }
 
-    setFolder(room);
+    setFolder(newRoom);
   };
 
   const onSave = async (roomParams) => {

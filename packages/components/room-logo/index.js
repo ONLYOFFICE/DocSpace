@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 
-import ArchiveSvg32Url from "../../../public/images/icons/32/room/archive.svg?url";
-import CustomSvg32Url from "../../../public/images/icons/32/room/custom.svg?url";
-import EditingSvg32Url from "../../../public/images/icons/32/room/editing.svg?url";
-import FillingFormSvg32Url from "../../../public/images/icons/32/room/filling.form.svg?url";
-import ReviewSvg32Url from "../../../public/images/icons/32/room/review.svg?url";
-import ViewOnlySvg32Url from "../../../public/images/icons/32/room/view.only.svg?url";
+import ArchiveSvg32Url from "PUBLIC_DIR/images/icons/32/room/archive.svg?url";
+import CustomSvg32Url from "PUBLIC_DIR/images/icons/32/room/custom.svg?url";
+import EditingSvg32Url from "PUBLIC_DIR/images/icons/32/room/editing.svg?url";
+import FillingFormSvg32Url from "PUBLIC_DIR/images/icons/32/room/filling.form.svg?url";
+import ReviewSvg32Url from "PUBLIC_DIR/images/icons/32/room/review.svg?url";
+import ViewOnlySvg32Url from "PUBLIC_DIR/images/icons/32/room/view.only.svg?url";
 
 import { RoomsType } from "@docspace/common/constants";
 
