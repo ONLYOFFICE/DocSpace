@@ -1,23 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Text from "@docspace/components/text";
-import MediaDeleteIcon from "../../../../public/images/media.delete.react.svg";
-import MediaDownloadIcon from "../../../../public/images/media.download.react.svg";
 import ImageViewer from "./sub-components/image-viewer";
-import VideoViewer from "./sub-components/video-viewer";
-import MediaScrollButton from "./sub-components/scroll-button";
-import ControlBtn from "./sub-components/control-btn";
-import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
-import IconButton from "@docspace/components/icon-button";
-import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import { isDesktop } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
+import { FileStatus } from "@docspace/common/constants";
 
-const StyledVideoViewer = styled(VideoViewer)`
-  z-index: 301;
-`;
+import InfoOutlineReactSvgUrl from "../../../../public/images/info.outline.react.svg?url";
+import CopyReactSvgUrl from "../../../../public/images/copy.react.svg?url";
+import DuplicateReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
+import DownloadReactSvgUrl from "../../../../public/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "../../../../public/images/download-as.react.svg?url";
+import RenameReactSvgUrl from "../../../../public/images/rename.react.svg?url";
+import TrashReactSvgUrl from "../../../../public/images/trash.react.svg?url";
+import MoveReactSvgUrl from "../../../../public/images/duplicate.react.svg?url";
+
 const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
@@ -28,6 +26,7 @@ const ButtonKeys = Object.freeze({
   rightArrow: 39,
   upArrow: 38,
   downArrow: 40,
+  space: 32,
   esc: 27,
   ctr: 17,
   one: 49,
@@ -35,31 +34,34 @@ const ButtonKeys = Object.freeze({
   s: 83,
 });
 
-const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-  ${commonIconsStyles}
-`;
-
-const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
-  ${commonIconsStyles}
-`;
-
 let ctrIsPressed = false;
 class MediaViewer extends React.Component {
   constructor(props) {
     super(props);
 
-    const item = props.playlist.find(
-      (file) => String(file.fileId) === String(props.currentFileId)
+    const { playlist, currentFileId, visible } = props;
+
+    const item = playlist.find(
+      (file) => String(file.fileId) === String(currentFileId)
     );
+
+    if (!item) {
+      console.error("MediaViewer: file not found in playlist", {
+        playlist,
+        currentFileId,
+      });
+      return;
+    }
 
     const playlistPos = item ? item.id : 0;
 
     this.state = {
-      visible: props.visible,
+      visible,
       allowConvert: true,
-      playlist: props.playlist,
+      playlist,
       playlistPos,
       fileUrl: item.src,
+      canSwipeImage: true,
     };
 
     this.detailsContainer = React.createRef();
@@ -76,11 +78,6 @@ class MediaViewer extends React.Component {
     const _this = this;
 
     if (this.hammer) {
-      this.hammer.off("swipeleft", this.nextMedia);
-      this.hammer.off("swiperight", this.prevMedia);
-      this.hammer.off("pinchout", this.prevMedia);
-      this.hammer.off("pinchin", this.prevMedia);
-      this.hammer.off("pinchend", this.prevMedia);
       this.hammer.off("doubletap", this.prevMedia);
     }
     this.hammer = null;
@@ -92,22 +89,8 @@ class MediaViewer extends React.Component {
             document.getElementsByClassName("react-viewer-canvas")[0]
           );
           _this.hammer.add([pinch]);
-          _this.hammer.on("pinchout", _this.handleZoomOut);
-          _this.hammer.on("pinchin", _this.handleZoomIn);
-          _this.hammer.on("pinchend", _this.handleZoomEnd);
+
           _this.hammer.on("doubletap", _this.doubleTap);
-        } else if (
-          _this.mapSupplied[ext] &&
-          (_this.mapSupplied[ext].type == mediaTypes.video ||
-            _this.mapSupplied[ext].type == mediaTypes.audio)
-        ) {
-          _this.hammer = Hammer(
-            document.getElementsByClassName("videoViewerOverlay")[0]
-          );
-        }
-        if (_this.hammer && !isDesktop) {
-          _this.hammer.on("swipeleft", _this.nextMedia);
-          _this.hammer.on("swiperight", _this.prevMedia);
         }
       } catch (ex) {
         //console.error("MediaViewer updateHammer", ex);
@@ -156,6 +139,7 @@ class MediaViewer extends React.Component {
       visible === prevProps.visible &&
       playlistPos !== prevState.playlistPos
     ) {
+      this.updateHammer();
       if (ext === ".tiff" || ext === ".tif") {
         this.getTiffDataURL(src);
       } else {
@@ -171,7 +155,12 @@ class MediaViewer extends React.Component {
       if (playlist.length > 0) {
         this.updateHammer();
 
-        const newPlaylistPos = playlistPos < playlist.length ? playlistPos : 0;
+        const newPlaylistPos =
+          playlistPos < playlist.length
+            ? playlist.length !== prevProps.playlist.length
+              ? playlistPos + 1
+              : playlistPos
+            : 0;
 
         this.setState({
           playlist: playlist,
@@ -191,10 +180,18 @@ class MediaViewer extends React.Component {
   }
 
   componentDidMount() {
-    const { playlist } = this.props;
+    const { playlist, files, setBufferSelection } = this.props;
     const { playlistPos } = this.state;
 
     const currentFile = playlist[playlistPos];
+
+    const currentFileId =
+      playlist.length > 0
+        ? playlist.find((file) => file.id === playlistPos).fileId
+        : 0;
+
+    const targetFile = files.find((item) => item.id === currentFileId);
+    if (targetFile) setBufferSelection(targetFile);
     const { src, title } = currentFile;
     const ext = this.getFileExtension(title);
 
@@ -210,11 +207,6 @@ class MediaViewer extends React.Component {
 
   componentWillUnmount() {
     if (this.hammer) {
-      this.hammer.off("swipeleft", this.nextMedia);
-      this.hammer.off("swiperight", this.prevMedia);
-      this.hammer.off("pinchout", this.prevMedia);
-      this.hammer.off("pinchin", this.prevMedia);
-      this.hammer.off("pinchend", this.prevMedia);
       this.hammer.off("doubletap", this.prevMedia);
     }
     document.removeEventListener("keydown", this.onKeydown, false);
@@ -295,15 +287,24 @@ class MediaViewer extends React.Component {
   };
 
   doubleTap = () => {
-    document.querySelector('li[data-key="zoomIn"]').click();
+    document.querySelector('li[data-key="zoomIn"]')?.click();
   };
 
   prevMedia = () => {
     const { playlistPos, playlist } = this.state;
+    const { setBufferSelection } = this.props;
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos--;
+    if (currentPlaylistPos === -1) return;
     if (currentPlaylistPos < 0) currentPlaylistPos = playlist.length - 1;
+
+    const currentFileId = playlist[currentPlaylistPos].fileId;
+
+    const targetFile = this.props.files.find(
+      (item) => item.id === currentFileId
+    );
+    setBufferSelection(targetFile);
 
     this.setState({
       playlistPos: currentPlaylistPos,
@@ -315,9 +316,18 @@ class MediaViewer extends React.Component {
 
   nextMedia = () => {
     const { playlistPos, playlist } = this.state;
+    const { setBufferSelection } = this.props;
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos = (currentPlaylistPos + 1) % playlist.length;
+    if (currentPlaylistPos === 0) return;
+
+    const currentFileId = playlist[currentPlaylistPos].fileId;
+
+    const targetFile = this.props.files.find(
+      (item) => item.id === currentFileId
+    );
+    setBufferSelection(targetFile);
 
     this.setState({
       playlistPos: currentPlaylistPos,
@@ -346,6 +356,9 @@ class MediaViewer extends React.Component {
         ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDelete && this.props.onDelete(currentFileId);
+    this.setState({
+      canSwipeImage: false,
+    });
   };
 
   onDownload = () => {
@@ -376,7 +389,8 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
-          !this.props.deleteDialogVisible
+          if (document.fullscreenElement) return;
+          this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateLeft")
                   .length > 0 &&
@@ -387,7 +401,8 @@ class MediaViewer extends React.Component {
             : null;
           break;
         case ButtonKeys.rightArrow:
-          !this.props.deleteDialogVisible
+          if (document.fullscreenElement) return;
+          this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateRight")
                   .length > 0 &&
@@ -396,6 +411,10 @@ class MediaViewer extends React.Component {
                   .click()
               : this.nextMedia()
             : null;
+          break;
+        case ButtonKeys.space:
+          document.getElementsByClassName("video-play").length > 0 &&
+            document.getElementsByClassName("video-play")[0].click();
           break;
         case ButtonKeys.esc:
           if (!this.props.deleteDialogVisible) this.props.onClose();
@@ -455,13 +474,25 @@ class MediaViewer extends React.Component {
   render() {
     const { playlistPos, playlist, visible, fileUrl } = this.state;
     const {
+      t,
       onClose,
       userAccess,
       canDelete,
       canDownload,
       errorLabel,
       isPreviewFile,
-      isFavoritesFolder,
+      onClickFavorite,
+      onShowInfoPanel,
+      onClickDownload,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
+      onClickDownloadAs,
+      getIcon,
+      onClickRename,
+      onClickDelete,
+      setBufferSelection,
+      files,
     } = this.props;
 
     const currentFileId =
@@ -470,13 +501,127 @@ class MediaViewer extends React.Component {
         : 0;
 
     const currentFile = playlist[playlistPos];
+
+    const targetFile =
+      files.find((item) => item.id === currentFileId) || playlist[0];
     const { title } = currentFile;
 
     let isImage = false;
     let isVideo = false;
+    let isAudio = false;
     let canOpen = true;
 
+    const isFavorite =
+      (playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
+      FileStatus.IsFavorite;
+
     const ext = this.getFileExtension(title);
+
+    const onSetSelectionFile = () => {
+      setBufferSelection(targetFile);
+    };
+
+    const getContextModel = () => {
+      const desktopModel = [
+        {
+          key: "download",
+          label: t("Common:Download"),
+          icon: DownloadReactSvgUrl,
+          onClick: () => onClickDownload(targetFile, t),
+          disabled: false,
+        },
+        {
+          key: "rename",
+          label: t("Rename"),
+          icon: RenameReactSvgUrl,
+          onClick: () => onClickRename(targetFile),
+          disabled: false,
+        },
+        {
+          key: "delete",
+          label: t("Common:Delete"),
+          icon: TrashReactSvgUrl,
+          onClick: () => onClickDelete(targetFile, t),
+          disabled: false,
+        },
+      ];
+
+      const model = [
+        {
+          id: "option_room-info",
+          key: "room-info",
+          label: t("Common:Info"),
+          icon: InfoOutlineReactSvgUrl,
+          onClick: () => {
+            return onShowInfoPanel(targetFile);
+          },
+          disabled: false,
+        },
+        {
+          key: "download",
+          label: t("Common:Download"),
+          icon: DownloadReactSvgUrl,
+          onClick: () => onClickDownload(targetFile, t),
+          disabled: false,
+        },
+        {
+          key: "move-to",
+          label: t("MoveTo"),
+          icon: MoveReactSvgUrl,
+          onClick: onMoveAction,
+          disabled: isPreviewFile,
+        },
+        // {
+        //   key: "download-as",
+        //   label: t("Translations:DownloadAs"),
+        //   icon: DownloadAsReactSvgUrl, // TODO: uncomment when we can download media by changing the format
+        //   onClick: onClickDownloadAs,
+        //   disabled: false,
+        // },
+        {
+          id: "option_copy-to",
+          key: "copy-to",
+          label: t("Translations:Copy"),
+          icon: CopyReactSvgUrl,
+          onClick: onCopyAction,
+          disabled: isPreviewFile,
+        },
+        {
+          id: "option_create-copy",
+          key: "copy",
+          label: t("Common:Duplicate"),
+          icon: DuplicateReactSvgUrl,
+          onClick: () => onDuplicate(targetFile, t),
+          disabled: isPreviewFile,
+        },
+        {
+          key: "rename",
+          label: t("Rename"),
+          icon: RenameReactSvgUrl,
+          onClick: () => onClickRename(targetFile),
+          disabled: isPreviewFile,
+        },
+
+        {
+          key: "separator0",
+          isSeparator: true,
+          disabled: isPreviewFile,
+        },
+        {
+          key: "delete",
+          label: t("Common:Delete"),
+          icon: TrashReactSvgUrl,
+          onClick: () => onClickDelete(targetFile, t),
+          disabled: isPreviewFile,
+        },
+      ];
+
+      return isMobileOnly
+        ? model
+        : isImage && !isMobileOnly
+        ? desktopModel.filter((el) => el.key !== "download")
+        : desktopModel;
+    };
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
       canOpen = false;
@@ -490,94 +635,48 @@ class MediaViewer extends React.Component {
       isVideo = this.mapSupplied[ext]
         ? this.mapSupplied[ext].type == mediaTypes.video
         : false;
+      isAudio = this.mapSupplied[ext]
+        ? this.mapSupplied[ext].type == mediaTypes.audio
+        : false;
     }
+
+    let audioIcon = getIcon(96, ext);
+    let headerIcon = getIcon(24, ext);
 
     // TODO: rewrite with fileURL
     /*if (this.mapSupplied[ext])
       if (!isImage && this.mapSupplied[ext].convertable && !src.includes("#")) {
         src += (src.includes("?") ? "&" : "?") + "convpreview=true";
       }*/
-
     return (
-      <StyledMediaViewer visible={visible}>
-        <div className="videoViewerOverlay"></div>
-        {!isImage && (
-          <>
-            <MediaScrollButton
-              orientation="right"
-              onClick={this.prevMedia}
-              inactive={playlist.length <= 1}
-            />
-            <MediaScrollButton
-              orientation="left"
-              onClick={this.nextMedia}
-              inactive={playlist.length <= 1}
-            />
-          </>
+      <>
+        {canOpen && (
+          <ImageViewer
+            userAccess={userAccess}
+            visible={visible}
+            title={title}
+            onClose={this.onClose}
+            images={[{ src: fileUrl, alt: "" }]}
+            inactive={playlist.length <= 1}
+            playlist={playlist}
+            playlistPos={playlistPos}
+            onNextClick={this.nextMedia}
+            onSetSelectionFile={onSetSelectionFile}
+            contextModel={getContextModel}
+            onPrevClick={this.prevMedia}
+            onDeleteClick={this.onDelete}
+            isFavorite={isFavorite}
+            headerIcon={headerIcon}
+            isImage={isImage}
+            isAudio={isAudio}
+            isVideo={isVideo}
+            isPreviewFile={isPreviewFile}
+            audioIcon={audioIcon}
+            onDownloadClick={this.onDownload}
+            //    isFavoritesFolder={isFavoritesFolder}
+          />
         )}
-
-        <div>
-          <div className="details" ref={this.detailsContainer}>
-            <Text isBold fontSize="14px" className="title">
-              {title}
-            </Text>
-            <ControlBtn
-              onClick={onClose && onClose}
-              className="mediaPlayerClose"
-            >
-              <IconButton
-                iconName="/static/images/cross.react.svg"
-                size={25}
-                isClickable
-              />
-            </ControlBtn>
-          </div>
-        </div>
-        {canOpen &&
-          (isImage ? (
-            <ImageViewer
-              userAccess={userAccess}
-              visible={visible}
-              onClose={this.onClose}
-              images={[{ src: fileUrl, alt: "" }]}
-              inactive={playlist.length <= 1}
-              onNextClick={this.nextMedia}
-              onPrevClick={this.prevMedia}
-              onDeleteClick={this.onDelete}
-              onDownloadClick={this.onDownload}
-              isFavoritesFolder={isFavoritesFolder}
-            />
-          ) : (
-            <StyledVideoViewer
-              url={fileUrl}
-              isVideo={isVideo}
-              getOffset={this.getOffset}
-              errorLabel={errorLabel}
-            />
-          ))}
-        <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
-          {!isImage && (
-            <span>
-              {canDelete(currentFileId) &&
-                !isPreviewFile &&
-                !isFavoritesFolder && (
-                  <ControlBtn onClick={this.onDelete}>
-                    <div className="deleteBtnContainer">
-                      <StyledMediaDeleteIcon size="scale" />
-                    </div>
-                  </ControlBtn>
-                )}
-              {canDownload(currentFileId) && (
-                <ControlBtn onClick={this.onDownload}>
-                  <div className="downloadBtnContainer">
-                    <StyledMediaDownloadIcon size="scale" />
-                  </div>
-                </ControlBtn>
-              )}
-            </span>
-          )}
-        </div>
-      </StyledMediaViewer>
+      </>
     );
   }
 }
@@ -599,7 +698,6 @@ MediaViewer.propTypes = {
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
   isPreviewFile: PropTypes.bool,
-  isFavoritesFolder: PropTypes.bool,
   onChangeUrl: PropTypes.func,
 };
 

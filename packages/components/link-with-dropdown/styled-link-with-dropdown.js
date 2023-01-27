@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import Base from "../themes/base";
-import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
 import { transform } from "lodash";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
@@ -46,7 +46,7 @@ const ExpanderDownIconWrapper = ({
   isOpen,
   isDisabled,
   ...props
-}) => <ExpanderDownIcon {...props} />;
+}) => <ExpanderDownReactSvg {...props} />;
 
 const Caret = styled(ExpanderDownIconWrapper)`
   position: absolute;
@@ -138,9 +138,6 @@ const StyledTextWithExpander = styled.div`
       transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
       width: 6.35px;
       height: auto;
-      path {
-        fill: ${(props) => props.theme.linkWithDropdown.expander.iconColor};
-      }
     }
   }
 `;
@@ -148,18 +145,30 @@ const StyledTextWithExpander = styled.div`
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const SimpleText = ({ color, ...props }) => <Text as="span" {...props} />;
 const StyledText = styled(SimpleText)`
-  color: ${color};
-
+  color: inherit;
   ${(props) =>
     props.isTextOverflow &&
     css`
       display: inline-block;
       max-width: ${(props) => props.theme.linkWithDropdown.text.maxWidth};
-    `}
+    `};
 `;
 StyledText.defaultProps = { theme: Base };
 
+const focusColor = css`
+  color: ${(props) => props.theme.linkWithDropdown.color.focus};
+  background: ${(props) => props.theme.linkWithDropdown.background.focus};
+  .expander {
+    path {
+      fill: ${(props) => props.theme.linkWithDropdown.color.focus};
+    }
+  }
+`;
+
 const StyledSpan = styled.span`
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
   position: relative;
 
   .drop-down-item {
@@ -168,6 +177,49 @@ const StyledSpan = styled.span`
 
   .fixed-max-width {
     max-width: ${(props) => props.theme.linkWithDropdown.text.maxWidth};
+  }
+
+  color: ${(props) => props.theme.linkWithDropdown.color.default};
+  background: ${(props) => props.theme.linkWithDropdown.background.default};
+  .expander {
+    path {
+      fill: ${(props) => props.theme.linkWithDropdown.color.default};
+    }
+  }
+
+  ${(props) =>
+    !props.$isOpen &&
+    css`
+      :hover {
+        color: ${(props) => props.theme.linkWithDropdown.color.hover};
+
+        background: ${(props) => props.theme.linkWithDropdown.background.hover};
+        .expander {
+          path {
+            fill: ${(props) => props.theme.linkWithDropdown.color.hover};
+          }
+        }
+      }
+    `}
+
+  ${(props) =>
+    props.$isOpen
+      ? focusColor
+      : css`
+          :focus-within,
+          :focus {
+            ${focusColor}
+          }
+        `}
+
+  :active {
+    color: ${(props) => props.theme.linkWithDropdown.color.active};
+    background: ${(props) => props.theme.linkWithDropdown.background.active};
+    .expander {
+      path {
+        fill: ${(props) => props.theme.linkWithDropdown.color.active};
+      }
+    }
   }
 `;
 StyledSpan.defaultProps = { theme: Base };

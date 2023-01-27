@@ -5,7 +5,7 @@ import Heading from "@docspace/components/heading";
 import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
-const AdminSettings = ({
+const GeneralSettings = ({
   storeForceSave,
   setStoreForceSave,
   enableThirdParty,
@@ -62,4 +62,4 @@ export default inject(({ settingsStore }) => {
     enableThirdParty,
     setEnableThirdParty,
   };
-})(observer(AdminSettings));
+})(observer(GeneralSettings));

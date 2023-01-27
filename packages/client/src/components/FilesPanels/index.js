@@ -13,13 +13,11 @@ import {
   InvitePanel,
 } from "../panels";
 import {
-  ThirdPartyMoveDialog,
   ConnectDialog,
   DeleteThirdPartyDialog,
   EmptyTrashDialog,
   DeleteDialog,
   DownloadDialog,
-  ThirdPartyDialog,
   ConflictResolveDialog,
   ConvertDialog,
   CreateRoomDialog,
@@ -42,7 +40,6 @@ const Panels = (props) => {
     deleteDialogVisible,
     downloadDialogVisible,
     emptyTrashDialogVisible,
-    thirdPartyDialogVisible,
     newFilesPanelVisible,
     conflictResolveDialogVisible,
     convertDialogVisible,
@@ -80,9 +77,6 @@ const Panels = (props) => {
         isRestore={restoreAllPanelVisible}
       />
     ),
-    thirdPartyMoveDialogVisible && (
-      <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
-    ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
     deleteThirdPartyDialogVisible && (
       <DeleteThirdPartyDialog key="thirdparty-delete-dialog" />
@@ -93,7 +87,7 @@ const Panels = (props) => {
     deleteDialogVisible && <DeleteDialog key="delete-dialog" />,
     emptyTrashDialogVisible && <EmptyTrashDialog key="empty-trash-dialog" />,
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
-    thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
+
     newFilesPanelVisible && <NewFilesPanel key="new-files-panel" />,
     conflictResolveDialogVisible && (
       <ConflictResolveDialog key="conflict-resolve-dialog" />
@@ -141,7 +135,6 @@ export default inject(
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
-      thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
@@ -175,7 +168,6 @@ export default inject(
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
-      thirdPartyDialogVisible,
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,

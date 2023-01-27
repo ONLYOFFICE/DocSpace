@@ -2,10 +2,7 @@ import React from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { withTranslation } from "react-i18next";
 
-import {
-  StyledPreparationPortal,
-  StyledBodyPreparationPortal,
-} from "./StyledPreparationPortal";
+import { StyledPreparationPortal } from "./StyledPreparationPortal";
 import Text from "@docspace/components/text";
 import { getRestoreProgress } from "@docspace/common/api/portal";
 import { observer, inject } from "mobx-react";
@@ -50,11 +47,22 @@ class PreparationPortal extends React.Component {
           }
         }
       })
-      .catch((err) =>
+      .catch((err) => {
+        let errorMessage = "";
+        if (typeof err === "object") {
+          errorMessage =
+            err?.response?.data?.error?.message ||
+            err?.statusText ||
+            err?.message ||
+            "";
+        } else {
+          errorMessage = err;
+        }
+
         this.setState({
-          errorMessage: err,
-        })
-      );
+          errorMessage: errorMessage,
+        });
+      });
   }
   componentWillUnmount() {
     clearInterval(this.timerId);

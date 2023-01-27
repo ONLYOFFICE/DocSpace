@@ -1,5 +1,0 @@
-{
-  "MoveConfirmation": "Confirmation de déplacement",
-  "MoveConfirmationAlert": "Vous êtes sur le point de déplacer des éléments du répertoire {{provider}}. Dans ce cas, ils seront supprimés de votre compte {{provider}} et ne seront plus accessibles aux autres utilisateurs, au cas où ces élément auraient été partagés auparavant.",
-  "MoveFileOption": "Déplacer le fichier"
-}

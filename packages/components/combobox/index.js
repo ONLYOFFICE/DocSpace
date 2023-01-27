@@ -109,8 +109,11 @@ class ComboBox extends React.Component {
       offsetLeft,
       modernView,
       withBackdrop,
-
+      isAside,
+      withBackground,
       advancedOptionsCount,
+      isMobileView,
+      withoutPadding,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -139,7 +142,18 @@ class ComboBox extends React.Component {
     let optionsCount = optionsLength;
 
     if (withAdvancedOptions) {
-      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+      const advancedOptionsWithoutSeparator = advancedOptions.props.children.filter(
+        (option) => option.key !== "s1"
+      );
+
+      const advancedOptionsWithoutSeparatorLength =
+        advancedOptionsWithoutSeparator.length;
+
+      optionsCount = advancedOptionsCount
+        ? advancedOptionsCount
+        : advancedOptionsWithoutSeparatorLength
+        ? advancedOptionsWithoutSeparatorLength
+        : 6;
     }
 
     const disableMobileView = optionsCount < 5;
@@ -155,6 +169,7 @@ class ComboBox extends React.Component {
         toggleAction={toggleAction}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
+        withoutPadding={withoutPadding}
         {...props}
       >
         <ComboButton
@@ -196,6 +211,9 @@ class ComboBox extends React.Component {
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
+            isAside={isAside}
+            withBackground={withBackground}
+            isMobileView={isMobileView && !disableMobileView}
           >
             {advancedOptions
               ? advancedOptions
@@ -299,6 +317,7 @@ ComboBox.propTypes = {
   /**Count of advanced options  */
   advancedOptionsCount: PropTypes.number,
   tabIndex: PropTypes.number,
+  withoutPadding: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -319,6 +338,7 @@ ComboBox.defaultProps = {
   isExternalLink: false,
   modernView: false,
   tabIndex: -1,
+  withoutPadding: false,
 };
 
 export default ComboBox;

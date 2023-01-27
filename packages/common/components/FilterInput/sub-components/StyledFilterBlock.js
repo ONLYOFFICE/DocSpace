@@ -5,7 +5,7 @@ import { isMobileOnly, isMobile } from "react-device-detect";
 import ToggleButton from "@docspace/components/toggle-button";
 import { mobile, tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossIcon from "../../../../../public/images/cross.react.svg";
 
 const StyledFilterBlock = styled.div`
   position: fixed;
@@ -151,8 +151,8 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
   font-size: 13px;
   line-height: 15px;
   color: ${(props) => props.theme.filterInput.filter.color};
-
   margin-left: 8px;
+  cursor: pointer;
 `;
 
 StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };

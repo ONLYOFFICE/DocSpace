@@ -15,6 +15,8 @@ const StyledSelectAll = styled.div`
   display: flex;
   align-items: center;
 
+  cursor: pointer;
+
   border-bottom: ${(props) => props.theme.selector.border};
 
   box-sizing: border-box;
@@ -55,9 +57,14 @@ const SelectAll = React.memo(
     isLoading,
     rowLoader,
   }) => {
+    const onClick = (e) => {
+      if (e.target.closest(".checkbox")) return;
+
+      onSelectAll && onSelectAll();
+    };
+
     return (
-      <StyledSelectAll>
-        <div style={{ background: "red", height: "150px" }}></div>
+      <StyledSelectAll onClick={onClick}>
         {isLoading ? (
           rowLoader
         ) : (

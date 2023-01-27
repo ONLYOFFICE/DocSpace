@@ -11,7 +11,7 @@ import { isChrome, browserVersion } from "react-device-detect";
 
 const StyledButton = styled(Button)`
   border: none;
-  padding: 0 10px;
+  padding: 0 12px;
   height: 100%;
   min-width: fit-content;
 
@@ -78,7 +78,11 @@ const StyledButton = styled(Button)`
   .button-content {
     @media ${tablet} {
       flex-direction: column;
-      gap: 0px;
+      gap: 4px;
+    }
+
+    @media ${hugeMobile} {
+      margin-top: 4px;
     }
 
     ${isChrome &&
@@ -115,7 +119,7 @@ const StyledButton = styled(Button)`
 
 StyledButton.defaultProps = { theme: Base };
 
-const GroupMenuItem = ({ item }) => {
+const GroupMenuItem = ({ item, isBlocked }) => {
   const buttonRef = React.useRef(null);
 
   const [open, setOpen] = React.useState(false);
@@ -125,6 +129,8 @@ const GroupMenuItem = ({ item }) => {
   };
 
   const onClickAction = (e) => {
+    if (isBlocked) return;
+
     onClick && onClick(e);
 
     if (withDropDown) {
@@ -152,7 +158,7 @@ const GroupMenuItem = ({ item }) => {
             id={id}
             label={label}
             title={title || label}
-            isDisabled={disabled}
+            isDisabled={isBlocked}
             onClick={onClickAction}
             icon={
               <ReactSVG src={iconUrl} className="combo-button_selected-icon" />

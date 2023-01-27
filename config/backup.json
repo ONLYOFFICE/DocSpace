@@ -15,10 +15,6 @@
 			"Cleaner":
 			{
 				"Period":"00:15:00"
-			},
-			"WebConfigs":
-			{
-				"CurrentRegion":"localhost","Elements":[]
 			}
 		}
 }

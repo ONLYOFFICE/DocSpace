@@ -8,13 +8,12 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
-const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
-const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
+const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
 
@@ -74,6 +73,7 @@ const config = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../public"),
+      ASSETS_DIR: path.resolve(__dirname, "./public"),
       SRC_DIR: path.resolve(__dirname, "./src"),
       PACKAGE_FILE: path.resolve(__dirname, "package.json"),
     },
@@ -82,9 +82,24 @@ const config = {
   output: {
     publicPath: "auto",
     chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      folder += result.length === 0 ? "" : "/";
+
+      return `${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+    },
   },
 
   performance: {
@@ -94,22 +109,89 @@ const config = {
 
   module: {
     rules: [
+      // {
+      //   test: /\.html$/i,
+      //   loader: "html-loader",
+      //   options: {
+      //     // Disables attributes processing
+      //     // sources: true,
+
+      //     sources: {
+      //       list: [
+      //         // All default supported tags and attributes
+      //         "...",
+      //         {
+      //           tag: "link",
+      //           attribute: "href",
+      //           type: "src",
+      //           filter: (tag, attribute, attributes, resourcePath) => {
+      //             // The `tag` argument contains a name of the HTML tag.
+      //             // The `attribute` argument contains a name of the HTML attribute.
+      //             // The `attributes` argument contains all attributes of the tag.
+      //             // The `resourcePath` argument contains a path to the loaded HTML file.
+
+      //             const relValue = attributes.find((a) => a.name === "rel")
+      //               .value;
+
+      //             if (
+      //               relValue === "shortcut icon" ||
+      //               relValue === "manifest" ||
+      //               relValue === "apple-touch-icon" ||
+      //               relValue === "android-touch-icon"
+      //             ) {
+      //               return true;
+      //             }
+
+      //             if (/my-html\.html$/.test(resourcePath)) {
+      //               return false;
+      //             }
+
+      //             if (!/stylesheet/i.test(attributes.rel)) {
+      //               return false;
+      //             }
+
+      //             if (
+      //               attributes.type &&
+      //               attributes.type.trim().toLowerCase() !== "text/css"
+      //             ) {
+      //               return false;
+      //             }
+
+      //             return true;
+      //           },
+      //         },
+      //       ],
+      //       urlFilter: (attribute, value, resourcePath) => {
+      //         // The `attribute` argument contains a name of the HTML attribute.
+      //         // The `value` argument contains a value of the HTML attribute.
+      //         // The `resourcePath` argument contains a path to the loaded HTML file.
+
+      //         if (
+      //           // /manifest\.json$/.test(value) ||
+      //           /favicon\.ico$/.test(value) ||
+      //           /appIcon-180\.png$/.test(value)
+      //         ) {
+      //           return true;
+      //         }
+
+      //         return false;
+      //       },
+      //     },
+      //   },
+      // },
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
-        generator: {
-          filename: "static/images/[hash][ext][query]",
-        },
       },
       {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /\.react.svg$/,
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",
@@ -120,6 +202,13 @@ const config = {
             },
           },
         ],
+      },
+      {
+        test: /\.m?js/,
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
       },
       { test: /\.json$/, loader: "json-loader" },
       {
@@ -184,10 +273,10 @@ const config = {
 
     new CopyPlugin({
       patterns: [
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "images/**/*.*",
-        },
+        // {
+        //   context: path.resolve(__dirname, "public"),
+        //   from: "images/**/*.*",
+        // },
         {
           context: path.resolve(__dirname, "public"),
           from: "locales/**/*.json",
@@ -211,22 +300,11 @@ module.exports = (env, argv) => {
   }
 
   const remotes = {
-    client: `client@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
-    // people: `people@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/people/remoteEntry.js"
-    // )}`,
-    // files: `files@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/files/remoteEntry.js"
-    // )}`,
+    client: "client@/remoteEntry.js",
   };
 
   if (!env.personal) {
-    remotes.login = `login@${combineUrl(
-      AppServerConfig.proxyURL,
-      "/login/remoteEntry.js"
-    )}`;
+    remotes.login = "login@/login/remoteEntry.js";
   }
 
   config.plugins.push(
@@ -256,7 +334,6 @@ module.exports = (env, argv) => {
           "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
-        "./GroupSelector": "./src/components/GroupSelector",
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
@@ -271,9 +348,9 @@ module.exports = (env, argv) => {
   if (!!env.hideText) {
     config.plugins.push(
       new HtmlWebpackPlugin({
+        title: title,
         template: "./public/index.html",
         publicPath: homepage,
-        title: title,
         base: `${homepage}/`,
         custom: `<style type="text/css">
           div,
@@ -300,6 +377,8 @@ module.exports = (env, argv) => {
         publicPath: homepage,
         title: title,
         base: `${homepage}/`,
+        favicon: "../../public/favicon.ico",
+        hash: true,
       })
     );
   }

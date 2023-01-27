@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import StyledButton from "./styled-selector-add-button";
 import IconButton from "../icon-button";
 
+import ActionsHeaderTouchReactSvgUrl from "../../../public/images/actions.header.touch.react.svg?url";
+
 const SelectorAddButton = (props) => {
   const { isDisabled, title, className, id, style, iconName } = props;
 
@@ -51,7 +53,7 @@ SelectorAddButton.propTypes = {
 
 SelectorAddButton.defaultProps = {
   isDisabled: false,
-  iconName: "/static/images/actions.header.touch.react.svg",
+  iconName: ActionsHeaderTouchReactSvgUrl,
 };
 
 export default SelectorAddButton;

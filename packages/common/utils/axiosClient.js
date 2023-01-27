@@ -1,8 +1,10 @@
 import axios from "axios";
-import { AppServerConfig } from "../constants";
 import combineUrl from "./combineUrl";
+import defaultConfig from "../../../public/scripts/config.json";
 
-const { proxyURL, apiOrigin, apiPrefix, apiTimeout } = AppServerConfig;
+let { api: apiConf, proxy: proxyConf } = defaultConfig;
+let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;
+let { url: proxyURL } = proxyConf;
 
 class AxiosClient {
   constructor() {
@@ -11,60 +13,69 @@ class AxiosClient {
 
   initCSR = () => {
     this.isSSR = false;
-    const origin = apiOrigin || window.location.origin;
+    const origin =
+      window.DocSpaceConfig?.api?.origin || apiOrigin || window.location.origin;
+    const proxy = window.DocSpaceConfig?.proxy?.url || proxyURL;
+    const prefix = window.DocSpaceConfig?.api?.prefix || apiPrefix;
+
     let headers = null;
 
     if (apiOrigin !== "") {
       headers = {
-		'Access-Control-Allow-Credentials' : true
+        "Access-Control-Allow-Credentials": true,
       };
     }
 
-    const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
+    const apiBaseURL = combineUrl(origin, proxy, prefix);
     const paymentsURL = combineUrl(
-      proxyURL,
+      proxy,
       "/portal-settings/payments/portal-payments"
     );
     this.paymentsURL = paymentsURL;
 
-    // window.AppServer = {
-    //   ...window.AppServer,
-    //   origin,
-    //   proxyURL,
-    //   apiPrefix,
-    //   apiBaseURL,
-    //   apiTimeout,
-    //   paymentsURL,
-    // };
-
-    const config = {
+    const apxiosConfig = {
       baseURL: apiBaseURL,
       responseType: "json",
       timeout: apiTimeout, // default is `0` (no timeout)
-	  withCredentials: true
+      withCredentials: true,
     };
 
     if (headers) {
-      config.headers = headers;
+      apxiosConfig.headers = headers;
     }
 
-    this.client = axios.create(config);
+    console.log("initCSR", {
+      defaultConfig,
+      apxiosConfig,
+      DocSpaceConfig: window.DocSpaceConfig,
+      paymentsURL,
+    });
+
+    this.client = axios.create(apxiosConfig);
   };
 
   initSSR = (headers) => {
     this.isSSR = true;
+
     const xRewriterUrl = headers["x-rewriter-url"];
 
     const origin = apiOrigin || xRewriterUrl;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
 
-    this.client = axios.create({
+    const axiosConfig = {
       baseURL: apiBaseURL,
       responseType: "json",
       timeout: apiTimeout,
       headers: headers,
+    };
+
+    console.log("initSSR", {
+      defaultConfig,
+      axiosConfig,
     });
+
+    this.client = axios.create(axiosConfig);
   };
 
   setWithCredentialsStatus = (state) => {
@@ -106,20 +117,25 @@ class AxiosClient {
     };
 
     const onError = (error) => {
-      //console.error("Request Failed:", error);
+      console.log("Request Failed:", { error });
 
-      let errorText = error.response
-        ? this.getResponseError(error.response)
-        : error.message;
+      // let errorText = error.response
+      //   ? this.getResponseError(error.response)
+      //   : error.message;
 
-      if (error?.response?.status === 401 && this.isSSR) errorText = 401;
+      if (error?.response?.status === 401 && this.isSSR) {
+        error.response.data = {
+          ...error?.response?.data,
+          error: { ...error?.response?.data?.error, message: 401 },
+        };
+      }
 
       const loginURL = combineUrl(proxyURL, "/login");
       if (!this.isSSR) {
         switch (error.response?.status) {
           case 401:
             if (options.skipUnauthorized) return Promise.resolve();
-            if (options.skipLogout) return Promise.reject(errorText || error);
+            if (options.skipLogout) return Promise.reject(error);
 
             this.request({
               method: "post",
@@ -138,7 +154,7 @@ class AxiosClient {
             break;
         }
 
-        return Promise.reject(errorText || error);
+        return Promise.reject(error);
       } else {
         switch (error.response?.status) {
           case 401:
@@ -148,7 +164,7 @@ class AxiosClient {
             break;
         }
 
-        return Promise.reject(errorText || error);
+        return Promise.reject(error);
       }
     };
     return this.client(options).then(onSuccess).catch(onError);

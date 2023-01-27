@@ -29,6 +29,7 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
 import Badge from "@docspace/components/badge";
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 const {
   DocumentModuleType,
@@ -82,6 +83,7 @@ class AutomaticBackup extends React.PureComponent {
       //setCommonThirdPartyList,
       getProgress,
       setStorageRegions,
+      setConnectedThirdPartyAccount,
     } = this.props;
 
     try {
@@ -89,16 +91,18 @@ class AutomaticBackup extends React.PureComponent {
 
       const [
         ///thirdPartyList,
+        account,
         backupSchedule,
         backupStorage,
         storageRegions,
       ] = await Promise.all([
         //getThirdPartyCommonFolderTree(),
+        getSettingsThirdParty(),
         getBackupSchedule(),
         getBackupStorage(),
         getStorageRegions(),
       ]);
-
+      setConnectedThirdPartyAccount(account);
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
       setStorageRegions(storageRegions);
@@ -213,7 +217,7 @@ class AutomaticBackup extends React.PureComponent {
 
       defaultFolderId,
     } = this.props;
-    console.log("defaultFolderId", defaultFolderId);
+
     toDefault();
     (isCheckedThirdParty || isCheckedDocuments) &&
       resetNewFolderPath(defaultFolderId);
@@ -504,7 +508,11 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
               {isCheckedThirdParty && (
-                <ThirdPartyModule {...commonProps} isError={isError} />
+                <ThirdPartyModule
+                  {...commonProps}
+                  isError={isError}
+                  buttonSize={buttonSize}
+                />
               )}
             </StyledModules>
             <StyledModules>
@@ -578,8 +586,7 @@ export default inject(
       getStorageParams,
       setSelectedEnableSchedule,
       selectedEnableSchedule,
-      updatePathSettings,
-
+      setConnectedThirdPartyAccount,
       setStorageRegions,
       defaultFolderId,
     } = backup;
@@ -598,6 +605,7 @@ export default inject(
     const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
     return {
+      setConnectedThirdPartyAccount,
       defaultFolderId,
       isEnableAuto: isRestoreAndAutoBackupAvailable,
       fetchTreeFolders,
@@ -639,7 +647,6 @@ export default inject(
       setSelectedEnableSchedule,
       selectedEnableSchedule,
 
-      updatePathSettings,
       resetNewFolderPath,
       setStorageRegions,
       updateBaseFolderPath,

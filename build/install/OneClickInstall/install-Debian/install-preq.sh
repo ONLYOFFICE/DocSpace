@@ -17,26 +17,27 @@ fi
 
 apt-get -y update
 
-if ! dpkg -l | grep -q "locales"; then
+if ! command -v locale-gen &> /dev/null; then
 	apt-get install -yq locales
 fi
 
-if ! dpkg -l | grep -q "dirmngr"; then
-	apt-get install -yq dirmngr
+if ! dpkg -l | grep -q "apt-transport-https"; then
+	apt-get install -yq apt-transport-https
 fi
 
 if ! dpkg -l | grep -q "software-properties-common"; then
 	apt-get install -yq software-properties-common
 fi
 
-if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-  apt-get install -yq curl;
+locale-gen en_US.UTF-8
+if [ -f /etc/needrestart/needrestart.conf ]; then
+	sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
 fi
 
 locale-gen en_US.UTF-8
 
 # add elasticsearch repo
-ELASTIC_VERSION="7.13.1"
+ELASTIC_VERSION="7.16.3"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
@@ -49,11 +50,15 @@ curl -sL https://deb.nodesource.com/setup_16.x | bash -
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
 	curl -sSL https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 	wget -O /etc/apt/sources.list.d/microsoft-prod.list https://packages.microsoft.com/config/debian/9/prod.list
-else
+elif [ "$DISTRIB_CODENAME" != "jammy" ]; then
 	curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
 	dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
+elif dpkg -l | grep -q "packages-microsoft-prod"; then 
+	apt-get purge -y packages-microsoft-prod dotnet*
 fi
 
+MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP 'mysql-apt-config_\K.*' | grep -o '^[^_]*' | sort --version-sort --field-separator=. | tail -n1)"
+MYSQL_PACKAGE_NAME="mysql-apt-config_${MYSQL_REPO_VERSION}_all.deb"
 if ! dpkg -l | grep -q "mysql-server"; then
 
 	MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST:-"localhost"}
@@ -62,8 +67,7 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	MYSQL_SERVER_PASS=${MYSQL_SERVER_PASS:-"$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)"}
 
 	# setup mysql 8.0 package
-	MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.23-1_all.deb"
-	curl -OL http://dev.mysql.com/get/${MYSQL_PACKAGE_NAME}
+	curl -OL http://repo.mysql.com/${MYSQL_PACKAGE_NAME}
 	echo "mysql-apt-config mysql-apt-config/repo-codename  select  $DISTRIB_CODENAME" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/repo-distro  select  $DIST" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/select-server  select  mysql-8.0" | debconf-set-selections
@@ -76,6 +80,11 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	echo mysql-server-8.0 mysql-server/root_password password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-server-8.0 mysql-server/root_password_again password ${MYSQL_SERVER_PASS} | debconf-set-selections
 
+	apt-get -y update
+elif dpkg -l | grep -q "mysql-apt-config" && [ "$(apt-cache policy mysql-apt-config | awk 'NR==2{print $2}')" != "${MYSQL_REPO_VERSION}" ]; then
+	curl -OL http://repo.mysql.com/${MYSQL_PACKAGE_NAME}
+	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
+	rm -f ${MYSQL_PACKAGE_NAME}
 	apt-get -y update
 fi
 

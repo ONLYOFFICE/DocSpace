@@ -10,6 +10,7 @@ class SelectFolderDialogStore {
   isPathError = false;
   isLoading = false;
   resultingFolderTree = [];
+  securityItem = {};
 
   constructor() {
     makeAutoObservable(this);
@@ -24,6 +25,10 @@ class SelectFolderDialogStore {
     this.isLoading = false;
     this.isPathError = false;
     this.setProviderKey(null);
+  };
+
+  setItemSecurity = (security) => {
+    this.securityItem = security;
   };
 
   updateBaseFolderPath = () => {

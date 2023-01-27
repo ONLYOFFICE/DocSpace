@@ -21,7 +21,6 @@ const StyledDropDown = styled(DropDown)`
   border-radius: 3px;
   overflow: hidden;
   ${(props) => !props.hasItems && "visibility: hidden"};
-  /* visibility: hidden */
 
   width: 446px;
   max-width: 446px;

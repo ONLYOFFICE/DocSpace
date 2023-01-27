@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
 import { toastr } from "@docspace/components";
+import { isMobile } from "react-device-detect";
 
 const CreateRoomEvent = ({
   visible,
@@ -21,17 +22,31 @@ const CreateRoomEvent = ({
 
   connectDialogVisible,
 
-  currrentFolderId,
+  currentFolderId,
   updateCurrentFolder,
 
   withPaging,
-  addFile,
   setCreateRoomDialogVisible,
-  getRoomLogo,
+  fetchFiles,
+  setInfoPanelIsVisible,
+  setView,
+  enableThirdParty,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const openNewRoom = (id) => {
+    setView("info_members");
+    fetchFiles(id)
+      .then(() => {
+        !isMobile && setInfoPanelIsVisible(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onClose();
+      });
+  };
 
   const onCreate = async (roomParams) => {
     const createRoomData = {
@@ -71,7 +86,8 @@ const CreateRoomEvent = ({
         await createTag(createTagsData[i]);
 
       // add new tags to room
-      room = await addTagsToRoom(room.id, addTagsData);
+      if (!!addTagsData.length)
+        room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
       if (roomParams.icon.uploadedFile) {
@@ -85,41 +101,23 @@ const CreateRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            if (!withPaging) {
-              const newLogo = await getRoomLogo(room.logo);
-
-              room.logoHandlers = room.logo;
-              room.logo = newLogo;
-              room.isLogoLoading = false;
-
-              addFile(room, true);
-            }
+            !withPaging && openNewRoom(room.id);
 
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      } else {
-        if (!withPaging) {
-          const newLogo = await getRoomLogo(room.logo);
-
-          room.logoHandlers = room.logo;
-          room.logo = newLogo;
-          room.isLogoLoading = false;
-
-          addFile(room, true);
-        }
-      }
+      } else !withPaging && openNewRoom(room.id);
     } catch (err) {
       toastr.error(err);
       console.log(err);
-    } finally {
-      if (withPaging) {
-        await updateCurrentFolder(null, currrentFolderId);
-      }
 
       setIsLoading(false);
       onClose();
+    } finally {
+      if (withPaging) {
+        await updateCurrentFolder(null, currentFolderId);
+      }
     }
   };
 
@@ -145,6 +143,7 @@ const CreateRoomEvent = ({
       setIsLoading={setIsLoading}
       deleteThirdParty={deleteThirdParty}
       fetchThirdPartyProviders={fetchThirdPartyProviders}
+      enableThirdParty={enableThirdParty}
     />
   );
 };
@@ -166,12 +165,12 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
-      addFile,
-      getRoomLogo,
+      fetchFiles,
+      addItem,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
-    const { id: currrentFolderId } = selectedFolderStore;
+    const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
     const { connectDialogVisible, setCreateRoomDialogVisible } = dialogsStore;
@@ -181,6 +180,13 @@ export default inject(
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { withPaging } = auth.settingsStore;
+
+    const {
+      setIsVisible: setInfoPanelIsVisible,
+      setView,
+    } = auth.infoPanelStore;
+
+    const { enableThirdParty } = settingsStore;
 
     return {
       createRoom,
@@ -193,15 +199,17 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
-      getRoomLogo,
 
       connectDialogVisible,
-      currrentFolderId,
+      currentFolderId,
       updateCurrentFolder,
 
       withPaging,
-      addFile,
       setCreateRoomDialogVisible,
+      fetchFiles,
+      setInfoPanelIsVisible,
+      setView,
+      enableThirdParty,
     };
   }
 )(observer(CreateRoomEvent));

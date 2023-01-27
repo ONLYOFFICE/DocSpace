@@ -5,6 +5,9 @@ import { ReactSVG } from "react-svg";
 import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { useTranslation } from "react-i18next";
+import Base from "@docspace/components/themes/base";
+import ArticleHideMenuReactSvgUrl from "../../../../../public/images/article-hide-menu.react.svg?url";
+import ArticleShowMenuReactSvgUrl from "../../../../../public/images/article-show-menu.react.svg?url";
 
 const StyledHideArticleMenuButton = styled.div`
   display: flex;
@@ -72,14 +75,26 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+  }
 
+  .article-hide-menu-icon_svg {
     svg {
       path {
         fill: ${({ currentColorScheme }) => currentColorScheme.main.accent};
       }
     }
   }
+
+  .article-show-menu-icon_svg {
+    svg {
+      path {
+        fill: ${(props) => props.theme.article.catalogShowText};
+      }
+    }
+  }
 `;
+
+StyledHideArticleMenuButton.defaultProps = { theme: Base };
 
 const HideArticleMenuButton = ({
   showText,
@@ -101,7 +116,7 @@ const HideArticleMenuButton = ({
         >
           <ReactSVG
             className="article-hide-menu-icon_svg"
-            src="/static/images/article-hide-menu.react.svg"
+            src={ArticleHideMenuReactSvgUrl}
           />
           <Text
             className="article-hide-menu-text"
@@ -120,7 +135,7 @@ const HideArticleMenuButton = ({
         >
           <ReactSVG
             className="article-show-menu-icon_svg"
-            src="/static/images/article-show-menu.react.svg"
+            src={ArticleShowMenuReactSvgUrl}
           />
         </div>
       )}

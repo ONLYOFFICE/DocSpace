@@ -1,3 +1,7 @@
+﻿import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import PlaneReactSvgUrl from "PUBLIC_DIR/images/plane.react.svg?url";
+import ImportReactSvgUrl from "PUBLIC_DIR/images/import.react.svg?url";
+import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -9,7 +13,6 @@ import Loaders from "@docspace/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { isMobile } from "react-device-detect";
 import {
   isMobile as isMobileUtils,
@@ -30,7 +33,11 @@ class ArticleMainButtonContent extends React.Component {
   onImportClick = () => {
     const { history, homepage } = this.props;
     history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "${homepage}/import")
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        homepage,
+        "${homepage}/import"
+      )
     );
     if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
@@ -38,7 +45,7 @@ class ArticleMainButtonContent extends React.Component {
   goToEmployeeCreate = () => {
     const { history, homepage } = this.props;
     history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+      combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/create/user")
     );
     if (isMobile || isMobileUtils()) this.props.toggleShowText();
   };
@@ -46,7 +53,7 @@ class ArticleMainButtonContent extends React.Component {
   // goToGuestCreate = () => {
   //   const { history, homepage } = this.props;
   //   history.push(
-  //     combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+  //     combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/create/guest")
   //   );
   //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
   // };
@@ -54,7 +61,7 @@ class ArticleMainButtonContent extends React.Component {
   // goToGroupCreate = () => {
   //   const { history, homepage } = this.props;
   //   history.push(
-  //     combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+  //     combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/group/create")
   //   );
   //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
   // };
@@ -91,9 +98,9 @@ class ArticleMainButtonContent extends React.Component {
       {
         key: "create-user",
         icon: combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           homepage,
-          "/images/add.employee.react.svg"
+          AddEmployeeReactSvgUrl
         ),
         label: userCaption,
         onClick: this.goToEmployeeCreate,
@@ -101,7 +108,7 @@ class ArticleMainButtonContent extends React.Component {
       // {
       //   key: "create-guest",
       //   icon: combineUrl(
-      //     AppServerConfig.proxyURL,
+      //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
       //     "/images/add.guest.react.svg"
       //   ),
@@ -111,7 +118,7 @@ class ArticleMainButtonContent extends React.Component {
       // {
       //   key: "create-group",
       //   icon: combineUrl(
-      //     AppServerConfig.proxyURL,
+      //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
       //     "/images/add.department.react.svg"
       //   ),
@@ -124,16 +131,16 @@ class ArticleMainButtonContent extends React.Component {
       {
         key: "invite-link",
         icon: combineUrl(
-          AppServerConfig.proxyURL,
-          "/static/images/invitation.link.react.svg"
+          window.DocSpaceConfig?.proxy?.url,
+          InvitationLinkReactSvgUrl
         ),
         label: t("PeopleTranslations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
       },
       /* {
         icon: combineUrl(
-          AppServerConfig.proxyURL,
-          "/static/images/plane.react.svg"
+          window.DocSpaceConfig?.proxy?.url,
+          PlaneReactSvgUrl
         ),
         label: t("SendInvitesAgain"),
         onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
@@ -141,8 +148,8 @@ class ArticleMainButtonContent extends React.Component {
       separator,
       {
         icon: combineUrl(
-          AppServerConfig.proxyURL,
-          "/static/images/import.react.svg"
+          window.DocSpaceConfig?.proxy?.url,
+          ImportReactSvgUrl
         ),
         label: t("ImportPeople"),
         onClick: this.onImportClick,

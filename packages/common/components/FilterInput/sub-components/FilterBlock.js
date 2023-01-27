@@ -2,6 +2,8 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 
+import ClearReactSvgUrl from "../../../../../public/images/clear.react.svg?url";
+
 import Loaders from "../../Loaders";
 
 import Backdrop from "@docspace/components/backdrop";
@@ -14,7 +16,6 @@ import Portal from "@docspace/components/portal";
 import FilterBlockItem from "./FilterBlockItem";
 
 import PeopleSelector from "client/PeopleSelector";
-import GroupSelector from "client/GroupSelector";
 
 import {
   StyledFilterBlock,
@@ -344,23 +345,13 @@ const FilterBlock = ({
       {showSelector.show ? (
         <>
           <StyledFilterBlock>
-            {showSelector.isAuthor ? (
-              <PeopleSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            ) : (
-              <GroupSelector
-                className="people-selector"
-                isMultiSelect={false}
-                onAccept={selectOption}
-                onBackClick={onArrowClick}
-                headerLabel={selectorLabel}
-              />
-            )}
+            <PeopleSelector
+              className="people-selector"
+              isMultiSelect={false}
+              onAccept={selectOption}
+              onBackClick={onArrowClick}
+              headerLabel={selectorLabel}
+            />
 
             <StyledControlContainer onClick={hideFilterBlock}>
               <StyledCrossIcon />
@@ -374,7 +365,7 @@ const FilterBlock = ({
             {showFooter && (
               <IconButton
                 id="filter_search-options-clear"
-                iconName="/static/images/clear.react.svg"
+                iconName={ClearReactSvgUrl}
                 isFill={true}
                 onClick={onClearFilter}
                 size={17}
@@ -383,11 +374,7 @@ const FilterBlock = ({
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (
-              <Loaders.FilterBlock
-                isPersonalRoom={isPersonalRoom}
-                isRooms={isRooms}
-                isAccounts={isAccounts}
-              />
+              <Loaders.FilterBlock isRooms={isRooms} isAccounts={isAccounts} />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
                 {filterData.map((item, index) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -23,6 +23,9 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
+import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
+import { getLogoFromPath } from "@docspace/common/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -48,8 +51,9 @@ const Login: React.FC<ILoginProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -57,6 +61,11 @@ const Login: React.FC<ILoginProps> = ({
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -67,7 +76,6 @@ const Login: React.FC<ILoginProps> = ({
     return (
       <div className="buttonWrapper">
         <SocialButton
-          //iconName="/static/images/sso.react.svg"
           IconComponent={SSOIcon}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
@@ -175,7 +183,9 @@ const Login: React.FC<ILoginProps> = ({
   const bgPattern = getBgPattern(currentColorScheme.id);
 
   const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+  const logoUrl = !theme.isBase
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   if (!mounted) return <></>;
 
@@ -184,7 +194,6 @@ const Login: React.FC<ILoginProps> = ({
       id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      //className="with-background-pattern"
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>

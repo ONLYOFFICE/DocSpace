@@ -79,7 +79,6 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
-    private readonly RoomLogoManager _roomLogoManager;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -110,8 +109,7 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings,
-        RoomLogoManager roomLogoManager)
+        ThumbnailSettings thumbnailSettings)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -142,7 +140,6 @@ public class FileHandlerService
         _logger = logger;
         _clientFactory = clientFactory;
         _thumbnailSettings = thumbnailSettings;
-        _roomLogoManager = roomLogoManager;
     }
 
     public Task Invoke(HttpContext context)
@@ -196,9 +193,6 @@ public class FileHandlerService
                 case "track":
                     await TrackFile(context);
                     break;
-                case "logo":
-                    await GetRoomLogoPathAsync(context);
-                    break;
                 default:
                     throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
             }
@@ -218,7 +212,9 @@ public class FileHandlerService
             return;
         }
 
-        var filename = context.Request.Query["filename"]; if (String.IsNullOrEmpty(filename))
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+
+        if (String.IsNullOrEmpty(filename))
         {
             var ext = _compressToArchive.GetExt(context.Request.Query["ext"]);
             filename = FileConstant.DownloadTitle + ext;
@@ -242,7 +238,7 @@ public class FileHandlerService
         {
             var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
             var url = tmp.ToString();
-            context.Response.Redirect(url);
+            context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
         }
 
@@ -423,7 +419,7 @@ public class FileHandlerService
                             var fullLength = await store.GetFileSizeAsync(string.Empty, mp4Path);
 
                             length = ProcessRangeHeader(context, fullLength, ref offset);
-                            fileStream = await store.GetReadStreamAsync(string.Empty, mp4Path, (int)offset);
+                            fileStream = await store.GetReadStreamAsync(string.Empty, mp4Path, offset);
 
                             title = FileUtility.ReplaceFileExtension(title, ".mp4");
                         }
@@ -1065,7 +1061,7 @@ public class FileHandlerService
 
             if (file.ThumbnailStatus != Thumbnail.Created)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.StatusCode = (int)HttpStatusCode.NoContent;
                 return;
             }
 
@@ -1126,7 +1122,7 @@ public class FileHandlerService
                 _ = int.TryParse(sizes[0], out width);
                 _ = int.TryParse(sizes[1], out height);
             }
-            
+
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
@@ -1568,60 +1564,6 @@ public class FileHandlerService
         result ??= new TrackResponse();
 
         await context.Response.WriteAsync(TrackResponse.Serialize(result));
-    }
-
-    private async Task GetRoomLogoPathAsync(HttpContext context)
-    {
-        if (!_securityContext.IsAuthenticated)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return;
-        }
-
-        var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
-        var size = context.Request.Query[FilesLinkUtility.Size].FirstOrDefault();
-
-        string result;
-
-        try
-        {
-            if (int.TryParse(folderId, out var id))
-            {
-                result = await _roomLogoManager.GetLogoPathAsync(id, size);
-            }
-            else
-            {
-                result = await _roomLogoManager.GetLogoPathAsync(folderId, size);
-            }
-        }
-        catch(ItemNotFoundException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return;
-        }
-        catch (SecurityException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return;
-        }
-        catch
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return;
-        }
-
-        context.Response.Clear();
-        await context.Response.WriteAsync(result);
-
-        try
-        {
-            await context.Response.Body.FlushAsync();
-            await context.Response.CompleteAsync();
-        }
-        catch (HttpException ex)
-        {
-            _logger.Error(ex.Message);
-        }
     }
 }
 

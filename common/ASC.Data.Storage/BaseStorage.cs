@@ -33,6 +33,7 @@ public abstract class BaseStorage : IDataStore
     public virtual bool IsSupportedPreSignedUri => true;
     public virtual bool IsSupportChunking => false;
     internal string Modulename { get; set; }
+    internal bool Cache { get; set; }
     internal DataList DataList { get; set; }
     internal string Tenant { get; set; }
     internal Dictionary<string, TimeSpan> DomainsExpires { get; set; }
@@ -148,7 +149,7 @@ public abstract class BaseStorage : IDataStore
 
     public abstract Task<Stream> GetReadStreamAsync(string domain, string path);
 
-    public abstract Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
+    public abstract Task<Stream> GetReadStreamAsync(string domain, string path, long offset);
 
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream);
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl);
@@ -347,6 +348,8 @@ public abstract class BaseStorage : IDataStore
         return "/" + str.TrimStart('/');
     }
 
+    public abstract Task<string> GetFileEtagAsync(string domain, string path);
+    
     internal class MonoUri : Uri
     {
         public MonoUri(Uri baseUri, string relativeUri)

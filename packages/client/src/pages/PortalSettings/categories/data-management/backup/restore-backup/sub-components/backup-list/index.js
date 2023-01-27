@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -15,7 +16,6 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import Checkbox from "@docspace/components/checkbox";
 import HelpButton from "@docspace/components/help-button";
 import config from "PACKAGE_FILE";
@@ -114,7 +114,7 @@ class BackupListModalDialog extends React.Component {
         .then(() =>
           history.push(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               config.homepage,
               "/preparation-portal"
             )
@@ -202,7 +202,6 @@ class BackupListModalDialog extends React.Component {
                   ) : (
                     <Text
                       fontSize="12px"
-                      color="#A3A9AE"
                       textAlign="center"
                       className="backup-restore_empty-list"
                     >
@@ -231,7 +230,7 @@ class BackupListModalDialog extends React.Component {
                         <HelpButton
                           className="backup-list_tooltip"
                           offsetLeft={100}
-                          iconName={"/static/images/help.react.svg"}
+                          iconName={HelpReactSvgUrl}
                           getContent={helpContent}
                           tooltipMaxWidth={"286px"}
                         />

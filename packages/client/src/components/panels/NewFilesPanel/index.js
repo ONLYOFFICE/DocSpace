@@ -7,7 +7,6 @@ import Text from "@docspace/components/text";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import Row from "@docspace/components/row";
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -22,7 +21,6 @@ import {
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
@@ -80,7 +78,7 @@ class NewFilesPanel extends React.Component {
       .then(() => {
         const { hasNew, refreshFiles } = this.props;
 
-        return hasNew ? refreshFiles() : Promise.resolve();
+        return Promise.resolve(); //hasNew ? refreshFiles() :
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -123,7 +121,7 @@ class NewFilesPanel extends React.Component {
         this.onFileClick(item);
       })
       .then(() => {
-        refreshFiles();
+        // refreshFiles();
       })
       .catch((err) => toastr.error(err));
   };
@@ -132,9 +130,12 @@ class NewFilesPanel extends React.Component {
     const { id, fileExst, webUrl, fileType, providerKey } = item;
     const {
       filter,
-      //setMediaViewerData,
+      setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      playlist,
+      setCurrentItem,
+      currentFolderId,
     } = this.props;
 
     if (!fileExst) {
@@ -143,7 +144,12 @@ class NewFilesPanel extends React.Component {
         .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
-      const isMedia = [2, 3, 4].includes(fileType);
+
+      const isMediaActive = playlist.findIndex((el) => el.fileId === id) !== -1;
+
+      const isMedia =
+        item?.viewAccessability?.ImageView ||
+        item?.viewAccessability?.MediaView;
 
       if (canEdit && providerKey) {
         return addFileToRecentlyViewed(id)
@@ -152,7 +158,7 @@ class NewFilesPanel extends React.Component {
           .finally(
             window.open(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 config.homepage,
                 `/doceditor?fileId=${id}`
               ),
@@ -162,8 +168,21 @@ class NewFilesPanel extends React.Component {
       }
 
       if (isMedia) {
-        //const mediaItem = { visible: true, id };
-        //setMediaViewerData(mediaItem);
+        if (currentFolderId !== item.folderId) {
+          fetchFiles(item.folderId, null)
+            .then(() => {
+              const mediaItem = { visible: true, id };
+              setMediaViewerData(mediaItem);
+            })
+            .catch((err) => toastr.error(err))
+            .finally(() => this.onClose());
+        } else {
+          const mediaItem = { visible: true, id };
+          setMediaViewerData(mediaItem);
+
+          return this.onClose();
+        }
+
         return;
       }
 
@@ -313,10 +332,14 @@ export default inject(
       refreshFiles,
     } = filesStore;
     //const { updateRootBadge } = treeFoldersStore;
-    const { setMediaViewerData } = mediaViewerDataStore;
+    const {
+      playlist,
+      setMediaViewerData,
+      setCurrentItem,
+    } = mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
-    const { pathParts } = selectedFolderStore;
+    const { pathParts, id: currentFolderId } = selectedFolderStore;
 
     const {
       setNewFilesPanelVisible,
@@ -332,6 +355,10 @@ export default inject(
       newFiles,
       newFilesIds,
       isLoading,
+
+      playlist,
+      setCurrentItem,
+      currentFolderId,
 
       //setIsLoading,
       fetchFiles,

@@ -146,7 +146,7 @@ public class UserController : PeopleControllerBase
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -186,7 +186,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
+            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -206,14 +207,13 @@ public class UserController : PeopleControllerBase
     {
         _apiContext.AuthByClaim();
 
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
         var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
-
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType) ,Constants.Action_AddRemoveUser);
 
         inDto.Type = options != null ? options.EmployeeType : inDto.Type;
 
@@ -264,9 +264,9 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user);
+        UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink && options.IsCorrect, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         await UpdateDepartments(inDto.Department, user);
 
@@ -302,6 +302,11 @@ public class UserController : PeopleControllerBase
     {
         foreach (var invite in inDto.Invitations)
         {
+            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            {
+                continue;
+            }
+
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
@@ -665,10 +670,20 @@ public class UserController : PeopleControllerBase
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
-        var users = inDto.UserIds
-             .Where(userId => !_userManager.IsSystemUser(userId))
-             .Select(userId => _userManager.GetUsers(userId))
-             .ToList();
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+
+        IEnumerable<UserInfo> users = null;
+
+        if (inDto.ResendAll)
+        {
+            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        }
+        else
+        {
+            users = inDto.UserIds
+                .Where(userId => !_userManager.IsSystemUser(userId))
+                .Select(userId => _userManager.GetUsers(userId));
+        }
 
         foreach (var user in users)
         {
@@ -700,10 +715,15 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.IsDocSpaceAdmin(user) ? EmployeeType.DocSpaceAdmin :
-                    _userManager.IsUser(user) ? EmployeeType.User : EmployeeType.RoomAdmin;
+                var type = _userManager.GetUserType(user.Id);
 
-                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
+                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                {
+                    continue;
+                }
+
+                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             }
             else
             {
@@ -1025,11 +1045,13 @@ public class UserController : PeopleControllerBase
                         }
 
                         user.Status = EmployeeStatus.Active;
+
                         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
                     }
                     break;
                 case EmployeeStatus.Terminated:
                     user.Status = EmployeeStatus.Terminated;
+
                     await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
                     await _cookiesManager.ResetUserCookie(user.Id);

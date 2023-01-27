@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@docspace/components/scrollbar";
-import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
+import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 import { UnavailableStyles } from "../../../utils/commonSettingsStyles";

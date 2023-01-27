@@ -1,18 +1,12 @@
 import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import {
-  AppServerConfig,
-  FolderType,
-  EDITOR_ID,
-} from "@docspace/common/constants";
+import { FolderType, EDITOR_ID } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
 import {
   restoreDocumentsVersion,
-  markAsFavorite,
-  removeFromFavorite,
   getEditDiff,
   getEditHistory,
   updateFile,
@@ -22,14 +16,11 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
-import {
-  getArchiveFileRoleActions,
-  getFileRoleActions,
-} from "@docspace/common/utils/actions";
+import ErrorContainer from "@docspace/common/components/ErrorContainer";
+import styled from "styled-components";
 
 toast.configure();
 
@@ -56,9 +47,11 @@ const onSDKError = (event) => {
       event.data.errorDescription
   );
 };
+const ErrorContainerBody = styled(ErrorContainer)`
+  position: absolute;
+  height: 100%;
+`;
 
-const text = "text";
-const presentation = "presentation";
 let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
@@ -76,7 +69,6 @@ function Editor({
   // isSharingAccess,
   user,
   doc,
-  actionLink,
   error,
   // sharingDialog,
   // onSDKRequestSharingSettings,
@@ -104,18 +96,17 @@ function Editor({
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
-    userAccessRights = isArchiveFolderRoot
-      ? getArchiveFileRoleActions(fileInfo.access)
-      : getFileRoleActions(fileInfo.access);
+    userAccessRights = fileInfo.security;
   }
   useEffect(() => {
     if (error && mfReady) {
-      if (error?.unAuthorized && error?.redirectPath) {
-        localStorage.setItem("redirectPath", window.location.href);
-        window.location.href = error?.redirectPath;
+      if (error?.unAuthorized) {
+        sessionStorage.setItem("referenceUrl", window.location.href);
+        window.open(
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"),
+          "_self"
+        );
       }
-      const errorText = typeof error === "string" ? error : error.errorMessage;
-      toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -132,9 +123,10 @@ function Editor({
     if (
       !view &&
       fileInfo &&
-      fileInfo.canWebRestrictedEditing &&
-      fileInfo.canFillForms &&
-      !fileInfo.canEdit
+      fileInfo.viewAccessability.WebRestrictedEditing &&
+      fileInfo.security.FillForms &&
+      !fileInfo.security.Edit &&
+      !config?.document?.isLinkedForMe
     ) {
       try {
         initForm();
@@ -167,7 +159,7 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        canConvert(fileInfo.fileExst, filesSettings)
+        fileInfo?.viewAccessability?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -202,15 +194,15 @@ function Editor({
   const getDefaultFileName = (format) => {
     switch (format) {
       case "docx":
-        return t("NewDocument");
+        return t("Common:NewDocument");
       case "xlsx":
-        return t("NewSpreadsheet");
+        return t("Common:NewSpreadsheet");
       case "pptx":
-        return t("NewPresentation");
+        return t("Common:NewPresentation");
       case "docxf":
-        return t("NewMasterForm");
+        return t("Common:NewMasterForm");
       default:
-        return t("NewFolder");
+        return t("Common:NewFolder");
     }
   };
 
@@ -229,7 +221,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (canConvert(fileInfo.fileExst, filesSettings)) {
+      if (fileInfo?.viewAccessability?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -242,6 +234,7 @@ function Editor({
 
   const onMakeActionLink = (event) => {
     const url = window.location.href;
+    const actionLink = config?.editorConfig?.actionLink;
 
     const actionData = event.data;
 
@@ -279,9 +272,20 @@ function Editor({
         ),
         history: getDocumentHistory(updateVersions, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -330,9 +334,19 @@ function Editor({
         currentVersion: getCurrentDocumentVersion(fileHistory, historyLength),
         history: getDocumentHistory(fileHistory, historyLength),
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
       docEditor.refreshHistory({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
       });
     }
   };
@@ -361,9 +375,20 @@ function Editor({
         url: versionDifference.url,
         version,
       });
-    } catch (e) {
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
+
       docEditor.setHistoryData({
-        error: `${e}`, //TODO: maybe need to display something else.
+        error: `${errorMessage}`, //TODO: maybe need to display something else.
         version,
       });
     }
@@ -479,11 +504,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        // if (fileInfo.rootFolderType === FolderType.Rooms) {
-        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        // } else {
-        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        //}
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
@@ -518,11 +543,12 @@ function Editor({
       }
 
       if (successAuth) {
-        const documentType = config.documentType;
+        const documentType = config?.documentType;
+
         const fileExt =
-          documentType === text
+          documentType === "word"
             ? "docx"
-            : documentType === presentation
+            : documentType === "slide"
             ? "pptx"
             : "xlsx";
 
@@ -531,8 +557,8 @@ function Editor({
         if (!user.isVisitor)
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
-            AppServerConfig.proxyURL,
-            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            window.DocSpaceConfig?.proxy?.url,
+            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
               defaultFileName
             )}`
           );
@@ -551,11 +577,11 @@ function Editor({
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename) {
+      if (userAccessRights.Rename) {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (userAccessRights.viewVersionHistory) {
+      if (userAccessRights.ReadHistory) {
         onRequestHistory = onSDKRequestHistory;
       }
 
@@ -569,7 +595,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory) {
+      if (userAccessRights.EditHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
 
@@ -603,6 +629,22 @@ function Editor({
     }
   };
 
+  const additionalComponents =
+    error && !error?.unAuthorized ? (
+      <ErrorContainerBody
+        headerText={t("Common:Error")}
+        customizedBodyText={
+          typeof error === "string" ? error : error.errorMessage
+        }
+      />
+    ) : (
+      <>
+        {/* {sharingDialog} */}
+        {selectFileDialog}
+        {selectFolderDialog}
+      </>
+    );
+
   return (
     <EditorWrapper
     // isVisibleSharingDialog={isVisible}
@@ -618,9 +660,8 @@ function Editor({
         ></DocumentEditor>
       )}
 
-      {/* {sharingDialog} */}
-      {selectFileDialog}
-      {selectFolderDialog}
+      {additionalComponents}
+
       <Toast />
     </EditorWrapper>
   );

@@ -79,7 +79,13 @@ public class DisplayUserSettingsHelper
             {
                 var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resource, ASC.Web.Core");
                 var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
-                var resourceValue = (string)resourceProperty.GetValue(null);
+
+                var resourceValue = "";
+
+                if (resourceProperty != null)
+                {
+                    resourceValue = (string)resourceProperty.GetValue(null);
+                }
 
                 return string.IsNullOrEmpty(resourceValue) ? _removedProfileName : resourceValue;
             }

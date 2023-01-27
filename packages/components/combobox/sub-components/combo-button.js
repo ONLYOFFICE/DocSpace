@@ -1,122 +1,112 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
-import styled from "styled-components";
 
 import Text from "../../text";
 import {
   StyledArrowIcon,
   StyledIcon,
   StyledOptionalItem,
-  StyledComboButton,
+  StyledTriangleDownIcon,
 } from "./styled-combobutton";
-
-import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
-import commonIconsStyles from "../../utils/common-icons-style";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
-  ${commonIconsStyles}
-`;
-class ComboButton extends React.Component {
-  render() {
-    const {
-      noBorder,
-      onClick,
-      isDisabled,
-      innerContainer,
-      innerContainerClassName,
-      selectedOption,
-      optionsLength,
-      withOptions,
-      withAdvancedOptions,
-      isOpen,
-      scaled,
-      size,
-      comboIcon,
-      fillIcon,
-      modernView,
-      tabIndex,
-    } = this.props;
+const ComboButton = (props) => {
+  const {
+    noBorder,
+    onClick,
+    isDisabled,
+    innerContainer,
+    innerContainerClassName,
+    selectedOption,
+    optionsLength,
+    withOptions,
+    withAdvancedOptions,
+    isOpen,
+    scaled,
+    size,
+    comboIcon,
+    fillIcon,
+    modernView,
+    tabIndex,
+  } = props;
 
-    const defaultOption = selectedOption?.default;
-    const isSelected = selectedOption?.key !== 0;
+  const defaultOption = selectedOption?.default;
+  const isSelected = selectedOption?.key !== 0;
+  const displayArrow = withOptions || withAdvancedOptions;
 
-    return (
-      <ColorTheme
-        isOpen={isOpen}
-        isDisabled={isDisabled}
+  return (
+    <ColorTheme
+      isOpen={isOpen}
+      isDisabled={isDisabled}
+      noBorder={noBorder}
+      containOptions={optionsLength}
+      withAdvancedOptions={withAdvancedOptions}
+      onClick={onClick}
+      scaled={scaled}
+      size={size}
+      isSelected={isSelected}
+      modernView={modernView}
+      className="combo-button"
+      themeId={ThemeType.ComboButton}
+      tabIndex={tabIndex}
+      displayArrow={displayArrow}
+    >
+      {innerContainer && (
+        <StyledOptionalItem
+          className={innerContainerClassName}
+          isDisabled={isDisabled}
+          defaultOption={defaultOption}
+        >
+          {innerContainer}
+        </StyledOptionalItem>
+      )}
+      {selectedOption && selectedOption.icon && (
+        <StyledIcon
+          className="forceColor"
+          isDisabled={isDisabled}
+          defaultOption={defaultOption}
+          isSelected={isSelected}
+        >
+          <ReactSVG
+            src={selectedOption.icon}
+            className={fillIcon ? "combo-button_selected-icon" : ""}
+          />
+        </StyledIcon>
+      )}
+
+      <Text
         noBorder={noBorder}
-        containOptions={optionsLength}
-        withAdvancedOptions={withAdvancedOptions}
-        onClick={onClick}
-        scaled={scaled}
-        size={size}
-        isSelected={isSelected}
-        modernView={modernView}
-        className="combo-button"
-        themeId={ThemeType.ComboButton}
-        tabIndex={tabIndex}
+        title={selectedOption?.label}
+        as="div"
+        truncate={true}
+        fontWeight={600}
+        className="combo-button-label"
       >
-        {innerContainer && (
-          <StyledOptionalItem
-            className={innerContainerClassName}
-            isDisabled={isDisabled}
-            defaultOption={defaultOption}
-          >
-            {innerContainer}
-          </StyledOptionalItem>
-        )}
-        {selectedOption && selectedOption.icon && (
-          <StyledIcon
-            className="forceColor"
-            isDisabled={isDisabled}
-            defaultOption={defaultOption}
-            isSelected={isSelected}
-          >
-            <ReactSVG
-              src={selectedOption.icon}
-              className={fillIcon ? "combo-button_selected-icon" : ""}
+        {selectedOption?.label}
+      </Text>
+
+      <StyledArrowIcon
+        displayArrow={displayArrow}
+        noBorder={noBorder}
+        isOpen={isOpen}
+        modernView={modernView}
+        className="combo-buttons_arrow-icon"
+      >
+        {displayArrow &&
+          (comboIcon ? (
+            <ReactSVG src={comboIcon} className="combo-buttons_expander-icon" />
+          ) : (
+            <StyledTriangleDownIcon
+              size="scale"
+              className="combo-buttons_expander-icon"
             />
-          </StyledIcon>
-        )}
-
-        <Text
-          noBorder={noBorder}
-          title={selectedOption?.label}
-          as="div"
-          truncate={true}
-          fontWeight={600}
-          className="combo-button-label"
-        >
-          {selectedOption?.label}
-        </Text>
-
-        <StyledArrowIcon
-          needDisplay={withOptions || withAdvancedOptions}
-          noBorder={noBorder}
-          isOpen={isOpen}
-          modernView={modernView}
-          className="combo-buttons_arrow-icon"
-        >
-          {(withOptions || withAdvancedOptions) &&
-            (comboIcon ? (
-              <ReactSVG
-                src={comboIcon}
-                className="combo-buttons_expander-icon"
-              />
-            ) : (
-              <StyledExpanderDownIcon
-                size="scale"
-                className="combo-buttons_expander-icon"
-              />
-            ))}
-        </StyledArrowIcon>
-      </ColorTheme>
-    );
-  }
-}
+          ))}
+      </StyledArrowIcon>
+    </ColorTheme>
+  );
+};
 
 ComboButton.propTypes = {
   noBorder: PropTypes.bool,

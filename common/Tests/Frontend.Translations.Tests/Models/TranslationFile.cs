@@ -27,7 +27,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Frontend.Translations.Tests;
+using Frontend.Tests;
+
+namespace Frontend.Tests.Models;
 
 public class TranslationFile
 {

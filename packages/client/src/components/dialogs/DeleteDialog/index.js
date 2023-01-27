@@ -35,9 +35,9 @@ const DeleteDialogComponent = (props) => {
     const item = props.selection[i];
 
     if (!item?.isEditing) {
-      if (item?.access === 0 || item?.access === 1 || unsubscribe) {
-        selection.push(item);
-      }
+      // if (item?.access === 0 || item?.access === 1 || unsubscribe) {
+      selection.push(item);
+      // }
     }
     i++;
   }
@@ -97,9 +97,9 @@ const DeleteDialogComponent = (props) => {
 
     const itemId = selection.map((s) => s.id);
 
-    await deleteRoomsAction(itemId, translations);
-
     onClose();
+
+    await deleteRoomsAction(itemId, translations);
   };
 
   const onClose = () => {
@@ -116,20 +116,33 @@ const DeleteDialogComponent = (props) => {
 
   const moveToTrashNoteText = () => {
     const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
+    const { pathname } = location;
 
     if (selection.length > 1) {
       if (isRoomDelete)
         return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      return t("MoveToTrashItems");
+      if (pathname.startsWith("/rooms/personal")) {
+        return t("MoveToTrashItemsFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return t("MoveToTrashItems");
+      }
     } else {
       if (isRoomDelete)
         return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
 
-      return !isFolder
-        ? t("MoveToTrashFile")
-        : personal
-        ? ""
-        : t("MoveToTrashFolder");
+      if (pathname.startsWith("/rooms/personal")) {
+        return !isFolder
+          ? t("MoveToTrashFileFromPersonal")
+          : personal
+          ? ""
+          : t("MoveToTrashFolderFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return !isFolder
+          ? t("MoveToTrashFile")
+          : personal
+          ? ""
+          : t("MoveToTrashFolder");
+      }
     }
   };
 

@@ -34,7 +34,7 @@ const ArchiveDialogComponent = (props) => {
     items,
   } = props;
 
-  const [requestRunning, setRequestRunning] = React.useState(false);
+  // const [requestRunning, setRequestRunning] = React.useState(false);
 
   useEffect(() => {
     window.addEventListener("keydown", onKeyPress);
@@ -43,19 +43,16 @@ const ArchiveDialogComponent = (props) => {
   }, []);
 
   const onClose = () => {
-    if (!requestRunning) {
-      setRestoreAllArchive(false);
-      setArchiveActionType(null);
-      setArchiveDialogVisible(false);
-    }
+    setRestoreAllArchive(false);
+    setArchiveActionType(null);
+    setArchiveDialogVisible(false);
   };
 
   const onAction = () => {
-    setRequestRunning(true);
-
+    setArchiveDialogVisible(false);
     setArchiveAction(action, items, t).then(() => {
-      setRequestRunning(false);
-      onClose();
+      setRestoreAllArchive(false);
+      setArchiveActionType(null);
     });
   };
 
@@ -116,7 +113,6 @@ const ArchiveDialogComponent = (props) => {
           size="normal"
           primary
           onClick={onAction}
-          isLoading={requestRunning}
           scale
         />
         <Button
@@ -125,7 +121,6 @@ const ArchiveDialogComponent = (props) => {
           label={t("Common:CancelButton")}
           size="normal"
           onClick={onClose}
-          isDisabled={requestRunning}
           scale
         />
       </ModalDialog.Footer>
@@ -137,36 +132,40 @@ const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
   ArchiveDialogComponent
 );
 
-export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { roomsForRestore, selection, bufferSelection } = filesStore;
-  const { setArchiveAction } = filesActionsStore;
+export default inject(
+  ({ filesStore, filesActionsStore, dialogsStore, selectedFolderStore }) => {
+    const { roomsForRestore, selection, bufferSelection } = filesStore;
+    const { setArchiveAction } = filesActionsStore;
 
-  const {
-    archiveDialogVisible: visible,
-    restoreAllArchive: restoreAll,
-    archiveAction: action,
+    const {
+      archiveDialogVisible: visible,
+      restoreAllArchive: restoreAll,
+      archiveAction: action,
 
-    setArchiveDialogVisible,
-    setRestoreAllArchive,
-    setArchiveAction: setArchiveActionType,
-  } = dialogsStore;
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction: setArchiveActionType,
+    } = dialogsStore;
 
-  const items = restoreAll
-    ? roomsForRestore
-    : selection.length > 0
-    ? selection
-    : [bufferSelection];
+    const items = restoreAll
+      ? roomsForRestore
+      : selection.length > 0
+      ? selection
+      : bufferSelection
+      ? [bufferSelection]
+      : [{ id: selectedFolderStore.id }];
 
-  return {
-    visible,
-    restoreAll,
-    action,
+    return {
+      visible,
+      restoreAll,
+      action,
 
-    setArchiveDialogVisible,
-    setRestoreAllArchive,
-    setArchiveActionType,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveActionType,
 
-    setArchiveAction,
-    items,
-  };
-})(withRouter(observer(ArchiveDialog)));
+      setArchiveAction,
+      items,
+    };
+  }
+)(withRouter(observer(ArchiveDialog)));

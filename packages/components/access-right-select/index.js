@@ -60,6 +60,7 @@ const AccessRightSelect = ({
                     label={item.quota}
                     backgroundColor={item.color}
                     fontSize="9px"
+                    isPaidBadge
                   />
                 )}
               </StyledItemTitle>

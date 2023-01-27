@@ -1,11 +1,27 @@
-import { LANGUAGE, AppServerConfig } from "../constants";
+import LoginPageSvgUrl from "../../../public/images/logo/loginpage.svg?url";
+import DarkLoginPageSvgUrl from "../../../public/images/logo/dark_loginpage.svg?url";
+import LeftMenuSvgUrl from "../../../public/images/logo/leftmenu.svg?url";
+import DocseditorSvgUrl from "../../../public/images/logo/docseditor.svg?url";
+import LightSmallSvgUrl from "../../../public/images/logo/lightsmall.svg?url";
+import DocsEditoRembedSvgUrl from "../../../public/images/logo/docseditorembed.svg?url";
+import DarkLightSmallSvgUrl from "../../../public/images/logo/dark_lightsmall.svg?url";
+import FaviconIco from "../../../public/favicon.ico";
+
+import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
+import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
+import BackgroundPatternGreenReactSvgUrl from "../../../public/images/background.pattern.green.react.svg?url";
+import BackgroundPatternRedReactSvgUrl from "../../../public/images/background.pattern.red.react.svg?url";
+import BackgroundPatternPurpleReactSvgUrl from "../../../public/images/background.pattern.purple.react.svg?url";
+import BackgroundPatternLightBlueReactSvgUrl from "../../../public/images/background.pattern.lightBlue.react.svg?url";
+import BackgroundPatternBlackReactSvgUrl from "../../../public/images/background.pattern.black.react.svg?url";
+
+import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
 import { Encoder } from "./encoder";
 import FilesFilter from "../api/files/filter";
-
-const { proxyURL } = AppServerConfig;
+import combineUrlFunc from "./combineUrl";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -148,7 +164,7 @@ export function isMe(user, userName) {
   );
 }
 
-export function isAdmin(currentUser, currentProductId) {
+export function isAdmin(currentUser) {
   return (
     currentUser.isAdmin ||
     currentUser.isOwner ||
@@ -156,7 +172,15 @@ export function isAdmin(currentUser, currentProductId) {
   );
 }
 
-import combineUrlFunc from "./combineUrl";
+export const getUserRole = (user) => {
+  if (user.isOwner) return "owner";
+  else if (isAdmin(user))
+    //TODO: Change to People Product Id const
+    return "admin";
+  //TODO: Need refactoring
+  else if (user.isVisitor) return "user";
+  else return "manager";
+};
 
 export const combineUrl = combineUrlFunc;
 
@@ -164,8 +188,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-      "=([^;]*)"
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -327,24 +351,6 @@ export function convertLanguage(key) {
   return key;
 }
 
-export function getFolderOptions(folderId, filter) {
-  if (folderId && typeof folderId === "string") {
-    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
-  }
-
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
-
-  const options = {
-    method: "get",
-    url: `/files/${params}`,
-  };
-
-  return options;
-}
-
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -358,7 +364,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -403,28 +409,32 @@ export function getOAuthToken(
 }
 
 export function getLoginLink(token: string, code: string) {
-  return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+  return combineUrl(
+    window.DocSpaceConfig?.proxy?.url,
+    `/login.ashx?p=${token}&code=${code}`
+  );
 }
 
 export function checkIsSSR() {
   return typeof window === "undefined";
 }
 
-export const frameCallbackData = (data) => {
+export const frameCallbackData = (methodReturnData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onMethodReturn",
-      methodReturnData: data,
+      methodReturnData,
     }),
     "*"
   );
 };
 
-export const frameCallCommand = (command) => {
+export const frameCallCommand = (commandName: string, commandData: any) => {
   window.parent.postMessage(
     JSON.stringify({
       type: "onCallCommand",
-      commandName: command,
+      commandName,
+      commandData,
     }),
     "*"
   );
@@ -467,20 +477,52 @@ export const getConvertedSize = (t, size) => {
 export const getBgPattern = (colorSchemeId: number) => {
   switch (colorSchemeId) {
     case 1:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
     case 2:
-      return "url('/static/images/background.pattern.orange.react.svg')";
+      return `url('${BackgroundPatternOrangeReactSvgUrl}')`;
     case 3:
-      return "url('/static/images/background.pattern.green.react.svg')";
+      return `url('${BackgroundPatternGreenReactSvgUrl}')`;
     case 4:
-      return "url('/static/images/background.pattern.red.react.svg')";
+      return `url('${BackgroundPatternRedReactSvgUrl}')`;
     case 5:
-      return "url('/static/images/background.pattern.purple.react.svg')";
+      return `url('${BackgroundPatternPurpleReactSvgUrl}')`;
     case 6:
-      return "url('/static/images/background.pattern.lightBlue.react.svg')";
+      return `url('${BackgroundPatternLightBlueReactSvgUrl}')`;
     case 7:
-      return "url('/static/images/background.pattern.black.react.svg')";
+      return `url('${BackgroundPatternBlackReactSvgUrl}')`;
     default:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
   }
+};
+
+export const getLogoFromPath = (path) => {
+  if (!path || path.indexOf("images/logo/") === -1) return path;
+
+  const name = path.split("/").pop();
+
+  switch (name) {
+    case "aboutpage.svg":
+    case "loginpage.svg":
+      return LoginPageSvgUrl;
+    case "dark_loginpage.svg":
+      return DarkLoginPageSvgUrl;
+    case "leftmenu.svg":
+    case "dark_leftmenu.svg":
+      return LeftMenuSvgUrl;
+    case "dark_aboutpage.svg":
+    case "dark_lightsmall.svg":
+      return DarkLightSmallSvgUrl;
+    case "docseditor.svg":
+      return DocseditorSvgUrl;
+    case "lightsmall.svg":
+      return LightSmallSvgUrl;
+    case "docseditorembed.svg":
+      return DocsEditoRembedSvgUrl;
+    case "favicon.ico":
+      return FaviconIco;
+    default:
+      break;
+  }
+
+  return path;
 };

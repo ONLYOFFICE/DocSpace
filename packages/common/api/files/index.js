@@ -3,9 +3,8 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { getFolderOptions, decodeDisplayName } from "../../utils";
-import { Encoder } from "../../utils/encoder";
-import { getLogoIcon, getRooms } from "../rooms";
+import { decodeDisplayName } from "../../utils";
+import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
 export function openEdit(fileId, version, doc, view) {
@@ -39,45 +38,7 @@ export function getFolderInfo(folderId) {
     url: `/files/folder/${folderId}`,
   };
 
-  return request(options).then((res) => {
-    if (res.roomType) {
-      return new Promise((resolve, reject) => {
-        if (res.rootFolderType === FolderType.Archive) {
-          res.isLogoLoading = false;
-          for (let key in room.logo) {
-            room.logo[key] = "";
-          }
-
-          return resolve(res);
-        }
-
-        res.isLogoLoading = false;
-        res.logoHandlers = res.logo;
-
-        const newLogos = {};
-
-        const actions = [];
-
-        const getLogo = async (key) => {
-          const logo = await getLogoIcon(res.logo[key]);
-
-          newLogos[key] = logo;
-        };
-
-        for (let key in res.logo) {
-          actions.push(getLogo(key));
-        }
-
-        return Promise.all(actions).then(() => {
-          res.logo = newLogos;
-
-          resolve(res);
-        });
-      });
-    }
-
-    return res;
-  });
+  return request(options);
 }
 
 export function getFolderPath(folderId) {
@@ -89,46 +50,29 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter) {
-  const options = getFolderOptions(folderId, filter);
+export function getFolder(folderId, filter, signal) {
+  if (folderId && typeof folderId === "string") {
+    folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
+  }
+
+  const params =
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toApiUrlParams()}`
+      : folderId;
+
+  const options = {
+    method: "get",
+    url: `/files/${params}`,
+    signal,
+  };
+
   return request(options).then((res) => {
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
-    const { current } = res;
-
-    if (current.roomType) {
-      res.current.isLogoLoading = false;
-      res.current.logoHandlers = current.logo;
-
-      if (current.rootFolderType === FolderType.Rooms) {
-        return new Promise((resolve, reject) => {
-          const actions = [];
-
-          const newLogos = {};
-
-          const getLogo = async (key) => {
-            const logo = await getLogoIcon(current.logo[key]);
-
-            newLogos[key] = logo;
-          };
-
-          for (let key in current.logo) {
-            actions.push(getLogo(key));
-          }
-
-          return Promise.all(actions).then(() => {
-            res.current.logo = newLogos;
-
-            resolve(res);
-          });
-        });
-      } else {
-        for (let key in res.current.logo) {
-          res.current.logo[key] = "";
-        }
-      }
-    }
+    res.current.isArchive =
+      !!res.current.roomType &&
+      res.current.rootFolderType === FolderType.Archive;
 
     return res;
   });
@@ -224,44 +168,37 @@ const sortInDisplayOrder = (folders) => {
 };
 
 export function getFoldersTree() {
-  return request({ method: "get", url: "/files/@root?filterType=2" }).then(
-    (response) => {
-      const folders = sortInDisplayOrder(response);
+  return request({
+    method: "get",
+    url: "/files/@root?filterType=2&count=1",
+  }).then((response) => {
+    const folders = sortInDisplayOrder(response);
 
-      return folders.map((data, index) => {
-        const type = +data.current.rootFolderType;
-        const name = getFolderClassNameByType(type);
-        const isRecycleBinFolder = type === FolderType.TRASH;
-        return {
-          id: data.current.id,
-          key: `0-${index}`,
-          parentId: data.current.parentId,
-          title: data.current.title,
-          rootFolderType: type,
-          folderClassName: name,
-          // folders: !isRecycleBinFolder
-          //   ? data.folders.map((folder) => {
-          //       return {
-          //         id: folder.id,
-          //         title: folder.title,
-          //         access: folder.access,
-          //         foldersCount: folder.foldersCount,
-          //         rootFolderType: folder.rootFolderType,
-          //         providerKey: folder.providerKey,
-          //         newItems: folder.new,
-          //       };
-          //     })
-          //   : null,
-          folders: null,
-          pathParts: data.pathParts,
-          foldersCount: !isRecycleBinFolder
-            ? data.current.foldersCount || data.folders.length
-            : null,
-          newItems: data.new,
-        };
-      });
-    }
-  );
+    return folders.map((data, index) => {
+      const { new: newItems, pathParts, current, folders, files } = data;
+      const { foldersCount, filesCount } = current;
+      const { parentId, title, id, rootFolderType, security } = current;
+
+      const type = +rootFolderType;
+
+      const name = getFolderClassNameByType(type);
+
+      return {
+        id,
+        key: `0-${index}`,
+        parentId,
+        title,
+        rootFolderType: type,
+        folderClassName: name,
+        folders: null,
+        pathParts,
+        foldersCount,
+        filesCount,
+        newItems,
+        security,
+      };
+    });
+  });
 }
 
 export function getCommonFoldersTree() {

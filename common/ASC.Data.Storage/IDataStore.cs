@@ -91,7 +91,7 @@ public interface IDataStore
     ///<param name="domain"></param>
     ///<param name="path"></param>
     ///<returns></returns>
-    Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
+    Task<Stream> GetReadStreamAsync(string domain, string path, long offset);
 
     ///<summary>
     /// Saves the contents of the stream in the repository.
@@ -309,4 +309,6 @@ public interface IDataStore
 
     string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
                          string contentDisposition);
+
+    Task<string> GetFileEtagAsync(string domain, string path);
 }

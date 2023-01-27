@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { RadioButtonIcon, RadioButtonIconChecked } from "./svg";
+import { RadioButtonReactSvg, RadioButtonCheckedReactSvg } from "./svg";
 import Text from "../text";
 import { Label, Input } from "./styled-radio-button";
 
@@ -16,9 +16,9 @@ const RadiobuttonIcon = ({ isChecked, theme }) => {
   return (
     <>
       {isChecked ? (
-        <RadioButtonIconChecked {...newProps} />
+        <RadioButtonCheckedReactSvg {...newProps} />
       ) : (
-        <RadioButtonIcon {...newProps} />
+        <RadioButtonReactSvg {...newProps} />
       )}
     </>
   );

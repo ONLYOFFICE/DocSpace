@@ -9,7 +9,6 @@ import {
   StyledChildrenBlock,
   StyledIconBlock,
 } from "./styled-input-block";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 //const iconNames = Object.keys(Icons);
 
@@ -83,7 +82,7 @@ class InputBlock extends React.Component {
       }
     }
     return (
-      <ColorTheme
+      <StyledInputGroup
         hasError={hasError}
         hasWarning={hasWarning}
         isDisabled={isDisabled}
@@ -92,7 +91,6 @@ class InputBlock extends React.Component {
         className={className}
         style={style}
         color={iconColor}
-        themeId={ThemeType.InputBlock}
         hoverColor={hoverColor}
       >
         <div className="prepend">
@@ -147,7 +145,7 @@ class InputBlock extends React.Component {
             </StyledIconBlock>
           </div>
         }
-      </ColorTheme>
+      </StyledInputGroup>
     );
   }
 }

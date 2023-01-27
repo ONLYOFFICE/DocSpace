@@ -144,11 +144,11 @@ class Section extends React.Component {
       setMaintenanceExist,
       snackbarExist,
       showText,
-      infoPanelIsVisible,
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
       withPaging,
+      isInfoPanelVisible,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -226,8 +226,8 @@ class Section extends React.Component {
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
-                    infoPanelIsVisible={infoPanelIsVisible}
                     settingsStudio={settingsStudio}
+                    isInfoPanelVisible={isInfoPanelVisible}
                   >
                     {isSectionHeaderAvailable && !isMobile && (
                       <SubSectionHeader
@@ -235,7 +235,6 @@ class Section extends React.Component {
                         snackbarExist={snackbarExist}
                         className="section-header_header"
                         isHeaderVisible={isHeaderVisible}
-                        infoPanelIsVisible={infoPanelIsVisible}
                         viewAs={viewAs}
                         showText={showText}
                       >
@@ -273,7 +272,6 @@ class Section extends React.Component {
                               isHeaderVisible={isHeaderVisible}
                               viewAs={viewAs}
                               showText={showText}
-                              infoPanelIsVisible={infoPanelIsVisible}
                               settingsStudio={settingsStudio}
                             >
                               {sectionHeaderContent
@@ -433,7 +431,7 @@ Section.SectionPaging = SectionPaging;
 Section.SectionFooter = SectionFooter;
 
 export default inject(({ auth }) => {
-  const { infoPanelStore, settingsStore } = auth;
+  const { settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
@@ -443,7 +441,7 @@ export default inject(({ auth }) => {
     showText,
   } = settingsStore;
 
-  const { isVisible: infoPanelIsVisible } = infoPanelStore;
+  const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
 
   return {
     isTabletView,
@@ -455,6 +453,6 @@ export default inject(({ auth }) => {
 
     showText,
 
-    infoPanelIsVisible,
+    isInfoPanelVisible,
   };
 })(observer(Section));

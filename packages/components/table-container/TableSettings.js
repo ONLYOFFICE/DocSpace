@@ -1,9 +1,13 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import IconButton from "../icon-button";
+// import IconButton from "../icon-button";
 import DropDown from "../drop-down";
-import { StyledTableSettings } from "./StyledTableContainer";
+import {
+  StyledTableSettings,
+  StyledSettingsIcon,
+} from "./StyledTableContainer";
 import Checkbox from "../checkbox";
+import SettingsDeskReactSvgUrl from "../../../public/images/settings.desc.react.svg?url";
 
 const TableSettings = ({ columns, infoPanelVisible }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,10 +31,10 @@ const TableSettings = ({ columns, infoPanelVisible }) => {
       className="table-container_header-settings-icon"
       ref={ref}
     >
-      <IconButton
+      <StyledSettingsIcon
         size={12}
         isFill
-        iconName="/static/images/settings.desc.react.svg"
+        iconName={SettingsDeskReactSvgUrl}
         onClick={onClick}
         isDisabled={infoPanelVisible}
       />

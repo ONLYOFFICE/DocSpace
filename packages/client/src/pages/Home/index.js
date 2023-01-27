@@ -46,7 +46,7 @@ class PureHome extends React.Component {
       setFirstLoad,
       setToPreviewFile,
       playlist,
-      isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
@@ -68,7 +68,9 @@ class PureHome extends React.Component {
       setTimeout(() => {
         getFileInfo(fileId)
           .then((data) => {
-            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const canOpenPlayer =
+              data.viewAccessability.ImageView ||
+              data.viewAccessability.MediaView;
             const file = { ...data, canOpenPlayer };
             setToPreviewFile(file, true);
           })
@@ -465,6 +467,7 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isErrorRoomNotAvailable,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -490,6 +493,7 @@ class PureHome extends React.Component {
       withPaging,
       setSelections,
       isEmptyPage,
+      isLoadedEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -526,21 +530,29 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <Section.SectionHeader>
-            {isFrame ? (
-              showTitle && <SectionHeaderContent />
-            ) : (
-              <SectionHeaderContent />
-            )}
-          </Section.SectionHeader>
+          {!isErrorRoomNotAvailable && (
+            <Section.SectionHeader>
+              {isFrame ? (
+                showTitle && <SectionHeaderContent />
+              ) : (
+                <SectionHeaderContent />
+              )}
+            </Section.SectionHeader>
+          )}
 
-          {!isEmptyPage && (
+          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
               ) : (
                 <SectionFilterContent />
               )}
+            </Section.SectionFilter>
+          )}
+
+          {isLoadedEmptyPage && (
+            <Section.SectionFilter>
+              <div style={{ height: "32px" }} />
             </Section.SectionFilter>
           )}
 
@@ -618,8 +630,9 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
-
+      isLoadedEmptyPage,
       disableDrag,
+      isErrorRoomNotAvailable,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -722,7 +735,7 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
-
+      isErrorRoomNotAvailable,
       isRoomsFolder,
       isArchiveFolder,
 
@@ -745,7 +758,7 @@ export default inject(
       personal,
       setToPreviewFile,
       playlist,
-      isMediaOrImage: settingsStore.isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
@@ -768,6 +781,7 @@ export default inject(
       setViewAs,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

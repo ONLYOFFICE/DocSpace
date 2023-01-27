@@ -1,3 +1,9 @@
+﻿import GoogleDriveSvgUrl from "PUBLIC_DIR/images/cloud.services.google.drive.react.svg?url";
+import BoxSvgUrl from "PUBLIC_DIR/images/cloud.services.box.react.svg?url";
+import DropboxSvgUrl from "PUBLIC_DIR/images/cloud.services.dropbox.react.svg?url";
+import OnedriveSvgUrl from "PUBLIC_DIR/images/cloud.services.onedrive.react.svg?url";
+import NextcloudSvgUrl from "PUBLIC_DIR/images/cloud.services.nextcloud.react.svg?url";
+import MoreSvgUrl from "PUBLIC_DIR/images/services/more.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Link from "@docspace/components/link";
@@ -7,9 +13,7 @@ import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { combineUrl, getOAuthToken } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@docspace/components/icon-button";
 import { connectedCloudsTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
@@ -123,7 +127,11 @@ const PureThirdPartyListContainer = ({
         toggleArticleOpen();
       }
       return history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          thirdPartyUrl
+        )
       );
     }
   }, [setSelectedNode, setSelectedFolder]);
@@ -197,7 +205,7 @@ const PureThirdPartyListContainer = ({
         {googleConnectItem && (
           <ServiceItem
             capability={googleConnectItem}
-            src="images/services/google_drive.svg"
+            src={GoogleDriveSvgUrl}
             onClick={onConnect}
             title={t("ButtonAddGoogle")}
           />
@@ -205,7 +213,7 @@ const PureThirdPartyListContainer = ({
         {boxConnectItem && (
           <ServiceItem
             capability={boxConnectItem}
-            src="images/services/box.svg"
+            src={BoxSvgUrl}
             onClick={onConnect}
             title={t("ButtonAddBoxNet")}
           />
@@ -213,7 +221,7 @@ const PureThirdPartyListContainer = ({
         {dropboxConnectItem && (
           <ServiceItem
             capability={dropboxConnectItem}
-            src="images/services/dropbox.svg"
+            src={DropboxSvgUrl}
             onClick={onConnect}
             title={t("ButtonAddDropBox")}
           />
@@ -221,7 +229,7 @@ const PureThirdPartyListContainer = ({
         {oneDriveConnectItem && (
           <ServiceItem
             capability={oneDriveConnectItem}
-            src="images/services/onedrive.svg"
+            src={OnedriveSvgUrl}
             onClick={onConnect}
             title={t("ButtonAddSkyDrive")}
           />
@@ -229,7 +237,7 @@ const PureThirdPartyListContainer = ({
         {nextCloudConnectItem && (
           <ServiceItem
             capability={nextCloudConnectItem}
-            src="images/services/nextcloud.svg"
+            src={NextcloudSvgUrl}
             onClick={onConnect}
             title={t("ButtonAddNextcloud")}
           />
@@ -237,13 +245,13 @@ const PureThirdPartyListContainer = ({
         {/* {webDavConnectItem && (
           <ServiceItem
             capability={webDavConnectItem}
-            src="images/services/more.svg"
+            src={MoreSvgUrl}
             onClick={onConnect}
           />
         )} */}
 
         <IconButton
-          iconName="images/services/more.svg"
+          iconName={MoreSvgUrl}
           onClick={onShowConnectPanel}
           title={t("Translations:AddAccount")}
           {...iconButtonProps}

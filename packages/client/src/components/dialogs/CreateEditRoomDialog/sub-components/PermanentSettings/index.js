@@ -1,3 +1,4 @@
+﻿import SecuritySvgUrl from "PUBLIC_DIR/images/security.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
@@ -61,7 +62,7 @@ const PermanentSettings = ({
         <PermanentSetting
           type="privacy"
           isFull={!storageLocation}
-          icon={"images/security.svg"}
+          icon={SecuritySvgUrl}
           title={"Private room"}
           content={`All files in this room will be encrypted`}
         />

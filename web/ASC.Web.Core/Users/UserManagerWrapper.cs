@@ -111,12 +111,7 @@ public sealed class UserManagerWrapper
 
         if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
         {
-            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
-        }
-
-        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
-        {
-            await _countManagerChecker.CheckAppend();
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
         var user = new UserInfo
@@ -129,7 +124,9 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
-        var newUser = await _userManager.SaveUserInfo(user);
+        user.UserName = MakeUniqueName(user);
+
+        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User);
 
         var groupId = type switch
         {
@@ -220,11 +217,11 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
         }
         else if (isAdmin)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
         }
 
         return newUserInfo;

@@ -457,6 +457,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new version cannot be the same as the current one.
+        /// </summary>
+        public static string ErrorMassage_FileUpdateToVersion {
+            get {
+                return ResourceManager.GetString("ErrorMassage_FileUpdateToVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot copy the folder to its subfolder.
         /// </summary>
         public static string ErrorMassage_FolderCopyError {
@@ -561,6 +570,24 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMassage_SecurityException_Auth {
             get {
                 return ResourceManager.GetString("ErrorMassage_SecurityException_Auth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the file.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFile {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to copy the folder.
+        /// </summary>
+        public static string ErrorMassage_SecurityException_CopyFolder {
+            get {
+                return ResourceManager.GetString("ErrorMassage_SecurityException_CopyFolder", resourceCulture);
             }
         }
         
@@ -745,11 +772,65 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid provider.
+        /// </summary>
+        public static string ErrorMessage_InvalidProvider {
+            get {
+                return ResourceManager.GetString("ErrorMessage_InvalidProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is not possible to use this folder to store the room.
+        /// </summary>
+        public static string ErrorMessage_InvalidThirdPartyFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_InvalidThirdPartyFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The invitation link is invalid or it&apos;s validity has expired.
         /// </summary>
         public static string ErrorMessage_InvintationLink {
             get {
                 return ResourceManager.GetString("ErrorMessage_InvintationLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role is only available to a paid user.
+        /// </summary>
+        public static string ErrorMessage_PaidRole {
+            get {
+                return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This provider is already connected to the room.
+        /// </summary>
+        public static string ErrorMessage_ProviderAlreadyConnect {
+            get {
+                return ResourceManager.GetString("ErrorMessage_ProviderAlreadyConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to copy to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_CopyToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_CopyToFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to move to this folder.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_MoveToFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_MoveToFolder", resourceCulture);
             }
         }
         
@@ -768,6 +849,15 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMessage_UpdateArchivedRoom {
             get {
                 return ResourceManager.GetString("ErrorMessage_UpdateArchivedRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t pin a room.
+        /// </summary>
+        public static string ErrorrMessage_PinRoom {
+            get {
+                return ResourceManager.GetString("ErrorrMessage_PinRoom", resourceCulture);
             }
         }
         

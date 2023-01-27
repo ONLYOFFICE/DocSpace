@@ -1,5 +1,0 @@
-{
-  "MoveConfirmation": "移動確認",
-  "MoveConfirmationAlert": "{{provider}}のディレクトリから要素を移動しようとしています。この場合、これらの要素は{{provider}}アカウントから削除され、以前共有されていた場合、他のユーザがアクセスできなくなります。",
-  "MoveFileOption": "ファイルの移動"
-}

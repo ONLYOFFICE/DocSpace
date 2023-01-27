@@ -1,5 +1,6 @@
 import React from "react";
 import Avatar from "./";
+import AtReactSvgUrl from "../../../public/images/@.react.svg?url";
 
 const editAction = () => console.log("Edit action");
 
@@ -61,7 +62,7 @@ Initials.args = {
 Icon.args = {
   size: "max",
   role: "user",
-  source: "/static/images/@.react.svg",
+  source: AtReactSvgUrl,
   userName: "",
   editing: false,
   hideRoleIcon: false,

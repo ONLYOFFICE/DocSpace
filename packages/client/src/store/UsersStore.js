@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import DefaultUserPhotoSize32PngUrl from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
@@ -343,7 +344,7 @@ class UsersStore {
   }
 
   getUsersByQuery = async (query) => {
-    const filter = Filter.getDefault();
+    const filter = Filter.getFilterWithOutDisabledUser();
 
     filter.search = query;
     filter.pageCount = 100;
@@ -358,6 +359,7 @@ class UsersStore {
       id,
       displayName,
       avatar,
+      hasAvatar,
       email,
       isOwner,
       isAdmin: isAdministrator,
@@ -387,6 +389,8 @@ class UsersStore {
       status
     );
 
+    const currentAvatar = hasAvatar ? avatar : DefaultUserPhotoSize32PngUrl;
+
     return {
       id,
       status,
@@ -397,7 +401,8 @@ class UsersStore {
       isAdmin: isAdministrator,
       isVisitor,
       displayName,
-      avatar,
+      avatar: currentAvatar,
+      hasAvatar,
       email,
       userName,
       mobilePhone,

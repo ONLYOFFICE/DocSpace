@@ -13,6 +13,8 @@ import {
   StyledUserName,
   StyledProfileWrapper,
 } from "../styled-article";
+import VerticalDotsReactSvgUrl from "../../../../../public/images/vertical-dots.react.svg?url";
+import DefaultUserPhotoPngUrl from "../../../../../public/images/default_user_photo_size_82-82.png";
 
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions, onProfileClick } = props;
@@ -45,6 +47,8 @@ const ArticleProfile = (props) => {
   const model = getActions(t);
   const username = user.displayName.split(" ");
 
+  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoPngUrl;
+
   return (
     <StyledProfileWrapper showText={showText}>
       <StyledArticleProfile showText={showText} tablet={isTabletView}>
@@ -54,7 +58,7 @@ const ArticleProfile = (props) => {
             id="user-avatar"
             size={avatarSize}
             role={"user"}
-            source={user.avatar}
+            source={userAvatar}
             userName={user.displayName}
             onClick={onAvatarClick}
           />
@@ -69,7 +73,10 @@ const ArticleProfile = (props) => {
         </div>
         {(!isTabletView || showText) && (
           <>
-            <StyledUserName length={user.displayName.length}>
+            <StyledUserName
+              length={user.displayName.length}
+              onClick={onProfileClick}
+            >
               <Text fontWeight={600} noSelect truncate>
                 {username[0]}
                 &nbsp;
@@ -85,7 +92,7 @@ const ArticleProfile = (props) => {
               zIndex={402}
               directionX="left"
               directionY="top"
-              iconName="/static/images/vertical-dots.react.svg"
+              iconName={VerticalDotsReactSvgUrl}
               size={32}
               isFill
               getData={() => getActions(t)}

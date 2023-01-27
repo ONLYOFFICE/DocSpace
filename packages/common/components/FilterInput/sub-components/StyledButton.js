@@ -26,6 +26,11 @@ const StyledButton = styled.div`
 
   &:hover {
     border: ${(props) => props.theme.filterInput.button.hoverBorder};
+    svg {
+      path {
+        fill: ${(props) => props.theme.iconButton.hoverColor};
+      }
+    }
   }
 
   div {

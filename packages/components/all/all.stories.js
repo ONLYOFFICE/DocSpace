@@ -27,8 +27,12 @@ import Toast from "../toast";
 import toastr from "../toast/toastr";
 import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
-import SettingsIcon from "../public/static/images/settings.react.svg";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
+import SettingsReactSvg from "../../../public/images/settings.react.svg";
+import CatalogFolderReactSvg from "../../../public/images/catalog.folder.react.svg";
+import CatalogEmployeeReactSvgUrl from "../../../public/images/catalog.employee.react.svg?url";
+import ItemActiveReactSvgUrl from "../../../public/images/item.active.react.svg?url";
+import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+
 const array_items = [
   {
     key: "0",
@@ -50,28 +54,28 @@ const array_items = [
 const options = [
   {
     key: 0,
-    icon: "static/images/catalog.employee.react.svg", // optional item
+    icon: CatalogEmployeeReactSvgUrl, // optional item
     label: "Option 1",
     disabled: false, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 1,
-    icon: "static/images/catalog.employee.react.svg", // optional item
+    icon: CatalogEmployeeReactSvgUrl, // optional item
     label: "Option 2",
     disabled: false, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 2,
-    icon: "static/images/catalog.employee.react.svg", // optional item
+    icon: CatalogEmployeeReactSvgUrl, // optional item
     label: "Option 3",
     disabled: true, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 3,
-    icon: "static/images/catalog.employee.react.svg", // optional item
+    icon: CatalogEmployeeReactSvgUrl, // optional item
     label: "Option 4",
     disabled: false, // optional item
     onClick: () => {}, // optional item
@@ -97,17 +101,17 @@ const arrayUsers = [
 const element = "Icon";
 
 const elementAvatar = <Avatar size="min" role="user" userName="Demo Avatar" />;
-const elementIcon = <CatalogFolderIcon size="big" />;
+const elementIcon = <CatalogFolderReactSvg size="big" />;
 const elementComboBox = (
   <ComboBox
     options={[
-      { key: 1, icon: "static/images/item.active.react.svg", label: "Open" },
+      { key: 1, icon: ItemActiveReactSvgUrl, label: "Open" },
       { key: 2, icon: "CheckIcon", label: "Closed" },
     ]}
     onSelect={(option) => console.log(option)}
     selectedOption={{
       key: 0,
-      icon: "static/images/item.active.react.svg",
+      icon: ItemActiveReactSvgUrl,
       label: "",
     }}
     scaled={false}
@@ -330,12 +334,12 @@ const Template = (args) => (
             {({ value, set }) => (
               <InputBlock
                 placeholder="Add input text"
-                iconName={"static/images/search.react.svg"}
+                iconName={SearchReactSvgUrl}
                 onIconClick={() => {}}
                 onChange={(e) => set(e.target.value)}
                 value={value}
               >
-                <SettingsIcon size="medium" />
+                <SettingsReactSvg size="medium" />
               </InputBlock>
             )}
           </StringValue>

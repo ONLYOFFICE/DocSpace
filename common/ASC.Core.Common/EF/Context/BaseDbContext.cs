@@ -36,9 +36,14 @@ public static class BaseDbContextExtension
 {
     public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder)
     {
+        OptionsAction(sp, optionsBuilder, "current");
+    }
+
+    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder, string region)
+    {
         var configuration = new ConfigurationExtension(sp.GetRequiredService<IConfiguration>());
         var migrateAssembly = configuration["testAssembly"];
-        var connectionString = configuration.GetConnectionStrings("default");
+        var connectionString = configuration.GetConnectionStrings("default", region);
         var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
 
         optionsBuilder.UseLoggerFactory(loggerFactory);
@@ -82,20 +87,24 @@ public static class BaseDbContextExtension
         }
     }
 
-    public static void AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
     {
         services.AddPooledDbContextFactory<T>(OptionsAction);
+
+        return services;
     }
 
-    public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
     {
         services.AddDbContext<T>(OptionsAction);
+
+        return services;
     }
 
-    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
+    public static T AddOrUpdate<T, TContext>(this TContext b, DbSet<T> dbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
-        var dbSet = expressionDbSet.Compile().Invoke(b);
-        var existingBlog = dbSet.Find(entity.GetKeys());
+        var keys = entity.GetKeys();
+        var existingBlog = dbSet.Find(keys);
         if (existingBlog == null)
         {
             return dbSet.Add(entity).Entity;

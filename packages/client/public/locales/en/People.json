@@ -1,9 +1,7 @@
 {
   "LblInviteAgain": "Invite again",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
-  "NotFoundTitle": "No teammates found",
   "NotFoundUsers": "No users found",
-  "NotFoundUsersDescription": "No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
-  "ReassignmentData": "Data reassignment",
+  "NotFoundUsersDescription": "No people matching your filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
   "UserStatus": "Status"
 }

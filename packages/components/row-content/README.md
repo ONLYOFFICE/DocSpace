@@ -6,7 +6,8 @@ Required for formatted output of elements inside Row
 
 ```js
 import RowContent from "@docspace/components/row-content";
-import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
+import SendClockReactSvg from "../../../public/images/send.clock.react.svg";
+import CatalogSpamReactSvg from "../../../public/images/catalog.spam.react.svg";
 ```
 
 ```jsx
@@ -15,8 +16,8 @@ import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
     Demo
   </Link>
   <>
-    <SendClockIcon size="small" isfill={true} color="#3B72A7" />
-    <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+    <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
+    <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
   </>
   <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
     Demo
