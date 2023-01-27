@@ -73,7 +73,7 @@
   "PortalAccessSubTitle": "Cette section vous permet de fournir aux utilisateurs des moyens sûrs et pratiques d'accéder au portail.",
   "PortalNameEmpty": "Nom de compte est vide",
   "PortalNameIncorrect": "Nom de compte incorrect",
-  "PortalNameLength": "Le nom du compte doit comporter entre 3 et 50 caractères",
+  "PortalNameLength": "Le nom du compte doit comporter entre {{minLength}} et {{maxLength}} caractères",
   "PortalRenaming": "Changement de nom du portail",
   "PortalRenamingDescription": "Ici vous pouvez changer l'adresse du portail.",
   "PortalRenamingLabelText": "Nouveau nom du portail",

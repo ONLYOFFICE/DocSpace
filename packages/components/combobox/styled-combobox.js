@@ -13,7 +13,7 @@ const StyledComboBox = styled.div`
   position: relative;
   outline: 0;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  padding: 4px 0;
+  padding: ${(props) => (props.withoutPadding ? "0" : "4px 0")};
 
   ${(props) =>
     props.isOpen &&
