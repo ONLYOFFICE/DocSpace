@@ -62,10 +62,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly bool _isEmptyTrash;
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
-    private readonly SocketManager _socketManager;
 
     public FileDeleteOperation(
-        IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings, SocketManager socketManager)
+        IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
     : base(serviceProvider, fileOperationData)
     {
         _ignoreException = fileOperationData.IgnoreException;
@@ -73,7 +72,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         _headers = fileOperationData.Headers;
         _isEmptyTrash = fileOperationData.IsEmptyTrash;
         _thumbnailSettings = thumbnailSettings;
-        _socketManager = socketManager;
         this[OpType] = (int)FileOperationType.Delete;
     }
 
@@ -81,6 +79,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
         var messageService = scope.ServiceProvider.GetService<MessageService>();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(CurrentTenant);
         _trashId = await folderDao.GetFolderIDTrashAsync(true);
 
         Folder<T> root = null;
@@ -112,6 +112,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
         var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
         foreach (var folderId in folderIds)
         {
@@ -154,7 +155,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             if (providerInfo.FolderId != null)
                             {
                                 var room = await roomLogoManager.DeleteAsync(providerInfo.FolderId, checkPermissions);
-                                await _socketManager.UpdateFolderAsync(room);
+                                await socketManager.UpdateFolderAsync(room);
                             }
                         }
 
@@ -183,7 +184,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             if (isRoom)
                             {
                                 var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
-                                await _socketManager.UpdateFolderAsync(room);
+                                await socketManager.UpdateFolderAsync(room);
                             }
 
                             await FolderDao.DeleteFolderAsync(folder.Id);
@@ -193,7 +194,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                             }
 
-                            await _socketManager.DeleteFolder(folder);
+                            await socketManager.DeleteFolder(folder);
 
                             filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
 
@@ -215,7 +216,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 if (isRoom)
                                 {
                                     var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
-                                    await _socketManager.UpdateFolderAsync(room);
+                                    await socketManager.UpdateFolderAsync(room);
                                 }
 
                                 await FolderDao.DeleteFolderAsync(folder.Id);
@@ -225,7 +226,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                     await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                                 }
 
-                                await _socketManager.DeleteFolder(folder);
+                                await socketManager.DeleteFolder(folder);
 
                                 if (isNeedSendActions)
                                 {

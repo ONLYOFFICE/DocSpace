@@ -10,6 +10,7 @@ import axios from "axios";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import { Trans } from "react-i18next";
 import { getPaymentLink } from "@docspace/common/api/portal";
+import CurrentUsersCountContainer from "./sub-components/CurrentUsersCount";
 
 const StyledBody = styled.div`
   border-radius: 12px;
@@ -71,6 +72,7 @@ const PriceCalculation = ({
   isAlreadyPaid,
   isFreeAfterPaidPeriod,
   setStartPaymentLink,
+  managersCount,
 }) => {
   useEffect(() => {
     initializeInfo();
@@ -158,6 +160,9 @@ const PriceCalculation = ({
       </Text>
     </div>
   );
+
+  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
+
   return (
     <StyledBody className="price-calculation-container" isDisabled={isDisabled}>
       <Text
@@ -171,9 +176,10 @@ const PriceCalculation = ({
           : t("PriceCalculation")}
       </Text>
       {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-        <></>
+        <CurrentUsersCountContainer isNeedPlusSign={isNeedPlusSign} t={t} />
       ) : (
         <SelectUsersCountContainer
+          isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
           isAlreadyPaid={isAlreadyPaid}
@@ -202,6 +208,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     initializeInfo,
     setStartPaymentLink,
+    managersCount,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -216,6 +223,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    managersCount,
     setStartPaymentLink,
     isFreeTariff,
     setManagersCount,
