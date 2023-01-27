@@ -53,7 +53,6 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
                 DateColumns = new Dictionary<string, bool> {{"timestamp", false}}
             },
             new TableInfo("feed_users") {InsertMethod = InsertMethod.None},
-            new TableInfo("backup_backup", "tenant_id", "id", IdType.Guid),
             new TableInfo("backup_schedule", "tenant_id"),
             new TableInfo("core_settings", "tenant")
         };
@@ -73,12 +72,6 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
                                  x => !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["groupid"]))),
 
                 new RelationInfo("core_user", "id", "feed_users", "user_id", typeof(CoreModuleSpecifics)),
-
-                new RelationInfo("files_folder", "id", "backup_backup", "storage_base_path", typeof(FilesModuleSpecifics),
-                                 x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
-
-                new RelationInfo("files_file", "id", "backup_backup", "storage_path", typeof(FilesModuleSpecifics),
-                                 x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
 
                 new RelationInfo("files_folder", "id", "backup_schedule", "storage_base_path", typeof(FilesModuleSpecifics),
                                  x => IsDocumentsStorageType(Convert.ToString(x["storage_type"]))),
