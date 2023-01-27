@@ -294,15 +294,15 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
 
     private async Task<OneDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var onedriveStorage = ActivatorUtilities.CreateInstance<OneDriveStorage>(ServiceProvider);
+        var oneDriveStorage = ServiceProvider.GetRequiredService<OneDriveStorage>();
 
         await CheckTokenAsync(token, id);
 
-        onedriveStorage.Open(token);
+        oneDriveStorage.Open(token);
 
-        _storages.TryAdd(id, onedriveStorage);
+        _storages.TryAdd(id, oneDriveStorage);
 
-        return onedriveStorage;
+        return oneDriveStorage;
     }
 }
 public static class OneDriveProviderInfoExtention

@@ -88,6 +88,8 @@ const CreateRoomDialog = ({
     }));
   };
 
+  const isRoomTitleChanged = roomParams.title.trim() !== "" ? false : true;
+
   const onCreateRoom = async () => {
     if (!roomParams.title.trim()) {
       setIsValidTitle(false);
@@ -166,6 +168,7 @@ const CreateRoomDialog = ({
             primary
             scale
             onClick={onCreateRoom}
+            isDisabled={isRoomTitleChanged}
             isLoading={isLoading}
           />
           <Button

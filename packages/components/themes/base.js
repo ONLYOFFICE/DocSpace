@@ -456,6 +456,8 @@ const Base = {
     pressedFillColor: grayLightMid,
 
     focusColor: gray,
+
+    errorColor: "#F21C0E",
   },
 
   // slider: {
@@ -822,7 +824,7 @@ const Base = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px",
+      large: "11px 12px",
     },
   },
 
@@ -3019,6 +3021,7 @@ const Base = {
 
     wizard: {
       linkColor: "#116d9d",
+      generatePasswordColor: "#657077",
     },
   },
 

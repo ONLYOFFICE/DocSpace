@@ -450,6 +450,8 @@ const Dark = {
     pressedFillColor: black,
 
     focusColor: "#858585",
+
+    errorColor: "#E06451",
   },
 
   // slider: {
@@ -814,7 +816,7 @@ const Dark = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px",
+      large: "11px 12px",
     },
   },
 
@@ -3018,6 +3020,7 @@ const Dark = {
 
     wizard: {
       linkColor: "#E06A1B",
+      generatePasswordColor: "#a9a9a9",
     },
   },
 

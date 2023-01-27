@@ -28,6 +28,7 @@ const Dialog = ({
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
     createWithoutDialog && isCreateDialog && setIsChecked(createWithoutDialog);
@@ -35,7 +36,7 @@ const Dialog = ({
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
-    if (input && value === startValue) input.select();
+    if (input && value === startValue && !isChanged) input.select();
   }, [visible, value]);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const Dialog = ({
     newValue = newValue.replace(folderFormValidation, "_");
 
     setValue(newValue);
+    setIsChanged(true);
   }, []);
 
   const onFocus = useCallback((e) => {

@@ -39,7 +39,8 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        IMapper mapper) : base(
+        IMapper mapper,
+        SocketManager socketManager) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
             coreBaseSettings,
@@ -49,7 +50,8 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
             folderDtoHelper,
             fileDtoHelper,
             fileShareDtoHelper,
-            mapper)
+            mapper,
+            socketManager)
     {
     }
 
@@ -91,7 +93,8 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        IMapper mapper) : base(
+        IMapper mapper,
+        SocketManager socketManager) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
             coreBaseSettings,
@@ -101,7 +104,8 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
             folderDtoHelper,
             fileDtoHelper,
             fileShareDtoHelper,
-            mapper)
+            mapper,
+            socketManager)
     {
     }
 
@@ -144,6 +148,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     protected readonly FileStorageService<T> _fileStorageService;
     private readonly FileShareDtoHelper _fileShareDtoHelper;
     private readonly IMapper _mapper;
+    private readonly SocketManager _socketManager;
 
     protected VirtualRoomsController(
         GlobalFolderHelper globalFolderHelper,
@@ -155,7 +160,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        IMapper mapper) : base(folderDtoHelper, fileDtoHelper)
+        IMapper mapper,
+        SocketManager socketManager) : base(folderDtoHelper, fileDtoHelper)
     {
         _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
@@ -165,6 +171,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _fileStorageService = fileStorageService;
         _fileShareDtoHelper = fileShareDtoHelper;
         _mapper = mapper;
+        _socketManager = socketManager;
     }
 
     /// <summary>
@@ -472,6 +479,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
         var room = await _roomLogoManager.CreateAsync(id, inDto.TmpFile, inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
+        await _socketManager.UpdateFolderAsync(room);
+
         return await _folderDtoHelper.GetAsync(room);
     }
 
@@ -493,6 +502,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         ErrorIfNotDocSpace();
 
         var room = await _roomLogoManager.DeleteAsync(id);
+
+        await _socketManager.UpdateFolderAsync(room);
 
         return await _folderDtoHelper.GetAsync(room);
     }
@@ -688,7 +699,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var filterValue = _apiContext.FilterValue;
 
         var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
-            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
+            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false,
             provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);

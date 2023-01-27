@@ -28,7 +28,7 @@ using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.Box;
 
-[Transient]
+[Scope]
 internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 {
     private readonly CrossDao _crossDao;

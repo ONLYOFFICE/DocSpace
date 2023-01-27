@@ -36,7 +36,7 @@ public class Startup : BaseWorkerStartup
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
     }
-        
+
     public override void ConfigureServices(IServiceCollection services)
     {
         base.ConfigureServices(services);
@@ -92,6 +92,19 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<TenantManager>();
         DIHelper.TryAdd<UserManager>();
         DIHelper.TryAdd<SocketServiceClient>();
+        DIHelper.TryAdd<FileStorageService<int>>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+        services.AddScoped<CountRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
+
+        services.AddScoped<UsersInRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
+        services.AddScoped<UsersInRoomStatistic>();
+
 
         services.AddBaseDbContextPool<FilesDbContext>();
 

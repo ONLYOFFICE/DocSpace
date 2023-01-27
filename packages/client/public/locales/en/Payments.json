@@ -23,6 +23,7 @@
   "InvalidEmail": "Invalid email",
   "LatePayment": "Late payment",
   "ManagerTypesDescription": "Admin account types and their privileges",
+  "NumberOfAdmins": "Number of admins",
   "OwnerCanChangePayer": "The portal owner can change the payer",
   "Pay": "Pay",
   "PayBeforeTheEndGracePeriod": "Make sure to make payment before the grace period is due",
