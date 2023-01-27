@@ -17,7 +17,7 @@ import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";
 import { Router } from "react-router-dom";
-import ActionsHeaderTouchReactSvgUrl from "../../../../public/images/actions.header.touch.react.svg?url";
+import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touch.react.svg?url";
 
 const { authStore } = store;
 

@@ -12,8 +12,8 @@ import Text from "@docspace/components/text";
 import { mobile } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
-import SortDesc from "../../../../../public/images/sort.desc.react.svg";
-import SortReactSvgUrl from "../../../../../public/images/sort.react.svg?url";
+import SortDesc from "PUBLIC_DIR/images/sort.desc.react.svg";
+import SortReactSvgUrl from "PUBLIC_DIR/images/sort.react.svg?url";
 import Backdrop from "@docspace/components/backdrop";
 import { Events } from "@docspace/common/constants";
 

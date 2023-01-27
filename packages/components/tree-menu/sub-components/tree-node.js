@@ -6,10 +6,10 @@ import ReactDOMServer from "react-dom/server";
 import PropTypes from "prop-types";
 import NoUserSelect from "../../utils/commonStyles";
 import Base from "../../themes/base";
-import CatalogFolderReactSvg from "../../../../public/images/catalog.folder.react.svg";
-import CheckboxCheckedReactSvg from "../../../../public/images/checkbox.checked.react.svg";
-import CheckboxIndeterminateReactSvg from "../../../../public/images/checkbox.indeterminate.react.svg";
-import CheckboxIcon from "../../../../public/images/checkbox.react.svg";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
+import CheckboxCheckedReactSvg from "PUBLIC_DIR/images/checkbox.checked.react.svg";
+import CheckboxIndeterminateReactSvg from "PUBLIC_DIR/images/checkbox.indeterminate.react.svg";
+import CheckboxIcon from "PUBLIC_DIR/images/checkbox.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
 const StyledCheckboxIcon = styled(CheckboxIcon)`

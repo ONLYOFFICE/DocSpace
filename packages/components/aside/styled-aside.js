@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
-import CrossReactSvg from "../../../public/images/cross.react.svg";
+import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 
 import { isMobile } from "react-device-detect";
 

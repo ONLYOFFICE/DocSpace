@@ -6,7 +6,7 @@ IconButton is used for a action on a page
 
 ```js
 import IconButton from "@docspace/components/icon-button";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 ```
 
 ```jsx

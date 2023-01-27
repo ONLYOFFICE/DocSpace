@@ -1,6 +1,6 @@
 import React from "react";
 
-import Icon from "../../../public/images/button.alert.react.svg";
+import Icon from "PUBLIC_DIR/images/button.alert.react.svg";
 import Button from "./";
 
 export default {

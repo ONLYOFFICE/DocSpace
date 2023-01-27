@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import TreeMenu from ".";
 import TreeNode from "./sub-components/tree-node";
-import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
-import ExpanderRightReactSvg from "../../../public/images/expander-right.react.svg";
-import CatalogFolderReactSvg from "../../../public/images/catalog.folder.react.svg";
+import ExpanderDownReactSvg from "PUBLIC_DIR/images/expander-down.react.svg";
+import ExpanderRightReactSvg from "PUBLIC_DIR/images/expander-right.react.svg";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
 
 const treeData = [
   {

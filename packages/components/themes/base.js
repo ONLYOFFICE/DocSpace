@@ -1,6 +1,6 @@
 import globalColors from "../utils/globalColors";
 
-import AvatarBaseReactSvgUrl from "../../../public/images/avatar.base.react.svg?url";
+import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
 
 const {
   black,

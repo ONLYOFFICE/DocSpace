@@ -3,7 +3,7 @@ import React from "react";
 import IconButton from "../../../icon-button";
 import Heading from "../../../heading";
 
-import ArrowPathReactSvgUrl from "../../../../../public/images/arrow.path.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 
 import { StyledSelectorHeader } from "../../StyledSelector";
 

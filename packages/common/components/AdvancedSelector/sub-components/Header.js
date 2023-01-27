@@ -3,7 +3,7 @@ import React from "react";
 import Heading from "@docspace/components/heading";
 import IconButton from "@docspace/components/icon-button";
 
-import ArrowPathReactSvgUrl from "../../../../../public/images/arrow.path.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 
 const Header = ({ headerLabel, onArrowClickAction }) => {
   return (

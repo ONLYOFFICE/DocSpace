@@ -2,7 +2,7 @@ import React from "react";
 import { mount } from "enzyme";
 import InputBlock from ".";
 import Button from "../button";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 describe("<IconButton />", () => {
   it("renders without error", () => {
     const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
