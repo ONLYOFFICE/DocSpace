@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import InfoReactSvg from "../../../public/images/danger.toast.react.svg";
+import InfoReactSvg from "PUBLIC_DIR/images/danger.toast.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledLogoIcon = styled(InfoReactSvg)`

@@ -6,7 +6,7 @@ Is a item of DropDown component
 
 ```js
 import DropDownItem from "@docspace/components/drop-down-item";
-import NavLogoReactSvgUrl from "../../../public/images/nav.logo.react.svg?url";
+import NavLogoReactSvgUrl from "PUBLIC_DIR/images/nav.logo.react.svg?url";
 ```
 
 ```jsx

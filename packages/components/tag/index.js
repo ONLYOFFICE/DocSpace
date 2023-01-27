@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
-import CrossIconReactSvgUrl from "../../../public/images/cross.react.svg?url";
-import TagIconReactSvgUrl from "../../../public/images/tag.react.svg?url";
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
+import TagIconReactSvgUrl from "PUBLIC_DIR/images/tag.react.svg?url";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import IconButton from "../icon-button";

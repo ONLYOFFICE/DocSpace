@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import PlusReactSvgUrl from "../../../../../public/images/plus.svg?url";
+import PlusReactSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 
 import IconButton from "@docspace/components/icon-button";
 import ContextMenu from "@docspace/components/context-menu";

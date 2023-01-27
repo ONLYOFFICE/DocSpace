@@ -6,7 +6,7 @@ List of all available icons
 
 ```js
 import Icons from "@docspace/components/icons";
-import NavLogoReactSvg from "../../../public/images/nav.logo.react.svg";
+import NavLogoReactSvg from "PUBLIC_DIR/images/nav.logo.react.svg";
 ```
 
 ```jsx

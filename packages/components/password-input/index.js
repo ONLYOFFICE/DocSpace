@@ -7,8 +7,8 @@ import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
 
-import EyeReactSvgUrl from "../../../public/images/eye.react.svg?url";
-import EyeOffReactSvgUrl from "../../../public/images/eye.off.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import EyeOffReactSvgUrl from "PUBLIC_DIR/images/eye.off.react.svg?url";
 
 import {
   PasswordProgress,

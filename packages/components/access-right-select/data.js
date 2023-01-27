@@ -1,10 +1,10 @@
-import ActionsDocumentReactSvgUrl from "../../../public/images/actions.documents.react.svg?url";
-import CheckReactSvgUrl from "../../../public/images/check.react.svg?url";
-import AccessEditReactSvgUrl from "../../../public/images/access.edit.react.svg?url";
-import AccessReviewReactSvgUrl from "../../../public/images/access.review.react.svg?url";
-import AccessCommentReactSvgUrl from "../../../public/images/access.comment.react.svg?url";
-import EyeReactSvgUrl from "../../../public/images/eye.react.svg?url";
-import AccessNoneReactSvgUrl from "../../../public/images/access.none.react.svg?url";
+import ActionsDocumentReactSvgUrl from "PUBLIC_DIR/images/actions.documents.react.svg?url";
+import CheckReactSvgUrl from "PUBLIC_DIR/images/check.react.svg?url";
+import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import AccessReviewReactSvgUrl from "PUBLIC_DIR/images/access.review.react.svg?url";
+import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 
 export const data = [
   {
