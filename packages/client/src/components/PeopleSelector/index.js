@@ -50,6 +50,7 @@ const PeopleSelector = ({
   withSelectAll,
   filter,
   excludeItems,
+  currentUserId,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -100,6 +101,21 @@ const PeopleSelector = ({
     };
   };
 
+  const moveCurrentUserToTopOfList = (listUser) => {
+    const currentUserIndex = listUser.findIndex(
+      (user) => user.id === currentUserId
+    );
+
+    // return if the current user is already at the top of the list or not found
+    if (currentUserIndex < 1) return listUser;
+
+    const [currentUser] = listUser.splice(currentUserIndex, 1);
+
+    listUser.splice(0, 0, currentUser);
+
+    return listUser;
+  };
+
   const loadNextPage = (startIndex, search = searchValue) => {
     const pageCount = 100;
 
@@ -132,7 +148,7 @@ const PeopleSelector = ({
           })
           .map((item) => toListItem(item));
 
-        newItems = [...newItems, ...items];
+        newItems = moveCurrentUserToTopOfList([...newItems, ...items]);
 
         const newTotal = response.total - totalDifferent;
 
@@ -216,7 +232,10 @@ PeopleSelector.defaultProps = {
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+  return {
+    theme: auth.settingsStore.theme,
+    currentUserId: auth.userStore.user.id,
+  };
 })(
   observer(
     withTranslation(["PeopleSelector", "PeopleTranslations", "Common"])(

@@ -121,7 +121,11 @@ const DeleteDialogComponent = (props) => {
     if (selection.length > 1) {
       if (isRoomDelete)
         return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      return t("MoveToTrashItems");
+      if (pathname.startsWith("/rooms/personal")) {
+        return t("MoveToTrashItemsFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return t("MoveToTrashItems");
+      }
     } else {
       if (isRoomDelete)
         return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;

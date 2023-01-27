@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.Sharpbox;
 
-[Transient]
+[Scope]
 internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 {
     private readonly CrossDao _crossDao;

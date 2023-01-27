@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
-[Transient]
+[Scope]
 internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 {
     private readonly CrossDao _crossDao;
