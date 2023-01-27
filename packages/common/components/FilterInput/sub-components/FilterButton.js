@@ -1,5 +1,5 @@
 import React from "react";
-import FilterReactSvrUrl from "../../../../../public/images/filter.react.svg?url";
+import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
 
 import IconButton from "@docspace/components/icon-button";
 import { Base } from "@docspace/components/themes";

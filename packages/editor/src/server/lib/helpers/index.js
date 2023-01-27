@@ -20,7 +20,10 @@ import { getLogoFromPath } from "@docspace/common/utils";
 export const getFavicon = (logoUrls) => {
   if (!logoUrls) return null;
 
-  return getLogoFromPath(logoUrls[2]?.path?.light);
+  return getLogoFromPath(logoUrls[2]?.path?.light).replace(
+    "client/",
+    "/doceditor/"
+  );
 };
 
 export const initDocEditor = async (req) => {
@@ -111,19 +114,23 @@ export const initDocEditor = async (req) => {
 
     config.editorConfig.customization.logo.image =
       config.editorConfig.customization.logo.url +
-      "doceditor/" +
-      getLogoFromPath(config.editorConfig.customization.logo.image);
+      getLogoFromPath(config.editorConfig.customization.logo.image)?.replace(
+        "client/",
+        "doceditor/"
+      );
 
     config.editorConfig.customization.logo.imageDark =
       config.editorConfig.customization.logo.url +
-      "doceditor/" +
-      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+      getLogoFromPath(
+        config.editorConfig.customization.logo.imageDark
+      )?.replace("client/", "doceditor/");
 
     if (config.editorConfig.customization.customer) {
       config.editorConfig.customization.customer.logo =
         config.editorConfig.customization.logo.url +
-        "doceditor/" +
-        getLogoFromPath(config.editorConfig.customization.customer.logo);
+        getLogoFromPath(
+          config.editorConfig.customization.customer.logo
+        )?.replace("client/", "doceditor/");
     }
 
     return {

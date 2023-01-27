@@ -177,7 +177,7 @@ class FilesStore {
 
             const folder = JSON.parse(opt?.data);
 
-            //if (this.selectedFolderStore.id !== folder.folderId) return;
+            if (this.selectedFolderStore.id !== folder.parentId) return;
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 

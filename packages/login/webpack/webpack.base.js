@@ -1,3 +1,5 @@
+const path = require("path");
+
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
@@ -9,6 +11,11 @@ module.exports = {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     fallback: {
       crypto: false,
+    },
+    alias: {
+      PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+      SRC_DIR: path.resolve(__dirname, "../src"),
+      PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
   },
   module: {

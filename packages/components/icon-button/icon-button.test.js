@@ -1,7 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import IconButton from ".";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 
 const baseProps = {
   size: "25",
