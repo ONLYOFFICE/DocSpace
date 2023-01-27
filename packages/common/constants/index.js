@@ -369,3 +369,14 @@ export const PortalFeaturesLimitations = Object.freeze({
 });
 
 export const EDITOR_ID = "docspace_editor";
+
+/**
+ * Enum for notifications.
+ * @readonly
+ */
+export const NotificationsType = Object.freeze({
+  Badges: 0,
+  RoomsActivity: 1,
+  DailyFeed: 2,
+  UsefulTips: 3,
+});

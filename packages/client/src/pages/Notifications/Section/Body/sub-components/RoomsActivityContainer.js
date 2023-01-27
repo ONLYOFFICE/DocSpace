@@ -1,14 +1,17 @@
 import { inject, observer } from "mobx-react";
-import React, { useState } from "react";
+import React from "react";
 import ToggleButton from "@docspace/components/toggle-button";
 import Text from "@docspace/components/text";
+import { NotificationsType } from "@docspace/common/constants";
 
-const RoomsActivityContainer = ({ t, isEnable }) => {
-  const [isEnableEmail, setIsEnableEmail] = useState(isEnable);
-
+const RoomsActivityContainer = ({
+  t,
+  roomsActivitySubscription,
+  changeSubscription,
+}) => {
   const onChangeEmailSubscription = (e) => {
     const checked = e.currentTarget.checked;
-    setIsEnableEmail(checked);
+    changeSubscription(NotificationsType.RoomsActivity, checked);
   };
 
   return (
@@ -27,9 +30,19 @@ const RoomsActivityContainer = ({ t, isEnable }) => {
       <ToggleButton
         className="toggle-btn"
         onChange={onChangeEmailSubscription}
-        isChecked={isEnableEmail}
+        isChecked={roomsActivitySubscription}
       />
     </div>
   );
 };
-export default RoomsActivityContainer;
+
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { roomsActivitySubscription, changeSubscription } = targetUserStore;
+
+  return {
+    roomsActivitySubscription,
+    changeSubscription,
+  };
+})(observer(RoomsActivityContainer));

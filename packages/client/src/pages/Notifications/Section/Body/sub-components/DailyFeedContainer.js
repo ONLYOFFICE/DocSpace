@@ -1,14 +1,17 @@
 import { inject, observer } from "mobx-react";
-import React, { useState } from "react";
+import React from "react";
 import ToggleButton from "@docspace/components/toggle-button";
 import Text from "@docspace/components/text";
+import { NotificationsType } from "@docspace/common/constants";
 
-const DailyFeedContainer = ({ t, isEnable }) => {
-  const [isEnableEmail, setIsEnableEmail] = useState(isEnable);
-
+const DailyFeedContainer = ({
+  t,
+  dailyFeedSubscriptions,
+  changeSubscription,
+}) => {
   const onChangeEmailSubscription = (e) => {
     const checked = e.currentTarget.checked;
-    setIsEnableEmail(checked);
+    changeSubscription(NotificationsType.DailyFeed, checked);
   };
 
   return (
@@ -27,9 +30,19 @@ const DailyFeedContainer = ({ t, isEnable }) => {
       <ToggleButton
         className="toggle-btn"
         onChange={onChangeEmailSubscription}
-        isChecked={isEnableEmail}
+        isChecked={dailyFeedSubscriptions}
       />
     </div>
   );
 };
-export default DailyFeedContainer;
+
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { changeSubscription, dailyFeedSubscriptions } = targetUserStore;
+
+  return {
+    changeSubscription,
+    dailyFeedSubscriptions,
+  };
+})(observer(DailyFeedContainer));

@@ -1,7 +1,12 @@
 import api from "@docspace/common/api";
-import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
+import {
+  LANGUAGE,
+  COOKIE_EXPIRATION_YEAR,
+  NotificationsType,
+} from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { setCookie } from "@docspace/common/utils";
+import { changeNotificationSubscription } from "@docspace/common/api/settings";
 
 class TargetUserStore {
   peopleStore = null;
@@ -14,6 +19,11 @@ class TargetUserStore {
   changePasswordVisible = false;
   changeNameVisible = false;
   changeAvatarVisible = false;
+
+  badgesSubscription = false;
+  roomsActivitySubscription = false;
+  dailyFeedSubscriptions = false;
+  usefulTipsSubscription = false;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -114,8 +124,29 @@ class TargetUserStore {
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 
-  setSubscriptions = async () => {
-    this.tipsSubscription = await api.settings.getTipsSubscription();
+  setSubscriptions = async (badges, roomsActivity, dailyFeed, tips) => {
+    this.badgesSubscription = badges;
+    this.roomsActivitySubscription = roomsActivity;
+    this.dailyFeedSubscriptions = dailyFeed;
+    this.usefulTipsSubscription = tips;
+  };
+
+  changeSubscription = async (notificationType, isEnabled) => {
+    switch (notificationType) {
+      case NotificationsType.Badges:
+        this.badgesSubscription = isEnabled;
+        break;
+      case NotificationsType.DailyFeed:
+        this.dailyFeedSubscriptions = isEnabled;
+        break;
+      case NotificationsType.RoomsActivity:
+        this.roomsActivitySubscription = isEnabled;
+        break;
+      case NotificationsType.UsefulTips:
+        this.usefulTipsSubscription = isEnabled;
+        break;
+    }
+    await changeNotificationSubscription(notificationType, isEnabled);
   };
 
   changeTipsSubscription = async (enabled) => {

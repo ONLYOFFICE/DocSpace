@@ -6,6 +6,8 @@ import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
+import { NotificationsType } from "@docspace/common/constants";
+import { getNotificationSubscription } from "@docspace/common/api/settings";
 
 const StyledBodyContent = styled.div`
   .notification-container {
@@ -29,7 +31,19 @@ const StyledTextContent = styled.div`
 `;
 const SectionBodyContent = ({ t, setSubscriptions }) => {
   useEffect(async () => {
-    await setSubscriptions();
+    const requests = [
+      getNotificationSubscription(NotificationsType.Badges),
+      getNotificationSubscription(NotificationsType.RoomsActivity),
+      getNotificationSubscription(NotificationsType.DailyFeed),
+      getNotificationSubscription(NotificationsType.UsefulTips),
+    ];
+    const [badges, roomsActivity, dailyFeed, tips] = Promise.all(requests);
+    setSubscriptions(
+      badges.isEnabled,
+      roomsActivity.isEnabled,
+      dailyFeed.isEnabled,
+      tips.isEnabled
+    );
   }, []);
 
   return (
@@ -40,15 +54,15 @@ const SectionBodyContent = ({ t, setSubscriptions }) => {
         </Text>
       </StyledTextContent>
       <div className="badges-container">
-        <RoomsActionsContainer isEnable={true} t={t} />
+        <RoomsActionsContainer t={t} />
       </div>
       <StyledTextContent>
         <Text fontSize={"16px"} fontWeight={700}>
           {t("Common:Email")}
         </Text>
       </StyledTextContent>
-      <RoomsActivityContainer isEnable={true} t={t} />
-      <DailyFeedContainer isEnable={true} t={t} />
+      <RoomsActivityContainer t={t} />
+      <DailyFeedContainer t={t} />
       <UsefulTipsContainer t={t} />
     </StyledBodyContent>
   );

@@ -2,15 +2,16 @@ import React from "react";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 import { inject, observer } from "mobx-react";
+import { NotificationsType } from "@docspace/common/constants";
 
 const UsefulTipsContainer = ({
   t,
-  changeTipsSubscription,
-  tipsSubscription,
+  changeSubscription,
+  usefulTipsSubscription,
 }) => {
-  const onChangeEmailSubscription = async (e) => {
+  const onChangeEmailSubscription = (e) => {
     const checked = e.currentTarget.checked;
-    changeTipsSubscription(checked);
+    changeSubscription(NotificationsType.UsefulTips, checked);
   };
 
   return (
@@ -29,7 +30,7 @@ const UsefulTipsContainer = ({
       <ToggleButton
         className="toggle-btn"
         onChange={onChangeEmailSubscription}
-        isChecked={tipsSubscription}
+        isChecked={usefulTipsSubscription}
       />
     </div>
   );
@@ -38,10 +39,10 @@ const UsefulTipsContainer = ({
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const { changeTipsSubscription, tipsSubscription } = targetUserStore;
+  const { changeSubscription, usefulTipsSubscription } = targetUserStore;
 
   return {
-    changeTipsSubscription,
-    tipsSubscription,
+    changeSubscription,
+    usefulTipsSubscription,
   };
 })(observer(UsefulTipsContainer));
