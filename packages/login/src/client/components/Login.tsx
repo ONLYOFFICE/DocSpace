@@ -19,7 +19,7 @@ import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/Recove
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-import SSOIcon from "../../../../../public/images/sso.react.svg";
+import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";

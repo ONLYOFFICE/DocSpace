@@ -7,7 +7,7 @@ import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import { LoginFormWrapper } from "./StyledLogin";
-import BarLogo from "../../../../../public/images/danger.alert.react.svg";
+import BarLogo from "PUBLIC_DIR/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
