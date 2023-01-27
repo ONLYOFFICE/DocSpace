@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Tämän osan avulla voit tarjota käyttäjille turvallisia ja käteviä tapoja käyttää portaalia.",
   "PortalNameEmpty": "Tilin nimi on tyhjä",
   "PortalNameIncorrect": "Virheellinen tilin nimi",
-  "PortalNameLength": "Tilin nimen on oltava 3-50 merkkiä pitkä",
+  "PortalNameLength": "Tilin nimen on oltava {{minLength}}-{{maxLength}} merkkiä pitkä",
   "PortalRenaming": "Portaalin uudelleennimeäminen",
   "PortalRenamingDescription": "Tässä voit vaihtaa portaalisi osoitteen.",
   "PortalRenamingLabelText": "Uusi portaalin nimi",

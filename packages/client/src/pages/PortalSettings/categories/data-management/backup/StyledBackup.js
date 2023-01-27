@@ -8,7 +8,7 @@ import { isMobileOnly } from "react-device-detect";
 import { mobile } from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
-const borderColor = globalColors.grayLightMid;
+
 const INPUT_LENGTH = "350px";
 const TEXT_LENGTH = "700px";
 const commonStyles = css`
@@ -452,40 +452,11 @@ const StyledBackupList = styled.div`
     margin-right: 16px;
     color: ${(props) => props.theme.client.settings.backup.textColor};
   }
-  #backup-list_help {
-    display: flex;
-    background-color: ${(props) => props.theme.backgroundColor};
-    margin-bottom: 16px;
-  }
-  .backup-list_tooltip {
-    margin-left: 8px;
-  }
+
   .backup-list_content {
     display: grid;
-    height: calc(100% - 32px);
+    height: 100%;
     grid-template-rows: max-content auto max-content;
-    .backup-list_agreement-text {
-      user-select: none;
-      div:first-child {
-        display: inline-block;
-      }
-    }
-    .backup-list_footer {
-      padding: 16px 16px 0 16px;
-      ${(props) => !props.isEmpty && `border-top: 1px solid ${borderColor}`};
-      margin-left: -16px;
-      margin-right: -16px;
-      .restore_dialog-button {
-        display: flex;
-        button:first-child {
-          margin-right: 10px;
-          width: 50%;
-        }
-        button:last-child {
-          width: 50%;
-        }
-      }
-    }
   }
 `;
 const StyledSettingsHeader = styled.div`

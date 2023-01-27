@@ -68,7 +68,7 @@
   "PortalAccessSubTitle": "Această secțiune va permite să le oferă utilizatorilor accesul sigur și convenabil la portal.",
   "PortalNameEmpty": "Denumirea contului este necompletată",
   "PortalNameIncorrect": "Denumirea contului incorectă",
-  "PortalNameLength": "Denumirea contului trebuie să conțină de la 3 până la 50 de caractere",
+  "PortalNameLength": "Denumirea contului trebuie să conțină de la {{minLength}} până la {{maxLength}} de caractere",
   "PortalRenaming": "Redenumirea portalului",
   "PortalRenamingDescription": "Aici puteți schimba adresa de portal dvs.",
   "PortalRenamingLabelText": "O nouă denumire de portal",

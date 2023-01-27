@@ -110,7 +110,7 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
   };
 
   const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 1,
+    maxFiles: 0,
     noClick: isDisabled,
     noKeyboard: isDisabled,
     // maxSize: 1000000,

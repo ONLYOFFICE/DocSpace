@@ -6,7 +6,7 @@ import { providersData } from "@docspace/common/constants";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@docspace/common/utils";
-import SsoReactSvgUrl from "../../../../public/images/sso.react.svg?url";
+import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 
 const ProviderRow = styled.div`
   width: 100%;

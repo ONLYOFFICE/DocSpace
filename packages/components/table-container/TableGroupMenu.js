@@ -10,8 +10,8 @@ import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
 import { useTranslation } from "react-i18next";
 import IconButton from "../icon-button";
-import TriangleNavigationDownReactSvgUrl from "../../../public/images/triangle.navigation.down.react.svg?url";
-import PanelReactSvgUrl from "../../../public/images/panel.react.svg?url";
+import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
+import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 
 const TableGroupMenu = (props) => {
   const {

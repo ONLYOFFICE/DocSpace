@@ -13,8 +13,8 @@ import {
   StyledUserName,
   StyledProfileWrapper,
 } from "../styled-article";
-import VerticalDotsReactSvgUrl from "../../../../../public/images/vertical-dots.react.svg?url";
-import DefaultUserPhotoPngUrl from "../../../../../public/images/default_user_photo_size_82-82.png";
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
+import DefaultUserPhotoPngUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions, onProfileClick } = props;

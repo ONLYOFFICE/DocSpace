@@ -64,18 +64,23 @@ class AuthStore {
     }
 
     if (this.isAuthenticated && !skipRequest) {
-      requests.push(
-        this.currentQuotaStore.init(),
-        this.currentTariffStatusStore.init()
-      );
-
-      !this.settingsStore.passwordSettings &&
+      if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
         requests.push(
-          this.settingsStore.getPortalPasswordSettings(),
-          this.settingsStore.getAdditionalResources(),
-          this.settingsStore.getCompanyInfoSettings(),
-          this.settingsStore.getWhiteLabelLogoUrls()
+          this.currentQuotaStore.init(),
+          this.currentTariffStatusStore.init()
         );
+      }
+
+      if (!this.settingsStore.passwordSettings) {
+        if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
+          requests.push(
+            this.settingsStore.getPortalPasswordSettings(),
+            this.settingsStore.getAdditionalResources(),
+            this.settingsStore.getCompanyInfoSettings()
+          );
+        }
+        requests.push(this.settingsStore.getWhiteLabelLogoUrls());
+      }
     }
 
     return Promise.all(requests);
@@ -95,10 +100,8 @@ class AuthStore {
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
-      success =
-        (this.userStore.isLoaded && this.settingsStore.isLoaded) ||
-        this.settingsStore.tenantStatus === TenantStatus.PortalRestore;
-
+      success = this.userStore.isLoaded && this.settingsStore.isLoaded;
+    
       success && this.setLanguage();
     } else {
       success = this.settingsStore.isLoaded;
@@ -231,8 +234,8 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      (this.settingsStore.isLoaded && !!this.settingsStore.socketUrl) || //this.userStore.isAuthenticated ||
-      this.settingsStore.tenantStatus === TenantStatus.PortalRestore
+      this.settingsStore.isLoaded && !!this.settingsStore.socketUrl
+      //|| //this.userStore.isAuthenticated 
     );
   }
 

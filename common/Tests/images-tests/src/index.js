@@ -13,7 +13,7 @@ const {
   findImagesWithDifferentNameButEqualMD5,
 } = require("./differentNameEqualMD5");
 const { findImagesWithEqualMD5AndEqualName } = require("./equalMD5EqualName");
-
+const { findWrongImagesImport } = require("./wrongImagesImport");
 const { importImgToImageHelper } = require("./importImgToImageHelper");
 
 const runAllTests = async () => {
@@ -66,6 +66,7 @@ const runAllTests = async () => {
   findImagesWithDifferentMD5ButEqualName(allImgs);
   findImagesWithDifferentNameButEqualMD5(allImgs);
   findImagesWithEqualMD5AndEqualName(allImgs);
+  findWrongImagesImport(allFiles);
 };
 
 runAllTests();

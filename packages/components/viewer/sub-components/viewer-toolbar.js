@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Icon, { ActionType } from "./icon";
 
-import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
+import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 
 const ToolbarItem = styled.li`
   height: 48px;

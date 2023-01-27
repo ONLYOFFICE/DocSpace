@@ -139,7 +139,6 @@ class NavMenu extends React.Component {
       asideContent,
       history,
       isDesktop,
-      preparationPortalDialogVisible,
       isFrame,
       showHeader,
     } = this.props;
@@ -188,7 +187,6 @@ class NavMenu extends React.Component {
                 {asideContent}
               </Aside>
             )}
-            {preparationPortalDialogVisible && <PreparationPortalDialog />}
           </StyledContainer>
         )}
       </LayoutContextConsumer>
@@ -220,16 +218,16 @@ NavMenu.defaultProps = {
   isDesktop: false,
 };
 
-const NavMenuWrapper = inject(({ auth, backup }) => {
+const NavMenuWrapper = inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
   const { isDesktopClient: isDesktop, frameConfig, isFrame } = settingsStore;
-  const { preparationPortalDialogVisible } = backup;
+
   return {
     isAuthenticated,
     isLoaded,
     isDesktop,
     language,
-    preparationPortalDialogVisible,
+
     showHeader: frameConfig?.showHeader,
     isFrame,
   };

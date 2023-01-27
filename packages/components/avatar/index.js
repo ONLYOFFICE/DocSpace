@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import PencilReactSvgUrl from "../../../public/images/pencil.react.svg?url";
+import PencilReactSvgUrl from "PUBLIC_DIR/images/pencil.react.svg?url";
 
 import { GuestReactSvg, AdministratorReactSvg, OwnerReactSvg } from "./svg";
 import {
