@@ -32,6 +32,7 @@ import CatalogFolderReactSvg from "../../../public/images/catalog.folder.react.s
 import CatalogEmployeeReactSvgUrl from "../../../public/images/catalog.employee.react.svg?url";
 import ItemActiveReactSvgUrl from "../../../public/images/item.active.react.svg?url";
 import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import VerticalDotsReactSvgUrl from "../../../public/images/vertical-dots.react.svg";
 
 const array_items = [
   {
@@ -268,7 +269,7 @@ const Template = (args) => (
         {/*
             <div style={{ padding: "8px 0" }}>
             <ContextMenuButton
-              iconName="static/images/vertical-dots.react.svg"
+              iconName={VerticalDotsReactSvgUrl}
               size={16}
               color="#A3A9AE"
               isDisabled={false}
@@ -290,7 +291,7 @@ const Template = (args) => (
                   size="25"
                   isDisabled={false}
                   onClick={() => {}}
-                  iconName={"search.react.svg"}
+                  iconName={VerticalDotsReactSvgUrl}
                   isFill={true}
                   isClickable={false}
                 />
