@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 import { isIOS, isFirefox, isMobileOnly } from "react-device-detect";
+import BackgroundPatternReactSvgUrl from "PUBLIC_DIR/images/background.pattern.react.svg?url";
 
 export const Wrapper = styled.div`
   height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
@@ -17,7 +18,7 @@ export const Wrapper = styled.div`
     width: 100%;
   `}
 
-  background-image: url("/static/images/background.pattern.react.svg");
+  background-image: url("${BackgroundPatternReactSvgUrl}");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;

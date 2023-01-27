@@ -35,6 +35,7 @@ import {
   StyledAcceptTerms,
 } from "./StyledWizard";
 import DocspaceLogo from "SRC_DIR/DocspaceLogo";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -299,7 +300,7 @@ const Wizard = (props) => {
           <StyledLink>
             <IconButton
               size="12"
-              iconName="/static/images/refresh.react.svg"
+              iconName={RefreshReactSvgUrl}
               onClick={generatePassword}
             />
             <Link
