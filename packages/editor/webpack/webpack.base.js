@@ -10,6 +10,11 @@ module.exports = {
     fallback: {
       crypto: false,
     },
+    alias: {
+      PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+      SRC_DIR: path.resolve(__dirname, "../src"),
+      PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
+    },
   },
   module: {
     rules: [
