@@ -144,6 +144,7 @@ const SelectUsersCountContainer = ({
   isLessCountThanAcceptable,
   step,
   addedManagersCountTitle,
+  isNeedPlusSign,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -207,8 +208,6 @@ const SelectUsersCountContainer = ({
     setManagersCount(numberValue);
     setTotalPrice(numberValue);
   };
-
-  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
 
   const value = isNeedPlusSign
     ? maxAvailableManagersCount + "+"
