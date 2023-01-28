@@ -105,6 +105,7 @@ class FilesStore {
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
+  tempActionFoldersIds = [];
   operationAction = false;
 
   isErrorRoomNotAvailable = false;
@@ -267,7 +268,7 @@ class FilesStore {
           }
           break;
         case "delete":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
 
@@ -296,6 +297,37 @@ class FilesStore {
             this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex == -1) return;
+
+            console.log(
+              "[WS] delete folder",
+              this.folders[foundIndex].id,
+              this.folders[foundIndex].title
+            );
+
+            const tempActionFoldersIds = JSON.parse(
+              JSON.stringify(this.tempActionFoldersIds)
+            );
+            tempActionFoldersIds.push(this.folders[foundIndex].id);
+
+            this.setTempActionFoldersIds(tempActionFoldersIds);
+            this.debounceRemoveFolders();
+
             runInAction(() => {
               this.isHidePagination = true;
             });
@@ -407,12 +439,20 @@ class FilesStore {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
 
+  debounceRemoveFolders = debounce(() => {
+    this.removeFiles(null, this.tempActionFoldersIds);
+  }, 1000);
+
   setIsErrorRoomNotAvailable = (state) => {
     this.isErrorRoomNotAvailable = state;
   };
 
   setTempActionFilesIds = (tempActionFilesIds) => {
     this.tempActionFilesIds = tempActionFilesIds;
+  };
+
+  setTempActionFoldersIds = (tempActionFoldersIds) => {
+    this.tempActionFoldersIds = tempActionFoldersIds;
   };
 
   setOperationAction = (operationAction) => {
