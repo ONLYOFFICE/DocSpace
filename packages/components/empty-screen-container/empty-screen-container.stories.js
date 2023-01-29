@@ -1,8 +1,8 @@
 import React from "react";
 import EmptyScreenContainer from "./";
 import Link from "../link";
-import CrossReactSvgUrl from "../../../public/images/cross.react.svg";
-import EmptyScreenFilterPng from "../../../public/images/empty_screen_filter.png";
+import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg";
+import EmptyScreenFilterPng from "PUBLIC_DIR/images/empty_screen_filter.png";
 
 export default {
   title: "Components/EmptyScreenContainer",

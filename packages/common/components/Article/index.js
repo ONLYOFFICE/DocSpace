@@ -112,6 +112,7 @@ const Article = ({
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
+        $withMainButton={withMainButton}
         {...rest}
       >
         <SubArticleHeader showText={showText}>

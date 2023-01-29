@@ -3,23 +3,23 @@ import styled, { css } from "styled-components";
 import { isMobileOnly, isIOS } from "react-device-detect";
 import { tablet } from "@docspace/components/utils/device";
 
-import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
-import IconStop from "../../../../public/images/videoplayer.stop.react.svg";
+import IconPlay from "PUBLIC_DIR/images/videoplayer.play.react.svg";
+import IconStop from "PUBLIC_DIR/images/videoplayer.stop.react.svg";
 
-import IconVolumeMax from "../../../../public/images/media.volumemax.react.svg";
-import IconVolumeMuted from "../../../../public/images/media.volumeoff.react.svg";
-import IconVolumeMin from "../../../../public/images/media.volumemin.react.svg";
+import IconVolumeMax from "PUBLIC_DIR/images/media.volumemax.react.svg";
+import IconVolumeMuted from "PUBLIC_DIR/images/media.volumeoff.react.svg";
+import IconVolumeMin from "PUBLIC_DIR/images/media.volumemin.react.svg";
 
-import IconFullScreen from "../../../../public/images/videoplayer.full.react.svg";
-import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react.svg";
-import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
+import IconFullScreen from "PUBLIC_DIR/images/videoplayer.full.react.svg";
+import IconExitFullScreen from "PUBLIC_DIR/images/videoplayer.exit.react.svg";
+import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 
-import Icon1x from "../../../../public/images/media.viewer1x.react.svg";
-import Icon05x from "../../../../public/images/media.viewer05x.react.svg";
-import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
-import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
+import Icon1x from "PUBLIC_DIR/images/media.viewer1x.react.svg";
+import Icon05x from "PUBLIC_DIR/images/media.viewer05x.react.svg";
+import Icon15x from "PUBLIC_DIR/images/media.viewer15x.react.svg";
+import Icon2x from "PUBLIC_DIR/images/media.viewer2x.react.svg";
 
-import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
+import BigIconPlay from "PUBLIC_DIR/images/media.bgplay.react.svg";
 import { useSwipeable } from "../../react-swipeable";
 
 let iconWidth = 80;

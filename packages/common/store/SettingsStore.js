@@ -236,7 +236,14 @@ class SettingsStore {
   };
 
   getPortalSettings = async () => {
-    const origSettings = await this.getSettings();
+    const origSettings = await this.getSettings().catch((err) => {
+      if (err?.response?.status === 404) {
+        // portal not found
+        return window.location.replace(
+          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+        );
+      }
+    });
 
     if (origSettings?.plugins?.enabled) {
       initPluginStore();
@@ -257,11 +264,9 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls()
+      this.getWhiteLabelLogoUrls(),
+      this.getBuildVersionInfo()
     );
-
-    this.tenantStatus !== TenantStatus.PortalRestore &&
-      requests.push(this.getBuildVersionInfo());
 
     await Promise.all(requests);
 

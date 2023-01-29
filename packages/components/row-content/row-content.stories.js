@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import RowContent from "./";
 import Link from "../link";
 import Checkbox from "../checkbox";
-import SendClockReactSvg from "../../../public/images/send.clock.react.svg";
-import CatalogSpamReactSvg from "../../../public/images/catalog.spam.react.svg";
+import SendClockReactSvg from "PUBLIC_DIR/images/send.clock.react.svg";
+import CatalogSpamReactSvg from "PUBLIC_DIR/images/catalog.spam.react.svg";
 
 const Template = (args) => {
   const [isChecked, setIsChecked] = useState(false);

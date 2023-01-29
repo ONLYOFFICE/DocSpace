@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import CalendarReactSvgUrl from "../../../public/images/calendar.react.svg?url";
+import CalendarReactSvgUrl from "PUBLIC_DIR/images/calendar.react.svg?url";
 
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";

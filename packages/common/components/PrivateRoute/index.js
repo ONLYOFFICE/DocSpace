@@ -136,10 +136,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (tenantStatus !== TenantStatus.PortalRestore && isPortalUrl) {
-      return window.location.replace("/");
-    }
-
+ 
     if (
       isNotPaidPeriod &&
       isLoaded &&

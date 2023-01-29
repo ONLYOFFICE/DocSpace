@@ -1,7 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import DropDownItem from ".";
-import NavLogoReactSvgUrl from "../../../public/images/nav.logo.react.svg?url";
+import NavLogoReactSvgUrl from "PUBLIC_DIR/images/nav.logo.react.svg?url";
 
 const baseProps = {
   isSeparator: false,

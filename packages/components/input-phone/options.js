@@ -247,7 +247,7 @@ import {
   YemenSvgUrl,
   ZambiaSvgUrl,
   ZimbabweSvgUrl,
-} from "../../../public/images/phoneFlags";
+} from "PUBLIC_DIR/images/phoneFlags";
 
 export const options = [
   {

@@ -7,7 +7,7 @@ const StyledPreparationPortalDialog = styled.div`
     margin-bottom: 40px;
   }
   .preparation-portal_body-wrapper {
-    margin-bottom: 16px;
+    margin-bottom: 0;
   }
 `;
 

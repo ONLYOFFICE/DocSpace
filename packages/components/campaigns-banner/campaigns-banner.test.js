@@ -1,7 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import CampaignsBanner from ".";
-import CampaignsCloudPng from "../../../public/images/campaigns.cloud.png";
+import CampaignsCloudPng from "PUBLIC_DIR/images/campaigns.cloud.png";
 
 describe("<CampaignsBanner />", () => {
   it("renders without error", () => {

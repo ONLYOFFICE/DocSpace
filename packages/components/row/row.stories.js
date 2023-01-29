@@ -3,9 +3,9 @@ import Row from ".";
 import Text from "../text";
 import Avatar from "../avatar";
 import ComboBox from "../combobox";
-import CatalogFolderReactSvg from "../../../public/images/catalog.folder.react.svg";
-import CheckReactSvgUrl from "../../../public/images/check.react.svg?url";
-import ItemActiveReactSvgUrl from "../../../public/images/item.active.react.svg?url";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
+import CheckReactSvgUrl from "PUBLIC_DIR/images/check.react.svg?url";
+import ItemActiveReactSvgUrl from "PUBLIC_DIR/images/item.active.react.svg?url";
 
 export default {
   title: "Components/Row",

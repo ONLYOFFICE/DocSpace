@@ -20,9 +20,9 @@ import ThemeProvider from "@docspace/components/theme-provider";
 
 const isDesktopEditor = window["AscDesktopEditor"] !== undefined;
 
-import PresentationIcoUrl from "../../../../public/images/presentation.ico";
-import SpreadSheetIcoUrl from "../../../../public/images/spreadsheet.ico";
-import TextIcoUrl from "../../../../public/images/text.ico";
+import PresentationIcoUrl from "PUBLIC_DIR/images/presentation.ico";
+import SpreadSheetIcoUrl from "PUBLIC_DIR/images/spreadsheet.ico";
+import TextIcoUrl from "PUBLIC_DIR/images/text.ico";
 
 const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   const [isInitialized, isErrorLoading] = useMfScripts();

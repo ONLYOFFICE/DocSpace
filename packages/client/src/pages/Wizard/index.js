@@ -35,6 +35,7 @@ import {
   StyledAcceptTerms,
 } from "./StyledWizard";
 import DocspaceLogo from "SRC_DIR/DocspaceLogo";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -299,7 +300,7 @@ const Wizard = (props) => {
           <StyledLink>
             <IconButton
               size="12"
-              iconName="/static/images/refresh.react.svg"
+              iconName={RefreshReactSvgUrl}
               onClick={generatePassword}
             />
             <Link
@@ -325,6 +326,7 @@ const Wizard = (props) => {
               {t("Common:Language")}
             </Text>
             <ComboBox
+              withoutPadding
               directionY="both"
               options={cultureNames}
               selectedOption={selectedLanguage}
@@ -347,6 +349,7 @@ const Wizard = (props) => {
               {t("Timezone")}
             </Text>
             <ComboBox
+              withoutPadding
               directionY="both"
               options={timezones}
               selectedOption={selectedTimezone}
