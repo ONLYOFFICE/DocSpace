@@ -73,6 +73,14 @@ class UploadDataStore {
     this.settingsStore = settingsStore;
   }
 
+  removeFiles = (fileIds) => {
+    fileIds.forEach((id) => {
+      this.files = this.files?.filter(
+        (file) => !(file.action === "converted" && file.fileInfo.id === id)
+      );
+    });
+  };
+
   selectUploadedFile = (file) => {
     this.selectedUploadFile = file;
   };
