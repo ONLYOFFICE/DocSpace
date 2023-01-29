@@ -560,7 +560,7 @@ public class FileStorageService<T> //: IFileStorageService
             await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
         }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, title, result.Item1.Id.ToString(), result.Item2, @private);
 
         return result.Item1;
     }
