@@ -373,9 +373,9 @@ class UploadDataStore {
       const res = convertFile(fileId, itemPassword)
         .then((res) => res)
         .catch(() => {
-          runInAction(() => {
-            const error = t("FailedToConvert");
+          const error = t("FailedToConvert");
 
+          runInAction(() => {
             if (file) file.error = error;
             if (historyFile) historyFile.error = error;
           });
@@ -752,7 +752,8 @@ class UploadDataStore {
     fileSize,
     indexOfFile,
     file,
-    path
+    path,
+    t
   ) => {
     this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
@@ -823,7 +824,7 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length || this.converted) {
         this.filesToConversion.push(currentFile);
-        this.startConversion();
+        this.startConversion(t);
       } else {
         this.filesToConversion.push(currentFile);
       }
@@ -956,7 +957,8 @@ class UploadDataStore {
           fileSize,
           indexOfFile,
           file,
-          path
+          path,
+          t
         );
       })
       .catch((error) => {
