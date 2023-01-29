@@ -135,19 +135,17 @@ const FilesMediaViewer = (props) => {
 
     setMediaViewerData({ visible: false, id: null });
 
-    if (e) {
-      const url = localStorage.getItem("isFirstUrl");
+    const url = localStorage.getItem("isFirstUrl");
 
-      if (!url) {
-        return;
-      }
-
-      setScrollToItem({ id: currentMediaFileId, type: "file" });
-      const targetFile = files.find((item) => item.id === currentMediaFileId);
-      if (targetFile) setBufferSelection(targetFile);
-
-      window.history.replaceState(null, null, url);
+    if (!url) {
+      return;
     }
+
+    setScrollToItem({ id: currentMediaFileId, type: "file" });
+    const targetFile = files.find((item) => item.id === currentMediaFileId);
+    if (targetFile) setBufferSelection(targetFile);
+
+    window.history.replaceState(null, null, url);
   };
 
   return (

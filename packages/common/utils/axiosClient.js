@@ -1,6 +1,6 @@
 import axios from "axios";
 import combineUrl from "./combineUrl";
-import defaultConfig from "../../../public/scripts/config.json";
+import defaultConfig from "PUBLIC_DIR/scripts/config.json";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
 let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;

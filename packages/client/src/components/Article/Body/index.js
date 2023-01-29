@@ -105,9 +105,6 @@ const ArticleBodyContent = (props) => {
             );
           })
           .finally(() => {
-            if (isMobileOnly || isMobile()) {
-              toggleArticleOpen();
-            }
             if (filesSection) {
               setIsLoading(false);
             } else {
@@ -139,15 +136,16 @@ const ArticleBodyContent = (props) => {
           })
           .catch((err) => toastr.error(err))
           .finally(() => {
-            if (isMobileOnly || isMobile()) {
-              toggleArticleOpen();
-            }
             if (filesSection) {
               setIsLoading(false);
             } else {
               hideLoader();
             }
           });
+      }
+
+      if (isMobileOnly || isMobile()) {
+        toggleArticleOpen();
       }
     },
     [categoryType, roomsFolderId, archiveFolderId]

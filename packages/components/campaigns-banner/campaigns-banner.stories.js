@@ -1,6 +1,6 @@
 import React from "react";
 import CampaignsBanner from "./";
-import CampaignsCloudPng from "../../../public/images/campaigns.cloud.png";
+import CampaignsCloudPng from "PUBLIC_DIR/images/campaigns.cloud.png";
 
 export default {
   title: "Components/CampaignsBanner",

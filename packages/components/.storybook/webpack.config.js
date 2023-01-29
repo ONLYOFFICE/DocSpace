@@ -6,6 +6,10 @@ const pathToAssets = path.resolve(__dirname, "../../../public/images");
 module.exports = ({ config }) => {
   const rules = config.module.rules;
 
+  config.resolve.alias = {
+    PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+  };
+
   const fileLoaderRule = rules.find((rule) => rule.test.test(".svg"));
   fileLoaderRule.exclude = /\.svg$/;
 

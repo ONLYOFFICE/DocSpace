@@ -326,6 +326,7 @@ const Wizard = (props) => {
               {t("Common:Language")}
             </Text>
             <ComboBox
+              withoutPadding
               directionY="both"
               options={cultureNames}
               selectedOption={selectedLanguage}
@@ -348,6 +349,7 @@ const Wizard = (props) => {
               {t("Timezone")}
             </Text>
             <ComboBox
+              withoutPadding
               directionY="both"
               options={timezones}
               selectedOption={selectedTimezone}
