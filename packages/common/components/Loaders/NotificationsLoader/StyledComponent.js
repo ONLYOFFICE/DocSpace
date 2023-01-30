@@ -15,6 +15,7 @@ const StyledComponent = styled.div`
   .notifications_content-loader {
     max-width: 540px;
   }
+  margin-bottom: 24px;
 `;
 
 export { StyledComponent };

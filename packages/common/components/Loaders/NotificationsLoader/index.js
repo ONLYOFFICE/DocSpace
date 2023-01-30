@@ -61,9 +61,13 @@ const NotificationsLoader = ({
   );
 
   for (var i = 0; i < count; i++) {
-    items.push(<div key={`notification_loader_${i}`}>{contentItem}</div>);
+    items.push(
+      <StyledComponent key={`notification_loader_${i}`}>
+        {contentItem}
+      </StyledComponent>
+    );
   }
-  return <StyledComponent>{items}</StyledComponent>;
+  return items;
 };
 
 export default NotificationsLoader;
