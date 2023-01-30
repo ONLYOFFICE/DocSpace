@@ -834,7 +834,7 @@ class FilesStore {
     this.selection = selection;
   };
 
-  setSelections = (added, removed, clear) => {
+  setSelections = (added, removed, clear = false) => {
     if (clear) {
       this.selection = [];
     }

@@ -98,10 +98,10 @@ class SelectionArea extends React.Component {
     const x4 = Math.max(x1, x2);
     const y4 = Math.max(y1, y2);
 
-    this.areaRect.x = x3;
-    this.areaRect.y = y3;
-    this.areaRect.width = x4 - x3;
-    this.areaRect.height = y4 - y3;
+    this.areaRect.x = x3 + 1;
+    this.areaRect.y = y3 + 1;
+    this.areaRect.width = x4 - x3 - 3;
+    this.areaRect.height = y4 - y3 - 3;
   };
 
   updateElementSelection = () => {

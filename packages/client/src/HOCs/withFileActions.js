@@ -235,7 +235,7 @@ export default function withFileActions(WrappedFileItem) {
         ? "_draggable"
         : item.providerKey
         ? `_${item.providerKey}`
-        : "";
+        : "_false";
 
       const isShareable = allowShareIn && item.canShare;
 
