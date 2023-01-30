@@ -143,6 +143,7 @@ public class SettingsController : BaseSettingsController
             GreetingSettings = Tenant.Name == "" ? Resource.PortalName : Tenant.Name,
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
+            Standalone = _coreBaseSettings.Standalone,
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
