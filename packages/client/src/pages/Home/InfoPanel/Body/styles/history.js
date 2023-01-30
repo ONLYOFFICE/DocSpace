@@ -50,7 +50,7 @@ const StyledHistoryBlock = styled.div`
   width: 100%;
   display: flex;
   gap: 8px;
-  padding: 16px 0;
+  padding: 8px 0;
 
   ${({ withBottomDivider, theme }) =>
     withBottomDivider
@@ -128,7 +128,7 @@ const StyledHistoryBlockMessage = styled.div`
 `;
 
 const StyledHistoryBlockFilesList = styled.div`
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   padding: 8px 0;
