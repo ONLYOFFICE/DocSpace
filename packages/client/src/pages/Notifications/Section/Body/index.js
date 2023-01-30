@@ -13,11 +13,12 @@ import Loaders from "@docspace/common/components/Loaders";
 const StyledBodyContent = styled.div`
   .notification-container {
     display: grid;
-    grid-template-columns: 540px 120px;
+    max-width: 660px;
+    grid-template-columns: 1fr 120px;
     margin-bottom: 24px;
 
     .toggle-btn {
-      margin-left: auto;
+      padding-left: 46px;
     }
   }
   .badges-container {
@@ -29,6 +30,7 @@ const StyledTextContent = styled.div`
   margin-bottom: 24px;
   height: 39px;
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+  max-width: 700px;
 `;
 
 let timerId = null;
