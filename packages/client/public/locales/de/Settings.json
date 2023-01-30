@@ -73,7 +73,7 @@
   "PortalAccessSubTitle": "In diesem Bereich können Sie den Benutzern einen sicheren und nahtlosen Zugang zum Portal gewähren.",
   "PortalNameEmpty": "Der Kontoname ist leer",
   "PortalNameIncorrect": "Inkorrekter Kontoname",
-  "PortalNameLength": "Der Kontoname muss zwischen 6 und 50 Zeichen lang sein",
+  "PortalNameLength": "Der Kontoname muss zwischen {{minLength}} und {{maxLength}} Zeichen lang sein",
   "PortalRenaming": "Portalumbenennung",
   "PortalRenamingDescription": "Hier können Sie Ihre Portaladresse ändern.",
   "PortalRenamingLabelText": "Neuer Portalname",

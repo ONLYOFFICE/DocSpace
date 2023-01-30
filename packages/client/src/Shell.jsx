@@ -11,7 +11,7 @@ import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
-import { updateTempContent } from "@docspace/common/utils";
+import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -169,7 +169,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   useEffect(() => {
     if (!whiteLabelLogoUrls) return;
-    const favicon = whiteLabelLogoUrls[2]?.path?.light;
+    const favicon = getLogoFromPath(whiteLabelLogoUrls[2]?.path?.light);
 
     let link = document.querySelector("link[rel~='icon']");
     if (!link) {
@@ -178,6 +178,20 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       document.getElementsByTagName("head")[0].appendChild(link);
     }
     link.href = favicon;
+
+    const shortcutIconLink = document.querySelector("#favicon");
+    shortcutIconLink.href = favicon;
+
+    const appleIconLink = document.querySelector(
+      "link[rel~='apple-touch-icon']"
+    );
+
+    if (appleIconLink) appleIconLink.href = favicon;
+
+    const androidIconLink = document.querySelector(
+      "link[rel~='android-touch-icon']"
+    );
+    if (androidIconLink) androidIconLink.href = favicon;
   }, [whiteLabelLogoUrls]);
 
   useEffect(() => {
@@ -474,7 +488,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-settings"}
                 component={PortalSettingsRoute}
               />
-              <PrivateRoute
+              <PublicRoute
                 path={"/preparation-portal"}
                 component={PreparationPortalRoute}
               />

@@ -12,9 +12,9 @@ export default function template(
   const { title } = pkg;
   const { error } = initialEditorState;
   const editorUrl = initialEditorState?.config?.editorUrl;
-  const faviconHref = getFavicon(
-    initialEditorState?.config?.documentType,
-    initialEditorState?.logoUrls
+  const faviconHref = getFavicon(initialEditorState?.logoUrls)?.replace(
+    "client/",
+    "doceditor/"
   );
 
   let clientScripts =
@@ -88,7 +88,8 @@ export default function template(
           <link rel="manifest" href="/manifest.json" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
-          <link rel="apple-touch-icon" href="/appIcon.png" />
+          <link rel="apple-touch-icon" href=${faviconHref} />
+          <link rel="android-touch-icon" href=${faviconHref} />
           ${styleTags}   
           <style type="text/css">
             .loadmask {

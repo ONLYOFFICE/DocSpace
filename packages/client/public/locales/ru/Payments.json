@@ -23,6 +23,7 @@
   "InvalidEmail": "Неверный email",
   "LatePayment": "Просрочка платежа",
   "ManagerTypesDescription": "Типы учетных записей администратора и их привилегии",
+  "NumberOfAdmins": "Количество администраторов",
   "OwnerCanChangePayer": "Владелец портала может изменить плательщика",
   "Pay": "Оплатить",
   "PayBeforeTheEndGracePeriod": "Обязательно произведите оплату до истечения льготного периода",

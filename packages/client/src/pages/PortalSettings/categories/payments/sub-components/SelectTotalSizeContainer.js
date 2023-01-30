@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
@@ -9,7 +9,7 @@ const StyledBody = styled.div`
     margin-bottom: 8px;
     margin-left: auto;
     margin-right: auto;
-    width: max-content;
+
     color: ${(props) =>
       props.isDisabled
         ? props.theme.client.settings.payment.priceContainer.disableColor
@@ -30,6 +30,7 @@ const SelectTotalSizeContainer = ({
   return (
     <StyledBody theme={theme}>
       <Text
+        textAlign={"center"}
         noSelect
         fontWeight={600}
         fontSize="11px"

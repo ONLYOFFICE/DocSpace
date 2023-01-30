@@ -87,14 +87,18 @@ public static class BaseDbContextExtension
         }
     }
 
-    public static void AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
     {
         services.AddPooledDbContextFactory<T>(OptionsAction);
+
+        return services;
     }
 
-    public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
     {
         services.AddDbContext<T>(OptionsAction);
+
+        return services;
     }
 
     public static T AddOrUpdate<T, TContext>(this TContext b, DbSet<T> dbSet, T entity) where T : BaseEntity where TContext : DbContext

@@ -20,6 +20,7 @@ const AuditTrail = (props) => {
     getAuditTrailReport,
     securityLifetime,
     isAuditAvailable,
+    isLoadingDownloadReport,
   } = props;
 
   useEffect(() => {
@@ -72,9 +73,11 @@ const AuditTrail = (props) => {
           lifetime={securityLifetime.auditTrailLifeTime}
           setLifetimeAuditSettings={setLifetimeAuditSettings}
           content={getContent()}
-          downloadReport={t("DownloadReportBtn")}
+          downloadReport={t("DownloadReportBtnText")}
+          downloadReportDescription={t("DownloadReportDescription")}
           getReport={getAuditTrailReport}
           isSettingNotPaid={!isAuditAvailable}
+          isLoadingDownloadReport={isLoadingDownloadReport}
         />
       )}
     </>
@@ -90,6 +93,7 @@ export default inject(({ setup, auth }) => {
     setLifetimeAuditSettings,
     getAuditTrailReport,
     securityLifetime,
+    isLoadingDownloadReport,
   } = setup;
   const { settingsStore, currentQuotaStore } = auth;
   const { theme } = settingsStore;
@@ -104,5 +108,6 @@ export default inject(({ setup, auth }) => {
     getAuditTrailReport,
     securityLifetime,
     isAuditAvailable,
+    isLoadingDownloadReport,
   };
 })(withTranslation("Settings")(withRouter(AuditTrail)));

@@ -26,6 +26,9 @@ const EditRoomEvent = ({
   calculateRoomLogoParams,
   uploadRoomLogo,
   setFolder,
+  getFolderIndex,
+  updateFolder,
+
   removeLogoFromRoom,
   addLogoToRoom,
 
@@ -72,6 +75,21 @@ const EditRoomEvent = ({
     },
   };
 
+  const updateRoom = (oldRoom, newRoom) => {
+    // After rename of room with providerKey, it's id value changes too
+    if (oldRoom.providerKey) {
+      let index = getFolderIndex(oldRoom.id);
+
+      if (index === -1) {
+        index = getFolderIndex(newRoom.id);
+      }
+
+      return updateFolder(index, newRoom);
+    }
+
+    setFolder(newRoom);
+  };
+
   const onSave = async (roomParams) => {
     const editRoomParams = {
       title: roomParams.title || t("Files:NewRoom"),
@@ -91,40 +109,43 @@ const EditRoomEvent = ({
 
       room.isLogoLoading = true;
 
-      for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
+      for (let i = 0; i < newTags.length; i++) {
+        await createTag(newTags[i]);
+      }
+
       room = await addTagsToRoom(room.id, tags);
       room = await removeTagsFromRoom(room.id, removedTags);
 
-      if (!!item.logo.original && !roomParams.icon.uploadedFile)
+      if (!!item.logo.original && !roomParams.icon.uploadedFile) {
         room = await removeLogoFromRoom(room.id);
+      }
 
       if (roomParams.icon.uploadedFile) {
-        await setFolder({
+        updateRoom(item, {
           ...room,
           logo: { big: item.logo.small },
         });
 
         addActiveItems(null, [room.id]);
 
-        await uploadRoomLogo(uploadLogoData).then((response) => {
-          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
-          const img = new Image();
-          img.onload = async () => {
-            const { x, y, zoom } = roomParams.icon;
-            room = await addLogoToRoom(room.id, {
-              tmpFile: response.data,
-              ...calculateRoomLogoParams(img, x, y, zoom),
-            });
+        const response = await uploadRoomLogo(uploadLogoData);
+        const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+        const img = new Image();
+        img.onload = async () => {
+          const { x, y, zoom } = roomParams.icon;
+          room = await addLogoToRoom(room.id, {
+            tmpFile: response.data,
+            ...calculateRoomLogoParams(img, x, y, zoom),
+          });
 
-            if (!withPaging) setFolder(room);
-            reloadInfoPanelSelection();
-            URL.revokeObjectURL(img.src);
-            setActiveFolders([]);
-          };
-          img.src = url;
-        });
+          !withPaging && updateRoom(item, room);
+          reloadInfoPanelSelection();
+          URL.revokeObjectURL(img.src);
+          setActiveFolders([]);
+        };
+        img.src = url;
       } else {
-        if (!withPaging) setFolder(room);
+        !withPaging && updateRoom(item, room);
         reloadInfoPanelSelection();
       }
     } catch (err) {
@@ -206,6 +227,8 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       setFolder,
+      getFolderIndex,
+      updateFolder,
       addLogoToRoom,
       removeLogoFromRoom,
       addActiveItems,
@@ -240,6 +263,8 @@ export default inject(
 
       calculateRoomLogoParams,
       setFolder,
+      getFolderIndex,
+      updateFolder,
       uploadRoomLogo,
       removeLogoFromRoom,
       addLogoToRoom,

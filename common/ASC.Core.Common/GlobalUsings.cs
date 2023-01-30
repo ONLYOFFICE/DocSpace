@@ -161,7 +161,7 @@ global using ProtoBuf;
 global using Telegram.Bot;
 
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
-
+global using Microsoft.EntityFrameworkCore.Update;
 global using AppOptions = FirebaseAdmin.AppOptions;
 global using FirebaseApp = FirebaseAdmin.FirebaseApp;
 global using FirebaseAdminMessaging = FirebaseAdmin.Messaging;

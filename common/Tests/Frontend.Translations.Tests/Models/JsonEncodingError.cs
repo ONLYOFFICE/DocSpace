@@ -26,7 +26,7 @@
 
 using UtfUnknown;
 
-namespace Frontend.Translations.Tests;
+namespace Frontend.Tests;
 
 public class JsonEncodingError
 {

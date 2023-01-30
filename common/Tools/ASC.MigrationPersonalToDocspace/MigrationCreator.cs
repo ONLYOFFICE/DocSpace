@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.RegularExpressions;
-
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 [Scope]
@@ -37,6 +35,7 @@ public class MigrationCreator
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
+    private readonly IMapper _mapper;
 
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
@@ -72,7 +71,8 @@ public class MigrationCreator
         DbFactory dbFactory,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
-        ModuleProvider moduleProvider)
+        ModuleProvider moduleProvider,
+        IMapper mapper)
     {
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
@@ -80,6 +80,7 @@ public class MigrationCreator
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
+        _mapper = mapper;
     }
 
     public string Create(string fromAlias, string userName, string mail, string toRegion, string toAlias)
@@ -87,6 +88,7 @@ public class MigrationCreator
         Init(fromAlias, userName, mail, toRegion, toAlias);
 
         var id = GetUserId();
+        CheckCountManager();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
@@ -171,6 +173,30 @@ public class MigrationCreator
         }
     }
 
+    private void CheckCountManager()
+    {
+        if (!string.IsNullOrEmpty(_toAlias)) {
+            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+            var tenant = dbContextTenant.Tenants.SingleOrDefault(t => t.Alias == _toAlias);
+
+            using var coreDbContext = _dbFactory.CreateDbContext<CoreDbContext>(_toRegion);
+            var qouta = coreDbContext.Quotas
+                 .Where(r => r.Tenant == tenant.Id)
+                 .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
+                 .SingleOrDefault();
+
+            using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
+            var usersCount = userDbContextToregion.Users
+                .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new {u, ug})
+                .Where(q=> q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
+            if (usersCount > qouta.CountRoomAdmin)
+            {
+                throw new ArgumentException("user count exceed");
+            }
+        }
+    }
+
+
     private void DoMigrationDb(Guid id, IDataWriteOperator writer)
     {
         if (!string.IsNullOrEmpty(_toAlias))
@@ -239,6 +265,11 @@ public class MigrationCreator
                 ChangeName(data);
             }
 
+            if (data.TableName == "files_bunch_objects")
+            {
+                ClearCommonBunch(data);
+            }
+
             WriteEnrty(data, writer, module);
         }
     }
@@ -281,6 +312,7 @@ public class MigrationCreator
                 {
                     NewAlias = $"DocSpace{NewAlias}";
                 }
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -293,6 +325,8 @@ public class MigrationCreator
                 {
                     NewAlias = NewAlias + 1;
                 }
+
+                Console.WriteLine(ex.Message);
             }
         }
         Console.WriteLine($"Alias is - {NewAlias}");
@@ -316,7 +350,19 @@ public class MigrationCreator
     {
         data.Rows[0]["name"] = "";
     }
-    
+
+    private void ClearCommonBunch(DataTable data)
+    {
+        for(var i = 0; i < data.Rows.Count; i++)
+        {
+            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
+            {
+                data.Rows.RemoveAt(i);
+                i--;
+            }
+        }
+    }
+
     private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         Console.WriteLine($"start backup storage");

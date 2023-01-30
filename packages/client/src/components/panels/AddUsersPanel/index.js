@@ -115,6 +115,7 @@ const AddUsersPanel = ({
           onAccept={onUsersSelect}
           onBackClick={onBackClick}
           accessRights={accessOptions}
+          acceptButtonLabel={t("Common:AddButton")}
           selectedAccessRight={selectedAccess}
           onCancel={onClosePanels}
           withCancelButton={!isMultiSelect}

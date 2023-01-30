@@ -219,6 +219,9 @@ public class EFUserService : IUserService
 
         q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
+        var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
+        q = orderedQuery;
+
         if (!string.IsNullOrEmpty(sortBy))
         {
             if (sortBy == "type")
@@ -229,12 +232,20 @@ public class EFUserService : IUserService
                          from @group in joinedGroup.DefaultIfEmpty()
                          select new { user, @group };
 
-                q = sortOrderAsc ? q1.OrderBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user)
-                    : q1.OrderByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+                if (sortOrderAsc)
+                {
+                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
+                       .ThenBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user);
+                }
+                else
+                {
+                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
+                        .ThenByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+                }
             }
             else
             {
-                q = q.OrderBy(sortBy, sortOrderAsc);
+                q = orderedQuery.ThenBy(sortBy, sortOrderAsc);
             }
         }
 

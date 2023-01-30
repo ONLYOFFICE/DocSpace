@@ -28,7 +28,7 @@ using Folder = Microsoft.OneDrive.Sdk.Folder;
 
 namespace ASC.Files.Thirdparty.OneDrive;
 
-[Scope]
+[Transient]
 internal class OneDriveStorage
 {
     private OAuth20Token _token;

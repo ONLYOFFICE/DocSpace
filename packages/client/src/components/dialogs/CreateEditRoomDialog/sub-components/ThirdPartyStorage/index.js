@@ -40,6 +40,7 @@ const ThirdPartyStorage = ({
 
   isDisabled,
   currentColorScheme,
+  isRoomAdmin,
 }) => {
   const onChangeIsThirdparty = () => {
     if (isDisabled) return;
@@ -49,7 +50,9 @@ const ThirdPartyStorage = ({
         isThirdparty: !storageLocation.isThirdparty,
       });
     } else {
-      toastr.warning(
+      const data = isRoomAdmin ? (
+        <Text as="p">{t("ThirdPartyStorageRoomAdminNoStorageAlert")}</Text>
+      ) : (
         <Text as="p">
           {t("ThirdPartyStorageNoStorageAlert")}{" "}
           <Link
@@ -60,12 +63,10 @@ const ThirdPartyStorage = ({
           >
             {t("Translations:ThirdPartyTitle")}
           </Link>
-        </Text>,
-        null,
-        5000,
-        true,
-        false
+        </Text>
       );
+
+      toastr.warning(data, null, 5000, true, false);
     }
   };
 
@@ -185,6 +186,8 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     )
     .filter((item) => !!item);
 
+  const { isRoomAdmin } = auth;
+
   return {
     connectItems,
 
@@ -201,5 +204,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectItem,
     getOAuthToken,
     currentColorScheme,
+    isRoomAdmin,
   };
 })(observer(ThirdPartyStorage));

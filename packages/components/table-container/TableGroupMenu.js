@@ -10,6 +10,8 @@ import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
 import { useTranslation } from "react-i18next";
 import IconButton from "../icon-button";
+import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
+import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 
 const TableGroupMenu = (props) => {
   const {
@@ -47,7 +49,7 @@ const TableGroupMenu = (props) => {
         />
         <ComboBox
           id="menu-combobox"
-          comboIcon="/static/images/triangle.navigation.down.react.svg"
+          comboIcon={TriangleNavigationDownReactSvgUrl}
           noBorder
           advancedOptions={checkboxOptions}
           className="table-container_group-menu-combobox not-selectable"
@@ -70,7 +72,7 @@ const TableGroupMenu = (props) => {
               <IconButton
                 id="info-panel-toggle--open"
                 className="info-panel-toggle"
-                iconName="images/panel.react.svg"
+                iconName={PanelReactSvgUrl}
                 size="16"
                 isFill={true}
                 onClick={toggleInfoPanel}

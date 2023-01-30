@@ -26,6 +26,7 @@
 
 global using System.Data;
 global using System.Data.Common;
+global using System.Text.RegularExpressions;
 global using System.Xml.Linq;
 
 global using ASC.Api.Core;
@@ -33,7 +34,6 @@ global using ASC.Api.Core.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Logging;
-global using ASC.Common.Utils;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
@@ -47,7 +47,6 @@ global using ASC.Data.Backup.Tasks;
 global using ASC.Data.Backup.Tasks.Data;
 global using ASC.Data.Backup.Tasks.Modules;
 global using ASC.Data.Storage;
-global using ASC.Data.Storage.DiscStorage;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.EventBus.Extensions.Logger;
@@ -60,6 +59,9 @@ global using ASC.Migration.PersonalToDocspace.Runner;
 global using ASC.Webhooks.Core.EF.Context;
 
 global using Autofac.Extensions.DependencyInjection;
+
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;

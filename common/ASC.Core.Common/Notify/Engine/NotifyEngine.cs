@@ -194,7 +194,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 }
                 if (request != null)
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
+                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     foreach (var action in Actions)
                     {
                         ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);

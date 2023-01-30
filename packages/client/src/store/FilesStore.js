@@ -1,3 +1,4 @@
+import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
@@ -104,6 +105,7 @@ class FilesStore {
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
+  tempActionFoldersIds = [];
   operationAction = false;
 
   isErrorRoomNotAvailable = false;
@@ -146,7 +148,7 @@ class FilesStore {
 
       switch (opt?.cmd) {
         case "create":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex > -1) return;
 
@@ -171,10 +173,39 @@ class FilesStore {
               this.setFilter(newFilter);
               this.setFiles(newFiles);
             });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex > -1) return;
+
+            const folder = JSON.parse(opt?.data);
+
+            if (this.selectedFolderStore.id !== folder.parentId) return;
+
+            const folderInfo = await api.files.getFolderInfo(folder.id);
+
+            console.log(
+              "[WS] create new folder",
+              folderInfo.id,
+              folderInfo.title
+            );
+
+            const newFolders = [folderInfo, ...this.folders];
+
+            if (newFolders.length > this.filter.pageCount && withPaging) {
+              newFolders.pop(); // Remove last
+            }
+
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFolders(newFolders);
+            });
           }
           break;
         case "update":
-          if (opt?.type == "file" && opt?.data) {
+          if (opt?.type === "file" && opt?.data) {
             const file = JSON.parse(opt?.data);
 
             if (!file || !file.id) return;
@@ -204,10 +235,40 @@ class FilesStore {
                 });
               }
             }
+          } else if (opt?.type === "folder" && opt?.data) {
+            const folder = JSON.parse(opt?.data);
+
+            if (!folder || !folder.id) return;
+
+            this.getFolderInfo(folder.id);
+
+            console.log("[WS] update folder", folder.id, folder.title);
+
+            if (this.selection) {
+              const foundIndex = this.selection?.findIndex(
+                (x) => x.id === folder.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.selection[foundIndex] = folder;
+                });
+              }
+            }
+
+            if (this.bufferSelection) {
+              const foundIndex = [this.bufferSelection].findIndex(
+                (x) => x.id === folder.id
+              );
+              if (foundIndex > -1) {
+                runInAction(() => {
+                  this.bufferSelection[foundIndex] = folder;
+                });
+              }
+            }
           }
           break;
         case "delete":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
 
@@ -236,6 +297,37 @@ class FilesStore {
             this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex == -1) return;
+
+            console.log(
+              "[WS] delete folder",
+              this.folders[foundIndex].id,
+              this.folders[foundIndex].title
+            );
+
+            const tempActionFoldersIds = JSON.parse(
+              JSON.stringify(this.tempActionFoldersIds)
+            );
+            tempActionFoldersIds.push(this.folders[foundIndex].id);
+
+            this.setTempActionFoldersIds(tempActionFoldersIds);
+            this.debounceRemoveFolders();
+
             runInAction(() => {
               this.isHidePagination = true;
             });
@@ -347,12 +439,20 @@ class FilesStore {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
 
+  debounceRemoveFolders = debounce(() => {
+    this.removeFiles(null, this.tempActionFoldersIds);
+  }, 1000);
+
   setIsErrorRoomNotAvailable = (state) => {
     this.isErrorRoomNotAvailable = state;
   };
 
   setTempActionFilesIds = (tempActionFilesIds) => {
     this.tempActionFilesIds = tempActionFilesIds;
+  };
+
+  setTempActionFoldersIds = (tempActionFoldersIds) => {
+    this.tempActionFoldersIds = tempActionFoldersIds;
   };
 
   setOperationAction = (operationAction) => {
@@ -636,11 +736,21 @@ class FilesStore {
     }
   };
 
-  setFolder = (folder) => {
-    const index = this.folders.findIndex((x) => x.id === folder.id);
+  getFolderIndex = (id) => {
+    const index = this.folders.findIndex((x) => x.id === id);
+    return index;
+  };
+
+  updateFolder = (index, folder) => {
     if (index !== -1) this.folders[index] = folder;
 
     this.updateSelection(folder.id);
+  };
+
+  setFolder = (folder) => {
+    const index = this.getFolderIndex(folder.id);
+
+    this.updateFolder(index, folder);
   };
 
   getFilesChecked = (file, selected) => {
@@ -1021,7 +1131,11 @@ class FilesStore {
             this.isErrorRoomNotAvailable = true;
           });
         } else {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         }
       })
       .finally(() => {
@@ -1135,7 +1249,11 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         });
 
     return request();

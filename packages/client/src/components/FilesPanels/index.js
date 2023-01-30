@@ -26,6 +26,7 @@ import {
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
+import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 
 const Panels = (props) => {
   const {
@@ -56,6 +57,7 @@ const Panels = (props) => {
     restoreAllPanelVisible,
     archiveDialogVisible,
     inviteUsersWarningDialogVisible,
+    preparationPortalDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -125,6 +127,9 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
+    preparationPortalDialogVisible && (
+      <PreparationPortalDialog key="preparation-portal-dialog" />
+    ),
   ];
 };
 
@@ -134,6 +139,7 @@ export default inject(
     dialogsStore,
     uploadDataStore,
     versionHistoryStore,
+    backup,
     createEditRoomStore,
   }) => {
     const {
@@ -164,12 +170,15 @@ export default inject(
       inviteUsersWarningDialogVisible,
     } = dialogsStore;
 
+    const { preparationPortalDialogVisible } = backup;
+
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
     const { hotkeyPanelVisible } = auth.settingsStore;
     const { confirmDialogIsLoading } = createEditRoomStore;
 
     return {
+      preparationPortalDialogVisible,
       sharingPanelVisible,
       uploadPanelVisible,
       ownerPanelVisible,

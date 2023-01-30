@@ -15,8 +15,6 @@ const FilesMediaViewer = (props) => {
     currentMediaFileId,
     deleteItemAction,
     setMediaViewerData,
-    mediaViewerMediaFormats,
-    mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
     userAccess,
@@ -29,7 +27,6 @@ const FilesMediaViewer = (props) => {
     setScrollToItem,
     setCurrentId,
     setBufferSelection,
-    mediaViewerAudioFormats,
     isFavoritesFolder,
     onClickFavorite,
     onShowInfoPanel,
@@ -41,6 +38,8 @@ const FilesMediaViewer = (props) => {
     onCopyAction,
     getIcon,
     onDuplicate,
+    extsImagePreviewed,
+    extsMediaPreviewed,
   } = props;
 
   useEffect(() => {
@@ -136,22 +135,18 @@ const FilesMediaViewer = (props) => {
 
     setMediaViewerData({ visible: false, id: null });
 
-    if (e) {
-      const url = localStorage.getItem("isFirstUrl");
+    const url = localStorage.getItem("isFirstUrl");
 
-      if (!url) {
-        return;
-      }
-
-      setScrollToItem({ id: currentMediaFileId, type: "file" });
-      const targetFile = files.find((item) => item.id === currentMediaFileId);
-      if (targetFile) setBufferSelection(targetFile);
-
-      window.history.replaceState(null, null, url);
+    if (!url) {
+      return;
     }
-  };
 
-  const mediaFormats = [...mediaViewerMediaFormats, ...mediaViewerAudioFormats];
+    setScrollToItem({ id: currentMediaFileId, type: "file" });
+    const targetFile = files.find((item) => item.id === currentMediaFileId);
+    if (targetFile) setBufferSelection(targetFile);
+
+    window.history.replaceState(null, null, url);
+  };
 
   return (
     visible && (
@@ -181,8 +176,8 @@ const FilesMediaViewer = (props) => {
         getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
-        extsMediaPreviewed={mediaFormats} //TODO:
-        extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        extsMediaPreviewed={extsMediaPreviewed}
+        extsImagePreviewed={extsImagePreviewed}
         errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={!!previewFile}
         onChangeUrl={onChangeUrl}
@@ -221,7 +216,7 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage, extsAudio, getIcon } = settingsStore;
+    const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
     const { isFavoritesFolder } = treeFoldersStore;
 
     const {
@@ -244,9 +239,8 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: extsImage,
-      mediaViewerMediaFormats: extsVideo,
-      mediaViewerAudioFormats: extsAudio,
+      extsImagePreviewed,
+      extsMediaPreviewed,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,

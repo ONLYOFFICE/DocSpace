@@ -1,3 +1,23 @@
+﻿import IconBoxSmallReactSvgUrl from "PUBLIC_DIR/images/icon_box_small.react.svg?url";
+import IconBoxReactSvgUrl from "PUBLIC_DIR/images/icon_box.react.svg?url";
+import IconDropboxSmallReactSvgUrl from "PUBLIC_DIR/images/icon_dropbox_small.react.svg?url";
+import IconDropboxReactSvgUrl from "PUBLIC_DIR/images/icon_dropbox.react.svg?url";
+import IconGoogleDriveSmallReactSvgUrl from "PUBLIC_DIR/images/icon_google_drive_small.react.svg?url";
+import IconGoogleDriveReactSvgUrl from "PUBLIC_DIR/images/icon_google_drive.react.svg?url";
+import IconOnedriveSmallReactSvgUrl from "PUBLIC_DIR/images/icon_onedrive_small.react.svg?url";
+import IconOnedriveReactSvgUrl from "PUBLIC_DIR/images/icon_onedrive.react.svg?url";
+import IconSharepointSmallReactSvgUrl from "PUBLIC_DIR/images/icon_sharepoint_small.react.svg?url";
+import IconSharepointReactSvgUrl from "PUBLIC_DIR/images/icon_sharepoint.react.svg?url";
+import IconKdriveSmallReactSvgUrl from "PUBLIC_DIR/images/icon_kdrive_small.react.svg?url";
+import IconKdriveReactSvgUrl from "PUBLIC_DIR/images/icon_kdrive.react.svg?url";
+import IconYandexDiskSmallReactSvgUrl from "PUBLIC_DIR/images/icon_yandex_disk_small.react.svg?url";
+import IconYandexDiskReactSvgUrl from "PUBLIC_DIR/images/icon_yandex_disk.react.svg?url";
+import IconOwncloudSmallReactSvgUrl from "PUBLIC_DIR/images/icon_owncloud_small.react.svg?url";
+import IconOwncloudReactSvgUrl from "PUBLIC_DIR/images/icon_owncloud.react.svg?url";
+import IconNextcloudSmallReactSvgUrl from "PUBLIC_DIR/images/icon_nextcloud_small.react.svg?url";
+import IconNextcloudReactSvgUrl from "PUBLIC_DIR/images/icon_nextcloud.react.svg?url";
+import IconWebdavSmallReactSvgUrl from "PUBLIC_DIR/images/icon_webdav_small.react.svg?url";
+import IconWebdavReactSvgUrl from "PUBLIC_DIR/images/icon_webdav.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 
@@ -92,38 +112,38 @@ class ThirdPartyStore {
   getThirdPartyIcon = (iconName, size = "big") => {
     switch (iconName) {
       case "Box":
-        if (size === "small") return "images/icon_box_small.react.svg";
-        return "images/icon_box.react.svg";
+        if (size === "small") return IconBoxSmallReactSvgUrl;
+        return IconBoxReactSvgUrl;
       case "DropboxV2":
-        if (size === "small") return "images/icon_dropbox_small.react.svg";
-        return "images/icon_dropbox.react.svg";
+        if (size === "small") return IconDropboxSmallReactSvgUrl;
+        return IconDropboxReactSvgUrl;
       case "GoogleDrive":
-        if (size === "small") return "images/icon_google_drive_small.react.svg";
-        return "images/icon_google_drive.react.svg";
+        if (size === "small") return IconGoogleDriveSmallReactSvgUrl;
+        return IconGoogleDriveReactSvgUrl;
       case "OneDrive":
-        if (size === "small") return "images/icon_onedrive_small.react.svg";
-        return "images/icon_onedrive.react.svg";
+        if (size === "small") return IconOnedriveSmallReactSvgUrl;
+        return IconOnedriveReactSvgUrl;
       case "SharePoint":
-        if (size === "small") return "images/icon_sharepoint_small.react.svg";
-        return "images/icon_sharepoint.react.svg";
+        if (size === "small") return IconSharepointSmallReactSvgUrl;
+        return IconSharepointReactSvgUrl;
       case "kDrive":
-        if (size === "small") return "images/icon_kdrive_small.react.svg";
-        return "images/icon_kdrive.react.svg";
+        if (size === "small") return IconKdriveSmallReactSvgUrl;
+        return IconKdriveReactSvgUrl;
       case "Yandex":
-        if (size === "small") return "images/icon_yandex_disk_small.react.svg";
-        return "images/icon_yandex_disk.react.svg";
+        if (size === "small") return IconYandexDiskSmallReactSvgUrl;
+        return IconYandexDiskReactSvgUrl;
       case "OwnCloud":
-        if (size === "small") return "images/icon_owncloud_small.react.svg";
-        return "images/icon_owncloud.react.svg";
+        if (size === "small") return IconOwncloudSmallReactSvgUrl;
+        return IconOwncloudReactSvgUrl;
       case "NextCloud":
-        if (size === "small") return "images/icon_nextcloud_small.react.svg";
-        return "images/icon_nextcloud.react.svg";
+        if (size === "small") return IconNextcloudSmallReactSvgUrl;
+        return IconNextcloudReactSvgUrl;
       case "OneDriveForBusiness":
-        if (size === "small") return "images/icon_onedrive_small.react.svg";
-        return "images/icon_onedrive.react.svg";
+        if (size === "small") return IconOnedriveSmallReactSvgUrl;
+        return IconOnedriveReactSvgUrl;
       case "WebDav":
-        if (size === "small") return "images/icon_webdav_small.react.svg";
-        return "images/icon_webdav.react.svg";
+        if (size === "small") return IconWebdavSmallReactSvgUrl;
+        return IconWebdavReactSvgUrl;
 
       default:
         return "";

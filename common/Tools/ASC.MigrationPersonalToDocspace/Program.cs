@@ -42,48 +42,46 @@ var param = Parser.Default.ParseArguments<Options>(args).Value;
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
-{
-    config.AddJsonFile($"appsettings.personalToDocspace.json", true);
-});
+builder.Configuration.AddJsonFile($"appsettings.personalToDocspace.json", true)
+                     .AddCommandLine(args);
+
 var config = builder.Configuration;
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-builder.WebHost.ConfigureServices((hostContext, services) =>
-{
-    RegionSettings.SetCurrent(param.FromRegion);
+RegionSettings.SetCurrent(param.FromRegion);
 
-    services.RegisterFeature();
-    services.AddScoped<EFLoggerFactory>();
-    services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-    services.AddHttpClient();
-    services.AddBaseDbContextPool<AccountLinkContext>();
-    services.AddBaseDbContextPool<BackupsContext>();
-    services.AddBaseDbContextPool<FilesDbContext>();
-    services.AddBaseDbContextPool<CoreDbContext>();
-    services.AddBaseDbContextPool<TenantDbContext>();
-    services.AddBaseDbContextPool<UserDbContext>();
-    services.AddBaseDbContextPool<TelegramDbContext>();
-    services.AddBaseDbContextPool<CustomDbContext>();
-    services.AddBaseDbContextPool<WebstudioDbContext>();
-    services.AddBaseDbContextPool<InstanceRegistrationContext>();
-    services.AddBaseDbContextPool<IntegrationEventLogContext>();
-    services.AddBaseDbContextPool<FeedDbContext>();
-    services.AddBaseDbContextPool<MessagesContext>();
-    services.AddBaseDbContextPool<WebhooksDbContext>();
-    services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
-    services.AddMemoryCache();
-    services.AddSingleton<IEventBus, MockEventBusRabbitMQ>();
-    services.AddCacheNotify(config);
+builder.Services.RegisterFeature()
+    .AddScoped<EFLoggerFactory>()
+    .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+    .AddHttpClient()
+    .AddBaseDbContextPool<AccountLinkContext>()
+    .AddBaseDbContextPool<BackupsContext>()
+    .AddBaseDbContextPool<FilesDbContext>()
+    .AddBaseDbContextPool<CoreDbContext>()
+    .AddBaseDbContextPool<TenantDbContext>()
+    .AddBaseDbContextPool<UserDbContext>()
+    .AddBaseDbContextPool<TelegramDbContext>()
+    .AddBaseDbContextPool<CustomDbContext>()
+    .AddBaseDbContextPool<WebstudioDbContext>()
+    .AddBaseDbContextPool<InstanceRegistrationContext>()
+    .AddBaseDbContextPool<IntegrationEventLogContext>()
+    .AddBaseDbContextPool<FeedDbContext>()
+    .AddBaseDbContextPool<MessagesContext>()
+    .AddBaseDbContextPool<WebhooksDbContext>()
+    .AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies())
+    .AddMemoryCache()
+    .AddSingleton<IEventBus, MockEventBusRabbitMQ>()
+    .AddCacheNotify(config);
+
 
     var diHelper = new DIHelper();
-    diHelper.Configure(services);
+    diHelper.Configure(builder.Services);
 
     diHelper.TryAdd<MigrationCreator>();
     diHelper.TryAdd<MigrationRunner>();
 
-});
+
 
 if(string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
 {
@@ -115,7 +113,7 @@ if (!string.IsNullOrEmpty(migrationCreator.NewAlias))
 }
 public sealed class Options
 {
-    [Option('a', "FromAlias", Required = true)]
+    [Option('a', "fromAlias", Required = true)]
     public string FromAlias { get; set; }
 
     [Option('u', "username", Required = false, HelpText = "enter username or mail for find user")]
@@ -124,12 +122,12 @@ public sealed class Options
     [Option('m', "mail", Required = false, HelpText = "enter username or mail for find user")]
     public string Mail { get; set; }
 
-    [Option('t' ,"toregion", Required = true)]
+    [Option('t' ,"toRegion", Required = true)]
     public string ToRegion { get; set; }
 
-    [Option('f' ,"fromregion", Required = false, Default = "personal")]
+    [Option('f' ,"fromRegion", Required = false, Default = "personal")]
     public string FromRegion { get; set; }
 
-    [Option("ToAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
+    [Option("toAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
     public string ToAlias { get; set; }
 }

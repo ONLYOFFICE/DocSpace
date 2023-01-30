@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
-
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
+import TagIconReactSvgUrl from "PUBLIC_DIR/images/tag.react.svg?url";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import IconButton from "../icon-button";
@@ -117,7 +118,7 @@ const Tag = ({
               >
                 <StyledDropdownIcon
                   className="tag__dropdown-item-icon"
-                  src="/static/images/tag.react.svg"
+                  src={TagIconReactSvgUrl}
                 />
                 <StyledDropdownText
                   className="tag__dropdown-item-text"
@@ -162,7 +163,7 @@ const Tag = ({
               {isNewTag && (
                 <IconButton
                   className={"tag-icon"}
-                  iconName={"/static/images/cross.react.svg"}
+                  iconName={CrossIconReactSvgUrl}
                   size={"10px"}
                   onClick={onDeleteAction}
                 />

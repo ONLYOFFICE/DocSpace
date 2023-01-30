@@ -116,20 +116,33 @@ const DeleteDialogComponent = (props) => {
 
   const moveToTrashNoteText = () => {
     const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
+    const { pathname } = location;
 
     if (selection.length > 1) {
       if (isRoomDelete)
         return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      return t("MoveToTrashItems");
+      if (pathname.startsWith("/rooms/personal")) {
+        return t("MoveToTrashItemsFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return t("MoveToTrashItems");
+      }
     } else {
       if (isRoomDelete)
         return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
 
-      return !isFolder
-        ? t("MoveToTrashFile")
-        : personal
-        ? ""
-        : t("MoveToTrashFolder");
+      if (pathname.startsWith("/rooms/personal")) {
+        return !isFolder
+          ? t("MoveToTrashFileFromPersonal")
+          : personal
+          ? ""
+          : t("MoveToTrashFolderFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return !isFolder
+          ? t("MoveToTrashFile")
+          : personal
+          ? ""
+          : t("MoveToTrashFolder");
+      }
     }
   };
 
