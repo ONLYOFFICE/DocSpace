@@ -1841,6 +1841,7 @@ public class EntryManager
 
             _logger.InformationDeleteFolder(folder.Id.ToString(), parentId.ToString());
             await folderDao.DeleteFolderAsync(folder.Id);
+            await _socketManager.DeleteFolder(folder);
         }
 
         var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
@@ -1848,6 +1849,7 @@ public class EntryManager
         {
             _logger.InformationDeletefile(file.Id.ToString(), parentId.ToString());
             await fileDao.DeleteFileAsync(file.Id);
+            await _socketManager.DeleteFile(file);
 
             await linkDao.DeleteAllLinkAsync(file.Id.ToString());
         }

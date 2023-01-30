@@ -9,7 +9,7 @@ import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
-import CrossIcon from "../../../../../public/images/cross.react.svg";
+import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { Portal } from "@docspace/components";

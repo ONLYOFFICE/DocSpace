@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Box from "../box";
 import ViewSelector from "./";
 
-import ViewRowsReactSvg from "../../../public/images/view-rows.react.svg?url";
-import ViewTilesReactSvg from "../../../public/images/view-tiles.react.svg?url";
-import EyeReactSvg from "../../../public/images/eye.react.svg?url";
+import ViewRowsReactSvg from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvg from "PUBLIC_DIR/images/view-tiles.react.svg?url";
+import EyeReactSvg from "PUBLIC_DIR/images/eye.react.svg?url";
 
 export default {
   title: "Components/ViewSelector",

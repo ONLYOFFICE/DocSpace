@@ -3,10 +3,10 @@ import { ReactSVG } from "react-svg";
 import throttle from "lodash/throttle";
 import AvatarEditor from "react-avatar-editor";
 
-import ZoomMinusReactSvgUrl from "../../../../public/images/zoom-minus.react.svg?url";
-import ZoomPlusReactSvgUrl from "../../../../public/images/zoom-plus.react.svg?url";
-import IconCropperGridSvgUrl from "../../../../public/images/icon-cropper-grid.svg?url";
-import TrashReactSvgUrl from "../../../../public/images/trash.react.svg?url";
+import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
+import IconCropperGridSvgUrl from "PUBLIC_DIR/images/icon-cropper-grid.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 
 import Slider from "../../slider";
 import IconButton from "../../icon-button";

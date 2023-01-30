@@ -102,7 +102,9 @@ const UpdatePlanButtonContainer = ({
       return;
     }
 
-    if (paymentLink) window.open(paymentLink, "_blank");
+    paymentLink
+      ? window.open(paymentLink, "_blank")
+      : toastr.error(t("ErrorNotification"));
   };
 
   useEffect(() => {

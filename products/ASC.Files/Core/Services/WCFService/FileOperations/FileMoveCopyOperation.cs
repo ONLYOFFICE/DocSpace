@@ -224,6 +224,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var (filesMessageService, fileMarker, _, _, _) = scopeClass;
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
         var countRoomChecker = scope.ServiceProvider.GetRequiredService<CountRoomChecker>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
         var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
@@ -330,6 +331,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     await FolderDao.DeleteFolderAsync(folder.Id);
 
+                                    await socketManager.DeleteFolder(folder);
+
                                     if (ProcessedFolder(folderId))
                                     {
                                         sb.Append($"folder_{newFolder.Id}{SplitChar}");
@@ -422,18 +425,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                        var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
-                                        if (pins.Count > 0)
-                                        {
-                                            await TagDao.RemoveTags(pins);
-                                        }
                                     }
                                     else
                                     {
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     }
                                 }
-                                catch(Exception)
+                                catch (Exception)
                                 {
                                     throw;
                                 }
@@ -447,6 +445,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 if (toFolder.FolderType == FolderType.Archive)
                                 {
+                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                    if (pins.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(pins);
+                                    }
+
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
                                 }
                                 else
@@ -764,7 +768,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         string error = null;
         foreach (var file in files)
         {
-            if(checkPermissions && !await FilesSecurity.CanMoveAsync(file))
+            if (checkPermissions && !await FilesSecurity.CanMoveAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 

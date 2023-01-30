@@ -2,11 +2,11 @@ import firebase from "firebase/app";
 import "firebase/remote-config";
 import "firebase/storage";
 
-import CampaignsCloudPngUrl from "../../../public/images/campaigns.cloud.png";
-import CampaignsDesktopPngUrl from "../../../public/images/campaigns.desktop.png";
-import CampaignsEducationPngUrl from "../../../public/images/campaigns.education.png";
-import CampaignsEnterprisePngUrl from "../../../public/images/campaigns.enterprise.png";
-import CampaignsIntegrationPngUrl from "../../../public/images/campaigns.integration.png";
+import CampaignsCloudPngUrl from "PUBLIC_DIR/images/campaigns.cloud.png";
+import CampaignsDesktopPngUrl from "PUBLIC_DIR/images/campaigns.desktop.png";
+import CampaignsEducationPngUrl from "PUBLIC_DIR/images/campaigns.education.png";
+import CampaignsEnterprisePngUrl from "PUBLIC_DIR/images/campaigns.enterprise.png";
+import CampaignsIntegrationPngUrl from "PUBLIC_DIR/images/campaigns.integration.png";
 
 class FirebaseHelper {
   remoteConfig = null;

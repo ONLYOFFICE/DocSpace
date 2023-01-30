@@ -115,6 +115,7 @@ class ComboBox extends React.Component {
       withBackground,
       advancedOptionsCount,
       isMobileView,
+      withoutPadding,
       isLoading,
     } = this.props;
 
@@ -171,6 +172,7 @@ class ComboBox extends React.Component {
         toggleAction={toggleAction}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
+        withoutPadding={withoutPadding}
         {...props}
       >
         <ComboButton
@@ -317,6 +319,7 @@ ComboBox.propTypes = {
   advancedOptionsCount: PropTypes.number,
   /** Accepts css tab-index style */
   tabIndex: PropTypes.number,
+  withoutPadding: PropTypes.bool,
   /** Tells when a component is loading */
   isLoading: PropTypes.bool,
 };
@@ -339,6 +342,7 @@ ComboBox.defaultProps = {
   isExternalLink: false,
   modernView: false,
   tabIndex: -1,
+  withoutPadding: false,
   isLoading: false,
 };
 

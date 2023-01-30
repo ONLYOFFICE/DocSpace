@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import PanelReactSvgUrl from "../../../../../public/images/panel.react.svg?url";
+import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@docspace/components/utils/device";

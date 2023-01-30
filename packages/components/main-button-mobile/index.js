@@ -22,7 +22,7 @@ import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
-import ButtonAlertReactSvg from "../../../public/images/button.alert.react.svg";
+import ButtonAlertReactSvg from "PUBLIC_DIR/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";

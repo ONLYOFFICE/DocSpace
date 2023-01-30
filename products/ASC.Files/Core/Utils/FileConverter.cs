@@ -107,7 +107,7 @@ public class FileConverterQueue<T>
     {
         var exist = LoadFromCache();
 
-        return exist.FirstOrDefault(x =>
+        return exist.LastOrDefault(x =>
                 {
                     var fileId = JsonDocument.Parse(x.Source).RootElement.GetProperty("id").Deserialize<T>();
                     var fileVersion = JsonDocument.Parse(x.Source).RootElement.GetProperty("version").Deserialize<int>();

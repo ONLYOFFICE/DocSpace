@@ -3,7 +3,7 @@ import { isMobileOnly } from "react-device-detect";
 import Base from "../../themes/base";
 import NoUserSelect from "../../utils/commonStyles";
 
-import TriangleDownIcon from "../../../../public/images/triangle.down.react.svg";
+import TriangleDownIcon from "PUBLIC_DIR/images/triangle.down.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
 import Loader from "../../loader";

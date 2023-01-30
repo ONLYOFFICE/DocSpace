@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import Base from "../themes/base";
-import ExpanderDownReactSvg from "../../../public/images/expander-down.react.svg";
+import ExpanderDownReactSvg from "PUBLIC_DIR/images/expander-down.react.svg";
 import { transform } from "lodash";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({

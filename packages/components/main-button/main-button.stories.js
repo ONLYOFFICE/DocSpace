@@ -1,6 +1,6 @@
 import React from "react";
 import MainButton from ".";
-import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 
 export default {
   title: "Components/MainButton",

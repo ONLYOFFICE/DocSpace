@@ -121,7 +121,14 @@ const DeleteDialogComponent = (props) => {
     if (selection.length > 1) {
       if (isRoomDelete)
         return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      return t("MoveToTrashItems");
+      if (isRecycleBinFolder) {
+        return t("DeleteItems");
+      }
+      if (pathname.startsWith("/rooms/personal")) {
+        return t("MoveToTrashItemsFromPersonal");
+      } else if (pathname.startsWith("/rooms/shared")) {
+        return t("MoveToTrashItems");
+      }
     } else {
       if (isRoomDelete)
         return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
@@ -139,24 +146,30 @@ const DeleteDialogComponent = (props) => {
           ? ""
           : t("MoveToTrashFolder");
       }
+
+      if (isRecycleBinFolder) {
+        return t(isFolder ? "DeleteFolder" : "DeleteFile");
+      }
     }
   };
 
-  const title = isRoomDelete
-    ? t("EmptyTrashDialog:DeleteForeverTitle")
-    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-    ? t("Common:Confirmation")
-    : moveToTrashTitle();
+  const title =
+    isRoomDelete || isRecycleBinFolder
+      ? t("EmptyTrashDialog:DeleteForeverTitle")
+      : isPrivacyFolder || selection[0]?.providerKey
+      ? t("Common:Confirmation")
+      : moveToTrashTitle();
 
   const noteText = unsubscribe ? t("UnsubscribeNote") : moveToTrashNoteText();
 
-  const accessButtonLabel = isRoomDelete
-    ? t("EmptyTrashDialog:DeleteForeverButton")
-    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-    ? t("Common:OKButton")
-    : unsubscribe
-    ? t("UnsubscribeButton")
-    : t("MoveToTrashButton");
+  const accessButtonLabel =
+    isRoomDelete || isRecycleBinFolder
+      ? t("EmptyTrashDialog:DeleteForeverButton")
+      : isPrivacyFolder || selection[0]?.providerKey
+      ? t("Common:OKButton")
+      : unsubscribe
+      ? t("UnsubscribeButton")
+      : t("MoveToTrashButton");
 
   return (
     <StyledDeleteDialog isLoading={!tReady} visible={visible} onClose={onClose}>

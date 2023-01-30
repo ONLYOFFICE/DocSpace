@@ -1,7 +1,7 @@
-import ShareGoogleReactSvgUrl from "../../../public/images/share.google.react.svg?url";
-import ShareFacebookReactSvgUrl from "../../../public/images/share.facebook.react.svg?url";
-import ShareTwitterReactSvgUrl from "../../../public/images/share.twitter.react.svg?url";
-import ShareLinkedinReactSvgUrl from "../../../public/images/share.linkedin.react.svg?url";
+import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url";
+import ShareFacebookReactSvgUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
+import ShareTwitterReactSvgUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
+import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg?url";
 
 export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;

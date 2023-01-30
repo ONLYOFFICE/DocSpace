@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 
-import ClearReactSvgUrl from "../../../../../public/images/clear.react.svg?url";
+import ClearReactSvgUrl from "PUBLIC_DIR/images/clear.react.svg?url";
 
 import Loaders from "../../Loaders";
 

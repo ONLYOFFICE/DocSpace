@@ -28,7 +28,7 @@ using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.Sharpbox;
 
-[Transient]
+[Scope]
 internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 {
     private readonly TempStream _tempStream;

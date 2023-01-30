@@ -13,13 +13,17 @@ import {
   getSettingsFiles,
   // getShareFiles,
 } from "@docspace/common/api/files";
+import { TenantStatus } from "@docspace/common/constants";
 
 import { getLogoFromPath } from "@docspace/common/utils";
 
 export const getFavicon = (logoUrls) => {
   if (!logoUrls) return null;
 
-  return getLogoFromPath(logoUrls[2]?.path?.light);
+  return getLogoFromPath(logoUrls[2]?.path?.light).replace(
+    "client/",
+    "/doceditor/"
+  );
 };
 
 export const initDocEditor = async (req) => {
@@ -53,20 +57,25 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    [
-      user,
-      settings,
-      filesSettings,
-      versionInfo,
-      appearanceTheme,
-      logoUrls,
-    ] = await Promise.all([
+    const baseSettings = [
       getUser(),
       getSettings(),
-      getSettingsFiles(),
-      getBuildVersion(),
       getAppearanceTheme(),
       getLogoUrls(),
+    ];
+
+    [user, settings, appearanceTheme, logoUrls] = await Promise.all(
+      baseSettings
+    );
+
+    if (settings.tenantStatus === TenantStatus.PortalRestore) {
+      error = "restore-backup";
+      return { error, logoUrls };
+    }
+
+    [filesSettings, versionInfo] = await Promise.all([
+      getSettingsFiles(),
+      getBuildVersion(),
     ]);
 
     const successAuth = !!user;
@@ -105,19 +114,23 @@ export const initDocEditor = async (req) => {
 
     config.editorConfig.customization.logo.image =
       config.editorConfig.customization.logo.url +
-      "doceditor/" +
-      getLogoFromPath(config.editorConfig.customization.logo.image);
+      getLogoFromPath(config.editorConfig.customization.logo.image)?.replace(
+        "client/",
+        "doceditor/"
+      );
 
     config.editorConfig.customization.logo.imageDark =
       config.editorConfig.customization.logo.url +
-      "doceditor/" +
-      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+      getLogoFromPath(
+        config.editorConfig.customization.logo.imageDark
+      )?.replace("client/", "doceditor/");
 
     if (config.editorConfig.customization.customer) {
       config.editorConfig.customization.customer.logo =
         config.editorConfig.customization.logo.url +
-        "doceditor/" +
-        getLogoFromPath(config.editorConfig.customization.customer.logo);
+        getLogoFromPath(
+          config.editorConfig.customization.customer.logo
+        )?.replace("client/", "doceditor/");
     }
 
     return {

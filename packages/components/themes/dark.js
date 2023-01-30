@@ -1,6 +1,6 @@
 import globalColors from "../utils/globalColors";
 
-import AvatarDarkReactSvgUrl from "../../../public/images/avatar.dark.react.svg?url";
+import AvatarDarkReactSvgUrl from "PUBLIC_DIR/images/avatar.dark.react.svg?url";
 
 const {
   black,
@@ -450,6 +450,8 @@ const Dark = {
     pressedFillColor: black,
 
     focusColor: "#858585",
+
+    errorColor: "#E06451",
   },
 
   // slider: {
@@ -814,7 +816,7 @@ const Dark = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px",
+      large: "11px 12px",
     },
   },
 
@@ -2942,6 +2944,9 @@ const Dark = {
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
         },
+        auditTrail: {
+          downloadReportDescriptionColor: "#858585",
+        },
       },
 
       common: {
@@ -3015,6 +3020,7 @@ const Dark = {
 
     wizard: {
       linkColor: "#E06A1B",
+      generatePasswordColor: "#a9a9a9",
     },
   },
 
@@ -3093,6 +3099,8 @@ const Dark = {
     backgroundColor: "#282828",
     colorPercentSmall: "#FFFFFF",
     colorPercentBig: "#333333",
+    errorTextColor: "#E06451",
+    descriptionTextColor: "#858585",
   },
 
   codeInput: {

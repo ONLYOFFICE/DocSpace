@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { isMobileOnly } from "react-device-detect";
-import MenuIcon from "../../../../../../public/images/menu.react.svg";
+import MenuIcon from "PUBLIC_DIR/images/menu.react.svg";
 import { mobile } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 

@@ -63,15 +63,8 @@ public class SocketManager : SocketServiceClient
     public async Task CreateFileAsync<T>(File<T> file)
     {
         var room = GetFolderRoom(file.ParentId);
-        var serializerSettings = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
+
+        var data = await SerializeFile(file);
 
         await MakeRequest("create-file", new { room, fileId = file.Id, data });
     }
@@ -79,15 +72,8 @@ public class SocketManager : SocketServiceClient
     public async Task CreateFolderAsync<T>(Folder<T> folder)
     {
         var room = GetFolderRoom(folder.ParentId);
-        var serializerSettings = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-        var data = JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), serializerSettings);
+
+        var data = await SerializeFolder(folder);
 
         await MakeRequest("create-folder", new { room, folderId = folder.Id, data });
     }
@@ -95,34 +81,46 @@ public class SocketManager : SocketServiceClient
     public async Task UpdateFileAsync<T>(File<T> file)
     {
         var room = GetFolderRoom(file.ParentId);
-        var serializerSettings = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
+
+        var data = await SerializeFile(file);
 
         await MakeRequest("update-file", new { room, fileId = file.Id, data });
+    }
+
+    public async Task UpdateFolderAsync<T>(Folder<T> folder)
+    {
+        var room = GetFolderRoom(folder.ParentId);
+
+        var data = await SerializeFolder(folder);
+
+        await MakeRequest("update-folder", new { room, folderId = folder.Id, data });
     }
 
     public async Task DeleteFile<T>(File<T> file)
     {
         var room = GetFolderRoom(file.ParentId);
+
         await MakeRequest("delete-file", new { room, fileId = file.Id });
+    }
+
+    public async Task DeleteFolder<T>(Folder<T> folder)
+    {
+        var room = GetFolderRoom(folder.ParentId);
+
+        await MakeRequest("delete-folder", new { room, folderId = folder.Id });
     }
 
     public async Task ExecMarkAsNewFile(object fileId, int count, Guid owner)
     {
         var room = GetFileRoom(fileId, owner);
+
         await MakeRequest("markasnew-file", new { room, fileId, count });
     }
 
     public async Task ExecMarkAsNewFolder(object folderId, int count, Guid owner)
     {
         var room = GetFolderRoom(folderId, owner);
+
         await MakeRequest("markasnew-folder", new { room, folderId, count });
     }
 
@@ -140,5 +138,28 @@ public class SocketManager : SocketServiceClient
         var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
         return $"{tenantId}-DIR-{folderId}{ownerData}";
+    }
+
+    private async Task<string> SerializeFile<T>(File<T> file)
+    {
+        return JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), GetSerializerSettings());
+    }
+
+    private async Task<string> SerializeFolder<T>(Folder<T> folder)
+    {
+        return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), GetSerializerSettings()); ;
+    }
+
+    private JsonSerializerOptions GetSerializerSettings()
+    {
+        var serializerSettings = new JsonSerializerOptions()
+        {
+            WriteIndented = false,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        serializerSettings.Converters.Add(new ApiDateTimeConverter());
+        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+        return serializerSettings;
     }
 }

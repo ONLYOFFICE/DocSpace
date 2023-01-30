@@ -22,11 +22,12 @@ import {
   ConvertDialog,
   CreateRoomDialog,
   InviteUsersWarningDialog,
+  CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
-// import ChangeUserTypeDialog from "./../dialogs/ChangeUserTypeDialog/old_index";
+import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 
 const Panels = (props) => {
   const {
@@ -52,9 +53,12 @@ const Panels = (props) => {
     invitePanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
+    createRoomConfirmDialogVisible,
+    confirmDialogIsLoading,
     restoreAllPanelVisible,
     archiveDialogVisible,
     inviteUsersWarningDialogVisible,
+    preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
   } = props;
 
@@ -100,6 +104,9 @@ const Panels = (props) => {
       <ChangeUserTypeDialog key="change-user-type-dialog" />
     ),
     createRoomDialogVisible && <CreateRoomDialog key="create-room-dialog" />,
+    (createRoomConfirmDialogVisible || confirmDialogIsLoading) && (
+      <CreateRoomConfirmDialog key="create-room-confirm-dialog" />
+    ),
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
@@ -125,11 +132,21 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
+    preparationPortalDialogVisible && (
+      <PreparationPortalDialog key="preparation-portal-dialog" />
+    ),
   ];
 };
 
 export default inject(
-  ({ auth, dialogsStore, uploadDataStore, versionHistoryStore }) => {
+  ({
+    auth,
+    dialogsStore,
+    uploadDataStore,
+    versionHistoryStore,
+    backup,
+    createEditRoomStore,
+  }) => {
     const {
       sharingPanelVisible,
       ownerPanelVisible,
@@ -145,6 +162,7 @@ export default inject(
       conflictResolveDialogVisible,
       convertDialogVisible,
       createRoomDialogVisible,
+      createRoomConfirmDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
@@ -158,11 +176,15 @@ export default inject(
       changeUserTypeDialogVisible,
     } = dialogsStore;
 
+    const { preparationPortalDialogVisible } = backup;
+
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
     const { hotkeyPanelVisible } = auth.settingsStore;
+    const { confirmDialogIsLoading } = createEditRoomStore;
 
     return {
+      preparationPortalDialogVisible,
       sharingPanelVisible,
       uploadPanelVisible,
       ownerPanelVisible,
@@ -179,6 +201,7 @@ export default inject(
       conflictResolveDialogVisible,
       convertDialogVisible,
       createRoomDialogVisible,
+      createRoomConfirmDialogVisible,
       convertPasswordDialogVisible,
       selectFileDialogVisible,
       createMasterForm,
@@ -188,6 +211,7 @@ export default inject(
       invitePanelVisible: invitePanelOptions.visible,
       archiveDialogVisible,
       inviteUsersWarningDialogVisible,
+      confirmDialogIsLoading,
       changeUserTypeDialogVisible,
     };
   }

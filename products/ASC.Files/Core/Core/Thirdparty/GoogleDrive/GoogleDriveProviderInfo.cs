@@ -360,7 +360,7 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
 
     public async Task<GoogleDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var driveStorage = ActivatorUtilities.CreateInstance<GoogleDriveStorage>(_serviceProvider);
+        var driveStorage = _serviceProvider.GetRequiredService<GoogleDriveStorage>();
 
         await CheckTokenAsync(token, id);
 

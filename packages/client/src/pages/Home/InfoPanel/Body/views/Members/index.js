@@ -5,8 +5,8 @@ import toastr from "@docspace/components/toast/toastr";
 import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
-import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg";
-import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg";
+import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg?url";
+import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 

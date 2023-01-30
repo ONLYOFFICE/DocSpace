@@ -532,15 +532,8 @@ public class FileStorageService<T> //: IFileStorageService
         var parent = await folderDao.GetFolderAsync(parentId);
         var providerInfo = await providerDao.GetProviderInfoAsync(parent.ProviderId);
 
-        if (providerInfo.RootFolderType != FolderType.VirtualRooms)
-        {
-            throw new InvalidDataException("Invalid provider type");
-        }
-
-        if (providerInfo.FolderId != null)
-        {
-            throw new InvalidOperationException("This provider already corresponds to the virtual room");
-        }
+        ErrorIf(providerInfo.RootFolderType != FolderType.VirtualRooms, FilesCommonResource.ErrorMessage_InvalidProvider);
+        ErrorIf(providerInfo.FolderId != null, FilesCommonResource.ErrorMessage_ProviderAlreadyConnect);
 
         List<AceWrapper> aces = null;
 
@@ -560,12 +553,14 @@ public class FileStorageService<T> //: IFileStorageService
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
 
+        ErrorIf(result.Item1.Id.Equals(result.Item1.RootId), FilesCommonResource.ErrorMessage_InvalidThirdPartyFolder);
+
         if (@private)
         {
             await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
         }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, title, result.Item1.Id.ToString(), result.Item2, @private);
 
         return result.Item1;
     }
@@ -619,13 +614,14 @@ public class FileStorageService<T> //: IFileStorageService
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
 
+            await _socketManager.CreateFolderAsync(folder);
+
             if (isRoom)
             {
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
             }
             else
             {
-                await _socketManager.CreateFolderAsync(folder);
                 _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
             }
 
@@ -694,6 +690,8 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+
+        await _socketManager.UpdateFolderAsync(folder);
 
         return folder;
     }
@@ -2092,6 +2090,11 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
 
+    public List<FileOperationResult> DeleteItems(string action, List<T> files, List<T> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+    {
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+    }
+
     public async Task<List<FileOperationResult>> EmptyTrashAsync()
     {
         var folderDao = GetFolderDao();
@@ -2314,8 +2317,11 @@ public class FileStorageService<T> //: IFileStorageService
         {
             await _entryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
 
+            var folderFromMy = await folderDao.GetFolderAsync(folderIdFromMy);
+
             //delete My userFrom folder
             await folderDao.DeleteFolderAsync(folderIdFromMy);
+            await _socketManager.DeleteFolder(folderFromMy);
             _globalFolderHelper.SetFolderMy(userId);
         }
 
