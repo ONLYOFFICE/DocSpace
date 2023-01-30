@@ -39,7 +39,9 @@ const User = ({
       invitations: [{ id: user.id, access: option.access }],
       notify: false,
       sharingMessage: "",
-    }).then(() => setIsLoading(false));
+    })
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const abortCallback = () => {

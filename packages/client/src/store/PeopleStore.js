@@ -124,7 +124,7 @@ class PeopleStore {
 
     let fromType =
       users.length === 1
-        ? [users[0].role ? user[0].role : getUserRole(users[0])]
+        ? [users[0].role ? users[0].role : getUserRole(users[0])]
         : users.map((u) => (u.role ? u.role : getUserRole(u)));
 
     if (users.length > 1) {
