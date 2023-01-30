@@ -135,7 +135,7 @@ class PeopleStore {
       if (fromType.length === 0) fromType = [fromType[0]];
     }
 
-    if (fromType.length === 1 && fromType[0] === type) return;
+    if (fromType.length === 1 && fromType[0] === type) return false;
 
     const userIDs = users
       .filter((u) => u.role !== type)
@@ -151,7 +151,9 @@ class PeopleStore {
       abortCallback,
     });
 
-    return window.dispatchEvent(event);
+    window.dispatchEvent(event);
+
+    return true;
   };
 
   onChangeStatus = (status) => {

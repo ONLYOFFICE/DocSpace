@@ -19,9 +19,9 @@ const User = ({
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
 
-  const [userIsRemoved, setUserIsRemoved] = useState(false);
+  //const [userIsRemoved, setUserIsRemoved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  if (userIsRemoved) return null;
+  //if (userIsRemoved) return null;
 
   const canChangeUserRole = user.canEditAccess;
 
@@ -36,19 +36,46 @@ const User = ({
   );
 
   const updateRole = (option) => {
-    updateRoomMemberRole(selectionParentRoom.id, {
+    return updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
       notify: false,
       sharingMessage: "",
     })
+      .then(() => {
+        setIsLoading(false);
+        const inRoomMembers = selectionParentRoom.members.inRoom;
+        const expectedMembers = selectionParentRoom.members.expected;
+        if (option.key === "remove") {
+          setSelectionParentRoom({
+            ...selectionParentRoom,
+            members: {
+              inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+              expected: expectedMembers?.filter((m) => m.id !== user.id),
+            },
+          });
+          //setUserIsRemoved(true);
+        } else {
+          setSelectionParentRoom({
+            ...selectionParentRoom,
+            members: {
+              inRoom: inRoomMembers?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+              expected: expectedMembers?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+            },
+          });
+        }
+      })
       .catch((err) => {
         toastr.error(err);
-      })
-      .finally(() => setIsLoading(false));
+        setIsLoading(false);
+      });
   };
 
   const abortCallback = () => {
-    return setIsLoading(false);
+    setIsLoading(false);
   };
 
   const onOptionClick = (option) => {
@@ -59,35 +86,14 @@ const User = ({
         ? "manager"
         : "user";
 
-    const successCallback = () => updateRole(option);
+    const successCallback = () => {
+      updateRole(option);
+    };
 
     setIsLoading(true);
 
-    changeUserType(userType, [user], successCallback, abortCallback);
-
-    const inRoomMembers = selectionParentRoom.members.inRoom;
-    const expectedMembers = selectionParentRoom.members.expected;
-    if (option.key === "remove") {
-      setUserIsRemoved(true);
-      setSelectionParentRoom({
-        ...selectionParentRoom,
-        members: {
-          inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
-          expected: expectedMembers?.filter((m) => m.id !== user.id),
-        },
-      });
-    } else {
-      setSelectionParentRoom({
-        ...selectionParentRoom,
-        members: {
-          inRoom: inRoomMembers?.map((m) =>
-            m.id === user.id ? { ...m, access: option.access } : m
-          ),
-          expected: expectedMembers?.map((m) =>
-            m.id === user.id ? { ...m, access: option.access } : m
-          ),
-        },
-      });
+    if (!changeUserType(userType, [user], successCallback, abortCallback)) {
+      updateRole(option);
     }
   };
 

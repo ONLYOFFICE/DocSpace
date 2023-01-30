@@ -183,14 +183,18 @@ const PeopleTableRow = (props) => {
     return options;
   }, [t, isOwner, isVisitor]);
 
-  const onCancelLoading = () => {
+  const onAbort = () => {
+    setIsLoading(false);
+  };
+
+  const onSuccess = () => {
     setIsLoading(false);
   };
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
       setIsLoading(true);
-      changeUserType(action, [item], onCancelLoading);
+      changeUserType(action, [item], onSuccess, onAbort);
     },
     [item, changeUserType]
   );

@@ -38,7 +38,10 @@ const ChangeUserTypeEvent = ({
 
         successCallback && successCallback();
       })
-      .catch((err) => toastr.error(err));
+      .catch((err) => {
+        abortCallback && abortCallback();
+        toastr.error(err);
+      });
   };
 
   const onClose = () => {

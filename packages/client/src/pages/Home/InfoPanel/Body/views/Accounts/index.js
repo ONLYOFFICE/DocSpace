@@ -89,14 +89,18 @@ const Accounts = ({
     return options;
   }, [t, isAdmin, isOwner, isVisitor]);
 
-  const onCancelLoading = () => {
+  const onAbort = () => {
+    setIsLoading(false);
+  };
+
+  const onSuccess = () => {
     setIsLoading(false);
   };
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
       setIsLoading(true);
-      changeUserType(action, [selection], onCancelLoading);
+      changeUserType(action, [selection], onSuccess, onAbort);
     },
     [selection, changeUserType, t]
   );
