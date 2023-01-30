@@ -842,7 +842,10 @@ class FilesStore {
     let newSelections = JSON.parse(JSON.stringify(this.selection));
 
     for (let item of added) {
-      const value = item.getAttribute("value");
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")[0].getAttribute("value");
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
@@ -872,7 +875,11 @@ class FilesStore {
     }
 
     for (let item of removed) {
-      const value = item.getAttribute("value");
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];

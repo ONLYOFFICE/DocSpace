@@ -374,7 +374,7 @@ class Section extends React.Component {
         {!isMobile && uploadFiles && !dragging && (
           <SelectionArea
             containerClass="section-scroll"
-            selectableClass="files-item"
+            selectableClass={viewAs === "tile" ? "files-item" : "window-item"}
             onMove={this.onMove}
             scroll={this.scroll}
           />
