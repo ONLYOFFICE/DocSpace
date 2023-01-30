@@ -37,7 +37,10 @@ const SectionBodyContent = ({ t, setSubscriptions }) => {
       getNotificationSubscription(NotificationsType.DailyFeed),
       getNotificationSubscription(NotificationsType.UsefulTips),
     ];
-    const [badges, roomsActivity, dailyFeed, tips] = Promise.all(requests);
+    const [badges, roomsActivity, dailyFeed, tips] = await Promise.all(
+      requests
+    );
+
     setSubscriptions(
       badges.isEnabled,
       roomsActivity.isEnabled,
