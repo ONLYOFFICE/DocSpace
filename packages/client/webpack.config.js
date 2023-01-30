@@ -189,6 +189,33 @@ const config = {
         resourceQuery: /url/, // *.svg?url
       },
       {
+        test: /\.json$/i,
+        resourceQuery: /url/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: (resourcePath, resourceQuery) => {
+                let result = resourcePath.split("public\\")[1].split("\\");
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: { not: [/url/] }, // exclude if *.json?url,
+        loader: "json-loader",
+      },
+      {
         test: /\.svg$/i,
         issuer: /\.[jt]sx?$/,
         resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
@@ -210,7 +237,6 @@ const config = {
           fullySpecified: false,
         },
       },
-      { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
@@ -271,19 +297,26 @@ const config = {
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
 
-    new CopyPlugin({
-      patterns: [
-        // {
-        //   context: path.resolve(__dirname, "public"),
-        //   from: "images/**/*.*",
-        // },
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "locales/**/*.json",
-          transform: minifyJson,
-        },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     // {
+    //     //   context: path.resolve(__dirname, "public"),
+    //     //   from: "images/**/*.*",
+    //     // },
+    //     {
+    //       context: path.resolve(__dirname, "public"),
+    //       from: "locales/**/*.json",
+    //       transform: minifyJson,
+    //       // to: ({ context, absoluteFilename }) => {
+    //       //   const newPath = absoluteFilename.replace(context, "").split("\\");
+
+    //       //   newPath.splice(-1);
+
+    //       //   return `/${newPath.join("/")}/[name].[contenthash][ext]`;
+    //       // },
+    //     },
+    //   ],
+    // }),
   ],
 };
 
