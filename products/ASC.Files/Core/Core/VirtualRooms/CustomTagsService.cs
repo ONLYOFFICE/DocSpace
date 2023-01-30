@@ -54,7 +54,7 @@ public class CustomTagsService
 
     private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
-    public async Task<object> CreateTagAsync<T>(string name)
+    public async Task<string> CreateTagAsync(string name)
     {
         if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
@@ -63,7 +63,7 @@ public class CustomTagsService
 
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(name);
 
-        var tagDao = _daoFactory.GetTagDao<T>();
+        var tagDao = _daoFactory.GetTagDao<int>();
         var tags = await tagDao.GetTagsInfoAsync(name, TagType.Custom, true).ToListAsync();
 
         if (tags.Any())

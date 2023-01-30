@@ -68,7 +68,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -116,7 +116,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -149,7 +149,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         await foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -181,7 +181,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     public async IAsyncEnumerable<Tag> GetTagsAsync(T entryID, FileEntryType entryType, TagType tagType)
     {
-        var mappedId = (await MappingIDAsync(entryID)).ToString();
+        var mappedId = (entryID is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entryID)).ToString();
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
@@ -598,7 +598,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)
     {
-        var entryId = (await MappingIDAsync(entry.Id)).ToString();
+        var entryId = (entry.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entry.Id)).ToString();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var toDelete = await Query(filesDbContext.TagLink)
@@ -657,7 +657,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         if (id != 0)
         {
-            var entryId = (await MappingIDAsync(tag.EntryId)).ToString();
+            var entryId = (tag.EntryId is int fid ? MappingIDAsync(fid) : await MappingIDAsync(tag.EntryId)).ToString();
             var toDelete = await Query(filesDbContext.TagLink)
                 .Where(r => r.TagId == id &&
                             r.EntryId == entryId &&
@@ -902,7 +902,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         foreach (var r in fileEntries)
         {
-            var idObj = await MappingIDAsync(r.Id);
+            var idObj = r.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(r.Id);
             var id = idObj.ToString();
             var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
 

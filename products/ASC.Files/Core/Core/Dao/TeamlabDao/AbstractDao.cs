@@ -121,6 +121,11 @@ public class AbstractDao
         await filesDbContext.SaveChangesAsync();
     }
 
+    protected ValueTask<object> MappingIDAsync(object id)
+    {
+        return MappingIDAsync(id, false);
+    }
+
     protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
     {
         if (id == null)
@@ -136,6 +141,16 @@ public class AbstractDao
         }
 
         return InternalMappingIDAsync(id, saveIfNotExist);
+    }
+
+    protected int MappingIDAsync(int id)
+    {
+        return MappingIDAsync(id, false);
+    }
+
+    protected int MappingIDAsync(int id, bool saveIfNotExist = false)
+    {
+        return id;
     }
 
     private async ValueTask<object> InternalMappingIDAsync(object id, bool saveIfNotExist = false)
@@ -176,11 +191,6 @@ public class AbstractDao
         }
 
         return result;
-    }
-
-    protected ValueTask<object> MappingIDAsync(object id)
-    {
-        return MappingIDAsync(id, false);
     }
 
     internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch

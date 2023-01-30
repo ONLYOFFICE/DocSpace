@@ -681,7 +681,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var filterValue = _apiContext.FilterValue;
 
         var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
-            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
+            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false,
             provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
@@ -702,11 +702,11 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Tag name
     /// </returns>
     [HttpPost("tags")]
-    public async Task<object> CreateTagAsync(CreateTagRequestDto inDto)
+    public async Task<string> CreateTagAsync(CreateTagRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        return await _customTagsService.CreateTagAsync<int>(inDto.Name);
+        return await _customTagsService.CreateTagAsync(inDto.Name);
     }
 
     /// <summary>

@@ -73,15 +73,22 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
             foreach (var record in records)
             {
-                var query = await filesDbContext.Security
+                List<DbFilesSecurity> toDelete = new();
+
+                var query = filesDbContext.Security
                 .Where(r => r.TenantId == record.TenantId)
                 .Where(r => r.EntryType == record.EntryType)
                 .Where(r => r.Subject == record.Subject)
-                .AsAsyncEnumerable()
-                .WhereAwait(async r => r.EntryId == (await MappingIDAsync(record.EntryId)).ToString())
-                .ToListAsync();
+                .AsAsyncEnumerable();
 
-                filesDbContext.RemoveRange(query);
+                await foreach (var r in query)
+                {
+                    r.EntryId = (await MappingIDAsync(r.EntryId)).ToString();
+
+                    toDelete.Add(r);
+                }
+
+                filesDbContext.RemoveRange(toDelete);
             }
 
             await tx.CommitAsync();
@@ -90,7 +97,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     public async Task<bool> IsSharedAsync(T entryId, FileEntryType type)
     {
-        var mappedId = (await MappingIDAsync(entryId)).ToString();
+        var mappedId = (entryId is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entryId)).ToString();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         return await Query(filesDbContext.Security)
@@ -101,7 +108,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         if (r.Share == FileShare.None)
         {
-            var entryId = (await MappingIDAsync(r.EntryId) ?? "").ToString();
+            var entryId = (r.EntryId is int fid ? MappingIDAsync(fid) : (await MappingIDAsync(r.EntryId) ?? "")).ToString();
             if (string.IsNullOrEmpty(entryId))
             {
                 return;
@@ -283,7 +290,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         T folderId;
         if (entry.FileEntryType == FileEntryType.File)
         {
-            var fileId = await MappingIDAsync(entry.Id);
+            var fileId = entry.Id is int entryId ? MappingIDAsync(entryId) : await MappingIDAsync(entry.Id);
             folderId = ((File<T>)entry).ParentId;
             if (!files.Contains(fileId.ToString()))
             {
@@ -300,7 +307,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             foldersInt.Add(folderIdInt);
         }
 
-        var mappedId = await MappingIDAsync(folderId);
+        var mappedId = folderId is int fid ? MappingIDAsync(fid) : await MappingIDAsync(folderId);
         if (folders != null)
         {
             folders.Add(mappedId.ToString());
