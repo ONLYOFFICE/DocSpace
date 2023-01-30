@@ -56,6 +56,29 @@ module.exports = {
         resourceQuery: /url/, // *.svg?url
       },
       {
+        test: /\.json$/i,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: (resourcePath, resourceQuery) => {
+                let result = resourcePath.split("public\\")[1].split("\\");
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
         test: /\.react.svg$/,
         issuer: /\.[jt]sx?$/,
         resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
