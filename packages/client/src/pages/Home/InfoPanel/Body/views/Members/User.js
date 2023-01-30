@@ -3,7 +3,8 @@ import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png?url";
+import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
+import toastr from "@docspace/components/toast/toastr";
 const User = ({
   t,
   user,
@@ -40,7 +41,9 @@ const User = ({
       notify: false,
       sharingMessage: "",
     })
-      .catch((err) => toastr.error(err))
+      .catch((err) => {
+        toastr.error(err);
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -56,9 +59,11 @@ const User = ({
         ? "manager"
         : "user";
 
+    const successCallback = () => updateRole(option);
+
     setIsLoading(true);
 
-    changeUserType(userType, [user], updateRole(option), abortCallback);
+    changeUserType(userType, [user], successCallback, abortCallback);
 
     const inRoomMembers = selectionParentRoom.members.inRoom;
     const expectedMembers = selectionParentRoom.members.expected;
