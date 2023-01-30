@@ -1,6 +1,8 @@
 ﻿import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
 import PlaneReactSvgUrl from "PUBLIC_DIR/images/plane.react.svg?url";
 import ImportReactSvgUrl from "PUBLIC_DIR/images/import.react.svg?url";
+import AddDepartmentReactSvgUrl from "PUBLIC_DIR/images/add.department.react.svg?url";
+import AddGuestReactSvgUrl from "PUBLIC_DIR/images/add.guest.react.svg?url";
 import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
@@ -110,7 +112,7 @@ class ArticleMainButtonContent extends React.Component {
       //   icon: combineUrl(
       //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
-      //     "/images/add.guest.react.svg"
+      //     AddGuestReactSvgUrl
       //   ),
       //   label: guestCaption,
       //   onClick: this.goToGuestCreate,
@@ -120,7 +122,7 @@ class ArticleMainButtonContent extends React.Component {
       //   icon: combineUrl(
       //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
-      //     "/images/add.department.react.svg"
+      //     AddDepartmentReactSvgUrl
       //   ),
       //   label: groupCaption,
       //   onClick: this.goToGroupCreate,

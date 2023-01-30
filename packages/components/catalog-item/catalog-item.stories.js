@@ -1,8 +1,8 @@
 import React from "react";
 import CatalogItem from "./";
-import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
-import CatalogGuestReactSvgUrl from "../../../public/images/catalog.guest.react.svg?url";
-import CatalogTrashReactSvgUrl from "../../../public/images/catalog.trash.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 
 export default {
   title: "Components/CatalogItem",

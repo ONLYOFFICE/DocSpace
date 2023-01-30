@@ -1,6 +1,7 @@
 {
   "ChooseRoomType": "Choose room type",
   "CollaborationRoomDescription": "Collaborate on one or multiple documents with your team",
+  "CreateRoomConfirmation": "Continue without connecting the storage?\nYou have selected a third-party storage option that is not connected yet. If you proceed without connecting the service, this option will not be added.",
   "CollaborationRoomTitle": "Collaboration room",
   "CreateTagOption": "Create tag",
   "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",

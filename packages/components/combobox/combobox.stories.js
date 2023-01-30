@@ -3,10 +3,10 @@ import React from "react";
 import ComboBox from "./";
 import RadioButton from "../radio-button";
 import DropDownItem from "../drop-down-item";
-import NavLogoIcon from "../../../public/images/nav.logo.opened.react.svg";
-import CatalogEmployeeReactSvgUrl from "../../../public/images/catalog.employee.react.svg?url";
-import CatalogGuestReactSvgUrl from "../../../public/images/catalog.guest.react.svg?url";
-import CopyReactSvgUrl from "../../../public/images/copy.react.svg?url";
+import NavLogoIcon from "PUBLIC_DIR/images/nav.logo.opened.react.svg";
+import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react.svg?url";
+import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 
 const comboOptions = [
   {

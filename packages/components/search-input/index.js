@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CrossIconReactSvgUrl from "../../../public/images/cross.react.svg?url";
-import SearchIconReactSvgUrl from "../../../public/images/search.react.svg?url";
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
+import SearchIconReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 import InputBlock from "../input-block";
 import StyledSearchInput from "./styled-search-input";
 

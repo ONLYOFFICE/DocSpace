@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CrossReactSvg from "../../../public/images/cross.react.svg";
+import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledCrossIcon = styled(CrossReactSvg)`

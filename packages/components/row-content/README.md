@@ -6,8 +6,8 @@ Required for formatted output of elements inside Row
 
 ```js
 import RowContent from "@docspace/components/row-content";
-import SendClockReactSvg from "../../../public/images/send.clock.react.svg";
-import CatalogSpamReactSvg from "../../../public/images/catalog.spam.react.svg";
+import SendClockReactSvg from "PUBLIC_DIR/images/send.clock.react.svg";
+import CatalogSpamReactSvg from "PUBLIC_DIR/images/catalog.spam.react.svg";
 ```
 
 ```jsx

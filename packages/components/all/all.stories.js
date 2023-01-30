@@ -27,11 +27,12 @@ import Toast from "../toast";
 import toastr from "../toast/toastr";
 import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
-import SettingsReactSvg from "../../../public/images/settings.react.svg";
-import CatalogFolderReactSvg from "../../../public/images/catalog.folder.react.svg";
-import CatalogEmployeeReactSvgUrl from "../../../public/images/catalog.employee.react.svg?url";
-import ItemActiveReactSvgUrl from "../../../public/images/item.active.react.svg?url";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SettingsReactSvg from "PUBLIC_DIR/images/settings.react.svg";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
+import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react.svg?url";
+import ItemActiveReactSvgUrl from "PUBLIC_DIR/images/item.active.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg";
 
 const array_items = [
   {
@@ -268,7 +269,7 @@ const Template = (args) => (
         {/*
             <div style={{ padding: "8px 0" }}>
             <ContextMenuButton
-              iconName="static/images/vertical-dots.react.svg"
+              iconName={VerticalDotsReactSvgUrl}
               size={16}
               color="#A3A9AE"
               isDisabled={false}
@@ -290,7 +291,7 @@ const Template = (args) => (
                   size="25"
                   isDisabled={false}
                   onClick={() => {}}
-                  iconName={"search.react.svg"}
+                  iconName={VerticalDotsReactSvgUrl}
                   isFill={true}
                   isClickable={false}
                 />

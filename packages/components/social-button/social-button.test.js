@@ -2,7 +2,7 @@ import React from "react";
 import { mount, shallow } from "enzyme";
 import SocialButton from ".";
 
-import ShareGoogleReactSvgUrl from "../../../public/images/share.google.react.svg?url";
+import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url";
 
 describe("<SocialButton />", () => {
   it("renders without error", () => {
@@ -77,7 +77,10 @@ describe("<SocialButton />", () => {
 
   it("accepts style", () => {
     const wrapper = mount(
-      <SocialButton iconName={ShareGoogleReactSvgUrl} style={{ color: "red" }} />
+      <SocialButton
+        iconName={ShareGoogleReactSvgUrl}
+        style={{ color: "red" }}
+      />
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");

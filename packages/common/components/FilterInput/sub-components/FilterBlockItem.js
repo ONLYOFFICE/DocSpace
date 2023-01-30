@@ -23,7 +23,7 @@ import {
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-import XIcon from "../../../../../public/images/x.react.svg";
+import XIcon from "PUBLIC_DIR/images/x.react.svg";
 
 const FilterBlockItem = ({
   group,

@@ -68,7 +68,7 @@
   "PortalAccessSubTitle": "이 섹션에서는 사용자에게 안전하고 편리한 포털 액세스 방법을 제공할 수 있습니다.",
   "PortalNameEmpty": "계정 이름이 비어 있습니다",
   "PortalNameIncorrect": "계정 이름이 잘못되었습니다",
-  "PortalNameLength": "계정 이름은 3~50글자여야 합니다",
+  "PortalNameLength": "계정 이름은 {{minLength}}~{{maxLength}}글자여야 합니다",
   "PortalRenaming": "포털 이름 변경",
   "PortalRenamingDescription": "여기에서 포털 주소를 변경할 수 있습니다.",
   "PortalRenamingLabelText": "새 포털 이름",

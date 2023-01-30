@@ -72,7 +72,7 @@
   "PortalAccessSubTitle": "Този раздел Ви позволява да предоставите на потребителите безопасни и удобни начини за достъп до портала.",
   "PortalNameEmpty": "Името на профила е празно",
   "PortalNameIncorrect": "Неправилно име на профила",
-  "PortalNameLength": "Името на профила трябва да бъде дълго между 3 и 50 знака",
+  "PortalNameLength": "Името на профила трябва да бъде дълго между {{minLength}} и {{maxLength}} знака",
   "PortalRenaming": "Преименуване на портала",
   "PortalRenamingDescription": "Тук можете да промените адреса на вашия портал.",
   "PortalRenamingLabelText": "Ново име на портала",

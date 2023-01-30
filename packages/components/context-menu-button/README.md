@@ -6,7 +6,7 @@ ContextMenuButton is used for displaying context menu actions on a list's item
 
 ```js
 import ContextMenuButton from "@docspace/components/context-menu-button";
-import VerticalDotsReactSvgUrl from "../../../public/images/vertical-dots.react.svg?url";
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 ```
 
 ```jsx
