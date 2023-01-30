@@ -92,9 +92,7 @@ const ArticleMainButtonContent = (props) => {
     setSelectFileDialogVisible,
     isArticleLoading,
     isFavoritesFolder,
-    isShareFolder,
     isRecentFolder,
-    isCommonFolder,
     isRecycleBinFolder,
     history,
     currentFolderId,
@@ -438,24 +436,16 @@ const ArticleMainButtonContent = (props) => {
     <>
       {isMobileArticle ? (
         <>
-          {!isFavoritesFolder &&
-            !isRecentFolder &&
-            !isCommonFolder &&
-            !isShareFolder &&
-            !isRecycleBinFolder &&
-            !isArchiveFolder &&
-            !isArticleLoading &&
-            !isProfile &&
-            ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) && (
-              <MobileView
-                t={t}
-                titleProp={t("Upload")}
-                actionOptions={actions}
-                buttonOptions={uploadActions}
-                isRooms={isRoomsFolder}
-                onMainButtonClick={onCreateRoom}
-              />
-            )}
+          {!isArticleLoading && !isProfile && (canCreateFiles || canInvite) && (
+            <MobileView
+              t={t}
+              titleProp={t("Upload")}
+              actionOptions={actions}
+              buttonOptions={uploadActions}
+              isRooms={isRoomsFolder}
+              onMainButtonClick={onCreateRoom}
+            />
+          )}
         </>
       ) : isRoomsFolder ? (
         <StyledButton
@@ -523,9 +513,7 @@ export default inject(
       isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
-      isCommonFolder,
       isRecycleBinFolder,
-      isShareFolder,
       isRoomsFolder,
       isArchiveFolder,
       selectedTreeNode,
@@ -551,9 +539,8 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
-      isCommonFolder,
       isRecycleBinFolder,
-      isShareFolder,
+
       isRoomsFolder,
       isArchiveFolder,
       selectedTreeNode,

@@ -26,6 +26,7 @@ import DeletePortalDialog from "./DeletePortalDialog";
 import InviteUsersWarningDialog from "./InviteUsersWarningDialog";
 import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
+import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 
 export {
   EmptyTrashDialog,
@@ -48,6 +49,7 @@ export {
   ResetApplicationDialog,
   BackupCodesDialog,
   CreateRoomDialog,
+  CreateRoomConfirmDialog,
   EditRoomDialog,
   ChangePortalOwnerDialog,
   ChangeNameDialog,
