@@ -100,7 +100,9 @@ const Accounts = ({
   const onTypeChange = React.useCallback(
     ({ action }) => {
       setIsLoading(true);
-      changeUserType(action, [selection], onSuccess, onAbort);
+      if (!changeUserType(action, [selection], onSuccess, onAbort)) {
+        setIsLoading(false);
+      }
     },
     [selection, changeUserType, t]
   );

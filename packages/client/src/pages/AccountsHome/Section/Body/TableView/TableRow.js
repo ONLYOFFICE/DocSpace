@@ -194,7 +194,9 @@ const PeopleTableRow = (props) => {
   const onTypeChange = React.useCallback(
     ({ action }) => {
       setIsLoading(true);
-      changeUserType(action, [item], onSuccess, onAbort);
+      if (!changeUserType(action, [item], onSuccess, onAbort)) {
+        setIsLoading(false);
+      }
     },
     [item, changeUserType]
   );
