@@ -28,6 +28,7 @@ const FilesMediaViewer = (props) => {
     setCurrentId,
     setBufferSelection,
     isFavoritesFolder,
+    archiveRoomsId,
     onClickFavorite,
     onShowInfoPanel,
     onClickDownload,
@@ -163,6 +164,7 @@ const FilesMediaViewer = (props) => {
         onDownload={onDownloadMediaFile}
         onClickFavorite={onClickFavorite}
         setBufferSelection={setBufferSelection}
+        archiveRoomsId={archiveRoomsId}
         files={files}
         onClickDownload={onClickDownload}
         onShowInfoPanel={onShowInfoPanel}
@@ -217,7 +219,7 @@ export default inject(
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
-    const { isFavoritesFolder } = treeFoldersStore;
+    const { isFavoritesFolder, archiveRoomsId } = treeFoldersStore;
 
     const {
       onClickFavorite,
@@ -262,6 +264,7 @@ export default inject(
       getIcon,
       onCopyAction,
       onDuplicate,
+      archiveRoomsId,
     };
   }
 )(

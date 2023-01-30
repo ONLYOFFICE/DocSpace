@@ -150,11 +150,18 @@ class FilesStore {
         case "create":
           if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
-            if (foundIndex > -1) return;
 
             const file = JSON.parse(opt?.data);
 
             if (this.selectedFolderStore.id !== file.folderId) return;
+
+            //To update a file version
+            if (foundIndex > -1 && !withPaging) {
+              this.getFileInfo(file.id);
+              this.checkSelection(file);
+            }
+
+            if (foundIndex > -1) return;
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
@@ -214,27 +221,7 @@ class FilesStore {
 
             console.log("[WS] update file", file.id, file.title);
 
-            if (this.selection) {
-              const foundIndex = this.selection?.findIndex(
-                (x) => x.id === file.id
-              );
-              if (foundIndex > -1) {
-                runInAction(() => {
-                  this.selection[foundIndex] = file;
-                });
-              }
-            }
-
-            if (this.bufferSelection) {
-              const foundIndex = [this.bufferSelection].findIndex(
-                (x) => x.id === file.id
-              );
-              if (foundIndex > -1) {
-                runInAction(() => {
-                  this.bufferSelection[foundIndex] = file;
-                });
-              }
-            }
+            this.checkSelection(file);
           } else if (opt?.type === "folder" && opt?.data) {
             const folder = JSON.parse(opt?.data);
 
@@ -461,6 +448,28 @@ class FilesStore {
 
   setClearSearch = (clearSearch) => {
     this.clearSearch = clearSearch;
+  };
+
+  checkSelection = (file) => {
+    if (this.selection) {
+      const foundIndex = this.selection?.findIndex((x) => x.id === file.id);
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.selection[foundIndex] = file;
+        });
+      }
+    }
+
+    if (this.bufferSelection) {
+      const foundIndex = [this.bufferSelection].findIndex(
+        (x) => x.id === file.id
+      );
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.bufferSelection[foundIndex] = file;
+        });
+      }
+    }
   };
 
   updateSelectionStatus = (id, status, isEditing) => {

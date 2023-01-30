@@ -493,6 +493,7 @@ class MediaViewer extends React.Component {
       onClickDelete,
       setBufferSelection,
       files,
+      archiveRoomsId,
     } = this.props;
 
     const currentFileId =
@@ -504,6 +505,8 @@ class MediaViewer extends React.Component {
 
     const targetFile =
       files.find((item) => item.id === currentFileId) || playlist[0];
+
+    const archiveRoom = archiveRoomsId === targetFile.rootFolderId;
     const { title } = currentFile;
 
     let isImage = false;
@@ -535,14 +538,14 @@ class MediaViewer extends React.Component {
           label: t("Rename"),
           icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: false,
+          disabled: archiveRoom,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
           icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
-          disabled: false,
+          disabled: archiveRoom,
         },
       ];
 
@@ -599,7 +602,7 @@ class MediaViewer extends React.Component {
           label: t("Rename"),
           icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: isPreviewFile,
+          disabled: archiveRoom,
         },
 
         {
@@ -673,6 +676,7 @@ class MediaViewer extends React.Component {
             isPreviewFile={isPreviewFile}
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
+            archiveRoom={archiveRoom}
             //    isFavoritesFolder={isFavoritesFolder}
           />
         )}
