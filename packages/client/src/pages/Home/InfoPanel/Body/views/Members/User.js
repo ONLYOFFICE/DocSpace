@@ -34,6 +34,18 @@ const User = ({
     (role) => role.key !== userRole.key
   );
 
+  const updateRole = (option) => {
+    updateRoomMemberRole(selectionParentRoom.id, {
+      invitations: [{ id: user.id, access: option.access }],
+      notify: false,
+      sharingMessage: "",
+    }).then(() => setIsLoading(false));
+  };
+
+  const abortCallback = () => {
+    return setIsLoading(false);
+  };
+
   const onOptionClick = (option) => {
     const userType =
       option.key === "owner"
@@ -44,13 +56,7 @@ const User = ({
 
     setIsLoading(true);
 
-    changeUserType(userType, [user]);
-
-    updateRoomMemberRole(selectionParentRoom.id, {
-      invitations: [{ id: user.id, access: option.access }],
-      notify: false,
-      sharingMessage: "",
-    }).then(() => setIsLoading(false));
+    changeUserType(userType, [user], updateRole(option), abortCallback);
 
     const inRoomMembers = selectionParentRoom.members.inRoom;
     const expectedMembers = selectionParentRoom.members.expected;
