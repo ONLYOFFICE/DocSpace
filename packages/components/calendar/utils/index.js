@@ -1,9 +1,0 @@
-export { compareMonths } from "./compareMonths";
-export { compareDates } from "./compareDates";
-export { getFirstMonthDay } from "./getFirstMonthDay";
-export { getArrayYears } from "./getArrayYears";
-export { getCurrentMonth } from "./getCurrentMonth";
-export { getCurrentYear } from "./getCurrentYear";
-export { getDays } from "./getDays";
-export { getListMonth } from "./getListMonth";
-export { getWeekDays } from "./getWeekDays";
