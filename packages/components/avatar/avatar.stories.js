@@ -1,6 +1,6 @@
 import React from "react";
 import Avatar from "./";
-import AtReactSvgUrl from "../../../public/images/@.react.svg?url";
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 
 const editAction = () => console.log("Edit action");
 

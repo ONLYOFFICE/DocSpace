@@ -2,7 +2,7 @@ import React from "react";
 import { mount } from "enzyme";
 import InputBlock from ".";
 import Button from "../button";
-import SearchReactSvgUrl from "../../../public/images/search.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 describe("<IconButton />", () => {
   it("renders without error", () => {
     const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
@@ -93,7 +93,7 @@ describe("<IconButton />", () => {
     const onChange = jest.fn();
     const wrapper = mount(
       <InputBlock
-        iconName="static/images/search.react.svg"
+        iconName={SearchReactSvgUrl}
         size="huge"
         onChange={onChange}
       />
@@ -106,7 +106,7 @@ describe("<IconButton />", () => {
     const onIconClick = jest.fn();
     const wrapper = mount(
       <InputBlock
-        iconName="static/images/search.react.svg"
+        iconName={SearchReactSvgUrl}
         size="huge"
         isDisabled={false}
         onIconClick={onIconClick}
@@ -119,7 +119,7 @@ describe("<IconButton />", () => {
   it("not call onChange", () => {
     const onChange = jest.fn();
     const wrapper = mount(
-      <InputBlock iconName="static/images/search.react.svg" size="huge" />
+      <InputBlock iconName={SearchReactSvgUrl} size="huge" />
     );
     const input = wrapper.find("input");
     input.first().simulate("change", { target: { value: "test" } });
@@ -129,7 +129,7 @@ describe("<IconButton />", () => {
     const onIconClick = jest.fn();
     const wrapper = mount(
       <InputBlock
-        iconName="static/images/search.react.svg"
+        iconName={SearchReactSvgUrl}
         size="huge"
         isDisabled={true}
         onIconClick={onIconClick}

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
-import RightArrowReactSvgUrl from "../../../public/images/right.arrow.react.svg?url";
+import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
 
 import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
 import { isNull } from "lodash";

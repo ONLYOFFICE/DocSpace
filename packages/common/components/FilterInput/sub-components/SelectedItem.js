@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import CrossReactSvgUrl from "../../../../../public/images/cross.react.svg?url";
+import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";

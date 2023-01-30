@@ -1,11 +1,11 @@
 import React from "react";
 import DropDown from "../drop-down";
 import DropDownItem from ".";
-import QuestionReactSvgUrl from "../../../public/images/question.react.svg?url";
-import EyeReactSvgUrl from "../../../public/images/eye.react.svg?url";
-import CopyReactSvgUrl from "../../../public/images/copy.react.svg?url";
-import ChatReactSvgUrl from "../../../public/images/chat.react.svg?url";
-import NavLogoReactSvgUrl from "../../../public/images/nav.logo.react.svg?url";
+import QuestionReactSvgUrl from "PUBLIC_DIR/images/question.react.svg?url";
+import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import ChatReactSvgUrl from "PUBLIC_DIR/images/chat.react.svg?url";
+import NavLogoReactSvgUrl from "PUBLIC_DIR/images/nav.logo.react.svg?url";
 
 export default {
   title: "Components/DropDownItem",

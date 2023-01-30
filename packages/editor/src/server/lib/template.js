@@ -12,7 +12,10 @@ export default function template(
   const { title } = pkg;
   const { error } = initialEditorState;
   const editorUrl = initialEditorState?.config?.editorUrl;
-  const faviconHref = getFavicon(initialEditorState?.logoUrls);
+  const faviconHref = getFavicon(initialEditorState?.logoUrls)?.replace(
+    "client/",
+    "doceditor/"
+  );
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")

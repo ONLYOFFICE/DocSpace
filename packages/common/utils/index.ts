@@ -1,19 +1,19 @@
-import LoginPageSvgUrl from "../../../public/images/logo/loginpage.svg?url";
-import DarkLoginPageSvgUrl from "../../../public/images/logo/dark_loginpage.svg?url";
-import LeftMenuSvgUrl from "../../../public/images/logo/leftmenu.svg?url";
-import DocseditorSvgUrl from "../../../public/images/logo/docseditor.svg?url";
-import LightSmallSvgUrl from "../../../public/images/logo/lightsmall.svg?url";
-import DocsEditoRembedSvgUrl from "../../../public/images/logo/docseditorembed.svg?url";
-import DarkLightSmallSvgUrl from "../../../public/images/logo/dark_lightsmall.svg?url";
-import FaviconIco from "../../../public/favicon.ico";
+import LoginPageSvgUrl from "PUBLIC_DIR/images/logo/loginpage.svg?url";
+import DarkLoginPageSvgUrl from "PUBLIC_DIR/images/logo/dark_loginpage.svg?url";
+import LeftMenuSvgUrl from "PUBLIC_DIR/images/logo/leftmenu.svg?url";
+import DocseditorSvgUrl from "PUBLIC_DIR/images/logo/docseditor.svg?url";
+import LightSmallSvgUrl from "PUBLIC_DIR/images/logo/lightsmall.svg?url";
+import DocsEditoRembedSvgUrl from "PUBLIC_DIR/images/logo/docseditorembed.svg?url";
+import DarkLightSmallSvgUrl from "PUBLIC_DIR/images/logo/dark_lightsmall.svg?url";
+import FaviconIco from "PUBLIC_DIR/favicon.ico";
 
-import BackgroundPatternReactSvgUrl from "../../../public/images/background.pattern.react.svg?url";
-import BackgroundPatternOrangeReactSvgUrl from "../../../public/images/background.pattern.orange.react.svg?url";
-import BackgroundPatternGreenReactSvgUrl from "../../../public/images/background.pattern.green.react.svg?url";
-import BackgroundPatternRedReactSvgUrl from "../../../public/images/background.pattern.red.react.svg?url";
-import BackgroundPatternPurpleReactSvgUrl from "../../../public/images/background.pattern.purple.react.svg?url";
-import BackgroundPatternLightBlueReactSvgUrl from "../../../public/images/background.pattern.lightBlue.react.svg?url";
-import BackgroundPatternBlackReactSvgUrl from "../../../public/images/background.pattern.black.react.svg?url";
+import BackgroundPatternReactSvgUrl from "PUBLIC_DIR/images/background.pattern.react.svg?url";
+import BackgroundPatternOrangeReactSvgUrl from "PUBLIC_DIR/images/background.pattern.orange.react.svg?url";
+import BackgroundPatternGreenReactSvgUrl from "PUBLIC_DIR/images/background.pattern.green.react.svg?url";
+import BackgroundPatternRedReactSvgUrl from "PUBLIC_DIR/images/background.pattern.red.react.svg?url";
+import BackgroundPatternPurpleReactSvgUrl from "PUBLIC_DIR/images/background.pattern.purple.react.svg?url";
+import BackgroundPatternLightBlueReactSvgUrl from "PUBLIC_DIR/images/background.pattern.lightBlue.react.svg?url";
+import BackgroundPatternBlackReactSvgUrl from "PUBLIC_DIR/images/background.pattern.black.react.svg?url";
 
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";

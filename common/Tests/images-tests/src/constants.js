@@ -42,6 +42,13 @@ const paths = {
 
 const imageHelperPath = path.join(commonPath, "/utils/image-helpers.js");
 
+const wrongImportImages = [
+  `"/static/images`,
+  `"/images`,
+  `"static/images`,
+  `"images/`,
+];
+
 module.exports = {
   imagesPattern,
   filesPattern,
@@ -50,4 +57,5 @@ module.exports = {
   paths,
   imageHelperPath,
   excludePath,
+  wrongImportImages,
 };

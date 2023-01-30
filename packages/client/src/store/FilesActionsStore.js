@@ -324,6 +324,7 @@ class FilesActionStore {
             } else {
               this.updateFilesAfterDelete(folderIds);
               this.filesStore.removeFiles(fileIds, folderIds, showToast);
+              this.uploadDataStore.removeFiles(fileIds);
             }
 
             if (currentFolderId) {

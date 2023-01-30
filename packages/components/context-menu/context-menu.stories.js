@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import CatalogFolderReactSvgUrl from "../../../public/images/catalog.folder.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import ContextMenu from "./index";
 
 export default {

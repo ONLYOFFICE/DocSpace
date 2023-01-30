@@ -32,6 +32,7 @@ import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
 import AccessRightsStore from "./AccessRightsStore";
 import TableStore from "./TableStore";
+import CreateEditRoomStore from "./CreateEditRoomStore";
 
 const oformsStore = new OformsStore(authStore);
 
@@ -146,6 +147,16 @@ authStore.infoPanelStore.peopleStore = peopleStore;
 authStore.infoPanelStore.selectedFolderStore = selectedFolderStore;
 authStore.infoPanelStore.treeFoldersStore = treeFoldersStore;
 
+const createEditRoomStore = new CreateEditRoomStore(
+  filesStore,
+  filesActionsStore,
+  selectedFolderStore,
+  tagsStore,
+  thirdPartyStore,
+  authStore.settingsStore,
+  authStore.infoPanelStore
+);
+
 const store = {
   auth: authStore,
   payments: paymentStore,
@@ -180,6 +191,7 @@ const store = {
   peopleStore,
 
   accessRightsStore,
+  createEditRoomStore,
 };
 
 export default store;

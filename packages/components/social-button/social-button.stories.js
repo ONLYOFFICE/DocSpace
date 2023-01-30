@@ -1,7 +1,7 @@
 import React from "react";
 import SocialButton from "./";
-import ShareGoogleReactSvgUrl from "../../../public/images/share.google.react.svg?url";
-import ShareLinkedinReactSvgUrl from "../../../public/images/share.linkedin.react.svg?url";
+import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url";
+import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg?url";
 
 export default {
   title: "Components/SocialButtons",

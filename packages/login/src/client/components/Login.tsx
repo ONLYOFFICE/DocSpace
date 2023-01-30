@@ -19,7 +19,7 @@ import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/Recove
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-import SSOIcon from "../../../../../public/images/sso.react.svg";
+import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
@@ -187,12 +187,15 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
-  const bgPattern = getBgPattern(currentColorScheme.id);
+  const bgPattern = getBgPattern(currentColorScheme.id).replace(
+    "client/",
+    "login/"
+  );
 
   const logo = Object.values(logoUrls)[1];
   const logoUrl = !theme.isBase
-    ? getLogoFromPath(logo.path.dark)
-    : getLogoFromPath(logo.path.light);
+    ? getLogoFromPath(logo.path.dark).replace("client/", "login/")
+    : getLogoFromPath(logo.path.light).replace("client/", "login/");
 
   if (!mounted) return <></>;
   if (isRestoringPortal) return <></>;

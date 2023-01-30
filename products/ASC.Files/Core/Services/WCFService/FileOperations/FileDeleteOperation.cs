@@ -236,6 +236,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             else
                             {
                                 await FolderDao.MoveFolderAsync(folder.Id, _trashId, CancellationToken);
+                                await socketManager.DeleteFolder(folder);
+
                                 if (isNeedSendActions)
                                 {
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);

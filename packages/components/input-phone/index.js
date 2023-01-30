@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { options } from "./options";
 import { FixedSizeList as List } from "react-window";
 import { StyledBox } from "./styled-input-phone";
-import InvalidSvgUrl from "../../../public/images/phoneFlags/invalid.svg?url";
+import InvalidSvgUrl from "PUBLIC_DIR/images/phoneFlags/invalid.svg?url";
 import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
