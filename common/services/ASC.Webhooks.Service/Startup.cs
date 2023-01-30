@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Webhooks;
 public class Startup : BaseWorkerStartup
 {
@@ -52,8 +53,20 @@ public class Startup : BaseWorkerStartup
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
+                .Or<SslException>()
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        })
+        .ConfigurePrimaryHttpMessageHandler((s) =>
+        {
+            return new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                {
+                    var helper = s.GetRequiredService<SslHelper>();
+                    return helper.ValidateCertificate(sslPolicyErrors);
+                }
+            };
         });
     }
 }

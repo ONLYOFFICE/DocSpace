@@ -49,3 +49,5 @@ global using Microsoft.Extensions.Logging;
 
 global using Polly;
 global using Polly.Extensions.Http;
+global using ASC.Core.Common.Settings;
+global using System.Net.Security;

@@ -24,12 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Service.Log;
-internal static partial class WebhookSenderLogger
-{
-    [LoggerMessage(Level = LogLevel.Debug, Message = "Procedure: Finish.")]
-    public static partial void DebugProcedureFinish(this ILogger<WorkerService> logger);
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-    [LoggerMessage(Level = LogLevel.Error)]
-    public static partial void ErrorSSLVerification(this ILogger logger, Exception exception);
+public class WebhooksSslSettingsDto : IMapFrom<SslSettings>
+{
+    public bool IsEnabled { get; set; }
 }

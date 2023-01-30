@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
@@ -33,6 +34,7 @@ public class WebhooksController : BaseSettingsController
     private readonly DbWorker _webhookDbWorker;
     private readonly IMapper _mapper;
     private readonly WebhookPublisher _webhookPublisher;
+    private readonly SettingsManager _settingsManager;
 
     public WebhooksController(
         ApiContext context,
@@ -43,7 +45,8 @@ public class WebhooksController : BaseSettingsController
         DbWorker dbWorker,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
-        WebhookPublisher webhookPublisher)
+        WebhookPublisher webhookPublisher,
+        SettingsManager settingsManager)
         : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _context = context;
@@ -51,6 +54,7 @@ public class WebhooksController : BaseSettingsController
         _webhookDbWorker = dbWorker;
         _mapper = mapper;
         _webhookPublisher = webhookPublisher;
+        _settingsManager = settingsManager;
     }
 
     [HttpGet("webhook")]
@@ -158,5 +162,27 @@ public class WebhooksController : BaseSettingsController
 
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
         }
+    }
+
+    [HttpGet("webhook/ssl")]
+    public WebhooksSslSettingsDto GetSslSettings()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<SslSettings>();
+
+        return _mapper.Map<WebhooksSslSettingsDto>(settings);
+    }
+
+    [HttpPost("webhook/ssl/{isEnabled}")]
+    public WebhooksSslSettingsDto SetSslSettings(bool isEnabled)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<SslSettings>();
+        settings.EnableSSLVerification = isEnabled;
+        _settingsManager.Save(settings);
+
+        return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
 }

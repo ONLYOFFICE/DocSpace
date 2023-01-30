@@ -81,6 +81,10 @@ public class WebhookSender
 
             _log.DebugResponse(response);
         }
+        catch (SslException e)
+        {
+            _log.ErrorSSLVerification(e);
+        }
         catch (HttpRequestException e)
         {
             if (e.StatusCode.HasValue)
