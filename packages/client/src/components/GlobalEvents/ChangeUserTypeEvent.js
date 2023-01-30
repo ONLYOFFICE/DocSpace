@@ -13,6 +13,13 @@ const ChangeUserTypeEvent = ({
   updateUserType,
   getUsersList,
 }) => {
+  const {
+    toType,
+    fromType,
+    userIDs,
+    successCallback,
+    abortCallback,
+  } = peopleDialogData;
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common"]);
 
   useEffect(() => {
@@ -23,12 +30,15 @@ const ChangeUserTypeEvent = ({
     };
   }, [peopleDialogData]);
 
-  const onChangeUserType = async () => {
+  const onChangeUserType = () => {
     onClose();
     updateUserType(toType, userIDs, peopleFilter, fromType)
-      .then(() => toastr.success(t("SuccessChangeUserType")))
-      .catch((err) => toastr.error(err))
-      .finally(() => callback && callback(false));
+      .then(() => {
+        toastr.success(t("SuccessChangeUserType"));
+
+        successCallback && successCallback();
+      })
+      .catch((err) => toastr.error(err));
   };
 
   const onClose = () => {
@@ -37,6 +47,7 @@ const ChangeUserTypeEvent = ({
 
   const onCloseAction = async () => {
     await getUsersList(peopleFilter);
+    abortCallback && abortCallback();
     onClose();
   };
 
@@ -51,8 +62,6 @@ const ChangeUserTypeEvent = ({
         return t("Common:User");
     }
   };
-
-  const { toType, fromType, userIDs, callback } = peopleDialogData;
 
   const firstType =
     fromType.length === 1 && fromType[0] ? getType(fromType[0]) : null;
