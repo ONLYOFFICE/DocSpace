@@ -5,74 +5,70 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
 {
     [DbContext(typeof(CoreDbContext))]
-    [Migration("20221019144347_CoreDbContextMigrate")]
+    [Migration("20230130103905_CoreDbContextMigrate")]
     partial class CoreDbContextMigrate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("description")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnType("character varying")
+                        .HasColumnName("description");
 
                     b.Property<string>("Features")
                         .HasColumnType("text")
                         .HasColumnName("features");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasColumnType("character varying")
+                        .HasColumnName("name");
 
                     b.Property<decimal>("Price")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(10,2)")
+                        .HasColumnType("numeric(10,2)")
                         .HasColumnName("price")
-                        .HasDefaultValueSql("'0.00'");
+                        .HasDefaultValueSql("0.00");
 
                     b.Property<string>("ProductId")
-                        .HasColumnType("varchar(128)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("product_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Visible")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("visible")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("boolean")
+                        .HasColumnName("visible");
 
                     b.HasKey("Tenant")
-                        .HasName("PRIMARY");
+                        .HasName("tenants_quota_pkey");
 
-                    b.ToTable("tenants_quota", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("tenants_quota", "onlyoffice");
 
                     b.HasData(
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1",
+                            Features = "trial,audit,ldap,sso,whitelabel,thirdparty,audit,restore,total_size:107374182400,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0m,
                             Visible = false
@@ -80,7 +76,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,audit,restore,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",
@@ -99,20 +95,13 @@ namespace ASC.Migrations.MySql.Migrations
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuotaRow", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("user_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<string>("Path")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("path")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("path");
 
                     b.Property<long>("Counter")
                         .ValueGeneratedOnAdd()
@@ -121,66 +110,77 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Tag")
-                        .HasColumnType("varchar(1024)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("tag")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("'0'");
 
-                    b.HasKey("Tenant", "UserId", "Path")
-                        .HasName("PRIMARY");
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasDefaultValueSql("NULL");
+
+                    b.HasKey("Tenant", "Path")
+                        .HasName("tenants_quotarow_pkey");
 
                     b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
+                        .HasDatabaseName("last_modified_tenants_quotarow");
 
-                    b.ToTable("tenants_quotarow", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("tenants_quotarow", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariff", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Comment")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("comment")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("CreateOn")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("create_on");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("create_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("customer_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("Stamp")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("stamp");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Tenant")
-                        .HasDatabaseName("tenant");
+                        .HasDatabaseName("tenant_tenants_tariff");
 
-                    b.ToTable("tenants_tariff", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("tenants_tariff", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
@@ -204,7 +204,7 @@ namespace ASC.Migrations.MySql.Migrations
                     b.HasKey("Tenant", "TariffId", "Quota")
                         .HasName("PRIMARY");
 
-                    b.ToTable("tenants_tariffrow", (string)null);
+                    b.ToTable("tenants_tariffrow", "onlyoffice");
                 });
 #pragma warning restore 612, 618
         }

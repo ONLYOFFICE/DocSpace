@@ -1,333 +1,293 @@
 using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
 {
+    /// <inheritdoc />
     public partial class FilesDbContextMigrate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
+            migrationBuilder.EnsureSchema(
+                name: "onlyoffice");
 
             migrationBuilder.CreateTable(
                 name: "files_bunch_objects",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    right_node = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    left_node = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    rightnode = table.Column<string>(name: "right_node", type: "character varying(255)", maxLength: 255, nullable: false),
+                    leftnode = table.Column<string>(name: "left_node", type: "character varying(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.right_node });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_bunch_objects_pkey", x => new { x.tenantid, x.rightnode });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_converts",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    input = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    output = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    input = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    output = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.input, x.output });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_converts_pkey", x => new { x.input, x.output });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_file",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false),
-                    version = table.Column<int>(type: "int", nullable: false),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    version_group = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'1'"),
-                    current_version = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'"),
-                    folder_id = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    title = table.Column<string>(type: "varchar(400)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    content_length = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "'0'"),
-                    file_status = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    category = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    create_by = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    create_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    modified_by = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    modified_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    converted_type = table.Column<string>(type: "varchar(10)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    comment = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    changes = table.Column<string>(type: "mediumtext", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    encrypted = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'"),
-                    forcesave = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    thumb = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'")
+                    id = table.Column<int>(type: "integer", nullable: false),
+                    version = table.Column<int>(type: "integer", nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    versiongroup = table.Column<int>(name: "version_group", type: "integer", nullable: false, defaultValueSql: "1"),
+                    currentversion = table.Column<bool>(name: "current_version", type: "boolean", nullable: false),
+                    folderid = table.Column<int>(name: "folder_id", type: "integer", nullable: false),
+                    title = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    contentlength = table.Column<long>(name: "content_length", type: "bigint", nullable: false, defaultValueSql: "'0'::bigint"),
+                    filestatus = table.Column<int>(name: "file_status", type: "integer", nullable: false),
+                    category = table.Column<int>(type: "integer", nullable: false),
+                    createby = table.Column<Guid>(name: "create_by", type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    createon = table.Column<DateTime>(name: "create_on", type: "timestamp with time zone", nullable: false),
+                    modifiedby = table.Column<Guid>(name: "modified_by", type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    modifiedon = table.Column<DateTime>(name: "modified_on", type: "timestamp with time zone", nullable: false),
+                    convertedtype = table.Column<string>(name: "converted_type", type: "character varying(10)", maxLength: 10, nullable: true, defaultValueSql: "NULL::character varying"),
+                    comment = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true, defaultValueSql: "NULL::character varying"),
+                    changes = table.Column<string>(type: "text", nullable: true),
+                    encrypted = table.Column<bool>(type: "boolean", nullable: false),
+                    forcesave = table.Column<int>(type: "integer", nullable: false),
+                    thumb = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.id, x.version });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_file_pkey", x => new { x.id, x.tenantid, x.version });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_folder",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    parent_id = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    title = table.Column<string>(type: "varchar(400)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    folder_type = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    create_by = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    create_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    modified_by = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    modified_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    foldersCount = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    filesCount = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    @private = table.Column<bool>(name: "private", type: "tinyint(1)", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    parentid = table.Column<int>(name: "parent_id", type: "integer", nullable: false),
+                    title = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    foldertype = table.Column<int>(name: "folder_type", type: "integer", nullable: false),
+                    createby = table.Column<Guid>(name: "create_by", type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    createon = table.Column<DateTime>(name: "create_on", type: "timestamp with time zone", nullable: false),
+                    modifiedby = table.Column<Guid>(name: "modified_by", type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    modifiedon = table.Column<DateTime>(name: "modified_on", type: "timestamp with time zone", nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    foldersCount = table.Column<int>(type: "integer", nullable: false),
+                    filesCount = table.Column<int>(type: "integer", nullable: false),
+                    @private = table.Column<bool>(name: "private", type: "boolean", nullable: false),
+                    haslogo = table.Column<bool>(name: "has_logo", type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_folder", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_folder_tree",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    folder_id = table.Column<int>(type: "int", nullable: false),
-                    parent_id = table.Column<int>(type: "int", nullable: false),
-                    level = table.Column<int>(type: "int", nullable: false)
+                    folderid = table.Column<int>(name: "folder_id", type: "integer", nullable: false),
+                    parentid = table.Column<int>(name: "parent_id", type: "integer", nullable: false),
+                    level = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.parent_id, x.folder_id });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_folder_tree_pkey", x => new { x.parentid, x.folderid });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_link",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    source_id = table.Column<string>(type: "varchar(32)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    linked_id = table.Column<string>(type: "varchar(32)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    linked_for = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    sourceid = table.Column<string>(name: "source_id", type: "character varying(32)", maxLength: 32, nullable: false),
+                    linkedid = table.Column<string>(name: "linked_id", type: "character varying(32)", maxLength: 32, nullable: false),
+                    linkedfor = table.Column<Guid>(name: "linked_for", type: "uuid", fixedLength: true, maxLength: 38, nullable: false, defaultValueSql: "NULL::bpchar")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.source_id, x.linked_id });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_link_pkey", x => new { x.tenantid, x.sourceid, x.linkedid });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_properties",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    entry_id = table.Column<string>(type: "varchar(32)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    data = table.Column<string>(type: "mediumtext", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    entryid = table.Column<string>(name: "entry_id", type: "character varying(50)", maxLength: 50, nullable: false),
+                    data = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id });
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                    table.PrimaryKey("files_properties_pkey", x => new { x.tenantid, x.entryid });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_security",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    entry_id = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    entry_type = table.Column<int>(type: "int", nullable: false),
-                    subject = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    subject_type = table.Column<int>(type: "int", nullable: false),
-                    owner = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    security = table.Column<int>(type: "int", nullable: false),
-                    timestamp = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    options = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    entryid = table.Column<string>(name: "entry_id", type: "character varying(50)", maxLength: 50, nullable: false),
+                    entrytype = table.Column<int>(name: "entry_type", type: "integer", nullable: false),
+                    subject = table.Column<Guid>(type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    subjecttype = table.Column<int>(name: "subject_type", type: "integer", nullable: false),
+                    owner = table.Column<Guid>(type: "uuid", fixedLength: true, maxLength: 38, nullable: false),
+                    security = table.Column<int>(type: "integer", nullable: false),
+                    timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    options = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_security_pkey", x => new { x.tenantid, x.entryid, x.entrytype, x.subject });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_tag",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    owner = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    flag = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'")
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    owner = table.Column<Guid>(type: "uuid", maxLength: 38, nullable: false),
+                    flag = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_tag", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_tag_link",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    tag_id = table.Column<int>(type: "int", nullable: false),
-                    entry_type = table.Column<int>(type: "int", nullable: false),
-                    entry_id = table.Column<string>(type: "varchar(32)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    create_by = table.Column<string>(type: "char(38)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    create_on = table.Column<DateTime>(type: "datetime", nullable: true),
-                    tag_count = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'")
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    tagid = table.Column<int>(name: "tag_id", type: "integer", nullable: false),
+                    entrytype = table.Column<int>(name: "entry_type", type: "integer", nullable: false),
+                    entryid = table.Column<string>(name: "entry_id", type: "character varying(32)", maxLength: 32, nullable: false),
+                    createby = table.Column<Guid>(name: "create_by", type: "uuid", fixedLength: true, maxLength: 38, nullable: true, defaultValueSql: "NULL::bpchar"),
+                    createon = table.Column<DateTime>(name: "create_on", type: "timestamp with time zone", nullable: true),
+                    tagcount = table.Column<int>(name: "tag_count", type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.tag_id, x.entry_id, x.entry_type });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_tag_link_pkey", x => new { x.tenantid, x.tagid, x.entrytype, x.entryid });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_account",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    provider = table.Column<string>(type: "varchar(50)", nullable: false, defaultValueSql: "'0'", collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    customer_title = table.Column<string>(type: "varchar(400)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    user_name = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    password = table.Column<string>(type: "varchar(512)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    user_id = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    folder_type = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    room_type = table.Column<int>(type: "int", nullable: false),
-                    create_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    url = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    folder_id = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    @private = table.Column<bool>(name: "private", type: "tinyint(1)", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    provider = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, defaultValueSql: "'0'::character varying"),
+                    customertitle = table.Column<string>(name: "customer_title", type: "character varying(400)", maxLength: 400, nullable: false),
+                    username = table.Column<string>(name: "user_name", type: "character varying(100)", maxLength: 100, nullable: false),
+                    password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    token = table.Column<string>(type: "text", nullable: true),
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", maxLength: 38, nullable: false),
+                    foldertype = table.Column<int>(name: "folder_type", type: "integer", nullable: false),
+                    roomtype = table.Column<int>(name: "room_type", type: "integer", nullable: false),
+                    createon = table.Column<DateTime>(name: "create_on", type: "timestamp with time zone", nullable: false),
+                    url = table.Column<string>(type: "text", nullable: true),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    folderid = table.Column<string>(name: "folder_id", type: "text", nullable: true),
+                    @private = table.Column<bool>(name: "private", type: "boolean", nullable: false),
+                    haslogo = table.Column<bool>(name: "has_logo", type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_app",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    user_id = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    app = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    modified_on = table.Column<DateTime>(type: "timestamp", nullable: false)
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", maxLength: 38, nullable: false),
+                    app = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    token = table.Column<string>(type: "text", nullable: true),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    modifiedon = table.Column<DateTime>(name: "modified_on", type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => new { x.user_id, x.app });
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_thirdparty_app_pkey", x => new { x.userid, x.app });
+                });
 
             migrationBuilder.CreateTable(
                 name: "files_thirdparty_id_mapping",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    hash_id = table.Column<string>(type: "char(32)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    tenant_id = table.Column<int>(type: "int", nullable: false),
-                    id = table.Column<string>(type: "text", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    hashid = table.Column<string>(name: "hash_id", type: "character(32)", fixedLength: true, maxLength: 32, nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", nullable: false),
+                    id = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.hash_id);
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                    table.PrimaryKey("files_thirdparty_id_mapping_pkey", x => x.hashid);
+                });
 
             migrationBuilder.CreateTable(
                 name: "tenants_tenants",
+                schema: "onlyoffice",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    alias = table.Column<string>(type: "varchar(100)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    mappeddomain = table.Column<string>(type: "varchar(100)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    version = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'2'"),
-                    version_changed = table.Column<DateTime>(type: "datetime", nullable: true),
-                    language = table.Column<string>(type: "char(10)", nullable: false, defaultValueSql: "'en-US'", collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    timezone = table.Column<string>(type: "varchar(50)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    trusteddomains = table.Column<string>(type: "varchar(1024)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    trusteddomainsenabled = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'1'"),
-                    status = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    statuschanged = table.Column<DateTime>(type: "datetime", nullable: true),
-                    creationdatetime = table.Column<DateTime>(type: "datetime", nullable: false),
-                    owner_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    payment_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    industry = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    last_modified = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    spam = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
-                    calls = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    alias = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    mappeddomain = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true, defaultValueSql: "NULL"),
+                    version = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "2"),
+                    versionchanged = table.Column<DateTime>(name: "version_changed", type: "timestamp with time zone", nullable: true),
+                    language = table.Column<string>(type: "character(10)", fixedLength: true, maxLength: 10, nullable: false, defaultValueSql: "'en-US'"),
+                    timezone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true, defaultValueSql: "NULL"),
+                    trusteddomains = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true, defaultValueSql: "NULL"),
+                    trusteddomainsenabled = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "1"),
+                    status = table.Column<int>(type: "integer", nullable: false),
+                    statuschanged = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    creationdatetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ownerid = table.Column<Guid>(name: "owner_id", type: "uuid", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
+                    paymentid = table.Column<string>(name: "payment_id", type: "character varying(38)", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
+                    industry = table.Column<int>(type: "integer", nullable: false),
+                    lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    spam = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true"),
+                    calls = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tenants_tenants", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8");
+                });
 
             migrationBuilder.InsertData(
+                schema: "onlyoffice",
                 table: "files_converts",
                 columns: new[] { "input", "output" },
                 values: new object[,]
@@ -683,150 +643,185 @@ namespace ASC.Migrations.MySql.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "onlyoffice",
                 table: "tenants_tenants",
-                columns: new[] { "id", "alias", "creationdatetime", "last_modified", "mappeddomain", "name", "owner_id", "payment_id", "statuschanged", "timezone", "trusteddomains", "version_changed" },
-                values: new object[] { 1, "localhost", new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317), new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Web Office", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", null, null, null, null, null });
+                columns: new[] { "id", "alias", "creationdatetime", "industry", "last_modified", "name", "owner_id", "status", "statuschanged", "version_changed" },
+                values: new object[] { 1, "localhost", new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317), 0, new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Web Office", new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), 0, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "left_node",
+                schema: "onlyoffice",
                 table: "files_bunch_objects",
                 column: "left_node");
 
             migrationBuilder.CreateIndex(
                 name: "folder_id",
+                schema: "onlyoffice",
                 table: "files_file",
                 column: "folder_id");
 
             migrationBuilder.CreateIndex(
                 name: "id",
+                schema: "onlyoffice",
                 table: "files_file",
                 column: "id");
 
             migrationBuilder.CreateIndex(
-                name: "modified_on",
+                name: "modified_on_files_file",
+                schema: "onlyoffice",
                 table: "files_file",
                 column: "modified_on");
 
             migrationBuilder.CreateIndex(
-                name: "modified_on",
+                name: "modified_on_files_folder",
+                schema: "onlyoffice",
                 table: "files_folder",
                 column: "modified_on");
 
             migrationBuilder.CreateIndex(
                 name: "parent_id",
+                schema: "onlyoffice",
                 table: "files_folder",
                 columns: new[] { "tenant_id", "parent_id" });
 
             migrationBuilder.CreateIndex(
-                name: "folder_id",
+                name: "folder_id_files_folder_tree",
+                schema: "onlyoffice",
                 table: "files_folder_tree",
                 column: "folder_id");
 
             migrationBuilder.CreateIndex(
-                name: "linked_for",
+                name: "linked_for_files_link",
+                schema: "onlyoffice",
                 table: "files_link",
                 columns: new[] { "tenant_id", "source_id", "linked_id", "linked_for" });
 
             migrationBuilder.CreateIndex(
                 name: "owner",
+                schema: "onlyoffice",
                 table: "files_security",
                 column: "owner");
 
             migrationBuilder.CreateIndex(
-                name: "tenant_id",
+                name: "tenant_id_files_security",
+                schema: "onlyoffice",
                 table: "files_security",
-                columns: new[] { "tenant_id", "entry_type", "entry_id", "owner" });
+                columns: new[] { "entry_id", "tenant_id", "entry_type", "owner" });
 
             migrationBuilder.CreateIndex(
-                name: "name",
+                name: "name_files_tag",
+                schema: "onlyoffice",
                 table: "files_tag",
                 columns: new[] { "tenant_id", "owner", "name", "flag" });
 
             migrationBuilder.CreateIndex(
-                name: "create_on",
+                name: "create_on_files_tag_link",
+                schema: "onlyoffice",
                 table: "files_tag_link",
                 column: "create_on");
 
             migrationBuilder.CreateIndex(
                 name: "entry_id",
+                schema: "onlyoffice",
                 table: "files_tag_link",
-                columns: new[] { "tenant_id", "entry_id", "entry_type" });
+                columns: new[] { "tenant_id", "entry_type", "entry_id" });
 
             migrationBuilder.CreateIndex(
                 name: "tenant_id",
+                schema: "onlyoffice",
                 table: "files_thirdparty_account",
                 column: "tenant_id");
 
             migrationBuilder.CreateIndex(
                 name: "index_1",
+                schema: "onlyoffice",
                 table: "files_thirdparty_id_mapping",
                 columns: new[] { "tenant_id", "hash_id" });
 
             migrationBuilder.CreateIndex(
                 name: "alias",
+                schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "alias",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "last_modified",
+                name: "last_modified_tenants_tenants",
+                schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "last_modified");
 
             migrationBuilder.CreateIndex(
                 name: "mappeddomain",
+                schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "mappeddomain");
 
             migrationBuilder.CreateIndex(
                 name: "version",
+                schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "version");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "files_bunch_objects");
+                name: "files_bunch_objects",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_converts");
+                name: "files_converts",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_file");
+                name: "files_file",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_folder");
+                name: "files_folder",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_folder_tree");
+                name: "files_folder_tree",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_link");
+                name: "files_link",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_properties");
+                name: "files_properties",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_security");
+                name: "files_security",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_tag");
+                name: "files_tag",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_tag_link");
+                name: "files_tag_link",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_thirdparty_account");
+                name: "files_thirdparty_account",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_thirdparty_app");
+                name: "files_thirdparty_app",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "files_thirdparty_id_mapping");
+                name: "files_thirdparty_id_mapping",
+                schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "tenants_tenants");
+                name: "tenants_tenants",
+                schema: "onlyoffice");
         }
     }
 }

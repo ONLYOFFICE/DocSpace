@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.Backups
 {
+    /// <inheritdoc />
     public partial class BackupsContextMigrate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
@@ -18,16 +20,17 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "char", maxLength: 38, nullable: false, collation: "utf8_general_ci"),
-                    tenant_id = table.Column<int>(type: "int", maxLength: 10, nullable: false),
-                    is_scheduled = table.Column<int>(type: "int", maxLength: 10, nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "int", maxLength: 10, nullable: false),
+                    isscheduled = table.Column<int>(name: "is_scheduled", type: "int", maxLength: 10, nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false, collation: "utf8_general_ci"),
                     hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false, collation: "utf8_general_ci"),
-                    storage_type = table.Column<int>(type: "int", maxLength: 10, nullable: false),
-                    storage_base_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci"),
-                    storage_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false, collation: "utf8_general_ci"),
-                    created_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    expires_on = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "'0001-01-01 00:00:00'"),
-                    storage_params = table.Column<string>(type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                    storagetype = table.Column<int>(name: "storage_type", type: "int", maxLength: 10, nullable: false),
+                    storagebasepath = table.Column<string>(name: "storage_base_path", type: "character varying(255)", maxLength: 255, nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci"),
+                    storagepath = table.Column<string>(name: "storage_path", type: "character varying(255)", maxLength: 255, nullable: false, collation: "utf8_general_ci"),
+                    createdon = table.Column<DateTime>(name: "created_on", type: "datetime", nullable: false),
+                    expireson = table.Column<DateTime>(name: "expires_on", type: "datetime", nullable: false, defaultValueSql: "'0001-01-01 00:00:00'"),
+                    storageparams = table.Column<string>(name: "storage_params", type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci"),
+                    removed = table.Column<int>(type: "int", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,18 +41,18 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 name: "backup_schedule",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "integer", maxLength: 10, nullable: false)
+                    tenantid = table.Column<int>(name: "tenant_id", type: "integer", maxLength: 10, nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     cron = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false, collation: "utf8_general_ci"),
-                    backups_stored = table.Column<int>(type: "integer", maxLength: 10, nullable: false),
-                    storage_type = table.Column<int>(type: "integer", maxLength: 10, nullable: false),
-                    storage_base_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci"),
-                    last_backup_time = table.Column<DateTime>(type: "datetime", nullable: false),
-                    storage_params = table.Column<string>(type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                    backupsstored = table.Column<int>(name: "backups_stored", type: "integer", maxLength: 10, nullable: false),
+                    storagetype = table.Column<int>(name: "storage_type", type: "integer", maxLength: 10, nullable: false),
+                    storagebasepath = table.Column<string>(name: "storage_base_path", type: "character varying(255)", maxLength: 255, nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci"),
+                    lastbackuptime = table.Column<DateTime>(name: "last_backup_time", type: "datetime", nullable: false),
+                    storageparams = table.Column<string>(name: "storage_params", type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.tenant_id);
+                    table.PrimaryKey("PRIMARY", x => x.tenantid);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +66,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     alias = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     mappeddomain = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true, defaultValueSql: "NULL"),
                     version = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "2"),
-                    version_changed = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    versionchanged = table.Column<DateTime>(name: "version_changed", type: "timestamp with time zone", nullable: true),
                     language = table.Column<string>(type: "character(10)", fixedLength: true, maxLength: 10, nullable: false, defaultValueSql: "'en-US'"),
                     timezone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true, defaultValueSql: "NULL"),
                     trusteddomains = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true, defaultValueSql: "NULL"),
@@ -71,10 +74,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     status = table.Column<int>(type: "integer", nullable: false),
                     statuschanged = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     creationdatetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    owner_id = table.Column<Guid>(type: "uuid", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
-                    payment_id = table.Column<string>(type: "character varying(38)", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
+                    ownerid = table.Column<Guid>(name: "owner_id", type: "uuid", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
+                    paymentid = table.Column<string>(name: "payment_id", type: "character varying(38)", maxLength: 38, nullable: true, defaultValueSql: "NULL"),
                     industry = table.Column<int>(type: "integer", nullable: false),
-                    last_modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     spam = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true"),
                     calls = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
@@ -130,6 +133,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 column: "version");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
