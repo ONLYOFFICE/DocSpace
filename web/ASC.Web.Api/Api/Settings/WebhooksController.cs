@@ -72,7 +72,7 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Name, model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -85,7 +85,7 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -107,7 +107,7 @@ public class WebhooksController : BaseSettingsController
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.Hookname, model.Route))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.Route))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }

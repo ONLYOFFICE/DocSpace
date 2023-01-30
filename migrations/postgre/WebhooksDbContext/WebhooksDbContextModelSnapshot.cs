@@ -35,12 +35,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("true");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)

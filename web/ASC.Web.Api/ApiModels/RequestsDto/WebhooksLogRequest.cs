@@ -30,7 +30,7 @@ public class WebhooksLogRequest
 {
     public DateTime? Delivery { get; set; }
 
-    public string Hookname { get; set; }
+    public string HookUri { get; set; }
 
     public string Route { get; set; }
 }

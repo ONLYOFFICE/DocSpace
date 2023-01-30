@@ -32,12 +32,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("name");
-
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
