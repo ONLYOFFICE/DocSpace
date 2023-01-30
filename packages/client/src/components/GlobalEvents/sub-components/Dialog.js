@@ -24,6 +24,7 @@ const Dialog = ({
   isCreateDialog,
   createWithoutDialog,
   setCreateWithoutDialog,
+  extension,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -86,16 +87,18 @@ const Dialog = ({
   );
 
   const onCancelAction = useCallback((e) => {
+    if (isChecked) {
+      setCreateWithoutDialog(false);
+    }
     onCancel && onCancel(e);
-    setCreateWithoutDialog(false);
   }, []);
 
   const onCloseAction = useCallback(
     (e) => {
-      if (!isDisabled) {
-        onClose && onClose(e);
+      if (!isDisabled && isChecked) {
         setCreateWithoutDialog(false);
       }
+      onClose && onClose(e);
     },
     [isDisabled]
   );
@@ -125,7 +128,7 @@ const Dialog = ({
           onFocus={onFocus}
           isDisabled={isDisabled}
         />
-        {isCreateDialog && (
+        {isCreateDialog && extension && (
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
               label={t("Common:DontAskAgain")}
