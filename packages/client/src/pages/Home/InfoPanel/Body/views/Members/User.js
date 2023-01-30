@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg";
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
+import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png?url";
 const User = ({
   t,
   user,
@@ -65,7 +65,7 @@ const User = ({
     }
   };
 
-  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhoto;
+  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
