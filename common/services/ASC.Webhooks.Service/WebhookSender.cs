@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.Json.Serialization;
 
 namespace ASC.Webhooks;
 
@@ -70,7 +69,7 @@ public class WebhookSender
             };
 
             request.Headers.Add("Accept", "*/*");
-            request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.Config.SecretKey, entry.RequestPayload));
+            request.Headers.Add("X-Hub-Signature-256", "SHA256=" + GetSecretHash(entry.Config.SecretKey, entry.RequestPayload));
             requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
 
             var response = await httpClient.SendAsync(request, cancellationToken);
@@ -111,7 +110,15 @@ public class WebhookSender
         using (var hasher = new HMACSHA256(secretBytes))
         {
             var data = Encoding.UTF8.GetBytes(body);
-            return BitConverter.ToString(hasher.ComputeHash(data));
+            var hash = hasher.ComputeHash(data);
+
+            var builder = new StringBuilder();
+            foreach (var b in hash)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+
+            return builder.ToString();
         }
     }
 }
