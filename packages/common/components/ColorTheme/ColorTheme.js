@@ -15,7 +15,6 @@ import {
   IndicatorFilterButtonTheme,
   FilterBlockItemTagTheme,
   IconWrapperTheme,
-  CalendarTheme,
   VersionBadgeTheme,
   TextareaTheme,
   InputBlockTheme,
@@ -147,15 +146,6 @@ const ColorTheme = forwardRef(
       case ThemeType.IconWrapper: {
         return (
           <IconWrapperTheme
-            {...props}
-            $currentColorScheme={currentColorScheme}
-            ref={ref}
-          />
-        );
-      }
-      case ThemeType.Calendar: {
-        return (
-          <CalendarTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}
