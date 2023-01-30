@@ -6,6 +6,8 @@ executable-not-elf-or-script var/www/{{product}}/services/*/node_modules/*
 privacy-breach-generic var/www/{{product}}/services/*/node_modules/*
 # Ignoring node_modules errors due to lack of ability to influence them
 script-not-executable var/www/{{product}}/services/*/node_modules/*
+# Ignoring node_modules errors due to lack of ability to influence them
+unusual-interpreter var/www/{{product}}/services/*/node_modules/*
 
 # The use of the /var/www directory is caused by its past history as the default document root
 dir-or-file-in-var-www
@@ -25,7 +27,7 @@ description-starts-with-package-name
 description-too-short
 description-synopsis-is-duplicated
 
-# There is no manual page for {{product}}-configuration.sh
+# There is no manual page for {{product}}-configuration
 binary-without-manpage
 
 # Chown is used for the directories of our project, the user and group are created before that
