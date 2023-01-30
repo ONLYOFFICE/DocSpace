@@ -33,6 +33,7 @@ export const Viewer = (props) => {
     playlist,
     isImage,
     isAudio,
+    archiveRoom,
     audioIcon,
     contextModel,
     generateContextMenu,

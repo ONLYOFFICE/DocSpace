@@ -51,6 +51,7 @@ const ViewerBase = (props) => {
     onPrevClick,
     onMaskClick,
     isPreviewFile,
+    archiveRoom,
   } = props;
 
   const initialState = {
@@ -709,6 +710,7 @@ const ViewerBase = (props) => {
                   percent={state.percent}
                   attribute={attribute}
                   isPreviewFile={isPreviewFile}
+                  archiveRoom={archiveRoom}
                   setIsOpenContextMenu={props.setIsOpenContextMenu}
                   zoomable={zoomable}
                   rotatable={rotatable}

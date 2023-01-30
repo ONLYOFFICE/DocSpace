@@ -186,6 +186,7 @@ class ImageViewer extends React.Component {
       isAudio,
       isVideo,
       isPreviewFile,
+      archiveRoom,
       contextModel,
       audioIcon,
       headerIcon,
@@ -213,6 +214,8 @@ class ImageViewer extends React.Component {
           manualX={(right || "-31") + "px"}
         >
           {model.map((item) => {
+            if (item.disabled) return;
+
             const onClick = (e) => {
               onClose();
               onItemClick(e, item);
@@ -377,6 +380,7 @@ class ImageViewer extends React.Component {
           isAudio={isAudio}
           isVideo={isVideo}
           isPreviewFile={isPreviewFile}
+          archiveRoom={archiveRoom}
           audioIcon={audioIcon}
           onSetSelectionFile={onSetSelectionFile}
           onMaskClick={onClose}

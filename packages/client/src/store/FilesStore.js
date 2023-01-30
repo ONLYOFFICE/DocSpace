@@ -3147,7 +3147,8 @@ class FilesStore {
 
     const lastSelection = this.selection[this.selection.length - 1];
     const indexOfLast = this.filesList.findIndex(
-      (f) => f.id === lastSelection.id && f.isFolder === lastSelection.isFolder
+      (f) =>
+        f.id === lastSelection?.id && f.isFolder === lastSelection?.isFolder
     );
 
     newSelection = newSelection.filter((f) => {
