@@ -4,7 +4,6 @@ import ChangeSecurityReactSvgUrl from "PUBLIC_DIR/images/change.security.react.s
 import FolderReactSvgUrl from "PUBLIC_DIR/images/folder.react.svg?url";
 import EnableReactSvgUrl from "PUBLIC_DIR/images/enable.react.svg?url";
 import RemoveReactSvgUrl from "PUBLIC_DIR/images/remove.react.svg?url";
-import RessingDataReactSvgUrl from "PUBLIC_DIR/images/ressing_data.react.svg?url";
 import DelDataReactSvgUrl from "PUBLIC_DIR/images/del_data.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
@@ -15,6 +14,7 @@ import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
+import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
