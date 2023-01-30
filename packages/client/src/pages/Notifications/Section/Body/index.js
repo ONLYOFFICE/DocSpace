@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
 import styled from "styled-components";
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
@@ -8,6 +8,7 @@ import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import { NotificationsType } from "@docspace/common/constants";
 import { getNotificationSubscription } from "@docspace/common/api/settings";
+import Loaders from "@docspace/common/components/Loaders";
 
 const StyledBodyContent = styled.div`
   .notification-container {
@@ -29,14 +30,24 @@ const StyledTextContent = styled.div`
   height: 39px;
   border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 `;
-const SectionBodyContent = ({ t, setSubscriptions }) => {
+
+let timerId = null;
+const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
+
   useEffect(async () => {
+    timerId = setTimeout(() => {
+      setIsLoading(true);
+    }, 400);
+
     const requests = [
       getNotificationSubscription(NotificationsType.Badges),
       getNotificationSubscription(NotificationsType.RoomsActivity),
       getNotificationSubscription(NotificationsType.DailyFeed),
       getNotificationSubscription(NotificationsType.UsefulTips),
     ];
+
     const [badges, roomsActivity, dailyFeed, tips] = await Promise.all(
       requests
     );
@@ -47,26 +58,54 @@ const SectionBodyContent = ({ t, setSubscriptions }) => {
       dailyFeed.isEnabled,
       tips.isEnabled
     );
+
+    clearTimeout(timerId);
+    timerId = null;
+
+    setIsLoading(false);
+    setIsContentLoaded(true);
   }, []);
+
+  const isLoadingContent = isLoading || !ready;
+
+  if (!isLoading && !isContentLoaded) return <></>;
 
   return (
     <StyledBodyContent>
       <StyledTextContent>
-        <Text fontSize={"16px"} fontWeight={700}>
-          {t("Badges")}
-        </Text>
+        {isLoadingContent ? (
+          <Loaders.Rectangle height={"22px"} width={"57px"} />
+        ) : (
+          <Text fontSize={"16px"} fontWeight={700}>
+            {t("Badges")}
+          </Text>
+        )}
       </StyledTextContent>
       <div className="badges-container">
-        <RoomsActionsContainer t={t} />
+        {isLoadingContent ? (
+          <Loaders.Notifications />
+        ) : (
+          <RoomsActionsContainer t={t} />
+        )}
       </div>
       <StyledTextContent>
-        <Text fontSize={"16px"} fontWeight={700}>
-          {t("Common:Email")}
-        </Text>
+        {isLoadingContent ? (
+          <Loaders.Rectangle height={"22px"} width={"57px"} />
+        ) : (
+          <Text fontSize={"16px"} fontWeight={700}>
+            {t("Common:Email")}
+          </Text>
+        )}
       </StyledTextContent>
-      <RoomsActivityContainer t={t} />
-      <DailyFeedContainer t={t} />
-      <UsefulTipsContainer t={t} />
+      {isLoadingContent ? (
+        <Loaders.Notifications count={3} />
+      ) : (
+        <>
+          <RoomsActivityContainer t={t} />
+          <DailyFeedContainer t={t} />
+          <UsefulTipsContainer t={t} />{" "}
+        </>
+      )}
     </StyledBodyContent>
   );
 };

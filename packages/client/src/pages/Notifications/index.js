@@ -5,15 +5,15 @@ import SectionHeaderContent from "./Section/Header/index";
 import { useTranslation } from "react-i18next";
 const NotificationComponent = (props) => {
   const { history } = props;
-  const { t } = useTranslation("Notifications");
+  const { t, ready } = useTranslation("Notifications");
   return (
-    <Section withBodyAutoFocus viewAs="profile">
+    <Section>
       <Section.SectionHeader>
         <SectionHeaderContent history={history} t={t} />
       </Section.SectionHeader>
 
       <Section.SectionBody>
-        <SectionBodyContent t={t} />
+        <SectionBodyContent t={t} ready={ready} />
       </Section.SectionBody>
     </Section>
   );
