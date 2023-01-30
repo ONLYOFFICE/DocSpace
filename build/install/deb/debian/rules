@@ -35,7 +35,7 @@ override_dh_auto_build:
 	bash publish-backend.sh -sp ${SRC_PATH} -ar "-r linux-x64"
 
 	find %{_builddir}/%{sourcename}/publish/ \
-         -depth -type f -regex '.*\(eslintrc\|npmignore\|git\).*$' -exec rm -f {} \;
+         -depth -type f -regex '.*\(eslintrc\|npmignore\|git\|un~\|DS_Store\).*$' -exec rm -f {} \;
 
 	rm -rf ${SRC_PATH}/ASC.Migration.Runner/service/runtimes/linux-arm*
 	rm -f ${SRC_PATH}/config/nginx/onlyoffice-login.conf
