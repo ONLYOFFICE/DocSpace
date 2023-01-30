@@ -3,7 +3,8 @@ import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png?url";
+import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
+import toastr from "@docspace/components/toast/toastr";
 const User = ({
   t,
   user,
@@ -13,12 +14,14 @@ const User = ({
   updateRoomMemberRole,
   selectionParentRoom,
   setSelectionParentRoom,
+  changeUserType,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
 
-  const [userIsRemoved, setUserIsRemoved] = useState(false);
-  if (userIsRemoved) return null;
+  //const [userIsRemoved, setUserIsRemoved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  //if (userIsRemoved) return null;
 
   const canChangeUserRole = user.canEditAccess;
 
@@ -32,36 +35,65 @@ const User = ({
     (role) => role.key !== userRole.key
   );
 
-  const onOptionClick = (option) => {
-    updateRoomMemberRole(selectionParentRoom.id, {
+  const updateRole = (option) => {
+    return updateRoomMemberRole(selectionParentRoom.id, {
       invitations: [{ id: user.id, access: option.access }],
       notify: false,
       sharingMessage: "",
-    });
+    })
+      .then(() => {
+        setIsLoading(false);
+        const inRoomMembers = selectionParentRoom.members.inRoom;
+        const expectedMembers = selectionParentRoom.members.expected;
+        if (option.key === "remove") {
+          setSelectionParentRoom({
+            ...selectionParentRoom,
+            members: {
+              inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+              expected: expectedMembers?.filter((m) => m.id !== user.id),
+            },
+          });
+          //setUserIsRemoved(true);
+        } else {
+          setSelectionParentRoom({
+            ...selectionParentRoom,
+            members: {
+              inRoom: inRoomMembers?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+              expected: expectedMembers?.map((m) =>
+                m.id === user.id ? { ...m, access: option.access } : m
+              ),
+            },
+          });
+        }
+      })
+      .catch((err) => {
+        toastr.error(err);
+        setIsLoading(false);
+      });
+  };
 
-    const inRoomMembers = selectionParentRoom.members.inRoom;
-    const expectedMembers = selectionParentRoom.members.expected;
-    if (option.key === "remove") {
-      setUserIsRemoved(true);
-      setSelectionParentRoom({
-        ...selectionParentRoom,
-        members: {
-          inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
-          expected: expectedMembers?.filter((m) => m.id !== user.id),
-        },
-      });
-    } else {
-      setSelectionParentRoom({
-        ...selectionParentRoom,
-        members: {
-          inRoom: inRoomMembers?.map((m) =>
-            m.id === user.id ? { ...m, access: option.access } : m
-          ),
-          expected: expectedMembers?.map((m) =>
-            m.id === user.id ? { ...m, access: option.access } : m
-          ),
-        },
-      });
+  const abortCallback = () => {
+    setIsLoading(false);
+  };
+
+  const onOptionClick = (option) => {
+    const userType =
+      option.key === "owner"
+        ? "admin"
+        : option.key === "roomAdmin"
+        ? "manager"
+        : "user";
+
+    const successCallback = () => {
+      updateRole(option);
+    };
+
+    setIsLoading(true);
+
+    if (!changeUserType(userType, [user], successCallback, abortCallback)) {
+      updateRole(option);
     }
   };
 
@@ -98,6 +130,7 @@ const User = ({
               modernView
               title={t("Common:Role")}
               manualWidth={"fit-content"}
+              isLoading={isLoading}
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

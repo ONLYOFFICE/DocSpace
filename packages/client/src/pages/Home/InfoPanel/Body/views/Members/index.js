@@ -20,8 +20,6 @@ import MembersHelper from "../../helpers/MembersHelper";
 const Members = ({
   t,
   selfId,
-  isOwner,
-  isAdmin,
   selection,
 
   setIsMobileHidden,
@@ -37,6 +35,7 @@ const Members = ({
   roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
+  changeUserType,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -175,6 +174,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            changeUserType={changeUserType}
           />
         ))}
       </StyledUserList>
@@ -210,6 +210,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            changeUserType={changeUserType}
           />
         ))}
       </StyledUserList>
@@ -218,7 +219,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogStore,
+    dialogsStore,
+    accessRightsStore,
+  }) => {
     const {
       setIsMobileHidden,
       selectionParentRoom,
@@ -235,8 +243,10 @@ export default inject(
       updateRoomMemberRole,
       resendEmailInvitations,
     } = filesStore;
-    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+    const { id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
+
+    const { changeType: changeUserType } = peopleStore;
 
     return {
       setView,
@@ -251,12 +261,11 @@ export default inject(
       updateRoomMembers,
       setUpdateRoomMembers,
 
-      isOwner,
-      isAdmin,
       selfId,
 
       setInvitePanelOptions,
       resendEmailInvitations,
+      changeUserType,
     };
   }
 )(

@@ -23,6 +23,7 @@ import {
   CreateRoomDialog,
   InviteUsersWarningDialog,
   CreateRoomConfirmDialog,
+  ChangeUserTypeDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -58,6 +59,7 @@ const Panels = (props) => {
     archiveDialogVisible,
     inviteUsersWarningDialogVisible,
     preparationPortalDialogVisible,
+    changeUserTypeDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -98,6 +100,9 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    changeUserTypeDialogVisible && (
+      <ChangeUserTypeDialog key="change-user-type-dialog" />
+    ),
     createRoomDialogVisible && <CreateRoomDialog key="create-room-dialog" />,
     (createRoomConfirmDialogVisible || confirmDialogIsLoading) && (
       <CreateRoomConfirmDialog key="create-room-confirm-dialog" />
@@ -168,6 +173,7 @@ export default inject(
       setSelectFileDialogVisible,
       invitePanelOptions,
       inviteUsersWarningDialogVisible,
+      changeUserTypeDialogVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -206,6 +212,7 @@ export default inject(
       archiveDialogVisible,
       inviteUsersWarningDialogVisible,
       confirmDialogIsLoading,
+      changeUserTypeDialogVisible,
     };
   }
 )(observer(Panels));
