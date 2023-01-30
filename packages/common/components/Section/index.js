@@ -2,15 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {
-  tablet,
-  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
-import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
 import SelectionArea from "@docspace/components/selection-area";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
@@ -29,7 +26,6 @@ import SubSectionFooter from "./sub-components/section-footer";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import styled, { css } from "styled-components";
 
 function SectionHeader() {
   return null;
@@ -141,13 +137,11 @@ class Section extends React.Component {
       isTabletView,
       dragging,
       maintenanceExist,
-      setMaintenanceExist,
       snackbarExist,
       showText,
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
-      withPaging,
       isInfoPanelVisible,
     } = this.props;
 
@@ -412,14 +406,12 @@ Section.propTypes = {
   isHeaderVisible: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
-  withPaging: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
   isInfoPanelAvailable: true,
   settingsStudio: false,
-  withPaging: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;
@@ -437,7 +429,6 @@ export default inject(({ auth }) => {
     isTabletView,
     maintenanceExist,
     snackbarExist,
-    setMaintenanceExist,
     showText,
   } = settingsStore;
 
@@ -449,7 +440,6 @@ export default inject(({ auth }) => {
 
     maintenanceExist,
     snackbarExist,
-    setMaintenanceExist,
 
     showText,
 

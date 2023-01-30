@@ -482,10 +482,6 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-      personal,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isFrame,
       showTitle,
       showFilter,
@@ -682,12 +678,8 @@ export default inject(
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
 
     const {
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setFrameConfig,
       frameConfig,
       isFrame,
@@ -712,9 +704,6 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -755,7 +744,6 @@ export default inject(
       uploadEmptyFolders,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setToPreviewFile,
       playlist,
 
