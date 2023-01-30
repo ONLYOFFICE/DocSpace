@@ -56,7 +56,7 @@ class CreateEditRoomStore {
     this.onClose = onClose;
   };
 
-  onCreateRoom = async () => {
+  onCreateRoom = async (withConfirm = false) => {
     const roomParams = this.roomParams;
 
     const { createTag } = this.tagsStore;
@@ -92,7 +92,7 @@ class CreateEditRoomStore {
 
     try {
       this.setIsLoading(true);
-      this.setConfirmDialogIsLoading(true);
+      withConfirm && this.setConfirmDialogIsLoading(true);
 
       // create room
       let room =
