@@ -9,6 +9,7 @@ import { inject, observer } from "mobx-react";
 import { NotificationsType } from "@docspace/common/constants";
 import { getNotificationSubscription } from "@docspace/common/api/settings";
 import Loaders from "@docspace/common/components/Loaders";
+import toastr from "@docspace/components/toast/toastr";
 
 const StyledBodyContent = styled.div`
   .notification-container {
@@ -34,46 +35,56 @@ const StyledTextContent = styled.div`
 `;
 
 let timerId = null;
+const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
+
 const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
+
+  const getData = async () => {
+    const requests = [
+      getNotificationSubscription(Badges),
+      getNotificationSubscription(RoomsActivity),
+      getNotificationSubscription(DailyFeed),
+      getNotificationSubscription(UsefulTips),
+    ];
+
+    try {
+      const [badges, roomsActivity, dailyFeed, tips] = await Promise.all(
+        requests
+      );
+
+      setSubscriptions(
+        badges.isEnabled,
+        roomsActivity.isEnabled,
+        dailyFeed.isEnabled,
+        tips.isEnabled
+      );
+
+      clearTimeout(timerId);
+      timerId = null;
+
+      setIsLoading(false);
+      setIsContentLoaded(true);
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
 
   useEffect(async () => {
     timerId = setTimeout(() => {
       setIsLoading(true);
     }, 400);
 
-    const requests = [
-      getNotificationSubscription(NotificationsType.Badges),
-      getNotificationSubscription(NotificationsType.RoomsActivity),
-      getNotificationSubscription(NotificationsType.DailyFeed),
-      getNotificationSubscription(NotificationsType.UsefulTips),
-    ];
-
-    const [badges, roomsActivity, dailyFeed, tips] = await Promise.all(
-      requests
-    );
-
-    setSubscriptions(
-      badges.isEnabled,
-      roomsActivity.isEnabled,
-      dailyFeed.isEnabled,
-      tips.isEnabled
-    );
-
-    clearTimeout(timerId);
-    timerId = null;
-
-    setIsLoading(false);
-    setIsContentLoaded(true);
+    getData();
   }, []);
 
   const isLoadingContent = isLoading || !ready;
 
   if (!isLoading && !isContentLoaded) return <></>;
 
-  return (
-    <StyledBodyContent>
+  const badgesContent = (
+    <>
       <StyledTextContent>
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
@@ -90,6 +101,11 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
           <RoomsActionsContainer t={t} />
         )}
       </div>
+    </>
+  );
+
+  const emailContent = (
+    <>
       <StyledTextContent>
         {isLoadingContent ? (
           <Loaders.Rectangle height={"22px"} width={"57px"} />
@@ -108,6 +124,13 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
           <UsefulTipsContainer t={t} />{" "}
         </>
       )}
+    </>
+  );
+
+  return (
+    <StyledBodyContent>
+      {badgesContent}
+      {emailContent}
     </StyledBodyContent>
   );
 };
