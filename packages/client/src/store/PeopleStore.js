@@ -117,12 +117,15 @@ class PeopleStore {
     this.changeType(action, getUsersToMakeEmployees);
   };
 
-  changeType = (type, users, callback) => {
+  changeType = (type, users, successCallback, abortCallback) => {
     const { setDialogData } = this.dialogStore;
+    const { getUserRole } = this.usersStore;
     const event = new Event(Events.CHANGE_USER_TYPE);
 
     let fromType =
-      users.length === 1 ? [users[0].role] : users.map((u) => u.role);
+      users.length === 1
+        ? [users[0].role ? user[0].role : getUserRole(users[0])]
+        : users.map((u) => (u.role ? u.role : getUserRole(u)));
 
     if (users.length > 1) {
       fromType = fromType.filter(
@@ -140,9 +143,15 @@ class PeopleStore {
         return user?.id ? user.id : user;
       });
 
-    setDialogData({ toType: type, fromType, userIDs, callback });
+    setDialogData({
+      toType: type,
+      fromType,
+      userIDs,
+      successCallback,
+      abortCallback,
+    });
 
-    window.dispatchEvent(event);
+    return window.dispatchEvent(event);
   };
 
   onChangeStatus = (status) => {
