@@ -104,6 +104,8 @@ public class SuccessApiResponse : CommonApiResponse
         }
     }
 
+    public List<Link> Links { get; set; }
+
     public SuccessApiResponse()
     {
 
@@ -114,6 +116,15 @@ public class SuccessApiResponse : CommonApiResponse
         Status = 0;
         _httpContext = httpContext;
         Response = response;
+
+        Links = new List<Link>(1)
+        {
+            new Link()
+            {
+                Href = httpContext.Request.GetUrlRewriter().ToString(),
+                Action = httpContext.Request.Method
+            }
+        };
     }
 }
 
@@ -140,4 +151,10 @@ public class CommonApiError
 
         return result;
     }
+}
+
+public class Link
+{
+    public string Href { get; set; }
+    public string Action { get; set; }
 }
