@@ -29,7 +29,7 @@ export function loadLanguagePath(homepage: string, fixedNS = null) {
     let path = "";
 
     if (ns.length > 0 && ns[0] === "Common") {
-      path = lngCollection?.get("Common");
+      return (path = lngCollection?.get("Common").replace("/login/", "/"));
     }
     path = lngCollection?.get(`${fixedNS || ns}`);
 
@@ -50,10 +50,19 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
     const collection = translations.get(lng);
 
     for (let ns in initialI18nStoreASC[lng]) {
-      window.i18n.loaded[`${collection?.get(ns)}`] = {
-        namespaces: ns,
-        data: initialI18nStoreASC[lng][ns],
-      };
+      if (ns === "Common") {
+        window.i18n.loaded[
+          `${collection?.get(ns)?.replace("/login/", "/")}`
+        ] = {
+          namespaces: ns,
+          data: initialI18nStoreASC[lng][ns],
+        };
+      } else {
+        window.i18n.loaded[`${collection?.get(ns)}`] = {
+          namespaces: ns,
+          data: initialI18nStoreASC[lng][ns],
+        };
+      }
     }
   }
 }

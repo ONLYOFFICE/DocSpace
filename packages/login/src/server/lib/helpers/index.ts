@@ -43,7 +43,7 @@ export const loadPath = (language: string, nameSpace: string): string => {
   const splitted = path.split("/");
   const length = splitted.length;
 
-  path = `/login/${splitted[length - 3]}/${splitted[length - 2]}/${
+  path = `/${splitted[length - 3]}/${splitted[length - 2]}/${
     splitted[length - 1]
   }`;
 
