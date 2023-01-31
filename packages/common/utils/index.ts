@@ -22,7 +22,7 @@ import TopLoaderService from "@docspace/components/top-loading-indicator";
 import { Encoder } from "./encoder";
 import FilesFilter from "../api/files/filter";
 import combineUrlFunc from "./combineUrl";
-import { translations } from "./i18next-http-backend/lib/translations";
+// import { translations } from "./i18next-http-backend/lib/translations";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -290,24 +290,6 @@ export function getLanguage(lng) {
   }
 
   return lng;
-}
-
-export function loadLanguagePath(homepage, fixedNS = null) {
-  return (lng, ns) => {
-    const language = getLanguage(lng instanceof Array ? lng[0] : lng);
-
-    const lngCollection = translations.get(language);
-
-    if (ns.length > 0 && ns[0] === "Common") {
-      return lngCollection?.get("Common");
-    }
-    return lngCollection?.get(`${fixedNS || ns}`);
-
-    // if (ns.length > 0 && ns[0] === "Common") {
-    //   return `/static/locales/${language}/Common.json`;
-    // }
-    // return `${homepage}/locales/${language}/${fixedNS || ns}.json`;
-  };
 }
 
 export function loadScript(url, id, onLoad, onError) {
