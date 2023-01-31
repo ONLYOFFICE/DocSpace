@@ -340,7 +340,6 @@ module.exports = (env, argv) => {
         publicPath: homepage,
         title: title,
         base: `${homepage}/`,
-        favicon: "../../public/favicon.ico",
       })
     );
   }
