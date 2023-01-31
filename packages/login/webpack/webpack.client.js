@@ -99,7 +99,7 @@ const clientConfig = {
 
                 folder += result.length === 0 ? "" : "/";
 
-                return `${folder}[name].[ext]?hash=[contenthash]&homepage=login`; // `${folder}/[name].[contenthash][ext]`;
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
               },
             },
           },
