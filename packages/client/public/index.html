@@ -11,17 +11,8 @@
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link
-      id="favicon"
-      rel="shortcut icon"
-      sizes="any"
-      href="<%=htmlWebpackPlugin.files.favicon%>"
-    />
-    <link
-      id="favicon-icon"
-      rel="icon"
-      href="<%=htmlWebpackPlugin.files.favicon%>"
-    />
+    <link id="favicon" rel="shortcut icon" sizes="any" href="favicon.ico" />
+    <link id="favicon-icon" rel="icon" href="favicon.ico" />
 
     <link rel="manifest" href="/manifest.json" />
     <!-- Tell the browser it's a PWA -->
@@ -46,11 +37,8 @@
       content="app-id=com.onlyoffice.documents"
     />
 
-    <link rel="apple-touch-icon" href="<%=htmlWebpackPlugin.files.favicon%>" />
-    <link
-      rel="android-touch-icon"
-      href="<%=htmlWebpackPlugin.files.favicon%>"
-    />
+    <link rel="apple-touch-icon" href="favicon.ico" />
+    <link rel="android-touch-icon" href="favicon.ico" />
 
     <!-- <%= htmlWebpackPlugin.options.custom %> -->
 
