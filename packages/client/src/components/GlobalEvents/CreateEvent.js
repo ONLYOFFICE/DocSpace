@@ -75,6 +75,8 @@ const CreateEvent = ({
 
     setHeaderTitle(defaultName);
 
+    if (!extension) return setEventDialogVisible(true);
+
     if (!createWithoutDialog) {
       setEventDialogVisible(true);
     } else {
@@ -272,6 +274,7 @@ const CreateEvent = ({
       onCancel={onCancel}
       onClose={onCloseAction}
       isCreateDialog={true}
+      extension={extension}
     />
   );
 };

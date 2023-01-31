@@ -17,6 +17,7 @@ class UsersStore {
   users = [];
   providers = [];
   accountsIsIsLoading = false;
+  operationRunning = false;
 
   constructor(peopleStore, authStore) {
     this.peopleStore = peopleStore;
@@ -62,6 +63,10 @@ class UsersStore {
 
   setProviders = (providers) => {
     this.providers = providers;
+  };
+
+  setOperationRunning = (operationRunning) => {
+    this.operationRunning = operationRunning;
   };
 
   employeeWrapperToMemberModel = (profile) => {

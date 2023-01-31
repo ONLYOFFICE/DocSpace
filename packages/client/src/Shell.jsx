@@ -171,12 +171,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!whiteLabelLogoUrls) return;
     const favicon = getLogoFromPath(whiteLabelLogoUrls[2]?.path?.light);
 
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "icon";
-      document.getElementsByTagName("head")[0].appendChild(link);
-    }
+    const link = document.querySelector("#favicon-icon");
     link.href = favicon;
 
     const shortcutIconLink = document.querySelector("#favicon");
