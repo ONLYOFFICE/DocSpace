@@ -1,8 +1,9 @@
 import authStore from "@docspace/common/store/AuthStore";
-import { toCommunityHostname } from "@docspace/common/utils";
+import { toCommunityHostname, getLanguage } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { CategoryType } from "./constants";
 import { FolderType } from "@docspace/common/constants";
+import { translations } from "./translations";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -23,6 +24,22 @@ export const setDocumentTitle = (subTitle = null) => {
 
   document.title = title;
 };
+
+export function loadLanguagePath(homepage, fixedNS = null) {
+  return (lng, ns) => {
+    const language = getLanguage(lng instanceof Array ? lng[0] : lng);
+
+    const lngCollection = translations.get(language);
+
+    if (!lngCollection?.get(`${fixedNS || ns}`)) return undefined;
+
+    let path = lngCollection?.get(`${fixedNS || ns}`)?.split("/");
+    const length = path?.length;
+
+    path = `/${path[length - 3]}/${path[length - 2]}/${path[length - 1]}`;
+    return path;
+  };
+}
 
 export const checkIfModuleOld = (link) => {
   if (

@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import { LANGUAGE } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import { loadLanguagePath } from "@docspace/common/utils";
+import { loadLanguagePath } from "SRC_DIR/helpers/utils";
 
 const newInstance = i18n.createInstance();
 
