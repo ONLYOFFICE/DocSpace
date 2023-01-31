@@ -35,6 +35,34 @@ const serverConfig = {
     },
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.json$/i,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: (resourcePath, resourceQuery) => {
+                let result = resourcePath.split("public\\")[1].split("\\");
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `client/${folder}[name].[ext]?hash=[contenthash]&homepage=login`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+
   plugins: [
     new CopyPlugin({
       patterns: [

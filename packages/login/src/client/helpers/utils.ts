@@ -1,9 +1,44 @@
+import { translations } from "../../translations";
 import pkg from "../../../package.json";
 import { thirdPartyLogin } from "@docspace/common/utils/loginUtils";
+
+export function getLanguage(lng: string) {
+  try {
+    let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
+
+    const splitted = lng.split("-");
+
+    if (splitted.length == 2 && splitted[0] == splitted[1].toLowerCase()) {
+      language = splitted[0];
+    }
+
+    return language;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return lng;
+}
+
+export function loadLanguagePath(homepage: string, fixedNS = null) {
+  return (lng: string | [string], ns: string) => {
+    const language = getLanguage(lng instanceof Array ? lng[0] : lng);
+
+    const lngCollection = translations.get(language);
+
+    let path = "";
+
+    if (ns.length > 0 && ns[0] === "Common") {
+      path = lngCollection?.get("Common");
+    }
+    path = lngCollection?.get(`${fixedNS || ns}`);
+
+    return path;
+  };
+}
+
 export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
   if (!initialI18nStoreASC || window.i18n) return;
-
-  const { homepage } = pkg;
 
   const i18n = {
     inLoad: [],
@@ -12,18 +47,13 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
   window.i18n = i18n;
 
   for (let lng in initialI18nStoreASC) {
+    const collection = translations.get(lng);
+
     for (let ns in initialI18nStoreASC[lng]) {
-      if (ns === "Common") {
-        window.i18n.loaded[`/static/locales/${lng}/${ns}.json`] = {
-          namespaces: ns,
-          data: initialI18nStoreASC[lng][ns],
-        };
-      } else {
-        window.i18n.loaded[`${homepage}/locales/${lng}/${ns}.json`] = {
-          namespaces: ns,
-          data: initialI18nStoreASC[lng][ns],
-        };
-      }
+      window.i18n.loaded[`${collection?.get(ns)}`] = {
+        namespaces: ns,
+        data: initialI18nStoreASC[lng][ns],
+      };
     }
   }
 }

@@ -1,3 +1,4 @@
+import { translations } from "../../../translations";
 import path from "path";
 import fs from "fs";
 import {
@@ -37,18 +38,16 @@ export const getScripts = (assets: assetsType): string[] | void => {
 };
 
 export const loadPath = (language: string, nameSpace: string): string => {
-  let resourcePath = path.resolve(
-    path.join(__dirname, "client", `locales/${language}/${nameSpace}.json`)
-  );
-  if (nameSpace === "Common")
-    resourcePath = path.resolve(
-      path.join(
-        __dirname,
-        `../../../public/locales/${language}/${nameSpace}.json`
-      )
-    );
+  let path = translations?.get(language)?.get(nameSpace);
 
-  return resourcePath;
+  const splitted = path.split("/");
+  const length = splitted.length;
+
+  path = `/login/${splitted[length - 3]}/${splitted[length - 2]}/${
+    splitted[length - 1]
+  }`;
+
+  return path;
 };
 
 export const getInitialState = async (
