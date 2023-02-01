@@ -45,8 +45,6 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
   let hasError = false;
   const errorVar = [];
 
-  console.log(localesFiles.length);
-
   localesFiles.forEach((file) => {
     const splitPath = file.path.split("\\");
 
