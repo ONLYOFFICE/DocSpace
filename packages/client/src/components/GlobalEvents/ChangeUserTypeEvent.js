@@ -23,12 +23,14 @@ const ChangeUserTypeEvent = ({
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common"]);
 
   useEffect(() => {
+    if (!peopleDialogData.toType) return;
+
     setVisible(true);
 
     return () => {
       setVisible(false);
     };
-  }, [peopleDialogData]);
+  }, [peopleDialogData.toType]);
 
   const onChangeUserType = () => {
     onClose();
@@ -67,7 +69,7 @@ const ChangeUserTypeEvent = ({
   };
 
   const firstType =
-    fromType.length === 1 && fromType[0] ? getType(fromType[0]) : null;
+    fromType?.length === 1 && fromType[0] ? getType(fromType[0]) : null;
   const secondType = getType(toType);
 
   return (

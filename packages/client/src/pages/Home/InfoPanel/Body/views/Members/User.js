@@ -5,6 +5,7 @@ import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
 import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import toastr from "@docspace/components/toast/toastr";
+import { isMobileOnly } from "react-device-detect";
 const User = ({
   t,
   user,
@@ -125,12 +126,13 @@ const User = ({
               options={userRoleOptions}
               onSelect={onOptionClick}
               scaled={false}
-              withBackdrop={false}
+              withBackdrop={isMobileOnly}
               size="content"
               modernView
               title={t("Common:Role")}
               manualWidth={"fit-content"}
               isLoading={isLoading}
+              isMobileView={isMobileOnly}
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

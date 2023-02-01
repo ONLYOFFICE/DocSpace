@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
     partial class FilesDbContextModelSnapshot : ModelSnapshot
@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>

@@ -123,10 +123,10 @@ elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 	${package_manager} -y update ${package_sysname}-documentserver
 fi
 
-{ ${package_manager} check-update ${package_sysname}-${product}; PRODUCT_CHECK_UPDATE=$?; } || true
+{ ${package_manager} check-update ${product}; PRODUCT_CHECK_UPDATE=$?; } || true
 if [ "$PRODUCT_INSTALLED" = "false" ]; then
-	${package_manager} install -y ${package_sysname}-${product}
-	${product}-configuration.sh \
+	${package_manager} install -y ${product}
+	${product}-configuration \
 		-mysqlh ${MYSQL_SERVER_HOST} \
 		-mysqld ${MYSQL_SERVER_DB_NAME} \
 		-mysqlu ${MYSQL_SERVER_USER} \
@@ -140,8 +140,8 @@ elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
 	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 
-	${package_manager} -y update ${package_sysname}-${product}
-	${product}-configuration.sh \
+	${package_manager} -y update ${product}
+	${product}-configuration \
 		-e ${ENVIRONMENT} \
 		-mysqlh ${MYSQL_SERVER_HOST} \
 		-mysqld ${MYSQL_SERVER_DB_NAME} \
