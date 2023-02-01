@@ -115,6 +115,18 @@ export const StyledInfo = styled.div`
   .combo-button {
     padding-left: 8px;
   }
+
+  .combo-button-label {
+    max-width: 220px;
+
+    @media ${tablet} {
+      max-width: 300px;
+    }
+
+    @media ${hugeMobile} {
+      max-width: 220px;
+    }
+  }
 `;
 
 export const StyledAcceptTerms = styled.div`

@@ -9,7 +9,13 @@ import { loadLanguagePath } from "./helpers/utils";
 
 const newInstance = i18n.createInstance();
 
-const lng = getCookie(LANGUAGE) || "en";
+const userLng = window.navigator
+  ? window.navigator.language ||
+    window.navigator.systemLanguage ||
+    window.navigator.userLanguage
+  : "en";
+
+const lng = getCookie(LANGUAGE) || userLng;
 
 newInstance
   .use(Backend)

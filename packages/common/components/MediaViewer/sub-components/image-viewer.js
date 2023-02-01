@@ -191,6 +191,7 @@ class ImageViewer extends React.Component {
       audioIcon,
       headerIcon,
       onSetSelectionFile,
+      onDownloadClick,
     } = this.props;
 
     const generateContextMenu = (isOpen, right, bottom) => {
@@ -351,7 +352,7 @@ class ImageViewer extends React.Component {
           button.onClick = this.props.onDeleteClick;
           break;
         case "download":
-          button.onClick = this.props.onDownloadClick;
+          button.onClick = onDownloadClick;
           break;
         default:
           break;
@@ -386,6 +387,7 @@ class ImageViewer extends React.Component {
           onMaskClick={onClose}
           onNextClick={onNextClick}
           onPrevClick={onPrevClick}
+          onDownloadClick={onDownloadClick}
           playlist={playlist}
           playlistPos={playlistPos}
           customToolbar={() => toolbars}

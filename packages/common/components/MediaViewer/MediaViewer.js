@@ -506,7 +506,9 @@ class MediaViewer extends React.Component {
     const targetFile =
       files.find((item) => item.id === currentFileId) || playlist[0];
 
-    const archiveRoom = archiveRoomsId === targetFile.rootFolderId;
+    const archiveRoom =
+      archiveRoomsId === targetFile.rootFolderId ||
+      (!targetFile.security.Rename && !targetFile.security.Delete);
     const { title } = currentFile;
 
     let isImage = false;
@@ -572,7 +574,7 @@ class MediaViewer extends React.Component {
           label: t("MoveTo"),
           icon: MoveReactSvgUrl,
           onClick: onMoveAction,
-          disabled: isPreviewFile,
+          disabled: !targetFile.security.Move,
         },
         // {
         //   key: "download-as",
@@ -587,7 +589,7 @@ class MediaViewer extends React.Component {
           label: t("Translations:Copy"),
           icon: CopyReactSvgUrl,
           onClick: onCopyAction,
-          disabled: isPreviewFile,
+          disabled: !targetFile.security.Copy,
         },
         {
           id: "option_create-copy",
@@ -595,27 +597,27 @@ class MediaViewer extends React.Component {
           label: t("Common:Duplicate"),
           icon: DuplicateReactSvgUrl,
           onClick: () => onDuplicate(targetFile, t),
-          disabled: isPreviewFile,
+          disabled: !targetFile.security.Duplicate,
         },
         {
           key: "rename",
           label: t("Rename"),
           icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: archiveRoom,
+          disabled: !targetFile.security.Rename,
         },
 
         {
           key: "separator0",
           isSeparator: true,
-          disabled: isPreviewFile,
+          disabled: !targetFile.security.Delete,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
           icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
-          disabled: isPreviewFile,
+          disabled: !targetFile.security.Delete,
         },
       ];
 

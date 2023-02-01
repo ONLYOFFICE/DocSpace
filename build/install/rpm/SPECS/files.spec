@@ -1,11 +1,9 @@
 %files
-%config %attr(644, root, root) %{_bindir}/*
+%attr(744, root, root) %{_bindir}/*
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/studio/ASC.Web.Api/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-api.service
 %dir %{buildpath}/studio/
 %dir %{buildpath}/products/ASC.People/
@@ -22,8 +20,6 @@
 %files backup
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Data.Backup/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-backup.service
 %dir %{buildpath}/services/
 %dir %{buildpath}/products/
@@ -35,6 +31,9 @@
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/onlyoffice/%{product}/
+%exclude %{_sysconfdir}/onlyoffice/%{product}/nginx
+%{_docdir}/%{name}-%{version}-%{release}/
+%config %{_sysconfdir}/logrotate.d/%{product}-common
 %{_var}/log/onlyoffice/%{product}/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
@@ -42,8 +41,6 @@
 %files files-services
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/products/ASC.Files/service/
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
-%{buildpath}/products/ASC.People/server/ASC.People*.dll
 /usr/lib/systemd/system/%{product}-files-services.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.People/
@@ -54,8 +51,6 @@
 %files notify
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Notify/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-notify.service
 %dir %{buildpath}/services/
 %dir %{buildpath}/products/
@@ -67,7 +62,6 @@
 %files files
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/products/ASC.Files/server/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
 /usr/lib/systemd/system/%{product}-files.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.Files/
@@ -76,16 +70,14 @@
 
 %files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_sysconfdir}/nginx/includes/*
-%{_sysconfdir}/nginx/conf.d/*
+%config %{_sysconfdir}/nginx/includes/*
+%config %{_sysconfdir}/nginx/conf.d/*
 %{buildpath}/public/
 %{buildpath}/client/
 
 %files studio-notify
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Studio.Notify/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-studio-notify.service
 %dir %{buildpath}/services/
 %dir %{buildpath}/products/
@@ -97,7 +89,6 @@
 %files people-server
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/products/ASC.People/server/
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-people-server.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.People/
@@ -107,8 +98,6 @@
 %files socket
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Socket.IO/
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
-%{buildpath}/products/ASC.People/server/ASC.People.dll
 /usr/lib/systemd/system/%{product}-socket.service
 %dir %{buildpath}/services/
 %dir %{buildpath}/products/
@@ -118,8 +107,6 @@
 %files studio
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/studio/ASC.Web.Studio/
-%{buildpath}/products/ASC.People/server/ASC.People.dll
-%{buildpath}/products/ASC.Files/server/ASC.Files*.dll
 /usr/lib/systemd/system/%{product}-studio.service
 %dir %{buildpath}/studio/
 %dir %{buildpath}/products/
@@ -170,3 +157,9 @@
 /usr/lib/systemd/system/%{product}-login.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.Login/
+
+%files healthchecks
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.Web.HealthChecks.UI
+/usr/lib/systemd/system/%{product}-healthchecks.service
+%dir %{buildpath}/services/

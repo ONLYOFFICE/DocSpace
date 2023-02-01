@@ -165,7 +165,8 @@ public class BackupProgressItem : BaseBackupProgressItem
                     CreatedOn = DateTime.UtcNow,
                     ExpiresOn = _storageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
                     StorageParams = JsonConvert.SerializeObject(StorageParams),
-                    Hash = BackupWorker.GetBackupHash(tempFile)
+                    Hash = BackupWorker.GetBackupHash(tempFile),
+                    Removed = false
                 });
 
             Percentage = 100;

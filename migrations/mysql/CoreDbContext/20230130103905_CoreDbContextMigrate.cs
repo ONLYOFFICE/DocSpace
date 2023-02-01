@@ -29,10 +29,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations;
+namespace ASC.Migrations.MySql.Migrations.CoreDb;
 
+/// <inheritdoc />
 public partial class CoreDbContextMigrate : Migration
 {
+    /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.AlterDatabase()
@@ -50,7 +52,7 @@ public partial class CoreDbContextMigrate : Migration
                 features = table.Column<string>(type: "text", nullable: true)
                     .Annotation("MySql:CharSet", "utf8"),
                 price = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValueSql: "'0.00'"),
-                product_id = table.Column<string>(type: "varchar(128)", nullable: true, collation: "utf8_general_ci")
+                productid = table.Column<string>(name: "product_id", type: "varchar(128)", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
                 visible = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'0'")
             },
@@ -67,16 +69,16 @@ public partial class CoreDbContextMigrate : Migration
                 tenant = table.Column<int>(type: "int", nullable: false),
                 path = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                user_id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "utf8_general_ci")
+                userid = table.Column<Guid>(name: "user_id", type: "char(36)", nullable: false, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
                 counter = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "'0'"),
                 tag = table.Column<string>(type: "varchar(1024)", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                last_modified = table.Column<DateTime>(type: "timestamp", nullable: false)
+                lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp", nullable: false)
             },
             constraints: table =>
             {
-                table.PrimaryKey("PRIMARY", x => new { x.tenant, x.user_id, x.path });
+                table.PrimaryKey("PRIMARY", x => new { x.tenant, x.userid, x.path });
             })
             .Annotation("MySql:CharSet", "utf8");
 
@@ -88,11 +90,11 @@ public partial class CoreDbContextMigrate : Migration
                     .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                 tenant = table.Column<int>(type: "int", nullable: false),
                 stamp = table.Column<DateTime>(type: "datetime", nullable: false),
-                customer_id = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                customerid = table.Column<string>(name: "customer_id", type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
                 comment = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
                     .Annotation("MySql:CharSet", "utf8"),
-                create_on = table.Column<DateTime>(type: "timestamp", nullable: false)
+                createon = table.Column<DateTime>(name: "create_on", type: "timestamp", nullable: false)
             },
             constraints: table =>
             {
@@ -104,14 +106,14 @@ public partial class CoreDbContextMigrate : Migration
             name: "tenants_tariffrow",
             columns: table => new
             {
-                tariff_id = table.Column<int>(type: "int", nullable: false),
+                tariffid = table.Column<int>(name: "tariff_id", type: "int", nullable: false),
                 quota = table.Column<int>(type: "int", nullable: false),
                 tenant = table.Column<int>(type: "int", nullable: false),
                 quantity = table.Column<int>(type: "int", nullable: false)
             },
             constraints: table =>
             {
-                table.PrimaryKey("PRIMARY", x => new { x.tenant, x.tariff_id, x.quota });
+                table.PrimaryKey("PRIMARY", x => new { x.tenant, x.tariffid, x.quota });
             })
             .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -123,12 +125,12 @@ public partial class CoreDbContextMigrate : Migration
         migrationBuilder.InsertData(
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "price", "product_id", "visible" },
-            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
+            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
 
         migrationBuilder.InsertData(
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "product_id" },
-            values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1", "trial", null });
+            values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:100,manager:1", "trial", null });
 
         migrationBuilder.CreateIndex(
             name: "last_modified",
@@ -141,6 +143,7 @@ public partial class CoreDbContextMigrate : Migration
             column: "tenant");
     }
 
+    /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropTable(
