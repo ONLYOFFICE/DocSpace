@@ -126,7 +126,7 @@ fi
 { ${package_manager} check-update ${product}; PRODUCT_CHECK_UPDATE=$?; } || true
 if [ "$PRODUCT_INSTALLED" = "false" ]; then
 	${package_manager} install -y ${product}
-	${product}-configuration.sh \
+	${product}-configuration \
 		-mysqlh ${MYSQL_SERVER_HOST} \
 		-mysqld ${MYSQL_SERVER_DB_NAME} \
 		-mysqlu ${MYSQL_SERVER_USER} \
@@ -141,7 +141,7 @@ elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 
 	${package_manager} -y update ${product}
-	${product}-configuration.sh \
+	${product}-configuration \
 		-e ${ENVIRONMENT} \
 		-mysqlh ${MYSQL_SERVER_HOST} \
 		-mysqld ${MYSQL_SERVER_DB_NAME} \

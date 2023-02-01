@@ -172,7 +172,7 @@ while [ "$1" != "" ]; do
 		;;
 		
 		-? | -h | --help )
-			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
+			echo "  Usage: bash ${PRODUCT}-configuration [PARAMETER] [[PARAMETER], ...]"
 			echo
 			echo "    Parameters:"
 			echo "      -ash, --appshost                    ${PRODUCT} ip"
