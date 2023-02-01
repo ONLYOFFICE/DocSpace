@@ -171,3 +171,9 @@
 /usr/lib/systemd/system/%{product}-login.service
 %dir %{buildpath}/products/
 %dir %{buildpath}/products/ASC.Login/
+
+%files healthchecks
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.Web.HealthChecks.UI
+/usr/lib/systemd/system/%{product}-healthchecks.service
+%dir %{buildpath}/services/
