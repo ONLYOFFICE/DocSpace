@@ -89,7 +89,9 @@ const clientConfig = {
         use: [
           {
             loader: "file-loader",
+
             options: {
+              emitFile: false,
               name: (resourcePath, resourceQuery) => {
                 let result = resourcePath.split("public\\")[1].split("\\");
 
@@ -123,15 +125,15 @@ const clientConfig = {
       shared: { ...sharedDeps, ...deps },
     }),
     new ExternalTemplateRemotesPlugin(),
-    // new CopyPlugin({
-    //   patterns: [
-    //     {
-    //       context: path.resolve(__dirname, "../public"),
-    //       from: "locales/**/*.json",
-    //       transform: minifyJson,
-    //     },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        {
+          context: path.resolve(__dirname, "../public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
     new WebpackManifestPlugin(),
   ],
 };

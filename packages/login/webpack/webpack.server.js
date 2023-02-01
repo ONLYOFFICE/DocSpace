@@ -44,7 +44,9 @@ const serverConfig = {
         use: [
           {
             loader: "file-loader",
+
             options: {
+              emitFile: false,
               name: (resourcePath, resourceQuery) => {
                 let result = resourcePath.split("public\\")[1].split("\\");
 
