@@ -26,12 +26,15 @@ export function loadLanguagePath(homepage: string, fixedNS = null) {
 
     const lngCollection = translations.get(language);
 
-    let path = "";
+    const path = lngCollection?.get(`${fixedNS || ns}`);
 
-    if (ns.length > 0 && ns[0] === "Common") {
-      return (path = lngCollection?.get("Common").replace("/login/", "/"));
+    if (!path) return `/login/locales/${language}/${fixedNS || ns}.json`;
+
+    const isCommonPath = path.indexOf("Common") > -1;
+
+    if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
+      return path.replace("/login/", "/static/");
     }
-    path = lngCollection?.get(`${fixedNS || ns}`);
 
     return path;
   };
@@ -50,18 +53,25 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
     const collection = translations.get(lng);
 
     for (let ns in initialI18nStoreASC[lng]) {
-      if (ns === "Common") {
-        window.i18n.loaded[
-          `${collection?.get(ns)?.replace("/login/", "/")}`
-        ] = {
+      const path = collection?.get(ns);
+
+      if (!path) {
+        window.i18n.loaded[`/login/locales/${lng}/${ns}.json`] = {
           namespaces: ns,
           data: initialI18nStoreASC[lng][ns],
         };
       } else {
-        window.i18n.loaded[`${collection?.get(ns)}`] = {
-          namespaces: ns,
-          data: initialI18nStoreASC[lng][ns],
-        };
+        if (ns === "Common") {
+          window.i18n.loaded[`${path?.replace("/login/", "/static/")}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        } else {
+          window.i18n.loaded[`${path}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        }
       }
     }
   }
