@@ -1,7 +1,7 @@
 Template: {{product}}/environment
 Type: string
 Default: production
-Description: Select environment for {{product}} configuration:
+_Description: Select environment for {{product}} configuration:
 
 Template: {{product}}/host
 Type: string
@@ -11,32 +11,32 @@ Description: {{product}} host:
 Template: {{product}}/port
 Type: string
 Default: 80
-Description: {{product}} port:
+Description: {{product}} listening port:
 
 Template: {{product}}/db-host
 Type: string
 Default: localhost
-Description: MySQL host:
+Description: Database host:
 
 Template: {{product}}/db-user
 Type: string
 Default: root
-Description: MySQL user:
+Description: Database user:
 
 Template: {{product}}/db-pwd
 Type: password
-Description: MySQL password:
+Description: Database password:
 
 Template: {{product}}/db-name
 Type: string
 Default: onlyoffice
-Description: MySQL database name:
+Description: Database name:
 
 Template: {{product}}/elasticsearch-sheme
 Type: select
 Choices: http, https
 Default: http
-Description: Elasticsearch sheme:
+Description: Elasticsearch protocol:
 
 Template: {{product}}/elasticsearch-host
 Type: string
