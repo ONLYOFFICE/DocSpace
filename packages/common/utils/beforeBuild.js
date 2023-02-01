@@ -21,14 +21,6 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
   const getLocalesFiles = async () => {
     const files = [];
 
-    // for await (const f of getFiles(pathsToLocales[0])) {
-    //   if (f) files.push(f);
-    // }
-
-    // for await (const f of getFiles(pathsToLocales[1])) {
-    //   if (f) files.push(f);
-    // }
-
     for await (const p of pathsToLocales) {
       for await (const f of getFiles(p)) {
         if (f) files.push(f);
@@ -41,9 +33,6 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
   const localesFiles = await getLocalesFiles();
 
   const cultures = appSettings.web.cultures;
-
-  let hasError = false;
-  const errorVar = [];
 
   localesFiles.forEach((file) => {
     const splitPath = file.path.split("\\");
@@ -80,30 +69,7 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
     const importString = `import ${fileName}${language}Url from "${alias}/${url}?url"`;
 
     const defineString = `["${fileName}", ${fileName}${language}Url]`;
-
-    const buffer = fs.readFileSync(pathToFile);
-
-    const content = buffer.toString();
-
-    if (
-      content.indexOf(importString) > -1 &&
-      content.indexOf(defineString) > -1
-    ) {
-      return;
-    }
-    errorVar.push(url);
-    hasError = true;
   });
-
-  if (hasError) {
-    let generatedError = "Need import next translation files:\n";
-
-    errorVar.forEach((e) => (generatedError = generatedError + e + " \n"));
-
-    return generatedError;
-  }
-
-  return null;
 };
 
 module.exports = beforeBuild;
