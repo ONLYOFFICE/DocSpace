@@ -31,12 +31,21 @@ export function loadLanguagePath(homepage, fixedNS = null) {
 
     const lngCollection = translations.get(language);
 
-    if (!lngCollection?.get(`${fixedNS || ns}`)) return undefined;
+    const data = lngCollection?.get(`${fixedNS || ns}`);
 
-    let path = lngCollection?.get(`${fixedNS || ns}`)?.split("/");
+    if (!data) return `/locales/${language}/${fixedNS || ns}.json`;
+
+    let path = data?.split("/");
     const length = path?.length;
 
+    const isCommonPath = path[length - 1].indexOf("Common") > -1;
+
     path = `/${path[length - 3]}/${path[length - 2]}/${path[length - 1]}`;
+
+    if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
+      return `/static${path}`;
+    }
+
     return path;
   };
 }
