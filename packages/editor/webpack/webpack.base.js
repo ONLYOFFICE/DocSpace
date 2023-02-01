@@ -67,8 +67,10 @@ module.exports = {
         use: [
           {
             loader: "file-loader",
+
             options: {
-              name: (resourcePath, resourceQuery) => {
+              emitFile: false,
+              name: (resourcePath) => {
                 let result = resourcePath.split("public\\")[1].split("\\");
 
                 result.pop();

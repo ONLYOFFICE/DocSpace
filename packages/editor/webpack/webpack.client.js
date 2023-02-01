@@ -99,15 +99,15 @@ const clientConfig = {
       shared: { ...sharedDeps },
     }),
     new ExternalTemplateRemotesPlugin(),
-    // new CopyPlugin({
-    //   patterns: [
-    //     {
-    //       context: path.resolve(process.cwd(), "public"),
-    //       from: "locales/**/*.json",
-    //       transform: minifyJson,
-    //     },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        {
+          context: path.resolve(process.cwd(), "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
     new WebpackManifestPlugin(),
   ],
 };
