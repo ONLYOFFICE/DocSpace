@@ -105,12 +105,14 @@ const Wizard = (props) => {
         getPortalTimezones(wizardToken).then((data) => {
           const userTimezone = getUserTimezone();
           const zones = mapTimezonesToArray(data);
-          const select = zones.filter((zone) => zone.key === userTimezone);
+          const select =
+            zones.filter((zone) => zone.key === userTimezone) ||
+            zones.filter((zone) => zone.key === timezone);
 
           setTimezones(zones);
           setSelectedTimezone({
-            key: select[0].key,
-            label: select[0].label,
+            key: select[0]?.key,
+            label: select[0]?.label,
           });
         }),
       ])
