@@ -30,10 +30,12 @@ namespace ASC.Data.Backup.Storage;
 public class BackupRepository : IBackupRepository
 {
     private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
+    private readonly DbFactory _dbFactory;
 
-    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory)
+    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory, DbFactory dbFactory)
     {
         _dbContextFactory = dbContextFactory;
+        _dbFactory = dbFactory;
     }
 
     public void SaveBackupRecord(BackupRecord backup)
@@ -64,13 +66,30 @@ public class BackupRepository : IBackupRepository
     public List<BackupRecord> GetScheduledBackupRecords()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.IsScheduled == true).ToList();
+        return backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.IsScheduled == true && b.Removed == false).ToList();
     }
 
     public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.TenantId == tenantId).ToList();
+        return backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.TenantId == tenantId && b.Removed == false).ToList();
+    }
+
+    public void MigrationBackupRecords(int tenantId, int newTenantId, string region)
+    {
+        using var backupContext = _dbContextFactory.CreateDbContext();
+
+        var backups = backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.TenantId == tenantId).ToList();
+
+        backups.ForEach(backup =>
+        {
+            backup.TenantId = newTenantId;
+            backup.Id = Guid.NewGuid();
+        });
+
+        var backupContextByNewTenant = _dbFactory.CreateDbContext<BackupsContext>(region);
+        backupContextByNewTenant.Backups.AddRange(backups);
+        backupContextByNewTenant.SaveChanges();
     }
 
     public void DeleteBackupRecord(Guid id)
@@ -80,7 +99,8 @@ public class BackupRepository : IBackupRepository
 
         if (backup != null)
         {
-            backupContext.Backups.Remove(backup);
+            backup.Removed = true;
+            backupContext.Backups.Update(backup);
             backupContext.SaveChanges();
         }
     }
