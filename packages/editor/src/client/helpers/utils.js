@@ -25,12 +25,15 @@ export function loadLanguagePath(homepage, fixedNS = null) {
 
     const lngCollection = translations.get(language);
 
-    let path = "";
+    const path = lngCollection?.get(`${fixedNS || ns}`);
 
-    if (ns.length > 0 && ns[0] === "Common") {
-      return (path = lngCollection?.get("Common").replace("/doceditor/", "/"));
+    if (!path) return `/doceditor/locales/${language}/${fixedNS || ns}.json`;
+
+    const isCommonPath = path.indexOf("Common") > -1;
+
+    if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
+      return path.replace("/doceditor/", "/static/");
     }
-    path = lngCollection?.get(`${fixedNS || ns}`);
 
     return path;
   };
@@ -47,18 +50,25 @@ export const initI18n = (initialI18nStoreASC) => {
     const collection = translations.get(lng);
 
     for (let ns in initialI18nStoreASC[lng]) {
-      if (ns === "Common") {
-        window.i18n.loaded[
-          `${collection?.get(ns)?.replace("/doceditor/", "/")}`
-        ] = {
+      const path = collection?.get(ns);
+
+      if (!path) {
+        window.i18n.loaded[`/doceditor/locales/${lng}/${ns}.json`] = {
           namespaces: ns,
           data: initialI18nStoreASC[lng][ns],
         };
       } else {
-        window.i18n.loaded[`${collection?.get(ns)}`] = {
-          namespaces: ns,
-          data: initialI18nStoreASC[lng][ns],
-        };
+        if (ns === "Common") {
+          window.i18n.loaded[`${path?.replace("/doceditor/", "/static/")}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        } else {
+          window.i18n.loaded[`${path}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        }
       }
     }
   }
