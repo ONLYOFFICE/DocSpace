@@ -110,8 +110,6 @@ module.exports = {
           path.join(__dirname, "../src/translations.js")
         );
 
-        console.log("call");
-
         if (error) {
           throw new Error(error);
         }
