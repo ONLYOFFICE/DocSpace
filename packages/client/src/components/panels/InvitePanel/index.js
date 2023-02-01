@@ -73,7 +73,7 @@ const InvitePanel = ({
             title,
             shareLink,
             expirationDate,
-            access: defaultAccess,
+            access: user.access || defaultAccess,
           });
         }
       });
@@ -204,7 +204,12 @@ const InvitePanel = ({
           </StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks t={t} shareLinks={shareLinks} roomType={roomType} />
+        <ExternalLinks
+          t={t}
+          shareLinks={shareLinks}
+          getInfo={getInfo}
+          roomType={roomType}
+        />
 
         <InviteInput
           t={t}

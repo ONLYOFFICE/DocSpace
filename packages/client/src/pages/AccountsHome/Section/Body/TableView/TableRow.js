@@ -119,6 +119,7 @@ const PeopleTableRow = (props) => {
     element,
     checkedProps,
     onContentRowSelect,
+    onContentRowClick,
     onEmailClick,
 
     isOwner,
@@ -201,22 +202,22 @@ const PeopleTableRow = (props) => {
     [item, changeUserType]
   );
 
-  const getRoomsOptions = React.useCallback(() => {
-    const options = [];
+  // const getRoomsOptions = React.useCallback(() => {
+  //   const options = [];
 
-    fakeRooms.forEach((room) => {
-      options.push(
-        <DropDownItem key={room.name} noHover={true}>
-          {room.name} &nbsp;
-          <Text fontSize="13px" fontWeight={600} color={sideInfoColor} truncate>
-            ({room.role})
-          </Text>
-        </DropDownItem>
-      );
-    });
+  //   fakeRooms.forEach((room) => {
+  //     options.push(
+  //       <DropDownItem key={room.name} noHover={true}>
+  //         {room.name} &nbsp;
+  //         <Text fontSize="13px" fontWeight={600} color={sideInfoColor} truncate>
+  //           ({room.role})
+  //         </Text>
+  //       </DropDownItem>
+  //     );
+  //   });
 
-    return <>{options.map((option) => option)}</>;
-  }, []);
+  //   return <>{options.map((option) => option)}</>;
+  // }, []);
 
   const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
@@ -234,14 +235,6 @@ const PeopleTableRow = (props) => {
   const typeLabel = getUserTypeLabel(role);
 
   const isChecked = checkedProps.checked;
-
-  const userContextClick = React.useCallback(() => {
-    if (isSeveralSelection && isChecked) {
-      return;
-    }
-
-    setBufferSelection(item);
-  }, [isSeveralSelection, isChecked, item, setBufferSelection]);
 
   const renderTypeCell = () => {
     const typesOptions = getTypesOptions();
@@ -286,20 +279,31 @@ const PeopleTableRow = (props) => {
   const typeCell = renderTypeCell();
 
   const onChange = (e) => {
+    //console.log("onChange");
     onContentRowSelect && onContentRowSelect(e.target.checked, item);
   };
+
+  const onRowContextClick = React.useCallback(() => {
+    //console.log("userContextClick");
+    onContentRowClick && onContentRowClick(!isChecked, item, false);
+  }, [isChecked, item, onContentRowClick]);
 
   const onRowClick = (e) => {
     if (
       e.target.closest(".checkbox") ||
+      e.target.closest(".table-container_row-checkbox") ||
       e.target.closest(".type-combobox") ||
       e.target.closest(".paid-badge") ||
       e.target.closest(".pending-badge") ||
-      e.target.closest(".disabled-badge")
+      e.target.closest(".disabled-badge") ||
+      e.detail === 0
     ) {
       return;
     }
-    onContentRowSelect && onContentRowSelect(!isChecked, item);
+
+    //console.log("onRowClick");
+
+    onContentRowClick && onContentRowClick(!isChecked, item);
   };
 
   return (
@@ -313,9 +317,9 @@ const PeopleTableRow = (props) => {
         className="table-row"
         sideInfoColor={sideInfoColor}
         checked={isChecked}
-        fileContextClick={userContextClick}
         isActive={isActive}
         onClick={onRowClick}
+        fileContextClick={onRowContextClick}
         {...contextOptionsProps}
       >
         <TableCell className={"table-container_user-name-cell"}>
