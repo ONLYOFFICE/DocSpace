@@ -44,7 +44,7 @@ const SubmenuCommon = (props) => {
   const data = [
     {
       id: "customization",
-      name: t("Customization"),
+      name: t("Common:SettingsGeneral"),
       content: <Customization />,
     },
     {

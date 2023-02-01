@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
 {
     [DbContext(typeof(CoreDbContext))]
     partial class CoreDbContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
@@ -65,7 +65,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1",
+                            Features = "trial,audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0m,
                             Visible = false
@@ -73,7 +73,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",

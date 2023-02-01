@@ -6,7 +6,6 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
-import PortalIntegration from "./portalIntegration";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
@@ -19,12 +18,6 @@ const IntegrationWrapper = (props) => {
   const { t, tReady, history, loadBaseInfo, enablePlugins } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
-  const integrationData = {
-    id: "portal-integration",
-    name: "Portal Integration",
-    content: <PortalIntegration />,
-  };
 
   const pluginData = {
     id: "plugins",
@@ -46,7 +39,6 @@ const IntegrationWrapper = (props) => {
   ];
 
   if (!isMobile) {
-    data.push(integrationData);
     enablePlugins && data.push(pluginData);
   }
 
