@@ -9,6 +9,7 @@ AutoReqProv:    no
 %package        common
 Summary:        common
 Group:          Applications/Internet
+Requires:       logrotate
 %description    common
 
 %package        files-services

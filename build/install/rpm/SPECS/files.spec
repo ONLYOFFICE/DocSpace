@@ -35,6 +35,7 @@
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/onlyoffice/%{product}/
+%config %{_sysconfdir}/logrotate.d/%{product}-common
 %{_var}/log/onlyoffice/%{product}/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
