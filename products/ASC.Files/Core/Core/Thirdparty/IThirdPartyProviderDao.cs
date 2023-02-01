@@ -71,16 +71,14 @@ internal abstract class ThirdPartyProviderDao
         return Task.FromResult(false);
     }
 
-    public Task CopyThumbnailAsync(File<string> fromFile, File<string> toFile, int width, int height)
+    public string GetUniqThumbnailPath(File<string> file, int width, int height)
     {
         //Do nothing
-        return Task.CompletedTask;
+        return null;
     }
 
-
-    public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
+    public Task SetThumbnailStatusAsync(File<string> file, Thumbnail status)
     {
-        //Do nothing
         return Task.CompletedTask;
     }
 

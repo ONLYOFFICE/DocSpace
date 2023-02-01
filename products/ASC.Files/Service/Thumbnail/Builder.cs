@@ -77,6 +77,7 @@ public class Builder<T>
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly DocumentServiceHelper _documentServiceHelper;
     private readonly Global _global;
+    private readonly GlobalStore _globalStore;
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
@@ -96,6 +97,7 @@ public class Builder<T>
         DocumentServiceConnector documentServiceConnector,
         DocumentServiceHelper documentServiceHelper,
         Global global,
+        GlobalStore globalStore,
         PathProvider pathProvider,
         ILoggerProvider log,
         IHttpClientFactory clientFactory,
@@ -117,6 +119,7 @@ public class Builder<T>
         _tempPath = tempPath;
         _socketManager = socketManager;
         _thumbnailSettings = thumbnailSettings;
+        _globalStore = globalStore;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
@@ -172,10 +175,8 @@ public class Builder<T>
             if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
                 file.ThumbnailStatus = Core.Thumbnail.NotRequired;
-                foreach (var size in _thumbnailSettings.Sizes)
-                {
-                    await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
-                }
+
+                await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.NotRequired);
 
                 return;
             }
@@ -207,10 +208,8 @@ public class Builder<T>
             if (file != null)
             {
                 file.ThumbnailStatus = Core.Thumbnail.Error;
-                foreach (var size in _thumbnailSettings.Sizes)
-                {
-                    await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
-                }
+
+                await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Error);
             }
         }
     }
@@ -240,6 +239,8 @@ public class Builder<T>
 
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
+        await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
+        
         foreach (var w in _config.Sizes)
         {
             _logger.DebugMakeThumbnail1(file.Id.ToString());
@@ -294,6 +295,9 @@ public class Builder<T>
 
             await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height);
         }
+
+        await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
+
     }
 
     private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
@@ -398,10 +402,14 @@ public class Builder<T>
 
             //await Parallel.ForEachAsync(config.Sizes, (w, b) => CropAsync(sourceImg, fileDao, file, w.Width, w.Height));
 
+            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
+
             foreach (var w in _config.Sizes)
             {
                 await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
             }
+
+            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
         }
 
         GC.Collect();
@@ -438,7 +446,8 @@ public class Builder<T>
                 await targetImg.SaveAsWebpAsync(targetStream);
                 break;
         }
-        await fileDao.SaveThumbnailAsync(file, targetStream, width, height);
+
+        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);     
     }
 
     private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth)

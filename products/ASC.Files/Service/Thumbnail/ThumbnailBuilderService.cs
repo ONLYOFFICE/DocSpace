@@ -69,21 +69,25 @@ public class ThumbnailBuilderService : BackgroundService
 
         //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
         //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
-
-        var filesWithoutThumbnails = FileDataQueue.Queue.Select(pair => pair.Value).ToList();
-
-        if (filesWithoutThumbnails.Count == 0)
-        {
-            _logger.TraceProcedureWaiting(_thumbnailSettings.LaunchFrequency);
-
-            await Task.Delay(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), stoppingToken);
-
-            return;
-        }
-
+        
         await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
             var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
+
+            var filesWithoutThumbnails = FileDataQueue.Queue.Select(pair => pair.Value)
+                                                      .ToList();
+
+            filesWithoutThumbnails.AddRange(await fileDataProvider.GetFreezingThumbnailsAsync());
+
+            if (filesWithoutThumbnails.Count == 0)
+            {
+                _logger.TraceProcedureWaiting(_thumbnailSettings.LaunchFrequency);
+
+                await Task.Delay(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), stoppingToken);
+
+                return;
+            }
+
             var premiumTenants = fileDataProvider.GetPremiumTenants();
 
             filesWithoutThumbnails = filesWithoutThumbnails
