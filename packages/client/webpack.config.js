@@ -124,7 +124,7 @@ const config = {
         resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /\.json$/i,
+        test: /locales\\[a-z-]*\\[a-z]*\.json$/i,
         resourceQuery: /url/,
         use: [
           {
@@ -132,6 +132,7 @@ const config = {
             options: {
               emitFile: false,
               name: (resourcePath) => {
+                console.log(resourcePath);
                 let result = resourcePath.split("public\\")[1].split("\\");
 
                 result.pop();

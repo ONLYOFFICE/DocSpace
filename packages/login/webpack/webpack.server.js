@@ -38,7 +38,7 @@ const serverConfig = {
   module: {
     rules: [
       {
-        test: /\.json$/i,
+        test: /locales\\[a-z-]*\\[a-z]*\.json$/i,
         resourceQuery: /url/,
         type: "javascript/auto",
         use: [
