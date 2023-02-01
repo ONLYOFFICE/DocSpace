@@ -244,7 +244,7 @@ restart_services() {
 	echo -n "Restarting services... "
 	for SVC in login api socket studio-notify notify \
 	people-server files files-services studio backup \
-	clear-events backup-background ssoauth doceditor
+	clear-events backup-background ssoauth doceditor healthchecks
 	do
 		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
 		systemctl restart ${PRODUCT}-$SVC

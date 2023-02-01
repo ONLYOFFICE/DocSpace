@@ -53,7 +53,7 @@ internal sealed class BackupCleanerService : BackgroundService
         {
             _logger.DebugBackupCleanerServiceDoingWork();
 
-            using var serviceScope = _scopeFactory.CreateScope();
+            await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
             var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupCleanerService>>();
 
@@ -76,7 +76,7 @@ internal sealed class BackupCleanerService : BackgroundService
 
     private async Task ExecuteBackupCleaner(CancellationToken stoppingToken)
     {
-        using var serviceScope = _scopeFactory.CreateScope();
+        await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
         var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
         var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();

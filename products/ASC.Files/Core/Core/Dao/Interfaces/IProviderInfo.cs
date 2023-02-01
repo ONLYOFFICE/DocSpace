@@ -38,6 +38,7 @@ public interface IProviderInfo : IDisposable
     string RootFolderId { get; }
     string FolderId { get; set; }
     bool Private { get; }
+    bool HasLogo { get; }
 
     Task<bool> CheckAccessAsync();
     Task InvalidateStorageAsync();

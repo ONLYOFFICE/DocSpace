@@ -1,3 +1,4 @@
+﻿import DangerAlertReactSvgUrl from "PUBLIC_DIR/images/danger.alert.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -71,7 +72,7 @@ const PrivacyLimitationsWarning = ({ t }) => {
         <div className="warning-title-icon-wrapper">
           <ReactSVG
             className="warning-title-icon"
-            src={"/static/images/danger.alert.react.svg"}
+            src={DangerAlertReactSvgUrl}
           />
         </div>
         <div className="warning-title-text">{t("Common:Warning")}</div>

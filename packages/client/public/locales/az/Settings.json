@@ -73,7 +73,7 @@
   "PortalAccessSubTitle": "Bu bölmə sizə istifadəçiləri portala təhlükəsiz və rahat giriş imkanı ilə təmin etmək imkanı verir",
   "PortalNameEmpty": "Hesab adı boşdur",
   "PortalNameIncorrect": "Yanlış hesab adı",
-  "PortalNameLength": "Hesab adı ən az 6, ən çox 50 işarədən ibarət ola bilər",
+  "PortalNameLength": "Hesab adı ən az {{minLength}}, ən çox {{maxLength}} işarədən ibarət ola bilər",
   "PortalRenaming": "Portalın Adının dəyişdirilməsi",
   "PortalRenamingDescription": "Burada portal ünvanınızı dəyişə bilərsiniz.",
   "PortalRenamingLabelText": "Yeni portal adı",

@@ -1,11 +1,12 @@
 import React from "react";
 import { mount } from "enzyme";
 import IconButton from ".";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 
 const baseProps = {
   size: "25",
   isDisabled: false,
-  iconName: "static/images/search.react.svg",
+  iconName: SearchReactSvgUrl,
   isFill: true,
 };
 

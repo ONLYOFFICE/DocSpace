@@ -3,9 +3,8 @@ import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Slider from "@docspace/components/slider";
-import PlusIcon from "../../../../../../public/images/payment.plus.react.svg";
-import MinusIcon from "../../../../../../public/images/minus.react.svg";
-import { smallTablet } from "@docspace/components/utils/device";
+import PlusIcon from "PUBLIC_DIR/images/payment.plus.react.svg";
+import MinusIcon from "PUBLIC_DIR/images/minus.react.svg";
 import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
 import SelectTotalSizeContainer from "./SelectTotalSizeContainer";
@@ -145,6 +144,7 @@ const SelectUsersCountContainer = ({
   isLessCountThanAcceptable,
   step,
   addedManagersCountTitle,
+  isNeedPlusSign,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -208,8 +208,6 @@ const SelectUsersCountContainer = ({
     setManagersCount(numberValue);
     setTotalPrice(numberValue);
   };
-
-  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
 
   const value = isNeedPlusSign
     ? maxAvailableManagersCount + "+"

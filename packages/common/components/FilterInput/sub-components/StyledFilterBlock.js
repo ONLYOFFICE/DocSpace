@@ -5,7 +5,7 @@ import { isMobileOnly, isMobile } from "react-device-detect";
 import ToggleButton from "@docspace/components/toggle-button";
 import { mobile, tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 
 const StyledFilterBlock = styled.div`
   position: fixed;

@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "У цьому розділі можна надати користувачам безпечні та зручні способи доступу до порталу.",
   "PortalNameEmpty": "Ім'я облікового запису порожнє",
   "PortalNameIncorrect": "Неправильне ім'я облікового запису",
-  "PortalNameLength": "Довжина імені облікового запису має бути від 6 до 50 символів",
+  "PortalNameLength": "Довжина імені облікового запису має бути від {{minLength}} до {{maxLength}} символів",
   "PortalRenaming": "Перейменування порталу",
   "PortalRenamingDescription": "Тут ви можете змінити адресу вашого порталу.",
   "PortalRenamingLabelText": "Нове ім'я порталу",

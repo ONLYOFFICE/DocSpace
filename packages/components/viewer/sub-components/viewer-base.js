@@ -51,6 +51,7 @@ const ViewerBase = (props) => {
     onPrevClick,
     onMaskClick,
     isPreviewFile,
+    archiveRoom,
   } = props;
 
   const initialState = {
@@ -209,6 +210,7 @@ const ViewerBase = (props) => {
     }
     let loadComplete = false;
     let img = new Image();
+    img.src = activeImage.src;
     img.onload = () => {
       clearTimeout(timerId);
       if (!init.current) {
@@ -218,7 +220,16 @@ const ViewerBase = (props) => {
         loadImgSuccess(img.width, img.height, true);
       }
     };
-    img.src = activeImage.src;
+    img.onerror = () => {
+      clearTimeout(timerId);
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          loading: false,
+          loadFailed: false,
+          startLoading: false,
+        })
+      );
+    };
     if (img.complete) {
       loadComplete = true;
       loadImgSuccess(img.width, img.height, true);
@@ -267,7 +278,7 @@ const ViewerBase = (props) => {
       currentLoadIndex.current = state.activeIndex;
       loadImg(state.activeIndex);
     }
-  }, [state.startLoading, state.activeIndex]);
+  }, [state.startLoading, state.activeIndex, images[state.activeIndex]?.src]);
 
   function getImgWidthHeight(imgWidth, imgHeight) {
     const titleHeight = 0;
@@ -699,6 +710,7 @@ const ViewerBase = (props) => {
                   percent={state.percent}
                   attribute={attribute}
                   isPreviewFile={isPreviewFile}
+                  archiveRoom={archiveRoom}
                   setIsOpenContextMenu={props.setIsOpenContextMenu}
                   zoomable={zoomable}
                   rotatable={rotatable}

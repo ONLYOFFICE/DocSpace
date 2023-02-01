@@ -13,13 +13,14 @@ import IconButton from "@docspace/components/icon-button";
 
 import { isMobileOnly } from "react-device-detect";
 
-import MediaNextIcon from "../../../public/images/viewer.next.react.svg";
-import MediaPrevIcon from "../../../public/images/viewer.prew.react.svg";
+import ViewerMediaCloseSvgUrl from "PUBLIC_DIR/images/viewer.media.close.svg?url";
+import MediaNextIcon from "PUBLIC_DIR/images/viewer.next.react.svg";
+import MediaPrevIcon from "PUBLIC_DIR/images/viewer.prew.react.svg";
 import ViewerPlayer from "./sub-components/viewer-player";
 
-import MediaContextMenu from "../../../public/images/vertical-dots.react.svg";
+import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 import ContextMenu from "@docspace/components/context-menu";
-import BackArrow from "../../../public/images/viewer.media.back.react.svg";
+import BackArrow from "PUBLIC_DIR/images/viewer.media.back.react.svg";
 
 export const Viewer = (props) => {
   const {
@@ -32,6 +33,7 @@ export const Viewer = (props) => {
     playlist,
     isImage,
     isAudio,
+    archiveRoom,
     audioIcon,
     contextModel,
     generateContextMenu,
@@ -215,7 +217,7 @@ export const Viewer = (props) => {
             >
               <IconButton
                 color={"#fff"}
-                iconName="/static/images/viewer.media.close.svg"
+                iconName={ViewerMediaCloseSvgUrl}
                 size={28}
                 isClickable
               />

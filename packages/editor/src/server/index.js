@@ -71,7 +71,11 @@ app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(
   "/doceditor/",
-  express.static(path.resolve(path.join(__dirname, "client")))
+  express.static(path.resolve(path.join(__dirname, "client")), {
+    // don`t delete
+    // https://github.com/pillarjs/send/issues/110
+    cacheControl: false,
+  })
 );
 app.use(logger("dev", { stream: winston.stream }));
 

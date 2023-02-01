@@ -772,6 +772,24 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid provider.
+        /// </summary>
+        public static string ErrorMessage_InvalidProvider {
+            get {
+                return ResourceManager.GetString("ErrorMessage_InvalidProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is not possible to use this folder to store the room.
+        /// </summary>
+        public static string ErrorMessage_InvalidThirdPartyFolder {
+            get {
+                return ResourceManager.GetString("ErrorMessage_InvalidThirdPartyFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The invitation link is invalid or it&apos;s validity has expired.
         /// </summary>
         public static string ErrorMessage_InvintationLink {
@@ -786,6 +804,15 @@ namespace ASC.Files.Core.Resources {
         public static string ErrorMessage_PaidRole {
             get {
                 return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This provider is already connected to the room.
+        /// </summary>
+        public static string ErrorMessage_ProviderAlreadyConnect {
+            get {
+                return ResourceManager.GetString("ErrorMessage_ProviderAlreadyConnect", resourceCulture);
             }
         }
         

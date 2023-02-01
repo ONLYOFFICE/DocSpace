@@ -7,6 +7,15 @@ import Hammer from "hammerjs";
 import { isMobileOnly } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/download-as.react.svg?url";
+import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+
 const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
@@ -30,16 +39,26 @@ class MediaViewer extends React.Component {
   constructor(props) {
     super(props);
 
-    const item = props.playlist.find(
-      (file) => String(file.fileId) === String(props.currentFileId)
+    const { playlist, currentFileId, visible } = props;
+
+    const item = playlist.find(
+      (file) => String(file.fileId) === String(currentFileId)
     );
+
+    if (!item) {
+      console.error("MediaViewer: file not found in playlist", {
+        playlist,
+        currentFileId,
+      });
+      return;
+    }
 
     const playlistPos = item ? item.id : 0;
 
     this.state = {
-      visible: props.visible,
+      visible,
       allowConvert: true,
-      playlist: props.playlist,
+      playlist,
       playlistPos,
       fileUrl: item.src,
       canSwipeImage: true,
@@ -474,6 +493,7 @@ class MediaViewer extends React.Component {
       onClickDelete,
       setBufferSelection,
       files,
+      archiveRoomsId,
     } = this.props;
 
     const currentFileId =
@@ -485,6 +505,8 @@ class MediaViewer extends React.Component {
 
     const targetFile =
       files.find((item) => item.id === currentFileId) || playlist[0];
+
+    const archiveRoom = archiveRoomsId === targetFile.rootFolderId;
     const { title } = currentFile;
 
     let isImage = false;
@@ -507,23 +529,23 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: "images/download.react.svg",
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: "images/rename.react.svg",
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: false,
+          disabled: archiveRoom,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
-          disabled: false,
+          disabled: archiveRoom,
         },
       ];
 
@@ -532,7 +554,7 @@ class MediaViewer extends React.Component {
           id: "option_room-info",
           key: "room-info",
           label: t("Common:Info"),
-          icon: "/static/images/info.outline.react.svg",
+          icon: InfoOutlineReactSvgUrl,
           onClick: () => {
             return onShowInfoPanel(targetFile);
           },
@@ -541,21 +563,21 @@ class MediaViewer extends React.Component {
         {
           key: "download",
           label: t("Common:Download"),
-          icon: "images/download.react.svg",
+          icon: DownloadReactSvgUrl,
           onClick: () => onClickDownload(targetFile, t),
           disabled: false,
         },
         {
           key: "move-to",
           label: t("MoveTo"),
-          icon: "images/move.react.svg",
+          icon: MoveReactSvgUrl,
           onClick: onMoveAction,
           disabled: isPreviewFile,
         },
         // {
         //   key: "download-as",
         //   label: t("Translations:DownloadAs"),
-        //   icon: "images/download-as.react.svg", // TODO: uncomment when we can download media by changing the format
+        //   icon: DownloadAsReactSvgUrl, // TODO: uncomment when we can download media by changing the format
         //   onClick: onClickDownloadAs,
         //   disabled: false,
         // },
@@ -563,7 +585,7 @@ class MediaViewer extends React.Component {
           id: "option_copy-to",
           key: "copy-to",
           label: t("Translations:Copy"),
-          icon: "/static/images/copy.react.svg",
+          icon: CopyReactSvgUrl,
           onClick: onCopyAction,
           disabled: isPreviewFile,
         },
@@ -571,16 +593,16 @@ class MediaViewer extends React.Component {
           id: "option_create-copy",
           key: "copy",
           label: t("Common:Duplicate"),
-          icon: "/static/images/duplicate.react.svg",
+          icon: DuplicateReactSvgUrl,
           onClick: () => onDuplicate(targetFile, t),
           disabled: isPreviewFile,
         },
         {
           key: "rename",
           label: t("Rename"),
-          icon: "images/rename.react.svg",
+          icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: isPreviewFile,
+          disabled: archiveRoom,
         },
 
         {
@@ -591,7 +613,7 @@ class MediaViewer extends React.Component {
         {
           key: "delete",
           label: t("Common:Delete"),
-          icon: "images/trash.react.svg",
+          icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
           disabled: isPreviewFile,
         },
@@ -654,6 +676,7 @@ class MediaViewer extends React.Component {
             isPreviewFile={isPreviewFile}
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
+            archiveRoom={archiveRoom}
             //    isFavoritesFolder={isFavoritesFolder}
           />
         )}

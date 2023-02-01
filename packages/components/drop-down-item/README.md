@@ -6,6 +6,7 @@ Is a item of DropDown component
 
 ```js
 import DropDownItem from "@docspace/components/drop-down-item";
+import NavLogoReactSvgUrl from "PUBLIC_DIR/images/nav.logo.react.svg?url";
 ```
 
 ```jsx
@@ -13,7 +14,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
   isSeparator={false}
   isHeader={false}
   label="Button 1"
-  icon="static/images/nav.logo.react.svg"
+  icon={NavLogoReactSvgUrl}
   onClick={() => console.log("Button 1 clicked")}
 />
 ```

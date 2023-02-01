@@ -14,7 +14,7 @@ import AccessRightSelect from "@docspace/components/AccessRightSelect";
     key: "key1",
     title: "Room administrator",
     description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
-    icon: CrownIcon,
+    icon: AccessCommentReactSvgUrl,
     quota: "free",
     color: "#20D21F",
   }}
@@ -37,7 +37,7 @@ import AccessRightSelect from "@docspace/components/AccessRightSelect";
     key: "key1",
     title: "Room administrator",
     description: `Administration of rooms, archiving of rooms, inviting and managing users in rooms.`,
-    icon: CrownIcon,
+    icon: AccessCommentReactSvgUrl,
     quota: "free",
     color: "#20D21F",
   }

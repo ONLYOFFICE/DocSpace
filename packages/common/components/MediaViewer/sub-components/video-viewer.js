@@ -7,11 +7,11 @@ import ReactPlayer from "react-player";
 
 import Duration from "./duration";
 import Progress from "./progress";
-import MediaPauseIcon from "../../../../../public/images/media.pause.react.svg";
-import MediaPlayIcon from "../../../../../public/images/media.play.react.svg";
-import MediaFullScreenIcon from "../../../../../public/images/media.fullscreen.video.react.svg";
-import MediaMuteIcon from "../../../../../public/images/media.mute.react.svg";
-import MediaMuteOffIcon from "../../../../../public/images/media.muteoff.react.svg";
+import MediaPauseIcon from "PUBLIC_DIR/images/media.pause.react.svg";
+import MediaPlayIcon from "PUBLIC_DIR/images/media.play.react.svg";
+import MediaFullScreenIcon from "PUBLIC_DIR/images/media.fullscreen.video.react.svg";
+import MediaMuteIcon from "PUBLIC_DIR/images/media.mute.react.svg";
+import MediaMuteOffIcon from "PUBLIC_DIR/images/media.muteoff.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 

@@ -1,3 +1,20 @@
+import LoginPageSvgUrl from "PUBLIC_DIR/images/logo/loginpage.svg?url";
+import DarkLoginPageSvgUrl from "PUBLIC_DIR/images/logo/dark_loginpage.svg?url";
+import LeftMenuSvgUrl from "PUBLIC_DIR/images/logo/leftmenu.svg?url";
+import DocseditorSvgUrl from "PUBLIC_DIR/images/logo/docseditor.svg?url";
+import LightSmallSvgUrl from "PUBLIC_DIR/images/logo/lightsmall.svg?url";
+import DocsEditoRembedSvgUrl from "PUBLIC_DIR/images/logo/docseditorembed.svg?url";
+import DarkLightSmallSvgUrl from "PUBLIC_DIR/images/logo/dark_lightsmall.svg?url";
+import FaviconIco from "PUBLIC_DIR/favicon.ico";
+
+import BackgroundPatternReactSvgUrl from "PUBLIC_DIR/images/background.pattern.react.svg?url";
+import BackgroundPatternOrangeReactSvgUrl from "PUBLIC_DIR/images/background.pattern.orange.react.svg?url";
+import BackgroundPatternGreenReactSvgUrl from "PUBLIC_DIR/images/background.pattern.green.react.svg?url";
+import BackgroundPatternRedReactSvgUrl from "PUBLIC_DIR/images/background.pattern.red.react.svg?url";
+import BackgroundPatternPurpleReactSvgUrl from "PUBLIC_DIR/images/background.pattern.purple.react.svg?url";
+import BackgroundPatternLightBlueReactSvgUrl from "PUBLIC_DIR/images/background.pattern.lightBlue.react.svg?url";
+import BackgroundPatternBlackReactSvgUrl from "PUBLIC_DIR/images/background.pattern.black.react.svg?url";
+
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
@@ -165,16 +182,14 @@ export const getUserRole = (user) => {
   else return "manager";
 };
 
-
-
 export const combineUrl = combineUrlFunc;
 
 export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-      "=([^;]*)"
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -349,7 +364,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -462,20 +477,52 @@ export const getConvertedSize = (t, size) => {
 export const getBgPattern = (colorSchemeId: number) => {
   switch (colorSchemeId) {
     case 1:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
     case 2:
-      return "url('/static/images/background.pattern.orange.react.svg')";
+      return `url('${BackgroundPatternOrangeReactSvgUrl}')`;
     case 3:
-      return "url('/static/images/background.pattern.green.react.svg')";
+      return `url('${BackgroundPatternGreenReactSvgUrl}')`;
     case 4:
-      return "url('/static/images/background.pattern.red.react.svg')";
+      return `url('${BackgroundPatternRedReactSvgUrl}')`;
     case 5:
-      return "url('/static/images/background.pattern.purple.react.svg')";
+      return `url('${BackgroundPatternPurpleReactSvgUrl}')`;
     case 6:
-      return "url('/static/images/background.pattern.lightBlue.react.svg')";
+      return `url('${BackgroundPatternLightBlueReactSvgUrl}')`;
     case 7:
-      return "url('/static/images/background.pattern.black.react.svg')";
+      return `url('${BackgroundPatternBlackReactSvgUrl}')`;
     default:
-      return "url('/static/images/background.pattern.react.svg')";
+      return `url('${BackgroundPatternReactSvgUrl}')`;
   }
+};
+
+export const getLogoFromPath = (path) => {
+  if (!path || path.indexOf("images/logo/") === -1) return path;
+
+  const name = path.split("/").pop();
+
+  switch (name) {
+    case "aboutpage.svg":
+    case "loginpage.svg":
+      return LoginPageSvgUrl;
+    case "dark_loginpage.svg":
+      return DarkLoginPageSvgUrl;
+    case "leftmenu.svg":
+    case "dark_leftmenu.svg":
+      return LeftMenuSvgUrl;
+    case "dark_aboutpage.svg":
+    case "dark_lightsmall.svg":
+      return DarkLightSmallSvgUrl;
+    case "docseditor.svg":
+      return DocseditorSvgUrl;
+    case "lightsmall.svg":
+      return LightSmallSvgUrl;
+    case "docseditorembed.svg":
+      return DocsEditoRembedSvgUrl;
+    case "favicon.ico":
+      return FaviconIco;
+    default:
+      break;
+  }
+
+  return path;
 };

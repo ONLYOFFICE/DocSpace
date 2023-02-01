@@ -538,7 +538,7 @@ class SharingPanelComponent extends React.Component {
                 <ModalDialog
                   displayType="modal"
                   visible={visible}
-                  withoutCloseButton={true}
+                  isCloseable={false}
                   withoutBodyScroll={true}
                   scale={true}
                   onClose={this.onClose}
@@ -554,7 +554,7 @@ class SharingPanelComponent extends React.Component {
                   <ModalDialog
                     displayType="modal"
                     visible={visible}
-                    withoutCloseButton={true}
+                    isCloseable={false}
                     withoutBodyScroll={true}
                     scale={true}
                     onClose={this.onClose}
@@ -572,7 +572,6 @@ class SharingPanelComponent extends React.Component {
               <ModalDialog
                 displayType="modal"
                 visible={visible}
-                withoutCloseButton={false}
                 withoutBodyScroll={true}
                 scale={true}
                 onClose={this.onClose}
@@ -633,7 +632,6 @@ class SharingPanelComponent extends React.Component {
               <ModalDialog
                 displayType="modal"
                 visible={visible}
-                withoutCloseButton={false}
                 withoutBodyScroll={true}
                 scale={true}
                 onClose={this.onClose}

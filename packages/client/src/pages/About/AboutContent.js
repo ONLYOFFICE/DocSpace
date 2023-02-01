@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import logoPersonalAboutUrl from "PUBLIC_DIR/images/logo_personal_about.svg?url";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -99,9 +101,11 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
-  const logo = !theme.isBase
-    ? whiteLabelLogoUrls[6]?.path.dark
-    : whiteLabelLogoUrls[6]?.path.light;
+  const logo = getLogoFromPath(
+    !theme.isBase
+      ? whiteLabelLogoUrls[6]?.path.dark
+      : whiteLabelLogoUrls[6]?.path.light
+  );
 
   return (
     companyInfoSettingsData && (
@@ -109,7 +113,7 @@ const AboutContent = (props) => {
         <div className="avatar">
           {personal ? (
             <ReactSVG
-              src="/images/logo_personal_about.svg"
+              src={logoPersonalAboutUrl}
               className="logo-theme no-select"
             />
           ) : (

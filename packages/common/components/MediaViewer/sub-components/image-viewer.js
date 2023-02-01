@@ -2,17 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import MediaZoomInIcon from "../../../../../public/images/media.zoomin.react.svg";
-import MediaZoomOutIcon from "../../../../../public/images/media.zoomout.react.svg";
-import MediaRotateLeftIcon from "../../../../../public/images/media.rotateleft.react.svg";
-import MediaRotateRightIcon from "../../../../../public/images/media.rotateright.react.svg";
-import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
-import MediaDownloadIcon from "../../../../../public/images/download.react.svg";
+import MediaZoomInIcon from "PUBLIC_DIR/images/media.zoomin.react.svg";
+import MediaZoomOutIcon from "PUBLIC_DIR/images/media.zoomout.react.svg";
+import MediaRotateLeftIcon from "PUBLIC_DIR/images/media.rotateleft.react.svg";
+import MediaRotateRightIcon from "PUBLIC_DIR/images/media.rotateright.react.svg";
+import MediaDeleteIcon from "PUBLIC_DIR/images/media.delete.react.svg";
+import MediaDownloadIcon from "PUBLIC_DIR/images/download.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import MediaFavoriteIcon from "../../../../../public/images/favorite.react.svg";
+import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
 
-import ViewerSeparator from "../../../../../public/images/viewer.separator.react.svg";
-import MediaShare from "../../../../../public/images/share.react.svg";
+import ViewerSeparator from "PUBLIC_DIR/images/viewer.separator.react.svg";
+import MediaShare from "PUBLIC_DIR/images/share.react.svg";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import DropDown from "@docspace/components/drop-down";
@@ -186,6 +186,7 @@ class ImageViewer extends React.Component {
       isAudio,
       isVideo,
       isPreviewFile,
+      archiveRoom,
       contextModel,
       audioIcon,
       headerIcon,
@@ -213,6 +214,8 @@ class ImageViewer extends React.Component {
           manualX={(right || "-31") + "px"}
         >
           {model.map((item) => {
+            if (item.disabled) return;
+
             const onClick = (e) => {
               onClose();
               onItemClick(e, item);
@@ -377,6 +380,7 @@ class ImageViewer extends React.Component {
           isAudio={isAudio}
           isVideo={isVideo}
           isPreviewFile={isPreviewFile}
+          archiveRoom={archiveRoom}
           audioIcon={audioIcon}
           onSetSelectionFile={onSetSelectionFile}
           onMaskClick={onClose}

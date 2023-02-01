@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import TreeMenu from ".";
 import TreeNode from "./sub-components/tree-node";
-import ExpanderDownIcon from "../public/static/images/expander-down.react.svg";
-import ExpanderRightIcon from "../public/static/images/expander-right.react.svg";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
+import ExpanderDownReactSvg from "PUBLIC_DIR/images/expander-down.react.svg";
+import ExpanderRightReactSvg from "PUBLIC_DIR/images/expander-right.react.svg";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
 
 const treeData = [
   {
@@ -115,7 +115,7 @@ const Template = ({
             title={title}
             key={item.key}
             icon={
-              <CatalogFolderIcon
+              <CatalogFolderReactSvg
                 size="scale"
                 //isfill=true,
                 color="dimgray"
@@ -133,7 +133,7 @@ const Template = ({
         <TreeNode
           key={item.key}
           title={title}
-          icon={React.createElement(CatalogFolderIcon, {
+          icon={React.createElement(CatalogFolderReactSvg, {
             size: "scale",
             //isfill: true,
             color: "dimgray",
@@ -148,9 +148,9 @@ const Template = ({
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon width="8px" color="dimgray" />;
+      return <ExpanderDownReactSvg width="8px" color="dimgray" />;
     } else {
-      return <ExpanderRightIcon width="8px" color="dimgray" />;
+      return <ExpanderRightReactSvg width="8px" color="dimgray" />;
     }
   };
 

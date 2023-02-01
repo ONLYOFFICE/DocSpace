@@ -23,7 +23,7 @@ Source3:        %{product}.rpmlintrc
 
 BuildRequires:  nodejs >= 18.0
 BuildRequires:  yarn
-BuildRequires:  dotnet-sdk-6.0
+BuildRequires:  dotnet-sdk-7.0
 
 BuildRoot:      %_tmppath/%name-%version-%release.%arch
 
@@ -34,6 +34,7 @@ Requires:       %name-clear-events = %version-%release
 Requires:       %name-doceditor = %version-%release
 Requires:       %name-files = %version-%release
 Requires:       %name-files-services = %version-%release
+Requires:       %name-healthchecks = %version-%release
 Requires:       %name-login = %version-%release
 Requires:       %name-migration-runner = %version-%release
 Requires:       %name-notify = %version-%release

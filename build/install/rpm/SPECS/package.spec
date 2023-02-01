@@ -2,7 +2,7 @@
 Summary:        Backup
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release 
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    backup
 Backup
@@ -10,6 +10,7 @@ Backup
 %package        common
 Summary:        Common
 Group:          Applications/Internet
+Requires:       logrotate
 %description    common
 Common
 
@@ -17,7 +18,7 @@ Common
 Summary:        Files-services
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    files-services
 Files-services
@@ -26,7 +27,7 @@ Files-services
 Summary:        Notify
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    notify
 Notify
@@ -35,7 +36,7 @@ Notify
 Summary:        Files
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    files
 Files
@@ -54,7 +55,7 @@ Proxy
 Summary:        Studio-notify
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    studio-notify
 Studio-notify
@@ -63,7 +64,7 @@ Studio-notify
 Summary:        People-server
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    people-server
 People-server
@@ -81,7 +82,7 @@ Socket
 Summary:        Studio
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    studio
 Studio
@@ -90,7 +91,7 @@ Studio
 Summary:        Api
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    api
 Api
@@ -99,7 +100,7 @@ Api
 Summary:        Api-system
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    api-system
 Api-system
@@ -117,7 +118,7 @@ Ssoauth
 Summary:        Clear-events
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    clear-events
 Clear-events
@@ -126,7 +127,7 @@ Clear-events
 Summary:        Backup-background
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    backup-background
 Backup-background
@@ -153,7 +154,7 @@ Doceditor
 Summary:        Migration-runner
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
+Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    migration-runner
 Migration-runner
@@ -166,3 +167,12 @@ Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
 Login
+
+%package        healthchecks
+Summary:        Healthchecks
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-7.0
+AutoReqProv:    no
+%description    healthchecks
+Healthchecks

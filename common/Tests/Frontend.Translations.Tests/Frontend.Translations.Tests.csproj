@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
 
     <Configurations>Debug;Release;SORT</Configurations>
+    <RootNamespace>Frontend.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

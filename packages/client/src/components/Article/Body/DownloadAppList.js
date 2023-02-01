@@ -1,3 +1,8 @@
+﻿import WindowsReactSvgUrl from "PUBLIC_DIR/images/windows.react.svg?url";
+import MacOSReactSvgUrl from "PUBLIC_DIR/images/macOS.react.svg?url";
+import LinuxReactSvgUrl from "PUBLIC_DIR/images/linux.react.svg?url";
+import AndroidReactSvgUrl from "PUBLIC_DIR/images/android.react.svg?url";
+import IOSReactSvgUrl from "PUBLIC_DIR/images/iOS.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
@@ -40,7 +45,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
         <IconButton
           onClick={() => window.open(desktopLink)}
           className="icon-button"
-          iconName="/static/images/windows.react.svg"
+          iconName={WindowsReactSvgUrl}
           size="25"
           isfill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.winHoverColor}
@@ -49,7 +54,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
         <IconButton
           onClick={() => window.open(desktopLink)}
           className="icon-button"
-          iconName="/static/images/macOS.react.svg"
+          iconName={MacOSReactSvgUrl}
           size="25"
           isfill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.macHoverColor}
@@ -58,7 +63,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
         <IconButton
           onClick={() => window.open(desktopLink)}
           className="icon-button"
-          iconName="/static/images/linux.react.svg"
+          iconName={LinuxReactSvgUrl}
           size="25"
           isfill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.linuxHoverColor}
@@ -67,7 +72,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
         <IconButton
           onClick={() => window.open(androidLink)}
           className="icon-button"
-          iconName="/static/images/android.react.svg"
+          iconName={AndroidReactSvgUrl}
           size="25"
           isfill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.androidHoverColor}
@@ -76,7 +81,7 @@ const DownloadAppListContainer = React.memo(({ t, theme }) => {
         <IconButton
           onClick={() => window.open(iosLink)}
           className="icon-button"
-          iconName="/static/images/iOS.react.svg"
+          iconName={IOSReactSvgUrl}
           size="25"
           isfill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.iosHoverColor}

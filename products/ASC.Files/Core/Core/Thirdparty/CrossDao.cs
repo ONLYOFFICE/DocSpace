@@ -32,16 +32,19 @@ internal class CrossDao //Additional SharpBox
     private readonly IServiceProvider _serviceProvider;
     private readonly SetupInfo _setupInfo;
     private readonly FileConverter _fileConverter;
+    private readonly SocketManager _socketManager;
     private readonly ThumbnailSettings _thumbnailSettings;
     public CrossDao(
         IServiceProvider serviceProvider,
         SetupInfo setupInfo,
-            FileConverter fileConverter,
-            ThumbnailSettings thumbnailSettings)
+        FileConverter fileConverter,
+        ThumbnailSettings thumbnailSettings,
+        SocketManager socketManager)
     {
         _serviceProvider = serviceProvider;
         _setupInfo = setupInfo;
         _fileConverter = fileConverter;
+        _socketManager = socketManager;
         _thumbnailSettings = thumbnailSettings;
     }
 
@@ -152,6 +155,11 @@ internal class CrossDao //Additional SharpBox
                              ? toFolder.Id
                              : await toFolderDao.SaveFolderAsync(toFolder1);
 
+        if (toFolder == null)
+        {
+            await _socketManager.CreateFolderAsync(toFolder1);
+        }
+
         var foldersToCopy = await fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId)).ToListAsync();
         var fileIdsToCopy = await fromFileDao.GetFilesAsync(fromConverter(fromFolderId)).ToListAsync();
         Exception copyException = null;
@@ -216,7 +224,10 @@ internal class CrossDao //Additional SharpBox
 
             if (copyException == null)
             {
-                await fromFolderDao.DeleteFolderAsync(fromConverter(fromFolderId));
+                var id = fromConverter(fromFolderId);
+                var folder = await fromFolderDao.GetFolderAsync(id);
+                await fromFolderDao.DeleteFolderAsync(id);
+                await _socketManager.DeleteFolder(folder);
             }
         }
 

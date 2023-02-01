@@ -53,7 +53,7 @@ public class FileMarkerHelper<T>
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
             await fileMarker.ExecMarkFileAsNewAsync(obj, socketManager);

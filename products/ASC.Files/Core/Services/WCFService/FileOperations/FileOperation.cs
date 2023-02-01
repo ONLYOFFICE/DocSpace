@@ -219,7 +219,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             //todo check files> 0 or folders > 0
             CancellationToken = cancellationToken;
 
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
             var (tenantManager, daoFactory, fileSecurity, logger) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
@@ -263,9 +263,9 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         }
     }
 
-    public IServiceScope CreateScope()
+    public AsyncServiceScope CreateScopeAsync()
     {
-        var scope = _serviceProvider.CreateScope();
+        var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(CurrentTenant);
 

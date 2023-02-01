@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
+
 const {
   black,
   white,
@@ -454,6 +456,8 @@ const Base = {
     pressedFillColor: grayLightMid,
 
     focusColor: gray,
+
+    errorColor: "#F21C0E",
   },
 
   // slider: {
@@ -820,7 +824,7 @@ const Base = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px",
+      large: "11px 12px",
     },
   },
 
@@ -1020,7 +1024,7 @@ const Base = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.base.react.svg")`,
+    defaultImage: `url("${AvatarBaseReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2939,6 +2943,9 @@ const Base = {
           departmentColor: gray,
           tooltipColor: lightCumulus,
         },
+        auditTrail: {
+          downloadReportDescriptionColor: gray,
+        },
       },
 
       common: {
@@ -3014,6 +3021,7 @@ const Base = {
 
     wizard: {
       linkColor: "#116d9d",
+      generatePasswordColor: "#657077",
     },
   },
 
@@ -3092,6 +3100,8 @@ const Base = {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
+    errorTextColor: "#F21C0E",
+    descriptionTextColor: "#A3A9AE",
   },
 
   codeInput: {

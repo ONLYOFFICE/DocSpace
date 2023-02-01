@@ -31,7 +31,6 @@ public class FileOperationsManager
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "files_operation";
     private readonly ThumbnailSettings _thumbnailSettings;
-
     private readonly DistributedTaskQueue _tasks;
     private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;

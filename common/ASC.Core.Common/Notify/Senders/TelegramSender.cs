@@ -41,7 +41,7 @@ public class TelegramSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public Task<NoticeSendResult> Send(NotifyMessage m)
+    public async Task<NoticeSendResult> Send(NotifyMessage m)
     {
         if (!string.IsNullOrEmpty(m.Content))
         {
@@ -50,7 +50,7 @@ public class TelegramSender : INotifySender
         }
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var TelegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
             TelegramHelper.SendMessage(m);
         }
@@ -59,6 +59,6 @@ public class TelegramSender : INotifySender
             _logger.ErrorUnexpected(e);
         }
 
-        return Task.FromResult(NoticeSendResult.OK);
+        return await Task.FromResult(NoticeSendResult.OK);
     }
 }

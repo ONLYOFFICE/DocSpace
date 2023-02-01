@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
-import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
+import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import { StyledArticlePaymentAlert } from "../styled-article";
 import styled from "styled-components";
 import { combineUrl } from "@docspace/common/utils";

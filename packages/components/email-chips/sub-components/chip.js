@@ -5,7 +5,7 @@ import IconButton from "../../icon-button";
 import Tooltip from "../../tooltip";
 import { useClickOutside } from "../../utils/useClickOutside.js";
 
-import { DeleteIcon, WarningIcon } from "../svg";
+import { DeleteIconSvgUrl, WarningIconSvgUrl } from "../svg";
 import {
   MAX_EMAIL_LENGTH,
   MAX_EMAIL_LENGTH_WITH_DOTS,
@@ -154,7 +154,7 @@ const Chip = (props) => {
       {!isValid && (
         <div className="warning_icon_wrap" ref={warningRef}>
           <IconButton
-            iconName={WarningIcon}
+            iconName={WarningIconSvgUrl}
             size={12}
             className="warning_icon_wrap warning_icon "
             data-for="group"
@@ -169,7 +169,7 @@ const Chip = (props) => {
         </div>
       )}
       <StyledChipValue>{value?.name || value?.email}</StyledChipValue>
-      <IconButton iconName={DeleteIcon} size={12} onClick={onIconClick} />
+      <IconButton iconName={DeleteIconSvgUrl} size={12} onClick={onIconClick} />
     </StyledChip>
   );
 };

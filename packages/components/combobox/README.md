@@ -6,14 +6,15 @@ Custom combo box input
 
 ```js
 import ComboBox from "@docspace/components/combobox";
-import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
+import NavLogoReactSvg from "PUBLIC_DIR/images/nav.logo.react.svg";
+import CatalogEmployeeReactSvg from "PUBLIC_DIR/images/catalog.employee.react.svg?url";
 ```
 
 ```js
 const options = [
   {
     key: 1,
-    icon: "static/images/catalog.employee.react.svg", // optional item
+    icon: CatalogEmployeeReactSvg, // optional item
     label: "Option 1",
     disabled: false, // optional item
     onClick: clickFunction, // optional item
@@ -89,7 +90,7 @@ const advancedOptions = (
   size="content"
   directionX="right"
 >
-  <NavLogoIcon size="medium" key="comboIcon" />
+  <NavLogoReactSvg size="medium" key="comboIcon" />
 </ComboBox>
 ```
 
@@ -107,7 +108,7 @@ To use Combobox as a toggle button, you must declare it according to the paramet
   displayType="toggle"
   toggleAction={alert("action")}
 >
-  <NavLogoIcon size="medium" key="comboIcon" />
+  <NavLogoReactSvg size="medium" key="comboIcon" />
 </ComboBox>
 ```
 

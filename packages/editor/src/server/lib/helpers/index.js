@@ -13,33 +13,17 @@ import {
   getSettingsFiles,
   // getShareFiles,
 } from "@docspace/common/api/files";
-import pkg from "../../../../package.json";
+import { TenantStatus } from "@docspace/common/constants";
 
-export const getFavicon = (documentType, logoUrls) => {
-  const { homepage } = pkg;
-  let icon = null;
+import { getLogoFromPath } from "@docspace/common/utils";
 
-  switch (documentType) {
-    case "word":
-      icon = "text.ico";
-      break;
-    case "slide":
-      icon = "presentation.ico";
-      break;
-    case "cell":
-      icon = "spreadsheet.ico";
-      break;
-    default:
-      break;
-  }
+export const getFavicon = (logoUrls) => {
+  if (!logoUrls) return null;
 
-  if (!icon && !logoUrls) return null;
-
-  const favicon = icon
-    ? `${homepage}/images/${icon}`
-    : logoUrls[2]?.path?.light;
-
-  return favicon;
+  return getLogoFromPath(logoUrls[2]?.path?.light).replace(
+    "client/",
+    "/doceditor/"
+  );
 };
 
 export const initDocEditor = async (req) => {
@@ -73,20 +57,25 @@ export const initDocEditor = async (req) => {
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
-    [
-      user,
-      settings,
-      filesSettings,
-      versionInfo,
-      appearanceTheme,
-      logoUrls,
-    ] = await Promise.all([
+    const baseSettings = [
       getUser(),
       getSettings(),
-      getSettingsFiles(),
-      getBuildVersion(),
       getAppearanceTheme(),
       getLogoUrls(),
+    ];
+
+    [user, settings, appearanceTheme, logoUrls] = await Promise.all(
+      baseSettings
+    );
+
+    if (settings.tenantStatus === TenantStatus.PortalRestore) {
+      error = "restore-backup";
+      return { error, logoUrls };
+    }
+
+    [filesSettings, versionInfo] = await Promise.all([
+      getSettingsFiles(),
+      getBuildVersion(),
     ]);
 
     const successAuth = !!user;
@@ -118,6 +107,32 @@ export const initDocEditor = async (req) => {
       config.type = type;
     }
 
+    // logoUrls.forEach((logo, index) => {
+    //   logoUrls[index].path.dark = getLogoFromPath(logo.path.dark);
+    //   logoUrls[index].path.light = getLogoFromPath(logo.path.dark);
+    // });
+
+    config.editorConfig.customization.logo.image =
+      config.editorConfig.customization.logo.url +
+      getLogoFromPath(config.editorConfig.customization.logo.image)?.replace(
+        "client/",
+        "doceditor/"
+      );
+
+    config.editorConfig.customization.logo.imageDark =
+      config.editorConfig.customization.logo.url +
+      getLogoFromPath(
+        config.editorConfig.customization.logo.imageDark
+      )?.replace("client/", "doceditor/");
+
+    if (config.editorConfig.customization.customer) {
+      config.editorConfig.customization.customer.logo =
+        config.editorConfig.customization.logo.url +
+        getLogoFromPath(
+          config.editorConfig.customization.customer.logo
+        )?.replace("client/", "doceditor/");
+    }
+
     return {
       config,
       personal,
@@ -137,6 +152,7 @@ export const initDocEditor = async (req) => {
       logoUrls,
     };
   } catch (err) {
+    console.error("initDocEditor failed", err);
     let message = "";
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;

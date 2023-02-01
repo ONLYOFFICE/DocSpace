@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
     ${(props) => props?.fonts}
     font-family: 'Open Sans', sans-serif, Arial;
     font-size: 13px;
+    overscroll-behavior: none;
   }
 
   #root {

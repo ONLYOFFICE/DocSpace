@@ -1,3 +1,5 @@
+const path = require("path");
+
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
@@ -9,6 +11,11 @@ module.exports = {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     fallback: {
       crypto: false,
+    },
+    alias: {
+      PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+      SRC_DIR: path.resolve(__dirname, "../src"),
+      PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
   },
   module: {
@@ -40,7 +47,18 @@ module.exports = {
         type: "asset",
       },
       {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
+      },
+      {
         test: /\.react.svg$/,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",

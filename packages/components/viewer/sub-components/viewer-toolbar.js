@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import Icon, { ActionType } from "./icon";
 
-import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
+import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 
 const ToolbarItem = styled.li`
   height: 48px;
@@ -187,7 +187,7 @@ export default function ViewerToolbar(props) {
     toolbars = deleteToolbarFromKey(toolbars, ["scaleX", "scaleY"]);
   }
 
-  if (props.isPreviewFile) {
+  if (props.isPreviewFile || props.archiveRoom) {
     toolbars = deleteToolbarFromKey(toolbars, [
       "context-menu",
       "context-separator",

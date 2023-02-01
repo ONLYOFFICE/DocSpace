@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -43,7 +44,7 @@ class EmbeddingPanelComponent extends React.Component {
             <StyledHeaderContent isEmbedding={true}>
               <IconButton
                 size="16"
-                iconName="/static/images/arrow.path.react.svg"
+                iconName={ArrowPathReactSvgUrl}
                 onClick={this.onArrowClick}
                 // color={theme.filesPanels.embedding.color}
               />

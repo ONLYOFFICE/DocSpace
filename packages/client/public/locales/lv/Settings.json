@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Šī sadaļa ļauj lietotājiem nodrošināt drošus un ērtus veidus, kā piekļūt portālam.",
   "PortalNameEmpty": "Konta nosaukums ir tukšs",
   "PortalNameIncorrect": "Nepareizs konta nosaukums",
-  "PortalNameLength": "Konta nosaukumam ir jābūt no 6 līdz 50 rakstzīmēm garam",
+  "PortalNameLength": "Konta nosaukumam ir jābūt no {{minLength}} līdz {{maxLength}} rakstzīmēm garam",
   "PortalRenaming": "Portāla pārdēvēšana",
   "PortalRenamingDescription": "Šeit jūs varat mainīt savu portāla adresi.",
   "PortalRenamingLabelText": "Jauns portāla nosaukums",

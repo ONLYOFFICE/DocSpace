@@ -24,10 +24,12 @@ const Dialog = ({
   isCreateDialog,
   createWithoutDialog,
   setCreateWithoutDialog,
+  extension,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
     createWithoutDialog && isCreateDialog && setIsChecked(createWithoutDialog);
@@ -35,7 +37,7 @@ const Dialog = ({
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
-    if (input && value === startValue) input.select();
+    if (input && value === startValue && !isChanged) input.select();
   }, [visible, value]);
 
   useEffect(() => {
@@ -68,6 +70,7 @@ const Dialog = ({
     newValue = newValue.replace(folderFormValidation, "_");
 
     setValue(newValue);
+    setIsChanged(true);
   }, []);
 
   const onFocus = useCallback((e) => {
@@ -84,16 +87,18 @@ const Dialog = ({
   );
 
   const onCancelAction = useCallback((e) => {
+    if (isChecked) {
+      setCreateWithoutDialog(false);
+    }
     onCancel && onCancel(e);
-    setCreateWithoutDialog(false);
   }, []);
 
   const onCloseAction = useCallback(
     (e) => {
-      if (!isDisabled) {
-        onClose && onClose(e);
+      if (!isDisabled && isChecked) {
         setCreateWithoutDialog(false);
       }
+      onClose && onClose(e);
     },
     [isDisabled]
   );
@@ -123,7 +128,7 @@ const Dialog = ({
           onFocus={onFocus}
           isDisabled={isDisabled}
         />
-        {isCreateDialog && (
+        {isCreateDialog && extension && (
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
               label={t("Common:DontAskAgain")}

@@ -142,7 +142,7 @@ public class GoogleCloudStorage : BaseStorage
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         var tempStream = _tempStream.Create();
 
