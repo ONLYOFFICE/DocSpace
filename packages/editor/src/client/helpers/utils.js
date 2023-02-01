@@ -29,7 +29,7 @@ export function loadLanguagePath(homepage, fixedNS = null) {
 
     if (!path) return `/doceditor/locales/${language}/${fixedNS || ns}.json`;
 
-    const isCommonPath = path.indexOf("Common") > -1;
+    const isCommonPath = path?.indexOf("Common") > -1;
 
     if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
       return path.replace("/doceditor/", "/static/");

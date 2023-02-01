@@ -30,7 +30,7 @@ export function loadLanguagePath(homepage: string, fixedNS = null) {
 
     if (!path) return `/login/locales/${language}/${fixedNS || ns}.json`;
 
-    const isCommonPath = path.indexOf("Common") > -1;
+    const isCommonPath = path?.indexOf("Common") > -1;
 
     if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
       return path.replace("/login/", "/static/");
