@@ -3,6 +3,11 @@ import { ReactSVG } from "react-svg";
 import throttle from "lodash/throttle";
 import AvatarEditor from "react-avatar-editor";
 
+import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
+import IconCropperGridSvgUrl from "PUBLIC_DIR/images/icon-cropper-grid.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
+
 import Slider from "../../slider";
 import IconButton from "../../icon-button";
 import StyledImageCropper from "./StyledImageCropper";
@@ -68,10 +73,7 @@ const ImageCropper = ({
   return (
     <StyledImageCropper className="icon_cropper">
       <div className="icon_cropper-crop_area">
-        <ReactSVG
-          className="icon_cropper-grid"
-          src="images/icon-cropper-grid.svg"
-        />
+        <ReactSVG className="icon_cropper-grid" src={IconCropperGridSvgUrl} />
         <AvatarEditor
           ref={setEditorRef}
           image={uploadedFile}
@@ -94,7 +96,7 @@ const ImageCropper = ({
         onClick={handleDeleteImage}
         title={t("Common:Delete")}
       >
-        <ReactSVG src={"images/trash.react.svg"} />
+        <ReactSVG src={TrashReactSvgUrl} />
         <div className="icon_cropper-delete_button-text">
           {t("Common:Delete")}
         </div>
@@ -105,7 +107,7 @@ const ImageCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomOutClick}
-          iconName={"/static/images/zoom-minus.react.svg"}
+          iconName={ZoomMinusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}
@@ -123,7 +125,7 @@ const ImageCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomInClick}
-          iconName={"/static/images/zoom-plus.react.svg"}
+          iconName={ZoomPlusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}

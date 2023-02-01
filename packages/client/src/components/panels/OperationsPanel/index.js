@@ -218,7 +218,7 @@ export default inject(
       ? filesList
       : isCopy
       ? selections
-      : selections.filter((f) => !f.isEditing);
+      : selections.filter((f) => f && !f?.isEditing);
 
     const provider = selections?.find((x) => x?.providerKey);
 

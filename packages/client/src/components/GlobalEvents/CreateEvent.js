@@ -21,7 +21,6 @@ const CreateEvent = ({
   templateId,
   fromTemplate,
   onClose,
-
   setIsLoading,
   createFile,
   createFolder,
@@ -36,7 +35,7 @@ const CreateEvent = ({
 
   isPrivacy,
   isDesktop,
-  editCompleteAction,
+  completeAction,
 
   clearActiveOperations,
   fileCopyAs,
@@ -49,6 +48,7 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
+  createWithoutDialog,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -74,7 +74,14 @@ const CreateEvent = ({
     }
 
     setHeaderTitle(defaultName);
-    setEventDialogVisible(true);
+
+    if (!extension) return setEventDialogVisible(true);
+
+    if (!createWithoutDialog) {
+      setEventDialogVisible(true);
+    } else {
+      onSave(null, title || defaultName);
+    }
 
     return () => {
       setEventDialogVisible(false);
@@ -120,7 +127,7 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(item, type, true))
+        .then(() => completeAction(item, type, true))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
@@ -140,7 +147,7 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((err) => {
             let errorMessage = "";
             if (typeof err === "object") {
@@ -198,10 +205,9 @@ const CreateEvent = ({
             createdFileId = file.id;
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
-
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -237,7 +243,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -267,6 +273,8 @@ const CreateEvent = ({
       onSave={onSave}
       onCancel={onCancel}
       onClose={onCloseAction}
+      isCreateDialog={true}
+      extension={extension}
     />
   );
 };
@@ -294,7 +302,7 @@ export default inject(
 
     const { gallerySelected, setGallerySelected } = oformsStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
 
     const { clearActiveOperations, fileCopyAs } = uploadDataStore;
 
@@ -312,6 +320,8 @@ export default inject(
       setFormCreationInfo,
       eventDialogVisible,
     } = dialogsStore;
+
+    const { createWithoutDialog } = filesStore;
 
     return {
       setEventDialogVisible,
@@ -331,7 +341,7 @@ export default inject(
       isDesktop: isDesktopClient,
       isPrivacy: isPrivacyFolder,
       isTrashFolder: isRecycleBinFolder,
-      editCompleteAction,
+      completeAction,
 
       clearActiveOperations,
       fileCopyAs,
@@ -341,6 +351,8 @@ export default inject(
 
       replaceFileStream,
       setEncryptionAccess,
+
+      createWithoutDialog,
     };
   }
 )(observer(CreateEvent));

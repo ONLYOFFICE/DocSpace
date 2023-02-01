@@ -15,6 +15,7 @@ import {
 import { dataUrlToFile } from "@docspace/common/utils/dataUrlToFile";
 import ImageEditor from "@docspace/components/ImageEditor";
 import AvatarPreview from "@docspace/components/ImageEditor/AvatarPreview";
+import DefaultUserAvatarMax from "PUBLIC_DIR/images/default_user_photo_size_200-200.png";
 
 const StyledModalDialog = styled(ModalDialog)`
   .wrapper-image-editor {
@@ -47,7 +48,7 @@ const AvatarEditorDialog = (props) => {
     updateCreatedAvatar,
   } = props;
   const [avatar, setAvatar] = useState({
-    uploadedFile: profile.avatarMax,
+    uploadedFile: profile.hasAvatar ? profile.avatarMax : DefaultUserAvatarMax,
     x: 0.5,
     y: 0.5,
     zoom: 1,

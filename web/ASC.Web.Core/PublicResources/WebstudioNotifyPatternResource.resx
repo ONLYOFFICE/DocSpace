@@ -1174,8 +1174,8 @@ The link is only valid for 7 days.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>You’re invited to join ${__VirtualRootPath}</value>
   </data>
-	<data name="pattern_change_password_v115" xml:space="preserve">
-		<value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your ONLYOFFICE account? Click the button below to confirm.
 
 $GreenButton
 
@@ -1183,8 +1183,8 @@ The link is valid for 7 days.
 
 Don’t want to change your password? Just ignore this message</value>
   </data>
-	<data name="pattern_personal_change_password_v115" xml:space="preserve">
-		<value>Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Want to change the password on your ONLYOFFICE Personal account? Click the button below to confirm.
 
 $GreenButton 
 
@@ -1528,7 +1528,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
 *#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
 
@@ -1551,7 +1551,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
 *#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
 
@@ -1574,7 +1574,7 @@ ONLYOFFICE Team
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
 *#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
 
@@ -1625,7 +1625,7 @@ ONLYOFFICE Team
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
 *#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
 

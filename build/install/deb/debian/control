@@ -2,7 +2,7 @@ Source: {{product}}
 Section: web
 Priority: optional
 Maintainer: Ascensio System SIA <support@onlyoffice.com>
-Build-Depends: debhelper (>= 10), po-debconf, nodejs (>=18), dotnet-sdk-6.0, yarn
+Build-Depends: debhelper (>= 10), po-debconf, nodejs (>=18), dotnet-sdk-7.0, yarn
 Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
 Architecture: any
@@ -18,6 +18,7 @@ Depends: debconf,
          {{product}}-doceditor(= {{package_header_tag_version}}),
          {{product}}-files (= {{package_header_tag_version}}),
          {{product}}-files-services (= {{package_header_tag_version}}),
+         {{product}}-healthchecks (= {{package_header_tag_version}}),
          {{product}}-login (= {{package_header_tag_version}}),
          {{product}}-migration-runner (= {{package_header_tag_version}}),
          {{product}}-notify (= {{package_header_tag_version}}),
@@ -35,14 +36,14 @@ Description: {{product}}
 
 Package: {{product}}-common
 Architecture: any
-Depends: adduser, ${misc:Depends}, ${shlibs:Depends}
+Depends: adduser, logrotate, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-common
 	{{product}}-common
 
 Package: {{product}}-backup
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-backup
@@ -51,7 +52,7 @@ Description: {{product}}-backup
 Package: {{product}}-files
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-files
@@ -60,7 +61,7 @@ Description: {{product}}-files
 Package: {{product}}-files-services
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-files-services
@@ -69,7 +70,7 @@ Description: {{product}}-files-services
 Package: {{product}}-notify
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-notify
@@ -78,7 +79,7 @@ Description: {{product}}-notify
 Package: {{product}}-people-server
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-people-server
@@ -96,7 +97,7 @@ Description: {{product}}-socket
 Package: {{product}}-studio-notify
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-studio-notify
@@ -105,7 +106,7 @@ Description: {{product}}-studio-notify
 Package: {{product}}-api
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-api
@@ -114,7 +115,7 @@ Description: {{product}}-api
 Package: {{product}}-api-system
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-api-system
@@ -123,7 +124,7 @@ Description: {{product}}-api-system
 Package: {{product}}-studio
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-studio
@@ -147,7 +148,7 @@ Description: {{product}}-ssoauth
 Package: {{product}}-backup-background
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-backup-background
@@ -156,7 +157,7 @@ Description: {{product}}-backup-background
 Package: {{product}}-clear-events
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-clear-events
@@ -165,7 +166,7 @@ Description: {{product}}-clear-events
 Package: {{product}}-migration-runner
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
+ dotnet-sdk-7.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-migration-runner
@@ -197,3 +198,12 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  ${shlibs:Depends}
 Description: {{product}}-login
 	{{product}}-login
+
+Package: {{product}}-healthchecks
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-7.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: {{product}}-healthchecks
+	{{product}}-healthchecks

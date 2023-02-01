@@ -145,6 +145,8 @@ const PeopleTableRow = (props) => {
 
   const isPending = statusType === "pending" || statusType === "disabled";
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const nameColor = isPending
     ? theme.peopleTableRow.pendingNameColor
     : theme.peopleTableRow.nameColor;
@@ -181,11 +183,22 @@ const PeopleTableRow = (props) => {
     return options;
   }, [t, isOwner, isVisitor]);
 
+  const onAbort = () => {
+    setIsLoading(false);
+  };
+
+  const onSuccess = () => {
+    setIsLoading(false);
+  };
+
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [item], t, true);
+      setIsLoading(true);
+      if (!changeUserType(action, [item], onSuccess, onAbort)) {
+        setIsLoading(false);
+      }
     },
-    [item, changeUserType, t]
+    [item, changeUserType]
   );
 
   const getRoomsOptions = React.useCallback(() => {
@@ -246,6 +259,7 @@ const PeopleTableRow = (props) => {
         displaySelectedOption
         modernView
         manualWidth={"fit-content"}
+        isLoading={isLoading}
       />
     );
 

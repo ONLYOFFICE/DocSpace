@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.OneDrive.Sdk;
+
 using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
@@ -366,7 +368,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset);
+        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), offset);
     }
 
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
@@ -1462,34 +1464,44 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1Task = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Select(r => r.TenantId)
+            .Distinct();
 
         await foreach (var q in q1Task.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2Task = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2Task.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2Task = filesDbContext.Security
+            .Where(r => r.TimeStamp > fromTime)
+            .Select(r => r.TenantId)
+            .Distinct();
+
+            await foreach (var q in q2Task.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 
     private const string ThumbnailTitle = "thumb";
+
+    public async Task CopyThumbnailAsync(File<int> fromFile, File<int> toFile, int width, int height)
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var thumnailName = GetThumnailName(width, height);
+
+        await _globalStore.GetStore().CopyAsync(String.Empty, GetUniqFilePath(fromFile, thumnailName), String.Empty, GetUniqFilePath(toFile, thumnailName));
+    }
 
     public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
     {

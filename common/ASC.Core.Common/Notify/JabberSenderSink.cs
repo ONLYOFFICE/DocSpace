@@ -44,7 +44,7 @@ class JabberSenderSink : Sink
         try
         {
             var result = SendResult.OK;
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<JabberSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
 
             if (string.IsNullOrEmpty(m.Reciever))

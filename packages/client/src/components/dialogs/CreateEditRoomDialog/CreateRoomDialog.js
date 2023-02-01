@@ -39,6 +39,7 @@ const CreateRoomDialog = ({
 
   deleteThirdParty,
   fetchThirdPartyProviders,
+  enableThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
@@ -86,6 +87,8 @@ const CreateRoomDialog = ({
       type: newRoomType,
     }));
   };
+
+  const isRoomTitleChanged = roomParams.title.trim() !== "" ? false : true;
 
   const onCreateRoom = async () => {
     if (!roomParams.title.trim()) {
@@ -150,6 +153,7 @@ const CreateRoomDialog = ({
             isDisabled={isLoading}
             isValidTitle={isValidTitle}
             setIsValidTitle={setIsValidTitle}
+            enableThirdParty={enableThirdParty}
           />
         )}
       </ModalDialog.Body>
@@ -164,6 +168,7 @@ const CreateRoomDialog = ({
             primary
             scale
             onClick={onCreateRoom}
+            isDisabled={isRoomTitleChanged}
             isLoading={isLoading}
           />
           <Button

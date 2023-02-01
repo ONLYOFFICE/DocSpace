@@ -45,6 +45,7 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
+  enableThirdParty,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
 
@@ -95,6 +96,7 @@ const SetRoomParams = ({
         isDisabled={isDisabled}
         isValidTitle={isValidTitle}
         errorMessage={t("Common:RequiredField")}
+        isAutoFocussed={true}
       />
 
       <TagInput
@@ -112,7 +114,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {!isEdit && (
+      {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
@@ -149,6 +151,6 @@ const SetRoomParams = ({
   );
 };
 
-export default withTranslation(["CreateEditRoomDialog"])(
+export default withTranslation(["CreateEditRoomDialog", "Translations"])(
   withLoader(SetRoomParams)(<Loaders.SetRoomParamsLoader />)
 );

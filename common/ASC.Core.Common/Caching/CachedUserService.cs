@@ -244,6 +244,11 @@ public class CachedUserService : IUserService, ICachedService
         return user;
     }
 
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        return Service.GetTenantsWithFeeds(from);
+    }
+
     public void RemoveUser(int tenant, Guid id)
     {
         Service.RemoveUser(tenant, id);

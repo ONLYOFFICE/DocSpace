@@ -197,6 +197,7 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
     [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
+    [AllowAnonymous]
     [AllowNotPayment]
     public BackupProgress GetRestoreProgress()
     {

@@ -13,6 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
+import CursorPalmReactSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
@@ -53,7 +54,7 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    "url(/static/images/cursor.palm.react.svg), auto"};
+    `url(${CursorPalmReactSvgUrl}), auto`};
   ${(props) =>
     props.inProgress &&
     css`
@@ -211,6 +212,7 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     checkedProps,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isEdit,
     isActive,
@@ -300,7 +302,7 @@ const SimpleFilesRow = (props) => {
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}

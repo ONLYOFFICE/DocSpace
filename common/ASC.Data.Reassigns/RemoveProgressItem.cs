@@ -67,7 +67,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
     protected override async Task DoJob()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");

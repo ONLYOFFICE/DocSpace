@@ -24,6 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.IO;
+
+using ASC.Common.Web;
+
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Primitives;
+
 namespace ASC.Data.Storage.DiscStorage;
 
 public class StorageHandler
@@ -86,8 +93,9 @@ public class StorageHandler
         var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
         const int bigSize = 5 * 1024 * 1024;
+        var fileSize = await storage.GetFileSizeAsync(_domain, path);
 
-        if (storage.IsSupportInternalUri && bigSize < await storage.GetFileSizeAsync(_domain, path))
+        if (storage.IsSupportInternalUri && bigSize < fileSize)
         {
             var uri = await storage.GetInternalUriAsync(_domain, path, TimeSpan.FromMinutes(15), headers);
 
@@ -134,7 +142,7 @@ public class StorageHandler
 
             context.Response.Headers[toCopy] = h.Substring(toCopy.Length + 1);
         }
-
+                
         try
         {
             context.Response.ContentType = MimeMapping.GetMimeMapping(path);
@@ -149,13 +157,55 @@ public class StorageHandler
             context.Response.Headers["Content-Encoding"] = encoding;
         }
 
-        using (var stream = await storage.GetReadStreamAsync(_domain, path))
+
+        long offset = 0;
+        var length = ProcessRangeHeader(context, fileSize, ref offset);
+
+        context.Response.Headers["Connection"] = "Keep-Alive";
+        context.Response.Headers["Content-Length"] = length.ToString(CultureInfo.InvariantCulture);
+
+        using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
         {
+            var responseBufferingFeature = context.Features.Get<IHttpResponseBodyFeature>();
+            responseBufferingFeature?.DisableBuffering();
+
             await stream.CopyToAsync(context.Response.Body);
         }
 
         await context.Response.Body.FlushAsync();
         await context.Response.CompleteAsync();
+    }
+
+    private long ProcessRangeHeader(HttpContext context, long fullLength, ref long offset)
+    {
+        if (context == null) throw new ArgumentNullException();
+        if (context.Request.Headers["Range"] == StringValues.Empty) return fullLength;
+
+        long endOffset = -1;
+
+        var range = context.Request.Headers["Range"][0].Split(new[] { '=', '-' });
+        offset = Convert.ToInt64(range[1]);
+        if (range.Count() > 2 && !string.IsNullOrEmpty(range[2]))
+        {
+            endOffset = Convert.ToInt64(range[2]);
+        }
+        if (endOffset < 0 || endOffset >= fullLength)
+        {
+            endOffset = fullLength - 1;
+        }
+
+        var length = endOffset - offset + 1;
+
+        if (length <= 0) throw new HttpException(HttpStatusCode.BadRequest, "Wrong Range header");
+
+        if (length < fullLength)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.PartialContent;
+        }
+        context.Response.Headers["Accept-Ranges"] = "bytes";
+        context.Response.Headers["Content-Range"] = string.Format(" bytes {0}-{1}/{2}", offset, endOffset, fullLength);
+
+        return length;
     }
 
     private string GetRouteValue(string name, HttpContext context)

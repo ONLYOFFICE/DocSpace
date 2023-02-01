@@ -8,7 +8,6 @@ const FilesListRow = ({
   index,
   onSelectFile,
   isChecked,
-  theme,
   folderSelection,
   icon,
   item,
@@ -22,7 +21,6 @@ const FilesListRow = ({
   return (
     <StyledRow
       displayType={displayType}
-      theme={theme}
       isChecked={isChecked}
       folderSelection={folderSelection}
       onClick={onFileClick}
@@ -36,7 +34,6 @@ const FilesListRow = ({
       <div className="selection-panel_checkbox">
         {!folderSelection && (
           <RadioButton
-            //theme={theme}
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}

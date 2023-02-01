@@ -5,6 +5,9 @@ import toastr from "@docspace/components/toast/toastr";
 import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
+import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg?url";
+import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
+
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
 import { ShareAccessRights } from "@docspace/common/constants";
@@ -17,8 +20,6 @@ import MembersHelper from "../../helpers/MembersHelper";
 const Members = ({
   t,
   selfId,
-  isOwner,
-  isAdmin,
   selection,
 
   setIsMobileHidden,
@@ -34,6 +35,7 @@ const Members = ({
   roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
+  changeUserType,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -150,7 +152,7 @@ const Members = ({
             id="info_add-user"
             className={"icon"}
             title={t("Common:AddUsers")}
-            iconName="/static/images/person+.react.svg"
+            iconName={PersonPlusReactSvgUrl}
             isFill={true}
             onClick={onClickInviteUsers}
             size={16}
@@ -172,6 +174,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            changeUserType={changeUserType}
           />
         ))}
       </StyledUserList>
@@ -183,7 +186,7 @@ const Members = ({
             <IconButton
               className={"icon"}
               title={t("Common:RepeatInvitation")}
-              iconName="/static/images/e-mail+.react.svg"
+              iconName={EmailPlusReactSvgUrl}
               isFill={true}
               onClick={onRepeatInvitation}
               size={16}
@@ -207,6 +210,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            changeUserType={changeUserType}
           />
         ))}
       </StyledUserList>
@@ -215,7 +219,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogStore,
+    dialogsStore,
+    accessRightsStore,
+  }) => {
     const {
       setIsMobileHidden,
       selectionParentRoom,
@@ -232,8 +243,10 @@ export default inject(
       updateRoomMemberRole,
       resendEmailInvitations,
     } = filesStore;
-    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+    const { id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
+
+    const { changeType: changeUserType } = peopleStore;
 
     return {
       setView,
@@ -248,12 +261,11 @@ export default inject(
       updateRoomMembers,
       setUpdateRoomMembers,
 
-      isOwner,
-      isAdmin,
       selfId,
 
       setInvitePanelOptions,
       resendEmailInvitations,
+      changeUserType,
     };
   }
 )(

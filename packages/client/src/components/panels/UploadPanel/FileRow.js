@@ -113,6 +113,9 @@ const StyledFileRow = styled(Row)`
       css`
         cursor: default;
       `}
+    :hover {
+      cursor: pointer;
+    }
   }
 `;
 class FileRow extends Component {
@@ -359,12 +362,7 @@ export default inject(
       name = splitted[0];
     }
     const { personal, theme } = auth.settingsStore;
-    const {
-      canViewedDocs,
-      isMediaOrImage,
-      getIconSrc,
-      isArchive,
-    } = settingsStore;
+    const { canViewedDocs, getIconSrc, isArchive } = settingsStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -382,7 +380,11 @@ export default inject(
       setCurrentItem,
     } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
-    const isMedia = isMediaOrImage(ext);
+
+    const isMedia =
+      item.fileInfo?.viewAccessability?.ImageView ||
+      item.fileInfo?.viewAccessability?.MediaView;
+
     const isMediaActive =
       playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
 

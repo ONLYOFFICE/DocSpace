@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
 import api from "@docspace/common/api";
+import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const EditRoomEvent = ({
   addActiveItems,
@@ -25,6 +26,9 @@ const EditRoomEvent = ({
   calculateRoomLogoParams,
   uploadRoomLogo,
   setFolder,
+  getFolderIndex,
+  updateFolder,
+
   removeLogoFromRoom,
   addLogoToRoom,
 
@@ -34,7 +38,12 @@ const EditRoomEvent = ({
 
   withPaging,
 
-  reloadSelection,
+  updateEditedSelectedRoom,
+  addDefaultLogoPaths,
+  updateLogoPathsCacheBreaker,
+  removeLogoPaths,
+
+  reloadInfoPanelSelection,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -66,6 +75,21 @@ const EditRoomEvent = ({
     },
   };
 
+  const updateRoom = (oldRoom, newRoom) => {
+    // After rename of room with providerKey, it's id value changes too
+    if (oldRoom.providerKey) {
+      let index = getFolderIndex(oldRoom.id);
+
+      if (index === -1) {
+        index = getFolderIndex(newRoom.id);
+      }
+
+      return updateFolder(index, newRoom);
+    }
+
+    setFolder(newRoom);
+  };
+
   const onSave = async (roomParams) => {
     const editRoomParams = {
       title: roomParams.title || t("Files:NewRoom"),
@@ -85,59 +109,62 @@ const EditRoomEvent = ({
 
       room.isLogoLoading = true;
 
-      for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
+      for (let i = 0; i < newTags.length; i++) {
+        await createTag(newTags[i]);
+      }
+
       room = await addTagsToRoom(room.id, tags);
       room = await removeTagsFromRoom(room.id, removedTags);
 
-      if (!!item.logo.original && !roomParams.icon.uploadedFile)
+      if (!!item.logo.original && !roomParams.icon.uploadedFile) {
         room = await removeLogoFromRoom(room.id);
+      }
 
       if (roomParams.icon.uploadedFile) {
-        await setFolder({
+        updateRoom(item, {
           ...room,
           logo: { big: item.logo.small },
         });
 
         addActiveItems(null, [room.id]);
 
-        await uploadRoomLogo(uploadLogoData).then((response) => {
-          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
-          const img = new Image();
-          img.onload = async () => {
-            const { x, y, zoom } = roomParams.icon;
-            room = await addLogoToRoom(room.id, {
-              tmpFile: response.data,
-              ...calculateRoomLogoParams(img, x, y, zoom),
-            });
+        const response = await uploadRoomLogo(uploadLogoData);
+        const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+        const img = new Image();
+        img.onload = async () => {
+          const { x, y, zoom } = roomParams.icon;
+          room = await addLogoToRoom(room.id, {
+            tmpFile: response.data,
+            ...calculateRoomLogoParams(img, x, y, zoom),
+          });
 
-            if (!withPaging) {
-              setFolder(room);
-            }
-
-            // to update state info panel
-            reloadSelection();
-
-            URL.revokeObjectURL(img.src);
-
-            setActiveFolders([]);
-          };
-          img.src = url;
-        });
+          !withPaging && updateRoom(item, room);
+          reloadInfoPanelSelection();
+          URL.revokeObjectURL(img.src);
+          setActiveFolders([]);
+        };
+        img.src = url;
       } else {
-        if (!withPaging) {
-          setFolder(room);
-        }
-        // to update state info panel
-        reloadSelection();
+        !withPaging && updateRoom(item, room);
+        reloadInfoPanelSelection();
       }
     } catch (err) {
       console.log(err);
     } finally {
-      if (withPaging) {
-        await updateCurrentFolder(null, currentFolderId);
-      }
-      setIsLoading(false);
+      if (withPaging) await updateCurrentFolder(null, currentFolderId);
 
+      if (item.id === currentFolderId) {
+        updateEditedSelectedRoom(editRoomParams.title, tags);
+        if (item.logo.original && !roomParams.icon.uploadedFile) {
+          removeLogoPaths();
+          reloadInfoPanelSelection();
+        } else if (!item.logo.original && roomParams.icon.uploadedFile)
+          addDefaultLogoPaths();
+        else if (item.logo.original && roomParams.icon.uploadedFile)
+          updateLogoPathsCacheBreaker();
+      }
+
+      setIsLoading(false);
       onClose();
     }
   };
@@ -147,7 +174,6 @@ const EditRoomEvent = ({
 
     if (logo) {
       const imgExst = logo.slice(".")[1];
-
       const file = await fetch(logo)
         .then((res) => res.arrayBuffer())
         .then(
@@ -167,7 +193,6 @@ const EditRoomEvent = ({
 
   useEffect(() => {
     setCreateRoomDialogVisible(true);
-
     return () => setCreateRoomDialogVisible(false);
   }, []);
 
@@ -202,6 +227,8 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       setFolder,
+      getFolderIndex,
+      updateFolder,
       addLogoToRoom,
       removeLogoFromRoom,
       addActiveItems,
@@ -209,12 +236,18 @@ export default inject(
     } = filesStore;
 
     const { createTag, fetchTags } = tagsStore;
-    const { id: currentFolderId } = selectedFolderStore;
+    const {
+      id: currentFolderId,
+      updateEditedSelectedRoom,
+      addDefaultLogoPaths,
+      removeLogoPaths,
+      updateLogoPathsCacheBreaker,
+    } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
     const { setCreateRoomDialogVisible } = dialogsStore;
     const { withPaging } = auth.settingsStore;
-    const { reloadSelection } = auth.infoPanelStore;
+    const { reloadSelection: reloadInfoPanelSelection } = auth.infoPanelStore;
     return {
       addActiveItems,
       setActiveFolders,
@@ -230,6 +263,8 @@ export default inject(
 
       calculateRoomLogoParams,
       setFolder,
+      getFolderIndex,
+      updateFolder,
       uploadRoomLogo,
       removeLogoFromRoom,
       addLogoToRoom,
@@ -240,7 +275,12 @@ export default inject(
       withPaging,
       setCreateRoomDialogVisible,
 
-      reloadSelection,
+      updateEditedSelectedRoom,
+      addDefaultLogoPaths,
+      updateLogoPathsCacheBreaker,
+      removeLogoPaths,
+
+      reloadInfoPanelSelection,
     };
   }
 )(observer(EditRoomEvent));

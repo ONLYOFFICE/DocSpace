@@ -52,12 +52,14 @@ public static class Constants
     public const string FilesModule = "files";
     public const string FoldersModule = "folders";
     public const string RoomsModule = "rooms";
+    public const string UsersModule = "users";
 
     #endregion
 
     #region Products
 
     public const string Documents = "documents";
+    public const string People = "people";
 
     #endregion
 
@@ -69,6 +71,7 @@ public static class Constants
     public const string SharedFileItem = "sharedFile";
     public const string FolderItem = "folder";
     public const string SharedFolderItem = "sharedFolder";
+    public const string UserItem = "user";
 
     #endregion
 }

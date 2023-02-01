@@ -16,6 +16,11 @@ import {
   fileCopyAs,
 } from "@docspace/common/api/files";
 import toastr from "@docspace/components/toast/toastr";
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@docspace/components/utils/device";
 class UploadDataStore {
   authStore;
   treeFoldersStore;
@@ -45,6 +50,8 @@ class UploadDataStore {
   isUploading = false;
   isUploadingAndConversion = false;
 
+  isConvertSingleFile = false;
+
   constructor(
     authStore,
     treeFoldersStore,
@@ -66,6 +73,14 @@ class UploadDataStore {
     this.settingsStore = settingsStore;
   }
 
+  removeFiles = (fileIds) => {
+    fileIds.forEach((id) => {
+      this.files = this.files?.filter(
+        (file) => !(file.action === "converted" && file.fileInfo.id === id)
+      );
+    });
+  };
+
   selectUploadedFile = (file) => {
     this.selectedUploadFile = file;
   };
@@ -81,6 +96,10 @@ class UploadDataStore {
         this[key] = uploadData[key];
       }
     }
+  };
+
+  setIsConvertSingleFile = (isConvertSingleFile) => {
+    this.isConvertSingleFile = isConvertSingleFile;
   };
 
   updateUploadedFile = (id, info) => {
@@ -230,9 +249,11 @@ class UploadDataStore {
     const secondConvertingWithPassword = file.hasOwnProperty("password");
     const conversionPositionIndex = file.hasOwnProperty("index");
 
-    const alreadyConverting = this.files.some(
+    let alreadyConverting = this.files.some(
       (item) => item.fileId === file.fileId
     );
+
+    if (this.isConvertSingleFile) alreadyConverting = false;
 
     if (this.converted && !alreadyConverting) {
       this.filesToConversion = [];
@@ -261,6 +282,8 @@ class UploadDataStore {
           this.uploadedFilesHistory.push(file);
       }
     }
+
+    this.setIsConvertSingleFile(false);
   };
 
   getNewPercent = (uploadedSize, indexOfFile) => {
@@ -345,7 +368,35 @@ class UploadDataStore {
       );
       if (historyFile) runInAction(() => (historyFile.inConversion = true));
 
-      const data = await convertFile(fileId, itemPassword);
+      const numberFiles = this.files.filter((f) => f.needConvert).length;
+
+      const res = convertFile(fileId, itemPassword)
+        .then((res) => res)
+        .catch(() => {
+          const error = t("FailedToConvert");
+
+          runInAction(() => {
+            if (file) file.error = error;
+            if (historyFile) historyFile.error = error;
+          });
+
+          if (this.uploaded) {
+            const primaryProgressData = {
+              icon: "file",
+              alert: true,
+            };
+
+            this.primaryProgressDataStore.setPrimaryProgressBarData(
+              numberFiles === 1
+                ? { ...primaryProgressData, ...{ percent: 100 } }
+                : primaryProgressData
+            );
+          }
+
+          return null;
+        });
+
+      const data = await res;
 
       if (data && data[0]) {
         let progress = data[0].progress;
@@ -396,7 +447,15 @@ class UploadDataStore {
           }
 
           const percent = this.getConversationPercent(index + 1);
-          this.setConversionPercent(percent);
+
+          if (
+            numberFiles === 1 &&
+            !(isMobile || isMobileUtils() || isTabletUtils())
+          ) {
+            this.setConversionPercent(progress);
+          } else {
+            this.setConversionPercent(percent);
+          }
         }
 
         if (progress === 100) {
@@ -693,9 +752,9 @@ class UploadDataStore {
     fileSize,
     indexOfFile,
     file,
-    path
+    path,
+    t
   ) => {
-    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (
@@ -764,7 +823,7 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length || this.converted) {
         this.filesToConversion.push(currentFile);
-        this.startConversion();
+        this.startConversion(t);
       } else {
         this.filesToConversion.push(currentFile);
       }
@@ -897,7 +956,8 @@ class UploadDataStore {
           fileSize,
           indexOfFile,
           file,
-          path
+          path,
+          t
         );
       })
       .catch((error) => {
@@ -1023,9 +1083,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "duplicate" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, true, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -1061,9 +1127,15 @@ class UploadDataStore {
         const data = res[0] ? res[0] : null;
         const pbData = { icon: "move" };
 
-        return this.loopFilesOperations(data, pbData).then(() =>
-          this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
-        );
+        return this.loopFilesOperations(data, pbData)
+          .then(() =>
+            this.moveToCopyTo(destFolderId, pbData, false, fileIds, folderIds)
+          )
+          .finally(async () => {
+            //to update the status of trashIsEmpty filesStore
+            if (this.treeFoldersStore.isRecycleBinFolder)
+              await this.filesStore.getIsEmptyTrash();
+          });
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -1080,9 +1152,7 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
 
     return fileCopyAs(fileId, title, folderId, enableExternalExt, password)
-      .then(() => {
-        fetchFiles(folderId, filter, true, true);
-      })
+      .then(() => fetchFiles(folderId, filter, true, true))
       .catch((err) => {
         return Promise.reject(err);
       });

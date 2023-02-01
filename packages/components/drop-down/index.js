@@ -242,7 +242,13 @@ class DropDown extends React.PureComponent {
   };
 
   renderDropDown() {
-    const { maxHeight, children, showDisabledItems, theme } = this.props;
+    const {
+      maxHeight,
+      children,
+      showDisabledItems,
+      theme,
+      isMobileView,
+    } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
     let cleanChildren = children;
@@ -268,6 +274,7 @@ class DropDown extends React.PureComponent {
         manualY={manualY}
         isExternalLink={this.props.isExternalLink}
         isPersonal={this.props.isPersonal}
+        isMobileView={isMobileView}
         {...dropDownMaxHeightProp}
       >
         {maxHeight ? (

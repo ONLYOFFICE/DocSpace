@@ -1,3 +1,13 @@
+﻿import FavoritesReactSvgUrl from "PUBLIC_DIR/images/favorites.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
+import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/downloadAs.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
+import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
+import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import {
   checkFileConflicts,
   deleteFile,
@@ -45,6 +55,7 @@ class FilesActionStore {
   itemOpenLocation = null;
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
+  isGroupMenuBlocked = false;
 
   constructor(
     authStore,
@@ -282,6 +293,7 @@ class FilesActionStore {
 
       try {
         this.filesStore.setOperationAction(true);
+        this.setGroupMenuBlocked(true);
         await removeFiles(folderIds, fileIds, deleteAfter, immediately)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
@@ -312,6 +324,7 @@ class FilesActionStore {
             } else {
               this.updateFilesAfterDelete(folderIds);
               this.filesStore.removeFiles(fileIds, folderIds, showToast);
+              this.uploadDataStore.removeFiles(fileIds);
             }
 
             if (currentFolderId) {
@@ -337,6 +350,7 @@ class FilesActionStore {
         return toastr.error(err.message ? err.message : err);
       } finally {
         this.filesStore.setOperationAction(false);
+        this.setGroupMenuBlocked(false);
       }
     }
   };
@@ -550,16 +564,18 @@ class FilesActionStore {
       this.dialogsStore.setIsFolderActions(false);
     }
 
-    return this.downloadFiles(fileIds, folderIds, label);
+    this.setGroupMenuBlocked(true);
+    return this.downloadFiles(fileIds, folderIds, label).finally(() =>
+      this.setGroupMenuBlocked(false)
+    );
   };
 
-  editCompleteAction = async (selectedItem, type, isFolder = false) => {
-    if (type === FileAction.Create) {
-      this.filesStore.addFile(selectedItem, isFolder);
-    }
-
-    if (type === FileAction.Create || type === FileAction.Rename) {
-      type === FileAction.Rename &&
+  completeAction = async (selectedItem, type, isFolder = false) => {
+    switch (type) {
+      case FileAction.Create:
+        this.filesStore.addItem(selectedItem, isFolder);
+        break;
+      case FileAction.Rename:
         this.onSelectItem(
           {
             id: selectedItem.id,
@@ -567,6 +583,9 @@ class FilesActionStore {
           },
           false
         );
+        break;
+      default:
+        break;
     }
   };
 
@@ -605,7 +624,7 @@ class FilesActionStore {
         } else {
           setSelection([item]);
           setHotkeyCaret(null);
-          setHotkeyCaretStart(null);
+          setHotkeyCaretStart(item);
         }
       } else if (
         isSelected &&
@@ -614,7 +633,7 @@ class FilesActionStore {
         !isSingleMenu
       ) {
         setHotkeyCaret(null);
-        setHotkeyCaretStart(null);
+        setHotkeyCaretStart(item);
       } else {
         setSelected("none");
         setBufferSelection(item);
@@ -708,6 +727,7 @@ class FilesActionStore {
       const items = Array.isArray(itemId) ? itemId : [itemId];
       addActiveItems(null, items);
 
+      this.setGroupMenuBlocked(true);
       return removeFiles(items, [], true, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
@@ -721,7 +741,10 @@ class FilesActionStore {
               ? translations?.successRemoveRooms
               : translations?.successRemoveRoom
           )
-        );
+        )
+        .finally(() => {
+          this.setGroupMenuBlocked(false);
+        });
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId)
@@ -955,6 +978,7 @@ class FilesActionStore {
 
     switch (action) {
       case "archive":
+        this.setGroupMenuBlocked(true);
         return moveToFolder(archiveRoomsId, items)
           .then(async (res) => {
             const lastResult = res && res[res.length - 1];
@@ -968,7 +992,20 @@ class FilesActionStore {
 
             console.log(pbData.label, { data, res });
 
-            await this.uploadDataStore.loopFilesOperations(data, pbData);
+            const operationData = await this.uploadDataStore.loopFilesOperations(
+              data,
+              pbData
+            );
+
+            if (
+              !operationData ||
+              operationData.error ||
+              !operationData.finished
+            ) {
+              return Promise.reject(
+                operationData?.error ? operationData.error : ""
+              );
+            }
 
             if (!isRoomsFolder) {
               setSelectedFolder(roomsFolder);
@@ -997,8 +1034,12 @@ class FilesActionStore {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
-          .finally(() => clearActiveOperations(null, items));
+          .finally(() => {
+            clearActiveOperations(null, items);
+            this.setGroupMenuBlocked(false);
+          });
       case "unarchive":
+        this.setGroupMenuBlocked(true);
         return moveToFolder(myRoomsId, items)
           .then(async (res) => {
             const lastResult = res && res[res.length - 1];
@@ -1037,7 +1078,10 @@ class FilesActionStore {
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
-          .finally(() => clearActiveOperations(null, items));
+          .finally(() => {
+            clearActiveOperations(null, items);
+            this.setGroupMenuBlocked(false);
+          });
       default:
         return;
     }
@@ -1101,9 +1145,13 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
+      setHotkeyCaret,
+      setHotkeyCaretStart,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
+    setHotkeyCaret(null);
+    setHotkeyCaretStart(file);
 
     if (checked) {
       selectFile(file);
@@ -1450,6 +1498,7 @@ class FilesActionStore {
     });
 
     try {
+      this.setGroupMenuBlocked(true);
       await this.deleteItemOperation(false, itemId, translations, true);
 
       const id = Array.isArray(itemId) ? itemId : [itemId];
@@ -1464,6 +1513,8 @@ class FilesActionStore {
       });
       setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
+    } finally {
+      this.setGroupMenuBlocked(false);
     }
   };
 
@@ -1492,7 +1543,7 @@ class FilesActionStore {
             id: "menu-show-info",
             key: "show-info",
             label: t("Common:Info"),
-            iconUrl: "/static/images/info.outline.react.svg",
+            iconUrl: InfoOutlineReactSvgUrl,
             onClick: this.onShowInfoPanel,
           };
       case "copy":
@@ -1502,7 +1553,7 @@ class FilesActionStore {
             id: "menu-copy",
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
-            iconUrl: "/static/images/copyTo.react.svg",
+            iconUrl: CopyToReactSvgUrl,
           };
 
       case "download":
@@ -1515,7 +1566,7 @@ class FilesActionStore {
               this.downloadAction(
                 t("Translations:ArchivingData")
               ).catch((err) => toastr.error(err)),
-            iconUrl: "/static/images/download.react.svg",
+            iconUrl: DownloadReactSvgUrl,
           };
 
       case "downloadAs":
@@ -1525,7 +1576,7 @@ class FilesActionStore {
             id: "menu-download-as",
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
-            iconUrl: "/static/images/downloadAs.react.svg",
+            iconUrl: DownloadAsReactSvgUrl,
           };
 
       case "moveTo":
@@ -1535,14 +1586,14 @@ class FilesActionStore {
             id: "menu-move-to",
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
-            iconUrl: "/static/images/move.react.svg",
+            iconUrl: MoveReactSvgUrl,
           };
       case "pin":
         return {
           id: "menu-pin",
           key: "pin",
           label: t("Pin"),
-          iconUrl: "/static/images/pin.react.svg",
+          iconUrl: PinReactSvgUrl,
           onClick: () => this.pinRooms(t),
           disabled: false,
         };
@@ -1551,7 +1602,7 @@ class FilesActionStore {
           id: "menu-unpin",
           key: "unpin",
           label: t("Unpin"),
-          iconUrl: "/static/images/unpin.react.svg",
+          iconUrl: UnpinReactSvgUrl,
           onClick: () => this.unpinRooms(t),
           disabled: false,
         };
@@ -1562,7 +1613,7 @@ class FilesActionStore {
             id: "menu-archive",
             key: "archive",
             label: t("Archived"),
-            iconUrl: "/static/images/room.archive.svg",
+            iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,
           };
@@ -1573,7 +1624,7 @@ class FilesActionStore {
             id: "menu-unarchive",
             key: "unarchive",
             label: t("Common:Restore"),
-            iconUrl: "images/subtract.react.svg",
+            iconUrl: MoveReactSvgUrl,
             onClick: () => this.archiveRooms("unarchive"),
             disabled: false,
           };
@@ -1584,7 +1635,7 @@ class FilesActionStore {
             id: "menu-delete-room",
             label: t("Common:Delete"),
             onClick: () => this.deleteRooms(t),
-            iconUrl: "/static/images/delete.react.svg",
+            iconUrl: DeleteReactSvgUrl,
           };
 
       case "delete":
@@ -1610,7 +1661,7 @@ class FilesActionStore {
                 );
               }
             },
-            iconUrl: "/static/images/delete.react.svg",
+            iconUrl: DeleteReactSvgUrl,
           };
     }
   };
@@ -1733,7 +1784,7 @@ class FilesActionStore {
       .set("delete", {
         label: t("RemoveFromFavorites"),
         alt: t("RemoveFromFavorites"),
-        iconUrl: "images/favorites.react.svg",
+        iconUrl: FavoritesReactSvgUrl,
         onClick: () => {
           const items = selection.map((item) => item.id);
           this.setFavoriteAction("remove", items)
@@ -1764,7 +1815,7 @@ class FilesActionStore {
         id: "menu-restore",
         label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
-        iconUrl: "/static/images/move.react.svg",
+        iconUrl: MoveReactSvgUrl,
       })
       .set("delete", deleteOption)
       .set("showInfo", showInfo);
@@ -1862,7 +1913,7 @@ class FilesActionStore {
               )
             : null;
 
-        return openDocEditor(id, providerKey, tab);
+        return openDocEditor(id, providerKey, tab, null, !canWebEdit);
       }
 
       if (isMediaOrImage) {
@@ -1891,6 +1942,10 @@ class FilesActionStore {
       true,
       false
     ).finally(() => setIsLoading(false));
+  };
+
+  setGroupMenuBlocked = (blocked) => {
+    this.isGroupMenuBlocked = blocked;
   };
 }
 

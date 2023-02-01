@@ -1,3 +1,7 @@
+﻿import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import UpSvgUrl from "PUBLIC_DIR/images/up.svg?url";
+import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { withTranslation } from "react-i18next";
@@ -26,6 +30,7 @@ const EmptyFolderContainer = ({
   tReady,
   isLoadedFetchFiles,
   viewAs,
+  setIsLoadedEmptyPage,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -36,9 +41,20 @@ const EmptyFolderContainer = ({
   };
 
   React.useEffect(() => {
+    if (isLoadedFetchFiles && tReady) {
+      setIsLoadedEmptyPage(true);
+    } else {
+      setIsLoadedEmptyPage(false);
+    }
+  }, [isLoadedFetchFiles, tReady]);
+
+  React.useEffect(() => {
     setIsEmptyPage(true);
 
-    return () => setIsEmptyPage(false);
+    return () => {
+      setIsEmptyPage(false);
+      setIsLoadedEmptyPage(false);
+    };
   }, []);
 
   const onInviteUsersClick = () => {
@@ -52,7 +68,7 @@ const EmptyFolderContainer = ({
       <div className="empty-folder_container-links">
         <ReactSVG
           className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+          src={PlusSvgUrl}
           data-format="docx"
           onClick={onCreate}
         />
@@ -76,7 +92,7 @@ const EmptyFolderContainer = ({
         <ReactSVG
           className="empty-folder_container_plus-image"
           onClick={onCreate}
-          src="images/plus.svg"
+          src={PlusSvgUrl}
         />
         <Link {...linkStyles} onClick={onCreate}>
           {t("Folder")}
@@ -96,7 +112,7 @@ const EmptyFolderContainer = ({
               <ReactSVG
                 className="empty-folder_container_plus-image"
                 onClick={onInviteUsersClick}
-                src="images/plus.svg"
+                src={PlusSvgUrl}
               />
               <Link onClick={onInviteUsersClick} {...linkStyles}>
                 {t("InviteUsersInRoom")}
@@ -110,8 +126,8 @@ const EmptyFolderContainer = ({
         <div className="empty-folder_container-links">
           <ReactSVG
             className="empty-folder_container_up-image"
+            src={UpSvgUrl}
             onClick={onBackToParentFolder}
-            src="images/up.svg"
           />
           <Link onClick={onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
@@ -136,11 +152,7 @@ const EmptyFolderContainer = ({
           ? t("EmptyFolderDecription")
           : t("EmptyFolderDescriptionUser")
       }
-      imageSrc={
-        isRooms
-          ? "images/empty_screen_corporate.svg"
-          : "/static/images/empty_screen_alt.svg"
-      }
+      imageSrc={isRooms ? EmptyScreenCorporateSvgUrl : EmptyScreenAltSvgUrl}
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
@@ -161,6 +173,7 @@ export default inject(
       setIsEmptyPage,
       isLoadedFetchFiles,
       viewAs,
+      setIsLoadedEmptyPage,
     } = filesStore;
     const {
       navigationPath,
@@ -198,6 +211,7 @@ export default inject(
       folderId,
       isLoadedFetchFiles,
       viewAs,
+      setIsLoadedEmptyPage,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import DefaultUserPhotoSize32PngUrl from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
@@ -16,6 +17,7 @@ class UsersStore {
   users = [];
   providers = [];
   accountsIsIsLoading = false;
+  operationRunning = false;
 
   constructor(peopleStore, authStore) {
     this.peopleStore = peopleStore;
@@ -61,6 +63,10 @@ class UsersStore {
 
   setProviders = (providers) => {
     this.providers = providers;
+  };
+
+  setOperationRunning = (operationRunning) => {
+    this.operationRunning = operationRunning;
   };
 
   employeeWrapperToMemberModel = (profile) => {
@@ -388,9 +394,7 @@ class UsersStore {
       status
     );
 
-    const currentAvatar = hasAvatar
-      ? avatar
-      : "/images/default_user_photo_size_32-32.png";
+    const currentAvatar = hasAvatar ? avatar : DefaultUserPhotoSize32PngUrl;
 
     return {
       id,

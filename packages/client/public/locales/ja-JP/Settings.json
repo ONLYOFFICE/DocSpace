@@ -72,7 +72,7 @@
   "PortalAccessSubTitle": "このセクションでは、ユーザーがポータルにアクセスするための安全で便利な方法を提供することができます。",
   "PortalNameEmpty": "アカウント名が空です。",
   "PortalNameIncorrect": "アカウント名が無効です。",
-  "PortalNameLength": "アカウント名は6～50文字がある必要です。",
+  "PortalNameLength": "アカウント名は{{minLength}}～{{maxLength}}文字がある必要です。",
   "PortalRenaming": "ポータル改名",
   "PortalRenamingDescription": "ここではポータルアドレスを変更できます。",
   "PortalRenamingLabelText": "新のポータル名",

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.RegularExpressions;
-
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
 [Scope]
@@ -37,13 +35,16 @@ public class MigrationCreator
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
+    private readonly IMapper _mapper;
 
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
     private string _userName;
     private string _mail;
     private string _toRegion;
-    private int _tenant;
+    private string _toAlias;
+    private string _fromAlias;
+    private int _fromTenantId;
     private readonly object _locker = new object();
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
@@ -55,6 +56,13 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
+    private readonly List<ModuleName> _namesModulesForAlreadyExistPortal = new List<ModuleName>()
+    {
+        ModuleName.Core,
+        ModuleName.Files,
+        ModuleName.Files2,
+    };
+
     public string NewAlias { get; private set; }
 
     public MigrationCreator(
@@ -63,7 +71,8 @@ public class MigrationCreator
         DbFactory dbFactory,
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
-        ModuleProvider moduleProvider)
+        ModuleProvider moduleProvider,
+        IMapper mapper)
     {
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
@@ -71,13 +80,15 @@ public class MigrationCreator
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
+        _mapper = mapper;
     }
 
-    public string Create(int tenant, string userName, string mail, string toRegion)
+    public string Create(string fromAlias, string userName, string mail, string toRegion, string toAlias)
     {
-        Init(tenant, userName, mail, toRegion);
+        Init(fromAlias, userName, mail, toRegion, toAlias);
 
         var id = GetUserId();
+        CheckCountManager();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
@@ -88,49 +99,116 @@ public class MigrationCreator
         return fileName;
     }
 
-    private void Init(int tenant, string userName, string mail, string toRegion)
+    private void Init(string fromAlias, string userName, string mail, string toRegion, string toAlias)
     {
-        _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
-
         _pathToSave = "";
         _toRegion = toRegion;
         _userName = userName;
         _mail = mail;
-        _tenant = tenant;
+        _fromAlias = fromAlias;
+        _toAlias = toAlias;
+
+        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>();
+        var tenant = dbContextTenant.Tenants.SingleOrDefault(q => q.Alias == _fromAlias);
+
+        if (tenant == null)
+        {
+            throw new ArgumentException("tenant was not found");
+        }
+        _fromTenantId = tenant.Id;
+
+        _modules = string.IsNullOrEmpty(_toAlias)
+            ? _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList()
+            : _moduleProvider.AllModules.Where(m => _namesModulesForAlreadyExistPortal.Contains(m.ModuleName)).ToList();
     }
 
     private Guid GetUserId()
     {
         try
         {
-            var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
+            using var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
             User user = null;
             if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail)) 
             {
                 if (string.IsNullOrEmpty(_userName))
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.Email == _mail);
                     _userName = user.UserName;
                 }
                 else
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName);
                 }
             }
             else
             {
-                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+            }
+            if (!string.IsNullOrEmpty(_toAlias)) 
+            {
+                using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+                using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
+                var tenant = dbContextTenant.Tenants.SingleOrDefault(t => t.Alias == _toAlias);
+                if (tenant == null)
+                {
+                    throw new ArgumentException("tenant was not found");
+                }
+                else
+                {
+                    if (userDbContextToregion.Users.Any(q => q.Tenant == tenant.Id && q.UserName == _userName || q.Email == _mail))
+                    {
+                        throw new ArgumentException("username already exist in the portal");
+                    }
+                }
             }
             return user.Id;
         }
+        catch (ArgumentException e)
+        {
+            throw e;
+        }
         catch (Exception)
         {
-            throw new Exception("username was not found");
+            throw new ArgumentException("username was not found");
         }
     }
 
+    private void CheckCountManager()
+    {
+        if (!string.IsNullOrEmpty(_toAlias)) {
+            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+            var tenant = dbContextTenant.Tenants.SingleOrDefault(t => t.Alias == _toAlias);
+
+            using var coreDbContext = _dbFactory.CreateDbContext<CoreDbContext>(_toRegion);
+            var qouta = coreDbContext.Quotas
+                 .Where(r => r.Tenant == tenant.Id)
+                 .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
+                 .SingleOrDefault();
+
+            using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
+            var usersCount = userDbContextToregion.Users
+                .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new {u, ug})
+                .Where(q=> q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
+            if (usersCount > qouta.CountRoomAdmin)
+            {
+                throw new ArgumentException("user count exceed");
+            }
+        }
+    }
+
+
     private void DoMigrationDb(Guid id, IDataWriteOperator writer)
     {
+        if (!string.IsNullOrEmpty(_toAlias))
+        {
+            using (var connection = _dbFactory.OpenConnection())
+            {
+                var tenantsModule = _moduleProvider.AllModules.Single(q => q.ModuleName == ModuleName.Tenants);
+                var coreUserTable = tenantsModule.Tables.Single(q => q.Name == "core_user");
+                ArhiveTable(coreUserTable, writer, tenantsModule, connection, id);
+            }
+        }
+
         foreach (var module in _modules)
         {
             var tablesToProcess = module.Tables.Where(t => t.InsertMethod != InsertMethod.None).ToList();
@@ -143,55 +221,68 @@ public class MigrationCreator
                     {
                         continue;
                     }
-
-                    Console.WriteLine($"backup table {table.Name}");
-                    using (var data = new DataTable(table.Name))
-                    {
-                        ActionInvoker.Try(
-                            state =>
-                            {
-                                data.Clear();
-                                int counts;
-                                var offset = 0;
-                                do
-                                {
-                                    var t = (TableInfo)state;
-                                    var dataAdapter = _dbFactory.CreateDataAdapter();
-                                    dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _tenant, t, _limit, offset, id).WithTimeout(600);
-                                    counts = ((DbDataAdapter)dataAdapter).Fill(data);
-                                    offset += _limit;
-                                } while (counts == _limit);
-
-                            },
-                            table,
-                            maxAttempts: 5,
-                            onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
-
-                        foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
-                        {
-                            col.DateTimeMode = DataSetDateTime.Unspecified;
-                        }
-
-                        module.PrepareData(data);
-
-                        if (data.TableName == "tenants_tenants")
-                        {
-                            ChangeAlias(data);
-                            ChangeName(data);
-                        }
-
-                        using (var file = _tempStream.Create())
-                        {
-                            data.WriteXml(file, XmlWriteMode.WriteSchema);
-                            data.Clear();
-
-                            writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
-                        }
-                    }
+                    ArhiveTable(table, writer, module, connection, id);
                 }
             }
         }
+    }
 
+    private void ArhiveTable(TableInfo table, IDataWriteOperator writer, IModuleSpecifics module, DbConnection connection, Guid id)
+    {
+        Console.WriteLine($"backup table {table.Name}");
+        using (var data = new DataTable(table.Name))
+        {
+            ActionInvoker.Try(
+                state =>
+                {
+                    data.Clear();
+                    int counts;
+                    var offset = 0;
+                    do
+                    {
+                        var t = (TableInfo)state;
+                        var dataAdapter = _dbFactory.CreateDataAdapter();
+                        dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _fromTenantId, t, _limit, offset, id).WithTimeout(600);
+                        counts = ((DbDataAdapter)dataAdapter).Fill(data);
+                        offset += _limit;
+                    } while (counts == _limit);
+
+                },
+                table,
+                maxAttempts: 5,
+                onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
+
+            foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
+            {
+                col.DateTimeMode = DataSetDateTime.Unspecified;
+            }
+
+            module.PrepareData(data);
+
+            if (data.TableName == "tenants_tenants")
+            {
+                ChangeAlias(data);
+                ChangeName(data);
+            }
+
+            if (data.TableName == "files_bunch_objects")
+            {
+                ClearCommonBunch(data);
+            }
+
+            WriteEnrty(data, writer, module);
+        }
+    }
+
+    private void WriteEnrty(DataTable data, IDataWriteOperator writer, IModuleSpecifics module)
+    {
+        using (var file = _tempStream.Create())
+        {
+            data.WriteXml(file, XmlWriteMode.WriteSchema);
+            data.Clear();
+
+            writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
+        }
     }
 
     private void ChangeAlias(DataTable data)
@@ -221,6 +312,7 @@ public class MigrationCreator
                 {
                     NewAlias = $"DocSpace{NewAlias}";
                 }
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -233,6 +325,8 @@ public class MigrationCreator
                 {
                     NewAlias = NewAlias + 1;
                 }
+
+                Console.WriteLine(ex.Message);
             }
         }
         Console.WriteLine($"Alias is - {NewAlias}");
@@ -257,6 +351,18 @@ public class MigrationCreator
         data.Rows[0]["name"] = "";
     }
 
+    private void ClearCommonBunch(DataTable data)
+    {
+        for(var i = 0; i < data.Rows.Count; i++)
+        {
+            if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
+            {
+                data.Rows.RemoveAt(i);
+                i--;
+            }
+        }
+    }
+
     private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         Console.WriteLine($"start backup storage");
@@ -266,7 +372,7 @@ public class MigrationCreator
             Console.WriteLine($"start backup fileGroup: {group.Key}");
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_tenant, group.Key);
+                var storage = _storageFactory.GetStorage(_fromTenantId, group.Key);
                 var file1 = file;
                 ActionInvoker.Try(state =>
                 {
@@ -307,9 +413,9 @@ public class MigrationCreator
 
         var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
 
-        var store = _storageFactory.GetStorage(_tenant, module);
+        var store = _storageFactory.GetStorage(_fromTenantId, module);
 
-        var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _tenant).ToList();
+        var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _fromTenantId).ToList();
 
         var tasks = new List<Task>(20);
         foreach (var dbFile in dbFiles)
@@ -331,7 +437,7 @@ public class MigrationCreator
     private async Task FindFiles(List<BackupFileInfo> list, IDataStore store, DbFile dbFile, string module)
     {
         var files = await store.ListFilesRelativeAsync(string.Empty, $"\\{GetUniqFileDirectory(dbFile.Id)}", "*.*", true)
-                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _tenant))
+                 .Select(path => new BackupFileInfo(string.Empty, module, $"{GetUniqFileDirectory(dbFile.Id)}\\{path}", _fromTenantId))
                  .ToListAsync();
 
         lock (_locker)

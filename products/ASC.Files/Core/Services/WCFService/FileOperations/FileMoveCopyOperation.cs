@@ -189,7 +189,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             return;
         }
 
-        var needToMark = new List<FileEntry<TTo>>();
+        var needToMark = new List<FileEntry>();
 
         var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
         var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
@@ -200,13 +200,20 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var ntm = needToMark.Distinct();
         foreach (var n in ntm)
         {
-            await fileMarker.MarkAsNewAsync(n);
+            if (n is FileEntry<T> entry1)
+            {
+                await fileMarker.MarkAsNewAsync(entry1);
+            }
+            else if (n is FileEntry<TTo> entry2)
+            {
+                await fileMarker.MarkAsNewAsync(entry2);
+            }
         }
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
+    private async Task<List<FileEntry>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
     {
-        var needToMark = new List<FileEntry<TTo>>();
+        var needToMark = new List<FileEntry>();
 
         if (folderIds.Count == 0)
         {
@@ -217,6 +224,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var (filesMessageService, fileMarker, _, _, _) = scopeClass;
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
         var countRoomChecker = scope.ServiceProvider.GetRequiredService<CountRoomChecker>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
         var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
@@ -230,6 +238,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
 
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+            var isThirdPartyRoom = isRoom && folder.ProviderEntry;
 
             if (folder == null)
             {
@@ -322,6 +331,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     await FolderDao.DeleteFolderAsync(folder.Id);
 
+                                    await socketManager.DeleteFolder(folder);
+
                                     if (ProcessedFolder(folderId))
                                     {
                                         sb.Append($"folder_{newFolder.Id}{SplitChar}");
@@ -396,44 +407,50 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                             TTo newFolderId = default;
 
-                            if (isRoom && folder.ProviderEntry)
+                            if (isThirdPartyRoom)
                             {
                                 await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, toFolder.FolderType);
-                                newFolderId = (TTo)Convert.ChangeType(folder, typeof(TTo));
                             }
                             else
                             {
-                                if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
+                                try
                                 {
-                                    await _semaphore.WaitAsync();
-                                    await countRoomChecker.CheckAppend();
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                    _semaphore.Release();
-                                }
-                                else if (isRoom && toFolder.FolderType == FolderType.Archive)
-                                {
-                                    await _semaphore.WaitAsync();
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
-                                    if (pins.Count > 0)
+                                    if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
                                     {
-                                        await TagDao.RemoveTags(pins);
+                                        await _semaphore.WaitAsync();
+                                        await countRoomChecker.CheckAppend();
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     }
-                                    _semaphore.Release();
-
+                                    else if (isRoom && toFolder.FolderType == FolderType.Archive)
+                                    {
+                                        await _semaphore.WaitAsync();
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    }
+                                    else
+                                    {
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    }
                                 }
-                                else
+                                catch (Exception)
                                 {
-                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    throw;
+                                }
+                                finally
+                                {
+                                    _semaphore.Release();
                                 }
                             }
-
-                            newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                             if (isRoom)
                             {
                                 if (toFolder.FolderType == FolderType.Archive)
                                 {
+                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                    if (pins.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(pins);
+                                    }
+
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
                                 }
                                 else
@@ -447,14 +464,23 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
 
 
-                            if (isToFolder)
+                            if (isToFolder && toFolder.FolderType != FolderType.Archive)
                             {
-                                needToMark.Add(newFolder);
+                                if (isThirdPartyRoom)
+                                {
+                                    needToMark.Add(folder);
+                                }
+                                else
+                                {
+                                    newFolder = await folderDao.GetFolderAsync(newFolderId);
+                                    needToMark.Add(newFolder);
+                                }
                             }
 
                             if (ProcessedFolder(folderId))
                             {
-                                sb.Append($"folder_{newFolderId}{SplitChar}");
+                                var id = isThirdPartyRoom ? folder.Id.ToString() : newFolderId.ToString();
+                                sb.Append($"folder_{id}{SplitChar}");
                             }
                         }
                     }
@@ -742,7 +768,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         string error = null;
         foreach (var file in files)
         {
-            if(checkPermissions && !await FilesSecurity.CanMoveAsync(file))
+            if (checkPermissions && !await FilesSecurity.CanMoveAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 

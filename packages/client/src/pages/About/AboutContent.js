@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import logoPersonalAboutUrl from "PUBLIC_DIR/images/logo_personal_about.svg?url";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -75,7 +77,6 @@ const AboutContent = (props) => {
     companyInfoSettingsData,
     previewData,
     whiteLabelLogoUrls,
-    userTheme,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -100,10 +101,11 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
-  const logo =
-    userTheme === "Dark"
+  const logo = getLogoFromPath(
+    !theme.isBase
       ? whiteLabelLogoUrls[6]?.path.dark
-      : whiteLabelLogoUrls[6]?.path.light;
+      : whiteLabelLogoUrls[6]?.path.light
+  );
 
   return (
     companyInfoSettingsData && (
@@ -111,7 +113,7 @@ const AboutContent = (props) => {
         <div className="avatar">
           {personal ? (
             <ReactSVG
-              src="/images/logo_personal_about.svg"
+              src={logoPersonalAboutUrl}
               className="logo-theme no-select"
             />
           ) : (
@@ -239,15 +241,13 @@ const AboutContent = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, userStore } = auth;
+  const { settingsStore } = auth;
 
   const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
-  const { userTheme } = userStore;
 
   return {
     theme,
     companyInfoSettingsData,
     whiteLabelLogoUrls,
-    userTheme,
   };
 })(observer(AboutContent));

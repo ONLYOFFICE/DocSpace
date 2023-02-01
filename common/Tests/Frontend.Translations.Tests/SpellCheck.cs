@@ -29,7 +29,7 @@ using System.IO;
 
 using WeCantSpell.Hunspell;
 
-namespace Frontend.Translations.Tests;
+namespace Frontend.Tests;
 
 public static class SpellCheck
 {

@@ -4,6 +4,7 @@ import Button from "@docspace/components/button";
 import styled from "styled-components";
 import RequestButtonContainer from "./RequestButtonContainer";
 import UpdatePlanButtonContainer from "./UpdatePlanButtonContainer";
+import toastr from "@docspace/components/toast/toastr";
 
 const StyledBody = styled.div`
   button {
@@ -23,7 +24,9 @@ const ButtonContainer = ({
   isFreeAfterPaidPeriod,
 }) => {
   const goToStripeAccount = () => {
-    if (accountLink) window.open(accountLink, "_blank");
+    accountLink
+      ? window.open(accountLink, "_blank")
+      : toastr.error(t("ErrorNotification"));
   };
 
   return (

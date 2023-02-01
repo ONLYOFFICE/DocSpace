@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React, { useEffect, useState, useRef } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
@@ -29,6 +30,7 @@ const StyledBody = styled.div`
   }
 
   .payment-info {
+    margin-top: 18px;
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
     grid-gap: 20px;
@@ -37,8 +39,7 @@ const StyledBody = styled.div`
     @media (max-width: ${size.smallTablet + 40}px) {
       grid-template-columns: 1fr;
 
-      grid-template-rows: ${(props) =>
-        props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
+      grid-template-rows: ${(props) => "1fr max-content"};
 
       .price-calculation-container,
       .benefits-container {
@@ -53,8 +54,7 @@ const StyledBody = styled.div`
       props.isChangeView &&
       css`
         grid-template-columns: 1fr;
-        grid-template-rows: ${(props) =>
-          props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
+        grid-template-rows: ${(props) => "1fr max-content"};
 
         .price-calculation-container,
         .benefits-container {
@@ -75,7 +75,7 @@ const StyledBody = styled.div`
   }
   .payment-info_wrapper {
     display: flex;
-    margin-bottom: 18px;
+
     margin-top: 11px;
     div {
       margin: auto 0;
@@ -197,7 +197,7 @@ const PaymentsPage = ({
       <>
         <HelpButton
           offsetRight={0}
-          iconName={"/static/images/help.react.svg"}
+          iconName={HelpReactSvgUrl}
           tooltipContent={
             <>
               <Text isBold>{t("ManagerTypesDescription")}</Text>
@@ -318,9 +318,6 @@ const PaymentsPage = ({
 
   const isFreeAfterPaidPeriod = isFreeTariff && payerEmail.length !== 0;
 
-  const isHideBenefitsInfo =
-    isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod;
-
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
@@ -331,7 +328,6 @@ const PaymentsPage = ({
           isChangeView={
             context.sectionWidth < size.smallTablet && expandArticle
           }
-          isHideBenefitsInfo={isHideBenefitsInfo}
         >
           {isNotPaidPeriod && isValidDelayDueDate
             ? expiredTitleSubscriptionWarning()
@@ -377,21 +373,23 @@ const PaymentsPage = ({
             </Text>
           )}
 
-          <div className="payment-info_wrapper">
-            <Text
-              noSelect
-              fontWeight={600}
-              fontSize={"14px"}
-              className="payment-info_managers-price"
-            >
-              <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
-                From {{ currencySymbol }}
-                {{ price: startValue }} per admin/month
-              </Trans>
-            </Text>
+          {!isGracePeriod && !isNotPaidPeriod && !isFreeAfterPaidPeriod && (
+            <div className="payment-info_wrapper">
+              <Text
+                noSelect
+                fontWeight={600}
+                fontSize={"14px"}
+                className="payment-info_managers-price"
+              >
+                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+                  From {{ currencySymbol }}
+                  {{ price: startValue }} per admin/month
+                </Trans>
+              </Text>
 
-            {renderTooltip()}
-          </div>
+              {renderTooltip()}
+            </div>
+          )}
           <div className="payment-info">
             <PriceCalculation
               t={t}
@@ -400,7 +398,7 @@ const PaymentsPage = ({
               isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
             />
 
-            {isHideBenefitsInfo ? <></> : <BenefitsContainer t={t} />}
+            <BenefitsContainer t={t} />
           </div>
           <ContactContainer t={t} />
         </StyledBody>

@@ -1,3 +1,5 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
+import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touch.react.svg?url";
 import React from "react";
 
 import IconButton from "@docspace/components/icon-button";
@@ -52,7 +54,7 @@ const Header = ({
         {uploadPanelVisible && (
           <IconButton
             size="15px"
-            iconName="/static/images/arrow.path.react.svg"
+            iconName={ArrowPathReactSvgUrl}
             className="sharing_panel-arrow"
             onClick={onClose}
           />
@@ -74,7 +76,7 @@ const Header = ({
           <div ref={ref} className="sharing_panel-drop-down-wrapper">
             <IconButton
               size="15"
-              iconName="/static/images/actions.header.touch.react.svg"
+              iconName={ActionsHeaderTouchReactSvgUrl}
               className="sharing_panel-plus-icon"
               onClick={onPlusClick}
             />

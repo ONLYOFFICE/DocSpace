@@ -1,3 +1,13 @@
+﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
+import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
+import CatalogArchiveReactSvgUrl from "PUBLIC_DIR/images/catalog.archive.react.svg?url";
+import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
+import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";
+import CatalogFavoritesReactSvgUrl from "PUBLIC_DIR/images/catalog.favorites.react.svg?url";
+import CatalogRecentReactSvgUrl from "PUBLIC_DIR/images/catalog.recent.react.svg?url";
+import CatalogPrivateReactSvgUrl from "PUBLIC_DIR/images/catalog.private.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
@@ -210,35 +220,35 @@ const Items = ({
   );
 
   const getFolderIcon = React.useCallback((item) => {
-    let iconUrl = "images/catalog.folder.react.svg";
+    let iconUrl = CatalogFolderReactSvgUrl;
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "/static/images/catalog.user.react.svg";
+        iconUrl = CatalogUserReactSvgUrl;
         break;
       case FolderType.Rooms:
-        iconUrl = "/static/images/catalog.folder.react.svg";
+        iconUrl = CatalogFolderReactSvgUrl;
         break;
       case FolderType.Archive:
-        iconUrl = "/static/images/catalog.archive.react.svg";
+        iconUrl = CatalogArchiveReactSvgUrl;
         break;
       case FolderType.SHARE:
-        iconUrl = "/static/images/catalog.shared.react.svg";
+        iconUrl = CatalogSharedReactSvgUrl;
         break;
       case FolderType.COMMON:
-        iconUrl = "/static/images/catalog.portfolio.react.svg";
+        iconUrl = CatalogPortfolioReactSvgUrl;
         break;
       case FolderType.Favorites:
-        iconUrl = "/static/images/catalog.favorites.react.svg";
+        iconUrl = CatalogFavoritesReactSvgUrl;
         break;
       case FolderType.Recent:
-        iconUrl = "/static/images/catalog.recent.react.svg";
+        iconUrl = CatalogRecentReactSvgUrl;
         break;
       case FolderType.Privacy:
-        iconUrl = "/static/images/catalog.private.react.svg";
+        iconUrl = CatalogPrivateReactSvgUrl;
         break;
       case FolderType.TRASH:
-        iconUrl = "/static/images/catalog.trash.react.svg";
+        iconUrl = CatalogTrashReactSvgUrl;
         break;
       default:
         break;
@@ -309,7 +319,7 @@ const Items = ({
           ? item.newItems > 0 && true
           : isTrash && !trashIsEmpty;
         const labelBadge = showBadge ? item.newItems : null;
-        const iconBadge = isTrash ? "images/clear.trash.react.svg" : null;
+        const iconBadge = isTrash ? ClearTrashReactSvgUrl : null;
 
         return (
           <Item

@@ -1,3 +1,6 @@
+﻿import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
 import React, { useEffect, useState, useReducer } from "react";
 import Button from "@docspace/components/button";
 import SelectFolderInput from "client/SelectFolderInput";
@@ -258,14 +261,14 @@ const DirectThirdPartyConnection = (props) => {
         label: t("Reconnect"),
         onClick: onConnect,
         disabled: false,
-        icon: "/static/images/refresh.react.svg",
+        icon: RefreshReactSvgUrl,
       },
       {
         key: "Disconnect-settings",
         label: t("Common:Disconnect"),
         onClick: onDisconnect,
         disabled: selectedThirdPartyAccount?.connected ? false : true,
-        icon: "/static/images/access.none.react.svg",
+        icon: AccessNoneReactSvgUrl,
       },
     ];
   };
@@ -345,7 +348,7 @@ const DirectThirdPartyConnection = (props) => {
           <ContextMenuButton
             zIndex={402}
             className="backup_third-party-context"
-            iconName="images/vertical-dots.react.svg"
+            iconName={VerticalDotsReactSvgUrl}
             size={15}
             getData={getContextOptions}
             isDisabled={

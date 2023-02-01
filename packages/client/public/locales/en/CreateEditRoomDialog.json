@@ -1,6 +1,7 @@
 {
   "ChooseRoomType": "Choose room type",
   "CollaborationRoomDescription": "Collaborate on one or multiple documents with your team",
+  "CreateRoomConfirmation": "Continue without connecting the storage?\nYou have selected a third-party storage option that is not connected yet. If you proceed without connecting the service, this option will not be added.",
   "CollaborationRoomTitle": "Collaboration room",
   "CreateTagOption": "Create tag",
   "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
@@ -21,9 +22,9 @@
   "TagsPlaceholder": "Add a tag",
   "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
-  "ThirdPartyStorageNoStorageAlert": "No storage is connected in the DocSpace Settings. Go to the Integration section to enable data storage in a third-party service",
+  "ThirdPartyStorageNoStorageAlert": "Before, you need to connect the corresponding service in the “Integration” section. Otherwise, the connection will not be possible.",
+  "ThirdPartyStorageRoomAdminNoStorageAlert": "To connect a third-party storage, you need to add the corresponding service in the Integration section of DocSpace settings. Contact DocSpace owner or administrator to enable the integration.",
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
-  "ThirdPartyStorageRememberChoice": "Remember this choice for new rooms",
   "ThirdPartyStorageTitle": "Third-party storage",
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
   "ViewOnlyRoomTitle": "View-only room"

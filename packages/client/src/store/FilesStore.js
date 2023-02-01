@@ -1,3 +1,4 @@
+import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
@@ -28,6 +29,7 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
+const storageCheckbox = JSON.parse(localStorage.getItem("createWithoutDialog"));
 
 let requestCounter = 0;
 
@@ -48,6 +50,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
+  createWithoutDialog = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -102,12 +105,17 @@ class FilesStore {
   isLoadedFetchFiles = false;
 
   tempActionFilesIds = [];
+  tempActionFoldersIds = [];
   operationAction = false;
 
   isErrorRoomNotAvailable = false;
 
   roomsController = null;
   filesController = null;
+
+  clearSearch = false;
+
+  isLoadedEmptyPage = false;
 
   constructor(
     authStore,
@@ -131,7 +139,6 @@ class FilesStore {
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
-
     const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
@@ -141,13 +148,20 @@ class FilesStore {
 
       switch (opt?.cmd) {
         case "create":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
-            if (foundIndex > -1) return;
 
             const file = JSON.parse(opt?.data);
 
             if (this.selectedFolderStore.id !== file.folderId) return;
+
+            //To update a file version
+            if (foundIndex > -1 && !withPaging) {
+              this.getFileInfo(file.id);
+              this.checkSelection(file);
+            }
+
+            if (foundIndex > -1) return;
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
@@ -166,10 +180,39 @@ class FilesStore {
               this.setFilter(newFilter);
               this.setFiles(newFiles);
             });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex > -1) return;
+
+            const folder = JSON.parse(opt?.data);
+
+            if (this.selectedFolderStore.id !== folder.parentId) return;
+
+            const folderInfo = await api.files.getFolderInfo(folder.id);
+
+            console.log(
+              "[WS] create new folder",
+              folderInfo.id,
+              folderInfo.title
+            );
+
+            const newFolders = [folderInfo, ...this.folders];
+
+            if (newFolders.length > this.filter.pageCount && withPaging) {
+              newFolders.pop(); // Remove last
+            }
+
+            const newFilter = this.filter;
+            newFilter.total += 1;
+
+            runInAction(() => {
+              this.setFilter(newFilter);
+              this.setFolders(newFolders);
+            });
           }
           break;
         case "update":
-          if (opt?.type == "file" && opt?.data) {
+          if (opt?.type === "file" && opt?.data) {
             const file = JSON.parse(opt?.data);
 
             if (!file || !file.id) return;
@@ -178,31 +221,41 @@ class FilesStore {
 
             console.log("[WS] update file", file.id, file.title);
 
+            this.checkSelection(file);
+          } else if (opt?.type === "folder" && opt?.data) {
+            const folder = JSON.parse(opt?.data);
+
+            if (!folder || !folder.id) return;
+
+            this.getFolderInfo(folder.id);
+
+            console.log("[WS] update folder", folder.id, folder.title);
+
             if (this.selection) {
               const foundIndex = this.selection?.findIndex(
-                (x) => x.id === file.id
+                (x) => x.id === folder.id
               );
               if (foundIndex > -1) {
                 runInAction(() => {
-                  this.selection[foundIndex] = file;
+                  this.selection[foundIndex] = folder;
                 });
               }
             }
 
             if (this.bufferSelection) {
               const foundIndex = [this.bufferSelection].findIndex(
-                (x) => x.id === file.id
+                (x) => x.id === folder.id
               );
               if (foundIndex > -1) {
                 runInAction(() => {
-                  this.bufferSelection[foundIndex] = file;
+                  this.bufferSelection[foundIndex] = folder;
                 });
               }
             }
           }
           break;
         case "delete":
-          if (opt?.type == "file" && opt?.id) {
+          if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
             if (foundIndex == -1) return;
 
@@ -231,6 +284,37 @@ class FilesStore {
             this.debounceRemoveFiles();
 
             // Hide pagination when deleting files
+            runInAction(() => {
+              this.isHidePagination = true;
+            });
+
+            runInAction(() => {
+              if (
+                this.files.length === 0 &&
+                this.folders.length === 0 &&
+                this.pageItemsLength > 1
+              ) {
+                this.isLoadingFilesFind = true;
+              }
+            });
+          } else if (opt?.type === "folder" && opt?.id) {
+            const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+            if (foundIndex == -1) return;
+
+            console.log(
+              "[WS] delete folder",
+              this.folders[foundIndex].id,
+              this.folders[foundIndex].title
+            );
+
+            const tempActionFoldersIds = JSON.parse(
+              JSON.stringify(this.tempActionFoldersIds)
+            );
+            tempActionFoldersIds.push(this.folders[foundIndex].id);
+
+            this.setTempActionFoldersIds(tempActionFoldersIds);
+            this.debounceRemoveFolders();
+
             runInAction(() => {
               this.isHidePagination = true;
             });
@@ -282,6 +366,8 @@ class FilesStore {
       console.log(`[WS] markasnew-file ${fileId}:${count}`);
 
       const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
+
+      this.treeFoldersStore.fetchTreeFolders();
       if (foundIndex == -1) return;
 
       this.updateFileStatus(
@@ -290,7 +376,6 @@ class FilesStore {
           ? this.files[foundIndex].fileStatus | FileStatus.IsNew
           : this.files[foundIndex].fileStatus & ~FileStatus.IsNew
       );
-      this.treeFoldersStore.fetchTreeFolders();
     });
 
     //WAIT FOR RESPONSES OF EDITING FILE
@@ -341,6 +426,10 @@ class FilesStore {
     this.removeFiles(this.tempActionFilesIds);
   }, 1000);
 
+  debounceRemoveFolders = debounce(() => {
+    this.removeFiles(null, this.tempActionFoldersIds);
+  }, 1000);
+
   setIsErrorRoomNotAvailable = (state) => {
     this.isErrorRoomNotAvailable = state;
   };
@@ -349,8 +438,38 @@ class FilesStore {
     this.tempActionFilesIds = tempActionFilesIds;
   };
 
+  setTempActionFoldersIds = (tempActionFoldersIds) => {
+    this.tempActionFoldersIds = tempActionFoldersIds;
+  };
+
   setOperationAction = (operationAction) => {
     this.operationAction = operationAction;
+  };
+
+  setClearSearch = (clearSearch) => {
+    this.clearSearch = clearSearch;
+  };
+
+  checkSelection = (file) => {
+    if (this.selection) {
+      const foundIndex = this.selection?.findIndex((x) => x.id === file.id);
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.selection[foundIndex] = file;
+        });
+      }
+    }
+
+    if (this.bufferSelection) {
+      const foundIndex = [this.bufferSelection].findIndex(
+        (x) => x.id === file.id
+      );
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.bufferSelection[foundIndex] = file;
+        });
+      }
+    }
   };
 
   updateSelectionStatus = (id, status, isEditing) => {
@@ -397,6 +516,11 @@ class FilesStore {
     localStorage.setItem("viewAs", viewAs);
   };
 
+  setCreateWithoutDialog = (checked) => {
+    this.createWithoutDialog = checked;
+    localStorage.setItem("createWithoutDialog", JSON.stringify(checked));
+  };
+
   setPageItemsLength = (pageItemsLength) => {
     this.pageItemsLength = pageItemsLength;
   };
@@ -423,6 +547,10 @@ class FilesStore {
 
   setIsEmptyPage = (isEmptyPage) => {
     this.isEmptyPage = isEmptyPage;
+  };
+
+  setIsLoadedEmptyPage = (isLoadedEmptyPage) => {
+    this.isLoadedEmptyPage = isLoadedEmptyPage;
   };
 
   get tooltipOptions() {
@@ -478,7 +606,19 @@ class FilesStore {
     if (!this.isEditor) {
       requests.push(
         getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
+        this.treeFoldersStore.fetchTreeFolders().then((treeFolders) => {
+          if (!treeFolders || !treeFolders.length) return;
+
+          const trashFolder = treeFolders.find(
+            (f) => f.rootFolderType == FolderType.TRASH
+          );
+
+          if (!trashFolder) return;
+
+          const isEmpty = !trashFolder.foldersCount && !trashFolder.filesCount;
+
+          this.setTrashIsEmpty(isEmpty);
+        })
       );
 
       if (isDesktopClient) {
@@ -486,7 +626,6 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => this.setIsInit(true));
   };
@@ -606,11 +745,21 @@ class FilesStore {
     }
   };
 
-  setFolder = (folder) => {
-    const index = this.folders.findIndex((x) => x.id === folder.id);
+  getFolderIndex = (id) => {
+    const index = this.folders.findIndex((x) => x.id === id);
+    return index;
+  };
+
+  updateFolder = (index, folder) => {
     if (index !== -1) this.folders[index] = folder;
 
     this.updateSelection(folder.id);
+  };
+
+  setFolder = (folder) => {
+    const index = this.getFolderIndex(folder.id);
+
+    this.updateFolder(index, folder);
   };
 
   getFilesChecked = (file, selected) => {
@@ -991,7 +1140,11 @@ class FilesStore {
             this.isErrorRoomNotAvailable = true;
           });
         } else {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         }
       })
       .finally(() => {
@@ -1105,7 +1258,11 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
-          toastr.error(err);
+          if (axios.isCancel(err)) {
+            console.log("Request canceled", err.message);
+          } else {
+            toastr.error(err);
+          }
         });
 
     return request();
@@ -1823,18 +1980,47 @@ class FilesStore {
     scrollElm && scrollElm.scrollTo(0, 0);
   };
 
-  addFile = (item, isFolder) => {
+  addItem = (item, isFolder) => {
+    const { socketHelper } = this.authStore.settingsStore;
+
+    if (isFolder) {
+      const foundIndex = this.folders.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      this.folders.unshift(item);
+
+      console.log("[WS] subscribe to folder changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: `DIR-${item.id}`,
+          individual: true,
+        },
+      });
+    } else {
+      const foundIndex = this.files.findIndex((x) => x.id === item?.id);
+      if (foundIndex > -1) return;
+
+      console.log("[WS] subscribe to file changes", item.id, item.title);
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: `FILE-${item.id}`, individual: true },
+      });
+
+      this.files.unshift(item);
+    }
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     const filter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     filter.total += 1;
 
     if (isRooms) this.setRoomsFilter(filter);
     else this.setFilter(filter);
-
-    isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
     this.scrollToTop();
   };
@@ -2791,19 +2977,19 @@ class FilesStore {
   setCreatedItem = (createdItem) => {
     this.createdItem = createdItem;
 
-    const { socketHelper } = this.authStore.settingsStore;
-    if (createdItem?.type == "file") {
-      console.log(
-        "[WS] subscribe to file's changes",
-        createdItem.id,
-        createdItem.title
-      );
+    // const { socketHelper } = this.authStore.settingsStore;
+    // if (createdItem?.type == "file") {
+    //   console.log(
+    //     "[WS] subscribe to file's changes",
+    //     createdItem.id,
+    //     createdItem.title
+    //   );
 
-      socketHelper.emit({
-        command: "subscribe",
-        data: { roomParts: `FILE-${createdItem.id}`, individual: true },
-      });
-    }
+    //   socketHelper.emit({
+    //     command: "subscribe",
+    //     data: { roomParts: `FILE-${createdItem.id}`, individual: true },
+    //   });
+    // }
   };
 
   setScrollToItem = (item) => {
@@ -2895,6 +3081,104 @@ class FilesStore {
 
   setRoomSecurity = async (id, data) => {
     return await api.rooms.setRoomSecurity(id, data);
+  };
+
+  withCtrlSelect = (item) => {
+    this.setHotkeyCaret(item);
+    this.setHotkeyCaretStart(item);
+
+    const fileIndex = this.selection.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
+    if (fileIndex === -1) {
+      this.setSelection([...this.selection, item]);
+    } else {
+      this.deselectFile(item);
+    }
+  };
+
+  withShiftSelect = (item) => {
+    const caretStart = this.hotkeyCaretStart
+      ? this.hotkeyCaretStart
+      : this.filesList[0];
+    const caret = this.hotkeyCaret ? this.hotkeyCaret : caretStart;
+
+    if (!caret || !caretStart) return;
+
+    const startCaretIndex = this.filesList.findIndex(
+      (f) => f.id === caretStart.id && f.isFolder === caretStart.isFolder
+    );
+
+    const caretIndex = this.filesList.findIndex(
+      (f) => f.id === caret.id && f.isFolder === caret.isFolder
+    );
+
+    const itemIndex = this.filesList.findIndex(
+      (f) => f.id === item.id && f.isFolder === item.isFolder
+    );
+
+    const isMoveDown = caretIndex < itemIndex;
+
+    let newSelection = JSON.parse(JSON.stringify(this.selection));
+    let index = caretIndex;
+    const newItemIndex = isMoveDown ? itemIndex + 1 : itemIndex - 1;
+
+    while (index !== newItemIndex) {
+      const filesItem = this.filesList[index];
+
+      const selectionIndex = newSelection.findIndex(
+        (f) => f.id === filesItem.id && f.isFolder === filesItem.isFolder
+      );
+      if (selectionIndex === -1) {
+        newSelection.push(filesItem);
+      } else {
+        newSelection = newSelection.filter(
+          (_, fIndex) => selectionIndex !== fIndex
+        );
+        newSelection.push(filesItem);
+      }
+
+      if (isMoveDown) {
+        index++;
+      } else {
+        index--;
+      }
+    }
+
+    const lastSelection = this.selection[this.selection.length - 1];
+    const indexOfLast = this.filesList.findIndex(
+      (f) =>
+        f.id === lastSelection?.id && f.isFolder === lastSelection?.isFolder
+    );
+
+    newSelection = newSelection.filter((f) => {
+      const listIndex = this.filesList.findIndex(
+        (x) => x.id === f.id && x.isFolder === f.isFolder
+      );
+
+      if (isMoveDown) {
+        const isSelect = listIndex < indexOfLast;
+        if (isSelect) return true;
+
+        if (listIndex >= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex >= itemIndex;
+        }
+      } else {
+        const isSelect = listIndex > indexOfLast;
+        if (isSelect) return true;
+
+        if (listIndex <= startCaretIndex) {
+          return true;
+        } else {
+          return listIndex <= itemIndex;
+        }
+      }
+    });
+
+    this.setSelection(newSelection);
+    this.setHotkeyCaret(item);
   };
 
   get disableDrag() {

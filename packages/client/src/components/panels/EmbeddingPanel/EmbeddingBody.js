@@ -1,3 +1,4 @@
+﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
@@ -120,7 +121,7 @@ const EmbeddingBody = ({ embeddingLink, t, theme, isPersonal }) => {
           <IconButton
             className="embedding-panel_copy-icon"
             size="16"
-            iconName="/static/images/copy.react.svg"
+            iconName={CopyReactSvgUrl}
             // color={theme.filesPanels.embedding.iconColor}
             onClick={onCopyLink}
           />

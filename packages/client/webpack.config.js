@@ -73,6 +73,7 @@ const config = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../public"),
+      ASSETS_DIR: path.resolve(__dirname, "./public"),
       SRC_DIR: path.resolve(__dirname, "./src"),
       PACKAGE_FILE: path.resolve(__dirname, "package.json"),
     },
@@ -81,9 +82,24 @@ const config = {
   output: {
     publicPath: "auto",
     chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      folder += result.length === 0 ? "" : "/";
+
+      return `${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+    },
   },
 
   performance: {
@@ -96,19 +112,16 @@ const config = {
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
-        generator: {
-          filename: "static/images/[hash][ext][query]",
-        },
       },
       {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
+        test: /\.svg$/i,
+        type: "asset/resource",
+        resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /\.react.svg$/,
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",
@@ -119,6 +132,13 @@ const config = {
             },
           },
         ],
+      },
+      {
+        test: /\.m?js/,
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
       },
       { test: /\.json$/, loader: "json-loader" },
       {
@@ -183,10 +203,10 @@ const config = {
 
     new CopyPlugin({
       patterns: [
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "images/**/*.*",
-        },
+        // {
+        //   context: path.resolve(__dirname, "public"),
+        //   from: "images/**/*.*",
+        // },
         {
           context: path.resolve(__dirname, "public"),
           from: "locales/**/*.json",
@@ -258,9 +278,9 @@ module.exports = (env, argv) => {
   if (!!env.hideText) {
     config.plugins.push(
       new HtmlWebpackPlugin({
+        title: title,
         template: "./public/index.html",
         publicPath: homepage,
-        title: title,
         base: `${homepage}/`,
         custom: `<style type="text/css">
           div,

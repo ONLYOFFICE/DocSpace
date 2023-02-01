@@ -1,13 +1,15 @@
 import React from "react";
 import IconButton from "@docspace/components/icon-button";
 
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
+
 const ArrowButton = ({ isRootFolder, onBackToParentFolder }) => {
   return (
     <>
       {!isRootFolder ? (
         <div className="navigation-arrow-container">
           <IconButton
-            iconName="/static/images/arrow.path.react.svg"
+            iconName={ArrowPathReactSvgUrl}
             size="17"
             isFill={true}
             onClick={onBackToParentFolder}

@@ -44,7 +44,7 @@ const withDialogs = (WrappedComponent) => {
       const { socketHelper } = window.authStore.auth.settingsStore;
       socketHelper.emit({
         command: "subscribe",
-        data: { roomParts: "backup-restore" }
+        data: { roomParts: "backup-restore" },
       });
       socketHelper.on("restore-backup", () => {
         const message = t("Common:PreparationPortalTitle");
@@ -52,7 +52,7 @@ const withDialogs = (WrappedComponent) => {
           typeof window !== "undefined" &&
           window.DocEditor?.instances[EDITOR_ID];
 
-        docEditor?.showMessage(message);
+        docEditor?.denyEditingRights(message);
       });
     };
 

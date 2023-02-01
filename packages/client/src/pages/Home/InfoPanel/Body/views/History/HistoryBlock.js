@@ -1,11 +1,12 @@
 import React from "react";
-
+import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import HistoryBlockUser from "./HistoryBlockUser";
 import { FeedItemTypes } from "@docspace/common/constants";
+import DefaultUserAvatarSmall from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 
 import { StyledHistoryBlock } from "../../styles/history";
 import { getDateTime } from "../../helpers/HistoryHelper";
@@ -24,9 +25,18 @@ const HistoryBlock = ({
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
 
+  const users = [target, ...groupedFeeds].filter(
+    (user, index, self) =>
+      self.findIndex((user2) => user2?.id === user?.id) === index
+  );
+
   const isUserAction = json.Item === FeedItemTypes.User && target;
   const isItemAction =
     json.Item === FeedItemTypes.File || json.Item === FeedItemTypes.Folder;
+
+  const userAvatar = initiator.hasAvatar
+    ? initiator.avatarSmall
+    : DefaultUserAvatarSmall;
 
   return (
     <StyledHistoryBlock
@@ -38,10 +48,8 @@ const HistoryBlock = ({
         className="avatar"
         size="min"
         source={
-          initiator.avatarSmall ||
-          (initiator.displayName
-            ? ""
-            : initiator.email && "/static/images/@.react.svg")
+          userAvatar ||
+          (initiator.displayName ? "" : initiator.email && AtReactSvgUrl)
         }
         userName={initiator.displayName}
       />
@@ -76,12 +84,12 @@ const HistoryBlock = ({
         )}
 
         {isUserAction &&
-          [target, ...groupedFeeds].map((user, i) => (
+          users.map((user, i) => (
             <HistoryBlockUser
               isVisitor={isVisitor}
               key={user.id}
               user={user}
-              withComma={i !== groupedFeeds.length}
+              withComma={i < users.length - 1}
               openUser={openUser}
             />
           ))}

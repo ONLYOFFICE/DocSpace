@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Box from "@docspace/components/box";
@@ -56,8 +56,12 @@ const HeaderUnAuth = ({
   wizardToken,
   isAuthenticated,
   isLoaded,
+  logoUrl,
+  theme,
 }) => {
   const { t } = useTranslation("NavMenu");
+
+  const logo = !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light;
 
   return (
     <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
@@ -70,13 +74,7 @@ const HeaderUnAuth = ({
         {!isAuthenticated && isLoaded ? (
           <div>
             <a className="header-logo-wrapper" href="/">
-              <img
-                className="header-logo-icon"
-                src={combineUrl(
-                  window.DocSpaceConfig?.proxy?.url,
-                  "/static/images/logo.docspace.react.svg"
-                )}
-              />
+              <img className="header-logo-icon" src={logo} />
             </a>
           </div>
         ) : (
@@ -98,11 +96,14 @@ HeaderUnAuth.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded } = auth;
-  const { enableAdmMess, wizardToken } = settingsStore;
+  const { enableAdmMess, wizardToken, logoUrl, theme } = settingsStore;
+
   return {
     enableAdmMess,
     wizardToken,
     isAuthenticated,
     isLoaded,
+    logoUrl,
+    theme,
   };
 })(observer(HeaderUnAuth));
