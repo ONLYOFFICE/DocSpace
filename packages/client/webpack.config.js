@@ -125,7 +125,8 @@ const config = {
           {
             loader: "file-loader",
             options: {
-              name: (resourcePath, resourceQuery) => {
+              emitFile: false,
+              name: (resourcePath) => {
                 let result = resourcePath.split("public\\")[1].split("\\");
 
                 result.pop();
@@ -227,26 +228,19 @@ const config = {
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
 
-    // new CopyPlugin({
-    //   patterns: [
-    //     // {
-    //     //   context: path.resolve(__dirname, "public"),
-    //     //   from: "images/**/*.*",
-    //     // },
-    //     {
-    //       context: path.resolve(__dirname, "public"),
-    //       from: "locales/**/*.json",
-    //       transform: minifyJson,
-    //       // to: ({ context, absoluteFilename }) => {
-    //       //   const newPath = absoluteFilename.replace(context, "").split("\\");
-
-    //       //   newPath.splice(-1);
-
-    //       //   return `/${newPath.join("/")}/[name].[contenthash][ext]`;
-    //       // },
-    //     },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        // {
+        //   context: path.resolve(__dirname, "public"),
+        //   from: "images/**/*.*",
+        // },
+        {
+          context: path.resolve(__dirname, "public"),
+          from: "locales/**/*.json",
+          transform: minifyJson,
+        },
+      ],
+    }),
   ],
 };
 
