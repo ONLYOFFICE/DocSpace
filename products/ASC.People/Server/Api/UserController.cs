@@ -1069,8 +1069,12 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("type/{type}")]
-    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserTypeAsync(EmployeeType type, UpdateMembersRequestDto inDto)
     {
+        _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
+
+        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
@@ -1078,34 +1082,53 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
+            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
             {
                 continue;
             }
 
-            switch (type)
+            var currentType = _userManager.GetUserType(user.Id);
+
+            if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
             {
-                case EmployeeType.RoomAdmin:
+                if (currentType is EmployeeType.RoomAdmin)
+                {
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+                else if (currentType is EmployeeType.User)
+                {
+                    await _countRoomAdminChecker.CheckAppend();
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+            }
+            else if (type is EmployeeType.RoomAdmin)
+            {
+                if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
+                {
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+                else if (currentType is EmployeeType.User)
+                {
                     await _countRoomAdminChecker.CheckAppend();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
-                    break;
-                case EmployeeType.User:
-                    await _countUserChecker.CheckAppend();
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                    break;
+                }
             }
         }
-
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-
+        
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), 
+            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        
         foreach (var user in users)
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
+    
     [HttpGet("recalculatequota")]
     public void RecalculateQuota()
     {

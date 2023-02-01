@@ -171,6 +171,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (!whiteLabelLogoUrls) return;
     const favicon = getLogoFromPath(whiteLabelLogoUrls[2]?.path?.light);
 
+    if (!favicon) return;
+
     const link = document.querySelector("#favicon-icon");
     link.href = favicon;
 

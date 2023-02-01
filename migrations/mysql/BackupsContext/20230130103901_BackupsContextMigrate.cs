@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.Backups
 {
+    /// <inheritdoc />
     public partial class BackupsContextMigrate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
@@ -19,21 +21,22 @@ namespace ASC.Migrations.MySql.Migrations
                 {
                     id = table.Column<string>(type: "char(38)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    tenant_id = table.Column<int>(type: "int(10)", nullable: false),
-                    is_scheduled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "int(10)", nullable: false),
+                    isscheduled = table.Column<bool>(name: "is_scheduled", type: "tinyint(1)", nullable: false),
                     name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     hash = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    storage_type = table.Column<int>(type: "int(10)", nullable: false),
-                    storage_base_path = table.Column<string>(type: "varchar(255)", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                    storagetype = table.Column<int>(name: "storage_type", type: "int(10)", nullable: false),
+                    storagebasepath = table.Column<string>(name: "storage_base_path", type: "varchar(255)", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    storage_path = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                    storagepath = table.Column<string>(name: "storage_path", type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    created_on = table.Column<DateTime>(type: "datetime", nullable: false),
-                    expires_on = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "'0001-01-01 00:00:00'"),
-                    storage_params = table.Column<string>(type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
+                    createdon = table.Column<DateTime>(name: "created_on", type: "datetime", nullable: false),
+                    expireson = table.Column<DateTime>(name: "expires_on", type: "datetime", nullable: false, defaultValueSql: "'0001-01-01 00:00:00'"),
+                    storageparams = table.Column<string>(name: "storage_params", type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    removed = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,20 +48,20 @@ namespace ASC.Migrations.MySql.Migrations
                 name: "backup_schedule",
                 columns: table => new
                 {
-                    tenant_id = table.Column<int>(type: "int(10)", nullable: false),
+                    tenantid = table.Column<int>(name: "tenant_id", type: "int(10)", nullable: false),
                     cron = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    backups_stored = table.Column<int>(type: "int(10)", nullable: false),
-                    storage_type = table.Column<int>(type: "int(10)", nullable: false),
-                    storage_base_path = table.Column<string>(type: "varchar(255)", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                    backupsstored = table.Column<int>(name: "backups_stored", type: "int(10)", nullable: false),
+                    storagetype = table.Column<int>(name: "storage_type", type: "int(10)", nullable: false),
+                    storagebasepath = table.Column<string>(name: "storage_base_path", type: "varchar(255)", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    last_backup_time = table.Column<DateTime>(type: "datetime", nullable: false),
-                    storage_params = table.Column<string>(type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
+                    lastbackuptime = table.Column<DateTime>(name: "last_backup_time", type: "datetime", nullable: false),
+                    storageparams = table.Column<string>(name: "storage_params", type: "text", nullable: true, defaultValueSql: "NULL", collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.tenant_id);
+                    table.PrimaryKey("PRIMARY", x => x.tenantid);
                 })
                 .Annotation("MySql:CharSet", "utf8");
 
@@ -75,7 +78,7 @@ namespace ASC.Migrations.MySql.Migrations
                     mappeddomain = table.Column<string>(type: "varchar(100)", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     version = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'2'"),
-                    version_changed = table.Column<DateTime>(type: "datetime", nullable: true),
+                    versionchanged = table.Column<DateTime>(name: "version_changed", type: "datetime", nullable: true),
                     language = table.Column<string>(type: "char(10)", nullable: false, defaultValueSql: "'en-US'", collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     timezone = table.Column<string>(type: "varchar(50)", nullable: true, collation: "utf8_general_ci")
@@ -86,12 +89,12 @@ namespace ASC.Migrations.MySql.Migrations
                     status = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
                     statuschanged = table.Column<DateTime>(type: "datetime", nullable: true),
                     creationdatetime = table.Column<DateTime>(type: "datetime", nullable: false),
-                    owner_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
+                    ownerid = table.Column<string>(name: "owner_id", type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
-                    payment_id = table.Column<string>(type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
+                    paymentid = table.Column<string>(name: "payment_id", type: "varchar(38)", nullable: true, collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     industry = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'0'"),
-                    last_modified = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    lastmodified = table.Column<DateTime>(name: "last_modified", type: "timestamp", nullable: false),
                     spam = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
                     calls = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
                 },
@@ -143,6 +146,7 @@ namespace ASC.Migrations.MySql.Migrations
                 column: "version");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
