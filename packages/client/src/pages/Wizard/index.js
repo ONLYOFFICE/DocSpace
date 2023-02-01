@@ -365,7 +365,7 @@ const Wizard = (props) => {
               size="content"
               showDisabledItems={true}
               dropDownMaxHeight={364}
-              manualWidth="250px"
+              manualWidth="350px"
               isDefaultMode={!isMobileOnly}
               withBlur={isMobileOnly}
               fillIcon={false}
