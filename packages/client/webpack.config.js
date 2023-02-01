@@ -4,13 +4,18 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
+const PrebuildWebpackPlugin = require("prebuild-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
+const fs = require("fs");
+const { readdir } = require("fs").promises;
 
 const path = require("path");
+
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
@@ -227,7 +232,21 @@ const config = {
   plugins: [
     new CleanWebpackPlugin(),
     new ExternalTemplateRemotesPlugin(),
+    new PrebuildWebpackPlugin({
+      build: async (compiler, compilation, matchedFiles) => {
+        const error = await beforeBuild(
+          [
+            path.join(__dirname, "./public/locales"),
+            path.join(__dirname, "../../public/locales"),
+          ],
+          path.join(__dirname, "./src/helpers/translations.js")
+        );
 
+        if (error) {
+          throw new Error(error);
+        }
+      },
+    }),
     new CopyPlugin({
       patterns: [
         // {

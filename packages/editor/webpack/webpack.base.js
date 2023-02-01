@@ -1,5 +1,7 @@
 const path = require("path");
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const PrebuildWebpackPlugin = require("prebuild-webpack-plugin");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
@@ -97,6 +99,23 @@ module.exports = {
     //ignore the drivers you don't want. This is the complete list of all drivers -- remove the suppressions for drivers you want to use.
     new FilterWarningsPlugin({
       exclude: [/Critical dependency/],
+    }),
+    new PrebuildWebpackPlugin({
+      build: async (compiler, compilation, matchedFiles) => {
+        const error = await beforeBuild(
+          [
+            path.join(__dirname, "../public/locales"),
+            path.join(__dirname, "../../../public/locales"),
+          ],
+          path.join(__dirname, "../src/translations.js")
+        );
+
+        console.log("call");
+
+        if (error) {
+          throw new Error(error);
+        }
+      },
     }),
   ],
 };
