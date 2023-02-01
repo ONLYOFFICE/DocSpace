@@ -38,14 +38,7 @@ export const getScripts = (assets: assetsType): string[] | void => {
 };
 
 export const loadPath = (language: string, nameSpace: string): string => {
-  let path = translations?.get(language)?.get(nameSpace);
-
-  const splitted = path.split("/");
-  const length = splitted.length;
-
-  path = `/${splitted[length - 3]}/${splitted[length - 2]}/${
-    splitted[length - 1]
-  }`;
+  const path = translations?.get(language)?.get(nameSpace);
 
   return path;
 };
