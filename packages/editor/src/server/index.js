@@ -13,6 +13,7 @@ import winston from "./lib/logger.js";
 import { getAssets, initDocEditor } from "./lib/helpers";
 import renderApp from "./lib/helpers/render-app";
 import dns from "dns";
+import { translations } from "SRC_DIR/translations";
 
 dns.setDefaultResultOrder("ipv4first");
 
@@ -32,15 +33,9 @@ winston.stream = {
 };
 
 const loadPath = (lng, ns) => {
-  let resourcePath = path.resolve(
-    path.join(__dirname, "client", `locales/${lng}/${ns}.json`)
-  );
-  if (ns === "Common")
-    resourcePath = path.resolve(
-      path.join(__dirname, `../../../public/locales/${lng}/${ns}.json`)
-    );
+  const path = translations?.get(lng)?.get(ns);
 
-  return resourcePath;
+  return path;
 };
 
 const app = express();

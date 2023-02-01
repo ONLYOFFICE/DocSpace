@@ -1,5 +1,5 @@
 import pkg from "../../../package.json";
-import { translations } from "./translations";
+import { translations } from "SRC_DIR/translations";
 
 export function getLanguage(lng) {
   try {
