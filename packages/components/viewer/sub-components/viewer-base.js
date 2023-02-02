@@ -163,6 +163,9 @@ const ViewerBase = (props) => {
   });
 
   React.useEffect(() => {
+    //fix memory leak
+    if (!init.current) return;
+
     if (visible) {
       if (!props.container) {
         document.body.style.overflow = "hidden";
@@ -181,6 +184,9 @@ const ViewerBase = (props) => {
   }, [state.visible]);
 
   React.useEffect(() => {
+    //fix memory leak
+    if (!init.current) return;
+
     if (visible) {
       dispatch(
         createAction(ACTION_TYPES.setActiveIndex, {

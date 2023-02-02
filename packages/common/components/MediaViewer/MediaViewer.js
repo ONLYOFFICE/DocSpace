@@ -446,8 +446,9 @@ class MediaViewer extends React.Component {
   };
 
   onClose = (e) => {
-    this.props.onClose(e);
+    //fix memory leak
     this.setState({ visible: false });
+    this.props.onClose(e);
   };
 
   getTiffDataURL = (src) => {
