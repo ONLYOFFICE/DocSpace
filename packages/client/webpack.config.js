@@ -98,7 +98,7 @@ const config = {
 
       folder += result.length === 0 ? "" : "/";
 
-      return `${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+      return `static/${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
     },
   },
 
@@ -110,12 +110,18 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif|ico)$/i,
+        test: /\.(png|jpe?g|gif|ico|woff2)$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
         resourceQuery: /url/, // *.svg?url
       },
       {
