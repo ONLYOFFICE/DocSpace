@@ -12,6 +12,7 @@ const Calendar = () => {
     <Container>
       {/* <Days selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> */}
       {/* <Months selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> */}
+      <Years selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
     </Container>
   );
 };
