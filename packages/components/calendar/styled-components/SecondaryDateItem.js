@@ -7,8 +7,4 @@ export const SecondaryDateItem = styled(DateItem)`
   :hover{
     cursor: ${props => props.disabled ? 'auto' : 'pointer'};
   }
-
-  :focus{
-    
-  }
 `;
