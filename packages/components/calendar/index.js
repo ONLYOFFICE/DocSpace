@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import {
-  Container,
-} from "./styled-components";
+import moment from "moment";
 
-import { Header, DaysBody } from "./sub-components";
+import { Container } from "./styled-components";
+import { Days, Months, Years } from "./sub-components";
 
 const Calendar = () => {
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   return (
     <Container>
-      <Header/>
-      <DaysBody/>
+      {/* <Days selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> */}
+      <Months selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
     </Container>
   );
 };
