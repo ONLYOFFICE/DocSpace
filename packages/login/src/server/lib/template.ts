@@ -2,6 +2,13 @@ import { getScripts } from "./helpers";
 import pkg from "../../../package.json";
 import { getLogoFromPath } from "@docspace/common/utils";
 
+import firstFont from "PUBLIC_DIR/fonts/RjgO7rYTmqiVp7vzi-Q5URJtnKITppOI_IvcXXDNrsc.woff2";
+import secondFont from "PUBLIC_DIR/fonts/MTP_ySUJH_bn48VBG8sNSugdm0LZdjqr5-oayXSOefg.woff2";
+import thirdFont from "PUBLIC_DIR/fonts/k3k702ZOKiLJc3WVjuplzOgdm0LZdjqr5-oayXSOefg.woff2";
+import fourthFont from "PUBLIC_DIR/fonts/cJZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2";
+import fifthFont from "PUBLIC_DIR/fonts/MTP_ySUJH_bn48VBG8sNSpX5f-9o1vgP2EXwfjgl7AY.woff2";
+import sixthFont from "PUBLIC_DIR/fonts/k3k702ZOKiLJc3WVjuplzJX5f-9o1vgP2EXwfjgl7AY.woff2";
+
 const { title } = pkg;
 const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
 
@@ -28,9 +35,7 @@ const template: Template = (
     ? `${t("Authorization")} – ${organizationName}`
     : title;
 
-  const favicon = getLogoFromPath(
-    initLoginState.logoUrls[2]?.path?.light
-  ).replace("client/", "login/");
+  const favicon = getLogoFromPath(initLoginState.logoUrls[2]?.path?.light);
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
@@ -88,12 +93,12 @@ const template: Template = (
           content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/RjgO7rYTmqiVp7vzi-Q5URJtnKITppOI_IvcXXDNrsc.woff2" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/MTP_ySUJH_bn48VBG8sNSugdm0LZdjqr5-oayXSOefg.woff2" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/k3k702ZOKiLJc3WVjuplzOgdm0LZdjqr5-oayXSOefg.woff2" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/cJZKeOuBrn4kERxqtaUH3VtXRa8TVwTICgirnJhmVJw.woff2" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/MTP_ySUJH_bn48VBG8sNSpX5f-9o1vgP2EXwfjgl7AY.woff2" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="/static/fonts/k3k702ZOKiLJc3WVjuplzJX5f-9o1vgP2EXwfjgl7AY.woff2" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${firstFont}" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${secondFont}" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${thirdFont}" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${fourthFont}" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${fifthFont}" />
+        <link rel="preload" as="font" crossorigin type="font/woff2" href="${sixthFont}" />
 
         <link id="favicon" rel="shortcut icon" href=${favicon} />
         <link rel="manifest" href="/manifest.json" />
