@@ -45,7 +45,10 @@ module.exports = {
       },
       {
         test: fontsExtension,
-        type: "asset",
+        generator: {
+          emit: false,
+        },
+        type: "asset/resource",
       },
       {
         test: /\.svg/,
@@ -55,10 +58,16 @@ module.exports = {
       },
       {
         test: imageExtensions,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
       },
       {
         test: /\.svg$/i,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
         resourceQuery: /url/, // *.svg?url
       },

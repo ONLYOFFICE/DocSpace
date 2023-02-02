@@ -31,7 +31,7 @@ const serverConfig = {
 
       folder += result.length === 0 ? "" : "/";
 
-      return `client/${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
+      return `/login/static/${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
     },
   },
 
