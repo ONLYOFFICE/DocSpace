@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Data;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 internal class FileDeleteOperationData<T> : FileOperationData<T>
@@ -287,10 +289,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     if (file.ThumbnailStatus == Thumbnail.Waiting)
                     {
                         file.ThumbnailStatus = Thumbnail.NotRequired;
-                        foreach (var size in _thumbnailSettings.Sizes)
-                        {
-                            await FileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
-                        }
+                        await FileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
                     }
 
                     await socketManager.DeleteFile(file);

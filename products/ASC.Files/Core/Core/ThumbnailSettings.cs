@@ -46,7 +46,7 @@ public class ThumbnailSettings
     private int _launchFrequency;
     public int LaunchFrequency
     {
-        get => _launchFrequency != 0 ? _launchFrequency : 1;
+        get => _launchFrequency != 0 ? _launchFrequency : 15;
         set => _launchFrequency = value;
     }
 
