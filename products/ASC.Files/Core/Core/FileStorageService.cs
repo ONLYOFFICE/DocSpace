@@ -899,7 +899,7 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     var pathThumb = $"{path}{fileExt.Trim('.')}.{size.Width}x{size.Height}.{_global.ThumbnailExtension}";
 
-                    if (await storeTemplate.IsFileAsync("", pathThumb))
+                    if (!await storeTemplate.IsFileAsync("", pathThumb))
                     {
                         break;
                     }

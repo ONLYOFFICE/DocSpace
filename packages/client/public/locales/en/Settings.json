@@ -126,7 +126,7 @@
   "PleaseNote": "Please note",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: your old space address will become available to new users once you click the <2>{{save}}</2> button.",
   "Plugins": "Plugins",
-  "PortalAccess": "Space access",
+  "PortalAccess": "Portal access",
   "PortalAccessSubTitle": "This section allows you to provide users with safe and convenient ways to access the space.",
   "PortalDeactivation": "Deactivate DocSpace",
   "PortalDeactivationDescription": "Use this option to deactivate your space temporarily.",
