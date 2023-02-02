@@ -124,7 +124,7 @@ const config = {
         resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /locales\\[a-z-]*\\[a-z]*\.json$/i,
+        test: /\.json$/,
         resourceQuery: /url/,
         use: [
           {

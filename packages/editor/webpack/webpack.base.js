@@ -63,7 +63,7 @@ module.exports = {
         resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /locales\\[a-z-]*\\[a-z]*\.json$/i,
+        test: /\.json$/,
         resourceQuery: /url/,
         type: "javascript/auto",
         use: [
