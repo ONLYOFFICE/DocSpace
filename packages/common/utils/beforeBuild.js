@@ -40,7 +40,7 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
   let importString = "\n";
 
   localesFiles.forEach((file) => {
-    const splitPath = file.path.split("\\");
+    const splitPath = file.path.split(path.sep);
 
     const length = splitPath.length;
 

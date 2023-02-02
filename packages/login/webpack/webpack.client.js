@@ -95,7 +95,9 @@ const clientConfig = {
             options: {
               emitFile: false,
               name: (resourcePath, resourceQuery) => {
-                let result = resourcePath.split("public\\")[1].split("\\");
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
 
                 result.pop();
 
