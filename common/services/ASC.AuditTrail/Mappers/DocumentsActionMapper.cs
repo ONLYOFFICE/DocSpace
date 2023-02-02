@@ -145,6 +145,7 @@ internal class RoomsActionMapper : IModuleActionMapper
                         ActionType.Update, new[]
                         {
                             MessageAction.RoomArchived,
+                            MessageAction.RoomUnarchived,
                             MessageAction.RoomRenamed,
                             MessageAction.AddedRoomTags,
                             MessageAction.DeletedRoomTags,
