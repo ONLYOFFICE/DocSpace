@@ -2647,7 +2647,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
