@@ -34,6 +34,8 @@ import {
   StyledInfo,
   StyledAcceptTerms,
 } from "./StyledWizard";
+import { getUserTimezone, getSelectZone } from "./timezonesHelper";
+
 import DocspaceLogo from "SRC_DIR/DocspaceLogo";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 
@@ -92,10 +94,6 @@ const Wizard = (props) => {
     });
   };
 
-  const getUserTimezone = () => {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
-  };
-
   const fetchData = async () => {
     await axios
       .all([
@@ -105,9 +103,7 @@ const Wizard = (props) => {
         getPortalTimezones(wizardToken).then((data) => {
           const userTimezone = getUserTimezone();
           const zones = mapTimezonesToArray(data);
-          const select =
-            zones.filter((zone) => zone.key === userTimezone) ||
-            zones.filter((zone) => zone.key === timezone);
+          const select = getSelectZone(zones, userTimezone);
 
           setTimezones(zones);
           setSelectedTimezone({
