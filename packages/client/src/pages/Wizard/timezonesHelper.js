@@ -11,7 +11,7 @@ export const getSelectZone = (zones, userTimezone) => {
   if (isWindowsZones) {
     const windowsZoneKey = findWindows(userTimezone);
     return (
-      zones.filter((zone) => zone.key === windowsZoneKey) ||
+      zones.filter((zone) => zone.key === windowsZoneKey[0]) ||
       zones.filter((zone) => zone.key === defaultTimezone)
     );
   }
