@@ -12,3 +12,6 @@ export { Weekday } from "./Weekday";
 export { DateItem } from "./DateItem";
 export { SecondaryDateItem } from "./SecondaryDateItem";
 export { CurrentDateItem } from "./CurrentDateItem";
+
+export { MonthsContainer } from "./MonthsContainer";
+export { YearsContainer } from "./YearsContainer";
