@@ -132,7 +132,6 @@ const config = {
             options: {
               emitFile: false,
               name: (resourcePath) => {
-                console.log(resourcePath);
                 let result = resourcePath.split("public\\")[1].split("\\");
 
                 result.pop();
