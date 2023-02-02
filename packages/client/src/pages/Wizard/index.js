@@ -106,9 +106,16 @@ const Wizard = (props) => {
           const select = getSelectZone(zones, userTimezone);
 
           setTimezones(zones);
+          if (!select) {
+            setSelectedTimezone({
+              key: "UTC",
+              label: "(UTC) Coordinated Universal Time",
+            });
+            return;
+          }
           setSelectedTimezone({
-            key: select[0]?.key,
-            label: select[0]?.label,
+            key: select[0].key,
+            label: select[0].label,
           });
         }),
       ])
@@ -117,7 +124,7 @@ const Wizard = (props) => {
           (lang) => lang.key === convertedCulture
         );
         if (!select.length)
-          select = cultureNames.filter((lang) => lang.key === "en");
+          select = cultureNames.filter((lang) => lang.key === "en-US");
 
         setSelectedLanguage({
           key: select[0].key,
