@@ -14,6 +14,7 @@ module.exports = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+      ASSETS_DIR: path.resolve(__dirname, "../public"),
       SRC_DIR: path.resolve(__dirname, "../src"),
       PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
@@ -44,15 +45,24 @@ module.exports = {
       },
       {
         test: fontsExtension,
-        type: "asset",
+        generator: {
+          emit: false,
+        },
+        type: "asset/resource",
       },
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
         resourceQuery: /url/, // *.svg?url
       },
       {
@@ -72,6 +82,9 @@ module.exports = {
       },
       {
         test: imageExtensions,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
       },
     ],

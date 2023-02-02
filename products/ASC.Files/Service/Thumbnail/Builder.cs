@@ -46,6 +46,17 @@ public class BuilderQueue<T>
     {
         try
         {
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+
+            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
+
+            var premiumTenants = fileDataProvider.GetPremiumTenants();
+
+            filesWithoutThumbnails = filesWithoutThumbnails
+                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
+                .ToList();
+
+
             await Parallel.ForEachAsync(
             filesWithoutThumbnails,
             new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
@@ -141,11 +152,7 @@ public class Builder<T>
         catch (Exception exception)
         {
             _logger.ErrorBuildThumbnailsTenantId(fileData.TenantId, exception);
-        }
-        finally
-        {
-            FileDataQueue.Queue.TryRemove(fileData.FileId, out _);
-        }
+        }      
     }
 
     private async Task GenerateThumbnail(IFileDao<T> fileDao, FileData<T> fileData)
