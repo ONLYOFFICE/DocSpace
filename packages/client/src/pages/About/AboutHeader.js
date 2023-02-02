@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
@@ -32,7 +33,7 @@ const AboutHeader = (props) => {
   return (
     <HeaderContainer>
       <IconButton
-        iconName="/static/images/arrow.path.react.svg"
+        iconName={ArrowPathReactSvgUrl}
         size="17"
         isFill={true}
         onClick={onBack}

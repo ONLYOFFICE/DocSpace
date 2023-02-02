@@ -543,7 +543,7 @@ function Editor({
       }
 
       if (successAuth) {
-        const documentType = config.documentType;
+        const documentType = config?.documentType;
 
         const fileExt =
           documentType === "word"
@@ -629,13 +629,18 @@ function Editor({
     }
   };
 
+  const errorMessage = () => {
+    if (typeof error !== "string") return error.errorMessage;
+
+    if (error === "restore-backup") return t("Common:PreparationPortalTitle");
+    return error;
+  };
+
   const additionalComponents =
     error && !error?.unAuthorized ? (
       <ErrorContainerBody
         headerText={t("Common:Error")}
-        customizedBodyText={
-          typeof error === "string" ? error : error.errorMessage
-        }
+        customizedBodyText={errorMessage()}
       />
     ) : (
       <>

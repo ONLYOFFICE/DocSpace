@@ -118,6 +118,24 @@ internal class FileDataProvider
         return result;
     }
 
+    public async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
+    {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var result = filesDbContext.Files
+                    .AsQueryable()
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Core.Thumbnail.Creating && EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5);
+
+        var updatedRows = await result.ExecuteUpdateAsync(s => s.SetProperty(b => b.ThumbnailStatus, b => Core.Thumbnail.Waiting));
+
+        if (updatedRows == 0)
+        {
+            return new List<FileData<int>>();  
+        }
+
+        return result.ToList().Select(r => new FileData<int>(r.TenantId, r.Id, ""));                     
+    }
+
     private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();

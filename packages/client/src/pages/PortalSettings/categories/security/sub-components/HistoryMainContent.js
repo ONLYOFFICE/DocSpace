@@ -27,6 +27,10 @@ const MainContainer = styled.div`
     max-width: 700px;
   }
 
+  .login-history-description {
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
+
   .save-cancel {
     padding: 0;
     position: static;
@@ -56,7 +60,15 @@ const MainContainer = styled.div`
     }
   }
 
-  .download-button {
+  ${(props) => props.isSettingNotPaid && UnavailableStyles}
+`;
+
+const DownLoadWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .download-report_button {
     width: auto;
     height: auto;
     font-size: 13px;
@@ -76,7 +88,23 @@ const MainContainer = styled.div`
     }
   }
 
-  ${(props) => props.isSettingNotPaid && UnavailableStyles}
+  .download-report_description {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+
+    height: 16px;
+
+    margin: 0;
+    color: ${(props) =>
+      props.theme.client.settings.security.auditTrail
+        .downloadReportDescriptionColor};
+  }
+
+  @media ${hugeMobile} {
+    flex-direction: column-reverse;
+  }
 `;
 
 const HistoryMainContent = (props) => {
@@ -94,8 +122,10 @@ const HistoryMainContent = (props) => {
     securityLifetime,
     content,
     downloadReport,
+    downloadReportDescription,
     getReport,
     isSettingNotPaid,
+    isLoadingDownloadReport,
   } = props;
 
   const [lifeTime, setLifeTime] = useState(String(lifetime) || "180");
@@ -158,7 +188,7 @@ const HistoryMainContent = (props) => {
         <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
       )}
       <div className="main-wrapper">
-        <Text fontSize="13px" color="#657077" className="settings_unavailable">
+        <Text fontSize="13px" className="login-history-description">
           {subHeader}
         </Text>
         <Text className="latest-text settings_unavailable">{latestText} </Text>
@@ -191,15 +221,21 @@ const HistoryMainContent = (props) => {
         <Text className="latest-text settings_unavailable">{downloadText}</Text>
       </div>
       {content}
-      <Button
-        className="download-button"
-        primary
-        label={downloadReport}
-        size="normal"
-        minwidth="auto"
-        onClick={() => getReport()}
-        isDisabled={isSettingNotPaid}
-      />
+      <DownLoadWrapper>
+        <Button
+          className="download-report_button"
+          primary
+          label={downloadReport}
+          size="normal"
+          minwidth="auto"
+          onClick={() => getReport()}
+          isDisabled={isSettingNotPaid}
+          isLoading={isLoadingDownloadReport}
+        />
+        <span className="download-report_description">
+          {downloadReportDescription}
+        </span>
+      </DownLoadWrapper>
     </MainContainer>
   );
 };

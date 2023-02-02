@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
-import ExpanderDownIcon from "@docspace/components/public/static/images/expander-down.react.svg";
+import ExpanderDownIcon from "PUBLIC_DIR/images/expander-down.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Heading from "@docspace/components/heading";
 

@@ -1,5 +1,7 @@
 import React from "react";
-
+import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import Dropzone from "react-dropzone";
 import ReactAvatarEditor from "./react-avatar-editor";
 import PropTypes from "prop-types";
@@ -431,7 +433,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={isLoading}
                           {...onDeleteProp}
-                          iconName={"/static/images/catalog.trash.react.svg"}
+                          iconName={CatalogTrashReactSvgUrl}
                           isFill={true}
                           isClickable={true}
                           className="editor-button"
@@ -443,7 +445,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={isLoading}
                           onClick={this.onZoomMinusClick}
-                          iconName={"/static/images/zoom-minus.react.svg"}
+                          iconName={ZoomMinusReactSvgUrl}
                           isFill={true}
                           isClickable={false}
                         />
@@ -462,7 +464,7 @@ class AvatarEditorBody extends React.Component {
                           className="zoom-container-svg_zoom-plus"
                           isDisabled={isLoading}
                           onClick={this.onZoomPlusClick}
-                          iconName={"/static/images/zoom-plus.react.svg"}
+                          iconName={ZoomPlusReactSvgUrl}
                           isFill={true}
                           isClickable={false}
                         />

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.Classes;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -532,15 +534,8 @@ public class FileStorageService<T> //: IFileStorageService
         var parent = await folderDao.GetFolderAsync(parentId);
         var providerInfo = await providerDao.GetProviderInfoAsync(parent.ProviderId);
 
-        if (providerInfo.RootFolderType != FolderType.VirtualRooms)
-        {
-            throw new InvalidDataException("Invalid provider type");
-        }
-
-        if (providerInfo.FolderId != null)
-        {
-            throw new InvalidOperationException("This provider already corresponds to the virtual room");
-        }
+        ErrorIf(providerInfo.RootFolderType != FolderType.VirtualRooms, FilesCommonResource.ErrorMessage_InvalidProvider);
+        ErrorIf(providerInfo.FolderId != null, FilesCommonResource.ErrorMessage_ProviderAlreadyConnect);
 
         List<AceWrapper> aces = null;
 
@@ -560,12 +555,14 @@ public class FileStorageService<T> //: IFileStorageService
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
 
+        ErrorIf(result.Item1.Id.Equals(result.Item1.RootId), FilesCommonResource.ErrorMessage_InvalidThirdPartyFolder);
+
         if (@private)
         {
             await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
         }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, title, result.Item1.Id.ToString(), result.Item2, @private);
 
         return result.Item1;
     }
@@ -618,6 +615,8 @@ public class FileStorageService<T> //: IFileStorageService
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
+
+            await _socketManager.CreateFolderAsync(folder);
 
             if (isRoom)
             {
@@ -693,6 +692,8 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
+
+        await _socketManager.UpdateFolderAsync(folder);
 
         return folder;
     }
@@ -875,6 +876,9 @@ public class FileStorageService<T> //: IFileStorageService
 
             try
             {
+
+                file.ThumbnailStatus = Thumbnail.Creating;
+
                 if (!enableExternalExt)
                 {
                     var pathNew = path + "new" + fileExt;
@@ -889,19 +893,39 @@ public class FileStorageService<T> //: IFileStorageService
                     file = await fileDao.SaveFileAsync(file, null);
                 }
 
+                int counter = 0;
+
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
                     var pathThumb = $"{path}{fileExt.Trim('.')}.{size.Width}x{size.Height}.{_global.ThumbnailExtension}";
-                    if (await storeTemplate.IsFileAsync("", pathThumb))
+
+                    if (!await storeTemplate.IsFileAsync("", pathThumb))
                     {
-                        using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
-                        {
-                            await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
-                        }
+                        break;
                     }
+
+                    using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                    {
+                        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, size.Width, size.Height), streamThumb);
+                    }
+
+                    counter++;
                 }
 
-                file.ThumbnailStatus = Thumbnail.Created;
+                if (_thumbnailSettings.Sizes.Count() == counter)
+                {
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.Created);
+
+                    file.ThumbnailStatus = Thumbnail.Created;
+
+                }
+                else
+                {
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
+
+                    file.ThumbnailStatus = Thumbnail.NotRequired;
+                }
+
             }
             catch (Exception e)
             {
@@ -915,6 +939,8 @@ public class FileStorageService<T> //: IFileStorageService
             ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!await _fileSecurity.CanReadAsync(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
+            file.ThumbnailStatus = template.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
+
             try
             {
                 using (var stream = await fileTemlateDao.GetFileStreamAsync(template))
@@ -927,11 +953,14 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        using (var thumb = await fileTemlateDao.GetThumbnailAsync(template, size.Width, size.Height))
-                        {
-                            await fileDao.SaveThumbnailAsync(file, thumb, size.Width, size.Height);
-                        }
+                        await _globalStore.GetStore().CopyAsync(String.Empty,
+                                        fileTemlateDao.GetUniqThumbnailPath(template, size.Width, size.Height),
+                                        String.Empty,
+                                        fileDao.GetUniqThumbnailPath(file, size.Width, size.Height));
                     }
+
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.Created);
+
                     file.ThumbnailStatus = Thumbnail.Created;
                 }
             }
@@ -1550,7 +1579,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                 if (currentProperies.FormFilling == null)
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
+                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     currentProperies.FormFilling = scope.ServiceProvider.GetService<FormFillingProperties>();
                 }
 
@@ -2091,6 +2120,11 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
 
+    public List<FileOperationResult> DeleteItems(string action, List<T> files, List<T> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+    {
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+    }
+
     public async Task<List<FileOperationResult>> EmptyTrashAsync()
     {
         var folderDao = GetFolderDao();
@@ -2253,6 +2287,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFolder.ParentId = folderIdToMy;
 
                 var newFolderTo = await folderDao.SaveFolderAsync(newFolder);
+                await _socketManager.CreateFolderAsync(newFolder);
 
                 //move items from userFrom to userTo
                 await _entryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
@@ -2312,8 +2347,11 @@ public class FileStorageService<T> //: IFileStorageService
         {
             await _entryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
 
+            var folderFromMy = await folderDao.GetFolderAsync(folderIdFromMy);
+
             //delete My userFrom folder
             await folderDao.DeleteFolderAsync(folderIdFromMy);
+            await _socketManager.DeleteFolder(folderFromMy);
             _globalFolderHelper.SetFolderMy(userId);
         }
 
@@ -2909,11 +2947,12 @@ public class FileStorageService<T> //: IFileStorageService
                 var folderAccess = folder.Access;
 
                 newFolder.CreateBy = userInfo.Id;
-                var newFolderID = await folderDao.SaveFolderAsync(newFolder);
 
+                var newFolderID = await folderDao.SaveFolderAsync(newFolder);
                 newFolder = await folderDao.GetFolderAsync(newFolderID);
                 newFolder.Access = folderAccess;
 
+                await _socketManager.CreateFolderAsync(newFolder);
                 await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
                 _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
@@ -2951,6 +2990,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFile.ConvertedType = file.ConvertedType;
                 newFile.Comment = FilesCommonResource.CommentChangeOwner;
                 newFile.Encrypted = file.Encrypted;
+                newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
                 using (var stream = await fileDao.GetFileStreamAsync(file))
                 {
@@ -2962,11 +3002,14 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        using (var thumbnail = await fileDao.GetThumbnailAsync(file, size.Width, size.Height))
-                        {
-                            await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
-                        }
+                        await _globalStore.GetStore().CopyAsync(String.Empty,
+                                                                fileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
+                                                                String.Empty,
+                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
                     }
+
+                    await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);
+
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 

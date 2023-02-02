@@ -113,11 +113,11 @@ const FilesSection = React.memo(() => {
           "/rooms/archived/:room",
           "/rooms/archived/:room/filter",
 
-          "/files/favorite",
-          "/files/favorite/filter",
+          // "/files/favorite",
+          // "/files/favorite/filter",
 
-          "/files/recent",
-          "/files/recent/filter",
+          // "/files/recent",
+          // "/files/recent/filter",
           "/products/files/",
         ]}
         component={Home}

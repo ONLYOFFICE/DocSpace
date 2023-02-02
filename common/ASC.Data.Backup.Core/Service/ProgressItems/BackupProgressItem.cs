@@ -116,7 +116,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
         }
 
-        using var scope = _serviceScopeProvider.CreateScope();
+        await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
         _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
@@ -165,7 +165,8 @@ public class BackupProgressItem : BaseBackupProgressItem
                     CreatedOn = DateTime.UtcNow,
                     ExpiresOn = _storageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
                     StorageParams = JsonConvert.SerializeObject(StorageParams),
-                    Hash = BackupWorker.GetBackupHash(tempFile)
+                    Hash = BackupWorker.GetBackupHash(tempFile),
+                    Removed = false
                 });
 
             Percentage = 100;

@@ -2,13 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
-import Text from "../../text";
 import {
   StyledArrowIcon,
   StyledIcon,
   StyledOptionalItem,
   StyledTriangleDownIcon,
+  StyledLoader,
 } from "./styled-combobutton";
+
+import Text from "../../text";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
@@ -30,6 +32,7 @@ const ComboButton = (props) => {
     fillIcon,
     modernView,
     tabIndex,
+    isLoading,
   } = props;
 
   const defaultOption = selectedOption?.default;
@@ -52,12 +55,14 @@ const ComboButton = (props) => {
       themeId={ThemeType.ComboButton}
       tabIndex={tabIndex}
       displayArrow={displayArrow}
+      isLoading={isLoading}
     >
       {innerContainer && (
         <StyledOptionalItem
           className={innerContainerClassName}
           isDisabled={isDisabled}
           defaultOption={defaultOption}
+          isLoading={isLoading}
         >
           {innerContainer}
         </StyledOptionalItem>
@@ -68,6 +73,7 @@ const ComboButton = (props) => {
           isDisabled={isDisabled}
           defaultOption={defaultOption}
           isSelected={isSelected}
+          isLoading={isLoading}
         >
           <ReactSVG
             src={selectedOption.icon}
@@ -75,7 +81,6 @@ const ComboButton = (props) => {
           />
         </StyledIcon>
       )}
-
       <Text
         noBorder={noBorder}
         title={selectedOption?.label}
@@ -93,6 +98,7 @@ const ComboButton = (props) => {
         isOpen={isOpen}
         modernView={modernView}
         className="combo-buttons_arrow-icon"
+        isLoading={isLoading}
       >
         {displayArrow &&
           (comboIcon ? (
@@ -104,6 +110,10 @@ const ComboButton = (props) => {
             />
           ))}
       </StyledArrowIcon>
+
+      {isLoading && (
+        <StyledLoader displaySize={size} type="track" size="20px" />
+      )}
     </ColorTheme>
   );
 };
@@ -131,6 +141,7 @@ ComboButton.propTypes = {
   fillIcon: PropTypes.bool,
   modernView: PropTypes.bool,
   tabIndex: PropTypes.number,
+  isLoading: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {
@@ -144,6 +155,7 @@ ComboButton.defaultProps = {
   scaled: false,
   modernView: false,
   tabIndex: -1,
+  isLoading: false,
 };
 
 export default ComboButton;

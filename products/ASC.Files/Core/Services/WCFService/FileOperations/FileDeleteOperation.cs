@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Data;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 internal class FileDeleteOperationData<T> : FileOperationData<T>
@@ -63,7 +65,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
 
-    public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
+    public FileDeleteOperation(
+        IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
     : base(serviceProvider, fileOperationData)
     {
         _ignoreException = fileOperationData.IgnoreException;
@@ -78,6 +81,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
         var messageService = scope.ServiceProvider.GetService<MessageService>();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(CurrentTenant);
         _trashId = await folderDao.GetFolderIDTrashAsync(true);
 
         Folder<T> root = null;
@@ -109,6 +114,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
         var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
         foreach (var folderId in folderIds)
         {
@@ -150,7 +156,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                             if (providerInfo.FolderId != null)
                             {
-                                await roomLogoManager.DeleteAsync(providerInfo.FolderId, checkPermissions);
+                                var room = await roomLogoManager.DeleteAsync(providerInfo.FolderId, checkPermissions);
+                                await socketManager.UpdateFolderAsync(room);
                             }
                         }
 
@@ -178,7 +185,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         {
                             if (isRoom)
                             {
-                                await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                await socketManager.UpdateFolderAsync(room);
                             }
 
                             await FolderDao.DeleteFolderAsync(folder.Id);
@@ -187,6 +195,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                             }
+
+                            await socketManager.DeleteFolder(folder);
 
                             filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
 
@@ -207,7 +217,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             {
                                 if (isRoom)
                                 {
-                                    await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                    var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                    await socketManager.UpdateFolderAsync(room);
                                 }
 
                                 await FolderDao.DeleteFolderAsync(folder.Id);
@@ -217,6 +228,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                     await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                                 }
 
+                                await socketManager.DeleteFolder(folder);
+
                                 if (isNeedSendActions)
                                 {
                                     filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
@@ -225,6 +238,8 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             else
                             {
                                 await FolderDao.MoveFolderAsync(folder.Id, _trashId, CancellationToken);
+                                await socketManager.DeleteFolder(folder);
+
                                 if (isNeedSendActions)
                                 {
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
@@ -274,10 +289,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     if (file.ThumbnailStatus == Thumbnail.Waiting)
                     {
                         file.ThumbnailStatus = Thumbnail.NotRequired;
-                        foreach (var size in _thumbnailSettings.Sizes)
-                        {
-                            await FileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
-                        }
+                        await FileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
                     }
 
                     await socketManager.DeleteFile(file);

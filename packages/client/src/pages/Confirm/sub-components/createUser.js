@@ -1,3 +1,4 @@
+﻿import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
@@ -31,6 +32,7 @@ import { getPasswordErrorMessage } from "../../../helpers/utils";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 import Box from "@docspace/components/box";
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -196,21 +198,19 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-fields {
-    @media ${hugeMobile} {
-      display: ${(props) => props.isGreetingMode && "none"};
-    }
+      @media ${hugeMobile} {
+        .form-field {
+          display: ${(props) => props.isGreetingMode && "none"};
+        }
+        .line {
+          display: ${(props) => props.isGreetingMode && "none"};
+        }
+      }
   }
 
   .password-field-wrapper {
     width: 100%;
   }
-
-  .is-greeting-mode-button {
-    display: ${(props) => !props.isGreetingMode && "none"};
-
-    @media (min-width: 768px) {
-      display: none;
-    }
   }
 `;
 
@@ -277,6 +277,10 @@ const Confirm = (props) => {
   }, []);
 
   const onSubmit = () => {
+    if (isGreetingMode) {
+      onGreetingSubmit();
+      return;
+    }
     const { defaultPage, linkData, hashSettings } = props;
     const type = parseInt(linkData.emplType);
 
@@ -497,7 +501,7 @@ const Confirm = (props) => {
     return (
       <div className="buttonWrapper">
         <SocialButton
-          iconName="/static/images/sso.react.svg"
+          iconName={SsoReactSvgUrl}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
           onClick={() => (window.location.href = ssoUrl)}
@@ -545,6 +549,8 @@ const Confirm = (props) => {
   const onBlurPassword = () => {
     setIsPasswordErrorShow(true);
   };
+
+  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhoto;
 
   return (
     <ConfirmContainer>
@@ -746,22 +752,6 @@ const Confirm = (props) => {
                 onClick={onSubmit}
               />
             </div>
-
-            <Button
-              className="login-button is-greeting-mode-button"
-              primary
-              size="medium"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("LoginRegistryButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onGreetingSubmit}
-            />
           </form>
 
           <MoreLoginModal

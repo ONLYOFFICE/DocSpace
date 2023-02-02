@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.Classes;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 [Transient]
@@ -224,6 +226,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var (filesMessageService, fileMarker, _, _, _) = scopeClass;
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
         var countRoomChecker = scope.ServiceProvider.GetRequiredService<CountRoomChecker>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
         var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
@@ -330,6 +333,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     await FolderDao.DeleteFolderAsync(folder.Id);
 
+                                    await socketManager.DeleteFolder(folder);
+
                                     if (ProcessedFolder(folderId))
                                     {
                                         sb.Append($"folder_{newFolder.Id}{SplitChar}");
@@ -422,18 +427,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
-                                        var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
-                                        if (pins.Count > 0)
-                                        {
-                                            await TagDao.RemoveTags(pins);
-                                        }
                                     }
                                     else
                                     {
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                                     }
                                 }
-                                catch(Exception)
+                                catch (Exception)
                                 {
                                     throw;
                                 }
@@ -447,6 +447,12 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             {
                                 if (toFolder.FolderType == FolderType.Archive)
                                 {
+                                    var pins = await TagDao.GetTagsAsync(Guid.Empty, TagType.Pin, new List<FileEntry<T>> { folder }).ToListAsync();
+                                    if (pins.Count > 0)
+                                    {
+                                        await TagDao.RemoveTags(pins);
+                                    }
+
                                     filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
                                 }
                                 else
@@ -510,6 +516,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
         var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+        var globalStorage = scope.ServiceProvider.GetService<GlobalStore>();
 
         var toFolderId = toFolder.Id;
         var sb = new StringBuilder();
@@ -613,10 +620,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                 {
                                     newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                    foreach (var size in _thumbnailSettings.Sizes)
-                                    {
-                                        await fileDao.SaveThumbnailAsync(newFile, null, size.Width, size.Height);
-                                    }
+
+                                    await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Waiting);
                                 }
 
                                 if (newFile.ProviderEntry)
@@ -665,7 +670,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 newFile.ConvertedType = file.ConvertedType;
                                 newFile.Comment = FilesCommonResource.CommentOverwrite;
                                 newFile.Encrypted = file.Encrypted;
-                                newFile.ThumbnailStatus = Thumbnail.Waiting;
+                                newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
+
 
                                 using (var stream = await FileDao.GetFileStreamAsync(file))
                                 {
@@ -677,12 +683,14 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 if (file.ThumbnailStatus == Thumbnail.Created)
                                 {
                                     foreach (var size in _thumbnailSettings.Sizes)
-                                    {
-                                        using (var thumbnail = await FileDao.GetThumbnailAsync(file, size.Width, size.Height))
-                                        {
-                                            await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
-                                        }
+                                    {                                       
+                                        await globalStorage.GetStore().CopyAsync(String.Empty,
+                                                                                FileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
+                                                                                String.Empty,
+                                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));                                      
                                     }
+
+                                    await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);
 
                                     newFile.ThumbnailStatus = Thumbnail.Created;
                                 }
@@ -764,7 +772,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         string error = null;
         foreach (var file in files)
         {
-            if(checkPermissions && !await FilesSecurity.CanMoveAsync(file))
+            if (checkPermissions && !await FilesSecurity.CanMoveAsync(file))
             {
                 error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 

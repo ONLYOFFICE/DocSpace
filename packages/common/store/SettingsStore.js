@@ -210,6 +210,7 @@ class SettingsStore {
             : newSettings[key]
         );
         if (key === "culture") {
+          if (newSettings.wizardToken) return;
           const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
             setCookie(LANGUAGE, newSettings[key], {
@@ -236,7 +237,14 @@ class SettingsStore {
   };
 
   getPortalSettings = async () => {
-    const origSettings = await this.getSettings();
+    const origSettings = await this.getSettings().catch((err) => {
+      if (err?.response?.status === 404) {
+        // portal not found
+        return window.location.replace(
+          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+        );
+      }
+    });
 
     if (origSettings?.plugins?.enabled) {
       initPluginStore();
@@ -257,11 +265,9 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls()
+      this.getWhiteLabelLogoUrls(),
+      this.getBuildVersionInfo()
     );
-
-    this.tenantStatus !== TenantStatus.PortalRestore &&
-      requests.push(this.getBuildVersionInfo());
 
     await Promise.all(requests);
 
@@ -485,6 +491,7 @@ class SettingsStore {
   getPortalTimezones = async (token = undefined) => {
     const timezones = await api.settings.getPortalTimezones(token);
     this.setTimezones(timezones);
+    return timezones;
   };
 
   setHeaderVisible = (isHeaderVisible) => {

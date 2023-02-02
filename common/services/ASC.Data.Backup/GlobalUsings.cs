@@ -43,7 +43,7 @@ global using ASC.Web.Api.Routing;
 global using ASC.Web.Studio.Core.Backup;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
-
+global using Microsoft.AspNetCore.Authorization;
 global using Autofac;
 
 global using Microsoft.AspNetCore.Http.Features;

@@ -102,7 +102,7 @@ public class TransferProgressItem : BaseBackupProgressItem
 
         try
         {
-            using var scope = _serviceScopeProvider.CreateScope();
+            await using var scope = _serviceScopeProvider.CreateAsyncScope();
             _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             _transferPortalTask = scope.ServiceProvider.GetService<TransferPortalTask>();
 

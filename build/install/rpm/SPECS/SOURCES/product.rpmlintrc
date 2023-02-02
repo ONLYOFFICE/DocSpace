@@ -1,0 +1,44 @@
+# Ignoring node_modules errors due to lack of ability to influence them
+addFilter(r'node_modules')
+
+# Packages use a non-standard user and group for our project directories, but the user and group are created in %pre common
+addFilter(r' W: non-standard-(uid|gid)')
+
+# This is necessary to ensure that all child packages are updated correctly
+addFilter(r'W: requires-on-release')
+
+# The signature of packages occurs in further stages
+addFilter(r'E: no-signature')
+
+# The basic documentation comes with the common package
+addFilter(r'W: no-documentation')
+
+# The directory is needed to keep the required data
+addFilter(r'W: hidden-file-or-dir')
+
+# Some packages do not need scriptlets
+addFilter(r'W: empty-(%preun|%pre|%postun|%post)')
+
+# This is implemented for easier updating of the config, in case of adding new data or correcting errors.
+addFilter(r'W: conffile-without-noreplace-flag')
+
+# In our packaging libraries are stored in the catalog of services
+addFilter(r'E: binary-or-shlib-defines-rpath')
+
+# The directory is used to store systemd files
+addFilter(r'W: only-non-binary-in-usr-lib')
+
+# Rpmbuild does not support different architectures for child packages
+addFilter(r'E: no-binary')
+
+# There is no manual page for {{product}}-configuration.sh
+addFilter(r'W: no-manual-page-for-binary')
+
+# Dependency on a non-existent package
+addFilter(r'E: no-dependency-on locales-api')
+
+# Scripts are not designed to be run manually
+addFilter(r'E: non-executable-script')
+
+# docspace-configuration.sh has a permission of 744, so that users do not have the opportunity to run the script
+addFilter(r'non-standard-executable-perm')

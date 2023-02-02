@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 
 import { isMobile } from "react-device-detect";
 
@@ -116,7 +116,7 @@ const StyledControlContainer = styled.div`
 
 StyledControlContainer.defaultProps = { theme: Base };
 
-const StyledCrossIcon = styled(CrossIcon)`
+const StyledCrossIcon = styled(CrossReactSvg)`
   width: 17px;
   height: 17px;
   z-index: 455;

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef, memo, useCallback } from "react";
+﻿import MediaDownloadReactSvgUrl from "PUBLIC_DIR/images/media.download.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import copy from "copy-to-clipboard";
 
@@ -28,6 +30,7 @@ const ExternalLinks = ({
   shareLinks,
   setInvitationLinks,
   isOwner,
+  getInfo,
 }) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
@@ -35,23 +38,44 @@ const ExternalLinks = ({
 
   const inputsRef = useRef();
 
+  useEffect(() => {
+    if (shareLinks[0]?.expirationDate) toggleLinks();
+  }, [shareLinks]);
+
   const toggleLinks = (e) => {
     let link = null;
+    if (!shareLinks.length) return;
+
     if (roomId === -1) {
       link = shareLinks.find((l) => l.access === +defaultAccess);
 
       setActiveLink(link);
     } else {
-      setInvitationLinks(roomId, shareLinks[0].id, "Invite", +defaultAccess);
-
       link = shareLinks[0];
 
-      setActiveLink(shareLinks[0]);
+      !linksVisible ? editLink() : disableLink();
     }
 
     setLinksVisible(!linksVisible);
 
     if (!linksVisible) copyLink(link?.shareLink);
+  };
+
+  const disableLink = () => {
+    setInvitationLinks(roomId, shareLinks[0].id, "Invite", 0);
+    setTimeout(() => getInfo(), 100);
+  };
+
+  const editLink = () => {
+    if (!shareLinks[0].expirationDate) {
+      setInvitationLinks(
+        roomId,
+        shareLinks[0].id,
+        "Invite",
+        shareLinks[0].access
+      );
+    }
+    setActiveLink(shareLinks[0]);
   };
 
   const onSelectAccess = (access) => {
@@ -81,6 +105,8 @@ const ExternalLinks = ({
       copy(link);
     }
   };
+
+  const onCopyLink = () => copyLink(activeLink.shareLink);
 
   const toggleActionLinks = () => {
     setActionLinksVisible(!actionLinksVisible);
@@ -135,7 +161,7 @@ const ExternalLinks = ({
           <div style={{ position: "relative" }}>
             <IconButton
               size={16}
-              iconName="/static/images/media.download.react.svg"
+              iconName={MediaDownloadReactSvgUrl}
               hoverColor="#333333"
               iconColor="#A3A9AE"
               onClick={toggleActionLinks}
@@ -149,11 +175,11 @@ const ExternalLinks = ({
             >
               <DropDownItem
                 label={`${t("SharingPanel:ShareVia")} e-mail`}
-                onClick={() => shareEmail(links[0])}
+                onClick={() => shareEmail(activeLink[0])}
               />
               <DropDownItem
                 label={`${t("SharingPanel:ShareVia")} Twitter`}
-                onClick={() => shareTwitter(links[0])}
+                onClick={() => shareTwitter(activeLink[0])}
               />
             </DropDown>
           </div>
@@ -168,8 +194,8 @@ const ExternalLinks = ({
               scale
               value={activeLink.shareLink}
               isReadOnly
-              iconName="/static/images/copy.react.svg"
-              onIconClick={() => copyLink(activeLink.shareLink)}
+              iconName={CopyReactSvgUrl}
+              onIconClick={onCopyLink}
               hoverColor="#333333"
               iconColor="#A3A9AE"
             />

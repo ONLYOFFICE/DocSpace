@@ -215,6 +215,14 @@ export function resendUserInvites(userIds) {
   });
 }
 
+export function resendInvitesAgain() {
+  return request({
+    method: "put",
+    url: "/people/invite",
+    data: { userIds: [], resendAll: true },
+  });
+}
+
 export function updateUserCulture(id, cultureName) {
   return request({
     method: "put",

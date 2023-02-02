@@ -1,582 +1,428 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router";
-import styled from "styled-components";
-import { withTranslation } from "react-i18next";
-import PropTypes from "prop-types";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { withRouter } from "react-router";
+import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
-import Section from "@docspace/common/components/Section";
+import Text from "@docspace/components/text";
+import FormWrapper from "@docspace/components/form-wrapper";
+import EmailInput from "@docspace/components/email-input";
+import PasswordInput from "@docspace/components/password-input";
+import IconButton from "@docspace/components/icon-button";
+import ComboBox from "@docspace/components/combobox";
+import Link from "@docspace/components/link";
+import Checkbox from "@docspace/components/checkbox";
+import Button from "@docspace/components/button";
+import FieldContainer from "@docspace/components/field-container";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
-import history from "@docspace/common/history";
+
+import Loader from "@docspace/components/loader";
+
+import withCultureNames from "@docspace/common/hoc/withCultureNames";
+import { EmailSettings } from "@docspace/components/utils/email";
 import {
   combineUrl,
   createPasswordHash,
   convertLanguage,
 } from "@docspace/common/utils";
-import Loader from "@docspace/components/loader";
-import { tablet } from "@docspace/components/utils/device";
-import { EmailSettings } from "@docspace/components/utils/email";
-import HeaderContainer from "./sub-components/header-container";
-import ButtonContainer from "./sub-components/button-container";
-import SettingsContainer from "./sub-components/settings-container";
-import InputContainer from "./sub-components/input-container";
-import ModalContainer from "./sub-components/modal-dialog-container";
 
-import { setDocumentTitle } from "SRC_DIR/helpers/utils";
-import { inject, observer } from "mobx-react";
-import withCultureNames from "@docspace/common/hoc/withCultureNames";
+import {
+  Wrapper,
+  WizardContainer,
+  StyledLink,
+  StyledInfo,
+  StyledAcceptTerms,
+} from "./StyledWizard";
+import DocspaceLogo from "SRC_DIR/DocspaceLogo";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
 
-const WizardContainer = styled.div`
-  width: 960px;
-  margin: 0 auto;
-  margin-top: 63px;
+const Wizard = (props) => {
+  const {
+    passwordSettings,
+    isWizardLoaded,
+    setIsWizardLoaded,
+    wizardToken,
+    history,
+    getPortalPasswordSettings,
+    getMachineName,
+    getIsRequiredLicense,
+    getPortalTimezones,
+    machineName,
+    urlLicense,
+    theme,
+    cultureNames,
+    culture,
+    timezone,
+    hashSettings,
+    setPortalOwner,
+    setWizardComplete,
+    getPortalSettings,
+  } = props;
+  const { t } = useTranslation(["Wizard", "Common"]);
 
-  .wizard-form {
-    margin-top: 33px;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-row-gap: 32px;
-  }
+  const [email, setEmail] = useState("");
+  const [hasErrorEmail, setHasErrorEmail] = useState(false);
+  const [password, setPassword] = useState("");
+  const [hasErrorPass, setHasErrorPass] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [hasErrorAgree, setHasErrorAgree] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [timezones, setTimezones] = useState(null);
+  const [selectedTimezone, setSelectedTimezone] = useState(null);
+  const [isCreated, setIsCreated] = useState(false);
+  const [errorInitWizard, setErrorInitWizard] = useState(false);
 
-  @media ${tablet} {
-    width: 100%;
-    max-width: 480px;
-  }
+  const refPassInput = useRef(null);
 
-  @media (max-width: 520px) {
-    width: calc(100% - 32px);
-  }
-`;
+  const userCulture = window.navigator
+    ? window.navigator.language ||
+      window.navigator.systemLanguage ||
+      window.navigator.userLanguage
+    : culture;
 
-class Body extends Component {
-  constructor(props) {
-    super(props);
+  const convertedCulture = convertLanguage(userCulture);
 
-    this.state = {
-      password: "",
-      isValidPass: false,
-      errorLoading: false,
-      errorMessage: null,
-      errorInitWizard: null,
-      sending: false,
-      visibleModal: false,
-      emailValid: false,
-      email: "",
-      changeEmail: "",
-      license: false,
-      timezones: null,
-      selectLanguage: null,
-      selectTimezone: null,
-
-      emailNeeded: true,
-      emailOwner: "fake@mail.com",
-
-      hasErrorEmail: false,
-      hasErrorPass: false,
-      hasErrorLicense: false,
-
-      checkingMessages: [],
-    };
-  }
-
-  async componentDidMount() {
-    const {
-      wizardToken,
-      getPortalPasswordSettings,
-      getPortalCultures,
-      getPortalTimezones,
-      setIsWizardLoaded,
-      getMachineName,
-      getIsRequiredLicense,
-      history,
-      i18n,
-      cultureNames,
-      culture,
-    } = this.props;
-
-    const convertedCulture = convertLanguage(culture);
-
-    window.addEventListener("keyup", this.onKeyPressHandler);
-
-    if (!wizardToken) {
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
-    } else {
-      await axios
-        .all([
-          getPortalPasswordSettings(wizardToken),
-          getMachineName(wizardToken),
-          getIsRequiredLicense(),
-          getPortalTimezones(wizardToken).then(() => {
-            const { timezones, timezone } = this.props;
-            const zones = this.mapTimezonesToArray(timezones);
-            const select = zones.filter((zone) => zone.key === timezone);
-            this.setState({
-              timezones: zones,
-              selectTimezone: {
-                key: select[0].key,
-                label: select[0].label,
-              },
-            });
-          }),
-        ])
-        .then(() => {
-          let select = cultureNames.filter(
-            (lang) => lang.key === convertedCulture
-          );
-          if (!select.length)
-            select = cultureNames.filter((lang) => lang.key === "en");
-
-          this.setState({
-            selectLanguage: {
-              key: select[0].key,
-              label: select[0].label,
-            },
-          });
-          setIsWizardLoaded(true);
-        })
-        .catch((error) => {
-          let errorMessage = "";
-          if (typeof err === "object") {
-            errorMessage =
-              error?.response?.data?.error?.message ||
-              error?.statusText ||
-              error?.message ||
-              "";
-          } else {
-            errorMessage = error;
-          }
-          console.error(errorMessage);
-          this.setState({
-            errorInitWizard: errorMessage,
-          });
-        });
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.isWizardLoaded === true ||
-      nextState.errorInitWizard !== null
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { tReady, t } = this.props;
-
-    if (tReady && prevProps.tReady !== tReady) {
-      setDocumentTitle(t("WizardTitle"));
-    }
-  }
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPressHandler);
-  }
-
-  mapTimezonesToArray = (timezones) => {
+  const mapTimezonesToArray = (timezones) => {
     return timezones.map((timezone) => {
       return { key: timezone.id, label: timezone.displayName };
     });
   };
 
-  onKeyPressHandler = (e) => {
-    if (e.key === "Enter") this.onContinueHandler();
+  const getUserTimezone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
   };
 
-  isValidPassHandler = (val) => this.setState({ isValidPass: val });
+  const fetchData = async () => {
+    await axios
+      .all([
+        getPortalPasswordSettings(wizardToken),
+        getMachineName(wizardToken),
+        getIsRequiredLicense(),
+        getPortalTimezones(wizardToken).then((data) => {
+          const userTimezone = getUserTimezone();
+          const zones = mapTimezonesToArray(data);
+          const select =
+            zones.filter((zone) => zone.key === userTimezone) ||
+            zones.filter((zone) => zone.key === timezone);
 
-  onChangePassword = (e) =>
-    this.setState({ password: e.target.value, hasErrorPass: false });
+          setTimezones(zones);
+          setSelectedTimezone({
+            key: select[0]?.key,
+            label: select[0]?.label,
+          });
+        }),
+      ])
+      .then(() => {
+        let select = cultureNames.filter(
+          (lang) => lang.key === convertedCulture
+        );
+        if (!select.length)
+          select = cultureNames.filter((lang) => lang.key === "en");
 
-  onClickChangeEmail = () => this.setState({ visibleModal: true });
-
-  onEmailChangeHandler = (result) => {
-    const { emailNeeded } = this.state;
-
-    emailNeeded
-      ? this.setState({
-          emailValid: result.isValid,
-          email: result.value,
-          hasErrorEmail: false,
-        })
-      : this.setState({
-          emailValid: result.isValid,
-          changeEmail: result.value,
+        setSelectedLanguage({
+          key: select[0].key,
+          label: select[0].label,
+          icon: select[0].icon,
         });
+        setIsWizardLoaded(true);
+      })
+      .catch((error) => {
+        let errorMessage = "";
+        if (typeof err === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+        console.error(errorMessage);
+        setErrorInitWizard(true);
+      });
   };
 
-  onChangeLicense = () => this.setState({ license: !this.state.license });
+  useEffect(() => {
+    if (!wizardToken)
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
+    else fetchData();
+  }, []);
 
-  onContinueHandler = () => {
-    const valid = this.checkingValid();
+  const onEmailChangeHandler = (result) => {
+    setEmail(result.value);
+    setHasErrorEmail(!result.isValid);
+  };
 
-    if (valid) {
-      const {
-        setPortalOwner,
-        wizardToken,
-        hashSettings,
-        getPortalSettings,
-        setWizardComplete,
-      } = this.props;
+  const onChangePassword = (e) => {
+    setPassword(e.target.value);
+  };
 
-      const {
-        password,
-        email,
-        selectLanguage,
-        selectTimezone,
-        emailOwner,
-      } = this.state;
+  const isValidPassHandler = (value) => {
+    setHasErrorPass(!value);
+  };
 
-      this.setState({ sending: true });
+  const generatePassword = () => {
+    if (isCreated) return;
+    refPassInput.current.onGeneratePassword();
+  };
 
-      const emailTrim = email ? email.trim() : emailOwner.trim();
-      const analytics = true;
+  const onLanguageSelect = (lang) => {
+    setSelectedLanguage(lang);
+  };
 
-      // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
-      const hash = createPasswordHash(password, hashSettings);
+  const onTimezoneSelect = (timezone) => {
+    setSelectedTimezone(timezone);
+  };
 
-      setPortalOwner(
+  const onAgreeTermsChange = () => {
+    if (hasErrorAgree && !agreeTerms) setHasErrorAgree(false);
+    setAgreeTerms(!agreeTerms);
+  };
+
+  const validateFields = () => {
+    const emptyEmail = email.trim() === "";
+    const emptyPassword = password.trim() === "";
+
+    if (emptyEmail || emptyPassword) {
+      emptyEmail && setHasErrorEmail(true);
+      emptyPassword && setHasErrorPass(true);
+    }
+
+    if (!agreeTerms) {
+      setHasErrorAgree(true);
+    }
+
+    if (
+      emptyEmail ||
+      emptyPassword ||
+      hasErrorEmail ||
+      hasErrorPass ||
+      !agreeTerms
+    )
+      return false;
+
+    return true;
+  };
+
+  const onContinueClick = async () => {
+    if (!validateFields()) return;
+
+    setIsCreated(true);
+
+    const emailTrim = email.trim();
+    const analytics = true;
+    const hash = createPasswordHash(password, hashSettings);
+
+    try {
+      await setPortalOwner(
         emailTrim,
         hash,
-        selectLanguage.key,
-        selectTimezone.key,
+        selectedLanguage.key,
+        selectedTimezone.key,
         wizardToken,
         analytics
-      )
-        .then(() => {
-          setWizardComplete();
-          getPortalSettings();
-        })
-        .then(() =>
-          history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"))
-        )
-        .catch((error) => {
-          let errorMessage = "";
-          if (typeof err === "object") {
-            errorMessage =
-              error?.response?.data?.error?.message ||
-              error?.statusText ||
-              error?.message ||
-              "";
-          } else {
-            errorMessage = error;
-          }
-
-          this.setState({
-            errorLoading: true,
-            sending: false,
-            errorMessage: errorMessage,
-          });
-        });
-    } else {
-      this.setState({ visibleModal: true });
-    }
-  };
-
-  checkingValid = () => {
-    const { t, isLicenseRequired, licenseUpload } = this.props;
-    const { isValidPass, emailValid, license, emailNeeded } = this.state;
-
-    let checkingMessages = [];
-    if (!isValidPass) {
-      checkingMessages.push(t("ErrorPassword"));
-      this.setState({ hasErrorPass: true, checkingMessages: checkingMessages });
-    }
-    if (!license) {
-      checkingMessages.push(t("ErrorLicenseRead"));
-      this.setState({ checkingMessages: checkingMessages });
-    }
-
-    if (emailNeeded && !isLicenseRequired) {
-      if (!emailValid) {
-        checkingMessages.push(t("ErrorEmail"));
-        this.setState({
-          hasErrorEmail: true,
-          checkingMessages: checkingMessages,
-        });
-      }
-
-      if (isValidPass && emailValid && license) {
-        return true;
-      }
-    }
-
-    if (emailNeeded && isLicenseRequired) {
-      if (!emailValid) {
-        checkingMessages.push(t("ErrorEmail"));
-        this.setState({
-          hasErrorEmail: true,
-          checkingMessages: checkingMessages,
-        });
-      }
-
-      if (!licenseUpload) {
-        checkingMessages.push(t("ErrorUploadLicenseFile"));
-        this.setState({
-          hasErrorLicense: true,
-          checkingMessages: checkingMessages,
-        });
-      }
-
-      if (isValidPass && emailValid && license && licenseUpload) {
-        return true;
-      }
-    }
-
-    if (!emailNeeded && isLicenseRequired) {
-      if (!licenseUpload) {
-        checkingMessages.push(t("ErrorUploadLicenseFile"));
-        this.setState({
-          hasErrorLicense: true,
-          checkingMessages: checkingMessages,
-        });
-      }
-
-      if (isValidPass && license && licenseUpload) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  onSaveEmailHandler = () => {
-    const { changeEmail, emailValid } = this.state;
-    if (emailValid && changeEmail) {
-      this.setState({ email: changeEmail });
-    }
-    this.setState({ visibleModal: false });
-  };
-
-  onCloseModal = () => {
-    this.setState({
-      visibleModal: false,
-      errorLoading: false,
-      errorMessage: null,
-    });
-  };
-
-  onSelectTimezoneHandler = (el) => this.setState({ selectTimezone: el });
-
-  onSelectLanguageHandler = (lang) =>
-    this.setState({
-      selectLanguage: {
-        key: lang.key,
-        label: lang.label,
-      },
-    });
-
-  onSelectContextLanguage = (obj) => {
-    this.setState({
-      selectLanguage: {
-        key: obj.item.key,
-        label: obj.item.label,
-      },
-    });
-  };
-  onSelectContextTimezones = (obj) => {
-    this.setState({
-      selectTimezone: {
-        key: obj.item.key,
-        label: obj.item.label,
-      },
-    });
-  };
-  onInputFileHandler = (file) => {
-    const {
-      setLicense,
-      wizardToken,
-      licenseUpload,
-      resetLicenseUploaded,
-    } = this.props;
-
-    if (licenseUpload) resetLicenseUploaded();
-
-    this.setState({ hasErrorLicense: false });
-
-    let fd = new FormData();
-    fd.append("files", file);
-
-    setLicense(wizardToken, fd).catch((error) => {
-      let errorMessage = "";
-      if (typeof err === "object") {
-        errorMessage =
-          error?.response?.data?.error?.message ||
-          error?.statusText ||
-          error?.message ||
-          "";
-      } else {
-        errorMessage = error;
-      }
-      this.setState({
-        errorLoading: true,
-        errorMessage: errorMessage,
-        hasErrorLicense: true,
-      });
-    });
-  };
-
-  render() {
-    const {
-      t,
-      isWizardLoaded,
-      machineName,
-      passwordSettings,
-      culture,
-      isLicenseRequired,
-      urlLicense,
-      cultureNames,
-      theme,
-    } = this.props;
-
-    const {
-      sending,
-      selectLanguage,
-      license,
-      selectTimezone,
-      timezones,
-      emailNeeded,
-      email,
-      emailOwner,
-      password,
-      errorLoading,
-      visibleModal,
-      errorMessage,
-      errorInitWizard,
-      changeEmail,
-      hasErrorEmail,
-      hasErrorPass,
-      hasErrorLicense,
-      checkingMessages,
-    } = this.state;
-
-    console.log("wizard render");
-
-    const convertedCulture = convertLanguage(culture);
-
-    if (errorInitWizard) {
-      return (
-        <ErrorContainer
-          headerText={t("Common:SomethingWentWrong")}
-          bodyText={t("ErrorInitWizard")}
-          buttonText={t("ErrorInitWizardButton")}
-          buttonUrl="/"
-        />
       );
-    } else if (isWizardLoaded) {
-      return (
-        <WizardContainer>
-          <ModalContainer
-            t={t}
-            errorLoading={errorLoading}
-            visibleModal={visibleModal}
-            errorMessage={errorMessage}
-            emailOwner={changeEmail ? changeEmail : emailOwner}
-            settings={emailSettings}
-            checkingMessages={checkingMessages}
-            onEmailChangeHandler={this.onEmailChangeHandler}
-            onSaveEmailHandler={this.onSaveEmailHandler}
-            onCloseModal={this.onCloseModal}
-          />
-
-          <HeaderContainer t={t} />
-
-          <form className="wizard-form">
-            <InputContainer
-              theme={theme}
-              t={t}
-              settingsPassword={passwordSettings}
-              emailNeeded={emailNeeded}
-              password={password}
-              license={license}
-              settings={emailSettings}
-              isLicenseRequired={isLicenseRequired}
-              hasErrorEmail={hasErrorEmail}
-              hasErrorPass={hasErrorPass}
-              hasErrorLicense={hasErrorLicense}
-              urlLicense={urlLicense}
-              onChangeLicense={this.onChangeLicense}
-              isValidPassHandler={this.isValidPassHandler}
-              onChangePassword={this.onChangePassword}
-              onInputFileHandler={this.onInputFileHandler}
-              onEmailChangeHandler={this.onEmailChangeHandler}
-            />
-
-            <SettingsContainer
-              t={t}
-              selectLanguage={selectLanguage}
-              selectTimezone={selectTimezone}
-              languages={cultureNames}
-              timezones={timezones}
-              emailNeeded={emailNeeded}
-              emailOwner={emailOwner}
-              email={email}
-              machineName={machineName}
-              portalCulture={convertedCulture}
-              onClickChangeEmail={this.onClickChangeEmail}
-              onSelectLanguageHandler={this.onSelectLanguageHandler}
-              onSelectTimezoneHandler={this.onSelectTimezoneHandler}
-              onSelectContextLanguage={this.onSelectContextLanguage}
-              onSelectContextTimezones={this.onSelectContextTimezones}
-            />
-
-            <ButtonContainer
-              t={t}
-              sending={sending}
-              onContinueHandler={this.onContinueHandler}
-            />
-          </form>
-        </WizardContainer>
-      );
+      setWizardComplete();
+      getPortalSettings();
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+    } catch (error) {
+      console.error(error);
+      setIsCreated(false);
     }
+  };
+
+  if (!isWizardLoaded)
     return <Loader className="pageLoader" type="rombs" size="40px" />;
-  }
-}
 
-Body.propTypes = {
-  culture: PropTypes.string,
-  i18n: PropTypes.object,
-  isWizardLoaded: PropTypes.bool.isRequired,
-  machineName: PropTypes.string.isRequired,
-  wizardToken: PropTypes.string,
-  passwordSettings: PropTypes.object,
-  cultures: PropTypes.array.isRequired,
-  timezones: PropTypes.array.isRequired,
-  timezone: PropTypes.string.isRequired,
-  licenseUpload: PropTypes.string,
-};
-
-const WizardWrapper = withTranslation(["Wizard", "Common"])(Body);
-
-const WizardPage = observer((props) => {
-  const { isLoaded } = props;
+  if (errorInitWizard)
+    return (
+      <ErrorContainer
+        headerText={t("Common:SomethingWentWrong")}
+        bodyText={t("ErrorInitWizard")}
+        buttonText={t("ErrorInitWizardButton")}
+        buttonUrl="/"
+      />
+    );
 
   return (
-    isLoaded && (
-      <Section>
-        <Section.SectionBody>
-          <WizardWrapper {...props} />
-        </Section.SectionBody>
-      </Section>
-    )
-  );
-});
+    <Wrapper>
+      <WizardContainer>
+        <DocspaceLogo className="docspace-logo" />
+        <Text fontWeight={700} fontSize="23px" className="welcome-text">
+          {t("WelcomeTitle")}
+        </Text>
+        <FormWrapper>
+          <Text fontWeight={600} fontSize="16px" className="form-header">
+            {t("Desc")}
+          </Text>
+          <FieldContainer
+            className="wizard-field"
+            isVertical={true}
+            labelVisible={false}
+            hasError={hasErrorEmail}
+            errorMessage={t("ErrorEmail")}
+          >
+            <EmailInput
+              name="wizard-email"
+              tabIndex={1}
+              size="large"
+              scale={true}
+              placeholder={t("Common:Email")}
+              emailSettings={emailSettings}
+              hasError={hasErrorEmail}
+              onValidateInput={onEmailChangeHandler}
+              isDisabled={isCreated}
+            />
+          </FieldContainer>
 
-WizardPage.propTypes = {
-  culture: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool,
+          <FieldContainer
+            className="wizard-field password-field"
+            isVertical={true}
+            labelVisible={false}
+            hasError={hasErrorPass}
+            errorMessage={t("ErrorPassword")}
+          >
+            <PasswordInput
+              ref={refPassInput}
+              tabIndex={2}
+              size="large"
+              scale={true}
+              inputValue={password}
+              passwordSettings={passwordSettings}
+              isDisabled={isCreated}
+              placeholder={t("Common:Password")}
+              hideNewPasswordButton={true}
+              isDisableTooltip={true}
+              isTextTooltipVisible={false}
+              hasError={hasErrorPass}
+              onChange={onChangePassword}
+              autoComplete="current-password"
+              onValidateInput={isValidPassHandler}
+            />
+          </FieldContainer>
+          <StyledLink>
+            <IconButton
+              size="12"
+              iconName={RefreshReactSvgUrl}
+              onClick={generatePassword}
+            />
+            <Link
+              className="generate-password-link"
+              type="action"
+              fontWeight={600}
+              isHovered={true}
+              onClick={generatePassword}
+            >
+              {t("GeneratePassword")}
+            </Link>
+          </StyledLink>
+          <StyledInfo>
+            <Text color="#A3A9AE" fontWeight={400}>
+              {t("Domain")}
+            </Text>
+            <Text fontWeight={600} className="machine-name">
+              {machineName}
+            </Text>
+          </StyledInfo>
+          <StyledInfo>
+            <Text color="#A3A9AE" fontWeight={400}>
+              {t("Common:Language")}
+            </Text>
+            <ComboBox
+              withoutPadding
+              directionY="both"
+              options={cultureNames}
+              selectedOption={selectedLanguage}
+              onSelect={onLanguageSelect}
+              isDisabled={isCreated}
+              scaled={isMobileOnly}
+              scaledOptions={false}
+              size="content"
+              showDisabledItems={true}
+              dropDownMaxHeight={364}
+              manualWidth="250px"
+              isDefaultMode={!isMobileOnly}
+              withBlur={isMobileOnly}
+              fillIcon={false}
+              modernView={true}
+            />
+          </StyledInfo>
+          <StyledInfo>
+            <Text color="#A3A9AE" fontWeight={400}>
+              {t("Timezone")}
+            </Text>
+            <ComboBox
+              withoutPadding
+              directionY="both"
+              options={timezones}
+              selectedOption={selectedTimezone}
+              onSelect={onTimezoneSelect}
+              isDisabled={isCreated}
+              scaled={isMobileOnly}
+              scaledOptions={false}
+              size="content"
+              showDisabledItems={true}
+              dropDownMaxHeight={364}
+              manualWidth="350px"
+              isDefaultMode={!isMobileOnly}
+              withBlur={isMobileOnly}
+              fillIcon={false}
+              modernView={true}
+            />
+          </StyledInfo>
+
+          <StyledAcceptTerms>
+            <Checkbox
+              className="wizard-checkbox"
+              id="license"
+              name="confirm"
+              label={t("License")}
+              isChecked={agreeTerms}
+              onChange={onAgreeTermsChange}
+              isDisabled={isCreated}
+              hasError={hasErrorAgree}
+            />
+            <Link
+              type="page"
+              color={
+                hasErrorAgree
+                  ? theme.checkbox.errorColor
+                  : theme.client.wizard.linkColor
+              }
+              fontSize="13px"
+              target="_blank"
+              href={
+                urlLicense
+                  ? urlLicense
+                  : "https://gnu.org/licenses/gpl-3.0.html"
+              }
+            >
+              {t("LicenseLink")}
+            </Link>
+          </StyledAcceptTerms>
+
+          <Button
+            size="medium"
+            scale={true}
+            primary
+            label={t("Common:ContinueButton")}
+            isLoading={isCreated}
+            onClick={onContinueClick}
+          />
+        </FormWrapper>
+      </WizardContainer>
+    </Wrapper>
+  );
 };
 
 export default inject(({ auth, wizard }) => {
   const {
     passwordSettings,
     wizardToken,
-    timezones,
     timezone,
     urlLicense,
     hashSettings,
@@ -607,7 +453,6 @@ export default inject(({ auth, wizard }) => {
     culture: language,
     wizardToken,
     passwordSettings,
-    timezones,
     timezone,
     urlLicense,
     hashSettings,
@@ -626,4 +471,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(withCultureNames(WizardPage)));
+})(withRouter(withCultureNames(observer(Wizard))));

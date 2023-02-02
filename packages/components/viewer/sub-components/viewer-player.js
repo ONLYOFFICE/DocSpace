@@ -1,25 +1,26 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isIOS } from "react-device-detect";
 import { tablet } from "@docspace/components/utils/device";
 
-import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
-import IconStop from "../../../../public/images/videoplayer.stop.react.svg";
+import IconPlay from "PUBLIC_DIR/images/videoplayer.play.react.svg";
+import IconStop from "PUBLIC_DIR/images/videoplayer.stop.react.svg";
 
-import IconVolumeMax from "../../../../public/images/media.volumemax.react.svg";
-import IconVolumeMuted from "../../../../public/images/media.volumeoff.react.svg";
-import IconVolumeMin from "../../../../public/images/media.volumemin.react.svg";
+import IconVolumeMax from "PUBLIC_DIR/images/media.volumemax.react.svg";
+import IconVolumeMuted from "PUBLIC_DIR/images/media.volumeoff.react.svg";
+import IconVolumeMin from "PUBLIC_DIR/images/media.volumemin.react.svg";
 
-import IconFullScreen from "../../../../public/images/videoplayer.full.react.svg";
-import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react.svg";
-import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
+import IconFullScreen from "PUBLIC_DIR/images/videoplayer.full.react.svg";
+import IconExitFullScreen from "PUBLIC_DIR/images/videoplayer.exit.react.svg";
+import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg";
 
-import Icon1x from "../../../../public/images/media.viewer1x.react.svg";
-import Icon05x from "../../../../public/images/media.viewer05x.react.svg";
-import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
-import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
+import Icon1x from "PUBLIC_DIR/images/media.viewer1x.react.svg";
+import Icon05x from "PUBLIC_DIR/images/media.viewer05x.react.svg";
+import Icon15x from "PUBLIC_DIR/images/media.viewer15x.react.svg";
+import Icon2x from "PUBLIC_DIR/images/media.viewer2x.react.svg";
 
-import BigIconPlay from "../../../../public/images/media.bgplay.react.svg";
+import BigIconPlay from "PUBLIC_DIR/images/media.bgplay.react.svg";
 import { useSwipeable } from "../../react-swipeable";
 
 let iconWidth = 80;
@@ -354,6 +355,8 @@ export default function ViewerPlayer(props) {
     globalTimer,
     videoControls,
     setIsOpenContextMenu,
+    contextModel,
+    onDownloadClick,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -577,7 +580,7 @@ export default function ViewerPlayer(props) {
   };
 
   const toggleScreen = () => {
-    handleFullScreen(!state.isFullScreen);
+    !isIOS && handleFullScreen(!state.isFullScreen);
     setIsFullScreen(!state.isFullScreen);
 
     dispatch(
@@ -918,6 +921,9 @@ export default function ViewerPlayer(props) {
     contextBottom
   );
 
+  const model = contextModel();
+  const hideContextMenu = model.filter((item) => !item.disabled).length <= 1;
+
   let iconLeft =
     state.deltaX && isMobileOnly
       ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
@@ -1114,7 +1120,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 </div>
               )}
 
-              {!isMobileOnly && !props.isPreviewFile && (
+              {!isMobileOnly && !props.isPreviewFile && !hideContextMenu && (
                 <div
                   className="controller context-menu-wrapper"
                   onClick={toggleContext}
@@ -1122,6 +1128,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 >
                   <MediaContextMenu className="context-menu-icon" />
                   {contextMenu}
+                </div>
+              )}
+              {hideContextMenu && (
+                <div className="controller" onClick={onDownloadClick}>
+                  <DownloadReactSvgUrl />
                 </div>
               )}
             </div>

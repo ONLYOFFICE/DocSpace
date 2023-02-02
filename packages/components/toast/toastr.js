@@ -2,9 +2,10 @@ import React from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 
-import CheckToastIcon from "../../../public/images/check.toast.react.svg";
-import DangerToastIcon from "../../../public/images/danger.toast.react.svg";
-import InfoToastIcon from "../../../public/images/info.toast.react.svg";
+import CheckToastReactSvg from "PUBLIC_DIR/images/check.toast.react.svg";
+import DangerToastReactSvg from "PUBLIC_DIR/images/danger.toast.react.svg";
+import InfoToastReactSvg from "PUBLIC_DIR/images/info.toast.react.svg";
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 
 import Text from "../text";
 import {
@@ -31,13 +32,13 @@ const getTitle = (type) => {
   return title;
 };
 
-const StyledCheckToastIcon = styled(CheckToastIcon)`
+const StyledCheckToastIcon = styled(CheckToastReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledDangerToastIcon = styled(DangerToastIcon)`
+const StyledDangerToastIcon = styled(DangerToastReactSvg)`
   ${commonIconsStyles}
 `;
-const StyledInfoToastIcon = styled(InfoToastIcon)`
+const StyledInfoToastIcon = styled(InfoToastReactSvg)`
   ${commonIconsStyles}
 `;
 
@@ -66,7 +67,7 @@ const CloseButton = ({ closeToast, theme }) => (
     <StyledIconButton
       className="closeButton"
       onClick={closeToast}
-      iconName="/static/images/cross.react.svg"
+      iconName={CrossIconReactSvgUrl}
       size={12}
     />
   </StyledCloseWrapper>

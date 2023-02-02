@@ -71,7 +71,7 @@
   "PortalAccessSubTitle": "Ta razdelek omogoča uporabnikom varne in udobne načine za dostop do portala.",
   "PortalNameEmpty": "Ime računa je prazno",
   "PortalNameIncorrect": "Napačno ime računa",
-  "PortalNameLength": "Ime računa mora imeti dolžino od 3 do 50 znakov",
+  "PortalNameLength": "Ime računa mora imeti dolžino od {{minLength}} do {{maxLength}} znakov",
   "PortalRenaming": "Preimenovanje portala",
   "PortalRenamingDescription": "Tukaj lahko spremenite naslov vašega portala.",
   "PortalRenamingLabelText": "Novo ime portala",

@@ -5,6 +5,8 @@ import Tooltip from "../tooltip";
 import { handleAnyClick } from "../utils/event";
 import uniqueId from "lodash/uniqueId";
 
+import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
+
 class HelpButton extends React.Component {
   constructor(props) {
     super(props);
@@ -146,7 +148,7 @@ HelpButton.propTypes = {
 };
 
 HelpButton.defaultProps = {
-  iconName: "/static/images/info.react.svg",
+  iconName: InfoReactSvgUrl,
   place: "top",
   offsetRight: 60,
   offsetLeft: 0,
