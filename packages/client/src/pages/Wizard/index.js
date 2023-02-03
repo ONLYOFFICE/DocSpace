@@ -16,6 +16,7 @@ import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
 import FieldContainer from "@docspace/components/field-container";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
+import FileInput from "@docspace/components/file-input";
 
 import Loader from "@docspace/components/loader";
 
@@ -62,11 +63,11 @@ const Wizard = (props) => {
     theme,
     cultureNames,
     culture,
-    timezone,
     hashSettings,
     setPortalOwner,
     setWizardComplete,
     getPortalSettings,
+    isLicenseRequired,
   } = props;
   const { t } = useTranslation(["Wizard", "Common"]);
 
@@ -319,6 +320,23 @@ const Wizard = (props) => {
               {t("GeneratePassword")}
             </Link>
           </StyledLink>
+
+          {isLicenseRequired && (
+            <FieldContainer
+              className="license-filed"
+              isVertical={true}
+              labelVisible={false}
+              hasError={false}
+              errorMessage={t("ErrorUploadLicenseFile")}
+            >
+              <FileInput
+                scale
+                size="large"
+                accept=".lic"
+                placeholder={t("PlaceholderLicense")}
+              />
+            </FieldContainer>
+          )}
           <StyledInfo>
             <Text color="#A3A9AE" fontWeight={400}>
               {t("Domain")}

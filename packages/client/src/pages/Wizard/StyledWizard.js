@@ -75,6 +75,11 @@ export const WizardContainer = styled.div`
   .password-field {
     margin: 0px !important;
   }
+
+  .license-filed {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 `;
 
 export const StyledLink = styled.div`
