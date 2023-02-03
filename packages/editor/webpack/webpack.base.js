@@ -1,7 +1,5 @@
 const path = require("path");
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
-const PrebuildWebpackPlugin = require("prebuild-webpack-plugin");
-const beforeBuild = require("@docspace/common/utils/beforeBuild");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
