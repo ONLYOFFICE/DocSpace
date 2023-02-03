@@ -2384,16 +2384,16 @@ class FilesStore {
               isArchive
             );
 
-      const defaultRoomIcon =
-        isRoom &&
-        getIcon(
-          iconSize,
-          fileExst,
-          providerKey,
-          contentLength,
-          roomType,
-          isArchive
-        );
+      const defaultRoomIcon = isRoom
+        ? getIcon(
+            iconSize,
+            fileExst,
+            providerKey,
+            contentLength,
+            roomType,
+            isArchive
+          )
+        : undefined;
 
       return {
         access,
