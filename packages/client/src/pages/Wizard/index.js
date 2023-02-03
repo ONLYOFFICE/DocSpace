@@ -38,6 +38,10 @@ import { getUserTimezone, getSelectZone } from "./timezonesHelper";
 
 import DocspaceLogo from "SRC_DIR/DocspaceLogo";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import {
+  DEFAULT_SELECT_TIMEZONE,
+  DEFAULT_SELECT_LANGUAGE,
+} from "SRC_DIR/helpers/constants";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -107,30 +111,22 @@ const Wizard = (props) => {
 
           setTimezones(zones);
           if (!select) {
-            setSelectedTimezone({
-              key: "UTC",
-              label: "(UTC) Coordinated Universal Time",
-            });
-            return;
+            setSelectedTimezone(DEFAULT_SELECT_TIMEZONE);
+          } else {
+            setSelectedTimezone(select[0]);
           }
-          setSelectedTimezone({
-            key: select[0].key,
-            label: select[0].label,
-          });
         }),
       ])
       .then(() => {
-        let select = cultureNames.filter(
+        const select = cultureNames.filter(
           (lang) => lang.key === convertedCulture
         );
-        if (!select.length)
-          select = cultureNames.filter((lang) => lang.key === "en-US");
 
-        setSelectedLanguage({
-          key: select[0].key,
-          label: select[0].label,
-          icon: select[0].icon,
-        });
+        if (!select) {
+          setSelectedLanguage(DEFAULT_SELECT_LANGUAGE);
+        } else {
+          setSelectedLanguage(select[0]);
+        }
         setIsWizardLoaded(true);
       })
       .catch((error) => {
