@@ -40,6 +40,7 @@ public class RestorePortalTask : PortalTaskBase
     private readonly LicenseReader _licenseReader;
     private readonly TenantManager _tenantManager;
     private readonly AscCacheNotify _ascCacheNotify;
+    private readonly BackupRepository _backupRepository;
     private readonly ILogger<RestorePortalTask> _options;
     private readonly ILogger<RestoreDbModuleTask> _logger;
     private string _region;
@@ -54,7 +55,8 @@ public class RestorePortalTask : PortalTaskBase
         LicenseReader licenseReader,
         TenantManager tenantManager,
         AscCacheNotify ascCacheNotify,
-        ModuleProvider moduleProvider)
+        ModuleProvider moduleProvider,
+        BackupRepository backupRepository)
         : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _coreBaseSettings = coreBaseSettings;
@@ -63,6 +65,7 @@ public class RestorePortalTask : PortalTaskBase
         _ascCacheNotify = ascCacheNotify;
         _options = options;
         _logger = logger;
+        _backupRepository = backupRepository;
     }
 
     public void Init(string region, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
@@ -115,6 +118,7 @@ public class RestorePortalTask : PortalTaskBase
 
                     await restoreTask.RunJob();
                 }
+                _backupRepository.MigrationBackupRecords(TenantId, _columnMapper.GetTenantMapping(), _region);
             }
 
             _options.DebugEndRestoreData();

@@ -198,21 +198,19 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-fields {
-    @media ${hugeMobile} {
-      display: ${(props) => props.isGreetingMode && "none"};
-    }
+      @media ${hugeMobile} {
+        .form-field {
+          display: ${(props) => props.isGreetingMode && "none"};
+        }
+        .line {
+          display: ${(props) => props.isGreetingMode && "none"};
+        }
+      }
   }
 
   .password-field-wrapper {
     width: 100%;
   }
-
-  .is-greeting-mode-button {
-    display: ${(props) => !props.isGreetingMode && "none"};
-
-    @media (min-width: 768px) {
-      display: none;
-    }
   }
 `;
 
@@ -279,6 +277,10 @@ const Confirm = (props) => {
   }, []);
 
   const onSubmit = () => {
+    if (isGreetingMode) {
+      onGreetingSubmit();
+      return;
+    }
     const { defaultPage, linkData, hashSettings } = props;
     const type = parseInt(linkData.emplType);
 
@@ -750,22 +752,6 @@ const Confirm = (props) => {
                 onClick={onSubmit}
               />
             </div>
-
-            <Button
-              className="login-button is-greeting-mode-button"
-              primary
-              size="medium"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("LoginRegistryButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onGreetingSubmit}
-            />
           </form>
 
           <MoreLoginModal

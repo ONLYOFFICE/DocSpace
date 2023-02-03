@@ -283,9 +283,9 @@ public interface IFileDao<T>
 
     Task<bool> ContainChangesAsync(T fileId, int fileVersion);
 
-    Task CopyThumbnailAsync(File<T> fromFile, File<T> toFile, int width, int height);
+    Task SetThumbnailStatusAsync(File<T> file, Thumbnail status);
 
-    Task SaveThumbnailAsync(File<T> file, Stream thumbnail, int width, int height);
+    string GetUniqThumbnailPath(File<T> file, int width, int height);
 
     Task<Stream> GetThumbnailAsync(File<T> file, int width, int height);
 

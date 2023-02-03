@@ -29,7 +29,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.ThumbnailBuilder;
 
 [Scope]
-internal class FileDataProvider
+public class FileDataProvider
 {
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ICache _cache;
@@ -116,6 +116,24 @@ internal class FileDataProvider
         _cache.Insert(_cacheKey, result, DateTime.UtcNow.AddHours(1));
 
         return result;
+    }
+
+    public async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
+    {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var result = filesDbContext.Files
+                    .AsQueryable()
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Core.Thumbnail.Creating && EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5);
+
+        var updatedRows = await result.ExecuteUpdateAsync(s => s.SetProperty(b => b.ThumbnailStatus, b => Core.Thumbnail.Waiting));
+
+        if (updatedRows == 0)
+        {
+            return new List<FileData<int>>();  
+        }
+
+        return result.ToList().Select(r => new FileData<int>(r.TenantId, r.Id, ""));                     
     }
 
     private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)

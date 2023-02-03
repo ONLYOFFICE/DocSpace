@@ -15,27 +15,43 @@ class SelectionStore {
   }
 
   setSelection = (selection) => {
+    //console.log("setSelection", { selection });
     this.selection = selection;
-    if (selection?.length && !this.selection.length) {
-      this.bufferSelection = null;
-    }
   };
 
-  setBufferSelection = (bufferSelection) => {
+  setBufferSelection = (bufferSelection, addToSelection = true) => {
     this.bufferSelection = bufferSelection;
-    this.setSelection([]);
+    //console.log("setBufferSelection", { bufferSelection });
+    bufferSelection
+      ? addToSelection && this.setSelection([bufferSelection])
+      : this.clearSelection();
   };
 
   selectUser = (user) => {
-    if (!this.selection.length) {
-      this.bufferSelection = null;
-    }
-    this.selection.push(user);
+    const index = this.selection.findIndex((el) => el.id === user.id);
+
+    const exists = index > -1;
+
+    //console.log("selectUser", { user, selection: this.selection, exists });
+
+    if (exists) return;
+
+    this.setSelection([...this.selection, user]);
   };
 
   deselectUser = (user) => {
-    const newData = this.selection.filter((el) => el.id !== user.id);
-    return (this.selection = newData);
+    const index = this.selection.findIndex((el) => el.id === user.id);
+
+    const exists = index > -1;
+
+    //console.log("deselectUser", { user, selection: this.selection, exists });
+
+    if (!exists) return;
+
+    const newData = [...this.selection];
+    newData = this.selection.splice(index, 1);
+
+    this.setSelection(newData);
   };
 
   selectAll = () => {
@@ -54,7 +70,7 @@ class SelectionStore {
       (u) => u.status === status
     );
 
-    return (this.selection = list);
+    this.setSelection(list);
   };
 
   getUserChecked = (user, selected) => {

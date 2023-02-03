@@ -11,19 +11,26 @@ export default function withContent(WrappedContent) {
     const {
       item,
       selectGroup,
-      fetchProfile,
-      history,
       checked,
       selectUser,
       deselectUser,
+      setBufferSelection,
 
       theme,
       getModel,
     } = props;
-    const { userName, mobilePhone, email, role, displayName, avatar } = item;
 
-    const onContentRowSelect = (checked, user) =>
+    const { mobilePhone, email, role, displayName, avatar } = item;
+
+    const onContentRowSelect = (checked, user) => {
       checked ? selectUser(user) : deselectUser(user);
+    };
+
+    const onContentRowClick = (checked, user, addToSelection = true) => {
+      checked
+        ? setBufferSelection(user, addToSelection)
+        : setBufferSelection(null);
+    };
 
     const checkedProps = { checked };
 
@@ -88,35 +95,6 @@ export default function withContent(WrappedContent) {
 
     const groups = getFormattedGroups();
 
-    /*const redirectToProfile = () => {
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          `/accounts/view/${userName}`
-        )
-      );
-    };*/
-
-    /*const onUserNameClick = useCallback(
-      (e) => {
-        const timer = setTimeout(() => redirectToProfile(), 500);
-        e.preventDefault();
-        fetchProfile(userName).finally(() => {
-          clearTimeout(timer);
-          if (
-            combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              config.homepage,
-              `/accounts/view/${userName}`
-            ) !== window.location.pathname
-          )
-            redirectToProfile();
-        });
-      },
-      [history, userName]
-    );*/
-
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
     const onEmailClick = () => window.open(`mailto:${email}`);
 
@@ -137,9 +115,9 @@ export default function withContent(WrappedContent) {
     return (
       <WrappedContent
         onContentRowSelect={onContentRowSelect}
+        onContentRowClick={onContentRowClick}
         onPhoneClick={onPhoneClick}
         onEmailClick={onEmailClick}
-        //onUserNameClick={onUserNameClick}
         groups={groups}
         checkedProps={checkedProps}
         element={element}

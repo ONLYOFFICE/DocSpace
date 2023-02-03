@@ -12,6 +12,7 @@ import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
+import { getLanguage } from "@docspace/common/utils";
 import { initSSR } from "@docspace/common/api/client";
 import dns from "dns";
 
@@ -65,6 +66,8 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
         maxAge: COOKIE_EXPIRATION_YEAR,
       });
     }
+
+    currentLanguage = getLanguage(currentLanguage);
 
     if (i18n) await i18n.changeLanguage(currentLanguage);
 

@@ -1629,7 +1629,7 @@ public class EntryManager
             newFile.ConvertedType = fromFile.ConvertedType;
             newFile.Comment = string.Format(FilesCommonResource.CommentRevert, fromFile.ModifiedOnString);
             newFile.Encrypted = fromFile.Encrypted;
-            newFile.ThumbnailStatus = fromFile.ThumbnailStatus;
+            newFile.ThumbnailStatus = fromFile.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
             using (var stream = await fileDao.GetFileStreamAsync(fromFile))
             {
@@ -1643,11 +1643,17 @@ public class EntryManager
                     await using (var scope =  _serviceProvider.CreateAsyncScope())
                     { 
                         var _fileDao = scope.ServiceProvider.GetService<IDaoFactory>().GetFileDao<T>();
-                     
+                        var _globalStoreLocal = scope.ServiceProvider.GetService<GlobalStore>();
+
                         foreach (var size in _thumbnailSettings.Sizes)
                         {
-                            await  _fileDao.CopyThumbnailAsync(fromFile, newFile, size.Width, size.Height);
+                            await _globalStoreLocal.GetStore().CopyAsync(String.Empty,
+                                                                    _fileDao.GetUniqThumbnailPath(fromFile, size.Width, size.Height),
+                                                                    String.Empty,
+                                                                    _fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
                         }
+
+                        await _fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);
                     }
                 };
 

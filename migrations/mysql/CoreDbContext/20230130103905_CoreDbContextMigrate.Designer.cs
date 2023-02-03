@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.CoreDb
 {
     [DbContext(typeof(CoreDbContext))]
-    [Migration("20221019144347_CoreDbContextMigrate")]
+    [Migration("20230130103905_CoreDbContextMigrate")]
     partial class CoreDbContextMigrate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
@@ -72,7 +73,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:100,manager:1",
+                            Features = "trial,audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0m,
                             Visible = false
@@ -80,7 +81,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,thirdparty,audit,total_size:107374182400,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",

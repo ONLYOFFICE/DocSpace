@@ -187,15 +187,12 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
-  const bgPattern = getBgPattern(currentColorScheme.id).replace(
-    "client/",
-    "login/"
-  );
+  const bgPattern = getBgPattern(currentColorScheme.id);
 
   const logo = Object.values(logoUrls)[1];
   const logoUrl = !theme.isBase
-    ? getLogoFromPath(logo.path.dark).replace("client/", "login/")
-    : getLogoFromPath(logo.path.light).replace("client/", "login/");
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   if (!mounted) return <></>;
   if (isRestoringPortal) return <></>;
