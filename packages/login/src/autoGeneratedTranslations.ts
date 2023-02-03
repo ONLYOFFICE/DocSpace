@@ -53,110 +53,162 @@ import CommontrUrl from "PUBLIC_DIR/locales/tr/Common.json?url";
 import CommonukUAUrl from "PUBLIC_DIR/locales/uk-UA/Common.json?url";
 import CommonviUrl from "PUBLIC_DIR/locales/vi/Common.json?url";
 import CommonzhCNUrl from "PUBLIC_DIR/locales/zh-CN/Common.json?url";
+import FilesazUrl from "CLIENT_PUBLIC_DIR/locales/az/Files.json?url";
+import FilesbgUrl from "CLIENT_PUBLIC_DIR/locales/bg/Files.json?url";
+import FilescsUrl from "CLIENT_PUBLIC_DIR/locales/cs/Files.json?url";
+import FilesdeUrl from "CLIENT_PUBLIC_DIR/locales/de/Files.json?url";
+import FileselGRUrl from "CLIENT_PUBLIC_DIR/locales/el-GR/Files.json?url";
+import FilesenUrl from "CLIENT_PUBLIC_DIR/locales/en/Files.json?url";
+import FilesesUrl from "CLIENT_PUBLIC_DIR/locales/es/Files.json?url";
+import FilesfiUrl from "CLIENT_PUBLIC_DIR/locales/fi/Files.json?url";
+import FilesfrUrl from "CLIENT_PUBLIC_DIR/locales/fr/Files.json?url";
+import FilesitUrl from "CLIENT_PUBLIC_DIR/locales/it/Files.json?url";
+import FilesjaJPUrl from "CLIENT_PUBLIC_DIR/locales/ja-JP/Files.json?url";
+import FileskoKRUrl from "CLIENT_PUBLIC_DIR/locales/ko-KR/Files.json?url";
+import FilesloLAUrl from "CLIENT_PUBLIC_DIR/locales/lo-LA/Files.json?url";
+import FileslvUrl from "CLIENT_PUBLIC_DIR/locales/lv/Files.json?url";
+import FilesnlUrl from "CLIENT_PUBLIC_DIR/locales/nl/Files.json?url";
+import FilesplUrl from "CLIENT_PUBLIC_DIR/locales/pl/Files.json?url";
+import FilesptUrl from "CLIENT_PUBLIC_DIR/locales/pt/Files.json?url";
+import FilesptBRUrl from "CLIENT_PUBLIC_DIR/locales/pt-BR/Files.json?url";
+import FilesroUrl from "CLIENT_PUBLIC_DIR/locales/ro/Files.json?url";
+import FilesruUrl from "CLIENT_PUBLIC_DIR/locales/ru/Files.json?url";
+import FilesskUrl from "CLIENT_PUBLIC_DIR/locales/sk/Files.json?url";
+import FilesslUrl from "CLIENT_PUBLIC_DIR/locales/sl/Files.json?url";
+import FilestrUrl from "CLIENT_PUBLIC_DIR/locales/tr/Files.json?url";
+import FilesukUAUrl from "CLIENT_PUBLIC_DIR/locales/uk-UA/Files.json?url";
+import FilesviUrl from "CLIENT_PUBLIC_DIR/locales/vi/Files.json?url";
+import FileszhCNUrl from "CLIENT_PUBLIC_DIR/locales/zh-CN/Files.json?url";
 
  const az = new Map([
 ["Login", LoginazUrl],
-["Common", CommonazUrl]
+["Common", CommonazUrl],
+["Files", FilesazUrl]
 ]);
  const bg = new Map([
 ["Login", LoginbgUrl],
-["Common", CommonbgUrl]
+["Common", CommonbgUrl],
+["Files", FilesbgUrl]
 ]);
  const cs = new Map([
 ["Login", LogincsUrl],
-["Common", CommoncsUrl]
+["Common", CommoncsUrl],
+["Files", FilescsUrl]
 ]);
  const de = new Map([
 ["Login", LogindeUrl],
-["Common", CommondeUrl]
+["Common", CommondeUrl],
+["Files", FilesdeUrl]
 ]);
  const elGR = new Map([
 ["Login", LoginelGRUrl],
-["Common", CommonelGRUrl]
+["Common", CommonelGRUrl],
+["Files", FileselGRUrl]
 ]);
  const en = new Map([
 ["Login", LoginenUrl],
-["Common", CommonenUrl]
+["Common", CommonenUrl],
+["Files", FilesenUrl]
 ]);
  const es = new Map([
 ["Login", LoginesUrl],
-["Common", CommonesUrl]
+["Common", CommonesUrl],
+["Files", FilesesUrl]
 ]);
  const fi = new Map([
 ["Login", LoginfiUrl],
-["Common", CommonfiUrl]
+["Common", CommonfiUrl],
+["Files", FilesfiUrl]
 ]);
  const fr = new Map([
 ["Login", LoginfrUrl],
-["Common", CommonfrUrl]
+["Common", CommonfrUrl],
+["Files", FilesfrUrl]
 ]);
  const it = new Map([
 ["Login", LoginitUrl],
-["Common", CommonitUrl]
+["Common", CommonitUrl],
+["Files", FilesitUrl]
 ]);
  const jaJP = new Map([
 ["Login", LoginjaJPUrl],
-["Common", CommonjaJPUrl]
+["Common", CommonjaJPUrl],
+["Files", FilesjaJPUrl]
 ]);
  const koKR = new Map([
 ["Login", LoginkoKRUrl],
-["Common", CommonkoKRUrl]
+["Common", CommonkoKRUrl],
+["Files", FileskoKRUrl]
 ]);
  const loLA = new Map([
 ["Login", LoginloLAUrl],
-["Common", CommonloLAUrl]
+["Common", CommonloLAUrl],
+["Files", FilesloLAUrl]
 ]);
  const lv = new Map([
 ["Login", LoginlvUrl],
-["Common", CommonlvUrl]
+["Common", CommonlvUrl],
+["Files", FileslvUrl]
 ]);
  const nl = new Map([
 ["Login", LoginnlUrl],
-["Common", CommonnlUrl]
+["Common", CommonnlUrl],
+["Files", FilesnlUrl]
 ]);
  const pl = new Map([
 ["Login", LoginplUrl],
-["Common", CommonplUrl]
+["Common", CommonplUrl],
+["Files", FilesplUrl]
 ]);
  const pt = new Map([
 ["Login", LoginptUrl],
-["Common", CommonptUrl]
+["Common", CommonptUrl],
+["Files", FilesptUrl]
 ]);
  const ptBR = new Map([
 ["Login", LoginptBRUrl],
-["Common", CommonptBRUrl]
+["Common", CommonptBRUrl],
+["Files", FilesptBRUrl]
 ]);
  const ro = new Map([
 ["Login", LoginroUrl],
-["Common", CommonroUrl]
+["Common", CommonroUrl],
+["Files", FilesroUrl]
 ]);
  const ru = new Map([
 ["Login", LoginruUrl],
-["Common", CommonruUrl]
+["Common", CommonruUrl],
+["Files", FilesruUrl]
 ]);
  const sk = new Map([
 ["Login", LoginskUrl],
-["Common", CommonskUrl]
+["Common", CommonskUrl],
+["Files", FilesskUrl]
 ]);
  const sl = new Map([
 ["Login", LoginslUrl],
-["Common", CommonslUrl]
+["Common", CommonslUrl],
+["Files", FilesslUrl]
 ]);
  const tr = new Map([
 ["Login", LogintrUrl],
-["Common", CommontrUrl]
+["Common", CommontrUrl],
+["Files", FilestrUrl]
 ]);
  const ukUA = new Map([
 ["Login", LoginukUAUrl],
-["Common", CommonukUAUrl]
+["Common", CommonukUAUrl],
+["Files", FilesukUAUrl]
 ]);
  const vi = new Map([
 ["Login", LoginviUrl],
-["Common", CommonviUrl]
+["Common", CommonviUrl],
+["Files", FilesviUrl]
 ]);
  const zhCN = new Map([
 ["Login", LoginzhCNUrl],
-["Common", CommonzhCNUrl]
+["Common", CommonzhCNUrl],
+["Files", FileszhCNUrl]
 ]);
  export const translations = new Map([
 ["az", az],
