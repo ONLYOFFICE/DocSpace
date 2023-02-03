@@ -506,7 +506,7 @@ class MediaViewer extends React.Component {
 
     const archiveRoom =
       archiveRoomsId === targetFile.rootFolderId ||
-      (!targetFile.security.Rename && !targetFile.security.Delete);
+      (!targetFile?.security?.Rename && !targetFile?.security?.Delete);
     const { title } = currentFile;
 
     let isImage = false;
