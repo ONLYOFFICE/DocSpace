@@ -38,7 +38,7 @@ export function loadLanguagePath(homepage: string, fixedNS = null) {
     }
 
     if (ns.length > 0 && ns[0] != "Login" && isClientPath) {
-      return path.replace("/login/", "");
+      return path.replace("/login/", "/");
     }
 
     return path;
@@ -72,7 +72,7 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
             data: initialI18nStoreASC[lng][ns],
           };
         } else if (ns != "Login") {
-          window.i18n.loaded[`${path?.replace("/login/", "")}`] = {
+          window.i18n.loaded[`${path?.replace("/login/", "/webpack")}`] = {
             namespaces: ns,
             data: initialI18nStoreASC[lng][ns],
           };
