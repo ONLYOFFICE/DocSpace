@@ -63,6 +63,7 @@ public class PortalController : ControllerBase
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly IMapper _mapper;
+    private readonly IEventBus _eventBus;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -94,7 +95,8 @@ public class PortalController : ControllerBase
         EmailValidationKeyProvider emailValidationKeyProvider,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
-        IMapper mapper)
+        IMapper mapper,
+        IEventBus eventBus)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -126,6 +128,7 @@ public class PortalController : ControllerBase
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _mapper = mapper;
+        _eventBus = eventBus;
     }
 
     [HttpGet("")]
@@ -504,8 +507,6 @@ public class PortalController : ControllerBase
                 authed = true;
             }
 
-            _messageService.Send(MessageAction.PortalDeleted);
-
         }
         finally
         {
@@ -515,7 +516,10 @@ public class PortalController : ControllerBase
             }
         }
 
-        _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+        _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id)
+        {
+            RedirectLink = redirectLink
+        });
 
         return redirectLink;
     }

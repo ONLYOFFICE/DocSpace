@@ -39,6 +39,7 @@ public interface ITenantService
     Tenant GetTenantForStandaloneWithoutAlias(string ip);
     Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant);
     void RemoveTenant(int id, bool auto = false);
+    void PermanentlyRemoveTenant(int id);
     void SetTenantSettings(int tenant, string key, byte[] data);
     void ValidateDomain(string domain);
 }

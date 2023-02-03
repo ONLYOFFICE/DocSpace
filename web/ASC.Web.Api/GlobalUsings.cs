@@ -55,6 +55,8 @@ global using ASC.AuditTrail.Repositories;
 global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.EventBus.Abstractions;
+global using ASC.Web.Core.RemovePortal;
 global using ASC.Common.Log;
 global using ASC.Common.Mapping;
 global using ASC.Common.Radicale;

@@ -26,11 +26,16 @@
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
+global using ASC.Common;
 global using ASC.Data.Storage;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Log;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Web.Core.HttpHandlers;
+global using ASC.Web.Core.RemovePortal;
 global using ASC.Web.Studio;
+global using ASC.Web.Studio.IntegrationEvents;
 
 global using Autofac;
 
@@ -38,3 +43,5 @@ global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.HttpOverrides;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+
+global using NLog;

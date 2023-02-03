@@ -298,6 +298,14 @@ public class DbTenantService : ITenantService
         });
     }
 
+    public void PermanentlyRemoveTenant(int id)
+    {
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var tenant = tenantDbContext.Tenants.SingleOrDefault(r => r.Id == id);
+        tenantDbContext.Tenants.Remove(tenant);
+        tenantDbContext.SaveChanges();
+    }
+
     public IEnumerable<TenantVersion> GetTenantVersions()
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
