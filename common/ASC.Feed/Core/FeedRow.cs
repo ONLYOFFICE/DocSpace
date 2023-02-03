@@ -30,7 +30,7 @@ public class FeedRow
 {
     public DateTime AggregatedDate { get; set; }
     public IList<Guid> Users { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Product { get; set; }
     public Aggregator.Feed Feed { get; private set; }
     public string Id => Feed.Id;

@@ -29,15 +29,19 @@ namespace ASC.Core.Common.EF.Model;
 public class TenantIpRestrictions
 {
     public int Id { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Ip { get; set; }
     public bool ForAdmin { get; set; }
+
+    public DbTenant Tenant { get; set; }
 }
 
 public static class TenantIpRestrictionsExtension
 {
     public static ModelBuilderWrapper AddTenantIpRestrictions(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<TenantIpRestrictions>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddTenantIpRestrictions, Provider.MySql)
             .Add(PgSqlAddTenantIpRestrictions, Provider.PostgreSql);
@@ -52,7 +56,7 @@ public static class TenantIpRestrictionsExtension
             entity.ToTable("tenants_iprestrictions")
                 .HasCharSet("utf8");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -69,7 +73,7 @@ public static class TenantIpRestrictionsExtension
                 .HasColumnName("for_admin")
                 .HasColumnType("TINYINT(1)");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
 
@@ -79,7 +83,7 @@ public static class TenantIpRestrictionsExtension
         {
             entity.ToTable("tenants_iprestrictions", "onlyoffice");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_tenants_iprestrictions");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -94,7 +98,7 @@ public static class TenantIpRestrictionsExtension
                 .HasColumnName("for_admin")
                 .HasColumnType("TINYINT(1)");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
 
     }

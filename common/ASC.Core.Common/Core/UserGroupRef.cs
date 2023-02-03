@@ -34,7 +34,7 @@ public class UserGroupRef : IMapFrom<UserGroup>
     public bool Removed { get; set; }
     public DateTime LastModified { get; set; }
     public UserGroupRefType RefType { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
 
     public UserGroupRef() { }
 
@@ -52,17 +52,17 @@ public class UserGroupRef : IMapFrom<UserGroup>
 
     public string CreateKey()
     {
-        return CreateKey(Tenant, UserId, GroupId, RefType);
+        return CreateKey(TenantId, UserId, GroupId, RefType);
     }
 
     public override int GetHashCode()
     {
-        return UserId.GetHashCode() ^ GroupId.GetHashCode() ^ Tenant.GetHashCode() ^ RefType.GetHashCode();
+        return UserId.GetHashCode() ^ GroupId.GetHashCode() ^ TenantId.GetHashCode() ^ RefType.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        return obj is UserGroupRef r && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
+        return obj is UserGroupRef r && r.TenantId == TenantId && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
     }
 
     public void Mapping(Profile profile)
@@ -84,7 +84,7 @@ public class UserGroupRef : IMapFrom<UserGroup>
             result.RefType = refType;
         }
 
-        result.Tenant = cache.Tenant;
+        result.TenantId = cache.Tenant;
         result.LastModified = new DateTime(cache.LastModified);
         result.Removed = cache.Removed;
 
@@ -100,7 +100,7 @@ public class UserGroupRef : IMapFrom<UserGroup>
             RefType = cache.RefType.ToString(),
             LastModified = cache.LastModified.Ticks,
             Removed = cache.Removed,
-            Tenant = cache.Tenant
+            Tenant = cache.TenantId
         };
     }
 }

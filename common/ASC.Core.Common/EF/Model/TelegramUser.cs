@@ -31,6 +31,9 @@ public class TelegramUser : BaseEntity
     public Guid PortalUserId { get; set; }
     public int TenantId { get; set; }
     public long TelegramUserId { get; set; }
+
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, PortalUserId };
@@ -41,6 +44,8 @@ public static class TelegramUsersExtension
 {
     public static ModelBuilderWrapper AddTelegramUsers(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<TelegramUser>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddTelegramUsers, Provider.MySql)
             .Add(PgSqlAddTelegramUsers, Provider.PostgreSql);

@@ -139,7 +139,7 @@ public class SmsManager
     {
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
+            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { TenantId = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
         }
     }
 
@@ -176,7 +176,7 @@ public class SmsManager
         if (!_securityContext.IsAuthenticated)
         {
             var action = isEntryPoint ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaSms;
-            _cookieManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            _cookieManager.AuthenticateMeAndSetCookies(user.TenantId, user.Id, action);
         }
 
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)

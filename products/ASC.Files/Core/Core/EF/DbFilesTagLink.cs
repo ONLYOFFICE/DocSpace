@@ -36,6 +36,8 @@ public class DbFilesTagLink : BaseEntity, IDbFile
     public DateTime? CreateOn { get; set; }
     public int Count { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, TagId, EntryId, EntryType };
@@ -46,6 +48,8 @@ public static class DbFilesTagLinkExtension
 {
     public static ModelBuilderWrapper AddDbFilesTagLink(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesTagLink>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesTagLink, Provider.MySql)
             .Add(PgSqlAddDbFilesTagLink, Provider.PostgreSql);

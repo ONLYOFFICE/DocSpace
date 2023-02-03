@@ -80,7 +80,7 @@ public class ConnectionsController : ControllerBase
     public async Task<object> GetAllActiveConnections()
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.Tenant, user.Id);
+        var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.TenantId, user.Id);
         var listLoginEvents = loginEvents.ConvertAll(Convert);
         var loginEventId = GetLoginEventIdFromCookie();
         if (loginEventId != 0)
@@ -174,7 +174,7 @@ public class ConnectionsController : ControllerBase
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
             var loginEventFromCookie = GetLoginEventIdFromCookie();
 
-            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThis(loginEventFromCookie, user.Tenant, user.Id);
+            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThis(loginEventFromCookie, user.TenantId, user.Id);
 
             _messageService.Send(MessageAction.UserLogoutActiveConnections, userName);
             return userName;

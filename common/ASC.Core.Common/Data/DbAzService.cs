@@ -45,20 +45,20 @@ class DbAzService : IAzService
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces =
             userDbContext.Acl
-            .Where(r => r.Tenant == Tenant.DefaultTenant)
+            .Where(r => r.TenantId == Tenant.DefaultTenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
-            .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
+            .ToDictionary(a => string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
 
         var tenantAces =
             userDbContext.Acl
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
             .ToList();
 
         // remove excaped rows
         foreach (var a in tenantAces)
         {
-            var key = string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
+            var key = string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
             if (commonAces.TryGetValue(key, out var common))
             {
                 commonAces.Remove(key);
@@ -74,7 +74,7 @@ class DbAzService : IAzService
 
     public AzRecord SaveAce(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
@@ -102,7 +102,7 @@ class DbAzService : IAzService
 
     public void RemoveAce(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
@@ -132,7 +132,7 @@ class DbAzService : IAzService
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         return userDbContext.Acl
-            .Where(a => a.Tenant == Tenant.DefaultTenant)
+            .Where(a => a.TenantId == Tenant.DefaultTenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))
@@ -144,7 +144,7 @@ class DbAzService : IAzService
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var record = userDbContext.Acl
-            .Where(a => a.Tenant == r.Tenant)
+            .Where(a => a.TenantId == r.TenantId)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))

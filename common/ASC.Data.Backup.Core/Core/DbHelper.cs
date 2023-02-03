@@ -182,8 +182,8 @@ public class DbHelper : IDisposable
                         r[table.Columns["mappeddomain"]] = null;
                         if (table.Columns.Contains("id"))
                         {
-                            var tariff = _coreDbContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
-                            tariff.Tenant = (int)r[table.Columns["id"]];
+                            var tariff = _coreDbContext.Tariffs.FirstOrDefault(t => t.TenantId == tenant.Id);
+                            tariff.TenantId = (int)r[table.Columns["id"]];
                             tariff.CreateOn = DateTime.Now;
                             //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                             _coreDbContext.Entry(tariff).State = EntityState.Modified;

@@ -204,7 +204,7 @@ public class TariffService : ITariffService
                         var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
                         asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
-                        asynctariff.Quotas.Add(new Quota(quota.Tenant, currentPayment.Quantity));
+                        asynctariff.Quotas.Add(new Quota(quota.TenantId, currentPayment.Quantity));
                         email = currentPayment.PaymentEmail;
                     }
 
@@ -284,7 +284,7 @@ public class TariffService : ITariffService
 
             var quota = _quotaService.GetTenantQuota(quotaId);
 
-            var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.Tenant == quota.Tenant);
+            var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.TenantId == quota.TenantId);
             if (mustUpdateQuota != null)
             {
                 qty = quantity[mustUpdateQuota.Name];
@@ -295,7 +295,7 @@ public class TariffService : ITariffService
         }
 
         // add new quotas
-        var addedQuotas = newQuotas.Where(q => !tariff.Quotas.Any(t => t.Id == q.Tenant));
+        var addedQuotas = newQuotas.Where(q => !tariff.Quotas.Any(t => t.Id == q.TenantId));
         foreach (var addedQuota in addedQuotas)
         {
             var qty = quantity[addedQuota.Name];
@@ -411,7 +411,7 @@ public class TariffService : ITariffService
                         var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef.ToString());
                         if (quota != null)
                         {
-                            pi.QuotaId = quota.Tenant;
+                            pi.QuotaId = quota.TenantId;
                         }
                         payments.Add(pi);
                     }
@@ -666,7 +666,7 @@ public class TariffService : ITariffService
 
         if (tenant.HasValue)
         {
-            q = q.Where(r => r.Tenant == tenant.Value);
+            q = q.Where(r => r.TenantId == tenant.Value);
         }
 
         if (id.HasValue)
@@ -686,7 +686,7 @@ public class TariffService : ITariffService
         tariff.CustomerId = r.CustomerId;
 
         var tariffRows = coreDbContext.TariffRows
-            .Where(row => row.TariffId == r.Id && row.Tenant == tenant);
+            .Where(row => row.TariffId == r.Id && row.TenantId == tenant);
 
         tariff.Quotas = tariffRows.Select(r => new Quota(r.Quota, r.Quantity)).ToList();
 
@@ -718,7 +718,7 @@ public class TariffService : ITariffService
                     var efTariff = new DbTariff
                     {
                         Id = tariffInfo.Id,
-                        Tenant = tenant,
+                        TenantId = tenant,
                         Stamp = stamp,
                         CustomerId = tariffInfo.CustomerId,
                         CreateOn = DateTime.UtcNow
@@ -744,7 +744,7 @@ public class TariffService : ITariffService
                             TariffId = efTariff.Id,
                             Quota = q.Id,
                             Quantity = q.Quantity,
-                            Tenant = tenant
+                            TenantId = tenant
                         });
                     }
 
@@ -781,11 +781,11 @@ public class TariffService : ITariffService
         const int tenant = Tenant.DefaultTenant;
 
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        var tariffs = coreDbContext.Tariffs.Where(r => r.Tenant == tenant).ToList();
+        var tariffs = coreDbContext.Tariffs.Where(r => r.TenantId == tenant).ToList();
 
         foreach (var t in tariffs)
         {
-            t.Tenant = -2;
+            t.TenantId = -2;
             t.CreateOn = DateTime.UtcNow;
         }
 
@@ -914,7 +914,7 @@ public class TariffService : ITariffService
 
         if (toAdd != null)
         {
-            tariff.Quotas.Add(new Quota(toAdd.Tenant, 1));
+            tariff.Quotas.Add(new Quota(toAdd.TenantId, 1));
         }
     }
 

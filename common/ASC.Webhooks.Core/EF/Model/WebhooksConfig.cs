@@ -35,6 +35,8 @@ public class WebhooksConfig : BaseEntity
     public string Uri { get; set; }
     public bool Enabled { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -45,6 +47,8 @@ public static class WebhooksConfigExtension
 {
     public static ModelBuilderWrapper AddWebhooksConfig(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<WebhooksConfig>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddWebhooksConfig, Provider.MySql)
             .Add(PgSqlAddWebhooksConfig, Provider.PostgreSql);

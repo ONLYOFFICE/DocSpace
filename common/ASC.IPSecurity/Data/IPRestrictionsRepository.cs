@@ -42,7 +42,7 @@ public class IPRestrictionsRepository
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
         return tenantDbContext.TenantIpRestrictions
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
             .ToList();
     }
@@ -57,13 +57,13 @@ public class IPRestrictionsRepository
             using var tenantDbContext = _dbContextManager.CreateDbContext();
             using var tx = tenantDbContext.Database.BeginTransaction();
 
-            var restrictions = tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
+            var restrictions = tenantDbContext.TenantIpRestrictions.Where(r => r.TenantId == tenant).ToList();
             tenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
             tenantDbContext.SaveChanges();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
-                Tenant = tenant,
+                TenantId = tenant,
                 Ip = r.Ip,
                 ForAdmin = r.ForAdmin
                 

@@ -179,7 +179,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.TenantId, user.Id, MessageAction.LoginSuccess);
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             var result = new AuthenticationTokenDto
@@ -272,7 +272,7 @@ public class AuthenticationController : ControllerBase
         try
         {
             var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.TenantId, user.Id, action);
 
             var tenant = _tenantManager.GetCurrentTenant().Id;
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);

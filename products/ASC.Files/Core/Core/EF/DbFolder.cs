@@ -46,6 +46,8 @@ public class DbFolder : IDbFile, IDbSearch, ISearchItem
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     [Ignore]
     public string IndexName => Tables.Folder;
 
@@ -59,6 +61,8 @@ public static class DbFolderExtension
 {
     public static ModelBuilderWrapper AddDbFolder(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFolder>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFolder, Provider.MySql)
                 .Add(PgSqlAddDbFolder, Provider.PostgreSql);

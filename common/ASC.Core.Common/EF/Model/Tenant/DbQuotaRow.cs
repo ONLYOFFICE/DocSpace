@@ -28,15 +28,18 @@ namespace ASC.Core.Common.EF;
 
 public class DbQuotaRow : BaseEntity, IMapFrom<TenantQuotaRow>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Path { get; set; }
     public long Counter { get; set; }
     public string Tag { get; set; }
     public DateTime LastModified { get; set; }
     public Guid UserId { get; set; }
+
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, UserId, Path };
+        return new object[] { TenantId, UserId, Path };
     }
 }
 
@@ -44,6 +47,8 @@ public static class DbQuotaRowExtension
 {
     public static ModelBuilderWrapper AddDbQuotaRow(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbQuotaRow>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbQuotaRow, Provider.MySql)
             .Add(PgSqlAddDbQuotaRow, Provider.PostgreSql);
@@ -55,7 +60,7 @@ public static class DbQuotaRowExtension
     {
         modelBuilder.Entity<DbQuotaRow>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.UserId, e.Path })
+            entity.HasKey(e => new { e.TenantId, e.UserId, e.Path })
                 .HasName("PRIMARY");
 
             entity.ToTable("tenants_quotarow")
@@ -64,7 +69,7 @@ public static class DbQuotaRowExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.Path)
                 .HasColumnName("path")
@@ -97,7 +102,7 @@ public static class DbQuotaRowExtension
     {
         modelBuilder.Entity<DbQuotaRow>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.Path })
+            entity.HasKey(e => new { e.TenantId, e.Path })
                 .HasName("tenants_quotarow_pkey");
 
             entity.ToTable("tenants_quotarow", "onlyoffice");
@@ -105,7 +110,7 @@ public static class DbQuotaRowExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified_tenants_quotarow");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.Path)
                 .HasColumnName("path")

@@ -34,7 +34,7 @@ public class Group : IMapFrom<DbGroup>
     public Guid CategoryId { get; set; }
     public bool Removed { get; set; }
     public DateTime LastModified { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Sid { get; set; }
 
     public override string ToString()

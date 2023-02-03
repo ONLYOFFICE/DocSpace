@@ -41,6 +41,8 @@ public class BackupRecord : BaseEntity
     public string StorageParams { get; set; }
     public bool Removed { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -51,6 +53,8 @@ public static class BackupRecordExtension
 {
     public static ModelBuilderWrapper AddBackupRecord(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<BackupRecord>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddBackupRecord, Provider.MySql)
             .Add(PgSqlAddBackupRecord, Provider.PostgreSql);

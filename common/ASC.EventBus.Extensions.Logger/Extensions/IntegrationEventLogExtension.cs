@@ -30,6 +30,8 @@ public static class IntegrationEventLogExtension
 {
     public static ModelBuilderWrapper AddIntegrationEventLog(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<IntegrationEventLogEntry>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddIntegrationEventLog, Provider.MySql)
             .Add(PgSqlAddIntegrationEventLog, Provider.PostgreSql);

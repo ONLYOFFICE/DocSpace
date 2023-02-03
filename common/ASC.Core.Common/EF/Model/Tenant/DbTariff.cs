@@ -29,11 +29,13 @@ namespace ASC.Core.Common.EF;
 public class DbTariff : BaseEntity
 {
     public int Id { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public DateTime Stamp { get; set; }
     public string CustomerId { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
+
+    public DbTenant Tenant { get; set; }
 
     public override object[] GetKeys()
     {
@@ -45,6 +47,8 @@ public static class DbTariffExtension
 {
     public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbTariff>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbTariff, Provider.MySql)
             .Add(PgSqlAddDbTariff, Provider.PostgreSql);
@@ -58,7 +62,7 @@ public static class DbTariffExtension
             entity.ToTable("tenants_tariff")
                 .HasCharSet("utf8");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -84,7 +88,7 @@ public static class DbTariffExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
     public static void PgSqlAddDbTariff(this ModelBuilder modelBuilder)
@@ -93,7 +97,7 @@ public static class DbTariffExtension
         {
             entity.ToTable("tenants_tariff", "onlyoffice");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_tenants_tariff");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -115,7 +119,7 @@ public static class DbTariffExtension
                 .HasMaxLength(255)
                 .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
 }

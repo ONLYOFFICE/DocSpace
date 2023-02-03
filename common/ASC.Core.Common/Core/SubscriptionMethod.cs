@@ -29,7 +29,7 @@ namespace ASC.Core;
 [Serializable]
 public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Source { get; set; }
     public string Action { get; set; }
     public string Recipient { get; set; }
@@ -39,7 +39,7 @@ public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
     {
         return new SubscriptionMethod()
         {
-            Tenant = cache.Tenant,
+            TenantId = cache.Tenant,
             Source = cache.SourceId,
             Action = cache.ActionId,
             Recipient = cache.RecipientId
@@ -50,7 +50,7 @@ public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
     {
         return new SubscriptionMethodCache
         {
-            Tenant = cache.Tenant,
+            Tenant = cache.TenantId,
             SourceId = cache.Source,
             ActionId = cache.Action,
             RecipientId = cache.Recipient

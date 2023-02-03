@@ -169,7 +169,7 @@ public class SubscriptionManager
     {
         var m = new SubscriptionMethod
         {
-            Tenant = GetTenant()
+            TenantId = GetTenant()
         };
 
         if (sourceID != null)

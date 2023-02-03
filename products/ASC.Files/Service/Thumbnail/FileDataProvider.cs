@@ -90,7 +90,7 @@ public class FileDataProvider
         using var filesDbContext = _coreContextFactory.CreateDbContext();
         var search =
             filesDbContext.Tariffs
-            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Id, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Id, b => b.TenantId, (tariff, quota) => new { tariff, quota })
             .Where(r =>
                     (
                         r.tariff.Comment == null ||
@@ -107,7 +107,7 @@ public class FileDataProvider
                         !r.quota.Features.Contains("trial")
 
                     )
-            .GroupBy(r => r.tariff.Tenant)
+            .GroupBy(r => r.tariff.TenantId)
             .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
             .Where(r => r.stamp > DateTime.UtcNow);
 

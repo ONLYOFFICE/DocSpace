@@ -32,6 +32,9 @@ public class DbWebstudioSettings : BaseEntity
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public string Data { get; set; }
+
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, Id, UserId };
@@ -42,6 +45,8 @@ public static class WebstudioSettingsExtension
 {
     public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbWebstudioSettings>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddWebstudioSettings, Provider.MySql)
             .Add(PgSqlAddWebstudioSettings, Provider.PostgreSql)

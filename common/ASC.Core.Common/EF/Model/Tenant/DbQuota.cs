@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF;
 
 public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string Features { get; set; }
@@ -38,7 +38,7 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
 
     public override object[] GetKeys()
     {
-        return new object[] { Tenant };
+        return new object[] { TenantId };
     }
 
     public void Mapping(Profile profile)
@@ -56,7 +56,7 @@ public static class DbQuotaExtension
             .HasData(
                 new DbQuota
                 {
-                    Tenant = -1,
+                    TenantId = -1,
                     Name = "trial",
                     Description = null,
                     Features = "trial,audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:100,manager:1",
@@ -66,7 +66,7 @@ public static class DbQuotaExtension
                 },
                 new DbQuota
                 {
-                    Tenant = -2,
+                    TenantId = -2,
                     Name = "admin",
                     Description = null,
                     Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
@@ -76,7 +76,7 @@ public static class DbQuotaExtension
                 },
                 new DbQuota
                 {
-                    Tenant = -3,
+                    TenantId = -3,
                     Name = "startup",
                     Description = null,
                     Features = "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3",
@@ -93,13 +93,13 @@ public static class DbQuotaExtension
     {
         modelBuilder.Entity<DbQuota>(entity =>
         {
-            entity.HasKey(e => e.Tenant)
+            entity.HasKey(e => e.TenantId)
                 .HasName("PRIMARY");
 
             entity.ToTable("tenants_quota")
                 .HasCharSet("utf8");
 
-            entity.Property(e => e.Tenant)
+            entity.Property(e => e.TenantId)
                 .HasColumnName("tenant")
                 .ValueGeneratedNever();
 
@@ -140,12 +140,12 @@ public static class DbQuotaExtension
     {
         modelBuilder.Entity<DbQuota>(entity =>
         {
-            entity.HasKey(e => e.Tenant)
+            entity.HasKey(e => e.TenantId)
                 .HasName("tenants_quota_pkey");
 
             entity.ToTable("tenants_quota", "onlyoffice");
 
-            entity.Property(e => e.Tenant)
+            entity.Property(e => e.TenantId)
                 .HasColumnName("tenant")
                 .ValueGeneratedNever();
 

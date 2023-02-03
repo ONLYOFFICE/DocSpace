@@ -49,7 +49,7 @@ class DbQuotaService : IQuotaService
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
         return coreDbContext.Quotas
-            .Where(r => r.Tenant == id)
+            .Where(r => r.TenantId == id)
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
             .SingleOrDefault();
     }
@@ -75,7 +75,7 @@ class DbQuotaService : IQuotaService
             using var coreDbContext = _dbContextFactory.CreateDbContext();
             using var tr = coreDbContext.Database.BeginTransaction();
             var d = coreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
+                 .Where(r => r.TenantId == id)
                  .SingleOrDefault();
 
             if (d != null)
@@ -115,7 +115,7 @@ class DbQuotaService : IQuotaService
             if (exchange)
             {
                 var counter = coreDbContext.QuotaRows
-                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
+                .Where(r => r.Path == row.Path && r.TenantId == row.TenantId && r.UserId == userId)
                 .Select(r => r.Counter)
                 .Take(1)
                 .FirstOrDefault();
@@ -140,7 +140,7 @@ class DbQuotaService : IQuotaService
 
         if (tenantId != Tenant.DefaultTenant)
         {
-            q = q.Where(r => r.Tenant == tenantId);
+            q = q.Where(r => r.TenantId == tenantId);
         }
 
         return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();

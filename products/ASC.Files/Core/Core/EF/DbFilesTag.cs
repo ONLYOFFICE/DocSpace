@@ -33,11 +33,15 @@ public class DbFilesTag : IDbFile, IMapFrom<TagInfo>
     public string Name { get; set; }
     public Guid Owner { get; set; }
     public TagType Type { get; set; }
+
+    public DbTenant Tenant { get; set; }
 }
 public static class DbFilesTagExtension
 {
     public static ModelBuilderWrapper AddDbFilesTag(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesTag>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesTag, Provider.MySql)
             .Add(PgSqlAddDbFilesTag, Provider.PostgreSql);

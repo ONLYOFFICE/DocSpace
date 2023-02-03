@@ -30,6 +30,8 @@ public class UserDav : BaseEntity
     public int TenantId { get; set; }
     public Guid UserId { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, UserId };
@@ -40,6 +42,8 @@ public static class UserDavExtension
 {
     public static ModelBuilderWrapper AddUserDav(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<UserDav>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddUserDav, Provider.MySql)
             .Add(PgSqlAddUserDav, Provider.PostgreSql);

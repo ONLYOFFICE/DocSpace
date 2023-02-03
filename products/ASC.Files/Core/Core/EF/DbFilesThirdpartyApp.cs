@@ -34,6 +34,8 @@ public class DbFilesThirdpartyApp : BaseEntity, IDbFile
     public int TenantId { get; set; }
     public DateTime ModifiedOn { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { UserId, App };
@@ -44,6 +46,8 @@ public static class DbFilesThirdpartyAppExtension
 {
     public static ModelBuilderWrapper AddDbDbFilesThirdpartyApp(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesThirdpartyApp>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesThirdpartyApp, Provider.MySql)
             .Add(PgSqlAddDbFilesThirdpartyApp, Provider.PostgreSql);
