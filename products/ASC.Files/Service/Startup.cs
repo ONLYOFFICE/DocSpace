@@ -117,7 +117,7 @@ public class Startup : BaseWorkerStartup
             boundedChannelCapacity = 100;
         }
 
-        services.AddSingleton(Channel.CreateBounded<IEnumerable<FileData<int>>>(new BoundedChannelOptions(boundedChannelCapacity) { SingleReader = true, SingleWriter = true }));
+        services.AddSingleton(Channel.CreateBounded<IEnumerable<FileData<int>>>(new BoundedChannelOptions(boundedChannelCapacity) { SingleReader = true, SingleWriter = false }));
         services.AddSingleton(svc => svc.GetRequiredService<Channel<IEnumerable<FileData<int>>>>().Reader);
         services.AddSingleton(svc => svc.GetRequiredService<Channel<IEnumerable<FileData<int>>>>().Writer);
     }
