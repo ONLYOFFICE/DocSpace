@@ -38,6 +38,7 @@ public class WebhooksDbContext : DbContext
         ModelBuilderWrapper
         .From(modelBuilder, Database)
         .AddWebhooksConfig()
-        .AddWebhooksLog();
+        .AddWebhooksLog()
+        .AddDbTenant();
     }
 }

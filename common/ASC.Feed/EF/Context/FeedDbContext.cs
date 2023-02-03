@@ -42,6 +42,7 @@ public class FeedDbContext : DbContext
             .AddFeedUsers()
             .AddFeedReaded()
             .AddFeedAggregate()
-            .AddFeedLast();
+            .AddFeedLast()
+            .AddDbTenant();
     }
 }
