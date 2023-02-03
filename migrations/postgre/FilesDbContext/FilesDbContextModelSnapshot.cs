@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
+namespace ASC.Migrations.PostgreSql.Migrations
 {
     [DbContext(typeof(FilesDbContext))]
     partial class FilesDbContextModelSnapshot : ModelSnapshot
@@ -165,6 +165,21 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                             OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             Spam = false,
                             Status = 0,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Spam = false,
+                            Status = 1,
                             TrustedDomainsEnabled = 0,
                             Version = 0
                         });
@@ -2040,6 +2055,8 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                     b.HasIndex("ParentId")
                         .HasDatabaseName("folder_id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("files_file", "onlyoffice");
                 });
 
@@ -2375,6 +2392,8 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                     b.HasKey("UserId", "App")
                         .HasName("files_thirdparty_app_pkey");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("files_thirdparty_app", "onlyoffice");
                 });
 
@@ -2498,6 +2517,127 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         .HasDatabaseName("folder_id_files_folder_tree");
 
                     b.ToTable("files_folder_tree", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFile", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesBunchObjects", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesLink", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesProperties", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesSecurity", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTag", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTagLink", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyAccount", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyApp", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyIdMapping", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFolder", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

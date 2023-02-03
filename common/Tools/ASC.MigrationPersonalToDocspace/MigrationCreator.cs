@@ -132,17 +132,17 @@ public class MigrationCreator
             {
                 if (string.IsNullOrEmpty(_userName))
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.Email == _mail);
                     _userName = user.UserName;
                 }
                 else
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                    user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName);
                 }
             }
             else
             {
-                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+                user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
             }
             if (!string.IsNullOrEmpty(_toAlias)) 
             {
@@ -155,7 +155,7 @@ public class MigrationCreator
                 }
                 else
                 {
-                    if (userDbContextToregion.Users.Any(q => q.Tenant == tenant.Id && q.UserName == _userName || q.Email == _mail))
+                    if (userDbContextToregion.Users.Any(q => q.TenantId == tenant.Id && q.UserName == _userName || q.Email == _mail))
                     {
                         throw new ArgumentException("username already exist in the portal");
                     }
@@ -181,14 +181,14 @@ public class MigrationCreator
 
             using var coreDbContext = _dbFactory.CreateDbContext<CoreDbContext>(_toRegion);
             var qouta = coreDbContext.Quotas
-                 .Where(r => r.Tenant == tenant.Id)
+                 .Where(r => r.TenantId == tenant.Id)
                  .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                  .SingleOrDefault();
 
             using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
             var usersCount = userDbContextToregion.Users
                 .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new {u, ug})
-                .Where(q=> q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
+                .Where(q=> q.u.TenantId == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
             if (usersCount > qouta.CountRoomAdmin)
             {
                 throw new ArgumentException("user count exceed");

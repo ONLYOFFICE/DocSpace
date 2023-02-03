@@ -18,12 +18,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
                 {
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -48,7 +48,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("acetype");
 
-                    b.HasKey("Tenant", "Subject", "Action", "Object")
+                    b.HasKey("TenantId", "Subject", "Action", "Object")
                         .HasName("core_acl_pkey");
 
                     b.ToTable("core_acl", "onlyoffice");
@@ -56,7 +56,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasData(
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"),
                             Action = new Guid("ef5e6790-f346-4b6e-b662-722bc28cb0db"),
                             Object = "",
@@ -64,7 +64,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"),
                             Action = new Guid("f11e8f3f-46e6-4e55-90e3-09c22ec565bd"),
                             Object = "",
@@ -72,7 +72,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("088d5940-a80f-4403-9741-d610718ce95c"),
                             Object = "",
@@ -80,7 +80,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("08d66144-e1c9-4065-9aa1-aa4bba0a7bc8"),
                             Object = "",
@@ -88,7 +88,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("08d75c97-cf3f-494b-90d1-751c941fe2dd"),
                             Object = "",
@@ -96,7 +96,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("0d1f72a8-63da-47ea-ae42-0900e4ac72a9"),
                             Object = "",
@@ -104,7 +104,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("13e30b51-5b4d-40a5-8575-cb561899eeb1"),
                             Object = "",
@@ -112,7 +112,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("19f658ae-722b-4cd8-8236-3ad150801d96"),
                             Object = "",
@@ -120,7 +120,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("2c6552b3-b2e0-4a00-b8fd-13c161e337b1"),
                             Object = "",
@@ -128,7 +128,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("388c29d3-c662-4a61-bf47-fc2f7094224a"),
                             Object = "",
@@ -136,7 +136,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("40bf31f4-3132-4e76-8d5c-9828a89501a3"),
                             Object = "",
@@ -144,7 +144,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("49ae8915-2b30-4348-ab74-b152279364fb"),
                             Object = "",
@@ -152,7 +152,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd"),
                             Object = "",
@@ -160,7 +160,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("9018c001-24c2-44bf-a1db-d1121a570e74"),
                             Object = "",
@@ -168,7 +168,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("948ad738-434b-4a88-8e38-7569d332910a"),
                             Object = "",
@@ -176,7 +176,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("9d75a568-52aa-49d8-ad43-473756cd8903"),
                             Object = "",
@@ -184,7 +184,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("a362fe79-684e-4d43-a599-65bc1f4e167f"),
                             Object = "",
@@ -192,7 +192,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("c426c349-9ad4-47cd-9b8f-99fc30675951"),
                             Object = "",
@@ -200,7 +200,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("d11ebcb9-0e6e-45e6-a6d0-99c41d687598"),
                             Object = "",
@@ -208,7 +208,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("d1f3b53d-d9e2-4259-80e7-d24380978395"),
                             Object = "",
@@ -216,7 +216,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("d49f4e30-da10-4b39-bc6d-b41ef6e039d3"),
                             Object = "",
@@ -224,7 +224,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
                             Action = new Guid("d852b66f-6719-45e1-8657-18f0bb791690"),
                             Object = "",
@@ -232,7 +232,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
@@ -240,7 +240,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("e37239bd-c5b5-4f1e-a9f8-3ceeac209615"),
                             Object = "",
@@ -248,7 +248,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("fbc37705-a04c-40ad-a68c-ce2f0423f397"),
                             Object = "",
@@ -256,7 +256,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("fcac42b8-9386-48eb-a938-d19b3c576912"),
                             Object = "",
@@ -264,7 +264,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("13e30b51-5b4d-40a5-8575-cb561899eeb1"),
                             Object = "",
@@ -272,7 +272,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("49ae8915-2b30-4348-ab74-b152279364fb"),
                             Object = "",
@@ -280,7 +280,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd"),
                             Object = "",
@@ -288,7 +288,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("9018c001-24c2-44bf-a1db-d1121a570e74"),
                             Object = "",
@@ -296,7 +296,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("d1f3b53d-d9e2-4259-80e7-d24380978395"),
                             Object = "",
@@ -304,7 +304,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
@@ -312,7 +312,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("e37239bd-c5b5-4f1e-a9f8-3ceeac209615"),
                             Object = "",
@@ -320,7 +320,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("f11e88d7-f185-4372-927c-d88008d2c483"),
                             Object = "",
@@ -328,7 +328,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
                             Action = new Guid("f11e8f3f-46e6-4e55-90e3-09c22ec565bd"),
                             Object = "",
@@ -336,7 +336,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("00e7dfc5-ac49-4fd3-a1d6-98d84e877ac4"),
                             Object = "",
@@ -344,7 +344,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("14be970f-7af5-4590-8e81-ea32b5f7866d"),
                             Object = "",
@@ -352,7 +352,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("18ecc94d-6afa-4994-8406-aee9dff12ce2"),
                             Object = "",
@@ -360,7 +360,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("298530eb-435e-4dc6-a776-9abcd95c70e9"),
                             Object = "",
@@ -368,7 +368,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("430eaf70-1886-483c-a746-1a18e3e6bb63"),
                             Object = "",
@@ -376,7 +376,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("557d6503-633b-4490-a14c-6473147ce2b3"),
                             Object = "",
@@ -384,7 +384,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("724cbb75-d1c9-451e-bae0-4de0db96b1f7"),
                             Object = "",
@@ -392,7 +392,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("7cb5c0d1-d254-433f-abe3-ff23373ec631"),
                             Object = "",
@@ -400,7 +400,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("91b29dcd-9430-4403-b17a-27d09189be88"),
                             Object = "",
@@ -408,7 +408,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("a18480a4-6d18-4c71-84fa-789888791f45"),
                             Object = "",
@@ -416,7 +416,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("b630d29b-1844-4bda-bbbe-cf5542df3559"),
                             Object = "",
@@ -424,7 +424,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("c62a9e8d-b24c-4513-90aa-7ff0f8ba38eb"),
                             Object = "",
@@ -432,7 +432,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("d7cdb020-288b-41e5-a857-597347618533"),
                             Object = "",
@@ -440,7 +440,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("662f3db7-9bc8-42cf-84da-2765f563e9b0"),
                             Object = "",
@@ -448,7 +448,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("712d9ec3-5d2b-4b13-824f-71f00191dcca"),
                             Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
@@ -456,7 +456,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
                             Action = new Guid("0d68b142-e20a-446e-a832-0d6b0b65a164"),
                             Object = "",
@@ -464,7 +464,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("6f05c382-8bca-4469-9424-c807a98c40d7"),
                             Object = "",
@@ -472,7 +472,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|1e04460243b54d7982f3fd6208a11960",
@@ -480,7 +480,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6743007c6f954d208c88a8601ce5e76d",
@@ -488,7 +488,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|e67be73df9ae4ce18fec1880cb518cb4",
@@ -496,7 +496,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8",
@@ -504,7 +504,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|32d24cb57ece46069c9419216ba42086",
@@ -512,7 +512,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|bf88953e3c434850a3fbb1e43ad53a3e",
@@ -520,7 +520,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|2a9230378b2d487b9a225ac0918acf3f",
@@ -528,7 +528,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|f4d98afdd336433287783c6945c81ea0",
@@ -536,7 +536,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7",
@@ -544,7 +544,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c",
@@ -552,7 +552,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2",
@@ -560,7 +560,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca",
@@ -568,7 +568,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234",
@@ -576,7 +576,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26",
@@ -584,7 +584,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
                             Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa",
@@ -637,7 +637,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("sid")
                         .HasDefaultValueSql("NULL");
 
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -646,7 +646,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified");
 
-                    b.HasIndex("Tenant", "ParentId")
+                    b.HasIndex("TenantId", "ParentId")
                         .HasDatabaseName("parentid");
 
                     b.ToTable("core_group", (string)null);
@@ -654,7 +654,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbSubscriptionMethod", b =>
                 {
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -679,7 +679,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("character varying(1024)")
                         .HasColumnName("sender");
 
-                    b.HasKey("Tenant", "Source", "Action", "Recipient")
+                    b.HasKey("TenantId", "Source", "Action", "Recipient")
                         .HasName("core_subscriptionmethod_pkey");
 
                     b.ToTable("core_subscriptionmethod", "onlyoffice");
@@ -687,7 +687,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasData(
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "send_whats_new",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -695,7 +695,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6504977c-75af-4691-9099-084d3ddeea04",
                             Action = "new feed",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -703,7 +703,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6a598c74-91ae-437d-a5f4-ad339bd11bb2",
                             Action = "new post",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -711,7 +711,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "853b6eb9-73ee-438d-9b09-8ffeedf36234",
                             Action = "new topic in forum",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -719,7 +719,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "9d51954f-db9b-4aed-94e3-ed70b914e101",
                             Action = "new photo uploaded",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -727,7 +727,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "28b10049-dd20-4f54-b986-873bc14ccfc7",
                             Action = "new bookmark created",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -735,7 +735,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "742cf945-cbbc-4a57-82d6-1600a12cf8ca",
                             Action = "new wiki page",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -743,7 +743,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "37620ae5-c40b-45ce-855a-39dd7d76a1fa",
                             Action = "BirthdayReminder",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -751,7 +751,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6fe286a4-479e-4c25-a8d9-0156e332b0c0",
                             Action = "sharedocument",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -759,7 +759,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6fe286a4-479e-4c25-a8d9-0156e332b0c0",
                             Action = "sharefolder",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -767,7 +767,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6fe286a4-479e-4c25-a8d9-0156e332b0c0",
                             Action = "updatedocument",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -775,7 +775,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "invitetoproject",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -783,7 +783,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "milestonedeadline",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -791,7 +791,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "newcommentformessage",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -799,7 +799,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "newcommentformilestone",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -807,7 +807,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "newcommentfortask",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -815,7 +815,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "projectcreaterequest",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -823,7 +823,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "projecteditrequest",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -831,7 +831,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "removefromproject",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -839,7 +839,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "responsibleforproject",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -847,7 +847,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "responsiblefortask",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -855,7 +855,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6045b68c-2c2e-42db-9e53-c272e814c4ad",
                             Action = "taskclosed",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -863,7 +863,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "40650da3-f7c1-424c-8c89-b9c115472e08",
                             Action = "calendar_sharing",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -871,7 +871,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "40650da3-f7c1-424c-8c89-b9c115472e08",
                             Action = "event_alert",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -879,7 +879,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "admin_notify",
                             Recipient = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
@@ -887,7 +887,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "SetAccess",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -895,7 +895,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ResponsibleForTask",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -903,7 +903,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "AddRelationshipEvent",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -911,7 +911,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ExportCompleted",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -919,7 +919,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "CreateNewContact",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -927,7 +927,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ResponsibleForOpportunity",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -935,7 +935,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "periodic_notify",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -943,9 +943,173 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("alias");
+
+                    b.Property<bool>("Calls")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("calls")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<DateTime>("CreationDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("creationdatetime");
+
+                    b.Property<int>("Industry")
+                        .HasColumnType("integer")
+                        .HasColumnName("industry");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character(10)")
+                        .HasColumnName("language")
+                        .HasDefaultValueSql("'en-US'")
+                        .IsFixedLength();
+
+                    b.Property<DateTime>("LastModified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("MappedDomain")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("mappeddomain")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("OwnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("payment_id")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<bool>("Spam")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("spam")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("StatusChanged")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("statuschanged");
+
+                    b.Property<string>("TimeZone")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("timezone")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<int>("TrustedDomainsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("trusteddomainsenabled")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("TrustedDomainsRaw")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("trusteddomains")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<int>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("version")
+                        .HasDefaultValueSql("2");
+
+                    b.Property<DateTime?>("Version_Changed")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("version_changed");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Alias")
+                        .IsUnique()
+                        .HasDatabaseName("alias");
+
+                    b.HasIndex("LastModified")
+                        .HasDatabaseName("last_modified_tenants_tenants");
+
+                    b.HasIndex("MappedDomain")
+                        .HasDatabaseName("mappeddomain");
+
+                    b.HasIndex("Version")
+                        .HasDatabaseName("version");
+
+                    b.ToTable("tenants_tenants", "onlyoffice");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Alias = "localhost",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                            Spam = false,
+                            Status = 0,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Spam = false,
+                            Status = 1,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        });
+                });
+
             modelBuilder.Entity("ASC.Core.Common.EF.Subscription", b =>
                 {
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -973,7 +1137,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("unsubscribed");
 
-                    b.HasKey("Tenant", "Source", "Action", "Recipient", "Object")
+                    b.HasKey("TenantId", "Source", "Action", "Recipient", "Object")
                         .HasName("core_subscription_pkey");
 
                     b.ToTable("core_subscription", "onlyoffice");
@@ -981,7 +1145,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasData(
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "send_whats_new",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -990,7 +1154,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6504977c-75af-4691-9099-084d3ddeea04",
                             Action = "new feed",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -999,7 +1163,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6a598c74-91ae-437d-a5f4-ad339bd11bb2",
                             Action = "new post",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1008,7 +1172,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "853b6eb9-73ee-438d-9b09-8ffeedf36234",
                             Action = "new topic in forum",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1017,7 +1181,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "9d51954f-db9b-4aed-94e3-ed70b914e101",
                             Action = "new photo uploaded",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1026,7 +1190,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "28b10049-dd20-4f54-b986-873bc14ccfc7",
                             Action = "new bookmark created",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1035,7 +1199,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "742cf945-cbbc-4a57-82d6-1600a12cf8ca",
                             Action = "new wiki page",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1044,7 +1208,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "37620ae5-c40b-45ce-855a-39dd7d76a1fa",
                             Action = "BirthdayReminder",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1053,7 +1217,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6fe286a4-479e-4c25-a8d9-0156e332b0c0",
                             Action = "sharedocument",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1062,7 +1226,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "6fe286a4-479e-4c25-a8d9-0156e332b0c0",
                             Action = "sharefolder",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1071,7 +1235,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "40650da3-f7c1-424c-8c89-b9c115472e08",
                             Action = "calendar_sharing",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1080,7 +1244,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "40650da3-f7c1-424c-8c89-b9c115472e08",
                             Action = "event_alert",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1089,7 +1253,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "admin_notify",
                             Recipient = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
@@ -1098,7 +1262,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "SetAccess",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1107,7 +1271,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ResponsibleForTask",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1116,7 +1280,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "AddRelationshipEvent",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1125,7 +1289,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ExportCompleted",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1134,7 +1298,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "CreateNewContact",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1143,7 +1307,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "13ff36fb-0272-4887-b416-74f52b0d0b02",
                             Action = "ResponsibleForOpportunity",
                             Recipient = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
@@ -1152,7 +1316,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         },
                         new
                         {
-                            Tenant = -1,
+                            TenantId = -1,
                             Source = "asc.web.studio",
                             Action = "periodic_notify",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
@@ -1280,7 +1444,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("status")
                         .HasDefaultValueSql("1");
 
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -1313,7 +1477,9 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified_core_user");
 
-                    b.HasIndex("UserName", "Tenant")
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserName", "TenantId")
                         .HasDatabaseName("username");
 
                     b.ToTable("core_user", "onlyoffice");
@@ -1331,7 +1497,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             MobilePhoneActivation = 0,
                             Removed = false,
                             Status = 1,
-                            Tenant = 1,
+                            TenantId = 1,
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157)
                         });
@@ -1356,7 +1522,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
                 {
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -1384,7 +1550,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("removed");
 
-                    b.HasKey("Tenant", "Userid", "UserGroupId", "RefType")
+                    b.HasKey("TenantId", "Userid", "UserGroupId", "RefType")
                         .HasName("core_usergroup_pkey");
 
                     b.HasIndex("LastModified")
@@ -1395,7 +1561,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasData(
                         new
                         {
-                            Tenant = 1,
+                            TenantId = 1,
                             Userid = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             UserGroupId = new Guid("cd84e66b-b803-40fc-99f9-b2969a54a1de"),
                             RefType = 0,
@@ -1417,14 +1583,14 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("photo");
 
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.HasKey("UserId")
                         .HasName("core_userphoto_pkey");
 
-                    b.HasIndex("Tenant")
+                    b.HasIndex("TenantId")
                         .HasDatabaseName("tenant_core_userphoto");
 
                     b.ToTable("core_userphoto", "onlyoffice");
@@ -1450,7 +1616,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("pwdhash")
                         .HasDefaultValueSql("NULL");
 
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -1460,7 +1626,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("PwdHash")
                         .HasDatabaseName("pwdhash");
 
-                    b.HasIndex("Tenant")
+                    b.HasIndex("TenantId")
                         .HasDatabaseName("tenant_core_usersecurity");
 
                     b.ToTable("core_usersecurity", "onlyoffice");
@@ -1471,8 +1637,107 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             UserId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
-                            Tenant = 1
+                            TenantId = 1
                         });
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbGroup", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbSubscriptionMethod", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Subscription", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserDav", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserPhoto", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserSecurity", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

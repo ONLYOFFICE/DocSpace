@@ -72,8 +72,7 @@ public static class WebhooksConfigExtension
                 .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Uri)
                 .HasMaxLength(50)
@@ -114,8 +113,7 @@ public static class WebhooksConfigExtension
                 .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Uri)
                 .HasMaxLength(50)

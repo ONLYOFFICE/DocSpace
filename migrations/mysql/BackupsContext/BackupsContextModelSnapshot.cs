@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.Backups
+namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(BackupsContext))]
     partial class BackupsContextModelSnapshot : ModelSnapshot
@@ -165,6 +165,21 @@ namespace ASC.Migrations.MySql.Migrations.Backups
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = "00000000-0000-0000-0000-000000000000",
+                            Spam = false,
+                            Status = 1,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
                         });
                 });
 
@@ -304,6 +319,28 @@ namespace ASC.Migrations.MySql.Migrations.Backups
                     b.ToTable("backup_schedule", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupRecord", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

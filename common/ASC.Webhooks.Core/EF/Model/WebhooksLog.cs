@@ -89,8 +89,7 @@ public static class WebhooksPayloadExtension
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
@@ -164,8 +163,7 @@ public static class WebhooksPayloadExtension
                 .HasMaxLength(50);
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()

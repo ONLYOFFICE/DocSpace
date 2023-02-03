@@ -165,7 +165,7 @@ public class MigrationRunner
         if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
         {
             
-            var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
+            var user = dbContextUser.Users.Single(u => u.TenantId == tenantId);
             tenant.OwnerId = user.Id;
             Console.WriteLine($"set ownerId {user.Id}");
         }
@@ -179,11 +179,11 @@ public class MigrationRunner
         var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
         using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
 
-        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId))
+        if (!dbContextUser.UserGroups.Any(q => q.TenantId == tenantId))
         {
             var userGroup = new UserGroup()
             {
-                Tenant = tenantId,
+                TenantId = tenantId,
                 LastModified = DateTime.UtcNow,
                 RefType = Core.UserGroupRefType.Contains,
                 Removed = false,

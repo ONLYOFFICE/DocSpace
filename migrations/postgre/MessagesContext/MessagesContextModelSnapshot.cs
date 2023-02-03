@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -165,6 +165,21 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             Spam = false,
                             Status = 0,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Spam = false,
+                            Status = 1,
                             TrustedDomainsEnabled = 0,
                             Version = 0
                         });
@@ -327,7 +342,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("status")
                         .HasDefaultValueSql("1");
 
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -360,7 +375,9 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified_core_user");
 
-                    b.HasIndex("UserName", "Tenant")
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserName", "TenantId")
                         .HasDatabaseName("username");
 
                     b.ToTable("core_user", "onlyoffice");
@@ -378,7 +395,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             MobilePhoneActivation = 0,
                             Removed = false,
                             Status = 1,
-                            Tenant = 1,
+                            TenantId = 1,
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157)
                         });
@@ -386,7 +403,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
                 {
-                    b.Property<int>("Tenant")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer")
                         .HasColumnName("tenant");
 
@@ -414,7 +431,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("removed");
 
-                    b.HasKey("Tenant", "Userid", "UserGroupId", "RefType")
+                    b.HasKey("TenantId", "Userid", "UserGroupId", "RefType")
                         .HasName("core_usergroup_pkey");
 
                     b.HasIndex("LastModified")
@@ -583,10 +600,67 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("Date")
                         .HasDatabaseName("date_login_events");
 
+                    b.HasIndex("TenantId");
+
                     b.HasIndex("UserId", "TenantId")
                         .HasDatabaseName("tenant_id_login_events");
 
                     b.ToTable("login_events", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.AuditEvent", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.LoginEvent", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }
