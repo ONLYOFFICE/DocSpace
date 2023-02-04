@@ -6,13 +6,36 @@ import { Container } from "./styled-components";
 import { Days, Months, Years } from "./sub-components";
 
 const Calendar = () => {
+  moment.locale("en");
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [observedDate, setObservedDate] = useState(moment());
+  const [selectedScene, setSelectedScene] = useState(0);
 
   return (
     <Container>
-      {/* <Days selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> */}
-      {/* <Months selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> */}
-      <Years selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      {selectedScene === 0 ? (
+        <Days
+          observedDate={observedDate}
+          setObservedDate={setObservedDate}
+          setSelectedScene={setSelectedScene}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      ) : selectedScene === 1 ? (
+        <Months
+          observedDate={observedDate}
+          setObservedDate={setObservedDate}
+          setSelectedScene={setSelectedScene}
+          selectedDate={selectedDate}
+        />
+      ) : (
+        <Years
+          observedDate={observedDate}
+          setObservedDate={setObservedDate}
+          setSelectedScene={setSelectedScene}
+          selectedDate={selectedDate}
+        />
+      )}
     </Container>
   );
 };
