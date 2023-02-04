@@ -6,5 +6,6 @@ export const SecondaryDateItem = styled(DateItem)`
 
   :hover{
     cursor: ${props => props.disabled ? 'auto' : 'pointer'};
+    color: #333333;
   }
 `;
