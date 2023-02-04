@@ -21,7 +21,6 @@ export const DateItem = styled.button`
   :hover {
     cursor: pointer;
     background: #f3f4f4;
-    color: #333333;
   }
 
   :focus{
