@@ -4,9 +4,11 @@ export const DateItem = styled.button`
   font-family: "Open Sans";
   font-weight: 600;
   font-size: 16px;
-  color: #333333;
+  border-radius: 50%;
+  color: ${props => props.focused ? '#4781D1' : '#333'};
 
-  border: 2px solid transparent;
+  border: 2px solid;
+  border-color: ${props => props.focused ? '#4781D1' : 'transparent'};
   background-color: transparent;
 
   width: ${props => props.big ? '60px' : '40px'};
@@ -19,13 +21,11 @@ export const DateItem = styled.button`
   :hover {
     cursor: pointer;
     background: #f3f4f4;
-    border-radius: 50%;
     color: #333333;
   }
 
   :focus{
     color: #4781D1;
-    border-radius: 50%;
     border: 2px solid #4781D1;
   }
 `;
