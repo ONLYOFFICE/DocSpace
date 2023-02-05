@@ -1,14 +1,25 @@
 import { DaysBody } from "./DaysBody";
 import { DaysHeader } from "./DaysHeader";
 
-export const Days = ({ selectedDate, setSelectedDate }) => {
+export const Days = ({
+  observedDate,
+  setObservedDate,
+  setSelectedScene,
+  setSelectedDate,
+  selectedDate,
+}) => {
   return (
     <>
       <DaysHeader
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
+        observedDate={observedDate}
+        setObservedDate={setObservedDate}
+        setSelectedScene={setSelectedScene}
       />
-      <DaysBody selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <DaysBody
+        observedDate={observedDate}
+        setSelectedDate={setSelectedDate}
+        selectedDate={selectedDate}
+      />
     </>
   );
 };
