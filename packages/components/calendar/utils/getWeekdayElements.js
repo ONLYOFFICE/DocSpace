@@ -1,6 +1,7 @@
 import { Weekday } from "../styled-components";
+import moment from "moment";
 
 export const getWeekdayElements = () => {
-  const weekdays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+  const weekdays = moment.weekdaysMin(true);
   return weekdays.map((day) => <Weekday key={day}>{day}</Weekday>);
 };
