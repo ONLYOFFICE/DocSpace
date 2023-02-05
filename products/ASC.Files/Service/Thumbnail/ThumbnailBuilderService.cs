@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Threading.Channels;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
@@ -33,80 +35,49 @@ public class ThumbnailBuilderService : BackgroundService
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ILogger<ThumbnailBuilderService> _logger;
     private readonly BuilderQueue<int> _builderQueue;
+    private readonly ChannelReader<IEnumerable<FileData<int>>> _channelReader;
 
     public ThumbnailBuilderService(
         BuilderQueue<int> builderQueue,
         IServiceScopeFactory serviceScopeFactory,
         ILogger<ThumbnailBuilderService> logger,
-        ThumbnailSettings settings)
+        ThumbnailSettings settings,
+        ChannelReader<IEnumerable<FileData<int>>> channelReader)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _thumbnailSettings = settings;
         _logger = logger;
         _builderQueue = builderQueue;
+        _channelReader = channelReader;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.InformationThumbnailWorkerRunnig();
 
+        stoppingToken.Register(() => _logger.InformationThumbnailWorkerStopping());
+
+        var fetchedData = new List<FileData<int>>();
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Procedure(stoppingToken);
+            _logger.TraceProcedureStart();
+
+            await foreach (var rawData in _channelReader.ReadAllAsync(stoppingToken))
+            {
+                fetchedData.AddRange(rawData);
+
+                if (_channelReader.CanCount && _channelReader.Count > 0 && _thumbnailSettings.BatchSize >= fetchedData.Count())
+                {
+                    continue;
+                }
+
+                await _builderQueue.BuildThumbnails(fetchedData);
+
+                fetchedData = new List<FileData<int>>();
+            }
         }
 
         _logger.InformationThumbnailWorkerStopping();
-    }
-
-    private async Task Procedure(CancellationToken stoppingToken)
-    {
-        _logger.TraceProcedureStart();
-
-        if (stoppingToken.IsCancellationRequested)
-        {
-            return;
-        }
-
-        //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
-        //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
-        
-        await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-        {
-            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
-
-            var filesWithoutThumbnails = FileDataQueue.Queue.Select(pair => pair.Value)
-                                                      .ToList();
-
-            filesWithoutThumbnails.AddRange(await fileDataProvider.GetFreezingThumbnailsAsync());
-
-            if (filesWithoutThumbnails.Count == 0)
-            {
-                _logger.TraceProcedureWaiting(_thumbnailSettings.LaunchFrequency);
-
-                await Task.Delay(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), stoppingToken);
-
-                return;
-            }
-
-            var premiumTenants = fileDataProvider.GetPremiumTenants();
-
-            filesWithoutThumbnails = filesWithoutThumbnails
-                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
-                .ToList();
-
-            await _builderQueue.BuildThumbnails(filesWithoutThumbnails);
-        }
-
-        _logger.TraceProcedureFinish();
-    }
-}
-
-public static class WorkerExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<FileDataProvider>();
-        services.TryAdd<BuilderQueue<int>>();
-        services.TryAdd<Builder<int>>();
     }
 }

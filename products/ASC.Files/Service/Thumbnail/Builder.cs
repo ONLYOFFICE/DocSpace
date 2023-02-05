@@ -46,6 +46,17 @@ public class BuilderQueue<T>
     {
         try
         {
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+
+            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
+
+            var premiumTenants = fileDataProvider.GetPremiumTenants();
+
+            filesWithoutThumbnails = filesWithoutThumbnails
+                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
+                .ToList();
+
+
             await Parallel.ForEachAsync(
             filesWithoutThumbnails,
             new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
@@ -141,11 +152,7 @@ public class Builder<T>
         catch (Exception exception)
         {
             _logger.ErrorBuildThumbnailsTenantId(fileData.TenantId, exception);
-        }
-        finally
-        {
-            FileDataQueue.Queue.TryRemove(fileData.FileId, out _);
-        }
+        }      
     }
 
     private async Task GenerateThumbnail(IFileDao<T> fileDao, FileData<T> fileData)
@@ -240,22 +247,22 @@ public class Builder<T>
     private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
         await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
-        
+       
         foreach (var w in _config.Sizes)
         {
             _logger.DebugMakeThumbnail1(file.Id.ToString());
 
             string thumbnailUrl = null;
+            var resultPercent = 0;
             var attempt = 1;
 
             do
             {
                 try
                 {
-                    var (result, url) = await GetThumbnailUrl(file, _global.DocThumbnailExtension.ToString(), w.Width, w.Height);
-                    thumbnailUrl = url;
-
-                    if (result)
+                    (resultPercent, thumbnailUrl) = await GetThumbnailUrl(file, _global.DocThumbnailExtension.ToString(), w.Width, w.Height);
+                    
+                    if (resultPercent == 100)
                     {
                         break;
                     }
@@ -269,19 +276,27 @@ public class Builder<T>
                         {
                             if (documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword)
                             {
-                                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.Id));
+                                throw new Exception(String.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.Id), exception);
                             }
                             if (documentServiceException.Code == DocumentServiceException.ErrorCode.Convert)
                             {
-                                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.Id));
+                                throw new Exception(String.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.Id), exception);
                             }
                         }
+                        else
+                        {
+                            _logger.WarningMakeThumbnail(file.Id.ToString(), thumbnailUrl, resultPercent, attempt, exception);
+                        }
+                    } 
+                    else
+                    {
+                        _logger.WarningMakeThumbnail(file.Id.ToString(), thumbnailUrl, resultPercent, attempt, exception);
                     }
                 }
 
                 if (attempt >= _config.AttemptsLimit)
                 {
-                    throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.Id));
+                    throw new Exception(string.Format("MakeThumbnail: FileId: {0}, ThumbnailUrl: {1}, ResultPercent: {2}. Attempts limmit exceeded.", file.Id, thumbnailUrl, resultPercent));
                 }
                 else
                 {
@@ -300,7 +315,7 @@ public class Builder<T>
 
     }
 
-    private async Task<(bool, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
+    private async Task<(int, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
     {
         var fileUri = _pathProvider.GetFileStreamUrl(file);
         fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
@@ -337,7 +352,7 @@ public class Builder<T>
         var (operationResultProgress, url) = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentCulture.Name, thumbnail, spreadsheetLayout, false);
 
         operationResultProgress = Math.Min(operationResultProgress, 100);
-        return (operationResultProgress == 100, url);
+        return (operationResultProgress, url);
     }
 
     private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height)

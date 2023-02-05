@@ -29,7 +29,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.ThumbnailBuilder;
 
 [Scope]
-internal class FileDataProvider
+public class FileDataProvider
 {
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ICache _cache;

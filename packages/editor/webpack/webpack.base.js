@@ -1,5 +1,7 @@
 const path = require("path");
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+const PrebuildWebpackPlugin = require("prebuild-webpack-plugin");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
@@ -13,6 +15,7 @@ module.exports = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
+      ASSETS_DIR: path.resolve(__dirname, "../public"),
       SRC_DIR: path.resolve(__dirname, "../src"),
       PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
@@ -42,7 +45,10 @@ module.exports = {
       },
       {
         test: fontsExtension,
-        type: "asset",
+        generator: {
+          emit: false,
+        },
+        type: "asset/resource",
       },
       {
         test: /\.svg/,
@@ -52,12 +58,50 @@ module.exports = {
       },
       {
         test: imageExtensions,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
       },
       {
         test: /\.svg$/i,
+        generator: {
+          emit: false,
+        },
         type: "asset/resource",
         resourceQuery: /url/, // *.svg?url
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: { not: [/url/] }, // exclude if *.json?url,
+        loader: "json-loader",
+        type: "javascript/auto",
       },
     ],
   },

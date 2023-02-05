@@ -1,6 +1,6 @@
 import React from "react";
 import { hydrate } from "react-dom";
-import { registerSW } from "@docspace/common/sw/helper";
+// import { registerSW } from "@docspace/common/sw/helper";
 import App from "./App.js";
 import pkg from "../../package.json";
 import { initI18n } from "./helpers/utils.js";
@@ -53,4 +53,4 @@ if (IS_DEVELOPMENT) {
   };
 }
 
-registerSW();
+// registerSW();
