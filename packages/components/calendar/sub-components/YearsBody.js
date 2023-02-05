@@ -1,13 +1,21 @@
 import moment from "moment";
 
-import {
-  YearsContainer,
-} from "../styled-components";
+import { YearsContainer } from "../styled-components";
 import { getCalendarYears, getYearElements } from "../utils";
 
-export const YearsBody = ({ selectedDate, setSelectedDate }) => {
-  const years = getCalendarYears(selectedDate);
-  const yearElements = getYearElements(years, setSelectedDate);
+export const YearsBody = ({
+  observedDate,
+  setObservedDate,
+  setSelectedScene,
+  selectedDate
+}) => {
+  const years = getCalendarYears(observedDate);
+  const yearElements = getYearElements(
+    years,
+    setObservedDate,
+    setSelectedScene,
+    selectedDate
+  );
 
   return <YearsContainer>{yearElements}</YearsContainer>;
 };
