@@ -1,16 +1,19 @@
 import { MonthsBody } from "./MonthsBody";
 import { MonthsHeader } from "./MonthsHeader";
 
-export const Months = ({selectedDate, setSelectedDate}) => {
+export const Months = ({ observedDate, setObservedDate, selectedDate, setSelectedScene }) => {
   return (
     <>
       <MonthsHeader
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
+        observedDate={observedDate}
+        setObservedDate={setObservedDate}
+        setSelectedScene={setSelectedScene}
       />
       <MonthsBody
+        observedDate={observedDate}
+        setObservedDate={setObservedDate}
+        setSelectedScene={setSelectedScene}
         selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
       />
     </>
   );
