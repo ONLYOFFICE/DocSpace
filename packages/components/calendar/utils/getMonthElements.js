@@ -5,21 +5,22 @@ import {
   SecondaryDateItem,
 } from "../styled-components";
 
-const onDateClick = (dateString, setSelectedDate) =>
-  setSelectedDate((prevSelectedDate) =>
-    prevSelectedDate.clone().set({
+const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
+  setObservedDate((prevObservedDate) =>
+    prevObservedDate.clone().set({
       year: dateString.substring(0, 4),
-      month: dateString.substring(5),
+      month: dateString.substring(5) - 1,
     })
   );
+  setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
+};
 
-export const getMonthElements = (months, setSelectedDate) => {
+export const getMonthElements = (months, setObservedDate, setSelectedScene, selectedDate) => {
+  const onClick = (dateString) =>
+    onDateClick(dateString, setObservedDate, setSelectedScene);
+
   const monthsElements = months.map((month) => (
-    <DateItem
-      big
-      key={month.key}
-      onClick={() => onDateClick(month.key, setSelectedDate)}
-    >
+    <DateItem big key={month.key} onClick={() => onClick(month.key)}>
       {month.value}
     </DateItem>
   ));
@@ -28,7 +29,7 @@ export const getMonthElements = (months, setSelectedDate) => {
       <SecondaryDateItem
         big
         key={months[i].key}
-        onClick={() => onDateClick(months[i].key, setSelectedDate)}
+        onClick={() => onClick(months[i].key)}
       >
         {months[i].value}
       </SecondaryDateItem>
@@ -36,17 +37,20 @@ export const getMonthElements = (months, setSelectedDate) => {
   }
 
   const currentDate = `${moment().year()}-${moment().format("M")}`;
+  const formattedDate = `${selectedDate.year()}-${selectedDate.format("M")}`;
 
   months.forEach((month, index) => {
     if (month.key === currentDate) {
       monthsElements[index] = (
-        <CurrentDateItem
-          big
-          key={month.key}
-          onClick={() => onDateClick(month.key, setSelectedDate)}
-        >
+        <CurrentDateItem big key={month.key} onClick={() => onClick(month.key)}>
           {month.value}
         </CurrentDateItem>
+      );
+    } else if (month.key === formattedDate) {
+      monthsElements[index] = (
+        <DateItem big key={month.key} focused onClick={() => onClick(month.key)}>
+          {month.value}
+        </DateItem>
       );
     }
   });
