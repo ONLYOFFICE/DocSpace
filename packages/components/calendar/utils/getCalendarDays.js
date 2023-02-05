@@ -1,31 +1,37 @@
 import moment from "moment";
 
 export const getCalendarDays = (date) => {
-  const selectedDate = moment(date);
+  const observedDate = moment(date);
 
   const prevMonthDays = [];
   const currentMonthDays = [];
   const nextMonthDays = [];
   const maxCalendarDays = 42;
 
-  const monthFirstMonday = selectedDate.clone().startOf("month").weekday(1).date();
-  const firstCalendarMonday =
-    monthFirstMonday < 10
-      ? selectedDate.clone().startOf("month").subtract(1, "week").weekday(1).date()
-      : monthFirstMonday;
+  const firstCalendarMonday = observedDate
+    .clone()
+    .startOf("month")
+    .startOf("week")
+    .date();
 
-  for (let i = 1; i <= selectedDate.clone().daysInMonth(); i++) {
+  for (let i = 1; i <= observedDate.clone().daysInMonth(); i++) {
     currentMonthDays.push({
-      key: selectedDate.clone().format("YYYY-MM") + "-" + i,
+      key: observedDate.clone().format("YYYY-MM") + "-" + i,
       value: i,
     });
   }
 
-  if (monthFirstMonday !== 1) {
-    const prevMonthLength = selectedDate.clone().subtract(1, "months").daysInMonth();
+  if (firstCalendarMonday !== 1) {
+    const prevMonthLength = observedDate
+      .clone()
+      .subtract(1, "months")
+      .daysInMonth();
     for (let i = firstCalendarMonday; i <= prevMonthLength; i++) {
       prevMonthDays.push({
-        key: selectedDate.clone().subtract(1, "months").format("YYYY-MM") + "-" + i,
+        key:
+          observedDate.clone().subtract(1, "months").format("YYYY-MM") +
+          "-" +
+          i,
         value: i,
       });
     }
@@ -37,7 +43,7 @@ export const getCalendarDays = (date) => {
     i++
   ) {
     nextMonthDays.push({
-      key: selectedDate.clone().add(1, "months").format("YYYY-MM") + "-" + i,
+      key: observedDate.clone().add(1, "months").format("YYYY-MM") + "-" + i,
       value: i,
     });
   }
