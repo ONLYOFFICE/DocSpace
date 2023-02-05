@@ -1,11 +1,19 @@
 import { YearsBody } from "./YearsBody";
 import { YearsHeader } from "./YearsHeader";
 
-export const Years = ({ selectedDate, setSelectedDate }) => {
+export const Years = ({ observedDate, setObservedDate, setSelectedScene, selectedDate }) => {
   return (
     <>
-      <YearsHeader selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-      <YearsBody selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <YearsHeader
+        observedDate={observedDate}
+        setObservedDate={setObservedDate}
+      />
+      <YearsBody
+        observedDate={observedDate}
+        setObservedDate={setObservedDate}
+        setSelectedScene={setSelectedScene}
+        selectedDate={selectedDate}
+      />
     </>
   );
 };
