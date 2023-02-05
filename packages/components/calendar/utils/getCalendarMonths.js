@@ -1,17 +1,20 @@
 import moment from "moment";
 
-export const getCalendarMonths = (selectedDate) => {
+export const getCalendarMonths = (observedDate) => {
   // prettier-ignore
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr"];
+  const months = moment.monthsShort();
+
   const monthsObjs = months.map((month) => ({
-    key: `${selectedDate.year()}-${moment().month(month).format("M")}`,
+    key: `${observedDate.year()}-${moment().month(month).format("M")}`,
     value: month,
   }));
-  for (let i = 12; i < 16; i++) {
-    monthsObjs[i] = {
-      key: `${selectedDate.year() + 1}` + monthsObjs[i].key.substring(4),
+  for (let i = 0; i < 4; i++) {
+    monthsObjs.push({
+      key: `${observedDate.year() + 1}-${moment()
+        .month(months[i])
+        .format("M")}`,
       value: monthsObjs[i].value,
-    };
+    });
   }
   return monthsObjs;
 };
