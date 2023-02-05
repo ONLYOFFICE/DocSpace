@@ -11,36 +11,31 @@ const onDateClick = (setSelectedDate, newDate) => {
   setSelectedDate(moment(newDate));
 };
 
-export const getDayElements = (selectedDate, setSelectedDate) => {
-  const calendarDays = getCalendarDays(selectedDate);
+export const getDayElements = (observedDate, selectedDate, setSelectedDate) => {
+  const onClick = (newDate) => onDateClick(setSelectedDate, newDate);
+
+  const calendarDays = getCalendarDays(observedDate);
   const monthDays = {
     prevMonthDays: calendarDays.prevMonthDays.map((day) => (
-      <SecondaryDateItem
-        key={day.key}
-        onClick={() => onDateClick(setSelectedDate, moment(day.key))}
-      >
+      <SecondaryDateItem key={day.key} onClick={() => onClick(moment(day.key))}>
         {day.value}
       </SecondaryDateItem>
     )),
     currentMonthDays: calendarDays.currentMonthDays.map((day) => (
-      <DateItem
-        key={day.key}
-        onClick={() => onDateClick(setSelectedDate, moment(day.key))}
-      >
+      <DateItem key={day.key} onClick={() => onClick(moment(day.key))}>
         {day.value}
       </DateItem>
     )),
     nextMonthDays: calendarDays.nextMonthDays.map((day) => (
-      <SecondaryDateItem
-        key={day.key}
-        onClick={() => onDateClick(setSelectedDate, moment(day.key))}
-      >
+      <SecondaryDateItem key={day.key} onClick={() => onClick(moment(day.key))}>
         {day.value}
       </SecondaryDateItem>
     )),
   };
 
   const currentDate = moment().format("YYYY-MM") + "-" + moment().date();
+  const selectedDateFormated =
+    selectedDate.format("YYYY-MM") + "-" + selectedDate.date();
 
   for (const key in calendarDays) {
     calendarDays[key].forEach((day, index) => {
@@ -48,10 +43,20 @@ export const getDayElements = (selectedDate, setSelectedDate) => {
         monthDays[key][index] = (
           <CurrentDateItem
             key={day.key}
-            onClick={() => onDateClick(setSelectedDate, moment(day.key))}
+            onClick={() => onClick(moment(day.key))}
           >
             {day.value}
           </CurrentDateItem>
+        );
+      } else if (day.key === selectedDateFormated) {
+        monthDays[key][index] = (
+          <DateItem
+            key={day.key}
+            focused
+            onClick={() => onClick(moment(day.key))}
+          >
+            {day.value}
+          </DateItem>
         );
       }
     });
