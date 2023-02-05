@@ -1,24 +1,34 @@
 import { HeaderContainer, Title } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
 
-const onLeftClick = (setSelectedDate) => {
-  setSelectedDate((prevSelectedDate) =>
-    prevSelectedDate.clone().subtract(1, "year")
+const onLeftClick = (setObservedDate) => {
+  setObservedDate((prevObservedDate) =>
+    prevObservedDate.clone().subtract(1, "year")
   );
 };
-const onRightClick = (setSelectedDate) => {
-  setSelectedDate((prevSelectedDate) =>
-    prevSelectedDate.clone().add(1, "year")
+const onRightClick = (setObservedDate) => {
+  setObservedDate((prevObservedDate) =>
+    prevObservedDate.clone().add(1, "year")
   );
 };
 
-export const MonthsHeader = ({ selectedDate, setSelectedDate }) => {
+export const MonthsHeader = ({
+  observedDate,
+  setObservedDate,
+  setSelectedScene,
+}) => {
   return (
     <HeaderContainer>
-      <Title>{selectedDate.year()}</Title>
+      <Title
+        onClick={() =>
+          setSelectedScene((prevSelectedScene) => prevSelectedScene + 1)
+        }
+      >
+        {observedDate.year()}
+      </Title>
       <HeaderButtons
-        onLeftClick={() => onLeftClick(setSelectedDate)}
-        onRightClick={() => onRightClick(setSelectedDate)}
+        onLeftClick={() => onLeftClick(setObservedDate)}
+        onRightClick={() => onRightClick(setObservedDate)}
       />
     </HeaderContainer>
   );
