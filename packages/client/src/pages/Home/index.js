@@ -306,7 +306,7 @@ class PureHome extends React.Component {
           );
         }
         return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="Filesы">
+          <Trans t={t} i18nKey="CopyItem" ns="Files">
             {{ title }} copied
           </Trans>
         );
