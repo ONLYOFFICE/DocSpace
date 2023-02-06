@@ -15,12 +15,27 @@ const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
   setSelectedScene((prevSelectedScene) => prevSelectedScene - 1);
 };
 
-export const getMonthElements = (months, setObservedDate, setSelectedScene, selectedDate) => {
+export const getMonthElements = (
+  months,
+  setObservedDate,
+  setSelectedScene,
+  selectedDate,
+  minDate,
+  maxDate
+) => {
   const onClick = (dateString) =>
     onDateClick(dateString, setObservedDate, setSelectedScene);
 
   const monthsElements = months.map((month) => (
-    <DateItem big key={month.key} onClick={() => onClick(month.key)}>
+    <DateItem
+      big
+      key={month.key}
+      onClick={() => onClick(month.key)}
+      disabled={
+        moment(month.key).endOf("month") < minDate ||
+        moment(month.key).startOf("month") > maxDate
+      }
+    >
       {month.value}
     </DateItem>
   ));
@@ -30,6 +45,10 @@ export const getMonthElements = (months, setObservedDate, setSelectedScene, sele
         big
         key={months[i].key}
         onClick={() => onClick(months[i].key)}
+        disabled={
+          moment(months[i].key).endOf("month") < minDate ||
+          moment(months[i].key).startOf("month") > maxDate
+        }
       >
         {months[i].value}
       </SecondaryDateItem>
@@ -42,13 +61,30 @@ export const getMonthElements = (months, setObservedDate, setSelectedScene, sele
   months.forEach((month, index) => {
     if (month.key === currentDate) {
       monthsElements[index] = (
-        <CurrentDateItem big key={month.key} onClick={() => onClick(month.key)}>
+        <CurrentDateItem
+          big
+          key={month.key}
+          onClick={() => onClick(month.key)}
+          disabled={
+            moment(month.key).endOf("month") < minDate ||
+            moment(month.key).startOf("month") > maxDate
+          }
+        >
           {month.value}
         </CurrentDateItem>
       );
     } else if (month.key === formattedDate) {
       monthsElements[index] = (
-        <DateItem big key={month.key} focused onClick={() => onClick(month.key)}>
+        <DateItem
+          big
+          key={month.key}
+          focused
+          onClick={() => onClick(month.key)}
+          disabled={
+            moment(month.key).endOf("month") < minDate ||
+            moment(month.key).startOf("month") > maxDate
+          }
+        >
           {month.value}
         </DateItem>
       );

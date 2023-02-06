@@ -11,23 +11,41 @@ const onDateClick = (setSelectedDate, newDate) => {
   setSelectedDate(moment(newDate));
 };
 
-export const getDayElements = (observedDate, selectedDate, setSelectedDate) => {
+export const getDayElements = (
+  observedDate,
+  selectedDate,
+  setSelectedDate,
+  minDate,
+  maxDate
+) => {
   const onClick = (newDate) => onDateClick(setSelectedDate, newDate);
 
   const calendarDays = getCalendarDays(observedDate);
   const monthDays = {
     prevMonthDays: calendarDays.prevMonthDays.map((day) => (
-      <SecondaryDateItem key={day.key} onClick={() => onClick(moment(day.key))}>
+      <SecondaryDateItem
+        key={day.key}
+        onClick={() => onClick(moment(day.key))}
+        disabled={moment(day.key) < minDate || moment(day.key) > maxDate}
+      >
         {day.value}
       </SecondaryDateItem>
     )),
     currentMonthDays: calendarDays.currentMonthDays.map((day) => (
-      <DateItem key={day.key} onClick={() => onClick(moment(day.key))}>
+      <DateItem
+        key={day.key}
+        onClick={() => onClick(moment(day.key))}
+        disabled={moment(day.key) < minDate || moment(day.key) > maxDate}
+      >
         {day.value}
       </DateItem>
     )),
     nextMonthDays: calendarDays.nextMonthDays.map((day) => (
-      <SecondaryDateItem key={day.key} onClick={() => onClick(moment(day.key))}>
+      <SecondaryDateItem
+        key={day.key}
+        onClick={() => onClick(moment(day.key))}
+        disabled={moment(day.key) < minDate || moment(day.key) > maxDate}
+      >
         {day.value}
       </SecondaryDateItem>
     )),
@@ -44,6 +62,7 @@ export const getDayElements = (observedDate, selectedDate, setSelectedDate) => {
           <CurrentDateItem
             key={day.key}
             onClick={() => onClick(moment(day.key))}
+            disabled={moment(day.key) < minDate || moment(day.key) > maxDate}
           >
             {day.value}
           </CurrentDateItem>
@@ -54,6 +73,7 @@ export const getDayElements = (observedDate, selectedDate, setSelectedDate) => {
             key={day.key}
             focused
             onClick={() => onClick(moment(day.key))}
+            disabled={moment(day.key) < minDate || moment(day.key) > maxDate}
           >
             {day.value}
           </DateItem>
