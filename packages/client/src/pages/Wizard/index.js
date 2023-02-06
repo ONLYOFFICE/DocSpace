@@ -68,6 +68,9 @@ const Wizard = (props) => {
     setWizardComplete,
     getPortalSettings,
     isLicenseRequired,
+    setLicense,
+    licenseUpload,
+    resetLicenseUploaded,
   } = props;
   const { t } = useTranslation(["Wizard", "Common"]);
 
@@ -82,6 +85,7 @@ const Wizard = (props) => {
   const [selectedTimezone, setSelectedTimezone] = useState(null);
   const [isCreated, setIsCreated] = useState(false);
   const [errorInitWizard, setErrorInitWizard] = useState(false);
+  const [hasErrorLicense, setHasErrorLicense] = useState(false);
 
   const refPassInput = useRef(null);
 
@@ -178,6 +182,19 @@ const Wizard = (props) => {
     setSelectedTimezone(timezone);
   };
 
+  const onLicenseFileHandler = (file) => {
+    if (licenseUpload) resetLicenseUploaded();
+    setHasErrorLicense(false);
+
+    let fd = new FormData();
+    fd.append("files", file);
+
+    setLicense(wizardToken, fd).catch((e) => {
+      console.error(e);
+      setHasErrorLicense(true);
+    });
+  };
+
   const onAgreeTermsChange = () => {
     if (hasErrorAgree && !agreeTerms) setHasErrorAgree(false);
     setAgreeTerms(!agreeTerms);
@@ -196,12 +213,17 @@ const Wizard = (props) => {
       setHasErrorAgree(true);
     }
 
+    if (isLicenseRequired && !licenseUpload) {
+      setHasErrorLicense(true);
+    }
+
     if (
       emptyEmail ||
       emptyPassword ||
       hasErrorEmail ||
       hasErrorPass ||
-      !agreeTerms
+      !agreeTerms ||
+      (isLicenseRequired && !licenseUpload)
     )
       return false;
 
@@ -326,7 +348,7 @@ const Wizard = (props) => {
               className="license-filed"
               isVertical={true}
               labelVisible={false}
-              hasError={false}
+              hasError={hasErrorLicense}
               errorMessage={t("ErrorUploadLicenseFile")}
             >
               <FileInput
@@ -334,6 +356,8 @@ const Wizard = (props) => {
                 size="large"
                 accept=".lic"
                 placeholder={t("PlaceholderLicense")}
+                onInput={onLicenseFileHandler}
+                hasError={hasErrorLicense}
               />
             </FieldContainer>
           )}
