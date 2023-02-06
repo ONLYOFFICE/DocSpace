@@ -33,7 +33,6 @@
     "@svgr/webpack": "^6.2.1",
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
-    "before-build-webpack": "^0.2.13",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",

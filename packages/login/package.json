@@ -73,7 +73,6 @@
     "@types/styled-components": "^5.1.25",
     "@types/winston": "^2.4.4",
     "babel-loader": "^8.2.2",
-    "before-build-webpack": "^0.2.13",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",

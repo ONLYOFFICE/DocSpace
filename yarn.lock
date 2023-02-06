@@ -2784,7 +2784,6 @@ __metadata:
     "@babel/preset-typescript": ^7.18.6
     "@svgr/webpack": ^5.5.0
     babel-loader: ^8.2.2
-    before-build-webpack: ^0.2.13
     clean-webpack-plugin: ^4.0.0
     copy-to-clipboard: ^3.3.1
     copy-webpack-plugin: ^9.0.1
@@ -2970,7 +2969,6 @@ __metadata:
     aws-crt: ^1.14.7
     babel-loader: ^8.2.2
     babel-plugin-styled-components: ^1.12.0
-    before-build-webpack: ^0.2.13
     bufferutil: ^4.0.6
     clean-webpack-plugin: ^4.0.0
     compression: ^1.7.4
@@ -3039,7 +3037,6 @@ __metadata:
     "@types/ws": ^8.5.3
     aws-crt: ^1.14.7
     babel-loader: ^8.2.2
-    before-build-webpack: ^0.2.13
     bufferutil: ^4.0.6
     clean-webpack-plugin: ^4.0.0
     compression: ^1.7.4
@@ -9155,13 +9152,6 @@ __metadata:
   dependencies:
     tweetnacl: ^0.14.3
   checksum: 4edfc9fe7d07019609ccf797a2af28351736e9d012c8402a07120c4453a3b789a15f2ee1530dc49eee8f7eb9379331a8dd4b3766042b9e502f74a68e7f662291
-  languageName: node
-  linkType: hard
-
-"before-build-webpack@npm:^0.2.13":
-  version: 0.2.13
-  resolution: "before-build-webpack@npm:0.2.13"
-  checksum: 9f31c0c8a6677ac86db885e6e24fe1329c3cbe9f23723d0c106b93e064549241a01653557b4608531266d9c51ff347f939be6fc1fb4a246cba6765b573e93793
   languageName: node
   linkType: hard
 

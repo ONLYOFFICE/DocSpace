@@ -72,7 +72,7 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
             data: initialI18nStoreASC[lng][ns],
           };
         } else if (ns != "Login") {
-          window.i18n.loaded[`${path?.replace("/login/", "/webpack")}`] = {
+          window.i18n.loaded[`${path?.replace("/login/", "/")}`] = {
             namespaces: ns,
             data: initialI18nStoreASC[lng][ns],
           };
