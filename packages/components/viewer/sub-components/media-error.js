@@ -68,7 +68,12 @@ export const MediaError = ({
           top: `${errorTop}`,
         }}
       >
-        <Text fontSize="15px" color={"#fff"} className="title">
+        <Text
+          fontSize="15px"
+          color={"#fff"}
+          textAlign="center"
+          className="title"
+        >
           {errorTitle}
         </Text>
       </StyledMediaError>
