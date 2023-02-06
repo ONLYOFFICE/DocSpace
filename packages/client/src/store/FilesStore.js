@@ -116,6 +116,9 @@ class FilesStore {
   clearSearch = false;
 
   isLoadedEmptyPage = false;
+  isPreview = false;
+  tempFilter = null;
+  uploadedFileIdWithVersion = null;
 
   constructor(
     authStore,
@@ -450,6 +453,18 @@ class FilesStore {
     this.clearSearch = clearSearch;
   };
 
+  setIsPreview = (predicate) => {
+    this.isPreview = predicate;
+  };
+
+  setTempFilter = (filser) => {
+    this.tempFilter = filser;
+  };
+
+  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
+    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
+  };
+
   checkSelection = (file) => {
     if (this.selection) {
       const foundIndex = this.selection?.findIndex((x) => x.id === file.id);
@@ -682,6 +697,8 @@ class FilesStore {
         console.log("[WS] subscribe to file's changes", file.id, file.title)
       );
     }
+
+    this.viewAs === "tile" && this.createThumbnails();
   };
 
   setFolders = (folders) => {
@@ -873,6 +890,10 @@ class FilesStore {
     });
   };
 
+  resetUrl = () => {
+    this.setFilesFilter(this.tempFilter);
+  };
+
   setRoomsFilter = (filter) => {
     const key = `UserRoomsFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
@@ -1030,7 +1051,12 @@ class FilesStore {
           );
         });
 
-        this.setFilesFilter(filterData); //TODO: FILTER
+        if (this.isPreview) {
+          //save filter for after closing preview change url
+          this.setTempFilter(filterData);
+        } else {
+          this.setFilesFilter(filterData); //TODO: FILTER
+        }
 
         const isPrivacyFolder =
           data.current.rootFolderType === FolderType.Privacy;
@@ -1101,8 +1127,6 @@ class FilesStore {
         const selectedFolder = {
           selectedFolder: { ...this.selectedFolderStore },
         };
-
-        this.viewAs === "tile" && this.createThumbnails();
 
         if (this.createdItem) {
           const newItem = this.filesList.find(
@@ -1236,8 +1260,6 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-
-          this.viewAs === "tile" && this.createThumbnails();
 
           if (this.createdItem) {
             const newItem = this.filesList.find(
@@ -2325,6 +2347,8 @@ class FilesStore {
         viewAccessability,
       } = item;
 
+      const upgradeVersion = id === this.uploadedFileIdWithVersion;
+
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2384,16 +2408,16 @@ class FilesStore {
               isArchive
             );
 
-      const defaultRoomIcon =
-        isRoom &&
-        getIcon(
-          iconSize,
-          fileExst,
-          providerKey,
-          contentLength,
-          roomType,
-          isArchive
-        );
+      const defaultRoomIcon = isRoom
+        ? getIcon(
+            iconSize,
+            fileExst,
+            providerKey,
+            contentLength,
+            roomType,
+            isArchive
+          )
+        : undefined;
 
       return {
         access,
@@ -2401,6 +2425,7 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
+        upgradeVersion,
         created,
         createdBy,
         encrypted,
@@ -2944,16 +2969,13 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = [...this.files, this.folders];
-    const fileIds = [];
-
-    filesList.map((file) => {
-      const { thumbnailStatus } = file;
-
-      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
+    const files = this.files?.filter((file) => {
+      return file?.thumbnailStatus === thumbnailStatuses.WAITING;
     });
 
-    if (fileIds.length) return api.files.createThumbnails(fileIds);
+    if (!files?.length) return;
+
+    return api.files.createThumbnails(files.map((f) => f.id));
   };
 
   createThumbnail = async (fileId) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -54,7 +54,24 @@ const FileTile = (props) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
+    setUploadedFileIdWithVersion,
   } = props;
+
+  const [isHighlight, setIsHighlight] = React.useState(false);
+
+  useEffect(() => {
+    setIsHighlight(false);
+  }, []);
+
+  useEffect(() => {
+    if (!item.upgradeVersion) return;
+
+    setIsHighlight(true);
+
+    return () => {
+      if (isHighlight) setUploadedFileIdWithVersion(null);
+    };
+  }, [item, isHighlight]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -126,6 +143,7 @@ const FileTile = (props) => {
           isRooms={isRooms}
           withCtrlSelect={withCtrlSelect}
           withShiftSelect={withShiftSelect}
+          isHighlight={isHighlight}
         >
           <FilesTileContent
             item={item}
@@ -141,13 +159,25 @@ const FileTile = (props) => {
 
 export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection, withCtrlSelect, withShiftSelect } = filesStore;
+  const {
+    setSelection,
+    withCtrlSelect,
+    withShiftSelect,
+    setUploadedFileIdWithVersion,
+  } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
-  return { getIcon, setSelection, isRooms, withCtrlSelect, withShiftSelect };
+  return {
+    getIcon,
+    setSelection,
+    isRooms,
+    withCtrlSelect,
+    withShiftSelect,
+    setUploadedFileIdWithVersion,
+  };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

@@ -84,12 +84,12 @@ public class RoomLogoManager
 
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
         {
-            throw new ItemNotFoundException("Virtual room not found");
+            throw new ItemNotFoundException();
         }
 
         if (room.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         var fileName = Path.GetFileName(tempFile);
@@ -113,7 +113,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -126,7 +126,7 @@ public class RoomLogoManager
 
         if (checkPermissions && !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         var stringId = GetId(room);
@@ -147,7 +147,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (Exception e)
