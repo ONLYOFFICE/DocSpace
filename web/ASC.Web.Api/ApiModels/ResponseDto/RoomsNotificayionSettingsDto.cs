@@ -24,46 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-namespace ASC.Web.Core.Notify;
-[Serializable]
-public class BadgesSettings : ISettings<BadgesSettings>
+public class RoomsNotificayionSettingsDto : IMapFrom<RoomsNotificationSettings>
 {
-    public bool EnableBadges { get; set; }
-
-    [JsonIgnore]
-    public Guid ID
-    {
-        get { return new Guid("23491DC6-FF99-43E0-885A-D6F7B9DD7665"); }
-    }
-    public BadgesSettings GetDefault()
-    {
-        return new BadgesSettings() { 
-            EnableBadges = true
-        };
-    }
-}
-
-[Scope]
-public class BadgesSettingsHelper
-{
-    private readonly SettingsManager _settingsManager;
-    public BadgesSettingsHelper(
-        SettingsManager settingsManager)
-    {
-        _settingsManager = settingsManager;
-    }
-
-    public bool GetEnabledForCurrentUser()
-    {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
-        return settings.EnableBadges;
-    }
-
-    public void SetEnabledForCurrentUser(bool isEnabled)
-    {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
-        settings.EnableBadges = isEnabled;
-        _settingsManager.SaveForCurrentUser(settings);
-    }
+    public List<int> DisabledRooms { get; set; }
 }

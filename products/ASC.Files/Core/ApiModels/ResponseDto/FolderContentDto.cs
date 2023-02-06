@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FolderContentDto<T>
@@ -66,17 +67,20 @@ public class FolderContentDtoHelper
     private readonly IDaoFactory _daoFactory;
     private readonly FileDtoHelper _fileDtoHelper;
     private readonly FolderDtoHelper _folderDtoHelper;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FolderContentDtoHelper(
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
         FileDtoHelper fileWrapperHelper,
-        FolderDtoHelper folderWrapperHelper)
+        FolderDtoHelper folderWrapperHelper,
+        BadgesSettingsHelper badgesSettingsHelper)
     {
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
         _fileDtoHelper = fileWrapperHelper;
         _folderDtoHelper = folderWrapperHelper;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public async Task<FolderContentDto<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
@@ -125,12 +129,14 @@ public class FolderContentDtoHelper
         var foldersTask = GetFoldersDto(folders).ToListAsync();
         var currentTask = _folderDtoHelper.GetAsync(folderItems.FolderInfo);
 
+        var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+
         var result = new FolderContentDto<T>
         {
             PathParts = folderItems.FolderPathParts,
             StartIndex = startIndex,
             Total = folderItems.Total,
-            New = folderItems.New,
+            New = isEnabledBadges ?  folderItems.New : 0,
             Count = folderItems.Entries.Count,
             Current = await currentTask
         };

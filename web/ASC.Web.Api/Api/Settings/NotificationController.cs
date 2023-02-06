@@ -43,19 +43,33 @@ public class NotificationController : BaseSettingsController
         _mapper = mapper;
     }
 
-    [HttpGet("notification/{notificationType}")]
-    public NotificationSettingsDto GetSettings(NotificationType notificationType)
+    [HttpGet("notification/{type}")]
+    public NotificationSettingsDto GetSettings(NotificationType type)
     {
-        var isEnabled = _notificationControllerHelper.GetNotificationStatus(notificationType);
+        var isEnabled = _notificationControllerHelper.GetNotificationStatus(type);
 
-        return new NotificationSettingsDto() { Type = notificationType, IsEnabled = isEnabled };
+        return new NotificationSettingsDto() { Type = type, IsEnabled = isEnabled };
     }
 
     [HttpPost("notification")]
     public NotificationSettingsDto SetSettings(NotificationSettingsRequestsDto model)
     {
-        _notificationControllerHelper.SetSettings(model.Type, model.IsEnabled);
+        _notificationControllerHelper.SetNotificationStatus(model.Type, model.IsEnabled);
 
         return _mapper.Map<NotificationSettingsDto>(model);
+    }
+
+    [HttpGet("notification/rooms")]
+    public RoomsNotificayionSettingsDto GetRoomsNotificationSettings()
+    {
+        var  settings = _notificationControllerHelper.GetDisabledRooms();
+        return _mapper.Map<RoomsNotificayionSettingsDto>(settings);
+    }
+
+    [HttpPost("notification/rooms")]
+    public RoomsNotificayionSettingsDto SetRoomsNotificationStatus(RoomsNotificationsSettingsRequestDto model)
+    {
+        var settings = _notificationControllerHelper.SetRoomsNotificationStatus(model.RoomsId, model.Mute);
+        return _mapper.Map<RoomsNotificayionSettingsDto>(settings);
     }
 }

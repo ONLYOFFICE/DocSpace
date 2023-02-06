@@ -24,65 +24,79 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Web.Core.Notify;
 [Scope]
 public class NotificationControllerHelper
 {
-    private readonly SettingsManager _settingsManager;
     private readonly StudioNotifyHelper _studioNotifyHelper;
-    private readonly AuthContext _authContext;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly Guid _userId;
 
     public NotificationControllerHelper(
-        SettingsManager settingsManager,
         StudioNotifyHelper studioNotifyHelper,
-        AuthContext authContext)
+        AuthContext authContext,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
+        BadgesSettingsHelper badgesSettingsHelper)
     {
-        _settingsManager = settingsManager;
         _studioNotifyHelper = studioNotifyHelper;
-        _authContext = authContext;
+        _badgesSettingsHelper = badgesSettingsHelper;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
+        _userId = authContext.CurrentAccount.ID;
     }
 
     public bool GetNotificationStatus(NotificationType notificationType)
     {
         bool isEnabled;
+
         switch (notificationType)
         {
             case NotificationType.Badges:
-                var settings = _settingsManager.Load<BadgesSettings>();
-                return settings.EnableBadges;
+                return _badgesSettingsHelper.GetEnabledForCurrentUser();
             case NotificationType.RoomsActivity:
-                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.RoomsActivity);
+                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_userId, Actions.RoomsActivity);
                 return isEnabled;
             case NotificationType.DailyFeed:
-                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.SendWhatsNew);
+                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_userId, Actions.SendWhatsNew);
                 return isEnabled;
             case NotificationType.UsefullTips:
-                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
+                isEnabled = _studioNotifyHelper.IsSubscribedToNotify(_userId, Actions.PeriodicNotify);
                 return isEnabled;
             default:
                 throw new Exception("Incorrect parameters");
         };
     }
 
-    public void SetSettings(NotificationType notificationType, bool isEnabled)
+    public void SetNotificationStatus(NotificationType notificationType, bool isEnabled)
     {
         switch (notificationType)
         {
             case NotificationType.Badges:
-                var settings = new BadgesSettings() { EnableBadges = isEnabled };
-                _settingsManager.Save(settings);
+                _badgesSettingsHelper.SetEnabledForCurrentUser(isEnabled);
                 break;
             case NotificationType.RoomsActivity:
-                _studioNotifyHelper.SubscribeToNotify(_authContext.CurrentAccount.ID, Actions.RoomsActivity, isEnabled);
+                _studioNotifyHelper.SubscribeToNotify(_userId, Actions.RoomsActivity, isEnabled);
                 break;
             case NotificationType.DailyFeed:
-                _studioNotifyHelper.SubscribeToNotify(_authContext.CurrentAccount.ID, Actions.SendWhatsNew, isEnabled);
+                _studioNotifyHelper.SubscribeToNotify(_userId, Actions.SendWhatsNew, isEnabled);
                 break;
             case NotificationType.UsefullTips:
-                _studioNotifyHelper.SubscribeToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify, isEnabled);
+                _studioNotifyHelper.SubscribeToNotify(_userId, Actions.PeriodicNotify, isEnabled);
                 break;
         }
     }
+
+    public RoomsNotificationSettings GetDisabledRooms()
+    {
+        return _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
+    }
+
+    public RoomsNotificationSettings SetRoomsNotificationStatus(int roomsId, bool mute)
+    {
+        return _roomsNotificationSettingsHelper.SetForCurrentUser(roomsId, mute);
+    }
+
 }
 
 public enum NotificationType

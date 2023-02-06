@@ -25,45 +25,79 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using AutoMapper.Internal;
+
 namespace ASC.Web.Core.Notify;
 [Serializable]
-public class BadgesSettings : ISettings<BadgesSettings>
+public class RoomsNotificationSettings : ISettings<RoomsNotificationSettings>
 {
-    public bool EnableBadges { get; set; }
+    public List<int> DisabledRooms { get; set; }
 
     [JsonIgnore]
     public Guid ID
     {
-        get { return new Guid("23491DC6-FF99-43E0-885A-D6F7B9DD7665"); }
+        get { return new Guid("D69680EC-58DA-40D1-8CB3-424D2F402A83"); }
     }
-    public BadgesSettings GetDefault()
+
+    public RoomsNotificationSettings GetDefault()
     {
-        return new BadgesSettings() { 
-            EnableBadges = true
+        return new RoomsNotificationSettings() {
+            DisabledRooms = new List<int> ()
         };
     }
 }
 
 [Scope]
-public class BadgesSettingsHelper
+public class RoomsNotificationSettingsHelper
 {
     private readonly SettingsManager _settingsManager;
-    public BadgesSettingsHelper(
+    public RoomsNotificationSettingsHelper(
         SettingsManager settingsManager)
     {
         _settingsManager = settingsManager;
     }
 
-    public bool GetEnabledForCurrentUser()
+    public RoomsNotificationSettings GetDisabledRoomsForCurrentUser()
     {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
-        return settings.EnableBadges;
+        var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
+        return settings;
     }
 
-    public void SetEnabledForCurrentUser(bool isEnabled)
+    public bool CheckMuteForRoom(int roomsId)
     {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
-        settings.EnableBadges = isEnabled;
+        var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
+        var disabledRooms = settings.DisabledRooms;
+
+        if (disabledRooms.Contains(roomsId))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public RoomsNotificationSettings SetForCurrentUser(int roomsId, bool mute)
+    {
+        var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
+        var disabledRooms = settings.DisabledRooms;
+
+        if (disabledRooms.Contains(roomsId))
+        {
+            if (!mute)
+            {
+                disabledRooms.Remove(roomsId);
+            }
+        }
+        else
+        {
+            if (mute)
+            {
+                disabledRooms.TryAdd(roomsId);
+            }
+        }
+
         _settingsManager.SaveForCurrentUser(settings);
+
+        return settings;
     }
 }
