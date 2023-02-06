@@ -20,7 +20,7 @@ const ChangeUserTypeEvent = ({
     successCallback,
     abortCallback,
   } = peopleDialogData;
-  const { t } = useTranslation(["ChangeUserTypeDialog", "Common"]);
+  const { t } = useTranslation(["ChangeUserTypeDialog", "Common", "Payments"]);
 
   useEffect(() => {
     if (!peopleDialogData.toType) return;
@@ -41,8 +41,9 @@ const ChangeUserTypeEvent = ({
         successCallback && successCallback();
       })
       .catch((err) => {
+        toastr.error(t("Payments:QuotaPaidUserLimitError"));
+
         abortCallback && abortCallback();
-        toastr.error(err);
       });
   };
 
