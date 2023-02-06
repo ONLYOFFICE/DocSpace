@@ -38,6 +38,7 @@ import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
 import { isTablet } from "@docspace/components/utils/device";
+import { muteRoomNotification } from "@docspace/common/api/settings";
 
 class FilesActionStore {
   authStore;
@@ -932,6 +933,23 @@ class FilesActionStore {
           .finally(() => toastr.success(t("RoomUnpinned")));
       default:
         return;
+    }
+  };
+
+  setMuteAction = (action, id) => {
+    switch (action) {
+      case "mute":
+        return muteRoomNotification(id, false)
+          .then(() => {
+            this.updateCurrentFolder(null, [id]);
+          })
+          .then(() => toastr.success("MUTE"));
+      case "unmute":
+        return muteRoomNotification(id, true)
+          .then(() => {
+            this.updateCurrentFolder(null, [id]);
+          })
+          .then(() => toastr.success("UNMUTE"));
     }
   };
 

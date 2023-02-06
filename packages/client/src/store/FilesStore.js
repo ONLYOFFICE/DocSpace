@@ -1616,6 +1616,7 @@ class FilesStore {
       const canEditRoom = item.security?.EditRoom;
 
       const canViewRoomInfo = item.security?.Read;
+      const canMuteRoom = true; //item.security?.Mute;
 
       let roomOptions = [
         "select",
@@ -1627,6 +1628,8 @@ class FilesStore {
         "room-info",
         "pin-room",
         "unpin-room",
+        "mute-room",
+        "unmute-room",
         "separator1",
         "archive-room",
         "unarchive-room",
@@ -1674,6 +1677,18 @@ class FilesStore {
           : (roomOptions = this.removeOptions(roomOptions, ["unpin-room"]));
       }
 
+      if (!canMuteRoom) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "unmute-room",
+          "mute-room",
+        ]);
+      } else {
+        console.log("item.mute", item.mute);
+        item.mute
+          ? (roomOptions = this.removeOptions(roomOptions, ["mute-room"]))
+          : (roomOptions = this.removeOptions(roomOptions, ["unmute-room"]));
+      }
+
       if (!canViewRoomInfo) {
         roomOptions = this.removeOptions(roomOptions, ["room-info"]);
       }
@@ -1699,7 +1714,7 @@ class FilesStore {
       }
 
       roomOptions = this.removeSeparator(roomOptions);
-
+      console.log("roomOptions", roomOptions);
       return roomOptions;
     } else {
       let folderOptions = [

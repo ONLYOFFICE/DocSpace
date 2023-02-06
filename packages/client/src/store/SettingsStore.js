@@ -177,6 +177,7 @@ class SettingsStore {
   setForcesave = (val) => (this.forcesave = val);
 
   updateRootTreeFolders = () => {
+    console.log("updateRootTreeFolders");
     const { getFoldersTree, setTreeFolders } = this.treeFoldersStore;
     getFoldersTree().then((root) => setTreeFolders(root));
   };

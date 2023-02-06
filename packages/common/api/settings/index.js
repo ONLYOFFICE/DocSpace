@@ -716,3 +716,13 @@ export function removeActiveSession(eventId) {
     data: { eventId },
   });
 }
+
+export function muteRoomNotification(id, isMute) {
+  const options = {
+    method: "post",
+    url: `/settings/notification/rooms`,
+    data: { RoomsId: id, Mute: isMute },
+  };
+
+  return request(options);
+}
