@@ -154,13 +154,10 @@ class MediaViewer extends React.Component {
     ) {
       if (playlist.length > 0) {
         this.updateHammer();
-
-        const newPlaylistPos =
-          playlistPos < playlist.length
-            ? playlist.length !== prevProps.playlist.length
-              ? playlistPos + 1
-              : playlistPos
-            : 0;
+        //switching from index to id
+        const newPlaylistPos = currentFileId
+          ? playlist.find((file) => file.fileId === currentFileId)?.id ?? 0
+          : 0;
 
         this.setState({
           playlist: playlist,
@@ -449,8 +446,9 @@ class MediaViewer extends React.Component {
   };
 
   onClose = (e) => {
-    this.props.onClose(e);
+    //fix memory leak
     this.setState({ visible: false });
+    this.props.onClose(e);
   };
 
   getTiffDataURL = (src) => {

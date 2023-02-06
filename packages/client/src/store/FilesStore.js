@@ -116,6 +116,8 @@ class FilesStore {
   clearSearch = false;
 
   isLoadedEmptyPage = false;
+  isPreview = false;
+  tempFilter = null;
   uploadedFileIdWithVersion = null;
 
   constructor(
@@ -449,6 +451,14 @@ class FilesStore {
 
   setClearSearch = (clearSearch) => {
     this.clearSearch = clearSearch;
+  };
+
+  setIsPreview = (predicate) => {
+    this.isPreview = predicate;
+  };
+
+  setTempFilter = (filser) => {
+    this.tempFilter = filser;
   };
 
   setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
@@ -880,6 +890,10 @@ class FilesStore {
     });
   };
 
+  resetUrl = () => {
+    this.setFilesFilter(this.tempFilter);
+  };
+
   setRoomsFilter = (filter) => {
     const key = `UserRoomsFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
@@ -1037,7 +1051,12 @@ class FilesStore {
           );
         });
 
-        this.setFilesFilter(filterData); //TODO: FILTER
+        if (this.isPreview) {
+          //save filter for after closing preview change url
+          this.setTempFilter(filterData);
+        } else {
+          this.setFilesFilter(filterData); //TODO: FILTER
+        }
 
         const isPrivacyFolder =
           data.current.rootFolderType === FolderType.Privacy;
