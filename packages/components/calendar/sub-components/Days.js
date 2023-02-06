@@ -7,6 +7,8 @@ export const Days = ({
   setSelectedScene,
   setSelectedDate,
   selectedDate,
+  minDate,
+  maxDate,
 }) => {
   return (
     <>
@@ -14,11 +16,15 @@ export const Days = ({
         observedDate={observedDate}
         setObservedDate={setObservedDate}
         setSelectedScene={setSelectedScene}
+        minDate={minDate}
+        maxDate={maxDate}
       />
       <DaysBody
         observedDate={observedDate}
         setSelectedDate={setSelectedDate}
         selectedDate={selectedDate}
+        minDate={minDate}
+        maxDate={maxDate}
       />
     </>
   );
