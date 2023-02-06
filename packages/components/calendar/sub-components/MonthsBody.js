@@ -5,14 +5,18 @@ export const MonthsBody = ({
   observedDate,
   setObservedDate,
   setSelectedScene,
-  selectedDate
+  selectedDate,
+  minDate,
+  maxDate
 }) => {
   const months = getCalendarMonths(observedDate);
   const monthsElements = getMonthElements(
     months,
     setObservedDate,
     setSelectedScene,
-    selectedDate
+    selectedDate,
+    minDate,
+    maxDate
   );
 
   return <MonthsContainer>{monthsElements}</MonthsContainer>;
