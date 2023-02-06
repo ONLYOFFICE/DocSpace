@@ -43,6 +43,8 @@ public static class FeedUsersExtension
 {
     public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<FeedUsers>().Navigation(e => e.Feed).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddFeedUsers, Provider.MySql)
             .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
