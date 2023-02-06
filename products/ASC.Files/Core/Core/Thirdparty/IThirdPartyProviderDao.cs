@@ -719,6 +719,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
+    public Task<int> RemoveTagLinksAsync(string entryId, FileEntryType entryType, TagType tagType)
+    {
+        return Task.FromResult(default(int));
+    }
+
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
     {
         return AsyncEnumerable.Empty<Tag>();
