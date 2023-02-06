@@ -86,6 +86,7 @@ const Wizard = (props) => {
   const [isCreated, setIsCreated] = useState(false);
   const [errorInitWizard, setErrorInitWizard] = useState(false);
   const [hasErrorLicense, setHasErrorLicense] = useState(false);
+  const [invalidLicense, setInvalidLicense] = useState(false);
 
   const refPassInput = useRef(null);
 
@@ -185,6 +186,7 @@ const Wizard = (props) => {
   const onLicenseFileHandler = (file) => {
     if (licenseUpload) resetLicenseUploaded();
     setHasErrorLicense(false);
+    setInvalidLicense(false);
 
     let fd = new FormData();
     fd.append("files", file);
@@ -192,6 +194,7 @@ const Wizard = (props) => {
     setLicense(wizardToken, fd).catch((e) => {
       console.error(e);
       setHasErrorLicense(true);
+      setInvalidLicense(true);
     });
   };
 
@@ -349,7 +352,11 @@ const Wizard = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={hasErrorLicense}
-              errorMessage={t("ErrorUploadLicenseFile")}
+              errorMessage={
+                invalidLicense
+                  ? t("ErrorLicenseBody")
+                  : t("ErrorUploadLicenseFile")
+              }
             >
               <FileInput
                 scale
