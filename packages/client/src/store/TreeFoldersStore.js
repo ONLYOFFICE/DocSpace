@@ -199,6 +199,14 @@ class TreeFoldersStore {
     );
   }
 
+  get isRoom() {
+    return (
+      this.roomsFolder &&
+      this.roomsFolder.rootFolderType ===
+        this.selectedFolderStore.rootFolderType
+    );
+  }
+
   get isArchiveFolder() {
     return (
       this.archiveFolder &&
