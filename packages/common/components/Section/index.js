@@ -6,7 +6,6 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Provider } from "@docspace/components/utils/context";
-import SelectionArea from "@docspace/components/selection-area";
 import { isMobile } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
@@ -92,10 +91,6 @@ class Section extends React.Component {
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
 
-  onMove = ({ added, removed, clear }) => {
-    this.props.setSelections(added, removed, clear);
-  };
-
   dragCondition = (e) => {
     const path = e.inputEvent.composedPath();
     const isBackdrop = path.some(
@@ -135,7 +130,6 @@ class Section extends React.Component {
       isHeaderVisible,
       onOpenUploadPanel,
       isTabletView,
-      dragging,
       maintenanceExist,
       snackbarExist,
       showText,
@@ -369,19 +363,7 @@ class Section extends React.Component {
       );
     };
 
-    return (
-      <>
-        {!isMobile && uploadFiles && !dragging && (
-          <SelectionArea
-            containerClass="section-scroll"
-            selectableClass={viewAs === "tile" ? "files-item" : "window-item"}
-            onMove={this.onMove}
-            scroll={this.scroll}
-          />
-        )}
-        {renderSection()}
-      </>
-    );
+    return <>{renderSection()}</>;
   }
 }
 
@@ -398,7 +380,6 @@ Section.propTypes = {
   secondaryProgressBarIcon: PropTypes.string,
   showSecondaryButtonAlert: PropTypes.bool,
   onDrop: PropTypes.func,
-  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   viewAs: PropTypes.string,
   onOpenUploadPanel: PropTypes.func,

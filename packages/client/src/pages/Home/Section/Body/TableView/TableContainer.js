@@ -198,6 +198,7 @@ const Table = ({
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             index={index}
             setFirsElemChecked={setFirsElemChecked}
             setHeaderBorder={setHeaderBorder}

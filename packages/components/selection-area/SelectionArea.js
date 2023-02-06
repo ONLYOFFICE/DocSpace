@@ -1,6 +1,7 @@
 import React, { createRef } from "react";
 import { StyledSelectionArea } from "./StyledSelectionArea";
 import { frames } from "./selector-helpers";
+import { isDesktop } from "../utils/device";
 
 class SelectionArea extends React.Component {
   constructor(props) {
@@ -8,24 +9,23 @@ class SelectionArea extends React.Component {
 
     this.areaRect = new DOMRect();
     this.scrollSpeed = { x: 0, y: 0 };
+    this.scrollElement = null;
     this.areaLocation = { x1: 0, x2: 0, y1: 0, y2: 0 };
     this.areaRef = createRef(null);
 
     this.selectableNodes = new Set();
+
+    this.array = [];
+
+    this.elemRect = {};
   }
 
   componentDidMount() {
     document.addEventListener("mousedown", this.onTapStart);
-    document.addEventListener("touchstart", this.onTapStart, {
-      passive: false,
-    });
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.onTapStart);
-    document.removeEventListener("touchstart", this.onTapStart, {
-      passive: false,
-    });
   }
 
   frame = () =>
@@ -35,15 +35,65 @@ class SelectionArea extends React.Component {
       this.redrawSelectionArea();
     });
 
-  isIntersects = (a, b) => {
-    if (!b.x && !b.y) return true;
+  isIntersects = (itemIndex) => {
+    const { right, left, bottom, top } = this.areaRect;
+    const { scrollTop } = this.scrollElement;
+    const { viewAs, countTilesInRow } = this.props;
 
-    return (
-      a.right > b.left &&
-      a.left < b.right &&
-      a.bottom > b.top &&
-      a.top < b.bottom
-    );
+    const itemHeight = this.props.itemHeight ?? this.elemRect.height;
+
+    let bTop, bBottom, bLeft, bRight;
+
+    // Tile view
+    if (viewAs === "tile") {
+      const marginLeft = 14;
+      const marginTop = 14;
+
+      let index = Math.trunc(+itemIndex / countTilesInRow);
+
+      const indexInRow = itemIndex % countTilesInRow;
+
+      if (itemIndex == 0) {
+        bTop = this.elemRect.top - scrollTop;
+        bBottom = this.elemRect.top + itemHeight - scrollTop;
+      } else {
+        bTop = this.elemRect.top + (itemHeight + marginTop) * index - scrollTop;
+        bBottom =
+          this.elemRect.top +
+          itemHeight +
+          (itemHeight + marginTop) * index -
+          scrollTop;
+      }
+
+      if (indexInRow == 0) {
+        bLeft = this.elemRect.left;
+        bRight = this.elemRect.left + this.elemRect.width;
+      } else {
+        bLeft =
+          this.elemRect.left + (this.elemRect.width + marginLeft) * indexInRow;
+        bRight =
+          this.elemRect.left +
+          (this.elemRect.width + marginLeft) * indexInRow +
+          this.elemRect.width;
+      }
+    } else {
+      // Table/row view
+
+      if (itemIndex == 0) {
+        bTop = this.elemRect.top + scrollTop;
+        bBottom = this.elemRect.top + itemHeight - scrollTop;
+      } else {
+        bTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
+        bBottom =
+          this.elemRect.top + itemHeight + itemHeight * itemIndex - scrollTop;
+      }
+    }
+
+    if (viewAs === "tile") {
+      return right > bLeft && left < bRight && bottom > bTop && top < bBottom;
+    } else {
+      return bottom > bTop && top < bBottom;
+    }
   };
 
   recalculateSelectionAreaRect = () => {
@@ -109,16 +159,26 @@ class SelectionArea extends React.Component {
     const removed = [];
     const newSelected = [];
 
-    const { selectableClass, onMove } = this.props;
-    const selectables = document.getElementsByClassName(selectableClass);
+    const { selectableClass, onMove, viewAs } = this.props;
+    const selectables1 = document.getElementsByClassName(selectableClass);
+
+    // console.log("updateElementSelection", selectables);
+    const selectables = [...selectables1, ...this.array];
 
     for (let i = 0; i < selectables.length; i++) {
       const node = selectables[i];
 
-      const isIntersects = this.isIntersects(
-        this.areaRect,
-        node.getBoundingClientRect()
-      );
+      const itemIndex =
+        viewAs === "tile"
+          ? node.getAttribute("value").split("_")[4]
+          : node
+              .getElementsByClassName("files-item")[0]
+              .getAttribute("value")
+              .split("_")[4];
+
+      // console.log("node", node);
+      // console.log("node", node.getBoundingClientRect());
+      const isIntersects = this.isIntersects(itemIndex);
 
       if (isIntersects) {
         if (!this.selectableNodes.has(node)) {
@@ -154,47 +214,71 @@ class SelectionArea extends React.Component {
   };
 
   addListeners = () => {
-    const scroll = this.props.scroll ?? document;
-
-    document.addEventListener("touchmove", this.onMove, {
-      passive: false,
-    });
     document.addEventListener("mousemove", this.onMove, {
       passive: false,
     });
     document.addEventListener("mouseup", this.onTapStop);
-    document.addEventListener("touchcancel", this.onTapStop);
-    document.addEventListener("touchend", this.onTapStop);
-    scroll.addEventListener("scroll", this.onScroll);
+    this.scrollElement.addEventListener("scroll", this.onScroll);
   };
 
   removeListeners = () => {
-    const scroll = this.props.scroll ?? document;
-
     document.removeEventListener("mousemove", this.onMove);
-    document.removeEventListener("touchmove", this.onMove);
-    document.removeEventListener("touchmove", this.onTapMove);
     document.removeEventListener("mousemove", this.onTapMove);
 
     document.removeEventListener("mouseup", this.onTapStop);
-    document.removeEventListener("touchcancel", this.onTapStop);
-    document.removeEventListener("touchend", this.onTapStop);
-    scroll.removeEventListener("scroll", this.onScroll);
+    this.scrollElement.removeEventListener("scroll", this.onScroll);
   };
 
   onTapStart = (e) => {
-    const { scroll, onMove } = this.props;
+    const {
+      onMove,
+      selectableClass,
+      scrollClass,
+      viewAs,
+      itemsContainerClass,
+    } = this.props;
+
+    if (e.target.closest(".not-selectable")) return;
+
+    const selectables = document.getElementsByClassName(selectableClass);
+    if (!selectables.length) return;
+
     this.areaLocation = { x1: e.clientX, y1: e.clientY, x2: 0, y2: 0 };
 
-    const scrollElement = scroll ?? document;
+    const scroll =
+      scrollClass && document.getElementsByClassName(scrollClass)
+        ? document.getElementsByClassName(scrollClass)[0]
+        : document;
+
+    this.scrollElement = scroll;
 
     this.scrollDelta = {
-      x: scrollElement.scrollLeft,
-      y: scrollElement.scrollTop,
+      x: scroll.scrollLeft,
+      y: scroll.scrollTop,
     };
 
     onMove && onMove({ added: [], removed: [], clear: true });
     this.addListeners();
+
+    const itemsContainer = document.getElementsByClassName(itemsContainerClass);
+
+    if (!itemsContainer) return;
+
+    this.elemRect.top =
+      scroll.scrollTop + itemsContainer[0].getBoundingClientRect().top;
+
+    this.elemRect.left =
+      scroll.scrollLeft + itemsContainer[0].getBoundingClientRect().left;
+
+    if (viewAs === "tile") {
+      this.elemRect.width = itemsContainer[0]
+        .getElementsByClassName(selectableClass)[0]
+        .getBoundingClientRect().width;
+
+      this.elemRect.height = itemsContainer[0]
+        .getElementsByClassName(selectableClass)[0]
+        .getBoundingClientRect().height;
+    }
   };
 
   onMove = (e) => {
@@ -210,20 +294,13 @@ class SelectionArea extends React.Component {
       document.removeEventListener("mousemove", this.onMove, {
         passive: false,
       });
-      document.removeEventListener("touchmove", this.onMove, {
-        passive: false,
-      });
 
       document.addEventListener("mousemove", this.onTapMove, {
-        passive: false,
-      });
-      document.addEventListener("touchmove", this.onTapMove, {
         passive: false,
       });
 
       this.areaRef.current.style.display = "block";
 
-      this.setupSelectionArea();
       this.onTapMove(e);
     }
   };
@@ -232,7 +309,9 @@ class SelectionArea extends React.Component {
     this.areaLocation.x2 = e.clientX;
     this.areaLocation.y2 = e.clientY;
 
-    this.frame().next(e);
+    // console.log("onTapMove");
+
+    this.frame().next();
   };
 
   onTapStop = (e) => {
@@ -242,29 +321,40 @@ class SelectionArea extends React.Component {
     this.scrollSpeed.y = 0;
     this.selectableNodes.clear();
 
+    this.array = [];
+
     this.frame()?.cancel();
 
-    if (this.areaRef.current) this.areaRef.current.style.display = "none";
+    if (this.areaRef.current) {
+      const { style } = this.areaRef.current;
+
+      style.display = "none";
+      style.left = "0px";
+      style.top = "0px";
+      style.width = "0px";
+      style.height = "0px";
+    }
   };
 
-  onScroll = () => {
-    const scrollElement = this.props.scroll ?? document;
-    const { scrollTop, scrollLeft } = scrollElement;
+  onScroll = (e) => {
+    const { scrollTop, scrollLeft } = e.target;
 
     this.areaLocation.x1 += this.scrollDelta.x - scrollLeft;
     this.areaLocation.y1 += this.scrollDelta.y - scrollTop;
     this.scrollDelta.x = scrollLeft;
     this.scrollDelta.y = scrollTop;
 
-    this.setupSelectionArea();
+    const selectables = document.getElementsByClassName(
+      this.props.selectableClass
+    );
+
+    if (!this.array.length) {
+      this.array = selectables;
+    } else {
+      this.array = [...this.array, ...selectables];
+    }
+
     this.frame().next(null);
-  };
-
-  setupSelectionArea = () => {
-    const area = this.areaRef.current;
-
-    area.style.marginTop = 0;
-    area.style.marginLeft = 0;
   };
 
   render() {

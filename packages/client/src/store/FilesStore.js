@@ -669,9 +669,9 @@ class FilesStore {
         },
       });
 
-      this.files?.forEach((file) =>
-        console.log("[WS] subscribe to file's changes", file.id, file.title)
-      );
+      // this.files?.forEach((file) =>
+      //   console.log("[WS] subscribe to file's changes", file.id, file.title)
+      // );
     }
   };
 
@@ -849,7 +849,7 @@ class FilesStore {
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
-      const id = splitValue.slice(1, -1).join("_");
+      const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
         const isFound =
@@ -883,7 +883,7 @@ class FilesStore {
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
-      const id = splitValue.slice(1, -1).join("_");
+      const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
         if (this.activeFiles.findIndex((f) => f == id) === -1) {
