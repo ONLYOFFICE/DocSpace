@@ -157,9 +157,7 @@ public class FeedAggregateDataProvider
             var aggregates = feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
             feedDbContext.FeedAggregates.RemoveRange(aggregates);
 
-            var users = feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
-            feedDbContext.FeedUsers.RemoveRange(users);
-
+            feedDbContext.SaveChanges();
             tx.Commit();
         });
     }
@@ -312,9 +310,6 @@ public class FeedAggregateDataProvider
 
             var aggregates = feedDbContext.FeedAggregates.Where(r => r.Id == id);
             feedDbContext.FeedAggregates.RemoveRange(aggregates);
-
-            var users = feedDbContext.FeedUsers.Where(r => r.FeedId == id);
-            feedDbContext.FeedUsers.RemoveRange(users);
 
             feedDbContext.SaveChanges();
 

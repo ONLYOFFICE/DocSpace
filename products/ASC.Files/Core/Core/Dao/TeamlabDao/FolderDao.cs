@@ -573,9 +573,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 await _factoryIndexer.DeleteAsync(f);
             }
 
-            var treeToDelete = await filesDbContext.Tree.Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
-            filesDbContext.Tree.RemoveRange(treeToDelete);
-
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
             var linkToDelete = await Query(filesDbContext.TagLink)
                 .Where(r => subfoldersStrings.Contains(r.EntryId))
