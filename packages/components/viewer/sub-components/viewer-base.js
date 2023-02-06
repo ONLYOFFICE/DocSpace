@@ -83,6 +83,8 @@ const ViewerBase = (props) => {
     };
   }
   const containerSize = React.useRef(setContainerWidthHeight());
+  const imageRef = React.useRef(null);
+
   const [isOpen, setIsOpen] = React.useState(false);
   const footerHeight = 0;
   function reducer(state, action) {
@@ -213,9 +215,18 @@ const ViewerBase = (props) => {
     if (images.length > 0) {
       activeImage = images[currentActiveIndex];
     }
+
+    if (imageRef.current) {
+      //abort previous image request
+      imageRef.current.src = ""
+    }
+
+
     let loadComplete = false;
     let img = new Image();
+    imageRef.current = img
     img.src = activeImage.src;
+
     img.onload = () => {
       clearTimeout(timerId);
       if (!init.current) {
@@ -647,13 +658,12 @@ const ViewerBase = (props) => {
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
-          backgroundColor: `${
-            isMobileOnly
+          backgroundColor: `${isMobileOnly
               ? !displayVisible
                 ? "rgba(55,55,55,0.6)"
                 : "#000"
               : "rgba(55,55,55,0.6)"
-          }`,
+            }`,
         }}
       />
       <ViewerImage
