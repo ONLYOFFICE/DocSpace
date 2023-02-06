@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.FeedDb
 {
     /// <inheritdoc />
     public partial class FeedDbContextMigrate : Migration
@@ -26,21 +26,6 @@ namespace ASC.Migrations.MySql.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.lastkey);
-                })
-                .Annotation("MySql:CharSet", "utf8");
-
-            migrationBuilder.CreateTable(
-                name: "feed_users",
-                columns: table => new
-                {
-                    feedid = table.Column<string>(name: "feed_id", type: "varchar(88)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    userid = table.Column<string>(name: "user_id", type: "char(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => new { x.feedid, x.userid });
                 })
                 .Annotation("MySql:CharSet", "utf8");
 
@@ -145,6 +130,27 @@ namespace ASC.Migrations.MySql.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8");
 
+            migrationBuilder.CreateTable(
+                name: "feed_users",
+                columns: table => new
+                {
+                    feedid = table.Column<string>(name: "feed_id", type: "varchar(88)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8"),
+                    userid = table.Column<string>(name: "user_id", type: "char(38)", nullable: false, collation: "utf8_general_ci")
+                        .Annotation("MySql:CharSet", "utf8")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => new { x.feedid, x.userid });
+                    table.ForeignKey(
+                        name: "FK_feed_users_feed_aggregate_feed_id",
+                        column: x => x.feedid,
+                        principalTable: "feed_aggregate",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8");
+
             migrationBuilder.InsertData(
                 table: "tenants_tenants",
                 columns: new[] { "id", "alias", "creationdatetime", "last_modified", "mappeddomain", "name", "owner_id", "payment_id", "status", "statuschanged", "timezone", "trusteddomains", "version_changed" },
@@ -201,9 +207,6 @@ namespace ASC.Migrations.MySql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "feed_aggregate");
-
-            migrationBuilder.DropTable(
                 name: "feed_last");
 
             migrationBuilder.DropTable(
@@ -211,6 +214,9 @@ namespace ASC.Migrations.MySql.Migrations
 
             migrationBuilder.DropTable(
                 name: "feed_users");
+
+            migrationBuilder.DropTable(
+                name: "feed_aggregate");
 
             migrationBuilder.DropTable(
                 name: "tenants_tenants");

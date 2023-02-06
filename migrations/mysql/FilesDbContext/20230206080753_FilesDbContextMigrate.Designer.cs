@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
-    [Migration("20230203115440_FilesDbContextMigrate")]
+    [Migration("20230206080753_FilesDbContextMigrate")]
     partial class FilesDbContextMigrate
     {
         /// <inheritdoc />
@@ -2721,6 +2721,17 @@ namespace ASC.Migrations.MySql.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFolderTree", b =>
+                {
+                    b.HasOne("ASC.Files.Core.EF.DbFolder", "Folder")
+                        .WithMany()
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Folder");
                 });
 #pragma warning restore 612, 618
         }

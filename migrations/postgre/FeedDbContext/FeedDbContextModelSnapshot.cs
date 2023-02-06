@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.FeedDb
 {
     [DbContext(typeof(FeedDbContext))]
     partial class FeedDbContextModelSnapshot : ModelSnapshot
@@ -353,6 +353,17 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Feed.Model.FeedUsers", b =>
+                {
+                    b.HasOne("ASC.Feed.Model.FeedAggregate", "Feed")
+                        .WithMany()
+                        .HasForeignKey("FeedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feed");
                 });
 #pragma warning restore 612, 618
         }

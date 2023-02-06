@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.FeedDb
 {
     /// <inheritdoc />
     public partial class FeedDbContextMigrate : Migration
@@ -28,19 +28,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("feed_last_pkey", x => x.lastkey);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "feed_users",
-                schema: "onlyoffice",
-                columns: table => new
-                {
-                    feedid = table.Column<string>(name: "feed_id", type: "character varying(88)", maxLength: 88, nullable: false),
-                    userid = table.Column<Guid>(name: "user_id", type: "uuid", fixedLength: true, maxLength: 38, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("feed_users_pkey", x => new { x.feedid, x.userid });
                 });
 
             migrationBuilder.CreateTable(
@@ -127,6 +114,26 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "feed_users",
+                schema: "onlyoffice",
+                columns: table => new
+                {
+                    feedid = table.Column<string>(name: "feed_id", type: "character varying(88)", maxLength: 88, nullable: false),
+                    userid = table.Column<Guid>(name: "user_id", type: "uuid", fixedLength: true, maxLength: 38, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("feed_users_pkey", x => new { x.feedid, x.userid });
+                    table.ForeignKey(
+                        name: "FK_feed_users_feed_aggregate_feed_id",
+                        column: x => x.feedid,
+                        principalSchema: "onlyoffice",
+                        principalTable: "feed_aggregate",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "tenants_tenants",
@@ -197,10 +204,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "feed_aggregate",
-                schema: "onlyoffice");
-
-            migrationBuilder.DropTable(
                 name: "feed_last",
                 schema: "onlyoffice");
 
@@ -210,6 +213,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             migrationBuilder.DropTable(
                 name: "feed_users",
+                schema: "onlyoffice");
+
+            migrationBuilder.DropTable(
+                name: "feed_aggregate",
                 schema: "onlyoffice");
 
             migrationBuilder.DropTable(

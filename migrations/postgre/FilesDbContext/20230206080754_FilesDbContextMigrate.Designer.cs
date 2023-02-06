@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
-    [Migration("20230203115441_FilesDbContextMigrate")]
+    [Migration("20230206080754_FilesDbContextMigrate")]
     partial class FilesDbContextMigrate
     {
         /// <inheritdoc />
@@ -2641,6 +2641,17 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFolderTree", b =>
+                {
+                    b.HasOne("ASC.Files.Core.EF.DbFolder", "Folder")
+                        .WithMany()
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Folder");
                 });
 #pragma warning restore 612, 618
         }
