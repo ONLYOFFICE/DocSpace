@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+#nullable enable
 using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
@@ -68,6 +69,14 @@ public abstract class FileEntryDto<T> : FileEntryDto
 {
     public T Id { get; set; }
     public T RootFolderId { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public T OriginId { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public T OriginRoomId { get; set; }
+    public string OriginTitle { get; set; }
+    public string OriginRoomTitle { get; set; }
     public bool CanShare { get; set; }
     public IDictionary<FilesSecurityActions, bool> Security { get; set; }
 
@@ -129,7 +138,11 @@ public class FileEntryDtoHelper
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),
             CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
-            Security = entry.Security
+            Security = entry.Security,
+            OriginId = entry.OriginId,
+            OriginTitle = entry.OriginTitle,
+            OriginRoomId = entry.OriginRoomId,
+            OriginRoomTitle = entry.OriginRoomTitle
         };
     }
 }

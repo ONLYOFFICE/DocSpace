@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.OneDrive.Sdk;
-
 using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
@@ -48,6 +46,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
+    private readonly TagDao<int> _tagDao;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -75,7 +74,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Settings settings,
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        TagDao<int> tagDao)
         : base(
               dbContextManager,
               userManager,
@@ -104,6 +104,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
+        _tagDao = tagDao;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -278,7 +279,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -360,7 +361,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in (withOrigin ? FromQueryWithOrigin(filesDbContext, q) : FromQuery(filesDbContext, q)).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -892,16 +893,28 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
+                var trashId = await trashIdTask;
+                var oldParentId = toUpdate.FirstOrDefault()?.ParentId;
+                
                 foreach (var f in toUpdate)
                 {
                     f.ParentId = toFolderId;
-
-                    var trashId = await trashIdTask;
+                    
                     if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = _authContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
                     }
+                }
+
+                if (toFolderId == trashId && oldParentId.HasValue)
+                {
+                    var origin = Tag.Origin(fileId, FileEntryType.File, oldParentId.Value, _authContext.CurrentAccount.ID);
+                    await _tagDao.SaveTags(origin);
+                }
+                else if (oldParentId == trashId)
+                {
+                    await _tagDao.RemoveTagLinksAsync(fileId, FileEntryType.File, TagType.Origin);
                 }
 
                 await filesDbContext.SaveChangesAsync();
@@ -1701,6 +1714,39 @@ internal class FileDao : AbstractDao, IFileDao<int>
             });
     }
 
+    private IQueryable<DbFileQuery> FromQueryWithOrigin(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
+    {
+        return dbFiles
+            .Select(r => new DbFileQuery
+            {
+                File = r,
+                Root = (from f in filesDbContext.Folders
+                        where f.Id ==
+                              (from t in filesDbContext.Tree
+                                  where t.FolderId == r.ParentId
+                                  orderby t.Level descending
+                                  select t.ParentId
+                              ).FirstOrDefault()
+                        where f.TenantId == r.TenantId
+                        select f
+                    ).FirstOrDefault(),
+                Origin = filesDbContext.Folders.AsNoTracking()
+                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id.ToString() == filesDbContext.TagLink.AsNoTracking()
+                        .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.File)
+                        .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => t.Name)
+                        .FirstOrDefault()),
+                OriginRoom = filesDbContext.Folders.AsNoTracking()
+                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id == filesDbContext.Tree.AsNoTracking()
+                        .Where(tree => tree.FolderId.ToString() == filesDbContext.TagLink.AsNoTracking()
+                            .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.File)
+                            .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => t.Name)
+                            .FirstOrDefault())
+                        .OrderByDescending(tree => tree.Level).Skip(1)
+                        .Select(t => t.ParentId)
+                        .FirstOrDefault())
+            });
+    }
+
     protected internal Task<DbFile> InitDocumentAsync(DbFile dbFile)
     {
         if (!_factoryIndexer.CanIndexByContent(dbFile))
@@ -1749,7 +1795,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     }
 }
 
-public class DbFileQuery
+public class DbFileQuery : OriginQuery
 {
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
