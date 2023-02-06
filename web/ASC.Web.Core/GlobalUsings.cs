@@ -45,7 +45,6 @@ global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml;
 
-global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
