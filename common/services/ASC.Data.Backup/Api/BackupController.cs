@@ -210,34 +210,4 @@ public class BackupController : ControllerBase
     {
         return _backupHandler.GetTmpFolder();
     }
-
-    ///<visible>false</visible>
-    [HttpGet("enablerestore")]
-    public bool EnableRestore()
-    {
-        try
-        {
-            _backupHandler.DemandPermissionsRestore();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    ///<visible>false</visible>
-    [HttpGet("enableAutoBackup")]
-    public bool EnableAutoBackup()
-    {
-        try
-        {
-            _backupHandler.DemandPermissionsAutoBackup();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }

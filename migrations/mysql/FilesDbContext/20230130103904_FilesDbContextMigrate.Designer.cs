@@ -5,136 +5,133 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.MySql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
-    [Migration("20221019144342_FilesDbContextMigrate")]
+    [Migration("20230130103904_FilesDbContextMigrate")]
     partial class FilesDbContextMigrate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Alias")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("alias");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("alias")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Calls")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("calls")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("creationdatetime");
 
                     b.Property<int>("Industry")
-                        .HasColumnType("integer")
-                        .HasColumnName("industry");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("industry")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Language")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("character(10)")
+                        .HasColumnType("char(10)")
                         .HasColumnName("language")
                         .HasDefaultValueSql("'en-US'")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp")
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("MappedDomain")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("mappeddomain")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid?>("OwnerId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("varchar(38)")
                         .HasColumnName("owner_id")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(38)
-                        .HasColumnType("character varying(38)")
+                        .HasColumnType("varchar(38)")
                         .HasColumnName("payment_id")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Spam")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("spam")
-                        .HasDefaultValueSql("true");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime?>("StatusChanged")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("statuschanged");
 
                     b.Property<string>("TimeZone")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("timezone")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TrustedDomainsEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("trusteddomainsenabled")
-                        .HasDefaultValueSql("1");
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<string>("TrustedDomainsRaw")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)")
+                        .HasColumnType("varchar(1024)")
                         .HasColumnName("trusteddomains")
-                        .HasDefaultValueSql("NULL");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("version")
-                        .HasDefaultValueSql("2");
+                        .HasDefaultValueSql("'2'");
 
                     b.Property<DateTime?>("Version_Changed")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("version_changed");
 
                     b.HasKey("Id");
@@ -144,7 +141,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasDatabaseName("alias");
 
                     b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified_tenants_tenants");
+                        .HasDatabaseName("last_modified");
 
                     b.HasIndex("MappedDomain")
                         .HasDatabaseName("mappeddomain");
@@ -152,7 +149,9 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.HasIndex("Version")
                         .HasDatabaseName("version");
 
-                    b.ToTable("tenants_tenants", "onlyoffice");
+                    b.ToTable("tenants_tenants", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -164,7 +163,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             Industry = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Web Office",
-                            OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                            OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
                             Spam = false,
                             Status = 0,
                             TrustedDomainsEnabled = 0,
@@ -175,19 +174,23 @@ namespace ASC.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FilesConverts", b =>
                 {
                     b.Property<string>("Input")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("input");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("input")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Output")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("output");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("output")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Input", "Output")
-                        .HasName("files_converts_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("files_converts", "onlyoffice");
+                    b.ToTable("files_converts", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasData(
                         new
@@ -1934,564 +1937,652 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFile", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
                     b.Property<int>("Version")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("version");
 
                     b.Property<int>("Category")
-                        .HasColumnType("integer")
-                        .HasColumnName("category");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("category")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Changes")
-                        .HasColumnType("text")
-                        .HasColumnName("changes");
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("changes")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Comment")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("comment")
-                        .HasDefaultValueSql("NULL::character varying");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<long>("ContentLength")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("content_length")
-                        .HasDefaultValueSql("'0'::bigint");
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("ConvertedType")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("converted_type")
-                        .HasDefaultValueSql("NULL::character varying");
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("CreateBy")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("create_by")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("create_on");
 
                     b.Property<bool>("CurrentVersion")
-                        .HasColumnType("boolean")
-                        .HasColumnName("current_version");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("current_version")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<bool>("Encrypted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("encrypted");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("encrypted")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FileStatus")
-                        .HasColumnType("integer")
-                        .HasColumnName("file_status");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("file_status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("Forcesave")
-                        .HasColumnType("integer")
-                        .HasColumnName("forcesave");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("forcesave")
+                        .HasDefaultValueSql("'0'");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("modified_by")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("modified_on");
 
                     b.Property<int>("ParentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("folder_id");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("folder_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("ThumbnailStatus")
-                        .HasColumnType("integer")
-                        .HasColumnName("thumb");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("thumb")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)")
-                        .HasColumnName("title");
+                        .HasColumnType("varchar(400)")
+                        .HasColumnName("title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("VersionGroup")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("version_group")
-                        .HasDefaultValueSql("1");
+                        .HasDefaultValueSql("'1'");
 
-                    b.HasKey("Id", "TenantId", "Version")
-                        .HasName("files_file_pkey");
+                    b.HasKey("TenantId", "Id", "Version")
+                        .HasName("PRIMARY");
 
                     b.HasIndex("Id")
                         .HasDatabaseName("id");
 
                     b.HasIndex("ModifiedOn")
-                        .HasDatabaseName("modified_on_files_file");
+                        .HasDatabaseName("modified_on");
 
                     b.HasIndex("ParentId")
                         .HasDatabaseName("folder_id");
 
-                    b.ToTable("files_file", "onlyoffice");
+                    b.ToTable("files_file", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesBunchObjects", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("RightNode")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("right_node");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("right_node")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("LeftNode")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("left_node");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("left_node")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TenantId", "RightNode")
-                        .HasName("files_bunch_objects_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("LeftNode")
                         .HasDatabaseName("left_node");
 
-                    b.ToTable("files_bunch_objects", "onlyoffice");
+                    b.ToTable("files_bunch_objects", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesLink", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("SourceId")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("source_id");
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("source_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("LinkedId")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("linked_id");
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("linked_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("LinkedFor")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("LinkedFor")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("linked_for")
-                        .HasDefaultValueSql("NULL::bpchar")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TenantId", "SourceId", "LinkedId")
-                        .HasName("files_link_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("TenantId", "SourceId", "LinkedId", "LinkedFor")
-                        .HasDatabaseName("linked_for_files_link");
+                        .HasDatabaseName("linked_for");
 
-                    b.ToTable("files_link", "onlyoffice");
+                    b.ToTable("files_link", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesProperties", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("EntryId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("entry_id");
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("entry_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("data");
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("data")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("TenantId", "EntryId")
-                        .HasName("files_properties_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("files_properties", "onlyoffice");
+                    b.ToTable("files_properties", (string)null);
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesSecurity", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("EntryId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("entry_id");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("entry_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("EntryType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("entry_type");
 
-                    b.Property<Guid>("Subject")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("Subject")
+                        .HasColumnType("char(38)")
                         .HasColumnName("subject")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("FileShareOptions")
                         .HasColumnType("text")
-                        .HasColumnName("options");
+                        .HasColumnName("options")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("Owner")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("owner")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Share")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("security");
 
                     b.Property<int>("SubjectType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("subject_type");
 
                     b.Property<DateTime>("TimeStamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp")
+                        .HasColumnName("timestamp");
 
                     b.HasKey("TenantId", "EntryId", "EntryType", "Subject")
-                        .HasName("files_security_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("Owner")
                         .HasDatabaseName("owner");
 
-                    b.HasIndex("EntryId", "TenantId", "EntryType", "Owner")
-                        .HasDatabaseName("tenant_id_files_security");
+                    b.HasIndex("TenantId", "EntryType", "EntryId", "Owner")
+                        .HasDatabaseName("tenant_id");
 
-                    b.ToTable("files_security", "onlyoffice");
+                    b.ToTable("files_security", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("Owner")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("owner");
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("owner")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("flag");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("flag")
+                        .HasDefaultValueSql("'0'");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId", "Owner", "Name", "Type")
-                        .HasDatabaseName("name_files_tag");
+                        .HasDatabaseName("name");
 
-                    b.ToTable("files_tag", "onlyoffice");
+                    b.ToTable("files_tag", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTagLink", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<int>("TagId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tag_id");
 
+                    b.Property<string>("EntryId")
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("entry_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
                     b.Property<int>("EntryType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("entry_type");
 
-                    b.Property<string>("EntryId")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("entry_id");
-
                     b.Property<int>("Count")
-                        .HasColumnType("integer")
-                        .HasColumnName("tag_count");
-
-                    b.Property<Guid?>("CreateBy")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                        .HasColumnType("int")
+                        .HasColumnName("tag_count")
+                        .HasDefaultValueSql("'0'");
+
+                    b.Property<string>("CreateBy")
+                        .HasColumnType("char(38)")
                         .HasColumnName("create_by")
-                        .HasDefaultValueSql("NULL::bpchar")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime?>("CreateOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("create_on");
 
-                    b.HasKey("TenantId", "TagId", "EntryType", "EntryId")
-                        .HasName("files_tag_link_pkey");
+                    b.HasKey("TenantId", "TagId", "EntryId", "EntryType")
+                        .HasName("PRIMARY");
 
                     b.HasIndex("CreateOn")
-                        .HasDatabaseName("create_on_files_tag_link");
+                        .HasDatabaseName("create_on");
 
-                    b.HasIndex("TenantId", "EntryType", "EntryId")
+                    b.HasIndex("TenantId", "EntryId", "EntryType")
                         .HasDatabaseName("entry_id");
 
-                    b.ToTable("files_tag_link", "onlyoffice");
+                    b.ToTable("files_tag_link", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreateOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("create_on");
 
                     b.Property<string>("FolderId")
                         .HasColumnType("text")
-                        .HasColumnName("folder_id");
+                        .HasColumnName("folder_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("FolderType")
-                        .HasColumnType("integer")
-                        .HasColumnName("folder_type");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("folder_type")
+                        .HasDefaultValueSql("'0'");
+
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("password");
+                        .HasColumnType("varchar(512)")
+                        .HasColumnName("password")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Private")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("private");
 
                     b.Property<string>("Provider")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("provider")
-                        .HasDefaultValueSql("'0'::character varying");
+                        .HasDefaultValueSql("'0'")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("RoomType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("room_type");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)")
-                        .HasColumnName("customer_title");
+                        .HasColumnType("varchar(400)")
+                        .HasColumnName("customer_title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Token")
                         .HasColumnType("text")
-                        .HasColumnName("token");
+                        .HasColumnName("token")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Url")
                         .HasColumnType("text")
-                        .HasColumnName("url");
+                        .HasColumnName("url")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("user_name");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("user_name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId")
                         .HasDatabaseName("tenant_id");
 
-                    b.ToTable("files_thirdparty_account", "onlyoffice");
+                    b.ToTable("files_thirdparty_account", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyApp", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("App")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("app");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("app")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("modified_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp")
+                        .HasColumnName("modified_on");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Token")
                         .HasColumnType("text")
-                        .HasColumnName("token");
+                        .HasColumnName("token")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("UserId", "App")
-                        .HasName("files_thirdparty_app_pkey");
+                        .HasName("PRIMARY");
 
-                    b.ToTable("files_thirdparty_app", "onlyoffice");
+                    b.ToTable("files_thirdparty_app", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyIdMapping", b =>
                 {
                     b.Property<string>("HashId")
-                        .HasMaxLength(32)
-                        .HasColumnType("character(32)")
+                        .HasColumnType("char(32)")
                         .HasColumnName("hash_id")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Id")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("id");
+                        .HasColumnName("id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.HasKey("HashId")
-                        .HasName("files_thirdparty_id_mapping_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("TenantId", "HashId")
                         .HasDatabaseName("index_1");
 
-                    b.ToTable("files_thirdparty_id_mapping", "onlyoffice");
+                    b.ToTable("files_thirdparty_id_mapping", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFolder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                    b.Property<Guid>("CreateBy")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("create_by")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("CreateOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("create_on");
 
                     b.Property<int>("FilesCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("filesCount");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("filesCount")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FolderType")
-                        .HasColumnType("integer")
-                        .HasColumnName("folder_type");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("folder_type")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("FoldersCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("foldersCount");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("foldersCount")
+                        .HasDefaultValueSql("'0'");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasMaxLength(38)
-                        .HasColumnType("uuid")
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("char(38)")
                         .HasColumnName("modified_by")
-                        .IsFixedLength();
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime")
                         .HasColumnName("modified_on");
 
                     b.Property<int>("ParentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("parent_id");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<bool>("Private")
-                        .HasColumnType("boolean")
-                        .HasColumnName("private");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("private")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("TenantId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)")
-                        .HasColumnName("title");
+                        .HasColumnType("varchar(400)")
+                        .HasColumnName("title")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ModifiedOn")
-                        .HasDatabaseName("modified_on_files_folder");
+                        .HasDatabaseName("modified_on");
 
                     b.HasIndex("TenantId", "ParentId")
                         .HasDatabaseName("parent_id");
 
-                    b.ToTable("files_folder", "onlyoffice");
+                    b.ToTable("files_folder", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Files.Core.EF.DbFolderTree", b =>
                 {
                     b.Property<int>("ParentId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("parent_id");
 
                     b.Property<int>("FolderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("folder_id");
 
                     b.Property<int>("Level")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("level");
 
                     b.HasKey("ParentId", "FolderId")
-                        .HasName("files_folder_tree_pkey");
+                        .HasName("PRIMARY");
 
                     b.HasIndex("FolderId")
-                        .HasDatabaseName("folder_id_files_folder_tree");
+                        .HasDatabaseName("folder_id");
 
-                    b.ToTable("files_folder_tree", "onlyoffice");
+                    b.ToTable("files_folder_tree", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 #pragma warning restore 612, 618
         }

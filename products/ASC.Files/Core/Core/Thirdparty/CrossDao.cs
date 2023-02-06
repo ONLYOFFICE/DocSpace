@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.Classes;
+
 namespace ASC.Files.Core.Thirdparty;
 
 [Scope(Additional = typeof(CrossDaoExtension))]
@@ -64,6 +66,7 @@ internal class CrossDao //Additional SharpBox
 
         var securityDao = _serviceProvider.GetService<ISecurityDao<TFrom>>();
         var tagDao = _serviceProvider.GetService<ITagDao<TFrom>>();
+        var globalStore = _serviceProvider.GetService<GlobalStore>();
 
         var fromFileShareRecords = securityDao.GetPureShareRecordsAsync(fromFile);
         var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFile);
@@ -76,6 +79,7 @@ internal class CrossDao //Additional SharpBox
         toFile.Title = fromFile.Title;
         toFile.Encrypted = fromFile.Encrypted;
         toFile.ParentId = toConverter(toFolderId);
+        toFile.ThumbnailStatus = fromFile.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
         fromFile.Id = fromConverter(fromFile.Id);
 
@@ -92,11 +96,13 @@ internal class CrossDao //Additional SharpBox
         {
             foreach (var size in _thumbnailSettings.Sizes)
             {
-                using (var thumbnail = await fromFileDao.GetThumbnailAsync(fromFile, size.Width, size.Height))
-                {
-                    await toFileDao.SaveThumbnailAsync(toFile, thumbnail, size.Width, size.Height);
-                }
+                await globalStore.GetStore().CopyAsync(String.Empty,
+                                      fromFileDao.GetUniqThumbnailPath(fromFile, size.Width, size.Height),
+                                      String.Empty,
+                                      toFileDao.GetUniqThumbnailPath(toFile, size.Width, size.Height));
             }
+
+            await toFileDao.SetThumbnailStatusAsync(toFile, Thumbnail.Created);
 
             toFile.ThumbnailStatus = Thumbnail.Created;
         }

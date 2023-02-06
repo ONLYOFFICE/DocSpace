@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -973,6 +973,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             copy.ConvertedType = file.ConvertedType;
             copy.Comment = FilesCommonResource.CommentCopy;
             copy.Encrypted = file.Encrypted;
+            copy.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
             using (var stream = await GetFileStreamAsync(file))
             {
@@ -984,12 +985,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    using (var thumbnail = await GetThumbnailAsync(file, size.Width, size.Height))
-                    {
-                        await SaveThumbnailAsync(copy, thumbnail, size.Width, size.Height);
-                    }
-                    copy.ThumbnailStatus = Thumbnail.Created;
+                    await _globalStore.GetStore().CopyAsync(String.Empty,
+                                         GetUniqThumbnailPath(file, size.Width, size.Height),
+                                         String.Empty,
+                                         GetUniqThumbnailPath(copy, size.Width, size.Height));                 
                 }
+
+                await SetThumbnailStatusAsync(copy, Thumbnail.Created);
+
+                copy.ThumbnailStatus = Thumbnail.Created;
             }
 
             return copy;
@@ -1494,44 +1498,25 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private const string ThumbnailTitle = "thumb";
 
-    public async Task CopyThumbnailAsync(File<int> fromFile, File<int> toFile, int width, int height)
+
+    public async Task SetThumbnailStatusAsync(File<int> file, Thumbnail status)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var thumnailName = GetThumnailName(width, height);
-
-        await _globalStore.GetStore().CopyAsync(String.Empty, GetUniqFilePath(fromFile, thumnailName), String.Empty, GetUniqFilePath(toFile, thumnailName));
-    }
-
-    public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
-    {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-
-        return InternalSaveThumbnailAsync(file, thumbnail, width, height);
-    }
-
-    private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
-    {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var toUpdate = await filesDbContext.Files
-            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+                            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
-        if (toUpdate != null)
-        {
-            toUpdate.ThumbnailStatus = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
-            await filesDbContext.SaveChangesAsync();
-        }
+        toUpdate.ThumbnailStatus = status;
 
-        if (thumbnail == null)
-        {
-            return;
-        }
+        await filesDbContext.SaveChangesAsync();
+    }
 
+
+    public string GetUniqThumbnailPath(File<int> file, int width, int height)
+    {
         var thumnailName = GetThumnailName(width, height);
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+
+        return GetUniqFilePath(file, thumnailName);
     }
 
     public async Task<Stream> GetThumbnailAsync(int fileId, int width, int height)

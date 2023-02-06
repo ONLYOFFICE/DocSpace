@@ -55,13 +55,6 @@ const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
-const peopleStore = new PeopleStore(
-  authStore,
-  authStore.infoPanelStore,
-  setupStore,
-  accessRightsStore
-);
-
 const filesStore = new FilesStore(
   authStore,
   selectedFolderStore,
@@ -78,6 +71,7 @@ const mediaViewerDataStore = new MediaViewerDataStore(
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 const versionHistoryStore = new VersionHistoryStore(filesStore);
+
 const dialogsStore = new DialogsStore(
   authStore,
   treeFoldersStore,
@@ -85,6 +79,15 @@ const dialogsStore = new DialogsStore(
   selectedFolderStore,
   versionHistoryStore
 );
+
+const peopleStore = new PeopleStore(
+  authStore,
+  authStore.infoPanelStore,
+  setupStore,
+  accessRightsStore,
+  dialogsStore
+);
+
 const uploadDataStore = new UploadDataStore(
   authStore,
   treeFoldersStore,

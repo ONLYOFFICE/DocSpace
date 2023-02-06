@@ -755,7 +755,6 @@ class UploadDataStore {
     path,
     t
   ) => {
-    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (

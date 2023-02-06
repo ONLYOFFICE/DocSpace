@@ -100,9 +100,9 @@ const Customization = (props) => {
       {!isLoadedPage ? (
         <LoaderDescriptionCustomization />
       ) : (
-        <div className="category-description">{`${t(
-          "Settings:CustomizationDescription"
-        )}`}</div>
+        <div className="category-description">
+          {t("Settings:CustomizationDescription")}
+        </div>
       )}
       <LanguageAndTimeZone isMobileView={isMobile} />
       <StyledSettingsSeparator />

@@ -16,7 +16,6 @@ const DeleteDialogComponent = (props) => {
     setBufferSelection,
     setRemoveMediaItem,
     setDeleteDialogVisible,
-    personal,
     visible,
     tReady,
     isLoading,
@@ -26,6 +25,8 @@ const DeleteDialogComponent = (props) => {
     isRoomDelete,
     setIsRoomDelete,
     deleteRoomsAction,
+    isPersonalRoom,
+    isRoom,
   } = props;
 
   const selection = [];
@@ -116,40 +117,34 @@ const DeleteDialogComponent = (props) => {
 
   const moveToTrashNoteText = () => {
     const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
-    const { pathname } = location;
+    const isSingle = selection.length === 1;
 
-    if (selection.length > 1) {
-      if (isRoomDelete)
-        return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      if (isRecycleBinFolder) {
-        return t("DeleteItems");
-      }
-      if (pathname.startsWith("/rooms/personal")) {
-        return t("MoveToTrashItemsFromPersonal");
-      } else if (pathname.startsWith("/rooms/shared")) {
-        return t("MoveToTrashItems");
-      }
-    } else {
-      if (isRoomDelete)
-        return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
+    if (isRoomDelete) {
+      return isSingle
+        ? `${t("DeleteRoom")} ${t("Common:WantToContinue")}`
+        : `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
+    }
 
-      if (pathname.startsWith("/rooms/personal")) {
-        return !isFolder
-          ? t("MoveToTrashFileFromPersonal")
-          : personal
-          ? ""
-          : t("MoveToTrashFolderFromPersonal");
-      } else if (pathname.startsWith("/rooms/shared")) {
-        return !isFolder
-          ? t("MoveToTrashFile")
-          : personal
-          ? ""
-          : t("MoveToTrashFolder");
-      }
+    if (isRecycleBinFolder) {
+      return isSingle
+        ? t(isFolder ? "DeleteFolder" : "DeleteFile")
+        : t("DeleteItems");
+    }
 
-      if (isRecycleBinFolder) {
-        return t(isFolder ? "DeleteFolder" : "DeleteFile");
-      }
+    if (isPersonalRoom) {
+      return isSingle
+        ? t(
+            isFolder
+              ? "MoveToTrashFolderFromPersonal"
+              : "MoveToTrashFileFromPersonal"
+          )
+        : t("MoveToTrashItemsFromPersonal");
+    }
+
+    if (isRoom) {
+      return isSingle
+        ? t(isFolder ? "MoveToTrashFolder" : "MoveToTrashFile")
+        : t("MoveToTrashItems");
     }
   };
 
@@ -228,7 +223,12 @@ export default inject(
       unsubscribeAction,
       deleteRoomsAction,
     } = filesActionsStore;
-    const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      isRecycleBinFolder,
+      isPersonalRoom,
+      isRoom,
+    } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -239,8 +239,6 @@ export default inject(
       isRoomDelete,
       setIsRoomDelete,
     } = dialogsStore;
-
-    const { personal } = auth.settingsStore;
 
     return {
       selection: removeMediaItem
@@ -259,13 +257,13 @@ export default inject(
       unsubscribe,
 
       setRemoveMediaItem,
-
-      personal,
       setBufferSelection,
 
       isRoomDelete,
       setIsRoomDelete,
       deleteRoomsAction,
+      isPersonalRoom,
+      isRoom,
     };
   }
 )(withRouter(observer(DeleteDialog)));

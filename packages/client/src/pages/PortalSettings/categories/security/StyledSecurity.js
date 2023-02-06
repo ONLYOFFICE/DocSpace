@@ -17,6 +17,7 @@ export const MainContainer = styled.div`
 
   .subtitle {
     margin-bottom: 20px;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
   .settings_tabs {

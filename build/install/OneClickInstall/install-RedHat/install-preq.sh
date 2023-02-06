@@ -110,7 +110,7 @@ ${package_manager} versionlock clear
 ${package_manager} -y install epel-release \
 			python3 \
 			nodejs \
-			dotnet-sdk-6.0 \
+			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
@@ -118,7 +118,8 @@ ${package_manager} -y install epel-release \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi \
-			SDL2 $POWERTOOLS_REPO
+			SDL2 $POWERTOOLS_REPO \
+			expect
 	
 py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
 if [[ $py3_version -lt 6 ]]; then

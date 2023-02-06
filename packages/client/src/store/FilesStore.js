@@ -152,11 +152,18 @@ class FilesStore {
         case "create":
           if (opt?.type === "file" && opt?.id) {
             const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
-            if (foundIndex > -1) return;
 
             const file = JSON.parse(opt?.data);
 
             if (this.selectedFolderStore.id !== file.folderId) return;
+
+            //To update a file version
+            if (foundIndex > -1 && !withPaging) {
+              this.getFileInfo(file.id);
+              this.checkSelection(file);
+            }
+
+            if (foundIndex > -1) return;
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
@@ -216,27 +223,7 @@ class FilesStore {
 
             console.log("[WS] update file", file.id, file.title);
 
-            if (this.selection) {
-              const foundIndex = this.selection?.findIndex(
-                (x) => x.id === file.id
-              );
-              if (foundIndex > -1) {
-                runInAction(() => {
-                  this.selection[foundIndex] = file;
-                });
-              }
-            }
-
-            if (this.bufferSelection) {
-              const foundIndex = [this.bufferSelection].findIndex(
-                (x) => x.id === file.id
-              );
-              if (foundIndex > -1) {
-                runInAction(() => {
-                  this.bufferSelection[foundIndex] = file;
-                });
-              }
-            }
+            this.checkSelection(file);
           } else if (opt?.type === "folder" && opt?.data) {
             const folder = JSON.parse(opt?.data);
 
@@ -473,6 +460,28 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
+  checkSelection = (file) => {
+    if (this.selection) {
+      const foundIndex = this.selection?.findIndex((x) => x.id === file.id);
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.selection[foundIndex] = file;
+        });
+      }
+    }
+
+    if (this.bufferSelection) {
+      const foundIndex = [this.bufferSelection].findIndex(
+        (x) => x.id === file.id
+      );
+      if (foundIndex > -1) {
+        runInAction(() => {
+          this.bufferSelection[foundIndex] = file;
+        });
+      }
+    }
+  };
+
   updateSelectionStatus = (id, status, isEditing) => {
     const index = this.selection.findIndex((x) => x.id === id);
 
@@ -683,6 +692,8 @@ class FilesStore {
         console.log("[WS] subscribe to file's changes", file.id, file.title)
       );
     }
+
+    this.viewAs === "tile" && this.createThumbnails();
   };
 
   setFolders = (folders) => {
@@ -1112,8 +1123,6 @@ class FilesStore {
           selectedFolder: { ...this.selectedFolderStore },
         };
 
-        this.viewAs === "tile" && this.createThumbnails();
-
         if (this.createdItem) {
           const newItem = this.filesList.find(
             (item) => item.id === this.createdItem.id
@@ -1246,8 +1255,6 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-
-          this.viewAs === "tile" && this.createThumbnails();
 
           if (this.createdItem) {
             const newItem = this.filesList.find(
@@ -2394,16 +2401,16 @@ class FilesStore {
               isArchive
             );
 
-      const defaultRoomIcon =
-        isRoom &&
-        getIcon(
-          iconSize,
-          fileExst,
-          providerKey,
-          contentLength,
-          roomType,
-          isArchive
-        );
+      const defaultRoomIcon = isRoom
+        ? getIcon(
+            iconSize,
+            fileExst,
+            providerKey,
+            contentLength,
+            roomType,
+            isArchive
+          )
+        : undefined;
 
       return {
         access,
@@ -2954,16 +2961,13 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = [...this.files, this.folders];
-    const fileIds = [];
-
-    filesList.map((file) => {
-      const { thumbnailStatus } = file;
-
-      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
+    const files = this.files?.filter((file) => {
+      return file?.thumbnailStatus === thumbnailStatuses.WAITING;
     });
 
-    if (fileIds.length) return api.files.createThumbnails(fileIds);
+    if (!files?.length) return;
+
+    return api.files.createThumbnails(files.map((f) => f.id));
   };
 
   createThumbnail = async (fileId) => {
