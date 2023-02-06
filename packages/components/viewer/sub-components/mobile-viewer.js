@@ -56,6 +56,15 @@ function MobileViewer({
     api.start({ ...point });
   }, [left, top]);
 
+  React.useEffect(()=>{
+    api.set({
+      width,
+      height,
+      x:left,
+      y:top,
+    })
+  },[height, width])
+
   React.useEffect(() => {
     unmountRef.current = false;
 

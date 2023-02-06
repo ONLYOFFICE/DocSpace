@@ -30,9 +30,14 @@ export function loadLanguagePath(homepage, fixedNS = null) {
     if (!path) return `/doceditor/locales/${language}/${fixedNS || ns}.json`;
 
     const isCommonPath = path?.indexOf("Common") > -1;
+    const isClientPath = !isCommonPath && path?.indexOf("Editor") === -1;
 
     if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
       return path.replace("/doceditor/", "/static/");
+    }
+
+    if (ns.length > 0 && ns[0] != "Editor" && isClientPath) {
+      return path.replace("/doceditor/", "/");
     }
 
     return path;
@@ -60,6 +65,11 @@ export const initI18n = (initialI18nStoreASC) => {
       } else {
         if (ns === "Common") {
           window.i18n.loaded[`${path?.replace("/doceditor/", "/static/")}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        } else if (ns != "Editor") {
+          window.i18n.loaded[`${path?.replace("/doceditor/", "/")}`] = {
             namespaces: ns,
             data: initialI18nStoreASC[lng][ns],
           };

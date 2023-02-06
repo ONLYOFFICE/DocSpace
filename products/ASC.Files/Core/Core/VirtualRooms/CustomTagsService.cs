@@ -60,7 +60,7 @@ public class CustomTagsService<T>
     {
         if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
-            throw new SecurityException("You do not have permission to create tags");
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(name);
@@ -69,7 +69,7 @@ public class CustomTagsService<T>
 
         if (tags.Any())
         {
-            throw new InvalidOperationException("The tag already exists");
+            throw new InvalidOperationException();
         }
 
         var tagInfo = new TagInfo
@@ -90,7 +90,7 @@ public class CustomTagsService<T>
     {
         if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
-            throw new SecurityException("You do not have permission to remove tags");
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
         if (!names.Any())
@@ -104,7 +104,7 @@ public class CustomTagsService<T>
 
         await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, tags.Select(t => t.Name).ToArray());
+        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<string> names)
@@ -113,7 +113,7 @@ public class CustomTagsService<T>
 
         if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
-            throw new SecurityException("You do not have permission to edit the room");
+            throw new SecurityException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         if (!names.Any())
@@ -129,7 +129,7 @@ public class CustomTagsService<T>
 
         await tagDao.SaveTags(tags);
 
-        _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
+        _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }
@@ -140,7 +140,7 @@ public class CustomTagsService<T>
 
         if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
-            throw new SecurityException("You do not have permission to edit the room");
+            throw new SecurityException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         if (!names.Any())
@@ -154,7 +154,7 @@ public class CustomTagsService<T>
 
         await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
+        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }

@@ -4,7 +4,7 @@ const { readdir } = require("fs").promises;
 
 const appSettings = require("../../../config/appsettings.json");
 
-const beforeBuild = async (pathsToLocales, pathToFile) => {
+const beforeBuild = async (pathsToLocales, pathToFile, additionalPath) => {
   async function* getFiles(dir) {
     const dirents = await readdir(dir, { withFileTypes: true });
     for (const dirent of dirents) {
@@ -24,6 +24,13 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
     for await (const p of pathsToLocales) {
       for await (const f of getFiles(p)) {
         if (f) files.push(f);
+      }
+    }
+
+    if (additionalPath) {
+      for await (const f of getFiles(additionalPath?.path)) {
+        if (f && additionalPath?.files?.indexOf(f?.fileName) > -1)
+          files.push(f);
       }
     }
 
@@ -80,7 +87,11 @@ const beforeBuild = async (pathsToLocales, pathToFile) => {
     }
 
     const alias =
-      fileName.indexOf("Common") === -1 ? "ASSETS_DIR" : "PUBLIC_DIR";
+      additionalPath?.files?.indexOf(splitPath[length - 1].toString()) > -1
+        ? additionalPath.alias
+        : fileName.indexOf("Common") === -1
+        ? "ASSETS_DIR"
+        : "PUBLIC_DIR";
 
     importString =
       importString +

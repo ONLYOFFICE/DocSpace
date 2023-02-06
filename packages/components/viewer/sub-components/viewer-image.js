@@ -5,7 +5,7 @@ import { useSwipeable } from "../../react-swipeable";
 import { isMobileOnly } from "react-device-detect";
 
 import MobileViewer from "./mobile-viewer";
-export default function ViewerImage(props) {
+function ViewerImage(props) {
   const {
     dispatch,
     createAction,
@@ -485,3 +485,5 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
     </div>
   );
 }
+
+export default React.memo(ViewerImage);
