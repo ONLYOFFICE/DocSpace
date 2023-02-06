@@ -31,9 +31,14 @@ export function loadLanguagePath(homepage: string, fixedNS = null) {
     if (!path) return `/login/locales/${language}/${fixedNS || ns}.json`;
 
     const isCommonPath = path?.indexOf("Common") > -1;
+    const isClientPath = !isCommonPath && path?.indexOf("Login") === -1;
 
     if (ns.length > 0 && ns[0] === "Common" && isCommonPath) {
       return path.replace("/login/", "/static/");
+    }
+
+    if (ns.length > 0 && ns[0] != "Login" && isClientPath) {
+      return path.replace("/login/", "/");
     }
 
     return path;
@@ -63,6 +68,11 @@ export function initI18n(initialI18nStoreASC: IInitialI18nStoreASC): void {
       } else {
         if (ns === "Common") {
           window.i18n.loaded[`${path?.replace("/login/", "/static/")}`] = {
+            namespaces: ns,
+            data: initialI18nStoreASC[lng][ns],
+          };
+        } else if (ns != "Login") {
+          window.i18n.loaded[`${path?.replace("/login/", "/")}`] = {
             namespaces: ns,
             data: initialI18nStoreASC[lng][ns],
           };

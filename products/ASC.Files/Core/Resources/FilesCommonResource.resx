@@ -433,4 +433,13 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="UnlockComment" xml:space="preserve">
     <value>The file is unlocked</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Room Administrator</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>You don't have permission to edit the room</value>
+  </data>
 </root>

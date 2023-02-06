@@ -96,6 +96,20 @@ const bottomFileBorder = css`
   border-radius: 0 0 6px 6px;
 `;
 
+const animationStyles = css`
+  animation: Highlight 2s 1;
+
+  @keyframes Highlight {
+    0% {
+      background: ${(props) => props.theme.filesSection.animationColor};
+    }
+
+    100% {
+      background: none;
+    }
+  }
+`;
+
 const StyledTile = styled.div`
   cursor: ${(props) =>
     !props.isRecycleBin && !props.isArchiveFolder ? "pointer" : "default"};
@@ -146,6 +160,14 @@ const StyledTile = styled.div`
         .file-tile-bottom {
           ${bottomFileBorder}
         }
+      }
+    `}
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      .file-tile-bottom {
+        ${animationStyles}
       }
     `}
 
@@ -250,6 +272,12 @@ const StyledFileTileTop = styled.div`
     width: 100%;
     bottom: 16px;
   }
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      ${animationStyles}
+    `}
 `;
 
 const StyledFileTileBottom = styled.div`
@@ -503,6 +531,7 @@ class Tile extends React.PureComponent {
       columnCount,
       selectTag,
       selectOption,
+      isHighlight,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -592,6 +621,7 @@ class Tile extends React.PureComponent {
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
         isThirdParty={item.providerType}
+        isHighlight={isHighlight}
       >
         {isFolder || (!fileExst && id === -1) ? (
           isRoom ? (
@@ -753,6 +783,7 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isMedia={item.canOpenPlayer}
+              isHighlight={isHighlight}
             >
               {icon}
             </StyledFileTileTop>
