@@ -677,6 +677,7 @@ class MediaViewer extends React.Component {
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             archiveRoom={archiveRoom}
+            errorTitle={t("Files:MediaError")}
             //    isFavoritesFolder={isFavoritesFolder}
           />
         )}

@@ -49,6 +49,7 @@ export const Viewer = (props) => {
   const [container, setContainer] = React.useState(props.container);
   const [panelVisible, setPanelVisible] = React.useState(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
   const [isPlay, setIsPlay] = React.useState(null);
   const [globalTimer, setGlobalTimer] = React.useState(null);
   const [init, setInit] = React.useState(false);
@@ -138,7 +139,7 @@ export const Viewer = (props) => {
       <Text fontSize="14px" color={"#fff"} className="title">
         {title}
       </Text>
-      {!props.isPreviewFile && (
+      {!props.isPreviewFile && !isError && (
         <div className="details-context">
           <MediaContextMenu
             className="mobile-context"
@@ -196,6 +197,7 @@ export const Viewer = (props) => {
       setPanelVisible={setPanelVisible}
       generateContextMenu={generateContextMenu}
       setIsFullScreen={setIsFullScreen}
+      setIsError={setIsError}
       videoRef={videoElement}
       video={playlist[playlistPos]}
       activeIndex={playlistPos}

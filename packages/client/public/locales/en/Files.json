@@ -59,6 +59,7 @@
   "MoveItem": "<strong>{{title}}</strong> moved",
   "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
   "MoveOrCopy": "Move or copy",
+  "MediaError": "Media URL could not be loaded",
   "MoveTo": "Move to",
   "MoveToFolderMessage": "You can't move the folder to its subfolder",
   "New": "New",

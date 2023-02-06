@@ -38,6 +38,8 @@ const ForbiddenHttpCode = 403;
 const PaymentRequiredHttpCode = 402;
 const UnauthorizedHttpCode = 401;
 
+const THUMBNAILS_CACHE = 500;
+
 class FilesStore {
   authStore;
 
@@ -119,6 +121,7 @@ class FilesStore {
   isPreview = false;
   tempFilter = null;
   uploadedFileIdWithVersion = null;
+  thumbnails = new Set();
 
   constructor(
     authStore,
@@ -419,9 +422,7 @@ class FilesStore {
 
       this.getFileInfo(id);
 
-      if (typeof id !== "string") {
-        this.createThumbnail(id);
-      }
+      this.createThumbnail(this.files[foundIndex]);
     });
   }
 
@@ -529,6 +530,7 @@ class FilesStore {
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
+    viewAs === "tile" && this.createThumbnails();
   };
 
   setCreateWithoutDialog = (checked) => {
@@ -698,7 +700,7 @@ class FilesStore {
       );
     }
 
-    this.viewAs === "tile" && this.createThumbnails();
+    this.createThumbnails();
   };
 
   setFolders = (folders) => {
@@ -741,7 +743,10 @@ class FilesStore {
 
   setFile = (file) => {
     const index = this.files.findIndex((x) => x.id === file.id);
-    if (index !== -1) this.files[index] = file;
+    if (index !== -1) {
+      this.files[index] = file;
+      this.createThumbnail(file);
+    }
   };
 
   updateSelection = (id) => {
@@ -2968,20 +2973,53 @@ class FilesStore {
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
-  createThumbnails = () => {
-    const files = this.files?.filter((file) => {
-      return file?.thumbnailStatus === thumbnailStatuses.WAITING;
+  createThumbnails = async () => {
+    if (this.viewAs !== "tile" || !this.files) return;
+
+    const newFiles = this.files.filter((f) => {
+      return (
+        typeof f.id !== "string" &&
+        f?.thumbnailStatus === thumbnailStatuses.WAITING &&
+        !this.thumbnails.has(`${f.id}|${f.versionGroup}`)
+      );
     });
 
-    if (!files?.length) return;
+    if (!newFiles.length) return;
 
-    return api.files.createThumbnails(files.map((f) => f.id));
+    if (this.thumbnails.size > THUMBNAILS_CACHE) this.thumbnails.clear();
+
+    newFiles.forEach((f) => this.thumbnails.add(`${f.id}|${f.versionGroup}`));
+
+    console.log("thumbnails", this.thumbnails);
+
+    const fileIds = newFiles.map((f) => f.id);
+
+    const res = await api.files.createThumbnails(fileIds);
+
+    return res;
   };
 
-  createThumbnail = async (fileId) => {
-    if (!fileId) return;
+  createThumbnail = async (file) => {
+    if (
+      this.viewAs !== "tile" ||
+      !file ||
+      !file.id ||
+      typeof file.id === "string" ||
+      file.thumbnailStatus !== thumbnailStatuses.WAITING ||
+      this.thumbnails.has(`${file.id}|${file.versionGroup}`)
+    ) {
+      return;
+    }
 
-    await api.files.createThumbnails([fileId]);
+    if (this.thumbnails.size > THUMBNAILS_CACHE) this.thumbnails.clear();
+
+    this.thumbnails.add(`${file.id}|${file.versionGroup}`);
+
+    console.log("thumbnails", this.thumbnails);
+
+    const res = await api.files.createThumbnails([file.id]);
+
+    return res;
   };
 
   setIsUpdatingRowItem = (updating) => {
