@@ -175,6 +175,33 @@ const StyledTableRow = styled(TableRow)`
         margin-top: 2px;
       }
     `}
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      .table-container_cell:not(.table-container_element-wrapper) {
+        animation: Highlight 2s 1;
+
+        @keyframes Highlight {
+          0% {
+            background: ${(props) => props.theme.filesSection.animationColor};
+          }
+
+          100% {
+            background: none;
+          }
+        }
+      }
+
+      .table-container_file-name-cell {
+        margin-left: -24px;
+        padding-left: 24px;
+      }
+      .table-container_row-context-menu-wrapper {
+        margin-right: -20px;
+        padding-right: 18px;
+      }
+    `}
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`

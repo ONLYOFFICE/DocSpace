@@ -2301,6 +2301,8 @@ const Base = {
       color: black,
       textColor: gray,
     },
+
+    animationColor: "rgba(82, 153, 224, 0.16)",
   },
 
   advancedSelector: {

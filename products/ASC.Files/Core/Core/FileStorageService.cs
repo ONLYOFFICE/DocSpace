@@ -618,14 +618,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             await _socketManager.CreateFolderAsync(folder);
 
-            if (isRoom)
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
-            }
-            else
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
-            }
+            _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 
             return folder;
         }
@@ -2556,7 +2549,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, name, GetAccessString(ace.Access));
                         }
                         else
                         {
@@ -2647,7 +2640,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -3281,8 +3274,10 @@ public class FileStorageService<T> //: IFileStorageService
             case FileShare.FillForms:
             case FileShare.Comment:
             case FileShare.Restrict:
+            case FileShare.RoomAdmin:
+            case FileShare.Editing:
             case FileShare.None:
-                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToString());
+                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToStringFast());
             default:
                 return string.Empty;
         }
