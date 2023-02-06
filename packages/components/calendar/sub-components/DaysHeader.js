@@ -15,7 +15,13 @@ export const DaysHeader = ({
   observedDate,
   setObservedDate,
   setSelectedScene,
+  minDate,
+  maxDate,
 }) => {
+  const isLeftDisabled =
+    observedDate.clone().subtract(1, "month").endOf("month") < minDate;
+  const isRightDisabled =
+    observedDate.clone().add(1, "month").startOf("month") > maxDate;
   return (
     <HeaderContainer>
       <Title
@@ -28,6 +34,8 @@ export const DaysHeader = ({
       <HeaderButtons
         onLeftClick={() => onLeftClick(setObservedDate)}
         onRightClick={() => onRightClick(setObservedDate)}
+        isLeftDisabled={isLeftDisabled}
+        isRightDisabled={isRightDisabled}
       />
     </HeaderContainer>
   );
