@@ -16,6 +16,7 @@ module.exports = {
       PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
       ASSETS_DIR: path.resolve(__dirname, "../public"),
       SRC_DIR: path.resolve(__dirname, "../src"),
+      CLIENT_PUBLIC_DIR: path.resolve(__dirname, "../../client/public"),
       PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
   },
