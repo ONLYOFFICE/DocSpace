@@ -119,6 +119,7 @@ const Table = ({
   withPaging,
   columnStorageName,
   columnInfoPanelStorageName,
+  setUploadedFileIdWithVersion,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
   const [hideColumns, setHideColumns] = React.useState(false);
@@ -205,6 +206,7 @@ const Table = ({
             tagCount={tagCount}
             isRooms={isRooms}
             hideColumns={hideColumns}
+            setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
           />
         ))}
       </TableBody>
@@ -230,6 +232,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     hasMoreFiles,
     filterTotal,
     roomsFilterTotal,
+    setUploadedFileIdWithVersion,
   } = filesStore;
 
   const { withPaging, theme } = auth.settingsStore;
@@ -250,5 +253,6 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     withPaging,
     columnStorageName,
     columnInfoPanelStorageName,
+    setUploadedFileIdWithVersion,
   };
 })(observer(Table));

@@ -116,6 +116,7 @@ class FilesStore {
   clearSearch = false;
 
   isLoadedEmptyPage = false;
+  uploadedFileIdWithVersion = null;
 
   constructor(
     authStore,
@@ -448,6 +449,10 @@ class FilesStore {
 
   setClearSearch = (clearSearch) => {
     this.clearSearch = clearSearch;
+  };
+
+  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
+    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
   };
 
   checkSelection = (file) => {
@@ -2325,6 +2330,8 @@ class FilesStore {
         viewAccessability,
       } = item;
 
+      const upgradeVersion = id === this.uploadedFileIdWithVersion;
+
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2401,6 +2408,7 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
+        upgradeVersion,
         created,
         createdBy,
         encrypted,
