@@ -7,14 +7,18 @@ export const YearsBody = ({
   observedDate,
   setObservedDate,
   setSelectedScene,
-  selectedDate
+  selectedDate,
+  minDate,
+  maxDate
 }) => {
   const years = getCalendarYears(observedDate);
   const yearElements = getYearElements(
     years,
     setObservedDate,
     setSelectedScene,
-    selectedDate
+    selectedDate,
+    minDate,
+    maxDate
   );
 
   return <YearsContainer>{yearElements}</YearsContainer>;
