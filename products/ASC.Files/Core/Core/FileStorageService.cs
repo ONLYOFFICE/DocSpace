@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.Classes;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -616,14 +618,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             await _socketManager.CreateFolderAsync(folder);
 
-            if (isRoom)
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
-            }
-            else
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
-            }
+            _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 
             return folder;
         }
@@ -874,6 +869,9 @@ public class FileStorageService<T> //: IFileStorageService
 
             try
             {
+
+                file.ThumbnailStatus = Thumbnail.Creating;
+
                 if (!enableExternalExt)
                 {
                     var pathNew = path + "new" + fileExt;
@@ -888,19 +886,39 @@ public class FileStorageService<T> //: IFileStorageService
                     file = await fileDao.SaveFileAsync(file, null);
                 }
 
+                int counter = 0;
+
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
                     var pathThumb = $"{path}{fileExt.Trim('.')}.{size.Width}x{size.Height}.{_global.ThumbnailExtension}";
-                    if (await storeTemplate.IsFileAsync("", pathThumb))
+
+                    if (!await storeTemplate.IsFileAsync("", pathThumb))
                     {
-                        using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
-                        {
-                            await fileDao.SaveThumbnailAsync(file, streamThumb, size.Width, size.Height);
-                        }
+                        break;
                     }
+
+                    using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                    {
+                        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, size.Width, size.Height), streamThumb);
+                    }
+
+                    counter++;
                 }
 
-                file.ThumbnailStatus = Thumbnail.Created;
+                if (_thumbnailSettings.Sizes.Count() == counter)
+                {
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.Created);
+
+                    file.ThumbnailStatus = Thumbnail.Created;
+
+                }
+                else
+                {
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
+
+                    file.ThumbnailStatus = Thumbnail.NotRequired;
+                }
+
             }
             catch (Exception e)
             {
@@ -914,6 +932,8 @@ public class FileStorageService<T> //: IFileStorageService
             ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!await _fileSecurity.CanReadAsync(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
+            file.ThumbnailStatus = template.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
+
             try
             {
                 using (var stream = await fileTemlateDao.GetFileStreamAsync(template))
@@ -926,11 +946,14 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        using (var thumb = await fileTemlateDao.GetThumbnailAsync(template, size.Width, size.Height))
-                        {
-                            await fileDao.SaveThumbnailAsync(file, thumb, size.Width, size.Height);
-                        }
+                        await _globalStore.GetStore().CopyAsync(String.Empty,
+                                        fileTemlateDao.GetUniqThumbnailPath(template, size.Width, size.Height),
+                                        String.Empty,
+                                        fileDao.GetUniqThumbnailPath(file, size.Width, size.Height));
                     }
+
+                    await fileDao.SetThumbnailStatusAsync(file, Thumbnail.Created);
+
                     file.ThumbnailStatus = Thumbnail.Created;
                 }
             }
@@ -2526,7 +2549,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, name, GetAccessString(ace.Access));
                         }
                         else
                         {
@@ -2617,7 +2640,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -2960,6 +2983,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFile.ConvertedType = file.ConvertedType;
                 newFile.Comment = FilesCommonResource.CommentChangeOwner;
                 newFile.Encrypted = file.Encrypted;
+                newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
                 using (var stream = await fileDao.GetFileStreamAsync(file))
                 {
@@ -2971,11 +2995,14 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var size in _thumbnailSettings.Sizes)
                     {
-                        using (var thumbnail = await fileDao.GetThumbnailAsync(file, size.Width, size.Height))
-                        {
-                            await fileDao.SaveThumbnailAsync(newFile, thumbnail, size.Width, size.Height);
-                        }
+                        await _globalStore.GetStore().CopyAsync(String.Empty,
+                                                                fileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
+                                                                String.Empty,
+                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
                     }
+
+                    await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);
+
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 
@@ -3247,8 +3274,10 @@ public class FileStorageService<T> //: IFileStorageService
             case FileShare.FillForms:
             case FileShare.Comment:
             case FileShare.Restrict:
+            case FileShare.RoomAdmin:
+            case FileShare.Editing:
             case FileShare.None:
-                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToString());
+                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToStringFast());
             default:
                 return string.Empty;
         }

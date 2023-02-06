@@ -59,6 +59,7 @@ SERVICE_NAME=(
 	doceditor
 	migration-runner
 	login
+	healthchecks
 	)
 
 reassign_values (){
@@ -141,6 +142,11 @@ reassign_values (){
 		SERVICE_PORT="5011"
 		WORK_DIR="${BASE_DIR}/products/ASC.Login/login/"
 		EXEC_FILE="server.js"
+	;;
+	healthchecks )
+		SERVICE_PORT="5033"
+		WORK_DIR="${BASE_DIR}/services/ASC.Web.HealthChecks.UI/"
+		EXEC_FILE="ASC.Web.HealthChecks.UI.dll"
 	;;
   esac
   SERVICE_NAME="$1"

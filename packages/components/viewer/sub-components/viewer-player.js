@@ -13,6 +13,7 @@ import IconVolumeMin from "PUBLIC_DIR/images/media.volumemin.react.svg";
 import IconFullScreen from "PUBLIC_DIR/images/videoplayer.full.react.svg";
 import IconExitFullScreen from "PUBLIC_DIR/images/videoplayer.exit.react.svg";
 import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg";
 
 import Icon1x from "PUBLIC_DIR/images/media.viewer1x.react.svg";
 import Icon05x from "PUBLIC_DIR/images/media.viewer05x.react.svg";
@@ -354,6 +355,8 @@ export default function ViewerPlayer(props) {
     globalTimer,
     videoControls,
     setIsOpenContextMenu,
+    contextModel,
+    onDownloadClick,
   } = props;
 
   const localStorageVolume = localStorage.getItem("player-volume");
@@ -918,6 +921,9 @@ export default function ViewerPlayer(props) {
     contextBottom
   );
 
+  const model = contextModel();
+  const hideContextMenu = model.filter((item) => !item.disabled).length <= 1;
+
   let iconLeft =
     state.deltaX && isMobileOnly
       ? (window.innerWidth - iconWidth) / 2 + state.left + "px"
@@ -1114,7 +1120,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 </div>
               )}
 
-              {!isMobileOnly && !props.isPreviewFile && (
+              {!isMobileOnly && !props.isPreviewFile && !hideContextMenu && (
                 <div
                   className="controller context-menu-wrapper"
                   onClick={toggleContext}
@@ -1122,6 +1128,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                 >
                   <MediaContextMenu className="context-menu-icon" />
                   {contextMenu}
+                </div>
+              )}
+              {hideContextMenu && (
+                <div className="controller" onClick={onDownloadClick}>
+                  <DownloadReactSvgUrl />
                 </div>
               )}
             </div>

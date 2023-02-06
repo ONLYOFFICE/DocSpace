@@ -92,13 +92,14 @@ const ThirdPartyStorage = ({
 
   return (
     <StyledThirdPartyStorage>
+      {/* //TODO: Uncomment when third-party storages will be  stable
       <ToggleParam
         id="shared_third-party-storage-toggle"
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}
         isChecked={storageLocation.isThirdparty}
         onCheckedChange={onChangeIsThirdparty}
-      />
+      /> */}
 
       {storageLocation.isThirdparty && (
         <ThirdPartyComboBox

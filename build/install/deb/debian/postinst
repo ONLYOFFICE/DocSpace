@@ -48,7 +48,7 @@ case "$1" in
         db_get onlyoffice/ds-port || true  
         DOCUMENT_SERVER_PORT="$RET"
 
-        bash /usr/bin/{{product}}-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT -dsh $DOCUMENT_SERVER_HOST \
+        bash /usr/bin/{{product}}-configuration -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT -dsh $DOCUMENT_SERVER_HOST \
         -dsp $DOCUMENT_SERVER_PORT -rdh $REDIS_HOST -rdp $REDIS_PORT -rbh $RABBITMQ_HOST -rbp $RABBITMQ_PORT -rbu $RABBITMQ_USER -rbpw $RABBITMQ_PASSWORD -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
 	;;
 

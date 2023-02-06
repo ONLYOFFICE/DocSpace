@@ -57,6 +57,7 @@ class DialogsStore {
   saveAfterReconnectOAuth = false;
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
+  changeUserTypeDialogVisible = false;
 
   constructor(
     authStore,
@@ -307,6 +308,10 @@ class DialogsStore {
     this.createRoomConfirmDialogVisible = createRoomConfirmDialogVisible;
   };
 
+  setChangeUserTypeDialogVisible = (changeUserTypeDialogVisible) => {
+    this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -331,7 +336,8 @@ class DialogsStore {
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible ||
       this.createRoomDialogVisible ||
-      this.createRoomConfirmDialogVisible
+      this.createRoomConfirmDialogVisible ||
+      this.changeUserTypeDialogVisible
     );
   }
 

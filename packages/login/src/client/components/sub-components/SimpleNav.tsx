@@ -26,8 +26,8 @@ const SimpleNav = ({ theme, logoUrls }) => {
   const logo = Object.values(logoUrls)[0];
 
   const logoUrl = !theme.isBase
-    ? getLogoFromPath(logo.path.dark).replace("client/", "/login/")
-    : getLogoFromPath(logo.path.light).replace("client/", "/login/");
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   return (
     <StyledNav id="login-header" theme={theme}>

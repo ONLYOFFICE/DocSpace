@@ -27,6 +27,10 @@ const MainContainer = styled.div`
     max-width: 700px;
   }
 
+  .login-history-description {
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
+
   .save-cancel {
     padding: 0;
     position: static;
@@ -184,7 +188,7 @@ const HistoryMainContent = (props) => {
         <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
       )}
       <div className="main-wrapper">
-        <Text fontSize="13px" color="#657077" className="settings_unavailable">
+        <Text fontSize="13px" className="login-history-description">
           {subHeader}
         </Text>
         <Text className="latest-text settings_unavailable">{latestText} </Text>

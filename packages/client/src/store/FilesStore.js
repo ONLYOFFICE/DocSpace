@@ -687,6 +687,8 @@ class FilesStore {
         console.log("[WS] subscribe to file's changes", file.id, file.title)
       );
     }
+
+    this.viewAs === "tile" && this.createThumbnails();
   };
 
   setFolders = (folders) => {
@@ -1107,8 +1109,6 @@ class FilesStore {
           selectedFolder: { ...this.selectedFolderStore },
         };
 
-        this.viewAs === "tile" && this.createThumbnails();
-
         if (this.createdItem) {
           const newItem = this.filesList.find(
             (item) => item.id === this.createdItem.id
@@ -1241,8 +1241,6 @@ class FilesStore {
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
           };
-
-          this.viewAs === "tile" && this.createThumbnails();
 
           if (this.createdItem) {
             const newItem = this.filesList.find(
@@ -2391,16 +2389,16 @@ class FilesStore {
               isArchive
             );
 
-      const defaultRoomIcon =
-        isRoom &&
-        getIcon(
-          iconSize,
-          fileExst,
-          providerKey,
-          contentLength,
-          roomType,
-          isArchive
-        );
+      const defaultRoomIcon = isRoom
+        ? getIcon(
+            iconSize,
+            fileExst,
+            providerKey,
+            contentLength,
+            roomType,
+            isArchive
+          )
+        : undefined;
 
       return {
         access,
@@ -2952,16 +2950,13 @@ class FilesStore {
   };
 
   createThumbnails = () => {
-    const filesList = [...this.files, this.folders];
-    const fileIds = [];
-
-    filesList.map((file) => {
-      const { thumbnailStatus } = file;
-
-      if (thumbnailStatus === thumbnailStatuses.WAITING) fileIds.push(file.id);
+    const files = this.files?.filter((file) => {
+      return file?.thumbnailStatus === thumbnailStatuses.WAITING;
     });
 
-    if (fileIds.length) return api.files.createThumbnails(fileIds);
+    if (!files?.length) return;
+
+    return api.files.createThumbnails(files.map((f) => f.id));
   };
 
   createThumbnail = async (fileId) => {
