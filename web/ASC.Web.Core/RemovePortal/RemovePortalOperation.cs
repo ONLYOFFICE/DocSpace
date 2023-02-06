@@ -74,6 +74,7 @@ public class RemovePortalOperation : DistributedTaskProgress
             foreach (var module in modules)
             {
                 Percentage += 100 / (modules.Count() + 1);
+                PublishChanges();
                 _logger.DebugRemoveModule(module);
                 var storage = _storageFactory.GetStorage(TenantId, module);
                 foreach (var domain in _storageFactoryConfig.GetDomainList(module))
@@ -102,6 +103,7 @@ public class RemovePortalOperation : DistributedTaskProgress
         finally
         {
             IsCompleted = true;
+            PublishChanges();
         }
     }
 }
