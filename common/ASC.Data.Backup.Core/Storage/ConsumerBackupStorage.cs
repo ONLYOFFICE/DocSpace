@@ -61,10 +61,10 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 
-    public void Init(int tenant, string webConfigPath)
+    public void Init(int tenant)
     {
         _isTemporary = true;
-        _store = _storageFactory.GetStorage(webConfigPath, tenant, "backup", null);
+        _store = _storageFactory.GetStorage(tenant, "backup");
         _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 
