@@ -31,7 +31,6 @@ public class BackupStorageFactory
 {
     private readonly ConfigurationExtension _configuration;
     private readonly DocumentsBackupStorage _documentsBackupStorage;
-    private readonly DataStoreBackupStorage _dataStoreBackupStorage;
     private readonly ILogger<BackupStorageFactory> _logger;
     private readonly LocalBackupStorage _localBackupStorage;
     private readonly ConsumerBackupStorage _consumerBackupStorage;
@@ -43,12 +42,10 @@ public class BackupStorageFactory
         ConfigurationExtension configuration,
         DocumentsBackupStorage documentsBackupStorage,
         TenantManager tenantManager,
-        DataStoreBackupStorage dataStoreBackupStorage,
         ILogger<BackupStorageFactory> logger)
     {
         _configuration = configuration;
         _documentsBackupStorage = documentsBackupStorage;
-        _dataStoreBackupStorage = dataStoreBackupStorage;
         _logger = logger;
         _localBackupStorage = localBackupStorage;
         _consumerBackupStorage = consumerBackupStorage;
@@ -84,9 +81,9 @@ public class BackupStorageFactory
                 }
             case BackupStorageType.DataStore:
                 {
-                    _dataStoreBackupStorage.Init(tenantId);
+                    _consumerBackupStorage.Init(tenantId);
 
-                    return _dataStoreBackupStorage;
+                    return _consumerBackupStorage;
                 }
             case BackupStorageType.Local:
                 return _localBackupStorage;
