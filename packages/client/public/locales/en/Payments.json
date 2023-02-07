@@ -32,6 +32,7 @@
   "PaymentOverdue": "Cannot add new users.",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per admin/month",
   "PriceCalculation": "Calculate your price",
+  "QuotaPaidUserLimitError": "The paid user limit has been reached. <1>Payments</1>",
   "RenewSubscription": "Renew subscription to {{planName}} plan",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
   "StartupSuggestion": "Do more with {{planName}} plan",

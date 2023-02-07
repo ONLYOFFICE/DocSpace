@@ -88,14 +88,10 @@ const notify = (
         <Icon size="medium" type={type} />
       </IconWrapper>
       <StyledDiv type={type}>
-        {typeof data === "string" ? (
-          <>
-            {title && <Text className="toast-title">{title}</Text>}
-            {data && <Text className="toast-text">{data}</Text>}
-          </>
-        ) : (
-          data
-        )}
+        {title && <Text className="toast-title">{title}</Text>}
+        {typeof data === "string"
+          ? data && <Text className="toast-text">{data}</Text>
+          : data}
       </StyledDiv>
     </>,
     {
@@ -141,7 +137,6 @@ function fatal(data, title, timeout, withCross, centerPosition) {
 }
 
 function error(data, title, timeout, withCross, centerPosition) {
-  console.log("toast error: ", { data });
   const dataType = typeof data;
   let message = "";
 
@@ -152,7 +147,7 @@ function error(data, title, timeout, withCross, centerPosition) {
       data?.response?.data?.error?.message ||
       data?.statusText ||
       data?.message ||
-      "";
+      data;
   }
 
   // const message =

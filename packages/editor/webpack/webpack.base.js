@@ -1,7 +1,5 @@
 const path = require("path");
 const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
-const PrebuildWebpackPlugin = require("prebuild-webpack-plugin");
-const beforeBuild = require("@docspace/common/utils/beforeBuild");
 
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png|ico)$/;
@@ -17,6 +15,7 @@ module.exports = {
       PUBLIC_DIR: path.resolve(__dirname, "../../../public"),
       ASSETS_DIR: path.resolve(__dirname, "../public"),
       SRC_DIR: path.resolve(__dirname, "../src"),
+      CLIENT_PUBLIC_DIR: path.resolve(__dirname, "../../client/public"),
       PACKAGE_FILE: path.resolve(__dirname, "../package.json"),
     },
   },
@@ -70,32 +69,6 @@ module.exports = {
         },
         type: "asset/resource",
         resourceQuery: /url/, // *.svg?url
-      },
-      {
-        test: /\.json$/,
-        resourceQuery: /url/,
-        type: "javascript/auto",
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              emitFile: false,
-              name: (resourcePath) => {
-                let result = resourcePath
-                  .split(`public${path.sep}`)[1]
-                  .split(path.sep);
-
-                result.pop();
-
-                let folder = result.join("/");
-
-                folder += result.length === 0 ? "" : "/";
-
-                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
-              },
-            },
-          },
-        ],
       },
       {
         test: /\.json$/,

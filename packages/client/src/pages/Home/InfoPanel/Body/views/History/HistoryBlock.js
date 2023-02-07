@@ -7,9 +7,9 @@ import HistoryBlockItemList from "./HistoryBlockItemList";
 import HistoryBlockUser from "./HistoryBlockUser";
 import { FeedItemTypes } from "@docspace/common/constants";
 import DefaultUserAvatarSmall from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
-
 import { StyledHistoryBlock } from "../../styles/history";
 import { getDateTime } from "../../helpers/HistoryHelper";
+import { decode } from "he";
 
 const HistoryBlock = ({
   t,
@@ -55,7 +55,7 @@ const HistoryBlock = ({
       />
       <div className="info">
         <div className="title">
-          <Text className="name">{initiator.displayName}</Text>
+          <Text className="name">{decode(initiator.displayName)}</Text>
           {initiator.isOwner && (
             <Text className="secondary-info">
               {t("Common:Owner").toLowerCase()}

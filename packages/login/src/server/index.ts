@@ -57,7 +57,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       next();
     }
 
-    let currentLanguage = initialState.portalSettings.culture;
+    let currentLanguage: string = initialState.portalSettings.culture;
 
     if (cookies && cookies[LANGUAGE]) {
       currentLanguage = cookies[LANGUAGE];
@@ -71,8 +71,17 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     if (i18n) await i18n.changeLanguage(currentLanguage);
 
-    let initialI18nStore = {};
-    if (i18n) initialI18nStore = i18n.services.resourceStore.data;
+    let initialI18nStore: {
+      [key: string]: { [key: string]: {} };
+    } = {};
+
+    if (i18n && i18n?.services?.resourceStore?.data) {
+      for (let key in i18n?.services?.resourceStore?.data) {
+        if (key === "en" || key === currentLanguage) {
+          initialI18nStore[key] = i18n.services.resourceStore.data[key];
+        }
+      }
+    }
 
     assets = await getAssets();
 

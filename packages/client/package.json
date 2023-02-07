@@ -4,10 +4,11 @@
   "private": true,
   "homepage": "",
   "scripts": {
-    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "build": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "build:translations": "node scripts/buildTranslations.js",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
+    "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
     "start-prod": "serve dist -s -p 5001"
   },
   "old-scripts": {
@@ -71,7 +72,6 @@
     "html-webpack-plugin": "5.3.2",
     "json-loader": "^0.5.7",
     "playwright": "^1.18.1",
-    "prebuild-webpack-plugin": "^1.1.1",
     "sass": "^1.39.2",
     "sass-loader": "^12.1.0",
     "serve": "14.1.1",

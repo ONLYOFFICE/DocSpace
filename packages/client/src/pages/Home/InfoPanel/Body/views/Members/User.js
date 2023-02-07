@@ -6,6 +6,8 @@ import { ComboBox } from "@docspace/components";
 import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobileOnly } from "react-device-detect";
+import { decode } from "he";
+
 const User = ({
   t,
   user,
@@ -111,7 +113,7 @@ const User = ({
       />
 
       <div className="name">
-        {isExpect ? user.email : user.displayName || user.email}
+        {isExpect ? user.email : decode(user.displayName) || user.email}
       </div>
       {currentMember?.id === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
