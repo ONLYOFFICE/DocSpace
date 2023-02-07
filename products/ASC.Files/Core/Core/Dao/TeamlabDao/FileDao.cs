@@ -46,7 +46,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
-    private readonly TagDao<int> _tagDao;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -74,8 +73,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Settings settings,
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
-        IQuotaService quotaService,
-        TagDao<int> tagDao)
+        IQuotaService quotaService)
         : base(
               dbContextManager,
               userManager,
@@ -104,7 +102,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
-        _tagDao = tagDao;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -907,14 +904,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     }
                 }
 
+                var tagDao = _daoFactory.GetTagDao<int>();
+
                 if (toFolderId == trashId && oldParentId.HasValue)
                 {
                     var origin = Tag.Origin(fileId, FileEntryType.File, oldParentId.Value, _authContext.CurrentAccount.ID);
-                    await _tagDao.SaveTags(origin);
+                    await tagDao.SaveTags(origin);
                 }
                 else if (oldParentId == trashId)
                 {
-                    await _tagDao.RemoveTagLinksAsync(fileId, FileEntryType.File, TagType.Origin);
+                    await tagDao.RemoveTagLinksAsync(fileId, FileEntryType.File, TagType.Origin);
                 }
 
                 await filesDbContext.SaveChangesAsync();
