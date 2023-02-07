@@ -4,7 +4,8 @@ export const RoundButton = styled.button`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  outline: 1px solid #eceef1;
+  outline: 1px solid;
+  outline-color: ${(props) => props.theme.calendar.outlineColor};
   border: none;
   background-color: transparent;
   position: relative;
@@ -12,15 +13,21 @@ export const RoundButton = styled.button`
   transition: all ease-in-out 0.05s;
 
   span {
-    border-color: ${(props) => (props.disabled ? "#A3A9AE" : "#555f65")};
+    border-color: ${(props) =>
+      props.disabled
+        ? props.theme.calendar.disabledArrow
+        : props.theme.calendar.arrowColor};
   }
 
   :hover {
     cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
     outline: ${(props) =>
-      props.disabled ? "1px solid #eceef1" : "2px solid #4781d1"};
+      props.disabled
+        ? `1px solid ${props.theme.calendar.outlineColor}`
+        : "2px solid #4781d1"};
     span {
-      border-color: ${(props) => (props.disabled ? "#A3A9AE" : "#4781d1")};
+      border-color: ${(props) =>
+        props.disabled ? props.theme.calendar.disabledArrow : "#4781d1"};
     }
   }
 `;

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Base from "../../themes/base";
 
 export const DateItem = styled.button`
   font-family: "Open Sans";
@@ -6,7 +7,11 @@ export const DateItem = styled.button`
   font-size: 16px;
   border-radius: 50%;
   color: ${(props) =>
-    props.disabled ? "#A3A9AE" : props.focused ? "#4781D1" : "#333"};
+    props.disabled
+      ? props.theme.calendar.disabledColor
+      : props.focused
+      ? "#4781D1"
+      : props.theme.calendar.color};
 
   border: 2px solid;
   border-color: ${(props) => (props.focused ? "#4781D1" : "transparent")};
@@ -21,7 +26,10 @@ export const DateItem = styled.button`
 
   :hover {
     cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-    background: ${(props) => (props.disabled ? "transparent" : "#f3f4f4")};
+    background: ${(props) =>
+      props.disabled
+        ? "transparent"
+        : props.theme.calendar.onHoverBackground};
   }
 
   :focus {
@@ -29,3 +37,4 @@ export const DateItem = styled.button`
     border: 2px solid #4781d1;
   }
 `;
+DateItem.defaultProps = { theme: Base };
