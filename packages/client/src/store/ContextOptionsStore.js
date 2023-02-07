@@ -575,11 +575,11 @@ class ContextOptionsStore {
     onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
-  onClickMute = (e, id, t) => {
+  onClickMute = (e, item, t) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore.setMuteAction(action, id, t);
+    this.filesActionsStore.setMuteAction(action, item, t);
   };
 
   getRoomsRootContextOptions = (item, t) => {
@@ -617,7 +617,7 @@ class ContextOptionsStore {
         key: "unmute-room",
         label: t("EnableNotifications"),
         icon: UnmuteReactSvgUrl,
-        onClick: (e) => this.onClickMute(e, item.id, t),
+        onClick: (e) => this.onClickMute(e, item, t),
         disabled: false,
         "data-action": "unmute",
         action: "unmute",
@@ -627,7 +627,7 @@ class ContextOptionsStore {
         key: "mute-room",
         label: t("DisableNotifications"),
         icon: MuteReactSvgUrl,
-        onClick: (e) => this.onClickMute(e, item.id, t),
+        onClick: (e) => this.onClickMute(e, item, t),
         disabled: false,
         "data-action": "mute",
         action: "mute",

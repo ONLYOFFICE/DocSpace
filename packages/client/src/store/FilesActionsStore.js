@@ -936,18 +936,48 @@ class FilesActionStore {
     }
   };
 
-  setMuteAction = (action, id) => {
+  setMuteAction = (action, item) => {
+    const { id, new: newCount, rootFolderId } = item;
+    const { treeFolders } = this.treeFoldersStore;
+
     switch (action) {
       case "mute":
         return muteRoomNotification(id, true)
           .then(() => {
             this.updateCurrentFolder(null, [id]);
           })
+          .then(() => {
+            const foundIndex = treeFolders.findIndex(
+              (x) => x.id === rootFolderId
+            );
+
+            if (foundIndex == -1) return;
+
+            const count = treeFolders[foundIndex].newItems;
+
+            treeFolders[foundIndex].newItems =
+              newCount >= 0 ? count - newCount : 0;
+
+            this.treeFoldersStore.fetchTreeFolders();
+          })
           .then(() => toastr.success("MUTE"));
       case "unmute":
         return muteRoomNotification(id, false)
           .then(() => {
             this.updateCurrentFolder(null, [id]);
+          })
+          .then(() => {
+            const foundIndex = treeFolders.findIndex(
+              (x) => x.id === rootFolderId
+            );
+
+            if (foundIndex == -1) return;
+
+            const count = treeFolders[foundIndex].newItems;
+
+            treeFolders[foundIndex].newItems = count + newCount;
+
+            this.treeFoldersStore.fetchTreeFolders();
           })
           .then(() => toastr.success("UNMUTE"));
     }
