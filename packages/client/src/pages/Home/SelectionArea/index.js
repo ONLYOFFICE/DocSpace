@@ -13,8 +13,6 @@ const SelectionArea = (props) => {
     foldersLength,
   } = props;
 
-  if (isMobile || dragging) return <></>;
-
   const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
 
   useEffect(() => {
@@ -46,7 +44,9 @@ const SelectionArea = (props) => {
   const division = foldersLength % countTilesInRow;
   const countOfMissingTiles = division ? countTilesInRow - division : 0;
 
-  return (
+  return isMobile || dragging ? (
+    <></>
+  ) : (
     <SelectionAreaComponent
       containerClass="section-scroll"
       scrollClass="section-scroll"
