@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 class MediaViewerDataStore {
   filesStore;
@@ -8,6 +8,7 @@ class MediaViewerDataStore {
   visible = false;
   previewFile = null;
   currentItem = null;
+  _currentPostionIndex
 
   constructor(filesStore, settingsStore) {
     makeAutoObservable(this);
@@ -43,6 +44,28 @@ class MediaViewerDataStore {
 
   setCurrentId = (id) => {
     this.id = id;
+  };
+
+  get currentPostionIndex(){ 
+
+   let temp = this.playlist.find(file => file.fileId === this.id)?.id
+  
+   if(temp === undefined || temp === null){
+      const value = this._currentPostionIndex
+
+      if( this.playlist <= 0) return 0
+
+      temp = this.playlist[0].id;
+      for (const item of this.playlist) {
+          if (Math.abs(item.id - value) < Math.abs(temp - value)) {
+            temp = item.id
+          }
+      }
+   }
+   runInAction(()=>{
+     this._currentPostionIndex = temp
+   })
+   return temp;
   };
 
   get playlist() {

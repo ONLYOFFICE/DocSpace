@@ -4,13 +4,14 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@docspace/common/history";
-import MediaViewer from "@docspace/common/components/MediaViewer";
+import MediaViewer from "@docspace/common/components/MediaViewerTS/MediaViewer";
 
 const FilesMediaViewer = (props) => {
   const {
     t,
     files,
     playlist,
+    currentPostionIndex,
     visible,
     currentMediaFileId,
     deleteItemAction,
@@ -139,7 +140,9 @@ const FilesMediaViewer = (props) => {
       setIsPreview(false);
       resetUrl();
       setScrollToItem({ id: previewFile.id, type: "file" });
-      setBufferSelection(previewFile);
+      if(previewFile){
+        setBufferSelection(previewFile);
+      }
       setToPreviewFile(null);
     }
     // if (previewFile) {
@@ -176,20 +179,16 @@ const FilesMediaViewer = (props) => {
         t={t}
         userAccess={userAccess}
         currentFileId={currentMediaFileId}
-        allowConvert={true} //TODO:
-        canDelete={canDelete} //TODO:
-        canDownload={canDownload} //TODO:
         visible={visible}
         playlist={playlist}
+        playlistPos={currentPostionIndex}
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
-        onClickFavorite={onClickFavorite}
         setBufferSelection={setBufferSelection}
         archiveRoomsId={archiveRoomsId}
         files={files}
         onClickDownload={onClickDownload}
         onShowInfoPanel={onShowInfoPanel}
-        onClickDownloadAs={onClickDownloadAs}
         onClickDelete={onClickDelete}
         onClickRename={onClickRename}
         onMoveAction={onMoveAction}
@@ -201,11 +200,8 @@ const FilesMediaViewer = (props) => {
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={extsMediaPreviewed}
         extsImagePreviewed={extsImagePreviewed}
-        errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={firstLoad}
-        previewFile={previewFile}
         onChangeUrl={onChangeUrl}
-        isFavoritesFolder={isFavoritesFolder}
       />
     )
   );
@@ -237,6 +233,7 @@ export default inject(
     const {
       visible,
       id: currentMediaFileId,
+      currentPostionIndex,
       setMediaViewerData,
       playlist,
       previewFile,
@@ -262,6 +259,7 @@ export default inject(
     return {
       files,
       playlist,
+      currentPostionIndex,
       userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,
