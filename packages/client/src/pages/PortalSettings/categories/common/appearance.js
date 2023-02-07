@@ -38,7 +38,8 @@ const Appearance = (props) => {
     t,
   } = props;
 
-  const defaultAppliedColor = "#AABBCC";
+  const defaultAppliedColorAccent = currentColorScheme.main.accent;
+  const defaultAppliedColorButtons = currentColorScheme.main.buttons;
 
   const headerAddTheme = t("Settings:NewColorScheme");
   const headerEditTheme = t("Settings:EditColorScheme");
@@ -64,10 +65,10 @@ const Appearance = (props) => {
   );
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
-    defaultAppliedColor
+    defaultAppliedColorAccent
   );
   const [appliedColorButtons, setAppliedColorButtons] = useState(
-    defaultAppliedColor
+    defaultAppliedColorButtons
   );
 
   const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
@@ -147,6 +148,17 @@ const Appearance = (props) => {
       window.removeEventListener("resize", onCheckView);
     };
   }, []);
+
+  useEffect(() => {
+    if (!currentColorScheme) return;
+
+    setAppliedColorButtons(defaultAppliedColorButtons);
+    setAppliedColorAccent(defaultAppliedColorAccent);
+  }, [
+    currentColorScheme,
+    defaultAppliedColorButtons,
+    defaultAppliedColorAccent,
+  ]);
 
   useEffect(() => {
     onColorCheck(appearanceTheme);
@@ -355,8 +367,8 @@ const Appearance = (props) => {
     setCurrentColorAccent(null);
     setCurrentColorButtons(null);
 
-    setAppliedColorAccent(defaultAppliedColor);
-    setAppliedColorButtons(defaultAppliedColor);
+    setAppliedColorAccent(defaultAppliedColorAccent);
+    setAppliedColorButtons(defaultAppliedColorButtons);
   };
 
   const onAddTheme = () => {
