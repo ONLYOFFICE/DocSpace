@@ -94,7 +94,7 @@ declare global {
   interface IError {
     status: number;
     standalone: boolean;
-    message: string | unknown;
+    message: string | undefined;
   }
 
   interface IInitialState {
