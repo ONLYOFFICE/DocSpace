@@ -2,7 +2,7 @@ name: 4testing multiarch-build
 
 on:
   push:
-    branches: [ "release/rc-v1.2.0" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -36,7 +36,7 @@ jobs:
           DOCKER_TAG="rc-v1.2.0" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
-          --set *.args.GIT_BRANCH="release/rc-v1.2.0" \
+          --set *.args.GIT_BRANCH="develop" \
           --set *.platform=linux/amd64 \
           --push
         shell: bash
