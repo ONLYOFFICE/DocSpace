@@ -34,10 +34,11 @@ export const Wrapper = styled.div`
 
 export const WizardContainer = styled.div`
   margin: 0 auto;
-  margin-top: 100px;
+  margin-top: 56px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   @media ${tablet} {
     width: 100%;
@@ -53,7 +54,7 @@ export const WizardContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 64px;
+    padding-bottom: 40px;
   }
 
   .welcome-text {
