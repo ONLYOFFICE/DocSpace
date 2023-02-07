@@ -1721,7 +1721,7 @@ class FilesStore {
       }
 
       roomOptions = this.removeSeparator(roomOptions);
-      console.log("roomOptions", roomOptions);
+
       return roomOptions;
     } else {
       let folderOptions = [
