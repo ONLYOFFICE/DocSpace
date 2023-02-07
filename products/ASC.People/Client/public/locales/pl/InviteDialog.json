@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Skopiuj link",
-  "GetShortenLink": "Uzyskaj skrócony link",
-  "HelpAnswerLinkInviteSettings": "Udostępnij link, aby zaprosić współpracowników do swojego portalu.",
-  "InviteLinkValidInterval": "Twój link będzie ważny tylko {{ count }} dni.",
-  "InviteUsersAsCollaborators": "Dodaj użytkowników jako {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link został skopiowany"
-}

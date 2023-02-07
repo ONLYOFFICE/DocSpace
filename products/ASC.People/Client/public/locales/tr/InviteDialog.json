@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Bağlantıyı kopyala",
-  "GetShortenLink": "Kısaltılmış bağlantı al",
-  "HelpAnswerLinkInviteSettings": "İş arkadaşlarınızı portalınıza davet etmek için bağlantıyı paylaşın.",
-  "InviteLinkValidInterval": "Bu bağlantı yalnızca {{ count }} gün geçerlidir.",
-  "InviteUsersAsCollaborators": "Kullanıcıları şu şekilde ekle {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Bağlantı kopyalandı"
-}

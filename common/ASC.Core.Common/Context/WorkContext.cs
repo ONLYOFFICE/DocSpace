@@ -1,183 +1,211 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
-
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Common.Notify;
-using ASC.Core.Notify;
-using ASC.Core.Notify.Senders;
-using ASC.Core.Tenants;
-using ASC.Notify.Engine;
-using ASC.Notify.Messages;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Singletone]
+public class WorkContext
 {
-    public static class WorkContext
+    private static readonly object _syncRoot = new object();
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
+    private readonly DispatchEngine _dispatchEngine;
+    private readonly JabberSender _jabberSender;
+    private readonly AWSSender _awsSender;
+    private readonly SmtpSender _smtpSender;
+    private readonly NotifyServiceSender _notifyServiceSender;
+    private readonly TelegramSender _telegramSender;
+    private readonly PushSender _pushSender;
+    private static bool _notifyStarted;
+    private static bool? _isMono;
+    private static string _monoVersion;
+
+
+    public NotifyContext NotifyContext { get; private set; }
+    public NotifyEngine NotifyEngine { get; private set; }
+
+    public static string[] DefaultClientSenders => new[] { Constants.NotifyEMailSenderSysName };
+
+    public static bool IsMono
     {
-        private static readonly object syncRoot = new object();
-        private static bool notifyStarted;
-        private static bool? ismono;
-        private static string monoversion;
-
-
-        public static NotifyContext NotifyContext { get; private set; }
-
-        public static string[] DefaultClientSenders
+        get
         {
-            get { return new[] { Constants.NotifyEMailSenderSysName, }; }
-        }
-
-        public static bool IsMono
-        {
-            get
+            if (_isMono.HasValue)
             {
-                if (ismono.HasValue)
+                return _isMono.Value;
+            }
+
+            var monoRuntime = Type.GetType("Mono.Runtime");
+            _isMono = monoRuntime != null;
+            if (monoRuntime != null)
+            {
+                var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                if (dispalayName != null)
                 {
-                    return ismono.Value;
+                    _monoVersion = dispalayName.Invoke(null, null) as string;
                 }
-
-                var monoRuntime = Type.GetType("Mono.Runtime");
-                ismono = monoRuntime != null;
-                if (monoRuntime != null)
-                {
-                    var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                    if (dispalayName != null)
-                    {
-                        monoversion = dispalayName.Invoke(null, null) as string;
-                    }
-                }
-                return ismono.Value;
             }
-        }
 
-        public static string MonoVersion
-        {
-            get
-            {
-                return IsMono ? monoversion : null;
-            }
-        }
-
-
-        public static void NotifyStartUp(IServiceProvider serviceProvider)
-        {
-            if (notifyStarted) return;
-            lock (syncRoot)
-            {
-                if (notifyStarted) return;
-
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
-                var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
-                var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-
-                NotifyContext = new NotifyContext(serviceProvider);
-
-                INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-                INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-                INotifySender telegramSender = new TelegramSender(options, serviceProvider);
-
-                var postman = configuration["core:notify:postman"];
-
-                if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    jabberSender = new JabberSender(serviceProvider);
-
-                    var properties = new Dictionary<string, string>
-                    {
-                        ["useCoreSettings"] = "true"
-                    };
-                    if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        emailSender = new AWSSender(serviceProvider, options);
-                        properties["accessKey"] = configuration["ses:accessKey"];
-                        properties["secretKey"] = configuration["ses:secretKey"];
-                        properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
-                    }
-                    else
-                    {
-                        emailSender = new SmtpSender(serviceProvider, options);
-                    }
-                    emailSender.Init(properties);
-                }
-
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider, options));
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, serviceProvider));
-
-                NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-                NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
-                notifyStarted = true;
-            }
-        }
-
-        public static void RegisterSendMethod(Action<DateTime> method, string cron)
-        {
-            NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
-        }
-
-        public static void UnregisterSendMethod(Action<DateTime> method)
-        {
-            NotifyContext.NotifyEngine.UnregisterSendMethod(method);
-
-        }
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
-        {
-            request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
-        }
-
-        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
-        {
-            if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
-            {
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenant);
-            }
+            return _isMono.Value;
         }
     }
 
-    public static class WorkContextExtension
+    public static string MonoVersion => IsMono ? _monoVersion : null;
+
+    public WorkContext(
+        IServiceProvider serviceProvider,
+        IConfiguration configuration,
+        DispatchEngine dispatchEngine,
+        NotifyEngine notifyEngine,
+        NotifyContext notifyContext,
+        JabberSender jabberSender,
+        AWSSender awsSender,
+        SmtpSender smtpSender,
+        NotifyServiceSender notifyServiceSender,
+        TelegramSender telegramSender,
+        PushSender pushSender
+        )
     {
-        public static void Register(DIHelper dIHelper)
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
+        _dispatchEngine = dispatchEngine;
+        NotifyEngine = notifyEngine;
+        NotifyContext = notifyContext;
+        _jabberSender = jabberSender;
+        _awsSender = awsSender;
+        _smtpSender = smtpSender;
+        _notifyServiceSender = notifyServiceSender;
+        _telegramSender = telegramSender;
+        _pushSender = pushSender;
+    }
+
+    public void NotifyStartUp()
+    {
+        if (_notifyStarted)
         {
-            dIHelper.TryAdd<TelegramHelper>();
-            dIHelper.TryAdd<EmailSenderSinkScope>();
-            dIHelper.TryAdd<JabberSenderSinkScope>();
+            return;
         }
+
+        lock (_syncRoot)
+        {
+            if (_notifyStarted)
+            {
+                return;
+            }
+
+            INotifySender jabberSender = _notifyServiceSender;
+            INotifySender emailSender = _notifyServiceSender;
+            INotifySender telegramSender = _telegramSender;
+            INotifySender pushSender = _pushSender;
+            
+
+            var postman = _configuration["core:notify:postman"];
+
+            if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
+            {
+                jabberSender = _jabberSender;
+
+                var properties = new Dictionary<string, string>
+                {
+                    ["useCoreSettings"] = "true"
+                };
+                if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    emailSender = _awsSender;
+                    properties["accessKey"] = _configuration["ses:accessKey"];
+                    properties["secretKey"] = _configuration["ses:secretKey"];
+                    properties["refreshTimeout"] = _configuration["ses:refreshTimeout"];
+                }
+                else
+                {
+                    emailSender = _smtpSender;
+                }
+
+                emailSender.Init(properties);
+            }
+
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyPushSenderSysName, new PushSenderSink(pushSender, _serviceProvider));
+
+            NotifyEngine.AddAction<NotifyTransferRequest>();
+
+            _notifyStarted = true;
+        }
+    }
+
+    public void RegisterSendMethod(Action<DateTime> method, string cron)
+    {
+        NotifyEngine.RegisterSendMethod(method, cron);
+    }
+
+    public void UnregisterSendMethod(Action<DateTime> method)
+    {
+        NotifyEngine.UnregisterSendMethod(method);
+
+    }
+}
+
+[Scope]
+public class NotifyTransferRequest : INotifyEngineAction
+{
+    private readonly TenantManager _tenantManager;
+
+    public NotifyTransferRequest(TenantManager tenantManager)
+    {
+        _tenantManager = tenantManager;
+    }
+
+    public void AfterTransferRequest(NotifyRequest request)
+    {
+        if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
+        {
+            _tenantManager.SetCurrentTenant(tenant);
+        }
+    }
+
+    public void BeforeTransferRequest(NotifyRequest request)
+    {
+        request.Properties.Add("Tenant", _tenantManager.GetCurrentTenant(false));
+    }
+}
+
+public static class WorkContextExtension
+{
+    public static void Register(DIHelper dIHelper)
+    {
+        dIHelper.TryAdd<NotifyTransferRequest>();
+        dIHelper.TryAdd<TelegramHelper>();
+        dIHelper.TryAdd<TelegramSenderSinkMessageCreator>();
+        dIHelper.TryAdd<JabberSenderSinkMessageCreator>();
+        dIHelper.TryAdd<PushSenderSinkMessageCreator>();
+        dIHelper.TryAdd<EmailSenderSinkMessageCreator>();
     }
 }

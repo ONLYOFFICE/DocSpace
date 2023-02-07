@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Копирай връзката",
-  "GetShortenLink": "Вземете съкратена връзка",
-  "HelpAnswerLinkInviteSettings": "Споделете връзката, за да поканите колеги в портала си.",
-  "InviteLinkValidInterval": "Тази връзка е валидна само за {{ count }} дни.",
-  "InviteUsersAsCollaborators": "Добавете потребители като {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Връзката беше копирана"
-}

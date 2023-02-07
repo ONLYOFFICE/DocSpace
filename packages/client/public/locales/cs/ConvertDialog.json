@@ -1,0 +1,8 @@
+{
+  "ConversionMessage": "Všechny nahrané dokumenty budou převedeny do formátu Office Open XML (docx, xlsx nebo pptx) pro rychlejší úpravy.",
+  "ConvertedFileDestination": "Kopie souboru bude vytvořena v <strong>{{folderTitle}}</strong>složce",
+  "HideMessage": "Tuto zprávu již nezobrazovat",
+  "InfoCreateFileIn": "Nový '{{fileTitle}}' soubor je vytvořen v '{{folderTitle}}'",
+  "OpenFileMessage": "Dokument bude konvertován do Office Open XML formátu pro rychlejší náhled a editaci.",
+  "SaveOriginalFormatMessage": "Uložit kopii souboru v původním formátu"
+}

@@ -550,9 +550,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Некорректный адрес электронной почты</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Неверный промо-код</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Недостаточно прав для выполнения данной операции</value>
   </data>
@@ -610,17 +607,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Пароль должен содержать</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Пароль должен содержать</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифры</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>без пробелов</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>специальные символы</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>заглавные буквы</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>только латинские буквы</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Превышен лимит запросов</value>

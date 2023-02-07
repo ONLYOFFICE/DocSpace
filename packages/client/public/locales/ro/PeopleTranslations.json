@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Adăugați membrii",
+  "DeleteSelfProfile": "Ștergere profil",
+  "DisableUserButton": "Dezactivează",
+  "DisabledEmployeeStatus": "Dezactivat",
+  "EmailChangeButton": "Schimbare email",
+  "EnableUserButton": "Activează",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Schimbare parola",
+  "PendingTitle": "În așteptare",
+  "RemoveData": "Șterge datele cu caracter personal",
+  "SendInviteAgain": "Trimiteți invitația din nou",
+  "SuccessChangeUserStatus": "Statutul utilizatorului a fost schimbat cu succes",
+  "SuccessDeletePersonalData": "Datele cu caracter personal au fost șterse cu succes",
+  "SuccessSentInvitation": "Invitația a fost trimisă cu succes"
+}

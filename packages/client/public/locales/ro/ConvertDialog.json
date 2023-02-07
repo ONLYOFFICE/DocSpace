@@ -1,0 +1,7 @@
+{
+  "ConversionMessage": "Toate documentele încărcate vor fi convertite în format Office Open XML (docx, xlsx sau pptx) pentru editarea mai rapidă.",
+  "ConvertedFileDestination": "Copia fișierului va fi creată în folderul <strong>{{folderTitle}}</strong>",
+  "HideMessage": "Nu afișa acest mesaj din nou",
+  "InfoCreateFileIn": "Fișierul nou '{{fileTitle}}' este creat în '{{folderTitle}}'",
+  "SaveOriginalFormatMessage": "Salvează copia în formatul original"
+}

@@ -1,7 +1,0 @@
-{
-  "ChangeUserTypeButton": "Modificare tip",
-  "ChangeUserTypeHeader": "Schimbați tipul utilizatorului",
-  "ChangeUserTypeMessage": "Utilizatorii de tipul '{{ firstType }}' vor fi transferați la tipul '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Nu puteți schimba tipul administratorului de portal și nici al dumneavoastră",
-  "SuccessChangeUserType": "Tipul utilizatorului a fost modificat cu succes"
-}

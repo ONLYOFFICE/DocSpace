@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Kopioi linkki",
-  "GetShortenLink": "Ota lyhennetty linkki",
-  "HelpAnswerLinkInviteSettings": "Jaa linkki kutsuaksesi kollegoitasi portaaliin.",
-  "InviteLinkValidInterval": "Tämä linkki on voimassa vain {{ count }} päivää.",
-  "InviteUsersAsCollaborators": "Lisää käyttäjiä {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Linkki on kopioitu"
-}

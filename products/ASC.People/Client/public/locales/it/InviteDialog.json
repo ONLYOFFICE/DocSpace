@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Copia collegamento",
-  "GetShortenLink": "Ottieni link accorciato",
-  "HelpAnswerLinkInviteSettings": "Condividi il link per invitare i colleghi al tuo portale.",
-  "InviteLinkValidInterval": "Questo collegamento è valido solo per {{ count }} giorni.",
-  "InviteUsersAsCollaborators": "Aggiungi utenti come {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Il link di collegamento è stato copiato"
-}

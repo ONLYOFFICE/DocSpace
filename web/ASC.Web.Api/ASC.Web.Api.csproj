@@ -1,30 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <AssemblyTitle>ASC.Web.Api</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Web.Api</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
+    <ItemGroup>
+	    <Compile Remove="Api\LdapController.cs" />
+	    <Compile Remove="Api\SsoSettingsV2Controller.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="img\audit.svg" />
+      <None Remove="img\backup.svg" />
+      <None Remove="img\restore.svg" />
+      <None Remove="img\room.svg" />
+      <None Remove="img\sso.svg" />
+      <None Remove="img\total_size.svg" />
+      <None Remove="img\users.svg" />
+      <None Remove="img\whitelabel.svg" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="img\audit.svg" />
+      <EmbeddedResource Include="img\restore.svg" />
+      <EmbeddedResource Include="img\room.svg" />
+      <EmbeddedResource Include="img\sso.svg" />
+      <EmbeddedResource Include="img\total_size.svg" />
+      <EmbeddedResource Include="img\users.svg" />
+      <EmbeddedResource Include="img\whitelabel.svg" />
+    </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Controllers\LdapController.cs" />
-    <Compile Remove="Controllers\SsoSettingsV2Controller.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
+    <ProjectReference Include="..\..\common\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Feed\ASC.Feed.csproj" />
     <ProjectReference Include="..\..\common\services\ASC.AuditTrail\ASC.AuditTrail.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -60,13 +80,13 @@
     <EmbeddedResource Update="Core\AuditResource.cs.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.el.resx">
+    <EmbeddedResource Update="Core\AuditResource.el-GR.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.fi.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.ja.resx">
+    <EmbeddedResource Update="Core\AuditResource.ja-JP.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.lv.resx">
@@ -90,7 +110,7 @@
     <EmbeddedResource Update="Core\AuditResource.tr.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\AuditResource.uk.resx">
+    <EmbeddedResource Update="Core\AuditResource.uk-UA.resx">
       <DependentUpon>AuditResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\AuditResource.vi.resx">

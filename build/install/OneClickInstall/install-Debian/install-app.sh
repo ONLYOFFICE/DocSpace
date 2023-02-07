@@ -62,14 +62,14 @@ else
 	systemctl reload nginx
 fi
 
-if [ "$APPSERVER_INSTALLED" = "false" ]; then
+if [ "$PRODUCT_INSTALLED" = "false" ]; then
 	echo ${product} ${product}/db-pwd select $MYSQL_SERVER_PASS | sudo debconf-set-selections
 	echo ${product} ${product}/db-user select $MYSQL_SERVER_USER | sudo debconf-set-selections
 	echo ${product} ${product}/db-name select $MYSQL_SERVER_DB_NAME | sudo debconf-set-selections
 	
 	apt-get install -y ${product} || true #Fix error 'Failed to fetch'
 	apt-get install -y ${product}
-elif [ "$UPDATE" = "true" ] && [ "$APPSERVER_INSTALLED" = "true" ]; then
+elif [ "$UPDATE" = "true" ] && [ "$PRODUCT_INSTALLED" = "true" ]; then
 	apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
 fi
 

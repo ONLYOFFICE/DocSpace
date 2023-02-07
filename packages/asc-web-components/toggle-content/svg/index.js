@@ -1,1 +1,0 @@
-export { default as ArrowContentIcon } from "./arrow.content.react.svg";

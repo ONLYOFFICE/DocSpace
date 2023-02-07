@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -9,10 +10,16 @@
     <NoWarn>1701;1702;NU1701;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="15.0.8" />
+    <Compile Remove="Attributes\**" />
+    <EmbeddedResource Remove="Attributes\**" />
+    <None Remove="Attributes\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="EtaEmre.NetEscapades.EnumGenerators" Version="1.0.0-beta07" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -48,13 +55,13 @@
     <EmbeddedResource Update="AuditReportResource.cs.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.el.resx">
+    <EmbeddedResource Update="AuditReportResource.el-GR.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.fi.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.ja.resx">
+    <EmbeddedResource Update="AuditReportResource.ja-JP.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.lv.resx">
@@ -78,7 +85,7 @@
     <EmbeddedResource Update="AuditReportResource.tr.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AuditReportResource.uk.resx">
+    <EmbeddedResource Update="AuditReportResource.uk-UA.resx">
       <DependentUpon>AuditReportResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.vi.resx">

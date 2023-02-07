@@ -1,7 +1,0 @@
-{
-  "ChangeUserTypeButton": "Modifier le type",
-  "ChangeUserTypeHeader": "Changer le type d'utilisateur",
-  "ChangeUserTypeMessage": "Les utilisateurs du type '{{ firstType }}' seront transférés vers le type '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Vous ne pouvez pas changer le type pour le propriétaire du portail ainsi que pour vous même",
-  "SuccessChangeUserType": "Le type de l'utilisateur a été modifié avec succès"
-}

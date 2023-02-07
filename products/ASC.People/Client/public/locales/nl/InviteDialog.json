@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Kopieer de link",
-  "GetShortenLink": "Krijg verkorte link",
-  "HelpAnswerLinkInviteSettings": "Deel de link om collega's uit te nodigen voor uw portaal.",
-  "InviteLinkValidInterval": "Deze link is slechts {{ count }} dagen geldig.",
-  "InviteUsersAsCollaborators": "Gebruikers toevoegen als {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link is gekopieerd"
-}

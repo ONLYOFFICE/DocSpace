@@ -1,0 +1,13 @@
+./app_store_plugin
+./app_auth_plugin
+./app_rights_plugin
+pytz
+vobject
+certifi
+chardet
+idna
+python_dateutil
+six
+urllib3
+requests
+radicale==3.0.5

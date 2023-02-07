@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Šeit nekā nav",
+  "DisplayFavorites": "Rādīt izlasi",
+  "DisplayNotification": "Parādīt paziņojumu, pārvietojot vienumus uz atkritni",
+  "DisplayRecent": "Rādīt nesenos",
+  "DisplayTemplates": "Rādīt veidnes",
+  "IntermediateVersion": "Saglabājiet visas saglabātās starpnieka versijas",
+  "KeepIntermediateVersion": "Rediģēšanas laikā saglabājiet starpnieka versijas",
+  "OriginalCopy": "Saglabājiet faila kopiju arī sākotnējā formātā",
+  "StoringFileVersion": "Failu versiju uzglabāšana",
+  "UpdateOrCreate": "Atjauniniet faila versiju esošajam failam ar tādu pašu nosaukumu. Pretējā gadījumā tiks izveidota faila kopija."
+}

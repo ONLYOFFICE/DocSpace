@@ -1,0 +1,7 @@
+{
+  "Error401Text": "Przepraszamy, wybrany zasób jest w tej chwili niedostępny.",
+  "Error403Text": "Przepraszamy, odmówiono dostępu.",
+  "Error404Text": "Przepraszamy, nie znaleziono zasobu.",
+  "ErrorEmptyResponse": "Pusta odpowiedź",
+  "ErrorOfflineText": "Brak połączenia z Internetem."
+}

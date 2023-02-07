@@ -1,0 +1,9 @@
+{
+  "MoveToTrashButton": "Presunúť do koša",
+  "MoveToTrashFile": "Chystáte sa odstrániť tento súbor? Upozorňujeme, že ak ste ho zdieľali s niekým, stane sa nedostupným. Ste si istý, že chcete pokračovať?",
+  "MoveToTrashFolder": "Chystáte sa odstrániť tento priečinok? Upozorňujeme, že ak ste ho zdieľali s niekým, stane sa nedostupným. Ste si istý, že chcete pokračovať?",
+  "MoveToTrashTitle": "Presunúť do koša?",
+  "UnsubscribeButton": "Zrušiť odber",
+  "UnsubscribeNote": "Naozaj sa chcete odhlásiť z odberu vybratých položiek zo zoznamu?",
+  "UnsubscribeTitle": "Potvrdenie zrušenia odberu"
+}

@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Pridať členov",
+  "DeleteSelfProfile": "Odstrániť profil",
+  "DisableUserButton": "Deaktivovať",
+  "DisabledEmployeeStatus": "Deaktivovaný",
+  "EmailChangeButton": "Zmeniť e-mail",
+  "EnableUserButton": "Aktivovať",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Zmeniť heslo",
+  "PendingTitle": "Nevybavené",
+  "RemoveData": "Odstrániť osobné údaje",
+  "SendInviteAgain": "Poslať pozvánku ešte raz",
+  "SuccessChangeUserStatus": "Stav používateľa bol úspešne zmenený",
+  "SuccessDeletePersonalData": "Osobné údaje boli úspešne odstránené",
+  "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná"
+}

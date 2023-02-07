@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Tu ni ničesar",
+  "DisplayFavorites": "Prikaži priljubljene",
+  "DisplayNotification": "Prikažite obvestilo pri premikanju elementov v koš",
+  "DisplayRecent": "Prikaži nedavne",
+  "DisplayTemplates": "Prikaži predloge",
+  "IntermediateVersion": "Ohranite vse shranjene vmesne različice",
+  "KeepIntermediateVersion": "Pri urejanju ohranite vmesne različice",
+  "OriginalCopy": "Kopijo datoteke shranite tudi v izvirni obliki",
+  "StoringFileVersion": "Shranjevanje različic datotek",
+  "UpdateOrCreate": "Posodobite različico datoteke za obstoječo datoteko z istim imenom. V nasprotnem primeru bo ustvarjena kopija datoteke."
+}

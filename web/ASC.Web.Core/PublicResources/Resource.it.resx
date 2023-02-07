@@ -512,9 +512,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Indirizzo email non corretto</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Codice promozionale errato</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Non si dispone di permessi sufficienti per effettuare questa azione</value>
   </data>
@@ -572,17 +569,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>La password deve contenere </value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>la Password deve contenere</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>cifre</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>senza spazi</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>simboli speciali</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettere maiuscole</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>solo alfabeto latino</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Il limite di richieste è stato superato</value>

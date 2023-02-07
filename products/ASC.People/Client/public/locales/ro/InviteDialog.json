@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Copiază link-ul",
-  "GetShortenLink": "Obține link-ul prescurtat",
-  "HelpAnswerLinkInviteSettings": "Partajați acest link și invitați colegii la portalul dvs.",
-  "InviteLinkValidInterval": "Link-ul este valabil numai {{ count }} zile.",
-  "InviteUsersAsCollaborators": "Adaugă utilizatorii în calitate de {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link-ul a fost copiat"
-}

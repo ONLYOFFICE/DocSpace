@@ -1,0 +1,7 @@
+{
+  "Error401Text": "Diemžēl resurss pašlaik nav pieejams.",
+  "Error403Text": "Diemžēl piekļuve liegta",
+  "Error404Text": "Diemžēl resursu nevar atrast.",
+  "ErrorEmptyResponse": "Tukša atbilde",
+  "ErrorOfflineText": "Interneta savienojums nav atrasts."
+}

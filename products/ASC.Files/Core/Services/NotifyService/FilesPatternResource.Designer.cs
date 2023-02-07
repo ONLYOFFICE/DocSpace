@@ -19,7 +19,7 @@ namespace ASC.Files.Core.Services.NotifyService {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesPatternResource {
@@ -142,7 +142,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         ///    &lt;subject resource=&quot;|subject_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///    &lt;body styler=&quot;ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile&quot; resource=&quot;|pattern_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core&quot; /&gt;
         ///  &lt;/pattern&gt;
-        ///  &lt;pattern id=&quot;DocuSignComplete&quot;  [rest of string was truncated]&quot;;.
+        ///  &lt;pattern id=&quot;DocuSignCom [rest of string was truncated]&quot;;.
         /// </summary>
         public static string patterns {
             get {
@@ -156,6 +156,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         public static string subject_DocuSignComplete {
             get {
                 return ResourceManager.GetString("subject_DocuSignComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All signers completed $DocumentTitle.
+        /// </summary>
+        public static string subject_DocuSignComplete_push {
+            get {
+                return ResourceManager.GetString("subject_DocuSignComplete_push", resourceCulture);
             }
         }
         
@@ -178,6 +187,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign status changed.
+        /// </summary>
+        public static string subject_DocuSignStatus_push {
+            get {
+                return ResourceManager.GetString("subject_DocuSignStatus_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents. Mentioned in document.
         /// </summary>
         public static string subject_EditorMentions {
@@ -187,11 +205,29 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mentioned in document.
+        /// </summary>
+        public static string subject_EditorMentions_push {
+            get {
+                return ResourceManager.GetString("subject_EditorMentions_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents. Mailing is complete..
         /// </summary>
         public static string subject_MailMergeEnd {
             get {
                 return ResourceManager.GetString("subject_MailMergeEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mailing is complete..
+        /// </summary>
+        public static string subject_MailMergeEnd_push {
+            get {
+                return ResourceManager.GetString("subject_MailMergeEnd_push", resourceCulture);
             }
         }
         
@@ -207,9 +243,27 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
         /// </summary>
+        public static string subject_ShareDocument_push {
+            get {
+                return ResourceManager.GetString("subject_ShareDocument_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
+        /// </summary>
         public static string subject_ShareDocument_tg {
             get {
                 return ResourceManager.GetString("subject_ShareDocument_tg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access granted to the encrypted document: $DocumentTitle.
+        /// </summary>
+        public static string subject_ShareEncryptedDocument_push {
+            get {
+                return ResourceManager.GetString("subject_ShareEncryptedDocument_push", resourceCulture);
             }
         }
         
@@ -219,6 +273,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         public static string subject_ShareFolder {
             get {
                 return ResourceManager.GetString("subject_ShareFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access granted to folder: $DocumentTitle.
+        /// </summary>
+        public static string subject_ShareFolder_push {
+            get {
+                return ResourceManager.GetString("subject_ShareFolder_push", resourceCulture);
             }
         }
         

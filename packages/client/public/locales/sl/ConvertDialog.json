@@ -1,0 +1,8 @@
+{
+  "ConversionMessage": "Vse prenešene datoteke bodo konvertirane v Office Open XML format (docx, xlsx ali pptx) za hitrejše urejanje.",
+  "ConvertedFileDestination": "Kopija datoteke bo ustvarjena v mapi <strong>{{folderTitle}}</strong>",
+  "HideMessage": "Ne prikazuj več tega sporočila",
+  "InfoCreateFileIn": "Nova '{{fileTitle}}' datoteka je ustvarjena v '{{folderTitle}}'",
+  "OpenFileMessage": "Dokument, ki ga boste odprli, bo pretvorjen v format Office Open XML za hitrejše gledanje in urejanje.",
+  "SaveOriginalFormatMessage": "Shranite kopijo datoteke v izvirni obliki"
+}

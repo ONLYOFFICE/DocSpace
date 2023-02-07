@@ -1,0 +1,16 @@
+{
+  "AddMembers": "멤버 추가",
+  "DeleteSelfProfile": "프로필 삭제",
+  "DisableUserButton": "비활성화",
+  "DisabledEmployeeStatus": "비활성화",
+  "EmailChangeButton": "이메일 변경",
+  "EnableUserButton": "활성화",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "비밀번호 변경",
+  "PendingTitle": "보류 중",
+  "RemoveData": "개인 데이터 삭제",
+  "SendInviteAgain": "초대장 다시 보내기",
+  "SuccessChangeUserStatus": "사용자 상태가 성공적으로 변경되었습니다",
+  "SuccessDeletePersonalData": "개인 데이터가 성공적으로 삭제되었습니다",
+  "SuccessSentInvitation": "초대장이 성공적으로 전송되었습니다"
+}

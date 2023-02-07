@@ -1,0 +1,19 @@
+{
+  "AddMembers": "Добавить участников",
+  "DeleteSelfProfile": "Удалить профиль",
+  "DisableUserButton": "Заблокировать",
+  "DisabledEmployeeStatus": "Заблокирован",
+  "EmailChangeButton": "Изменить email",
+  "EnableUserButton": "Разблокировать",
+  "LDAPLbl": "LDAP",
+  "NameChangeButton": "Изменить имя",
+  "PasswordChangeButton": "Изменить пароль",
+  "PendingTitle": "Ожидание",
+  "RemoveData": "Удалить личные данные",
+  "ResetAuth": "Сбросить аутентификацию",
+  "SendInviteAgain": "Отправить приглашение ещё раз",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
+  "SuccessDeletePersonalData": "Персональные данные успешно удалены",
+  "SuccessSentInvitation": "Приглашение было успешно отправлено",
+  "SuccessSentMultipleInvitatios": "Приглашения были успешно отправлены"
+}

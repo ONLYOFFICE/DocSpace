@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "링크 복사",
-  "GetShortenLink": "단축 링크 받기",
-  "HelpAnswerLinkInviteSettings": "링크를 공유하여 동료를 포털에 초대하세요.",
-  "InviteLinkValidInterval": "이 링크는 {{ count }}일 동안만 유효합니다.",
-  "InviteUsersAsCollaborators": "사용자를 {{guestsCaption, lowercase}}로 추가",
-  "LinkCopySuccess": "링크가 복사되었습니다"
-}

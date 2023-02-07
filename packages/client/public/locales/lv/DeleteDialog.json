@@ -1,0 +1,8 @@
+{
+  "MoveToTrashButton": "Pārvietot uz miskasti",
+  "MoveToTrashFile": "Vai grasāties dzēst šo failu? Lūdzu, ņemiet vērā, ka, ja esat to kopīgojuši ar kādu, tas vairs nebūs pieejams. Vai vēlaties turpināt?",
+  "MoveToTrashFolder": "Vai grasāties dzēst šo mapi? Lūdzu, ņemiet vērā, ka ja esat to ar kādu kopīgojuši, tā vairs nebūs pieejama. Vai vēlaties turpināt?",
+  "UnsubscribeButton": "Anulēt abonementu",
+  "UnsubscribeNote": "Vai tiešām vēlaties atteikties no sarakstā atlasīto vienumu abonēšanas?",
+  "UnsubscribeTitle": "Abonēšanas atcelšanas apstiprinājums"
+}

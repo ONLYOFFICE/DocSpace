@@ -1,14 +1,6 @@
 {
   "components": [
     {
-      "type": "ASC.Common.Logging.LogNLog, ASC.Common",
-      "services": [
-        {
-          "type": "ASC.Common.Logging.ILog, ASC.Common"
-        }
-      ]
-    },
-    {
       "type": "ASC.Data.Encryption.Crypt, ASC.Data.Encryption",
       "services": [
         {

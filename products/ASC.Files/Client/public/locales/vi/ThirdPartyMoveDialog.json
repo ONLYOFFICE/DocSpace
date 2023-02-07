@@ -1,4 +1,0 @@
-{
-  "MoveConfirmation": "Xác nhận di chuyển ",
-  "MoveConfirmationMessage": "Bạn sắp chuyển các thành phần khỏi thư mục {{provider}}. Chúng sẽ bị xóa khỏi tài khoản {{ provider}} của bạn và những người dùng khác sẽ không thể truy cập nó được nữa."
-}

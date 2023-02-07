@@ -1,0 +1,9 @@
+{
+  "MoveToTrashButton": "Mover para a lixeira",
+  "MoveToTrashFile": "Você está prestes a apagar este arquivo? Observe que, se você o compartilhou com alguém, ele se tornará indisponível. Você tem certeza de que quer continuar?",
+  "MoveToTrashFolder": "Você está prestes a apagar esta pasta? Observe que, se você a tiver compartilhado com alguém, ela ficará indisponível. Você tem certeza de que quer continuar?",
+  "MoveToTrashTitle": "Mover para a lixeira?",
+  "UnsubscribeButton": "Cancelar assinatura",
+  "UnsubscribeNote": "Você tem certeza de que deseja cancelar a inscrição dos itens selecionados da lista?",
+  "UnsubscribeTitle": "Cancelar a confirmação da inscrição"
+}

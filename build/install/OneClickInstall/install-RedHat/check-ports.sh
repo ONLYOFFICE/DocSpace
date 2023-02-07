@@ -12,13 +12,13 @@ EOF
 
 if rpm -qa | grep ${package_sysname}-${product}; then
 	echo "${package_sysname}-${product} $RES_APP_INSTALLED"
-	APPSERVER_INSTALLED="true";
+	PRODUCT_INSTALLED="true";
 elif [ "${UPDATE}" != "true" ] && netstat -lnp | awk '{print $4}' | grep -qE ":80$|:8081$|:8083$|:5001$|:5002$|:8080$|:80$"; then
 	echo "${package_sysname}-${product} $RES_APP_CHECK_PORTS: 80, 8081, 8083, 5001, 5002, 9200, 2181, 9092";
 	echo "$RES_CHECK_PORTS"
 	exit
 else
-	APPSERVER_INSTALLED="false";
+	PRODUCT_INSTALLED="false";
 fi
 
 if rpm -qa | grep ${package_sysname}-documentserver; then
@@ -32,7 +32,7 @@ else
 	DOCUMENT_SERVER_INSTALLED="false";
 fi
 
-if [ "$APPSERVER_INSTALLED" = "true" ] || [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
+if [ "$PRODUCT_INSTALLED" = "true" ] || [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 	if [ "$UPDATE" != "true" ]; then
 		exit;	
 	fi

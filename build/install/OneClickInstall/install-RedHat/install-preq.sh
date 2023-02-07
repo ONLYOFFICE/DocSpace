@@ -25,21 +25,6 @@ if ! [[ "$REV" =~ ^[0-9]+$ ]]; then
 	REV=7;
 fi
 
-read_unsupported_installation () {
-	read -p "$RES_CHOICE_INSTALLATION " CHOICE_INSTALLATION
-	case "$CHOICE_INSTALLATION" in
-		y|Y ) yum -y install $DIST*-release
-		;;
-
-		n|N ) exit 0;
-		;;
-
-		* ) echo $RES_CHOICE;
-			read_unsupported_installation
-		;;
-	esac
-}
-
 { yum check-update postgresql; PSQLExitCode=$?; } || true #Checking for postgresql update
 { yum check-update $DIST*-release; exitCode=$?; } || true #Checking for distribution update
 
@@ -57,34 +42,44 @@ if rpm -qa | grep mariadb.*config >/dev/null 2>&1; then
    echo $RES_MARIADB && exit 0
 fi
 
-# add epel repo
+#Add repositories: EPEL, REMI and RPMFUSION
 rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm || true
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
+yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$REV.noarch.rpm
+
+MONOREV=$REV
+if [ "$REV" = "9" ]; then
+	MONOREV="8"
+	yum localinstall -y --nogpgcheck https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/xorg-x11-font-utils-7.5-41.el8.x86_64.rpm
+elif [ "$REV" = "8" ]; then
+	POWERTOOLS_REPO="--enablerepo=powertools"
+fi
+
+#add rabbitmq & erlang repo
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | os=centos dist=$MONOREV bash
+curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$MONOREV bash
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_14.x | bash - || true
-
-#add yarn
-curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo || true
+curl -sL https://rpm.nodesource.com/setup_16.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
 
 #add dotnet repo
-rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
+if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
+	rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
+elif rpm -q packages-microsoft-prod; then
+	yum remove -y packages-microsoft-prod dotnet*
+fi
 
 #add mysql repo
-case $REV in
-	8) 	dnf remove -y @mysql
-		dnf module -y reset mysql && dnf module -y disable mysql
-		${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm || true ;;
-	7) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm || true ;;
-	6) 	${package_manager} localinstall -y https://dev.mysql.com/get/mysql80-community-release-el6-5.noarch.rpm || true ;;
-esac
+[ "$REV" != "7" ] && dnf remove -y @mysql && dnf module -y reset mysql && dnf module -y disable mysql
+MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP "mysql80-community-release-el${REV}-\K.*" | grep -o '^[^.]*' | sort | tail -n1)"
+yum localinstall -y https://repo.mysql.com/mysql80-community-release-el${REV}-${MYSQL_REPO_VERSION}.noarch.rpm || true
 
 if ! rpm -q mysql-community-server; then
 	MYSQL_FIRST_TIME_INSTALL="true";
 fi
 
 #add elasticsearch repo
-ELASTIC_VERSION="7.13.1"
+ELASTIC_VERSION="7.16.3"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END
@@ -98,52 +93,6 @@ autorefresh=1
 type=rpm-md
 END
 
-#install kafka
-PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
-	mkdir -p ${PRODUCT_DIR}/services/
-	getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
-	cd ${PRODUCT_DIR}/services/kafka
-	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
-	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
-	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
-	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
-	chown -R kafka ${PRODUCT_DIR}/services/kafka
-	cd -
-fi
-
-if [ ! -e /lib/systemd/system/zookeeper.service ]; then
-cat > /lib/systemd/system/zookeeper.service <<END
-[Unit]
-Requires=network.target remote-fs.target
-After=network.target remote-fs.target
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-fi
-
-if [ ! -e /lib/systemd/system/kafka.service ]; then
-cat > /lib/systemd/system/kafka.service <<END
-[Unit]
-Requires=zookeeper.service
-After=zookeeper.service
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-fi
-
 # add nginx repo
 cat > /etc/yum.repos.d/nginx.repo <<END
 [nginx-stable]
@@ -155,45 +104,32 @@ gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true
 END
 
-if [ "$REV" = "8" ]; then
-	rabbitmq_version="-3.8.12"
-
-	cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
-[rabbitmq-server]
-name=rabbitmq-server
-baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/\$basearch
-repo_gpgcheck=1
-gpgcheck=0
-enabled=1
-gpgkey=https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
-sslverify=0
-sslcacert=/etc/pki/tls/certs/ca-bundle.crt
-metadata_expire=300
-END
-
-fi
-
 ${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
 ${package_manager} -y install epel-release \
-			expect \
-			nano \
+			python3 \
 			nodejs \
-			gcc-c++ \
-			make \
-			yarn \
-			dotnet-sdk-6.0 \
+			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
-			supervisor \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi \
-			java
+			SDL2 $POWERTOOLS_REPO \
+			expect
 	
+py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
+if [[ $py3_version -lt 6 ]]; then
+	curl -O https://bootstrap.pypa.io/pip/3.$py3_version/get-pip.py
+else
+	curl -O https://bootstrap.pypa.io/get-pip.py
+fi
+python3 get-pip.py || true
+rm get-pip.py
+
 if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	yum -y install postgresql-upgrade
 	postgresql-setup --upgrade || true
@@ -207,4 +143,4 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx mysqld"
+package_services="rabbitmq-server postgresql redis nginx mysqld"

@@ -1,0 +1,17 @@
+{
+  "ChangeEmailSuccess": "E-Mail wurde erfolgreich geändert",
+  "DarkTheme": "Dunkelmodus",
+  "EditPhoto": "Bild bearbeiten",
+  "InterfaceTheme": "Thema der Benutzeroberfläche",
+  "LightTheme": "Heller Modus",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
+  "ProviderSuccessfullyConnected": "Anbieter erfolgreich verbunden",
+  "ProviderSuccessfullyDisconnected": "Anbieter erfolgreich getrennt",
+  "ShowBackupCodes": "Back-up-Codes anzeigen",
+  "SubscriptionEmailTipsToggleLbl": "E-Mail-Benachrichtigung mit Tipps und Tricks",
+  "SubscriptionTurnOffToast": "Sie wurden erfolgreich von der Mailingliste abgemeldet. <1>Neu anmelden</1>",
+  "Subscriptions": "Abonnements",
+  "SystemTheme": "Wie im System",
+  "TfaLoginSettings": "Login-Einstellungen",
+  "TwoFactorDescription": "Zwei-Faktor-Authentifizierung über eine App für Generierung von Codes wurde für alle aktiviert."
+}

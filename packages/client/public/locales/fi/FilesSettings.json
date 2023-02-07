@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Täällä ei ole mitään",
+  "DisplayFavorites": "Näytä suosikit",
+  "DisplayNotification": "Näytä ilmoitus, kun siirrät kohteita roskakoriin",
+  "DisplayRecent": "Näytä viimeisimmät",
+  "DisplayTemplates": "Näytä mallit",
+  "IntermediateVersion": "Säilytä kaikki tallennetut väliversiot",
+  "KeepIntermediateVersion": "Pidä väliversiot muokkauksen aikana",
+  "OriginalCopy": "Tallenna kopio tiedostosta myös alkuperäisessä muodossa",
+  "StoringFileVersion": "Tiedostoversioiden tallentaminen",
+  "UpdateOrCreate": "Päivitä samannimisen tiedoston tiedostoversio. Muussa tapauksessa tiedostosta luodaan kopio."
+}

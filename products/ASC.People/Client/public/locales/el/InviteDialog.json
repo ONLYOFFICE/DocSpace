@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Αντιγραφή συνδέσμου",
-  "GetShortenLink": "Λήψη συντομευμένου συνδέσμου",
-  "HelpAnswerLinkInviteSettings": "Μοιραστείτε τον σύνδεσμο για να προσκαλέσετε συναδέλφους στην πύλη σας.",
-  "InviteLinkValidInterval": "Αυτός ο σύνδεσμος ισχύει μόνο για {{ count }} ημέρες.",
-  "InviteUsersAsCollaborators": "Προσθήκη χρηστών ως {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Ο σύνδεσμος έχει αντιγραφεί"
-}

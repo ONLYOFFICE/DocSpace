@@ -1,9 +1,0 @@
-## COPY PUBLIC ##
-../../../config/nginx/onlyoffice*.conf                etc/nginx/conf.d
-../../../config/nginx/includes/onlyoffice*.conf       etc/nginx/includes
-../../../build/deploy/public/*                        var/www/appserver/public
-../../../build/deploy/products/ASC.People/client/*    var/www/appserver/products/ASC.People/client
-../../../build/deploy/products/ASC.Files/client/*     var/www/appserver/products/ASC.Files/client
-../../../build/deploy/products/ASC.Files/editor/*     var/www/appserver/products/ASC.Files/editor
-../../../build/deploy/studio/client/*                 var/www/appserver/studio/client
-../../../build/deploy/studio/login/*                  var/www/appserver/studio/login

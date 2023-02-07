@@ -43,20 +43,20 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}/packages/asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								sh "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}/packages/components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
-									junit 'packages/asc-web-components/junit.xml'
+									junit 'packages/components/junit.xml'
 									publishHTML target: [
 										allowMissing         : false,
 										alwaysLinkToLastBuild: false,
 										keepAll             : true,
-										reportDir            : 'packages/asc-web-components/coverage/lcov-report',
+										reportDir            : 'packages/components/coverage/lcov-report',
 										reportFiles          : 'index.html',
 										reportName           : 'Unix Test Report'
 									]
-									publishCoverage adapters: [coberturaAdapter('packages/asc-web-components/coverage/cobertura-coverage.xml')]
+									publishCoverage adapters: [coberturaAdapter('packages/components/coverage/cobertura-coverage.xml')]
 								}
 							}
 						}
@@ -72,16 +72,16 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								bat "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}\\packages\\asc-web-components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								bat "yarn install --frozen-lockfile && yarn build && cd ${env.WORKSPACE}\\packages\\components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
-									junit 'packages\\asc-web-components\\junit.xml'
+									junit 'packages\\components\\junit.xml'
 									publishHTML target: [
 										allowMissing         : false,
 										alwaysLinkToLastBuild: false,
 										keepAll             : true,
-										reportDir            : 'packages\\asc-web-components\\coverage\\lcov-report',
+										reportDir            : 'packages\\components\\coverage\\lcov-report',
 										reportFiles          : 'index.html',
 										reportName           : 'Windows Test Report'
 									]

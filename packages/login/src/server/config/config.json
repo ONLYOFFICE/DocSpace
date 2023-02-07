@@ -1,0 +1,6 @@
+{
+    "PORT": "5011",
+    "app": {
+        "appsettings": "../../../config"
+    }
+}

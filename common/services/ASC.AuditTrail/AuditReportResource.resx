@@ -1396,4 +1396,43 @@
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Website Contact Form Key Updated</value>
   </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Room Created: {0}</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Room Archived: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Room Unarchived: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Room Renamed: {0}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Room Logo Created: {0}</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Room Logo Deleted: {0}</value>
+  </data>
+  <data name="RoomUpdateAccess" xml:space="preserve">
+    <value>{0} appointed {1}</value>
+  </data>
+  <data name="RoomLinkUpdate" xml:space="preserve">
+    <value>Room {0}. Link Update Access: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Room Deleted: {0}</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Room: {0}. Added Tags: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Room: {0}. Deleted Tags: [{1}]</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag Created: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tags Deleted: {0}</value>
+  </data>
 </root>

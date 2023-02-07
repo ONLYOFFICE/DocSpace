@@ -97,7 +97,7 @@ namespace ASC.Core.Common.Tests
             var u1 = users[1];
             var u2 = users[2];
             userManager.GetCompanyCEO();
-            userManager.SetCompanyCEO(ceo.ID);
+            userManager.SetCompanyCEO(ceo.Id);
             var ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
@@ -105,9 +105,9 @@ namespace ASC.Core.Common.Tests
             ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
-            userManager.SetDepartmentManager(g1.ID, u1.ID);
+            userManager.SetDepartmentManager(g1.ID, u1.Id);
 
-            userManager.SetDepartmentManager(g1.ID, u2.ID);
+            userManager.SetDepartmentManager(g1.ID, u2.Id);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace ASC.Core.Common.Tests
             {
                 var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in userManager.GetUserGroups(u.ID))
+                foreach (var g in userManager.GetUserGroups(u.Id))
                 {
                     var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }
@@ -132,7 +132,7 @@ namespace ASC.Core.Common.Tests
             {
                 var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in userManager.GetUserGroups(u.ID))
+                foreach (var g in userManager.GetUserGroups(u.Id))
                 {
                     var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }

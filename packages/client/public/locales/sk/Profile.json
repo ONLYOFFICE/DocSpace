@@ -1,0 +1,17 @@
+{
+  "ChangeEmailSuccess": "E-mail bol úspešne zmenený ",
+  "DarkTheme": "Tmavá téma",
+  "EditPhoto": "Upraviť foto",
+  "InterfaceTheme": "Vzhľad prostredia",
+  "LightTheme": "Svetlá téma",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na e-mail <strong>{{ email }}</strong>",
+  "ProviderSuccessfullyConnected": "Poskytovateľ bol úspešne pripojený",
+  "ProviderSuccessfullyDisconnected": "Poskytovateľ bol úspešne odpojený",
+  "ShowBackupCodes": "Zobraziť záložné kódy",
+  "SubscriptionEmailTipsToggleLbl": "Upozornenie e-mailom s tipmi a trikmi",
+  "SubscriptionTurnOffToast": "Boli ste úspešne odhlásení z odberu noviniek. <1>Znova sa prihlásiť na odber</1>",
+  "Subscriptions": "Predplatné",
+  "SystemTheme": "Použiť tému systému",
+  "TfaLoginSettings": "Nastavenia prihlasovania",
+  "TwoFactorDescription": "Správca povolil všetkým používateľom dvojfaktorovú autentifikáciu prostredníctvom aplikácie generujúcej kód."
+}

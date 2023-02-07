@@ -1,4 +1,0 @@
-{
-  "MoveConfirmation": "이동 확인",
-  "MoveConfirmationMessage": "{{provider}} 디렉토리에서 요소를 이동하려고 합니다. 해당 요소는 {{provider}} 계정에서 삭제되며 다른 사용자가 더 이상 액세스할 수 없게 됩니다."
-}

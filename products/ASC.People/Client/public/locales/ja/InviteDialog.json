@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "リンクのコピー",
-  "GetShortenLink": "短縮リンクの取得",
-  "HelpAnswerLinkInviteSettings": "リンクを共有すると、同僚をポータルに招待できます。",
-  "InviteLinkValidInterval": "このリンクは {{ count }} 日間のみ有効です。",
-  "InviteUsersAsCollaborators": "ユーザーを {{guestsCaption, lowercase}} として追加します。",
-  "LinkCopySuccess": "リンクがコピーされました"
-}

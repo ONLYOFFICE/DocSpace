@@ -1,4 +1,0 @@
-{
-  "MoveConfirmation": "移動確認",
-  "MoveConfirmationMessage": "現在、{{provider}}ディレクトリから要素を移動しようとしています。これらの要素はあなたの{{provider}}アカウントから削除され、他のユーザーがアクセスすることはできなくなります。"
-}

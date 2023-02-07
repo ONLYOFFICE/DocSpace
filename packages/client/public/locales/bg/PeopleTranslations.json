@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Добави членове",
+  "DeleteSelfProfile": "Изтрий профил",
+  "DisableUserButton": "Деактивирай",
+  "DisabledEmployeeStatus": "Деактивиран",
+  "EmailChangeButton": "Промени имейл",
+  "EnableUserButton": "Активирай",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Промяна на парола",
+  "PendingTitle": "В очакване",
+  "RemoveData": "Изтрий лични данни",
+  "SendInviteAgain": "Изпрати покана още веднъж",
+  "SuccessChangeUserStatus": "Потребителският статус беше променен успешно",
+  "SuccessDeletePersonalData": "Личните данни бяха изтрити успешно",
+  "SuccessSentInvitation": "Поканата беше изпратена успешно"
+}

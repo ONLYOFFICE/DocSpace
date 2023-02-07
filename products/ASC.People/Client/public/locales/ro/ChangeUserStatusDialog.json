@@ -1,8 +1,0 @@
-{
-  "ChangeUserStatusDialog": "Utilizatorii cu statutul '{{ userStatus }}' vor fi {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Schimbați statutul utilizatorului",
-  "ChangeUserStatusDialogMessage": "Nu puteți schimba statutul posesorului portalului și nici al dumneavoastră",
-  "ChangeUsersActiveStatus": "dezactivat",
-  "ChangeUsersDisableStatus": "activat",
-  "ChangeUsersStatusButton": "Schimbați statutul utilizatorului"
-}

@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Không có gì ở đây cả",
+  "DisplayFavorites": "Hiển thị Yêu thích",
+  "DisplayNotification": "Hiển thị thông báo khi chuyển các mục vào Thùng rác",
+  "DisplayRecent": "Hiển thị Gần đây",
+  "DisplayTemplates": "Hiển thị mẫu",
+  "IntermediateVersion": "Giữ tất cả các phiên bản đã lưu trong quá trình chỉnh sửa",
+  "KeepIntermediateVersion": "Giữ các phiên bản đã lưu trong quá trình chỉnh sửa",
+  "OriginalCopy": "Lưu cả bản sao của tệp ở định dạng gốc",
+  "StoringFileVersion": "Lưu trữ các phiên bản của tệp",
+  "UpdateOrCreate": "Cập nhật phiên bản của tệp cho tệp hiện có với cùng tên. Nếu không, bản sao của tệp sẽ được tạo."
+}

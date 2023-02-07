@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CustomModeResource {
@@ -61,22 +61,19 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear $UserName,
+        ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Get started with it today!
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///h3.Start working with Documents:
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
         ///
-        ///# Create and edit text documents, spreadsheet and presentations.
-        ///# Connect cloud storages you use to create a single workspace for all of your docs.
-        ///# Share documents with your team members.
-        ///# Explore different ways of working on docs together: two real-time co-editing modes, review, comments, chat.
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///h3.Try add [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, c [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_welcome_custom_mode {
+        public static string pattern_enterprise_whitelabel_user_welcome_custom_mode_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_custom_mode", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_custom_mode_v1", resourceCulture);
             }
         }
         
@@ -102,22 +99,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-        ///
-        ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some tips and recommendations on how to make your work even more effective.
-        ///
-        ///*Bring all your docs together*
-        ///
-        ///Connect Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive, or Yandex.Disk to ONLYOFFICE and create a single document management space for all your documents.
-        ///&quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/ [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_custom_mode_after_registration8 {
-            get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_after_registration8", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Want to change the email on your cloud office account?
         ///
         ///Click the button below and log in* to your cloud.
@@ -137,22 +118,17 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been a request to change your password used to enter the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
-        ///
-        ///Please follow the link below to change your password:
+        ///   Looks up a localized string similar to Want to change the password on your cloud office account? Click the button below to confirm.
         ///
         ///$GreenButton
         ///
-        ///*Note*: this link is valid for 7 days only. Please complete the password change process within that period.
+        ///The link is valid for 7 days.
         ///
-        ///If you do not want to change your password or received this email by mistake, please ignore it.
-        ///
-        ///Sincerely,
-        ///ONLYOFFICE team.
+        ///Don’t want to change your password? Just ignore this message..
         /// </summary>
-        public static string pattern_personal_custom_mode_change_password {
+        public static string pattern_personal_custom_mode_change_password_v115 {
             get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_change_password", resourceCulture);
+                return ResourceManager.GetString("pattern_personal_custom_mode_change_password_v115", resourceCulture);
             }
         }
         
@@ -244,24 +220,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_personal_custom_mode_after_registration1 {
             get {
                 return ResourceManager.GetString("subject_personal_custom_mode_after_registration1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect your favorite cloud storage to ONLYOFFICE.
-        /// </summary>
-        public static string subject_personal_custom_mode_after_registration7 {
-            get {
-                return ResourceManager.GetString("subject_personal_custom_mode_after_registration7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Personal password assistance.
-        /// </summary>
-        public static string subject_personal_custom_mode_change_password {
-            get {
-                return ResourceManager.GetString("subject_personal_custom_mode_change_password", resourceCulture);
             }
         }
         

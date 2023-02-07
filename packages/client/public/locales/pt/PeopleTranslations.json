@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Adicionar membros",
+  "DeleteSelfProfile": "Eliminar perfil",
+  "DisableUserButton": "Desativar",
+  "DisabledEmployeeStatus": "Desativado",
+  "EmailChangeButton": "Alterar e-mail",
+  "EnableUserButton": "Ativar",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Alterar palavra-passe",
+  "PendingTitle": "Pendente",
+  "RemoveData": "Eliminar dados pessoais",
+  "SendInviteAgain": "Enviar convite novamente",
+  "SuccessChangeUserStatus": "O estado do utilizador foi alterado com êxito",
+  "SuccessDeletePersonalData": "Os dados pessoais foram eliminados com êxito",
+  "SuccessSentInvitation": "O convite foi enviado com êxito"
+}

@@ -27,23 +27,43 @@ const fs = require("fs"),
     bodyParser = require("body-parser"),
     session = require("express-session"),
     winston = require("winston"),
+    WinstonCloudWatch = require('winston-cloudwatch'),
     config = require("./config").get(),
     path = require("path"),
     exphbs = require("express-handlebars"),
     favicon = require("serve-favicon"),
-    cors = require("cors");
+    cors = require("cors"),
+    { randomUUID } = require('crypto'),
+    date = require('date-and-time'),
+    os = require("os");
 
 require('winston-daily-rotate-file');
 
 const app = express();
-let logDir = config["logPath"] ? config["logPath"] : config.app.logDir;
-// ensure log directory exists
-fs.existsSync(logDir) || fs.mkdirSync(logDir);
+
+let logpath = config["logPath"];
+if(logpath != null)
+{
+    if(!path.isAbsolute(logpath))
+    {
+        logpath = path.join(__dirname, logpath);
+    }
+    // ensure log directory exists
+    fs.existsSync(logpath) || fs.mkdirSync(logpath);
+}
+
+const aws = config["aws"].cloudWatch;
+
+const accessKeyId = aws.accessKeyId; 
+const secretAccessKey = aws.secretAccessKey; 
+const awsRegion = aws.region; 
+const logGroupName = aws.logGroupName;
+const logStreamName = aws.logStreamName;
 
 let transports = [];
 
 if (config.logger.file) {
-    logDir = config["logPath"] ? logDir : (config.app.logDir[0] === "." ? path.join(__dirname, config.app.logDir) : config.app.logDir);
+    let logDir = logpath ? logpath : (config.app.logDir[0] === "." ? path.join(__dirname, config.app.logDir) : config.app.logDir);
     config.logger.file.filename = path.join(logDir, config.app.logName);
     transports.push(new (winston.transports.DailyRotateFile)(config.logger.file));
 }
@@ -52,7 +72,54 @@ if (config.logger.console) {
     transports.push(new (winston.transports.Console)(config.logger.console));
 }
 
+if (aws != null && aws.accessKeyId !== '')
+{
+  transports.push(new WinstonCloudWatch({
+    name: 'aws',
+    level: "debug",
+    logStreamName: () => {
+      const hostname = os.hostname();
+      const now = new Date();
+      const guid = randomUUID();
+      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
+      
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "SsoAuth")                  
+                          .replace("${guid}", guid)
+                          .replace("${date}", dateAsString);      
+    },
+    logGroupName: logGroupName,
+    awsRegion: awsRegion,
+    jsonMessage: true,
+    awsOptions: {
+      credentials: {
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
+      }
+    }
+  }));
+}
+
+const customFormat = winston.format(info => {
+    const now = new Date();
+  
+    info.date = date.format(now, 'YYYY-MM-DD HH:mm:ss');
+    info.applicationContext = "SsoAuth";
+    info.level = info.level.toUpperCase();
+  
+    const hostname = os.hostname();
+  
+    info["instance-id"] = hostname;
+  
+    return info;
+  })();
+  
+
 let logger = winston.createLogger({
+    format: winston.format.combine(
+        customFormat,
+        winston.format.json()    
+    ),    
     transports: transports,
     exitOnError: false
 });
@@ -77,7 +144,7 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")))
     {
         resave: true,
         saveUninitialized: true,
-        secret: config["core.machinekey"] ? config["core.machinekey"] : config.app.machinekey
+        secret: config["core"].machinekey ? config["core"].machinekey : config.app.machinekey
         }))
     .use(cors());
 

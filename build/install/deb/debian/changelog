@@ -1,5 +1,5 @@
-appserver ({{package_header_tag_version}}) unstable; urgency=medium
+{{product}} ({{package_header_tag_version}}) unstable; urgency=medium
 
   * Initial Release.
 
- -- Ascensio System SIA <support@onlyoffice.com> Fri, 19 Mar 2021 18:39:30 +0300
+ -- Ascensio System SIA <support@onlyoffice.com>  Fri, 19 Mar 2021 18:39:30 +0300

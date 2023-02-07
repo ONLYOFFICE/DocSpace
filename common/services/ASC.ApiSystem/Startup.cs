@@ -1,140 +1,162 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+ï»¿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.ApiSystem;
 
-using System.Text.Json.Serialization;
-
-using ASC.Api.Core;
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Controllers;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-
-using Autofac;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
-namespace ASC.ApiSystem
+public class Startup
 {
-    public class Startup : BaseWorkerStartup
+    private const string CustomCorsPolicyName = "Basic";
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _hostEnvironment;
+    private readonly DIHelper _diHelper;
+    private readonly string _corsOrigin;
+
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
-        public IHostEnvironment HostEnvironment { get; }
+        _configuration = configuration;
+        _hostEnvironment = hostEnvironment;
+        _diHelper = new DIHelper();
+        _corsOrigin = _configuration["core:cors"];
+    }
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCustomHealthCheck(_configuration);
+        services.AddHttpContextAccessor();
+        services.AddMemoryCache();
+        services.AddHttpClient();
+
+        services.AddScoped<EFLoggerFactory>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<FirebaseDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
+
+        services.AddSession();
+
+        _diHelper.Configure(services);
+
+        Action<JsonOptions> jsonOptions = options =>
         {
-            HostEnvironment = hostEnvironment;
-        }
+            options.JsonSerializerOptions.WriteIndented = false;
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+        };
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public override void ConfigureServices(IServiceCollection services)
+        services.AddControllers()
+            .AddXmlSerializerFormatters()
+            .AddJsonOptions(jsonOptions);
+
+        services.AddSingleton(jsonOptions);
+
+        _diHelper.AddControllers();
+        _diHelper.TryAdd<IpSecurityFilter>();
+        _diHelper.TryAdd<PaymentFilter>();
+        _diHelper.TryAdd<ProductSecurityFilter>();
+        _diHelper.TryAdd<TenantStatusFilter>();
+        _diHelper.TryAdd<ConfirmAuthHandler>();
+        _diHelper.TryAdd<BasicAuthHandler>();
+        _diHelper.TryAdd<CookieAuthHandler>();
+        _diHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
         {
-            base.ConfigureServices(services);
-
-            var diHelper = new DIHelper(services);
-
-            services.AddHttpContextAccessor();
-            services.AddMemoryCache();
-
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.WriteIndented = false;
-                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                });
-
-            services.AddMemoryCache();
-
-            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
-            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
-
-            if (kafkaConfiguration != null)
+            services.AddCors(options =>
             {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            }
-            else if (redisConfiguration != null)
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
-            }
-            else
-            {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-            }
-
-            diHelper.TryAdd<AuthHandler>();
-            diHelper.TryAdd<CalDavController>();
-            diHelper.TryAdd<PortalController>();
-            diHelper.TryAdd<SettingsController>();
-            diHelper.TryAdd<TariffController>();
-
-            services.AddAuthentication()
-                .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
-                .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public override void Configure(IApplicationBuilder app)
-        {
-            base.Configure(app);
-
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-
-            app.UseCors(builder =>
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
+                options.AddPolicy(name: CustomCorsPolicyName,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(_corsOrigin)
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
+                                  });
             });
         }
 
-        public void ConfigureContainer(ContainerBuilder builder)
+        services.AddDistributedCache(_configuration);
+        services.AddEventBus(_configuration);
+        services.AddDistributedTaskQueue();
+        services.AddCacheNotify(_configuration);
+
+        services.RegisterFeature();
+
+        _diHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
+
+        _diHelper.RegisterProducts(_configuration, _hostEnvironment.ContentRootPath);
+
+        services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
+
+        if (!_hostEnvironment.IsDevelopment())
         {
-            builder.Register(Configuration, false, false);
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
         }
+
+        services.AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:default", _ => { })
+            .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:registerportal", _ => { });
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseRouting();
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            app.UseCors(CustomCorsPolicyName);
+        }
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapCustom();
+
+            endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("self")
+            });
+        });
     }
 }

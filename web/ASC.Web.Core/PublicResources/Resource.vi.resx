@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Địa chỉ email không chính xác</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Mã khuyến mại không chính xác</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Không có quyền để thực hiện hành động này</value>
   </data>
@@ -141,9 +138,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Mật khẩu phải chứa</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Phải chứa</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>chữ số</value>

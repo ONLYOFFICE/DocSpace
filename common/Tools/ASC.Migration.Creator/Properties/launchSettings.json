@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ASC.Migration.Creator": {
+      "commandName": "Project",
+      "launchBrowser": false
+    }
+  }
+}

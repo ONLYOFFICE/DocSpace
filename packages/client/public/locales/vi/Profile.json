@@ -1,0 +1,17 @@
+{
+  "ChangeEmailSuccess": "Email đã được thay đổi thành công",
+  "DarkTheme": "Nền tối",
+  "EditPhoto": "Chỉnh sửa ảnh",
+  "InterfaceTheme": "Chủ đề giao diện\"",
+  "LightTheme": "Nền sáng",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi thành công đến địa chỉ email <strong>{{ email }}</strong>",
+  "ProviderSuccessfullyConnected": "Đã kết nối nhà cung cấp thành công",
+  "ProviderSuccessfullyDisconnected": " Đã ngắt kết nối nhà cung cấp thành công",
+  "ShowBackupCodes": "Hiển thị mã dự phòng",
+  "SubscriptionEmailTipsToggleLbl": "Thông báo qua email các mẹo và thủ thuật",
+  "SubscriptionTurnOffToast": "Bạn đã hủy đăng ký danh sách nhận thư thành công. <1>Đăng ký lại</1>",
+  "Subscriptions": "Đăng ký",
+  "SystemTheme": "Sử dụng chủ đề hệ thống",
+  "TfaLoginSettings": "Thiết lập đăng nhập ",
+  "TwoFactorDescription": " Xác thực hai yếu tố qua ứng dụng tạo mã đã được quản trị viên bật cho tất cả người dùng."
+}

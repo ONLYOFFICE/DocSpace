@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Thêm thành viên ",
+  "DeleteSelfProfile": "Xóa hồ sơ",
+  "DisableUserButton": "Vô hiệu hóa",
+  "DisabledEmployeeStatus": "Đã vô hiệu hóa",
+  "EmailChangeButton": "Thay đổi email",
+  "EnableUserButton": "Kích hoạt",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Thay đổi mật khẩu",
+  "PendingTitle": "Đang chờ xử lý",
+  "RemoveData": "Xóa dữ liệu cá nhân",
+  "SendInviteAgain": "Gửi lại lời mời",
+  "SuccessChangeUserStatus": "Trạng thái người dùng đã được thay đổi thành công",
+  "SuccessDeletePersonalData": "Dữ liệu cá nhân đã được xóa thành công",
+  "SuccessSentInvitation": "Lời mời đã được gửi thành công"
+}

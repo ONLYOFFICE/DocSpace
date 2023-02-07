@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Kopiraj povezavo",
-  "GetShortenLink": "Dobi skrajšano povezavo",
-  "HelpAnswerLinkInviteSettings": "Deli povezavo in povabi sodelavce na svoj portal.",
-  "InviteLinkValidInterval": "Ta povezava velja le {{ count }} dni.",
-  "InviteUsersAsCollaborators": "Dodaj uporabnike kot {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Povezava je bila kopirana"
-}

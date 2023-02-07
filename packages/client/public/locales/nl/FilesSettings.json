@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Er is nog niets",
+  "DisplayFavorites": "Favorieten Tonen",
+  "DisplayNotification": "Meldingen weergeven wanneer items naar de Prullenbak worden verplaatst",
+  "DisplayRecent": "Recent Weergeven",
+  "DisplayTemplates": "Sjablonen Weergeven",
+  "IntermediateVersion": "Bewaar alle opgeslagen tussenversies",
+  "KeepIntermediateVersion": "Bewaar tussenversies bij het bewerken",
+  "OriginalCopy": "Bewaar de bestandskopie ook in het oorspronkelijke formaat",
+  "StoringFileVersion": "Opslaan van bestandsversies",
+  "UpdateOrCreate": "Update de bestandsversie voor het bestaande bestand met dezelfde naam. Anders wordt een kopie van het bestand gemaakt."
+}

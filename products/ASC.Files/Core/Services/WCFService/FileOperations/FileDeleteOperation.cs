@@ -1,324 +1,386 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
-namespace ASC.Web.Files.Services.WCFService.FileOperations
+internal class FileDeleteOperationData<T> : FileOperationData<T>
 {
-    internal class FileDeleteOperationData<T> : FileOperationData<T>
+    public bool IgnoreException { get; }
+    public bool Immediately { get; }
+    public IDictionary<string, StringValues> Headers { get; }
+    public bool IsEmptyTrash { get; }
+
+    public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
+        bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null, bool isEmptyTrash = false)
+        : base(folders, files, tenant, holdResult)
     {
-        public bool IgnoreException { get; }
-        public bool Immediately { get; }
-        public IDictionary<string, StringValues> Headers { get; }
+        IgnoreException = ignoreException;
+        Immediately = immediately;
+        Headers = headers;
+        IsEmptyTrash = isEmptyTrash;
+    }
+}
 
-        public FileDeleteOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant,
-            bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null)
-            : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult, ignoreException, immediately, headers)
-        {
-        }
+[Transient]
+class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>, FileDeleteOperationData<int>>
+{
+    public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
+        : base(serviceProvider, f1, f2)
+    {
+        this[OpType] = (int)FileOperationType.Delete;
+    }
+}
 
-        public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
-            bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null)
-            : base(folders, files, tenant, holdResult)
-        {
-            IgnoreException = ignoreException;
-            Immediately = immediately;
-            Headers = headers;
-        }
+class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
+{
+    private int _trashId;
+    private readonly bool _ignoreException;
+    private readonly bool _immediately;
+    private readonly bool _isEmptyTrash;
+    private readonly IDictionary<string, StringValues> _headers;
+    private readonly ThumbnailSettings _thumbnailSettings;
+
+    public FileDeleteOperation(
+        IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
+    : base(serviceProvider, fileOperationData)
+    {
+        _ignoreException = fileOperationData.IgnoreException;
+        _immediately = fileOperationData.Immediately;
+        _headers = fileOperationData.Headers;
+        _isEmptyTrash = fileOperationData.IsEmptyTrash;
+        _thumbnailSettings = thumbnailSettings;
+        this[OpType] = (int)FileOperationType.Delete;
     }
 
-    [Transient]
-    class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>, FileDeleteOperationData<int>>
+    protected override async Task DoJob(IServiceScope scope)
     {
-        public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
-            : base(serviceProvider, f1, f2)
+        var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
+        var messageService = scope.ServiceProvider.GetService<MessageService>();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(CurrentTenant);
+        _trashId = await folderDao.GetFolderIDTrashAsync(true);
+
+        Folder<T> root = null;
+        if (0 < Folders.Count)
         {
+            root = await FolderDao.GetRootFolderAsync(Folders[0]);
         }
-
-        public override FileOperationType OperationType
+        else if (0 < Files.Count)
         {
-            get { return FileOperationType.Delete; }
+            root = await FolderDao.GetRootFolderByFileAsync(Files[0]);
         }
-    }
-
-    class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
-    {
-        private int _trashId;
-        private readonly bool _ignoreException;
-        private readonly bool _immediately;
-        private readonly IDictionary<string, StringValues> _headers;
-        private readonly ThumbnailSettings _thumbnailSettings;
-
-        public override FileOperationType OperationType
+        if (root != null)
         {
-            get { return FileOperationType.Delete; }
+            this[Res] += string.Format("folder_{0}{1}", root.Id, SplitChar);
         }
-
-
-        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
-            : base(serviceProvider, fileOperationData)
+        if (_isEmptyTrash)
         {
-            _ignoreException = fileOperationData.IgnoreException;
-            _immediately = fileOperationData.Immediately;
-            _headers = fileOperationData.Headers;
-            _thumbnailSettings = thumbnailSettings;
-        }
-
-        protected override async Task DoAsync(IServiceScope scope)
-        {
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-            _trashId = await folderDao.GetFolderIDTrashAsync(true);
-
-            Folder<T> root = null;
-            if (0 < Folders.Count)
-            {
-                root = await FolderDao.GetRootFolderAsync(Folders[0]);
-            }
-            else if (0 < Files.Count)
-            {
-                root = await FolderDao.GetRootFolderByFileAsync(Files[0]);
-            }
-            if (root != null)
-            {
-                Result += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
-            }
-
             await DeleteFilesAsync(Files, scope);
             await DeleteFoldersAsync(Folders, scope);
+            messageService.Send(_headers, MessageAction.TrashEmptied);
         }
-
-        private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope)
+        else
         {
-            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var (fileMarker, filesMessageService) = scopeClass;
-            foreach (var folderId in folderIds)
+            await DeleteFilesAsync(Files, scope, true);
+            await DeleteFoldersAsync(Folders, scope, true);
+        }
+    }
+
+    private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
+    {
+        var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+        var (fileMarker, filesMessageService, roomLogoManager) = scopeClass;
+        foreach (var folderId in folderIds)
+        {
+            CancellationToken.ThrowIfCancellationRequested();
+
+            var folder = await FolderDao.GetFolderAsync(folderId);
+            var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
+
+            T canCalculate = default;
+            if (folder == null)
             {
-                CancellationToken.ThrowIfCancellationRequested();
+                this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
+            }
+            else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
+                && !DocSpaceHelper.IsRoom(folder.FolderType))
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+            }
+            else if (!_ignoreException && checkPermissions && !await FilesSecurity.CanDeleteAsync(folder))
+            {
+                canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
-                var folder = await FolderDao.GetFolderAsync(folderId);
-                T canCalculate = default;
-                if (folder == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FolderNotFound;
-                }
-                else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH)
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
-                }
-                else if (!_ignoreException && !await FilesSecurity.CanDeleteAsync(folder))
-                {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
+                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+            }
+            else
+            {
+                checkPermissions = isRoom ? false : checkPermissions;
 
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
+                canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
+
+                await fileMarker.RemoveMarkAsNewForAllAsync(folder);
+                if (folder.ProviderEntry && folder.Id.Equals(folder.RootId))
+                {
+                    if (ProviderDao != null)
+                    {
+                        if (folder.RootFolderType == FolderType.VirtualRooms || folder.RootFolderType == FolderType.Archive)
+                        {
+                            var providerInfo = await ProviderDao.GetProviderInfoAsync(folder.ProviderId);
+
+                            if (providerInfo.FolderId != null)
+                            {
+                                var room = await roomLogoManager.DeleteAsync(providerInfo.FolderId, checkPermissions);
+                                await socketManager.UpdateFolderAsync(room);
+                            }
+                        }
+
+                        await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
+                        if (isNeedSendActions)
+                        {
+                            filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.Id.ToString(), folder.ProviderKey);
+                        }
+                    }
+
+                    ProcessedFolder(folderId);
                 }
                 else
                 {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
-
-                    await fileMarker.RemoveMarkAsNewForAllAsync(folder);
-                    if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
+                    var immediately = _immediately || !FolderDao.UseTrashForRemoveAsync(folder);
+                    if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
-                        if (ProviderDao != null)
-                        {
-                            await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
-                            filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
-                        }
+                        var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
+                        await DeleteFilesAsync(files, scope, checkPermissions: checkPermissions);
 
-                        ProcessedFolder(folderId);
+                        var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
+                        await DeleteFoldersAsync(folders.Select(f => f.Id).ToList(), scope, checkPermissions: checkPermissions);
+
+                        if (await FolderDao.IsEmptyAsync(folder.Id))
+                        {
+                            if (isRoom)
+                            {
+                                var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                await socketManager.UpdateFolderAsync(room);
+                            }
+
+                            await FolderDao.DeleteFolderAsync(folder.Id);
+
+                            if (isRoom && folder.ProviderEntry)
+                            {
+                                await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
+                            }
+
+                            await socketManager.DeleteFolder(folder);
+
+                            filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
+
+                            ProcessedFolder(folderId);
+                        }
                     }
                     else
                     {
-                        var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
+                        var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
+                        var (isError, message) = await WithErrorAsync(scope, files, true, checkPermissions);
+                        if (!_ignoreException && isError)
                         {
-                            var files = await FileDao.GetFilesAsync(folder.ID);
-                            await DeleteFilesAsync(files, scope);
-
-                            var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
-                            await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
-
-                            if (await FolderDao.IsEmptyAsync(folder.ID))
+                            this[Err] = message;
+                        }
+                        else
+                        {
+                            if (immediately)
                             {
-                                await FolderDao.DeleteFolderAsync(folder.ID);
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                if (isRoom)
+                                {
+                                    var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
+                                    await socketManager.UpdateFolderAsync(room);
+                                }
 
-                                ProcessedFolder(folderId);
+                                await FolderDao.DeleteFolderAsync(folder.Id);
+
+                                if (isRoom && folder.ProviderEntry)
+                                {
+                                    await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
+                                }
+
+                                await socketManager.DeleteFolder(folder);
+
+                                if (isNeedSendActions)
+                                {
+                                    filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
+                                }
+                            }
+                            else
+                            {
+                                await FolderDao.MoveFolderAsync(folder.Id, _trashId, CancellationToken);
+                                await socketManager.DeleteFolder(folder);
+
+                                if (isNeedSendActions)
+                                {
+                                    filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
+                                }
+                            }
+
+                            ProcessedFolder(folderId);
+                        }
+                    }
+                }
+            }
+            ProgressStep(canCalculate);
+        }
+    }
+
+    private async Task DeleteFilesAsync(IEnumerable<T> fileIds, IServiceScope scope, bool isNeedSendActions = false, bool checkPermissions = true)
+    {
+        var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+
+        var (fileMarker, filesMessageService, _) = scopeClass;
+        foreach (var fileId in fileIds)
+        {
+            CancellationToken.ThrowIfCancellationRequested();
+
+            var file = await FileDao.GetFileAsync(fileId);
+            var (isError, message) = await WithErrorAsync(scope, new[] { file }, false, checkPermissions);
+            if (file == null)
+            {
+                this[Err] = FilesCommonResource.ErrorMassage_FileNotFound;
+            }
+            else if (!_ignoreException && isError)
+            {
+                this[Err] = message;
+            }
+            else
+            {
+                await fileMarker.RemoveMarkAsNewForAllAsync(file);
+                if (!_immediately && FileDao.UseTrashForRemove(file))
+                {
+                    await FileDao.MoveFileAsync(file.Id, _trashId);
+                    if (isNeedSendActions)
+                    {
+                        filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
+                    }
+
+                    if (file.ThumbnailStatus == Thumbnail.Waiting)
+                    {
+                        file.ThumbnailStatus = Thumbnail.NotRequired;
+                        await FileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
+                    }
+
+                    await socketManager.DeleteFile(file);
+                }
+                else
+                {
+                    try
+                    {
+                        await FileDao.DeleteFileAsync(file.Id);
+
+                        if (_headers != null)
+                        {
+                            if (isNeedSendActions)
+                            {
+                                filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
                             }
                         }
                         else
                         {
-                            var files = await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
-                            var (isError, message) = await WithErrorAsync(scope, files, true);
-                            if (!_ignoreException && isError)
-                            {
-                                Error = message;
-                            }
-                            else
-                            {
-                                if (immediately)
-                                {
-                                    await FolderDao.DeleteFolderAsync(folder.ID);
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                                }
-                                else
-                                {
-                                    await FolderDao.MoveFolderAsync(folder.ID, _trashId, CancellationToken);
-                                    filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
-                                }
-
-                                ProcessedFolder(folderId);
-                            }
+                            filesMessageService.Send(file, MessageInitiator.AutoCleanUp, MessageAction.FileDeleted, file.Title);
                         }
+
+                        await socketManager.DeleteFile(file);
                     }
-                }
-                ProgressStep(canCalculate);
-            }
-        }
-
-        private async Task DeleteFilesAsync(IEnumerable<T> fileIds, IServiceScope scope)
-        {
-            var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
-            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
-
-            var (fileMarker, filesMessageService) = scopeClass;
-            foreach (var fileId in fileIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var file = await FileDao.GetFileAsync(fileId);
-                var (isError, message) = await WithErrorAsync(scope, new[] { file }, false);
-                if (file == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                }
-                else if (!_ignoreException && isError)
-                {
-                    Error = message;
-                }
-                else
-                {
-                    await fileMarker.RemoveMarkAsNewForAllAsync(file);
-                    if (!_immediately && FileDao.UseTrashForRemove(file))
+                    catch (Exception ex)
                     {
-                        await FileDao.MoveFileAsync(file.ID, _trashId);
-                        filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
-
-                        if (file.ThumbnailStatus == Thumbnail.Waiting)
-                        {
-                            file.ThumbnailStatus = Thumbnail.NotRequired;
-                            foreach (var size in _thumbnailSettings.Sizes)
-                            {
-                                await FileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
-                            }
-                        }
-
-                        socketManager.DeleteFile(file);
+                        this[Err] = ex.Message;
+                        Logger.ErrorWithException(ex);
                     }
-                    else
-                    {
-                        try
-                        {
-                            await FileDao.DeleteFileAsync(file.ID);
-                            filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
 
-                            socketManager.DeleteFile(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            Error = ex.Message;
-                            Logger.Error(Error, ex);
-                        }
-
-                        await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
-                    }
-                    ProcessedFile(fileId);
+                    await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                 }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
+
+                ProcessedFile(fileId);
             }
-        }
 
-        private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder)
-        {
-            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
-            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-
-            string error = null;
-            foreach (var file in files)
-            {
-                if (!await FilesSecurity.CanDeleteAsync(file))
-                {
-                    error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
-                    return (true, error);
-                }
-                if (await entryManager.FileLockedForMeAsync(file.ID))
-                {
-                    error = FilesCommonResource.ErrorMassage_LockedFile;
-                    return (true, error);
-                }
-                if (fileTracker.IsEditing(file.ID))
-                {
-                    error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
-                    return (true, error);
-                }
-            }
-            return (false, error);
+            ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
         }
     }
 
-    [Scope]
-    public class FileDeleteOperationScope
+    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files, bool folder, bool checkPermissions)
     {
-        private FileMarker FileMarker { get; }
-        private FilesMessageService FilesMessageService { get; }
+        var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+        var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
 
-        public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService)
+        string error = null;
+        foreach (var file in files)
         {
-            FileMarker = fileMarker;
-            FilesMessageService = filesMessageService;
+            if (checkPermissions && !await FilesSecurity.CanDeleteAsync(file))
+            {
+                error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
+
+                return (true, error);
+            }
+            if (checkPermissions && await entryManager.FileLockedForMeAsync(file.Id))
+            {
+                error = FilesCommonResource.ErrorMassage_LockedFile;
+
+                return (true, error);
+            }
+            if (fileTracker.IsEditing(file.Id))
+            {
+                error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
+
+                return (true, error);
+            }
         }
 
-        public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService)
-        {
-            fileMarker = FileMarker;
-            filesMessageService = FilesMessageService;
-        }
+        return (false, error);
+    }
+}
+
+[Scope]
+public class FileDeleteOperationScope
+{
+    private readonly FileMarker _fileMarker;
+    private readonly FilesMessageService _filesMessageService;
+    private readonly RoomLogoManager _roomLogoManager;
+
+    public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService, RoomLogoManager roomLogoManager)
+    {
+        _fileMarker = fileMarker;
+        _filesMessageService = filesMessageService;
+        _roomLogoManager = roomLogoManager;
+        _roomLogoManager.EnableAudit = false;
+    }
+
+    public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService, out RoomLogoManager roomLogoManager)
+    {
+        fileMarker = _fileMarker;
+        filesMessageService = _filesMessageService;
+        roomLogoManager = _roomLogoManager;
     }
 }

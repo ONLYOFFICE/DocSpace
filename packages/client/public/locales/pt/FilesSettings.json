@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Não há nada aqui",
+  "DisplayFavorites": "Mostrar Favoritos",
+  "DisplayNotification": "Mostrar notificação ao mover itens para a Lixo",
+  "DisplayRecent": "Mostrar recentes",
+  "DisplayTemplates": "Mostrar Modelos",
+  "IntermediateVersion": "Manter todas as versões intermédias guardadas",
+  "KeepIntermediateVersion": "Manter versões intermediárias ao editar",
+  "OriginalCopy": "Guardar a cópia do ficheiro também no formato original",
+  "StoringFileVersion": "Armazenamento de versões de ficheiros",
+  "UpdateOrCreate": "Atualizar a versão do ficheiro existente com o mesmo nome. Caso contrário, será criada uma cópia do ficheiro."
+}

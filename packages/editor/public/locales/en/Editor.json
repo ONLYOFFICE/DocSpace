@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "documents",
+  "FileLocation": "Open file location",
+  "FileName": "File name",
+  "ImageFileType": "images",
+  "MailMergeFileType": "Select .XLSX file",
+  "OpenSavedDocument": "Open saved document in new tab",
+  "SelectFilesType": "Select files type: {{fileType}}"
+}

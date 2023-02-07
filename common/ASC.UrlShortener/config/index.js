@@ -26,9 +26,44 @@
 
 const nconf = require("nconf");
 const path = require("path");
+const fs = require("fs");
 
 nconf.argv()
     .env()
-    .file({ file: path.join(__dirname, 'config.json') });
+    .file("config", path.join(__dirname, 'config.json') );
+
+getAndSaveAppsettings();
+
+getAndSaveSql();
 
 module.exports = nconf;
+
+function getAndSaveAppsettings(){
+    var appsettings = nconf.get("app").appsettings;
+    if(!path.isAbsolute(appsettings)){
+        appsettings =path.join(__dirname, appsettings);
+    }
+
+    var env = nconf.get("app").environment;
+    console.log('environment: ' + env);
+    
+    nconf.file("appsettingsWithEnv", path.join(appsettings, 'appsettings.' + env + '.json'));
+    nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
+    nconf.file("appsettingsServices", path.join(appsettings, 'appsettings.services.json'));
+}
+
+function getAndSaveSql(){
+    var sql = new Map();
+    var connetionString = nconf.get("ConnectionStrings").default.connectionString;
+
+    var conf = connetionString.split(';');
+    
+    for(let i = 0; i < conf.length; i++){
+        var splited = conf[i].split('=');
+        if(splited.Length < 2) continue;
+        if(splited[0] != null){
+            sql[splited[0]] = splited[1];
+        }
+    }
+    nconf.set("sql", sql);
+}

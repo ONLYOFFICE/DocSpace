@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Lisää jäseniä",
+  "DeleteSelfProfile": "Poista profiili",
+  "DisableUserButton": "Poisteta käytöstä",
+  "DisabledEmployeeStatus": "Poistettu käytöstä",
+  "EmailChangeButton": "Vaihda sähköposti",
+  "EnableUserButton": "Käytössä",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Vaihda salasana",
+  "PendingTitle": "Odottaa",
+  "RemoveData": "Poista henkilökohtaiset tiedot",
+  "SendInviteAgain": "Lähetä kutsu uudelleen",
+  "SuccessChangeUserStatus": "Käyttäjän tilan muuttaminen onnistui",
+  "SuccessDeletePersonalData": "Henkilötietojen poistaminen onnistui",
+  "SuccessSentInvitation": "Kutsu lähetettiin onnistuneesti"
+}

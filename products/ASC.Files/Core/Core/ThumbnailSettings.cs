@@ -1,98 +1,146 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2021
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Files.ThumbnailBuilder;
 
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Utils;
-
-namespace ASC.Files.Core
+[Singletone]
+public class ThumbnailSettings
 {
-    [Singletone]
-    public class ThumbnailSettings
+    public ThumbnailSettings(ConfigurationExtension configuration)
     {
-        public ThumbnailSettings(ConfigurationExtension configuration)
+        configuration.GetSetting("thumbnail", this);
+    }
+
+    #region worker settings
+
+    private string _serverRoot;
+    public string ServerRoot
+    {
+        get => _serverRoot ?? "http://localhost/";
+        set => _serverRoot = value;
+    }
+
+    private int _boundedChannelCapacity;
+
+    public int BoundedChannelCapacity
+    {
+        get => _boundedChannelCapacity != 0 ? _boundedChannelCapacity : MaxDegreeOfParallelism * 10;
+        set => _boundedChannelCapacity = value;
+    }
+
+    private int _batchSize;
+
+    public int BatchSize
+    {
+        get => _batchSize != 0 ? _batchSize : MaxDegreeOfParallelism * 10;
+        set => _batchSize = value;
+    }
+
+    #endregion
+
+
+    #region data privider settings
+
+    private string _connectionStringName;
+    public string ConnectionStringName
+    {
+        get => _connectionStringName ?? "default";
+        set => _connectionStringName = value;
+    }
+
+    private string _formats;
+    public string Formats
+    {
+        get => _formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docxf|.oform|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.oxps";
+        set => _formats = value;
+    }
+
+    private string[] _formatsArray;
+    public string[] FormatsArray
+    {
+        get
         {
-            configuration.GetSetting("thumbnail", this);
-        }
-
-        #region worker settings
-
-        private string serverRoot;
-        public string ServerRoot { get => serverRoot ?? "http://localhost/"; set { serverRoot = value; } }
-
-        private int launchFrequency;
-        public int LaunchFrequency { get => launchFrequency != 0 ? launchFrequency : 1; set { launchFrequency = value; } }
-
-        #endregion
-
-
-        #region data privider settings
-
-        private string connectionStringName;
-        public string ConnectionStringName { get => connectionStringName ?? "default"; set { connectionStringName = value; } }
-
-        private string formats;
-        public string Formats { get => formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docxf|.oform|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.bmp|.jpeg|.jpg|.png|.gif|.tiff|.tif|.ico"; set { formats = value; } }
-
-        private string[] formatsArray;
-
-        public string[] FormatsArray
-        {
-            get
+            if (_formatsArray != null)
             {
-                if (formatsArray != null)
-                {
-                    return formatsArray;
-                }
-                formatsArray = (Formats ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                return formatsArray;
+                return _formatsArray;
             }
+
+            _formatsArray = (Formats ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return _formatsArray;
         }
-
-        private int sqlMaxResults;
-        public int SqlMaxResults { get => sqlMaxResults != 0 ? sqlMaxResults : 1000; set { sqlMaxResults = value; } }
-
-        #endregion
-
-
-        #region thumbnails generator settings
-
-        private int maxDegreeOfParallelism;
-        public int MaxDegreeOfParallelism { get => maxDegreeOfParallelism != 0 ? maxDegreeOfParallelism : 10; set { maxDegreeOfParallelism = value; } }
-
-        private long? availableFileSize;
-        public long? AvailableFileSize { get => availableFileSize ?? 100L * 1024L * 1024L; set { availableFileSize = value; } }
-
-        private int? attemptsLimit;
-        public int? AttemptsLimit { get => attemptsLimit ?? 3; set { attemptsLimit = value; } }
-
-        private int attemptWaitInterval;
-        public int AttemptWaitInterval { get => attemptWaitInterval != 0 ? attemptWaitInterval : 1000; set { attemptWaitInterval = value; } }
-
-        public IEnumerable<ThumbnailSize> Sizes { get; set; }
-
-        #endregion
     }
 
-    public class ThumbnailSize
+    private int _sqlMaxResults;
+    public int SqlMaxResults
     {
-        public int Height { get; set; }
-        public int Width { get; set; }
+        get => _sqlMaxResults != 0 ? _sqlMaxResults : 1000;
+        set => _sqlMaxResults = value;
     }
+
+    #endregion
+
+
+    #region thumbnails generator settings
+
+    private int _maxDegreeOfParallelism;
+    public int MaxDegreeOfParallelism
+    {
+        get => _maxDegreeOfParallelism != 0 ? _maxDegreeOfParallelism : 10;
+        set => _maxDegreeOfParallelism = value;
+    }
+
+    private long? _availableFileSize;
+    public long? AvailableFileSize
+    {
+        get => _availableFileSize ?? 100L * 1024L * 1024L;
+        set => _availableFileSize = value;
+    }
+
+    private int? _attemptsLimit;
+    public int? AttemptsLimit
+    {
+        get => _attemptsLimit ?? 3;
+        set => _attemptsLimit = value;
+    }
+
+    private int _attemptWaitInterval;
+    public int AttemptWaitInterval
+    {
+        get => _attemptWaitInterval != 0 ? _attemptWaitInterval : 1000;
+        set => _attemptWaitInterval = value;
+    }
+
+    public IEnumerable<ThumbnailSize> Sizes { get; set; }
+
+    #endregion
+}
+
+public class ThumbnailSize
+{
+    public int Height { get; set; }
+    public int Width { get; set; }
 }

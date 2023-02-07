@@ -1,0 +1,12 @@
+{
+  "ConnectEmpty": "Burada bir şey yok",
+  "DisplayFavorites": "Favorileri Görüntüle",
+  "DisplayNotification": "Öğeleri Çöp Kutusuna taşırken bildirim göster",
+  "DisplayRecent": "Son kullanılanları görüntüle",
+  "DisplayTemplates": "Şablonları Görüntüle",
+  "IntermediateVersion": "Kaydedilen tüm ara sürümleri sakla",
+  "KeepIntermediateVersion": "Düzenleme yaparken ara sürümleri koru",
+  "OriginalCopy": "Dosya kopyasını da orijinal türünde kaydet",
+  "StoringFileVersion": "Dosya sürümleri depolanıyor",
+  "UpdateOrCreate": "Aynı isme sahip mevcut dosyanın dosya sürümünü güncelleyin. Aksi halde, dosyanın bir kopyası oluşturulacaktır."
+}

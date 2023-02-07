@@ -97,9 +97,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Грешен имейл адрес</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Неправилен промо код</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Няма разрешения за извършване на това действие</value>
   </data>
@@ -155,9 +152,6 @@
     <value>от {0} до {1} символа</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
-    <value>Паролата трябва да съдържа</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
     <value>Паролата трябва да съдържа</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">

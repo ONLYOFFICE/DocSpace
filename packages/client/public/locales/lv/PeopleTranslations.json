@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Pievienot dalībniekus",
+  "DeleteSelfProfile": "Dzēst profilu",
+  "DisableUserButton": "Atspējot",
+  "DisabledEmployeeStatus": "Atspējots",
+  "EmailChangeButton": "Mainīt e-pastu",
+  "EnableUserButton": "Iespējot",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Mainīt paroli",
+  "PendingTitle": "Gaida apstiprinājumu",
+  "RemoveData": "Dzēst personas datus",
+  "SendInviteAgain": "Nosūtiet ielūgumu vēlreiz",
+  "SuccessChangeUserStatus": "Lietotāja statuss tika veiksmīgi mainīts",
+  "SuccessDeletePersonalData": "Personas dati ir veiksmīgi izdzēsti",
+  "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts"
+}

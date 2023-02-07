@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Ավելացնել անդամներ",
+  "DeleteSelfProfile": "Ջնջել կայքէջը",
+  "DisableUserButton": "Կասեցնել",
+  "DisabledEmployeeStatus": "Կասեցված",
+  "EmailChangeButton": "Փոխել էլ․ փոստը",
+  "EnableUserButton": "Թույլատրել",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Փոխել գաղտնաբառը",
+  "PendingTitle": "Սպասող",
+  "RemoveData": "Ջնջել անձնական տվյալները",
+  "SendInviteAgain": "Ուղարկեք հրավեր ևս մեկ անգամ",
+  "SuccessChangeUserStatus": "Օգտատիրոջ կարգավիճակը հաջողությամբ փոխվել է",
+  "SuccessDeletePersonalData": "Անձնական տվյալները հաջողությամբ ջնջվել են",
+  "SuccessSentInvitation": "Հրավերը հաջողությամբ ուղարկվեց"
+}

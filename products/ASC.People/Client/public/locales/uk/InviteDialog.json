@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Копіювати посилання",
-  "GetShortenLink": "Отримати скорочене посилання",
-  "HelpAnswerLinkInviteSettings": "Поділіться посиланням, щоб запросити колег на свій портал.",
-  "InviteLinkValidInterval": "Це посилання дійсне лише {{ count }} дн.",
-  "InviteUsersAsCollaborators": "Додати користувачів як {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Посилання скопійовано"
-}

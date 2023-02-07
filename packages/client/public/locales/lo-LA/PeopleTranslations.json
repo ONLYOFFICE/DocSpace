@@ -1,0 +1,15 @@
+{
+  "AddMembers": "ເພີ່ມສະມາຊິກ",
+  "DeleteSelfProfile": "ລຶບ profile",
+  "DisableUserButton": "ປິດ",
+  "DisabledEmployeeStatus": "ປິດ",
+  "EmailChangeButton": "ປ່ຽນອີເມວ",
+  "EnableUserButton": "ປິດ",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "ປ່ຽນລະຫັດຜ່ານ",
+  "RemoveData": "ລຶບຂໍ້ມູນສ່ວນຕົວ",
+  "SendInviteAgain": "ສົ່ງຄໍາເຊີນອີກເທື່ອຫນຶ່ງ",
+  "SuccessChangeUserStatus": "ຖານະຜູ້ໃຊ້ໄດ້ຖືກປ່ຽນແປງສໍາເລັດ",
+  "SuccessDeletePersonalData": "ຂໍ້ມູນສ່ວນຕົວໄດ້ຖືກລຶບອອກສໍາເລັດ",
+  "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ"
+}

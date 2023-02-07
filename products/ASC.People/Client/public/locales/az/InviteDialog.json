@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Linki köçür",
-  "GetShortenLink": "Qısa linki əldə et",
-  "HelpAnswerLinkInviteSettings": "Həmkarların portala dəvəti üçün linki paylaşın",
-  "InviteLinkValidInterval": "Link {{ count }} gün ərzində aktivdir.",
-  "InviteUsersAsCollaborators": "İstifadəçiləri {{guestsCaption, lowercase}} kimi əlavə et",
-  "LinkCopySuccess": "Link köçürüldü"
-}

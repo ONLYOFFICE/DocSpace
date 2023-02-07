@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Kopējiet saiti",
-  "GetShortenLink": "Iegūstiet saīsinātu saiti",
-  "HelpAnswerLinkInviteSettings": "Kopīgojiet saiti, lai uzaicinātu kolēģus uz savu portālu.",
-  "InviteLinkValidInterval": "Šī saite ir derīga tikai {{ count }} dienu (-as).",
-  "InviteUsersAsCollaborators": "Pievienot lietotājus kā {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Saite ir nokopēta"
-}

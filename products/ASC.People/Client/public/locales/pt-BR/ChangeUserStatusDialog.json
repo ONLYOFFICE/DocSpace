@@ -1,8 +1,0 @@
-{
-  "ChangeUserStatusDialog": "Os usuários com o status '{{ userStatus }}' serão {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Alterar status de usuário",
-  "ChangeUserStatusDialogMessage": "Você não pode mudar o status para o proprietário do portal e para você mesmo",
-  "ChangeUsersActiveStatus": "Desabilitado",
-  "ChangeUsersDisableStatus": "Habilitado",
-  "ChangeUsersStatusButton": "Alterar status de usuário"
-}

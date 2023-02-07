@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Dodaj člane",
+  "DeleteSelfProfile": "Izbriši profil",
+  "DisableUserButton": "Onemogoči",
+  "DisabledEmployeeStatus": "Onemogočeno",
+  "EmailChangeButton": "Spremeni email",
+  "EnableUserButton": "Omogoči",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Spremeni geslo",
+  "PendingTitle": "V teku",
+  "RemoveData": "Izbriši osebne podatke",
+  "SendInviteAgain": "Ponovno pošlji vabilo",
+  "SuccessChangeUserStatus": "Status uporabnika je bil uspešno spremenjen",
+  "SuccessDeletePersonalData": "Osebni podatki so bili uspešno izbrisani",
+  "SuccessSentInvitation": "Vabilo je bilo uspešno poslano"
+}

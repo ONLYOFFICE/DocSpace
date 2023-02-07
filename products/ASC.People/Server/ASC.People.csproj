@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
@@ -10,7 +10,9 @@
     <AssemblyTitle>ASC.People</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.People</Product>
+	<ImplicitUsings>enable</ImplicitUsings>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
@@ -21,12 +23,9 @@
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj" />
+    <ProjectReference Include="..\..\ASC.Files\Core\ASC.Files.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -64,16 +63,16 @@
     <EmbeddedResource Update="Resources\PeopleResource.cs.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.el.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.el-GR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.fi.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ja.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ja-JP.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ko.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.ko-KR.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.lv.resx">
@@ -103,7 +102,7 @@
     <EmbeddedResource Update="Resources\PeopleResource.tr.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.uk.resx">
+    <EmbeddedResource Update="Resources\PeopleResource.uk-UA.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\PeopleResource.vi.resx">

@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "ຄັດລອກລິ້ງ",
-  "GetShortenLink": "ຮັບລິ້ງທີ່ສັ້ນລົງ",
-  "HelpAnswerLinkInviteSettings": "ແບ່ງປັນລິ້ງເພື່ອເຊີນເພື່ອນຮ່ວມງານເຂົ້າສູ້ portal.",
-  "InviteLinkValidInterval": "ລິ້ງນີ້ໃຊ້ສຳລັບ {{ count }} ມື້",
-  "InviteUsersAsCollaborators": "ເພີ່ມຜູ້ໃຊ້ເປັນ {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "ລິ້ງຖືກຄັດລອກແລ້ວ"
-}

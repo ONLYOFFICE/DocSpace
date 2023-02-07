@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Üzvlərin əlavə edilməsi",
+  "DeleteSelfProfile": "Profilin silinməsi",
+  "DisableUserButton": "Bloklamaq",
+  "DisabledEmployeeStatus": "Söndürülüb",
+  "EmailChangeButton": "Elektron poçtu dəyiş",
+  "EnableUserButton": "İzn ver",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Şifrəni dəyişdir",
+  "PendingTitle": "Gözləmə",
+  "RemoveData": "Şəxsi məlumatların silinməsi",
+  "SendInviteAgain": "Dəvəti bir daha göndər",
+  "SuccessChangeUserStatus": "İstifadəçinin statusu müvəffəqiyyətlə dəyişdirilmişdir",
+  "SuccessDeletePersonalData": "Şəxsi məlumatlar müvəffəqiyyətlə silindi",
+  "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi"
+}

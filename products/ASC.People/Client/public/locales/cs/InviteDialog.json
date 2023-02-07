@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Kopírovat odkaz",
-  "GetShortenLink": "Získat zkrácený odkaz",
-  "HelpAnswerLinkInviteSettings": "Sdílet odkaz pro pozvání kolegů na portál.",
-  "InviteLinkValidInterval": "Tento odkaz je platný pouze {{ count }} dní.",
-  "InviteUsersAsCollaborators": "Přidat uživatele jako {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Odkaz byl zkopírován"
-}

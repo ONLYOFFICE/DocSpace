@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "复制链接",
-  "GetShortenLink": "获取短链接",
-  "HelpAnswerLinkInviteSettings": "共享链接以邀请同事加入您的门户。",
-  "InviteLinkValidInterval": "此链接仅在{{ count }}天内可用。",
-  "InviteUsersAsCollaborators": "将用户添加为{{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "链接已复制"
-}

@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Üyeler ekle",
+  "DeleteSelfProfile": "Profili sil",
+  "DisableUserButton": "Devre dışı bırak",
+  "DisabledEmployeeStatus": "Devre dışı bırakıldı",
+  "EmailChangeButton": "E-postayı değiştir",
+  "EnableUserButton": "Etkinleştir",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Şifreyi değiştir",
+  "PendingTitle": "Bekliyor",
+  "RemoveData": "Kişisel bilgileri sil",
+  "SendInviteAgain": "Bir kez daha davetiye gönder",
+  "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
+  "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
+  "SuccessSentInvitation": "Davetiye başarıyla gönderildi"
+}

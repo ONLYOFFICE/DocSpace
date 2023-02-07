@@ -21,24 +21,6 @@
 					"useCoreSettings" : "true"
 				}
 			}
-		],
-		"schedulers": [
-			{
-				"name": "Calendar",
-				"register": "ASC.Api.Calendar.Notification.CalendarNotifyClient.RegisterSendMethod, ASC.Api.Calendar"
-			},			
-			{
-				"name": "Projects",
-				"register": "ASC.Web.Projects.Configuration.ProductEntryPoint.RegisterSendMethods, ASC.Web.Projects"
-			},			
-			{
-				"name": "Birthdays",
-				"register": "ASC.Web.Community.Birthdays.BirthdaysModule.RegisterSendMethod, ASC.Web.Community"
-			},			
-			{
-				"name": "CRM",
-				"register": "ASC.Web.CRM.Configuration.ProductEntryPoint.RegisterSendMethods, ASC.Web.CRM"
-			}
 		]
 	}
  }

@@ -1,64 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common;
-using ASC.Core.Common.EF.Model;
+namespace ASC.Core.Common.EF;
 
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Core.Common.EF
+public class UserDbContext : DbContext
 {
-    public class MySqlUserDbContext : UserDbContext { }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UserSecurity> UserSecurity { get; set; }
+    public DbSet<UserPhoto> Photos { get; set; }
+    public DbSet<Acl> Acl { get; set; }
+    public DbSet<DbGroup> Groups { get; set; }
+    public DbSet<UserGroup> UserGroups { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
+    public DbSet<UserDav> UsersDav { get; set; }
 
-
-    public class PostgreSqlUserDbContext : UserDbContext
+    public UserDbContext(DbContextOptions<UserDbContext> dbContextOptions) : base(dbContextOptions)
     {
 
     }
 
-    public class UserDbContext : BaseDbContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserSecurity> UserSecurity { get; set; }
-        public DbSet<UserPhoto> Photos { get; set; }
-        public DbSet<Acl> Acl { get; set; }
-        public DbSet<DbGroup> Groups { get; set; }
-        public DbSet<UserGroup> UserGroups { get; set; }
-        public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
-
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlUserDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
-                };
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-            .From(modelBuilder, Provider)
-            .AddSubscriptionMethod()
-            .AddUser()
-            .AddAcl()
-            .AddUserSecurity()
-            .AddUserPhoto()
-            .AddDbGroup()
-            .AddUserGroup()
-            .AddSubscription();
-        }
-    }
-
-    public static class UserDbExtension
-    {
-        public static DIHelper AddUserDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<UserDbContext>();
-        }
+        ModelBuilderWrapper
+        .From(modelBuilder, Database)
+        .AddSubscriptionMethod()
+        .AddUser()
+        .AddAcl()
+        .AddUserSecurity()
+        .AddUserPhoto()
+        .AddDbGroup()
+        .AddUserGroup()
+        .AddSubscription()
+        .AddUserDav();
     }
 }

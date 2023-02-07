@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Պատճենել հղումը",
-  "GetShortenLink": "Ստացեք կրճատված հղում",
-  "HelpAnswerLinkInviteSettings": "Կիսվեք հղումով՝ գործընկերներին Ձեր կայքէջ հրավիրելու համար:",
-  "InviteLinkValidInterval": "Այս հղումը վավեր է միայն {{ count }} օր.",
-  "InviteUsersAsCollaborators": "Ավելացնել օգտվողներ որպես {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Հղումը պատճենվել է"
-}

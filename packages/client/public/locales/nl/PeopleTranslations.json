@@ -1,0 +1,16 @@
+{
+  "AddMembers": "Leden toevoegen",
+  "DeleteSelfProfile": "Verwijder profiel",
+  "DisableUserButton": "Schakel uit",
+  "DisabledEmployeeStatus": "Uitgeschakeld",
+  "EmailChangeButton": "Wijzig e-mail",
+  "EnableUserButton": "Inschakelen",
+  "LDAPLbl": "LDAP",
+  "PasswordChangeButton": "Wijzig wachtwoord",
+  "PendingTitle": "In behandeling",
+  "RemoveData": "Verwijder persoonsgegevens",
+  "SendInviteAgain": "Stuur uitnodiging opnieuw",
+  "SuccessChangeUserStatus": "De gebruikersstatus is met succes gewijzigd",
+  "SuccessDeletePersonalData": "Persoonsgegevens zijn met succes verwijderd",
+  "SuccessSentInvitation": "De uitnodiging werd met succes verzonden"
+}

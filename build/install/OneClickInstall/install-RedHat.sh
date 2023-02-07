@@ -4,7 +4,7 @@ set -e
 
 package_manager="yum"
 package_sysname="onlyoffice";
-product="appserver"
+product="docspace"
 GIT_BRANCH="develop"
 package_services="";	
 RES_APP_INSTALLED="is already installed";

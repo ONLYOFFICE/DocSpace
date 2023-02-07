@@ -550,9 +550,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Adresse e-mail incorrecte</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Le code promo est incorrect </value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Pas d'autorisation pour effectuer cette action</value>
   </data>
@@ -610,17 +607,20 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Le mot de passe doit contenir</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Le mot de passe doit comporter </value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>chiffres</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>sans espaces</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>symboles spéciaux</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>lettres majuscules</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>lettres latines seulement</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Le délai de  requête est dépassé</value>

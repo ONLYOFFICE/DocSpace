@@ -1,8 +1,0 @@
-{
-  "CopyToClipboard": "Sao chép liên kết",
-  "GetShortenLink": "Lấy liên kết rút gọn",
-  "HelpAnswerLinkInviteSettings": " Chia sẻ liên kết để mời đồng nghiệp vào cổng thông tin của bạn.",
-  "InviteLinkValidInterval": "Liên kết này chỉ có hiệu lực trong {{ count }} ngày.",
-  "InviteUsersAsCollaborators": " Thêm người dùng là {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Liên kết đã được sao chép"
-}
