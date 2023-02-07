@@ -11,7 +11,22 @@ interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
 }
 const App: React.FC<ILoginProps> = (props) => {
-  const loginStore = initLoginStore(props.currentColorScheme);
+  const loginStore = initLoginStore(props?.currentColorScheme || {});
+
+  React.useEffect(() => {
+    if (window && props.error) {
+      const { status, standalone, message } = props.error;
+
+      if (status === 404 || !standalone) {
+        window.location.replace(
+          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+        );
+      }
+
+      throw new Error(message);
+    }
+  }, []);
+
   return (
     <MobxProvider {...loginStore}>
       <SimpleNav {...props} />
