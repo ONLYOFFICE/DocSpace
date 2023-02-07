@@ -87,10 +87,11 @@ export default function withBadges(WrappedComponent) {
         viewAs,
         isMutedBadge,
       } = this.props;
-      const { fileStatus, access } = item;
+      const { fileStatus, access, mute } = item;
 
       const newItems =
-        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
+        item.new ||
+        (!mute && (fileStatus & FileStatus.IsNew) === FileStatus.IsNew);
       const showNew = !!newItems;
 
       const accessToEdit =
