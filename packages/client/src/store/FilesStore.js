@@ -1690,7 +1690,6 @@ class FilesStore {
           "mute-room",
         ]);
       } else {
-        console.log("item.mute", item.mute);
         item.mute
           ? (roomOptions = this.removeOptions(roomOptions, ["mute-room"]))
           : (roomOptions = this.removeOptions(roomOptions, ["unmute-room"]));
