@@ -1681,67 +1681,14 @@ const Dark = {
   },
 
   calendar: {
-    baseWidth: "265px",
-    bigWidth: "289px",
-
-    baseMaxWidth: "293px",
-    bigMaxWidth: "325px",
-
-    hover: {
-      backgroundColor: "#292929",
-      borderRadius: "16px",
-      cursor: "pointer",
-    },
-
-    day: {
-      width: "32px",
-      height: "32px",
-      baseSizeWidth: "270px",
-      bigSizeWidth: "294px",
-      baseMarginTop: "3px",
-      bigMarginTop: "7.5px",
-      lineHeight: "33px",
-    },
-
-    weekdays: {
-      color: "#5c5c5c",
-      disabledColor: "#5c5c5c",
-      baseWidth: "272px",
-      bigWidth: "295px",
-      marginBottom: "-5px",
-    },
-
-    month: {
-      baseWidth: "267px",
-      bigWidth: "295px",
-      color: black,
-      weekendColor: grayMaxLight,
-      disabledColor: "#474747",
-      neighboringHoverColor: grayMaxLight,
-      neighboringColor: "#5c5c5c",
-    },
-
-    selectedDay: {
-      backgroundColor: "#F59931",
-      borderRadius: "16px",
-      cursor: "pointer",
-      color: black,
-    },
-
-    comboBox: {
-      color: black,
-      minWidth: "80px",
-      height: "32px",
-      marginLeft: "8px",
-      padding: "0 0 24px 0",
-    },
-    comboBoxMonth: {
-      baseWidth: "172px",
-      bigWidth: "205px",
-
-      baseMaxWidth: "172px",
-      bigMaxWidth: "196px",
-    },
+    color: "#FFFFFF",
+    disabledColor: "#858585",
+    onHoverBackground: "#3D3D3D",
+    titleColor: "#ADADAD",
+    outlineColor: "#474747",
+    arrowColor: "#F6F9FC",
+    disabledArrow: "#474747",
+    weekdayColor: "#858585",
   },
 
   datePicker: {
