@@ -576,6 +576,7 @@ const Base = {
     overflow: "hidden",
     color: white,
     backgroundColor: orangeMain,
+    disableBackgroundColor: "#A3A9AE",
   },
 
   scrollbar: {

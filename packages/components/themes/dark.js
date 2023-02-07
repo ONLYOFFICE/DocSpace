@@ -569,6 +569,7 @@ const Dark = {
     overflow: "hidden",
     color: black,
     backgroundColor: "#F59931",
+    disableBackgroundColor: "#858585",
   },
 
   scrollbar: {

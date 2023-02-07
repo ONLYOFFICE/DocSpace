@@ -116,6 +116,7 @@ class FilesStore {
   clearSearch = false;
 
   isLoadedEmptyPage = false;
+  isMuteCurrentRoomNotifications = false;
 
   constructor(
     authStore,
@@ -1071,11 +1072,17 @@ class FilesStore {
               roomType,
               rootFolderId,
               rootFolderType,
+              parentId,
+              mute,
             } = folderInfo;
 
             const isRootRoom =
               rootFolderId === id &&
               (rootFolderType === Rooms || rootFolderType === Archive);
+
+            if (parentId === rootFolderId) {
+              this.isMuteCurrentRoomNotifications = mute;
+            }
 
             return {
               id: folderId,
@@ -2338,6 +2345,7 @@ class FilesStore {
         pinned,
         security,
         viewAccessability,
+        mute,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2432,6 +2440,7 @@ class FilesStore {
         logo,
         locked,
         new: item.new,
+        mute,
         parentId,
         pureContentLength,
         rootFolderType,
