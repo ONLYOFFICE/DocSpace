@@ -939,13 +939,13 @@ class FilesActionStore {
   setMuteAction = (action, id) => {
     switch (action) {
       case "mute":
-        return muteRoomNotification(id, false)
+        return muteRoomNotification(id, true)
           .then(() => {
             this.updateCurrentFolder(null, [id]);
           })
           .then(() => toastr.success("MUTE"));
       case "unmute":
-        return muteRoomNotification(id, true)
+        return muteRoomNotification(id, false)
           .then(() => {
             this.updateCurrentFolder(null, [id]);
           })
