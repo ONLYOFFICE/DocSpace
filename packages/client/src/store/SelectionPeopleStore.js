@@ -49,7 +49,8 @@ class SelectionStore {
     if (!exists) return;
 
     const newData = [...this.selection];
-    newData = this.selection.splice(index, 1);
+
+    newData.splice(index, 1);
 
     this.setSelection(newData);
   };
