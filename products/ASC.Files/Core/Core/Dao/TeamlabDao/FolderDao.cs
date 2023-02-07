@@ -48,6 +48,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+    private readonly GlobalStore _globalStore;
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -67,7 +68,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         IDaoFactory daoFactory,
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
-        IMapper mapper)
+        IMapper mapper,
+        GlobalStore globalStore)
         : base(
               dbContextManager,
               userManager,
@@ -88,6 +90,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _providerFolderDao = providerFolderDao;
         _crossDao = crossDao;
         _mapper = mapper;
+        _globalStore = globalStore;
     }
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
@@ -159,7 +162,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
-    
+
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
     {
         return GetFoldersAsync(parentId, default, FilterType.None, false, default, string.Empty);
@@ -1496,11 +1499,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             var q2 = filesDbContext.Security.Where(r => r.TimeStamp > fromTime).Select(r => r.TenantId).Distinct();
 
-            await foreach (var q in q2.AsAsyncEnumerable())
-            {
-                yield return q;
-            }
+        await foreach (var q in q2.AsAsyncEnumerable())
+        {
+            yield return q;
         }
+    }
     }
 
     private IQueryable<DbFolder> BuildRoomsQuery(FilesDbContext filesDbContext, IQueryable<DbFolder> query, FolderType filterByType, IEnumerable<string> tags, Guid subjectId, bool searchByTags, bool withoutTags,
@@ -1632,6 +1635,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.CustomRooms => FolderType.CustomRoom,
             _ => FolderType.CustomRoom,
         };
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+           int folderId,
+           CommonChunkedUploadSession chunkedUploadSession,
+           CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return _globalStore.GetStore().CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
 
     private string GetProjectTitle(object folderID)

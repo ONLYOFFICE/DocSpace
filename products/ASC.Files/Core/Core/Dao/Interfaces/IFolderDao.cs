@@ -211,6 +211,11 @@ public interface IFolderDao<T>
     /// <returns>Maximum size of file which can be uploaded to folder</returns>
     Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
+    IDataWriteOperator CreateDataWriteOperator(
+            T folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder);
+
     #region Only for TMFolderDao
 
     /// <summary>

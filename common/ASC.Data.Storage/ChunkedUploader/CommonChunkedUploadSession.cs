@@ -35,6 +35,7 @@ public class CommonChunkedUploadSession : ICloneable
     public string Location { get; set; }
     public long BytesUploaded { get; set; }
     public long BytesTotal { get; set; }
+    public bool LastChunk { get; set; }
     public int TenantId { get; set; }
     public Guid UserId { get; set; }
     public bool UseChunks { get; set; }
@@ -73,6 +74,7 @@ public class CommonChunkedUploadSession : ICloneable
         BytesUploaded = 0;
         BytesTotal = bytesTotal;
         UseChunks = true;
+        LastChunk = false;
     }
 
     public T GetItemOrDefault<T>(string key)

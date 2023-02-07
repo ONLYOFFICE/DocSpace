@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,51 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
-
-[Scope]
-public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
+namespace ASC.Files.Core.ApiModels.RequestDto;
+public class GetReferenceDataDto<T>
 {
-    public Task<string> Upload(string storageBasePath, string localPath, Guid userId)
-    {
-        if (!Directory.Exists(storageBasePath))
-        {
-            throw new FileNotFoundException("Directory not found.");
-        }
-
-        var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
-        if (localPath != storagePath)
-        {
-            File.Copy(localPath, storagePath, true);
-        }
-
-        return Task.FromResult(storagePath);
-    }
-
-    public Task Download(string storagePath, string targetLocalPath)
-    {
-        File.Copy(storagePath, targetLocalPath, true);
-        return Task.CompletedTask;
-    }
-
-    public Task Delete(string storagePath)
-    {
-        File.Delete(storagePath);
-        return Task.CompletedTask;
-    }
-
-    public Task<bool> IsExists(string storagePath)
-    {
-        return Task.FromResult(File.Exists(storagePath));
-    }
-
-    public Task<string> GetPublicLink(string storagePath)
-    {
-        return Task.FromResult(string.Empty);
-    }
-
-    public Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
-    {
-        return Task.FromResult<IDataWriteOperator>(null);
-    }
+    public T FileKey { get; set; }
+    public string InstanceId { get; set; }
+    public T SourceFileId { get; set; }
+    public string Path { get; set; }
 }

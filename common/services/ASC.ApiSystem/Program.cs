@@ -51,13 +51,6 @@ var path = builder.Configuration["pathToConf"];
 logger.Debug("path: " + path);
 logger.Debug("EnvironmentName: " + builder.Environment.EnvironmentName);
 
-var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-logger.Error($"redisConfiguration is null: {redisConfiguration == null}");
-var kafkaConfiguration = builder.Configuration.GetSection("kafka").Get<KafkaSettings>();
-logger.Debug($"kafkaConfiguration is null: {kafkaConfiguration == null}");
-var rabbitMQConfiguration = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-logger.Debug($"rabbitMQConfiguration is null: {rabbitMQConfiguration == null}");
-
 try
 {
     logger.Info("Configuring web host ({applicationContext})...", AppName);

@@ -90,7 +90,7 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
-    [HttpDelete("webhook")]
+    [HttpDelete("webhook/{id}")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -101,13 +101,13 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? delivery, string hookname, string route)
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, delivery, hookname, route))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.Hookname, model.Route))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }
