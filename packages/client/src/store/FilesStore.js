@@ -894,7 +894,7 @@ class FilesStore {
         }
       } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
         const isFound =
-          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
+          this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
 
         const selectableFolder = this.filesList.find(
           (f) => f.id == id && f.isFolder
@@ -929,12 +929,7 @@ class FilesStore {
       }
     }
 
-    //need fo table view
-    const clearSelection = Object.values(
-      newSelections.reduce((item, n) => ((item[n.id] = n), item), {})
-    );
-
-    this.setSelection(clearSelection);
+    this.setSelection(newSelections);
   };
 
   setBufferSelection = (bufferSelection) => {
