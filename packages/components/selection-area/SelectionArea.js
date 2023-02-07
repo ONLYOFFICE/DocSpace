@@ -1,7 +1,6 @@
 import React, { createRef } from "react";
 import { StyledSelectionArea } from "./StyledSelectionArea";
 import { frames } from "./selector-helpers";
-import { isDesktop } from "../utils/device";
 
 class SelectionArea extends React.Component {
   constructor(props) {
@@ -35,64 +34,99 @@ class SelectionArea extends React.Component {
       this.redrawSelectionArea();
     });
 
-  isIntersects = (itemIndex) => {
+  isIntersects = (itemIndex, itemType) => {
     const { right, left, bottom, top } = this.areaRect;
     const { scrollTop } = this.scrollElement;
-    const { viewAs, countTilesInRow } = this.props;
+    const {
+      viewAs,
+      countTilesInRow,
+      countOfMissingTiles,
+      countRowsOfFolders,
+    } = this.props;
 
     const itemHeight = this.props.itemHeight ?? this.elemRect.height;
 
-    let bTop, bBottom, bLeft, bRight;
+    let itemTop, itemBottom, itemLeft, itemRight;
 
     // Tile view
     if (viewAs === "tile") {
-      const marginLeft = 14;
-      const marginTop = 14;
+      const marginLeft = 14; // TODO:remove
+      const marginTop = 14; // TODO:this
 
-      let index = Math.trunc(+itemIndex / countTilesInRow);
+      if (itemIndex === 0) {
+        itemTop = this.elemRect.top - scrollTop;
+        itemBottom = this.elemRect.top + itemHeight - scrollTop;
+      } else if (itemType === "file") {
+        const folderHeight = 66 + marginTop; // TODO:remove
+        const fileHeight = 236 + marginTop; // TODO:this
 
-      const indexInRow = itemIndex % countTilesInRow;
+        const nextRow = Math.floor(
+          (itemIndex + countOfMissingTiles) / countTilesInRow
+        );
 
-      if (itemIndex == 0) {
-        bTop = this.elemRect.top - scrollTop;
-        bBottom = this.elemRect.top + itemHeight - scrollTop;
+        itemTop =
+          this.elemRect.top +
+          folderHeight * countRowsOfFolders +
+          fileHeight * (nextRow - countRowsOfFolders) -
+          scrollTop;
+
+        itemBottom =
+          this.elemRect.top +
+          folderHeight * countRowsOfFolders +
+          fileHeight * (nextRow - countRowsOfFolders) -
+          scrollTop +
+          fileHeight;
       } else {
-        bTop = this.elemRect.top + (itemHeight + marginTop) * index - scrollTop;
-        bBottom =
+        const rowIndex = Math.trunc(itemIndex / countTilesInRow);
+
+        itemTop =
+          this.elemRect.top + (itemHeight + marginTop) * rowIndex - scrollTop;
+        itemBottom =
           this.elemRect.top +
           itemHeight +
-          (itemHeight + marginTop) * index -
+          (itemHeight + marginTop) * rowIndex -
           scrollTop;
       }
 
-      if (indexInRow == 0) {
-        bLeft = this.elemRect.left;
-        bRight = this.elemRect.left + this.elemRect.width;
+      // Set left/right for item
+      let fileIndex = itemIndex % countTilesInRow;
+      if (itemType === "file") {
+        fileIndex = (itemIndex + countOfMissingTiles) % countTilesInRow;
+      }
+
+      if (fileIndex == 0) {
+        itemLeft = this.elemRect.left;
+        itemRight = this.elemRect.left + this.elemRect.width;
       } else {
-        bLeft =
-          this.elemRect.left + (this.elemRect.width + marginLeft) * indexInRow;
-        bRight =
+        itemLeft =
+          this.elemRect.left + (this.elemRect.width + marginLeft) * fileIndex;
+        itemRight =
           this.elemRect.left +
-          (this.elemRect.width + marginLeft) * indexInRow +
+          (this.elemRect.width + marginLeft) * fileIndex +
           this.elemRect.width;
       }
     } else {
       // Table/row view
 
       if (itemIndex == 0) {
-        bTop = this.elemRect.top + scrollTop;
-        bBottom = this.elemRect.top + itemHeight - scrollTop;
+        itemTop = this.elemRect.top + scrollTop;
+        itemBottom = this.elemRect.top + itemHeight - scrollTop;
       } else {
-        bTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
-        bBottom =
+        itemTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
+        itemBottom =
           this.elemRect.top + itemHeight + itemHeight * itemIndex - scrollTop;
       }
     }
 
     if (viewAs === "tile") {
-      return right > bLeft && left < bRight && bottom > bTop && top < bBottom;
+      return (
+        right > itemLeft &&
+        left < itemRight &&
+        bottom > itemTop &&
+        top < itemBottom
+      );
     } else {
-      return bottom > bTop && top < bBottom;
+      return bottom > itemTop && top < itemBottom;
     }
   };
 
@@ -160,25 +194,28 @@ class SelectionArea extends React.Component {
     const newSelected = [];
 
     const { selectableClass, onMove, viewAs } = this.props;
-    const selectables1 = document.getElementsByClassName(selectableClass);
+    const selectableItems = document.getElementsByClassName(selectableClass);
 
-    // console.log("updateElementSelection", selectables);
-    const selectables = [...selectables1, ...this.array];
+    const selectables = [...selectableItems, ...this.array];
 
     for (let i = 0; i < selectables.length; i++) {
       const node = selectables[i];
 
-      const itemIndex =
+      const splitItem =
         viewAs === "tile"
-          ? node.getAttribute("value").split("_")[4]
+          ? node.getAttribute("value").split("_")
           : node
               .getElementsByClassName("files-item")[0]
               .getAttribute("value")
-              .split("_")[4];
+              .split("_");
+
+      const itemType = splitItem[0];
+      const itemIndex = splitItem[4];
 
       // console.log("node", node);
       // console.log("node", node.getBoundingClientRect());
-      const isIntersects = this.isIntersects(itemIndex);
+
+      const isIntersects = this.isIntersects(+itemIndex, itemType);
 
       if (isIntersects) {
         if (!this.selectableNodes.has(node)) {
@@ -236,6 +273,7 @@ class SelectionArea extends React.Component {
       scrollClass,
       viewAs,
       itemsContainerClass,
+      isRooms,
     } = this.props;
 
     if (e.target.closest(".not-selectable")) return;
@@ -264,20 +302,27 @@ class SelectionArea extends React.Component {
 
     if (!itemsContainer) return;
 
-    this.elemRect.top =
-      scroll.scrollTop + itemsContainer[0].getBoundingClientRect().top;
+    const itemsContainerRect = itemsContainer[0].getBoundingClientRect();
 
-    this.elemRect.left =
-      scroll.scrollLeft + itemsContainer[0].getBoundingClientRect().left;
+    if (!isRooms && viewAs === "tile") {
+      const folderTitleHeight = 33; // TODO: fix
+
+      this.elemRect.top =
+        scroll.scrollTop + itemsContainerRect.top + folderTitleHeight;
+      this.elemRect.left =
+        scroll.scrollLeft + itemsContainerRect.left + folderTitleHeight;
+    } else {
+      this.elemRect.top = scroll.scrollTop + itemsContainerRect.top;
+      this.elemRect.left = scroll.scrollLeft + itemsContainerRect.left;
+    }
 
     if (viewAs === "tile") {
-      this.elemRect.width = itemsContainer[0]
+      const elemRect = itemsContainer[0]
         .getElementsByClassName(selectableClass)[0]
-        .getBoundingClientRect().width;
+        .getBoundingClientRect();
 
-      this.elemRect.height = itemsContainer[0]
-        .getElementsByClassName(selectableClass)[0]
-        .getBoundingClientRect().height;
+      this.elemRect.width = elemRect.width;
+      this.elemRect.height = elemRect.height;
     }
   };
 
@@ -308,8 +353,6 @@ class SelectionArea extends React.Component {
   onTapMove = (e) => {
     this.areaLocation.x2 = e.clientX;
     this.areaLocation.y2 = e.clientY;
-
-    // console.log("onTapMove");
 
     this.frame().next();
   };
@@ -348,6 +391,7 @@ class SelectionArea extends React.Component {
       this.props.selectableClass
     );
 
+    // TODO:
     if (!this.array.length) {
       this.array = selectables;
     } else {

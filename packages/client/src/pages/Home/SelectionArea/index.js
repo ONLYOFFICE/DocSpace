@@ -3,12 +3,16 @@ import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import SelectionAreaComponent from "@docspace/components/selection-area";
 
-const SelectionArea = ({
-  dragging,
-  viewAs,
-  setSelections,
-  getCountTilesInRow,
-}) => {
+const SelectionArea = (props) => {
+  const {
+    dragging,
+    viewAs,
+    setSelections,
+    getCountTilesInRow,
+    isRooms,
+    foldersLength,
+  } = props;
+
   if (isMobile || dragging) return <></>;
 
   const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
@@ -36,8 +40,11 @@ const SelectionArea = ({
   };
 
   const selectableClass = viewAs === "tile" ? "files-item" : "window-item";
-
   const itemHeight = viewAs === "table" ? 49 : viewAs === "row" ? 59 : null;
+
+  const countRowsOfFolders = Math.ceil(foldersLength / countTilesInRow);
+  const division = foldersLength % countTilesInRow;
+  const countOfMissingTiles = division ? countTilesInRow - division : 0;
 
   return (
     <SelectionAreaComponent
@@ -49,17 +56,31 @@ const SelectionArea = ({
       viewAs={viewAs}
       itemHeight={itemHeight}
       countTilesInRow={countTilesInRow}
+      isRooms={isRooms}
+      countRowsOfFolders={countRowsOfFolders}
+      countOfMissingTiles={countOfMissingTiles}
     />
   );
 };
 
-export default inject(({ filesStore }) => {
-  const { dragging, viewAs, setSelections, getCountTilesInRow } = filesStore;
+export default inject(({ filesStore, treeFoldersStore }) => {
+  const {
+    dragging,
+    viewAs,
+    setSelections,
+    getCountTilesInRow,
+    folders,
+  } = filesStore;
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
 
   return {
     dragging,
     viewAs,
     setSelections,
     getCountTilesInRow,
+    isRooms,
+    foldersLength: folders.length,
   };
 })(observer(SelectionArea));
