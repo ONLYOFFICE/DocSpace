@@ -81,7 +81,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     }
 
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
-    { 
+    {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.SharePoint))
         {
             yield break;
@@ -101,10 +101,10 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -390,9 +390,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
 
                 if (ProviderInfo.FolderId == oldId)
                 {
-                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newFolderId);
-                }
+                await DaoSelector.UpdateProviderFolderId(ProviderInfo, newFolderId);
             }
+        }
         }
 
         await UpdatePathInDBAsync(oldId, newFolderId);
@@ -441,5 +441,13 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
     {
         return Task.FromResult(2L * 1024L * 1024L * 1024L);
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return null;
     }
 }

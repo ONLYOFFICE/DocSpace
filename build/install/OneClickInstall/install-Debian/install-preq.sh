@@ -115,7 +115,7 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				nodejs \
 				gcc \
 				make \
-				dotnet-sdk-6.0 \
+				dotnet-sdk-7.0 \
 				mysql-server \
 				mysql-client \
 				postgresql \

@@ -92,6 +92,10 @@ const Wizard = (props) => {
     });
   };
 
+  const getUserTimezone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
+  };
+
   const fetchData = async () => {
     await axios
       .all([
@@ -99,13 +103,16 @@ const Wizard = (props) => {
         getMachineName(wizardToken),
         getIsRequiredLicense(),
         getPortalTimezones(wizardToken).then((data) => {
+          const userTimezone = getUserTimezone();
           const zones = mapTimezonesToArray(data);
-          const select = zones.filter((zone) => zone.key === timezone);
+          const select =
+            zones.filter((zone) => zone.key === userTimezone) ||
+            zones.filter((zone) => zone.key === timezone);
 
           setTimezones(zones);
           setSelectedTimezone({
-            key: select[0].key,
-            label: select[0].label,
+            key: select[0]?.key,
+            label: select[0]?.label,
           });
         }),
       ])
@@ -360,7 +367,7 @@ const Wizard = (props) => {
               size="content"
               showDisabledItems={true}
               dropDownMaxHeight={364}
-              manualWidth="250px"
+              manualWidth="350px"
               isDefaultMode={!isMobileOnly}
               withBlur={isMobileOnly}
               fillIcon={false}

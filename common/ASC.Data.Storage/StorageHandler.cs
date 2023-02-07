@@ -50,18 +50,17 @@ public class StorageHandler
 
     public Task Invoke(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
     {
-        if (_checkAuth && !securityContext.IsAuthenticated)
+        var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().Id, _module);
+        var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
+        var header = context.Request.Query[Constants.QueryHeader].FirstOrDefault() ?? "";
+        var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
+        var storageExpire = storage.GetExpire(_domain);
+
+        if (_checkAuth && !securityContext.IsAuthenticated && String.IsNullOrEmpty(auth))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return Task.CompletedTask;
         }
-
-        var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().Id, _module);
-        var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
-        var header = context.Request.Query[Constants.QueryHeader].FirstOrDefault() ?? "";
-
-        var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
-        var storageExpire = storage.GetExpire(_domain);
 
         if (storageExpire != TimeSpan.Zero && storageExpire != TimeSpan.MinValue && storageExpire != TimeSpan.MaxValue || !string.IsNullOrEmpty(auth))
         {

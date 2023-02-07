@@ -2300,6 +2300,8 @@ const Dark = {
       color: grayMaxLight,
       textColor: "#858585",
     },
+
+    animationColor: "rgba(82, 153, 224, 0.16)",
   },
 
   advancedSelector: {

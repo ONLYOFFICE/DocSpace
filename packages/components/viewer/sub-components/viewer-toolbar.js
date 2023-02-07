@@ -187,7 +187,7 @@ export default function ViewerToolbar(props) {
     toolbars = deleteToolbarFromKey(toolbars, ["scaleX", "scaleY"]);
   }
 
-  if (props.isPreviewFile) {
+  if (props.isPreviewFile || props.archiveRoom) {
     toolbars = deleteToolbarFromKey(toolbars, [
       "context-menu",
       "context-separator",

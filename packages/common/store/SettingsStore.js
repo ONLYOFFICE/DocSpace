@@ -210,6 +210,7 @@ class SettingsStore {
             : newSettings[key]
         );
         if (key === "culture") {
+          if (newSettings.wizardToken) return;
           const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
             setCookie(LANGUAGE, newSettings[key], {

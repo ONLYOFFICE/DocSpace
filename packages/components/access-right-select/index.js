@@ -84,7 +84,7 @@ const AccessRightSelect = ({
       onSelect={onSelectCurrentItem}
       options={[]}
       selectedOption={{
-        icon: currentItem.icon,
+        icon: currentItem?.icon,
         default: true,
         key: currentItem?.key,
         label: currentItem?.label,

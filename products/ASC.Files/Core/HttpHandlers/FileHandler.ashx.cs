@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System;
+
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -649,7 +651,18 @@ public class FileHandlerService
                         var header = context.Request.Headers[_fileUtility.SignatureHeader].FirstOrDefault();
                         if (string.IsNullOrEmpty(header) || !header.StartsWith("Bearer "))
                         {
-                            throw new Exception("Invalid header " + header);
+                            var requestHeaderTrace = String.Empty;
+
+                            foreach (var requestHeader in context.Request.Headers)
+                            {
+                                requestHeaderTrace += $"{requestHeader.Key}={requestHeader.Value}" + Environment.NewLine;
+                            }
+
+                            var exceptionMessage = $"Invalid signature header {_fileUtility.SignatureHeader} with value {header}." +
+                                                   $"Trace headers: {requestHeaderTrace}  ";
+
+
+                            throw new Exception(exceptionMessage);
                         }
 
                         header = header.Substring("Bearer ".Length);
@@ -1068,7 +1081,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await fileDao.GetThumbnailAsync(file, width, height))
+            using (var stream = await _globalStore.GetStore().GetReadStreamAsync(fileDao.GetUniqThumbnailPath(file, width, height)))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);

@@ -51,6 +51,7 @@ const ViewerBase = (props) => {
     onPrevClick,
     onMaskClick,
     isPreviewFile,
+    archiveRoom,
   } = props;
 
   const initialState = {
@@ -83,6 +84,8 @@ const ViewerBase = (props) => {
     };
   }
   const containerSize = React.useRef(setContainerWidthHeight());
+  const imageRef = React.useRef(null);
+
   const [isOpen, setIsOpen] = React.useState(false);
   const footerHeight = 0;
   function reducer(state, action) {
@@ -163,6 +166,9 @@ const ViewerBase = (props) => {
   });
 
   React.useEffect(() => {
+    //fix memory leak
+    if (!init.current) return;
+
     if (visible) {
       if (!props.container) {
         document.body.style.overflow = "hidden";
@@ -181,6 +187,9 @@ const ViewerBase = (props) => {
   }, [state.visible]);
 
   React.useEffect(() => {
+    //fix memory leak
+    if (!init.current) return;
+
     if (visible) {
       dispatch(
         createAction(ACTION_TYPES.setActiveIndex, {
@@ -207,9 +216,18 @@ const ViewerBase = (props) => {
     if (images.length > 0) {
       activeImage = images[currentActiveIndex];
     }
+
+    if (imageRef.current) {
+      //abort previous image request
+      imageRef.current.src = ""
+    }
+
+
     let loadComplete = false;
     let img = new Image();
+    imageRef.current = img
     img.src = activeImage.src;
+
     img.onload = () => {
       clearTimeout(timerId);
       if (!init.current) {
@@ -641,13 +659,12 @@ const ViewerBase = (props) => {
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
-          backgroundColor: `${
-            isMobileOnly
+          backgroundColor: `${isMobileOnly
               ? !displayVisible
                 ? "rgba(55,55,55,0.6)"
                 : "#000"
               : "rgba(55,55,55,0.6)"
-          }`,
+            }`,
         }}
       />
       <ViewerImage
@@ -709,6 +726,7 @@ const ViewerBase = (props) => {
                   percent={state.percent}
                   attribute={attribute}
                   isPreviewFile={isPreviewFile}
+                  archiveRoom={archiveRoom}
                   setIsOpenContextMenu={props.setIsOpenContextMenu}
                   zoomable={zoomable}
                   rotatable={rotatable}

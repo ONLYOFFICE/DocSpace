@@ -99,20 +99,22 @@ const SimpleUserRow = (props) => {
     contextOptionsProps,
     checkedProps,
     onContentRowSelect,
+    onContentRowClick,
     element,
-    setBufferSelection,
+    //setBufferSelection,
     isActive,
-    isSeveralSelection,
+    //isSeveralSelection,
   } = props;
 
   const isChecked = checkedProps.checked;
 
-  const userContextClick = React.useCallback(() => {
-    if (isSeveralSelection && isChecked) {
-      return;
-    }
-    setBufferSelection(item);
-  }, [isChecked, isSeveralSelection, item, setBufferSelection]);
+  const onRowClick = React.useCallback(() => {
+    onContentRowClick && onContentRowClick(!isChecked, item);
+  }, [isChecked, item, onContentRowClick]);
+
+  const onRowContextClick = React.useCallback(() => {
+    onContentRowClick && onContentRowClick(!isChecked, item, false);
+  }, [isChecked, item, onContentRowClick]);
 
   return (
     <StyledWrapper
@@ -130,7 +132,8 @@ const SimpleUserRow = (props) => {
           sectionWidth={sectionWidth}
           mode={"modern"}
           className={"user-row"}
-          rowContextClick={userContextClick}
+          onRowClick={onRowClick}
+          rowContextClick={onRowContextClick}
         >
           <UserContent {...props} />
         </StyledSimpleUserRow>

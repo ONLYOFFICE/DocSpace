@@ -654,7 +654,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 
         uploadSession.BytesUploaded += chunkLength;
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }

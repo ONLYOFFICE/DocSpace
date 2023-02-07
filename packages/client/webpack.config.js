@@ -4,18 +4,25 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
+
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
+const fs = require("fs");
+const { readdir } = require("fs").promises;
 
 const path = require("path");
+
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
+
+const isAlreadyBuilding = false;
 
 const config = {
   entry: "./src/index",
@@ -98,7 +105,7 @@ const config = {
 
       folder += result.length === 0 ? "" : "/";
 
-      return `${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+      return `static/${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
     },
   },
 
@@ -109,84 +116,50 @@ const config = {
 
   module: {
     rules: [
-      // {
-      //   test: /\.html$/i,
-      //   loader: "html-loader",
-      //   options: {
-      //     // Disables attributes processing
-      //     // sources: true,
-
-      //     sources: {
-      //       list: [
-      //         // All default supported tags and attributes
-      //         "...",
-      //         {
-      //           tag: "link",
-      //           attribute: "href",
-      //           type: "src",
-      //           filter: (tag, attribute, attributes, resourcePath) => {
-      //             // The `tag` argument contains a name of the HTML tag.
-      //             // The `attribute` argument contains a name of the HTML attribute.
-      //             // The `attributes` argument contains all attributes of the tag.
-      //             // The `resourcePath` argument contains a path to the loaded HTML file.
-
-      //             const relValue = attributes.find((a) => a.name === "rel")
-      //               .value;
-
-      //             if (
-      //               relValue === "shortcut icon" ||
-      //               relValue === "manifest" ||
-      //               relValue === "apple-touch-icon" ||
-      //               relValue === "android-touch-icon"
-      //             ) {
-      //               return true;
-      //             }
-
-      //             if (/my-html\.html$/.test(resourcePath)) {
-      //               return false;
-      //             }
-
-      //             if (!/stylesheet/i.test(attributes.rel)) {
-      //               return false;
-      //             }
-
-      //             if (
-      //               attributes.type &&
-      //               attributes.type.trim().toLowerCase() !== "text/css"
-      //             ) {
-      //               return false;
-      //             }
-
-      //             return true;
-      //           },
-      //         },
-      //       ],
-      //       urlFilter: (attribute, value, resourcePath) => {
-      //         // The `attribute` argument contains a name of the HTML attribute.
-      //         // The `value` argument contains a value of the HTML attribute.
-      //         // The `resourcePath` argument contains a path to the loaded HTML file.
-
-      //         if (
-      //           // /manifest\.json$/.test(value) ||
-      //           /favicon\.ico$/.test(value) ||
-      //           /appIcon-180\.png$/.test(value)
-      //         ) {
-      //           return true;
-      //         }
-
-      //         return false;
-      //       },
-      //     },
-      //   },
-      // },
       {
-        test: /\.(png|jpe?g|gif|ico)$/i,
+        test: /\.(png|jpe?g|gif|ico|woff2)$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
         resourceQuery: /url/, // *.svg?url
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: { not: [/url/] }, // exclude if *.json?url,
+        loader: "json-loader",
       },
       {
         test: /\.svg$/i,
@@ -210,7 +183,6 @@ const config = {
           fullySpecified: false,
         },
       },
-      { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
@@ -377,8 +349,6 @@ module.exports = (env, argv) => {
         publicPath: homepage,
         title: title,
         base: `${homepage}/`,
-        favicon: "../../public/favicon.ico",
-        hash: true,
       })
     );
   }

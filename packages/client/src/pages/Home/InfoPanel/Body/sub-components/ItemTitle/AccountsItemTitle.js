@@ -7,7 +7,6 @@ import { Avatar, ContextMenuButton } from "@docspace/components";
 import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges";
 import { StyledAccountsItemTitle } from "../../styles/accounts";
 import { StyledTitle } from "../../styles/common";
-import ItemContextOptions from "./ItemContextOptions";
 
 const AccountsItemTitle = ({
   t,

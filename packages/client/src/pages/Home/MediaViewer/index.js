@@ -28,6 +28,7 @@ const FilesMediaViewer = (props) => {
     setCurrentId,
     setBufferSelection,
     isFavoritesFolder,
+    archiveRoomsId,
     onClickFavorite,
     onShowInfoPanel,
     onClickDownload,
@@ -40,6 +41,10 @@ const FilesMediaViewer = (props) => {
     onDuplicate,
     extsImagePreviewed,
     extsMediaPreviewed,
+    setIsPreview,
+    isPreview,
+    resetUrl,
+    firstLoad,
   } = props;
 
   useEffect(() => {
@@ -50,6 +55,16 @@ const FilesMediaViewer = (props) => {
       onMediaFileClick(+previewId);
     }
   }, [removeQuery, onMediaFileClick]);
+
+  useEffect(() => {
+    if (previewFile) {
+      // fetch file after preview with
+      fetchFiles(previewFile.folderId).finally(() => {
+        setIsLoading(false);
+        setFirstLoad(false);
+      });
+    }
+  }, [previewFile]);
 
   useEffect(() => {
     window.addEventListener("popstate", onButtonBackHandler);
@@ -120,18 +135,25 @@ const FilesMediaViewer = (props) => {
   };
 
   const onMediaViewerClose = (e) => {
-    if (previewFile) {
-      setIsLoading(true);
-      setFirstLoad(true);
-
-      fetchFiles(previewFile.folderId).finally(() => {
-        setIsLoading(false);
-        setFirstLoad(false);
-        setScrollToItem({ id: previewFile.id, type: "file" });
-        setBufferSelection(previewFile);
-        setToPreviewFile(null);
-      });
+    if (isPreview) {
+      setIsPreview(false);
+      resetUrl();
+      setScrollToItem({ id: previewFile.id, type: "file" });
+      setBufferSelection(previewFile);
+      setToPreviewFile(null);
     }
+    // if (previewFile) {
+    //   setIsLoading(true);
+    //   setFirstLoad(true);
+
+    //   fetchFiles(previewFile.folderId).finally(() => {
+    //     setIsLoading(false);
+    //     setFirstLoad(false);
+    //     setScrollToItem({ id: previewFile.id, type: "file" });
+    //     setBufferSelection(previewFile);
+    //     setToPreviewFile(null);
+    //   });
+    // }
 
     setMediaViewerData({ visible: false, id: null });
 
@@ -163,6 +185,7 @@ const FilesMediaViewer = (props) => {
         onDownload={onDownloadMediaFile}
         onClickFavorite={onClickFavorite}
         setBufferSelection={setBufferSelection}
+        archiveRoomsId={archiveRoomsId}
         files={files}
         onClickDownload={onClickDownload}
         onShowInfoPanel={onShowInfoPanel}
@@ -179,7 +202,8 @@ const FilesMediaViewer = (props) => {
         extsMediaPreviewed={extsMediaPreviewed}
         extsImagePreviewed={extsImagePreviewed}
         errorLabel={t("Translations:MediaLoadError")}
-        isPreviewFile={!!previewFile}
+        isPreviewFile={firstLoad}
+        previewFile={previewFile}
         onChangeUrl={onChangeUrl}
         isFavoritesFolder={isFavoritesFolder}
       />
@@ -202,9 +226,13 @@ export default inject(
       userAccess,
       fetchFiles,
       setIsLoading,
+      firstLoad,
       setFirstLoad,
       setScrollToItem,
       setBufferSelection,
+      setIsPreview,
+      isPreview,
+      resetUrl,
     } = filesStore;
     const {
       visible,
@@ -217,7 +245,7 @@ export default inject(
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
-    const { isFavoritesFolder } = treeFoldersStore;
+    const { isFavoritesFolder, archiveRoomsId } = treeFoldersStore;
 
     const {
       onClickFavorite,
@@ -246,8 +274,12 @@ export default inject(
       fetchFiles,
       previewFile,
       setIsLoading,
+      firstLoad,
       setFirstLoad,
       setToPreviewFile,
+      setIsPreview,
+      resetUrl,
+      isPreview,
       setScrollToItem,
       setCurrentId,
       setBufferSelection,
@@ -262,6 +294,7 @@ export default inject(
       getIcon,
       onCopyAction,
       onDuplicate,
+      archiveRoomsId,
     };
   }
 )(

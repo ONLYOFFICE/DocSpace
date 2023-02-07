@@ -515,6 +515,10 @@ class UploadDataStore {
           }
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
+
+          if (file.fileInfo.version > 2) {
+            this.filesStore.setUploadedFileIdWithVersion(file.fileInfo.id);
+          }
         }
       }
 
@@ -755,7 +759,6 @@ class UploadDataStore {
     path,
     t
   ) => {
-    this.filesStore.setOperationAction(true);
     const length = requestsDataArray.length;
     for (let index = 0; index < length; index++) {
       if (
@@ -806,6 +809,11 @@ class UploadDataStore {
           this.files[indexOfFile].fileInfo = fileInfo;
           this.percent = newPercent;
         });
+
+        if (fileInfo.version > 2) {
+          this.filesStore.setUploadedFileIdWithVersion(fileInfo.id);
+        }
+
         //setUploadData(uploadData);
       }
     }

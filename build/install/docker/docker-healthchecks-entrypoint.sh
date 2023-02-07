@@ -39,8 +39,8 @@ sed -i "s!localhost:5007!${FILES_HOST}!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!localhost:5009!${FILES_SERVICES_HOST}!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!localhost:5005!${NOTIFY_HOST}!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!localhost:5004!${PEOPLE_SERVER_HOST}!g" ${PATH_TO_CONF}/appsettings.json
-sed -i "s!localhost:5006!${API_HOST}!g" ${PATH_TO_CONF}/appsettings.json
-sed -i "s!localhost:5000!${STUDIO_NOTIFY_HOST}!g" ${PATH_TO_CONF}/appsettings.json
+sed -i "s!localhost:5000!${API_HOST}!g" ${PATH_TO_CONF}/appsettings.json
+sed -i "s!localhost:5006!${STUDIO_NOTIFY_HOST}!g" ${PATH_TO_CONF}/appsettings.json
 sed -i "s!localhost:5003!${STUDIO_HOST}!g" ${PATH_TO_CONF}/appsettings.json
      
 dotnet ${RUN_DLL} --urls=${URLS} 

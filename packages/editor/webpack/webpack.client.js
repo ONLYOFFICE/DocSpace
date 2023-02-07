@@ -10,6 +10,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const minifyJson = require("@docspace/common/utils/minifyJson");
 
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
+
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 const baseConfig = require("./webpack.base.js");
 
@@ -44,7 +46,7 @@ const clientConfig = {
 
       folder += result.length === 0 ? "" : "/";
 
-      return `${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
+      return `static/${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
     },
   },
 
@@ -55,6 +57,32 @@ const clientConfig = {
 
   module: {
     rules: [
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.s[ac]ss$/i,
         use: [
