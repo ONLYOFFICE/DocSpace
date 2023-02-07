@@ -48,6 +48,8 @@ RABBIT_HOST = os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else "only
 RABBIT_USER_NAME = os.environ["RABBIT_USER_NAME"] if environ.get("RABBIT_USER_NAME") else "guest"
 RABBIT_PASSWORD = os.environ["RABBIT_PASSWORD"] if environ.get("RABBIT_PASSWORD") else "guest"
 RABBIT_PORT =  os.environ["RABBIT_PORT"] if environ.get("RABBIT_PORT") else "5672"
+RABBIT_VIRTUAL_HOST = os.environ["RABBIT_VIRTUAL_HOST"] if environ.get("RABBIT_VIRTUAL_HOST") else "/"
+RABBIT_URI = {"Uri": os.environ["RABBIT_URI"]} if environ.get("RABBIT_URI") else None
 
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
@@ -168,6 +170,8 @@ updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_HOST)
 updateJsonData(jsonData,"$.RabbitMQ.UserName", RABBIT_USER_NAME)
 updateJsonData(jsonData, "$.RabbitMQ.Password", RABBIT_PASSWORD)
 updateJsonData(jsonData, "$.RabbitMQ.Port", RABBIT_PORT)
+updateJsonData(jsonData, "$.RabbitMQ.VirtualHost", RABBIT_VIRTUAL_HOST)
+jsonData["RabbitMQ"].update(RABBIT_URI) if RABBIT_URI is not None else None
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
