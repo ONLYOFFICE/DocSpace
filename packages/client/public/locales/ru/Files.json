@@ -89,6 +89,8 @@
   "RoomCreated": "Комната создана",
   "RoomEmptyContainerDescription": "Пожалуйста, создайте первую комнату.",
   "RoomEmptyContainerDescriptionUser": "Комнаты, которыми с вами поделились, будут отображаться здесь.",
+  "RoomNotificationsDisabled": "Уведомления комнаты отключены",
+  "RoomNotificationsEnabled": "Уведомления комнаты включены",
   "RoomPinned": "Комната закреплена",
   "RoomRemoved": "Комната удалена",
   "RoomUnpinned": "Комната откреплена",

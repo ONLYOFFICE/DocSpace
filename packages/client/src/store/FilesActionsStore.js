@@ -936,7 +936,7 @@ class FilesActionStore {
     }
   };
 
-  setMuteAction = (action, item) => {
+  setMuteAction = (action, item, t) => {
     const { id, new: newCount, rootFolderId } = item;
     const { treeFolders } = this.treeFoldersStore;
 
@@ -960,7 +960,7 @@ class FilesActionStore {
 
             this.treeFoldersStore.fetchTreeFolders();
           })
-          .then(() => toastr.success("MUTE"));
+          .then(() => toastr.success(t("RoomNotificationsDisabled")));
       case "unmute":
         return muteRoomNotification(id, false)
           .then(() => {
@@ -979,7 +979,7 @@ class FilesActionStore {
 
             this.treeFoldersStore.fetchTreeFolders();
           })
-          .then(() => toastr.success("UNMUTE"));
+          .then(() => toastr.success(t("RoomNotificationsEnabled")));
     }
   };
 
