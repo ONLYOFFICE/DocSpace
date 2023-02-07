@@ -13,9 +13,9 @@ ONLYOFFICE DocSpace is a document hub where you can connect users and documents 
 
 ## Technology stack
 
-Backend: С# 9.0, .NET 5.0/.NET Core/ASP.NET Core/MySQL 8.0/Kafka/ElasticSearch
+Backend: С# 11.0, .NET 7.0/.NET Core/ASP.NET Core/MySQL 8.0/Kafka/ElasticSearch
 
-Frontend: ES6, CSS/SAAS, React, Mobx, Styled-Components, i18next, Webpack 4/5
+Frontend: ES6, TypeScript, React, Mobx, Styled-Components, CSS/SAAS, i18next, Webpack 5
 
 ## Licensing 
 
