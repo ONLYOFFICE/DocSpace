@@ -51,11 +51,6 @@ internal class SharpBoxDaoSelector : RegexDaoSelectorBase<SharpBoxProviderInfo>,
     {
         return base.GetTagDao<SharpBoxTagDao>(id);
     }
-
-    public ISecurityDao<string> GetSecurityDao(string id)
-    {
-        return base.GetSecurityDao<SharpBoxSecurityDao>(id);
-    }
 }
 
 public static class SharpBoxDaoSelectorExtension
@@ -65,6 +60,5 @@ public static class SharpBoxDaoSelectorExtension
         services.TryAdd<SharpBoxFileDao>();
         services.TryAdd<SharpBoxFolderDao>();
         services.TryAdd<SharpBoxTagDao>();
-        services.TryAdd<SharpBoxSecurityDao>();
     }
 }

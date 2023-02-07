@@ -88,11 +88,6 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
         return id != null && Selector.IsMatch(id);
     }
 
-    public virtual ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>
-    {
-        return GetDao<T1>(id);
-    }
-
     public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>
     {
         return GetDao<T1>(id);

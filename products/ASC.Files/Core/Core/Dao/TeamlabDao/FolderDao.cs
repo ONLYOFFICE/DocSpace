@@ -44,7 +44,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly FactoryIndexerFolder _factoryIndexer;
     private readonly GlobalSpace _globalSpace;
     private readonly IDaoFactory _daoFactory;
-    private readonly ProviderFolderDao _providerFolderDao;
+    private readonly SelectorFactory _selectorFactory;
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
     private readonly GlobalStore _globalStore;
@@ -65,7 +65,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         ICache cache,
         GlobalSpace globalSpace,
         IDaoFactory daoFactory,
-        ProviderFolderDao providerFolderDao,
+        SelectorFactory selectorFactory,
         CrossDao crossDao,
         IMapper mapper,
         GlobalStore globalStore)
@@ -86,7 +86,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _factoryIndexer = factoryIndexer;
         _globalSpace = globalSpace;
         _daoFactory = daoFactory;
-        _providerFolderDao = providerFolderDao;
+        _selectorFactory = selectorFactory;
         _crossDao = crossDao;
         _mapper = mapper;
         _globalStore = globalStore;
@@ -716,7 +716,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<string> MoveFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
             folderId, this, _daoFactory.GetFileDao<int>(), r => r,
@@ -769,7 +769,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async Task<Folder<string>> CopyFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
             folderId, this, _daoFactory.GetFileDao<int>(), r => r,

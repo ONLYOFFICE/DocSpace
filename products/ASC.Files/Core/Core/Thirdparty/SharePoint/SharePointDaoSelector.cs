@@ -52,11 +52,6 @@ internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderIn
         return base.GetTagDao<SharePointTagDao>(id);
     }
 
-    public ISecurityDao<string> GetSecurityDao(string id)
-    {
-        return base.GetSecurityDao<SharePointSecurityDao>(id);
-    }
-
     public override string ConvertId(string id)
     {
         if (id != null)
@@ -81,6 +76,5 @@ public static class SharePointDaoSelectorExtension
         services.TryAdd<SharePointFileDao>();
         services.TryAdd<SharePointFolderDao>();
         services.TryAdd<SharePointTagDao>();
-        services.TryAdd<SharePointSecurityDao>();
     }
 }

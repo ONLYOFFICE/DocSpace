@@ -24,25 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.ProviderDao;
+
 namespace ASC.Files.Thirdparty.ProviderDao;
 
-internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
+internal abstract class ProviderDaoBase : ThirdPartyProviderDao
 {
-    private List<IDaoSelector> _selectors;
-    private List<IDaoSelector> Selectors
-    {
-        get => _selectors ??= new List<IDaoSelector>
-        {
-            //Fill in selectors  
-            _serviceProvider.GetService<SharpBoxDaoSelector>(),
-            _serviceProvider.GetService<SharePointDaoSelector>(),
-            _serviceProvider.GetService<GoogleDriveDaoSelector>(),
-            _serviceProvider.GetService<BoxDaoSelector>(),
-            _serviceProvider.GetService<DropboxDaoSelector>(),
-            _serviceProvider.GetService<OneDriveDaoSelector>()
-        };
-    }
-
     private int _tenantID;
     private int TenantID
     {
@@ -57,22 +44,25 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
         }
     }
 
+    protected readonly IServiceProvider _serviceProvider;
+    protected readonly TenantManager _tenantManager;
+    protected readonly CrossDao _crossDao;
+    protected readonly SelectorFactory _selectorFactory;
+    protected readonly ISecurityDao<string> _securityDao;
+
     public ProviderDaoBase(
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
-        SecurityDao<string> securityDao,
-        CrossDao crossDao)
+        CrossDao crossDao,
+        SelectorFactory selectorFactory,
+        ISecurityDao<string> securityDao)
     {
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
-        _securityDao = securityDao;
         _crossDao = crossDao;
+        _selectorFactory = selectorFactory;
+        _securityDao = securityDao;
     }
-
-    protected readonly IServiceProvider _serviceProvider;
-    protected readonly TenantManager _tenantManager;
-    protected readonly SecurityDao<string> _securityDao;
-    protected readonly CrossDao _crossDao;
 
     protected bool IsCrossDao(string id1, string id2)
     {
@@ -81,12 +71,52 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
             return false;
         }
 
-        return !Equals(GetSelector(id1).GetIdCode(id1), GetSelector(id2).GetIdCode(id2));
+        return !Equals(_selectorFactory.GetSelector(id1).GetIdCode(id1), _selectorFactory.GetSelector(id2).GetIdCode(id2));
     }
 
-    public IDaoSelector GetSelector(string id)
+    protected internal Task<File<string>> PerformCrossDaoFileCopyAsync(string fromFileId, string toFolderId, bool deleteSourceFile)
     {
-        return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
+        var fromSelector = _selectorFactory.GetSelector(fromFileId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
+
+        return _crossDao.PerformCrossDaoFileCopyAsync(
+            fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
+            toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
+            deleteSourceFile);
+    }
+
+    protected async Task<File<int>> PerformCrossDaoFileCopyAsync(string fromFileId, int toFolderId, bool deleteSourceFile)
+    {
+        var fromSelector = _selectorFactory.GetSelector(fromFileId);
+        using var scope = _serviceProvider.CreateScope();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(TenantID);
+
+        return await _crossDao.PerformCrossDaoFileCopyAsync(
+            fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
+            toFolderId, scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
+            deleteSourceFile);
+    }
+
+    protected Task<Folder<string>> PerformCrossDaoFolderCopyAsync(string fromFolderId, string toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
+    {
+        var fromSelector = _selectorFactory.GetSelector(fromFolderId);
+        var toSelector = _selectorFactory.GetSelector(toRootFolderId);
+
+        return _crossDao.PerformCrossDaoFolderCopyAsync(
+            fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
+            toRootFolderId, toSelector.GetFolderDao(toRootFolderId), toSelector.GetFileDao(toRootFolderId), toSelector.ConvertId,
+            deleteSourceFolder, cancellationToken);
+    }
+
+    protected Task<Folder<int>> PerformCrossDaoFolderCopyAsync(string fromFolderId, int toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
+    {
+        var fromSelector = _selectorFactory.GetSelector(fromFolderId);
+
+        return _crossDao.PerformCrossDaoFolderCopyAsync(
+            fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
+            toRootFolderId, _serviceProvider.GetService<IFolderDao<int>>(), _serviceProvider.GetService<IFileDao<int>>(), r => r,
+            deleteSourceFolder, cancellationToken);
     }
 
     protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
@@ -104,64 +134,6 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
             {
                 firstEntry.Shared = true;
             }
-        }
-    }
-
-    protected IEnumerable<IDaoSelector> GetSelectors()
-    {
-        return Selectors;
-    }
-
-    protected internal Task<File<string>> PerformCrossDaoFileCopyAsync(string fromFileId, string toFolderId, bool deleteSourceFile)
-    {
-        var fromSelector = GetSelector(fromFileId);
-        var toSelector = GetSelector(toFolderId);
-
-        return _crossDao.PerformCrossDaoFileCopyAsync(
-            fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
-            toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
-            deleteSourceFile);
-    }
-
-    protected async Task<File<int>> PerformCrossDaoFileCopyAsync(string fromFileId, int toFolderId, bool deleteSourceFile)
-    {
-        var fromSelector = GetSelector(fromFileId);
-        using var scope = _serviceProvider.CreateScope();
-        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        tenantManager.SetCurrentTenant(TenantID);
-
-        return await _crossDao.PerformCrossDaoFileCopyAsync(
-            fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
-            toFolderId, scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
-            deleteSourceFile);
-    }
-
-    protected Task<Folder<string>> PerformCrossDaoFolderCopyAsync(string fromFolderId, string toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
-    {
-        var fromSelector = GetSelector(fromFolderId);
-        var toSelector = GetSelector(toRootFolderId);
-
-        return _crossDao.PerformCrossDaoFolderCopyAsync(
-            fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-            toRootFolderId, toSelector.GetFolderDao(toRootFolderId), toSelector.GetFileDao(toRootFolderId), toSelector.ConvertId,
-            deleteSourceFolder, cancellationToken);
-    }
-
-    protected Task<Folder<int>> PerformCrossDaoFolderCopyAsync(string fromFolderId, int toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
-    {
-        var fromSelector = GetSelector(fromFolderId);
-
-        return _crossDao.PerformCrossDaoFolderCopyAsync(
-            fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-            toRootFolderId, _serviceProvider.GetService<IFolderDao<int>>(), _serviceProvider.GetService<IFileDao<int>>(), r => r,
-            deleteSourceFolder, cancellationToken);
-    }
-
-    public void Dispose()
-    {
-        if (_selectors != null)
-        {
-            _selectors.ForEach(r => r.Dispose());
         }
     }
 }

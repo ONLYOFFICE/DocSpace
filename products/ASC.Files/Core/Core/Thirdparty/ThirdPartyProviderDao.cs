@@ -491,50 +491,6 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected abstract string MakeId(string path = null);
 
-
-    #region SecurityDao
-    public Task SetShareAsync(FileShareRecord r)
-    {
-        return Task.CompletedTask;
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
-    {
-        return AsyncEnumerable.Empty<FileShareRecord>();
-    }
-
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
-    {
-        return null;
-    }
-
-    public Task RemoveSubjectAsync(Guid subject)
-    {
-        return Task.CompletedTask;
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
-    {
-        return null;
-    }
-
-    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(FileEntry<string> entry)
-    {
-        return null;
-    }
-
-    public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
-    {
-        return null;
-    }
-
-    #endregion
-
     #region TagDao
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)

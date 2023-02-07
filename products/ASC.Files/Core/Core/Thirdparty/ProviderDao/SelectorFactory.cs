@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,24 +24,49 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Thirdparty;
+namespace ASC.Files.Core.Core.Thirdparty.ProviderDao;
 
-internal interface IDaoSelector : IDisposable
+[Scope]
+internal class SelectorFactory : IDisposable
 {
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao(string id);
-    IFolderDao<string> GetFolderDao(string id);
-    IThirdPartyTagDao GetTagDao(string id);
-    string ConvertId(string id);
-    string GetIdCode(string id);
-}
+    private List<IDaoSelector> _selectors;
+    private List<IDaoSelector> Selectors
+    {
+        get => _selectors ??= new List<IDaoSelector>
+        {
+            //Fill in selectors  
+            _serviceProvider.GetService<SharpBoxDaoSelector>(),
+            _serviceProvider.GetService<SharePointDaoSelector>(),
+            _serviceProvider.GetService<GoogleDriveDaoSelector>(),
+            _serviceProvider.GetService<BoxDaoSelector>(),
+            _serviceProvider.GetService<DropboxDaoSelector>(),
+            _serviceProvider.GetService<OneDriveDaoSelector>()
+        };
+    }
 
-internal interface IDaoSelector<T> where T : class, IProviderInfo
-{
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>;
-    IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>;
-    IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao;
-    string ConvertId(string id);
-    string GetIdCode(string id);
+    private readonly IServiceProvider _serviceProvider;
+
+    public SelectorFactory(
+        IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public IDaoSelector GetSelector(string id)
+    {
+        return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
+    }
+
+    public IEnumerable<IDaoSelector> GetSelectors()
+    {
+        return Selectors;
+    }
+
+    public void Dispose()
+    {
+        if (_selectors != null)
+        {
+            _selectors.ForEach(r => r.Dispose());
+        }
+    }
 }

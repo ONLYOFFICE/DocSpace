@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.ProviderDao;
+
 namespace ASC.Files.Thirdparty.ProviderDao;
 
 [Scope]
@@ -32,15 +34,16 @@ internal class ProviderTagDao : ProviderDaoBase, IThirdPartyTagDao
     public ProviderTagDao(
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
-        SecurityDao<string> securityDao,
-        CrossDao crossDao)
-        : base(serviceProvider, tenantManager, securityDao, crossDao)
+        CrossDao crossDao,
+        SelectorFactory selectorFactory,
+        ISecurityDao<string> securityDao)
+        : base(serviceProvider, tenantManager, crossDao, selectorFactory, securityDao)
     {
     }
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        return GetSelector(parentFolder.Id)
+        return _selectorFactory.GetSelector(parentFolder.Id)
             .GetTagDao(parentFolder.Id)
             .GetNewTagsAsync(subject, parentFolder, deepSearch);
     }

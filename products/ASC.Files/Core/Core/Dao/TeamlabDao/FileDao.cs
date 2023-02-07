@@ -40,7 +40,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly Global _global;
     private readonly IDaoFactory _daoFactory;
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
-    private readonly ProviderFolderDao _providerFolderDao;
+    private readonly SelectorFactory _selectorFactory;
     private readonly CrossDao _crossDao;
     private readonly Settings _settings;
     private readonly IMapper _mapper;
@@ -68,7 +68,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Global global,
         IDaoFactory daoFactory,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-        ProviderFolderDao providerFolderDao,
+        SelectorFactory selectorFactory,
         CrossDao crossDao,
         Settings settings,
         IMapper mapper,
@@ -96,7 +96,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _global = global;
         _daoFactory = daoFactory;
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
-        _providerFolderDao = providerFolderDao;
+        _selectorFactory = selectorFactory;
         _crossDao = crossDao;
         _settings = settings;
         _mapper = mapper;
@@ -938,7 +938,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<string> MoveFileAsync(int fileId, string toFolderId)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, r => r,
@@ -1001,7 +1001,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<File<string>> CopyFileAsync(int fileId, string toFolderId)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, r => r,
