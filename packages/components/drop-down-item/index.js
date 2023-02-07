@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
+import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
+
 import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
 import { isNull } from "lodash";
 
@@ -40,7 +42,7 @@ const DropDownItem = (props) => {
       {icon && (
         <IconWrapper className="drop-down-icon">
           {!withoutIcon ? (
-            icon.includes("https://") || icon.includes("http://") ? (
+            !icon.includes("images/") ? (
               <img src={icon} />
             ) : (
               <ReactSVG
@@ -57,7 +59,7 @@ const DropDownItem = (props) => {
       {isSubMenu && (
         <IconWrapper className="submenu-arrow">
           <ReactSVG
-            src="/static/images/right.arrow.react.svg"
+            src={RightArrowReactSvgUrl}
             className="drop-down-item_icon"
           />
         </IconWrapper>

@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Adăugare Șef de Departament",
-  "CustomNewDepartment": "{{groupCaption}} (creare)",
-  "GroupAction": "Acțiune de grup",
-  "SearchAddedMembers": "Căutare după membrii adăugați",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' a fost salvat cu succes"
-}

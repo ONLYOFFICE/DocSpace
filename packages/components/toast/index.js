@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { cssTransition } from "react-toastify";
 
 import PropTypes from "prop-types";
 import StyledToastContainer from "./styled-toast";
+import { isMobileOnly } from "react-device-detect";
 
 const Slide = cssTransition({
   enter: "SlideIn",
@@ -10,6 +11,8 @@ const Slide = cssTransition({
 });
 
 const Toast = (props) => {
+  const [offset, setOffset] = useState(0);
+
   const onToastClick = () => {
     let documentElement = document.getElementsByClassName("Toastify__toast");
     if (documentElement.length > 1)
@@ -18,6 +21,22 @@ const Toast = (props) => {
           documentElement[i].style.setProperty("position", "static");
       }
   };
+
+  const onResize = useCallback((event) => {
+    const topOffset = event.target.innerHeight - window.visualViewport.height;
+
+    setOffset(topOffset);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileOnly) {
+      window.addEventListener("resize", onResize);
+    }
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   return (
     <StyledToastContainer
@@ -32,6 +51,7 @@ const Toast = (props) => {
       style={props.style}
       transition={Slide}
       onClick={onToastClick}
+      $topOffset={offset}
     />
   );
 };

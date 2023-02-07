@@ -1,5 +1,7 @@
 import globalColors from "../utils/globalColors";
 
+import AvatarDarkReactSvgUrl from "PUBLIC_DIR/images/avatar.dark.react.svg?url";
+
 const {
   black,
   white,
@@ -448,6 +450,8 @@ const Dark = {
     pressedFillColor: black,
 
     focusColor: "#858585",
+
+    errorColor: "#E06451",
   },
 
   // slider: {
@@ -780,7 +784,7 @@ const Dark = {
   },
   textInput: {
     fontWeight: "normal",
-    placeholderColor: "#474747",
+    placeholderColor: "rgba(255, 255, 255, 0.2)",
     disablePlaceholderColor: "#6c6c6c",
 
     transition: "all 0.2s ease 0s",
@@ -812,7 +816,7 @@ const Dark = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px",
+      large: "11px 12px",
     },
   },
 
@@ -1010,7 +1014,7 @@ const Dark = {
   },
 
   avatar: {
-    defaultImage: `url("/static/images/avatar.dark.react.svg")`,
+    defaultImage: `url("${AvatarDarkReactSvgUrl}")`,
     initialsContainer: {
       color: white,
       left: "50%",
@@ -2078,6 +2082,7 @@ const Dark = {
     details: {
       customLogoBorderColor: "#474747",
       commentEditorIconColor: "#eee",
+      tagBackground: "#242424",
     },
 
     gallery: {
@@ -2295,6 +2300,8 @@ const Dark = {
       color: grayMaxLight,
       textColor: "#858585",
     },
+
+    animationColor: "rgba(82, 153, 224, 0.16)",
   },
 
   advancedSelector: {
@@ -2939,6 +2946,9 @@ const Dark = {
           departmentColor: "#858585",
           tooltipColor: "#F5E9BA",
         },
+        auditTrail: {
+          downloadReportDescriptionColor: "#858585",
+        },
       },
 
       common: {
@@ -3012,6 +3022,7 @@ const Dark = {
 
     wizard: {
       linkColor: "#E06A1B",
+      generatePasswordColor: "#a9a9a9",
     },
   },
 
@@ -3031,6 +3042,7 @@ const Dark = {
 
   errorContainer: {
     background: black,
+    bodyText: "#858585",
   },
 
   editor: {
@@ -3089,6 +3101,8 @@ const Dark = {
     backgroundColor: "#282828",
     colorPercentSmall: "#FFFFFF",
     colorPercentBig: "#333333",
+    errorTextColor: "#E06451",
+    descriptionTextColor: "#858585",
   },
 
   codeInput: {

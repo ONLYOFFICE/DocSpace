@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
@@ -13,6 +13,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
+import CursorPalmReactSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 import { classNames } from "@docspace/components/utils/classNames";
 const checkedStyle = css`
   background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
@@ -53,7 +54,7 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    "url(/static/images/cursor.palm.react.svg), auto"};
+    `url(${CursorPalmReactSvgUrl}), auto`};
   ${(props) =>
     props.inProgress &&
     css`
@@ -73,6 +74,33 @@ const StyledSimpleFilesRow = styled(Row)`
       padding-left: 24px;
       padding-right: 24px;
     `}
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      ${checkedStyle}
+
+      margin-top: -2px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      border-bottom: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+      animation: Highlight 2s 1;
+
+      @keyframes Highlight {
+        0% {
+          background: ${(props) => props.theme.filesSection.animationColor};
+        }
+
+        100% {
+          background: none;
+        }
+      }
+    `}
+
 
   ::after {
     ${(props) =>
@@ -211,6 +239,7 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     checkedProps,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isEdit,
     isActive,
@@ -222,10 +251,14 @@ const SimpleFilesRow = (props) => {
     isRooms,
 
     folderCategory,
+    setUploadedFileIdWithVersion,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
+  const [isHighlight, setIsHighlight] = React.useState(false);
 
+  let timeoutRef = React.useRef(null);
+  let isMounted;
   const withAccess = item.security?.Lock;
   const isSmallContainer = sectionWidth <= 500;
 
@@ -238,6 +271,28 @@ const SimpleFilesRow = (props) => {
       defaultRoomIcon={item.defaultRoomIcon}
     />
   );
+
+  useEffect(() => {
+    setIsHighlight(false);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!item.upgradeVersion) return;
+
+    isMounted = true;
+    setIsHighlight(true);
+    setUploadedFileIdWithVersion(null);
+
+    timeoutRef.current = setTimeout(() => {
+      isMounted && setIsHighlight(false);
+    }, 2000);
+  }, [item]);
 
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {
@@ -300,7 +355,7 @@ const SimpleFilesRow = (props) => {
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
@@ -318,6 +373,7 @@ const SimpleFilesRow = (props) => {
           isSmallContainer={isSmallContainer}
           isRooms={isRooms}
           folderCategory={folderCategory}
+          isHighlight={isHighlight}
         >
           <FilesRowContent
             item={item}

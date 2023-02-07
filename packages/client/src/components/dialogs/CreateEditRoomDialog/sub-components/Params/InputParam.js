@@ -28,6 +28,7 @@ const InputParam = ({
   isDisabled,
   isValidTitle,
   errorMessage,
+  isAutoFocussed,
 }) => {
   return (
     <StyledInputParam>
@@ -56,6 +57,7 @@ const InputParam = ({
           tabIndex={2}
           isDisabled={isDisabled}
           hasError={!isValidTitle}
+          isAutoFocussed={isAutoFocussed}
         />
       </FieldContainer>
     </StyledInputParam>

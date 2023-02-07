@@ -27,8 +27,6 @@ const OperationsPanelComponent = (props) => {
     setConflictDialogData,
     itemOperationToFolder,
     checkFileConflicts,
-    setThirdPartyMoveDialogVisible,
-    parentFolderId,
     conflictResolveDialogVisible,
     clearActiveOperations,
     thirdPartyMoveDialogVisible,
@@ -65,12 +63,7 @@ const OperationsPanelComponent = (props) => {
     if (isCopy) {
       startOperation(isCopy, selectedFolder, folderTitle);
     } else {
-      if (provider && providerKey !== provider.providerKey) {
-        setDestFolderId(selectedFolder);
-        setThirdPartyMoveDialogVisible(true);
-      } else {
-        startOperation(isCopy, selectedFolder, folderTitle);
-      }
+      startOperation(isCopy, selectedFolder, folderTitle);
     }
   };
 
@@ -208,7 +201,6 @@ export default inject(
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
-      setThirdPartyMoveDialogVisible,
       setIsFolderActions,
       conflictResolveDialogVisible,
       thirdPartyMoveDialogVisible,
@@ -226,7 +218,7 @@ export default inject(
       ? filesList
       : isCopy
       ? selections
-      : selections.filter((f) => !f.isEditing);
+      : selections.filter((f) => f && !f?.isEditing);
 
     const provider = selections?.find((x) => x?.providerKey);
 
@@ -245,7 +237,6 @@ export default inject(
       setRestoreAllPanelVisible,
       setDestFolderId,
       setIsFolderActions,
-      setThirdPartyMoveDialogVisible,
       setConflictDialogData,
       setExpandedPanelKeys,
       itemOperationToFolder,

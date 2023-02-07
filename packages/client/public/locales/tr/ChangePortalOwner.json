@@ -1,7 +1,7 @@
 {
-  "BackupPortal": "Portal verisini yedekle",
+  "BackupPortal": "DocSpace verisini yedekle",
   "ChangeOwner": "Modül yöneticileri ata",
   "DeactivateOrDeletePortal": "Modül erişim yetkileri tanımla",
-  "ManagePortal": "Portal yapılandırmasını yönet",
+  "ManagePortal": "DocSpace yapılandırmasını yönet",
   "ManageUser": "Kullanıcı hesaplarını yönet"
 }

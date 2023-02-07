@@ -3,11 +3,19 @@ import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import config from "PACKAGE_FILE";
 import { LANGUAGE } from "@docspace/common/constants";
-import { loadLanguagePath, getCookie } from "@docspace/common/utils";
+import { getCookie } from "@docspace/common/utils";
+
+import { loadLanguagePath } from "./helpers/utils";
 
 const newInstance = i18n.createInstance();
 
-const lng = getCookie(LANGUAGE) || "en";
+const userLng = window.navigator
+  ? window.navigator.language ||
+    window.navigator.systemLanguage ||
+    window.navigator.userLanguage
+  : "en";
+
+const lng = getCookie(LANGUAGE) || userLng;
 
 newInstance
   .use(Backend)
@@ -36,7 +44,6 @@ newInstance
       "ConnectDialog",
       "ConflictResolveDialog",
       "DeleteThirdPartyDialog",
-      "ThirdPartyMoveDialog",
       "PortalUnavailable",
       "Errors",
     ],

@@ -20,6 +20,8 @@ import withDialogs from "../helpers/withDialogs";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import ErrorContainer from "@docspace/common/components/ErrorContainer";
+import styled from "styled-components";
 
 toast.configure();
 
@@ -46,6 +48,10 @@ const onSDKError = (event) => {
       event.data.errorDescription
   );
 };
+const ErrorContainerBody = styled(ErrorContainer)`
+  position: absolute;
+  height: 100%;
+`;
 
 let documentIsReady = false;
 let docSaved = null;
@@ -102,9 +108,6 @@ function Editor({
           "_self"
         );
       }
-      const errorText = typeof error === "string" ? error : error.errorMessage;
-
-      errorText && toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -192,15 +195,15 @@ function Editor({
   const getDefaultFileName = (format) => {
     switch (format) {
       case "docx":
-        return t("NewDocument");
+        return t("Common:NewDocument");
       case "xlsx":
-        return t("NewSpreadsheet");
+        return t("Common:NewSpreadsheet");
       case "pptx":
-        return t("NewPresentation");
+        return t("Common:NewPresentation");
       case "docxf":
-        return t("NewMasterForm");
+        return t("Common:NewMasterForm");
       default:
-        return t("NewFolder");
+        return t("Common:NewFolder");
     }
   };
 
@@ -510,11 +513,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        // if (fileInfo.rootFolderType === FolderType.Rooms) {
-        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        // } else {
-        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        //}
+        if (fileInfo.rootFolderType === FolderType.Rooms) {
+          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        } else {
+          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        }
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
@@ -549,7 +552,7 @@ function Editor({
       }
 
       if (successAuth) {
-        const documentType = config.documentType;
+        const documentType = config?.documentType;
 
         const fileExt =
           documentType === "word"
@@ -641,6 +644,27 @@ function Editor({
     }
   };
 
+  const errorMessage = () => {
+    if (typeof error !== "string") return error.errorMessage;
+
+    if (error === "restore-backup") return t("Common:PreparationPortalTitle");
+    return error;
+  };
+
+  const additionalComponents =
+    error && !error?.unAuthorized ? (
+      <ErrorContainerBody
+        headerText={t("Common:Error")}
+        customizedBodyText={errorMessage()}
+      />
+    ) : (
+      <>
+        {/* {sharingDialog} */}
+        {selectFileDialog}
+        {selectFolderDialog}
+      </>
+    );
+
   return (
     <EditorWrapper
     // isVisibleSharingDialog={isVisible}
@@ -656,9 +680,8 @@ function Editor({
         ></DocumentEditor>
       )}
 
-      {/* {sharingDialog} */}
-      {selectFileDialog}
-      {selectFolderDialog}
+      {additionalComponents}
+
       <Toast />
     </EditorWrapper>
   );

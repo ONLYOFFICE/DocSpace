@@ -146,7 +146,7 @@ public class UserController : PeopleControllerBase
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -186,7 +186,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
+            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -669,10 +670,20 @@ public class UserController : PeopleControllerBase
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
-        var users = inDto.UserIds
-             .Where(userId => !_userManager.IsSystemUser(userId))
-             .Select(userId => _userManager.GetUsers(userId))
-             .ToList();
+        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+
+        IEnumerable<UserInfo> users = null;
+
+        if (inDto.ResendAll)
+        {
+            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        }
+        else
+        {
+            users = inDto.UserIds
+                .Where(userId => !_userManager.IsSystemUser(userId))
+                .Select(userId => _userManager.GetUsers(userId));
+        }
 
         foreach (var user in users)
         {
@@ -704,10 +715,15 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.IsDocSpaceAdmin(user) ? EmployeeType.DocSpaceAdmin :
-                    _userManager.IsUser(user) ? EmployeeType.User : EmployeeType.RoomAdmin;
+                var type = _userManager.GetUserType(user.Id);
 
-                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
+                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                {
+                    continue;
+                }
+
+                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             }
             else
             {
@@ -1053,8 +1069,12 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("type/{type}")]
-    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserTypeAsync(EmployeeType type, UpdateMembersRequestDto inDto)
     {
+        _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
+
+        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
@@ -1062,34 +1082,53 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
-                || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
+            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
             {
                 continue;
             }
 
-            switch (type)
+            var currentType = _userManager.GetUserType(user.Id);
+
+            if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
             {
-                case EmployeeType.RoomAdmin:
+                if (currentType is EmployeeType.RoomAdmin)
+                {
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+                else if (currentType is EmployeeType.User)
+                {
+                    await _countRoomAdminChecker.CheckAppend();
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+            }
+            else if (type is EmployeeType.RoomAdmin)
+            {
+                if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
+                {
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
+                }
+                else if (currentType is EmployeeType.User)
+                {
                     await _countRoomAdminChecker.CheckAppend();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
-                    break;
-                case EmployeeType.User:
-                    await _countUserChecker.CheckAppend();
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                    break;
+                }
             }
         }
-
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-
+        
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), 
+            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        
         foreach (var user in users)
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
+    
     [HttpGet("recalculatequota")]
     public void RecalculateQuota()
     {

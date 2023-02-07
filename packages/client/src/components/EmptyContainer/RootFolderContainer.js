@@ -1,3 +1,7 @@
+﻿import PrivacySvgUrl from "PUBLIC_DIR/images/privacy.svg?url";
+import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import React from "react";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
@@ -13,7 +17,14 @@ import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
-import PlusIcon from "@docspace/client/public/images/plus.react.svg";
+import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
+import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
+import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import EmptyScreenFavoritesUrl from "PUBLIC_DIR/images/empty_screen_favorites.svg?url";
+import EmptyScreenRecentUrl from "PUBLIC_DIR/images/empty_screen_recent.svg?url";
+import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.png";
+import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url";
+import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -48,10 +59,10 @@ const RootFolderContainer = (props) => {
     setIsEmptyPage,
     isVisitor,
     sectionWidth,
+    setIsLoadedEmptyPage,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
-  const shareDescription = t("SharedEmptyContainerDescription");
-  const commonDescription = t("CommonEmptyContainerDescription");
+
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
   const noFilesHeader = t("NoFilesHereYet");
@@ -67,7 +78,7 @@ const RootFolderContainer = (props) => {
     : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
-  const privacyIcon = <img alt="" src="images/privacy.svg" />;
+  const privacyIcon = <img alt="" src={PrivacySvgUrl} />;
   const privateRoomDescTranslations = [
     t("PrivateRoomDescriptionSafest"),
     t("PrivateRoomDescriptionSecure"),
@@ -88,8 +99,13 @@ const RootFolderContainer = (props) => {
 
     return () => {
       setIsEmptyPage(false);
+      setIsLoadedEmptyPage(false);
     };
-  }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
+  }, []);
+
+  React.useEffect(() => {
+    setIsLoadedEmptyPage(!isLoading);
+  }, [isLoading]);
 
   const onGoToPersonal = () => {
     const newFilter = filter.clone();
@@ -130,38 +146,27 @@ const RootFolderContainer = (props) => {
         return {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
-          imageSrc: "images/empty_screen_personal.svg",
-          buttons: commonButtons,
-        };
-      case FolderType.SHARE:
-        return {
-          descriptionText: shareDescription,
-          imageSrc: "images/empty_screen_forme.png",
-        };
-      case FolderType.COMMON:
-        return {
-          descriptionText: commonDescription,
-          imageSrc: "images/empty_screen_corporate.svg",
+          imageSrc: EmptyScreenPersonalUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
         return {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageSrc: "images/empty_screen_favorites.svg",
+          imageSrc: EmptyScreenFavoritesUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
-          imageSrc: "images/empty_screen_recent.svg",
+          imageSrc: EmptyScreenRecentUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
           descriptionText: privateRoomDescription,
-          imageSrc: "images/empty_screen_privacy.png",
+          imageSrc: EmptyScreenPrivacyUrl,
           buttons: isDesktop && isEncryptionSupport && commonButtons,
         };
       case FolderType.TRASH:
@@ -169,23 +174,21 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
-          imageSrc: theme.isBase
-            ? "images/empty_screen_trash.svg"
-            : "images/empty_screen_trash.svg",
+          imageSrc: EmptyScreenTrashSvgUrl,
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: "images/empty_screen_corporate.svg",
+          imageSrc: EmptyScreenCorporateSvgUrl,
           buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
           headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: "images/empty_screen_archive.svg",
+          imageSrc: EmptyScreenArchiveUrl,
           buttons: archiveButtons,
         };
       default:
@@ -270,7 +273,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/person.svg"
+        src={PersonSvgUrl}
         alt="person_icon"
         onClick={onGoToPersonal}
       />
@@ -284,7 +287,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container_plus-image"
-        src="images/plus.svg"
+        src={PlusSvgUrl}
         onClick={onCreateRoom}
         alt="plus_icon"
       />
@@ -298,7 +301,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/empty-folder-image.svg"
+        src={EmptyFolderImageSvgUrl}
         onClick={onGoToShared}
         alt="folder_icon"
       />
@@ -312,7 +315,7 @@ const RootFolderContainer = (props) => {
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
-        src="images/person.svg"
+        src={PersonSvgUrl}
         alt="person_icon"
         onClick={onGoToPersonal}
       />
@@ -325,35 +328,17 @@ const RootFolderContainer = (props) => {
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
 
-  React.useEffect(() => {
-    let timeout;
-
-    if (isLoading) {
-      setShowLoader(isLoading);
-    } else {
-      timeout = setTimeout(() => setShowLoader(isLoading), 300);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [isLoading]);
+  if (isLoading) {
+    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
+  }
 
   return (
-    <>
-      {showLoader ? (
-        viewAs === "tile" ? (
-          <Loaders.Tiles />
-        ) : (
-          <Loaders.Rows />
-        )
-      ) : (
-        <EmptyContainer
-          headerText={headerText}
-          isEmptyPage={isEmptyPage}
-          sectionWidth={sectionWidth}
-          {...emptyFolderProps}
-        />
-      )}
-    </>
+    <EmptyContainer
+      headerText={headerText}
+      isEmptyPage={isEmptyPage}
+      sectionWidth={sectionWidth}
+      {...emptyFolderProps}
+    />
   );
 };
 
@@ -378,6 +363,7 @@ export default inject(
       setAlreadyFetchingRooms,
       isEmptyPage,
       setIsEmptyPage,
+      setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
@@ -403,6 +389,7 @@ export default inject(
       setAlreadyFetchingRooms,
       isEmptyPage,
       setIsEmptyPage,
+      setIsLoadedEmptyPage,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

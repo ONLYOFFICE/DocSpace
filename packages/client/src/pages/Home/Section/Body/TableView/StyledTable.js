@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 import TableRow from "@docspace/components/table-container/TableRow";
 import DragAndDrop from "@docspace/components/drag-and-drop";
+import CursorPalmSvgUrl from "PUBLIC_DIR/images/cursor.palm.react.svg?url";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -76,7 +77,7 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(/static/images/cursor.palm.react.svg), auto !important"};
+      `url(${CursorPalmSvgUrl}), auto !important`};
 
     ${(props) =>
       props.inProgress &&
@@ -172,6 +173,33 @@ const StyledTableRow = styled(TableRow)`
       .author-cell,
       .table-container_cell > p {
         margin-top: 2px;
+      }
+    `}
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      .table-container_cell:not(.table-container_element-wrapper) {
+        animation: Highlight 2s 1;
+
+        @keyframes Highlight {
+          0% {
+            background: ${(props) => props.theme.filesSection.animationColor};
+          }
+
+          100% {
+            background: none;
+          }
+        }
+      }
+
+      .table-container_file-name-cell {
+        margin-left: -24px;
+        padding-left: 24px;
+      }
+      .table-container_row-context-menu-wrapper {
+        margin-right: -20px;
+        padding-right: 18px;
       }
     `}
 `;

@@ -461,6 +461,11 @@ public class UserManager
         return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
     }
 
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        return _userService.GetTenantsWithFeeds(from);
+    }
+
     public async Task DeleteUser(Guid id)
     {
         if (IsSystemUser(id))

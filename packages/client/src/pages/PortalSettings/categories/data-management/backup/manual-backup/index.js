@@ -264,11 +264,7 @@ class ManualBackup extends React.Component {
           <Text isBold fontSize="16px">
             {t("DataBackup")}
           </Text>
-          {renderTooltip(
-            t("ManualBackupHelp") +
-              " " +
-              t("ManualBackupHelpNote", { organizationName })
-          )}
+          {renderTooltip(t("ManualBackupHelp"))}
         </div>
         <Text className="backup_modules-description">
           {t("ManualBackupDescription")}

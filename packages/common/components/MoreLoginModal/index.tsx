@@ -6,6 +6,7 @@ import { providersData } from "@docspace/common/constants";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@docspace/common/utils";
+import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 
 const ProviderRow = styled.div`
   width: 100%;
@@ -82,7 +83,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
       <ModalDialog.Body>
         {ssoUrl && (
           <ProviderRow key={`ProviderItemSSO`}>
-            <ReactSVG src="/static/images/sso.react.svg" />
+            <ReactSVG src={SsoReactSvgUrl} />
             <Text fontSize="14px" fontWeight="600" className="provider-name">
               {ssoLabel || getProviderTranslation("sso", t)}
             </Text>

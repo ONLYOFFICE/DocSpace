@@ -1,3 +1,6 @@
+﻿import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
+import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touch.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
@@ -274,7 +277,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:Delete"),
         disabled: !selection || !selection.length > 0,
         onClick: this.removeAdmins,
-        iconUrl: "/static/images/delete.react.svg",
+        iconUrl: DeleteReactSvgUrl,
       },
     ];
 
@@ -296,7 +299,7 @@ class SectionHeaderContent extends React.Component {
           <HeaderContainer>
             {!isCategoryOrHeader && arrayOfParams[0] && (
               <IconButton
-                iconName="/static/images/arrow.path.react.svg"
+                iconName={ArrowPathReactSvgUrl}
                 size="17"
                 isFill={true}
                 onClick={this.onBackToParent}
@@ -321,7 +324,7 @@ class SectionHeaderContent extends React.Component {
             {addUsers && (
               <div className="action-wrapper">
                 <IconButton
-                  iconName="/static/images/actions.header.touch.react.svg"
+                  iconName={ActionsHeaderTouchReactSvgUrl}
                   size="17"
                   isFill={true}
                   onClick={this.onToggleSelector}
@@ -338,7 +341,6 @@ class SectionHeaderContent extends React.Component {
 
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore } = auth;
-  const { customNames } = auth.settingsStore;
   const {
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,
@@ -360,7 +362,6 @@ export default inject(({ auth, setup, common }) => {
   return {
     addUsers,
     removeAdmins,
-    groupsCaption: customNames.groupsCaption,
     selected,
     setSelected,
     admins,

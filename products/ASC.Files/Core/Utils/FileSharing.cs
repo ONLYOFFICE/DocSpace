@@ -555,7 +555,7 @@ public class FileSharing
                 Id = id,
                 Link = _roomLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
                 SubjectGroup = true,
-                Access = FileShare.Restrict,
+                Access = FileShare.Read,
                 Owner = false
             };
 

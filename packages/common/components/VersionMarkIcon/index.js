@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
+import VersionSvg from "PUBLIC_DIR/images/versionrevision_active.react.svg";
 
 const VersionMarkIcon = styled(VersionSvg)`
   path {

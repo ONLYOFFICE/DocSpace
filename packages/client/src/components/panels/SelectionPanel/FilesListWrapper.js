@@ -113,7 +113,6 @@ class FilesListWrapper extends React.Component {
   render() {
     const {
       t,
-      theme,
       onSelectFile,
       folderSelection = false,
       fileId,
@@ -124,7 +123,6 @@ class FilesListWrapper extends React.Component {
 
     return (
       <FilesListBody
-        theme={theme}
         files={files}
         onSelectFile={onSelectFile}
         hasNextPage={hasNextPage}
@@ -150,11 +148,7 @@ export default inject(
       setProviderKey,
     } = selectFolderDialogStore;
 
-    const { settingsStore } = auth;
-    const { theme } = settingsStore;
-
     return {
-      theme: theme,
       storeFolderId: id,
       setResultingFolderId,
       setFolderTitle,

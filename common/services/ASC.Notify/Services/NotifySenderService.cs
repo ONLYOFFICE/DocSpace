@@ -55,14 +55,14 @@ public class NotifySenderService : BackgroundService
 
         stoppingToken.Register(() => _logger.Debug("NotifySenderService background task is stopping."));
 
-        if (0 < _notifyServiceCfg.Schedulers.Count)
+        if (_notifyServiceCfg.Schedulers != null && _notifyServiceCfg.Schedulers.Any())
         {
             InitializeNotifySchedulers();
         }
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var serviceScope = _scopeFactory.CreateScope();
+            await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
             var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<NotifySenderService>>();
 

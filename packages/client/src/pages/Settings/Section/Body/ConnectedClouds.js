@@ -1,3 +1,8 @@
+﻿import FolderReactSvgUrl from "PUBLIC_DIR/images/folder.react.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
+import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -171,7 +176,7 @@ class ConnectClouds extends React.Component {
         key: `${index}_open`,
         "data-provider-id": item.provider_id,
         "data-provider-key": item.provider_key,
-        icon: "images/folder.react.svg",
+        icon: FolderReactSvgUrl,
         label: t("Home:Open"),
         onClick: this.openLocation,
         disabled: !isMobile,
@@ -179,7 +184,7 @@ class ConnectClouds extends React.Component {
       {
         key: `${index}_change`,
         "data-provider-id": item.provider_id,
-        icon: "/static/images/access.edit.react.svg",
+        icon: AccessEditReactSvgUrl,
         label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
@@ -189,7 +194,7 @@ class ConnectClouds extends React.Component {
         "data-id": item.provider_id,
         "data-title": item.customer_title,
         "data-provider-key": item.provider_key,
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: CatalogTrashReactSvgUrl,
         label: t("Common:Disconnect"),
         onClick: this.onDeleteThirdParty,
       },
@@ -291,12 +296,12 @@ class ConnectClouds extends React.Component {
             descriptionText={t("ConnectDescriptionText")}
             style={{ gridColumnGap: "39px" }}
             buttonStyle={{ marginTop: "16px" }}
-            imageSrc="/static/images/empty_screen_alt.svg"
+            imageSrc={EmptyScreenAltSvgUrl}
             buttons={
               <div className="empty-folder_container-links empty-connect_container-links">
                 <img
                   className="empty-folder_container_plus-image"
-                  src="images/plus.svg"
+                  src={PlusSvgUrl}
                   onClick={this.onShowThirdPartyDialog}
                   alt="plus_icon"
                 />

@@ -26,6 +26,10 @@ const SessionLifetimePage = lazy(() =>
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
+const DeveloperTools = lazy(() =>
+  import("./categories/developer-tools/index.js")
+);
+
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );
@@ -43,7 +47,6 @@ const DNSSettings = lazy(() =>
 const PortalRenaming = lazy(() =>
   import("./categories/common/Customization/portal-renaming")
 );
-const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 
 const Integration = lazy(() => import("./categories/integration"));
 const Payments = lazy(() => import("./categories/payments"));
@@ -77,6 +80,12 @@ const COMMON_URLS = [
   combineUrl(PROXY_BASE_URL, "/common/customization"),
   combineUrl(PROXY_BASE_URL, "/common/branding"),
   combineUrl(PROXY_BASE_URL, "/common/appearance"),
+];
+
+const DEVELOPER_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/developer"),
+  combineUrl(PROXY_BASE_URL, "/developer/tools"),
 ];
 
 const CUSTOMIZATION_URLS = [
@@ -196,7 +205,6 @@ const Settings = () => {
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
-          <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
 
@@ -227,6 +235,7 @@ const Settings = () => {
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
+          <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
 
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />

@@ -1,3 +1,20 @@
+﻿import PencilReactSvgUrl from "PUBLIC_DIR/images/pencil.react.svg?url";
+import ChangeMailReactSvgUrl from "PUBLIC_DIR/images/email.react.svg?url";
+import ChangeSecurityReactSvgUrl from "PUBLIC_DIR/images/change.security.react.svg?url";
+import FolderReactSvgUrl from "PUBLIC_DIR/images/folder.react.svg?url";
+import EnableReactSvgUrl from "PUBLIC_DIR/images/enable.react.svg?url";
+import RemoveReactSvgUrl from "PUBLIC_DIR/images/remove.react.svg?url";
+import DelDataReactSvgUrl from "PUBLIC_DIR/images/del_data.react.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
+import DisableReactSvgUrl from "PUBLIC_DIR/images/disable.react.svg?url";
+import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
+import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
+import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React from "react";
 import { makeAutoObservable } from "mobx";
 import { Trans } from "react-i18next";
@@ -40,7 +57,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_profile",
             key: option,
-            icon: "/static/images/profile.react.svg",
+            icon: ProfileReactSvgUrl,
             label: t("Common:Profile"),
             onClick: this.onProfileClick,
           };
@@ -49,7 +66,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-name",
             key: option,
-            icon: "images/pencil.react.svg",
+            icon: PencilReactSvgUrl,
             label: t("PeopleTranslations:NameChangeButton"),
             onClick: this.toggleChangeNameDialog,
           };
@@ -57,7 +74,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-email",
             key: option,
-            icon: "images/change.mail.react.svg",
+            icon: ChangeMailReactSvgUrl,
             label: t("PeopleTranslations:EmailChangeButton"),
             onClick: () => this.toggleChangeEmailDialog(item),
           };
@@ -65,7 +82,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-password",
             key: option,
-            icon: "images/change.security.react.svg",
+            icon: ChangeSecurityReactSvgUrl,
             label: t("PeopleTranslations:PasswordChangeButton"),
             onClick: () => this.toggleChangePasswordDialog(item),
           };
@@ -73,14 +90,14 @@ class AccountsContextOptionsStore {
           return {
             id: "option_change-owner",
             key: option,
-            icon: "/static/images/refresh.react.svg",
+            icon: RefreshReactSvgUrl,
             label: t("Translations:OwnerChange"),
             onClick: () => this.toggleChangeOwnerDialog(item),
           };
         case "room-list":
           return {
             key: option,
-            icon: "images/folder.react.svg",
+            icon: FolderReactSvgUrl,
             label: "Room list",
             onClick: () => this.openUserRoomList(item),
           };
@@ -88,7 +105,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_enable",
             key: option,
-            icon: "images/enable.react.svg",
+            icon: EnableReactSvgUrl,
             label: t("PeopleTranslations:EnableUserButton"),
             onClick: () => this.onEnableClick(t, item),
           };
@@ -96,24 +113,15 @@ class AccountsContextOptionsStore {
           return {
             id: "option_disable",
             key: option,
-            icon: "images/remove.react.svg",
+            icon: RemoveReactSvgUrl,
             label: t("PeopleTranslations:DisableUserButton"),
             onClick: () => this.onDisableClick(t, item),
-          };
-
-        case "reassign-data":
-          return {
-            id: "option_reassign-data",
-            key: option,
-            icon: "images/ressing_data.react.svg",
-            label: t("PeopleTranslations:ReassignData"),
-            onClick: () => this.onReassignDataClick(item),
           };
         case "delete-personal-data":
           return {
             id: "option_delete-personal-data",
             key: option,
-            icon: "images/del_data.react.svg",
+            icon: DelDataReactSvgUrl,
             label: t("PeopleTranslations:RemoveData"),
             onClick: () => this.onDeletePersonalDataClick(t, item),
           };
@@ -121,7 +129,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_delete-user",
             key: option,
-            icon: "images/trash.react.svg",
+            icon: TrashReactSvgUrl,
             label: t("DeleteProfileEverDialog:DeleteUser"),
             onClick: () => this.toggleDeleteProfileEverDialog(item),
           };
@@ -130,7 +138,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_details",
             key: option,
-            icon: "images/info.react.svg",
+            icon: InfoOutlineReactSvgUrl,
             label: t("Common:Info"),
             onClick: this.onDetailsClick,
           };
@@ -139,7 +147,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_invite-again",
             key: option,
-            icon: "/static/images/invite.again.react.svg",
+            icon: InviteAgainReactSvgUrl,
             label: t("LblInviteAgain"),
             onClick: () => this.onInviteAgainClick(t, item),
           };
@@ -147,7 +155,7 @@ class AccountsContextOptionsStore {
           return {
             id: "option_reset-auth",
             key: option,
-            icon: "images/restore.auth.react.svg",
+            icon: RestoreAuthReactSvgUrl,
             label: t("PeopleTranslations:ResetAuth"),
             onClick: () => this.onResetAuth(item),
           };
@@ -222,7 +230,7 @@ class AccountsContextOptionsStore {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
         disabled: !hasUsersToMakeEmployees,
-        icon: "/static/images/change.to.employee.react.svg",
+        icon: ChangeToEmployeeReactSvgUrl,
         items: options,
       },
       {
@@ -230,35 +238,35 @@ class AccountsContextOptionsStore {
         label: t("Common:Info"),
         disabled: isVisible,
         onClick: () => setIsVisible(true),
-        icon: "images/info.react.svg",
+        icon: InfoReactSvgUrl,
       },
       {
         key: "cm-invite",
         label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
-        icon: "/static/images/invite.again.react.svg",
+        icon: InviteAgainReactSvgUrl,
       },
       {
         key: "cm-enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
         onClick: () => onChangeStatus(EmployeeStatus.Active),
-        icon: "images/enable.react.svg",
+        icon: EnableReactSvgUrl,
       },
       {
         key: "cm-disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
         onClick: () => onChangeStatus(EmployeeStatus.Disabled),
-        icon: "images/disable.react.svg",
+        icon: DisableReactSvgUrl,
       },
       {
         key: "cm-delete",
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: () => setDeleteDialogVisible(true),
-        icon: "/static/images/delete.react.svg",
+        icon: DeleteReactSvgUrl,
       },
     ];
 
@@ -356,20 +364,6 @@ class AccountsContextOptionsStore {
     const { changeStatus } = this.peopleStore;
 
     changeStatus(EmployeeStatus.Disabled, [id]);
-  };
-
-  onReassignDataClick = (item) => {
-    const { userName } = item;
-
-    toastr.warning("Work at progress");
-
-    // history.push(
-    //   combineUrl(
-    //     window.DocSpaceConfig?.proxy?.url,
-    //     config.homepage,
-    //     `/reassign/${userName}`
-    //   )
-    // );
   };
 
   onDeletePersonalDataClick = (t, item) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyledRow, StyledBox1, StyledBox2 } from "./StyledRowLoader";
+import { StyledRow, StyledBox } from "./StyledRowLoader";
 import RectangleLoader from "../RectangleLoader";
 import CircleLoader from "../CircleLoader";
 
@@ -17,31 +17,14 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
   } = rest;
 
   return (
-    <StyledRow
-      id={id}
-      className={className}
-      style={style}
-      gap={isRectangle ? "8px" : "16px"}
-    >
-      <RectangleLoader
-        title={title}
-        width="16"
-        height="16"
-        borderRadius={borderRadius}
-        backgroundColor={backgroundColor}
-        foregroundColor={foregroundColor}
-        backgroundOpacity={backgroundOpacity}
-        foregroundOpacity={foregroundOpacity}
-        speed={speed}
-        animate={animate}
-      />
-      <StyledBox1>
+    <StyledRow id={id} className={className} style={style}>
+      <>
         {isRectangle ? (
           <RectangleLoader
             className="rectangle-content"
             title={title}
-            width="100%"
-            height="100%"
+            width="32px"
+            height="32px"
             borderRadius={borderRadius}
             backgroundColor={backgroundColor}
             foregroundColor={foregroundColor}
@@ -66,12 +49,11 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
             animate={animate}
           />
         )}
-      </StyledBox1>
-      <StyledBox2 className="row-content">
+      </>
+      <StyledBox className="row-content">
         <RectangleLoader
           className="first-row-content__mobile"
           title={title}
-          height="16px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -83,7 +65,7 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
         <RectangleLoader
           className="second-row-content__mobile"
           title={title}
-          height="12px"
+          height="16px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
           foregroundColor={foregroundColor}
@@ -92,7 +74,20 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
           speed={speed}
           animate={animate}
         />
-      </StyledBox2>
+      </StyledBox>
+
+      <RectangleLoader
+        title={title}
+        width="16"
+        height="16"
+        borderRadius={borderRadius}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        backgroundOpacity={backgroundOpacity}
+        foregroundOpacity={foregroundOpacity}
+        speed={speed}
+        animate={animate}
+      />
     </StyledRow>
   );
 };

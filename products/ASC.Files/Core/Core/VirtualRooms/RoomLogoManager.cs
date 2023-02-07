@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-
 using Image = SixLabors.ImageSharp.Image;
 
 namespace ASC.Files.Core.VirtualRooms;
@@ -86,20 +84,20 @@ public class RoomLogoManager
 
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
         {
-            throw new ItemNotFoundException("Virtual room not found");
+            throw new ItemNotFoundException();
         }
 
         if (room.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         var fileName = Path.GetFileName(tempFile);
         var data = await GetTempAsync(fileName);
 
-        id = GetId(room);
+        var stringId = GetId(room);
 
-        await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
+        await SaveWithProcessAsync(stringId, data, -1, new Point(x, y), new Size(width, height));
         await RemoveTempAsync(fileName);
 
         room.HasLogo = true;
@@ -115,7 +113,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -128,14 +126,14 @@ public class RoomLogoManager
 
         if (checkPermissions && !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
-        id = GetId(room);
+        var stringId = GetId(room);
 
         try
         {
-            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
+            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(stringId)}*.*", false);
             room.HasLogo = false;
 
             if (room.ProviderEntry)
@@ -149,7 +147,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (Exception e)
@@ -169,7 +167,7 @@ public class RoomLogoManager
                 Original = string.Empty,
                 Large = string.Empty,
                 Medium = string.Empty,
-                Small = string.Empty, 
+                Small = string.Empty,
             };
         }
 
@@ -177,7 +175,7 @@ public class RoomLogoManager
 
         var cacheKey = Math.Abs(room.ModifiedOn.GetHashCode());
 
-        return new Logo()
+        return new Logo
         {
             Original = await GetLogoPathAsync(id, SizeName.Original) + $"?_={cacheKey}",
             Large = await GetLogoPathAsync(id, SizeName.Large) + $"?_={cacheKey}",
@@ -207,7 +205,7 @@ public class RoomLogoManager
         return pathWithoutQuery;
     }
 
-    public async Task RemoveTempAsync(string fileName)
+    private async Task RemoveTempAsync(string fileName)
     {
         var index = fileName.LastIndexOf('.');
         var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
@@ -216,13 +214,13 @@ public class RoomLogoManager
         {
             await DataStore.DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             _logger.ErrorRemoveTempPhoto(e);
         }
     }
 
-    private async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
+    private async Task SaveWithProcessAsync(string id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
     {
         imageData = UserPhotoThumbnailManager.TryParseImage(imageData, maxFileSize, _originalLogoSize.Item2, out var _, out var _, out var _);
 
@@ -230,22 +228,20 @@ public class RoomLogoManager
 
         if (imageData == null || imageData.Length == 0)
         {
-            return string.Empty;
+            return;
         }
 
         using var stream = new MemoryStream(imageData);
-        var path = await DataStore.SaveAsync(fileName, stream);
+        await DataStore.SaveAsync(fileName, stream);
 
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _mediumLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _smallLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _largeLogoSize, position, cropSize);
-
-        return path.ToString();
     }
 
     private async Task ResizeAndSaveAsync<T>(T id, byte[] data, long maxFileSize, (SizeName, Size) size, Point position, Size cropSize)
     {
-        if (data == null || data.Length <= 0)
+        if (data is not { Length: > 0 })
         {
             throw new Web.Core.Users.UnknownImageFormatException();
         }
@@ -257,8 +253,7 @@ public class RoomLogoManager
         try
         {
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out var format);
-            var imgFormat = format;
+            using var img = Image.Load(stream, out _);
 
             if (size.Item2 != img.Size())
             {
@@ -269,8 +264,7 @@ public class RoomLogoManager
             {
                 data = CommonPhotoManager.SaveToBytes(img);
             }
-
-            var extension = CommonPhotoManager.GetImgFormatName(imgFormat);
+            
             var fileName = string.Format(LogosPath, ProcessFolderId(id), size.Item1.ToStringLowerFast());
 
             using var stream2 = new MemoryStream(data);
@@ -292,25 +286,25 @@ public class RoomLogoManager
 
     private async Task<byte[]> GetTempAsync(string fileName)
     {
-        using var stream = await DataStore.GetReadStreamAsync(TempDomainPath, fileName);
+        await using var stream = await DataStore.GetReadStreamAsync(TempDomainPath, fileName);
 
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
         while (true)
         {
-            var count = await stream.ReadAsync(buffer, 0, buffer.Length);
+            var count = await stream.ReadAsync(buffer);
             if (count == 0)
             {
                 break;
             }
 
-            data.Write(buffer, 0, count);
+            await data.WriteAsync(buffer.AsMemory(0, count));
         }
 
         return data.ToArray();
     }
 
-    private string ProcessFolderId<T>(T id)
+    private static string ProcessFolderId<T>(T id)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
@@ -319,10 +313,24 @@ public class RoomLogoManager
             : id.ToString()?.Replace("-", "").Replace("|", "");
     }
 
-    private T GetId<T>(Folder<T> room)
+    private static string GetId<T>(Folder<T> room)
     {
-        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox") 
-            || room.RootId.ToString().Contains("spoint")) ? room.RootId : room.Id;
+        if (!room.ProviderEntry)
+        {
+            return room.Id.ToString();
+        }
+
+        if (room.Id.ToString()!.Contains("sbox"))
+        {
+            return $"sbox-{room.ProviderId}";
+        }
+
+        if (room.Id.ToString()!.Contains("spoint"))
+        {
+            return $"spoint-{room.ProviderId}";
+        }
+
+        return room.Id.ToString();
     }
 }
 

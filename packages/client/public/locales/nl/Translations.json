@@ -1,5 +1,4 @@
 {
-  "AddAccount": "Account toevoegen",
   "ArchivingData": "Gegevens archiveren",
   "ConnectingAccount": "Account koppelen",
   "Copy": "Kopieer",
@@ -31,7 +30,7 @@
   "MobileAndroid": "Download ONLYOFFICE Documenten op Google Play",
   "MobileIos": "Download ONLYOFFICE Documents in de App Store",
   "MobileLinux": "Download ONLYOFFICE Desktop Editors voor Linux",
-  "MobileMac": "Download ONLYOFFICE Desktop Editors voor Mac OS",
+  "MobileMac": "Download ONLYOFFICE Desktop Editors voor macOS",
   "MobileWin": "Download ONLYOFFICE Desktop Editors voor Windows",
   "MoveHere": "Hierheen verplaatsen",
   "MoveToOperation": "Verplaatsen",

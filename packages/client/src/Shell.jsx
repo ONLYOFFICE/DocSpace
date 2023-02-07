@@ -11,7 +11,7 @@ import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
-import { combineUrl, updateTempContent } from "@docspace/common/utils";
+import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -23,14 +23,13 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
-import { useThemeDetector } from "SRC_DIR/helpers/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 
-const Payments = React.lazy(() => import("./pages/Payments"));
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
 const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
@@ -51,13 +50,6 @@ const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-const PaymentsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Payments {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -177,15 +169,26 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   useEffect(() => {
     if (!whiteLabelLogoUrls) return;
-    const favicon = whiteLabelLogoUrls[2]?.path?.light;
+    const favicon = getLogoFromPath(whiteLabelLogoUrls[2]?.path?.light);
 
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "icon";
-      document.getElementsByTagName("head")[0].appendChild(link);
-    }
+    if (!favicon) return;
+
+    const link = document.querySelector("#favicon-icon");
     link.href = favicon;
+
+    const shortcutIconLink = document.querySelector("#favicon");
+    shortcutIconLink.href = favicon;
+
+    const appleIconLink = document.querySelector(
+      "link[rel~='apple-touch-icon']"
+    );
+
+    if (appleIconLink) appleIconLink.href = favicon;
+
+    const androidIconLink = document.querySelector(
+      "link[rel~='android-touch-icon']"
+    );
+    if (androidIconLink) androidIconLink.href = favicon;
   }, [whiteLabelLogoUrls]);
 
   useEffect(() => {
@@ -421,6 +424,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
             <Switch>
+              <Redirect
+                exact
+                sensitive
+                from="/Products/Files/"
+                to="/rooms/shared"
+              />
               <PrivateRoute
                 exact
                 path={[
@@ -459,6 +468,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/settings",
                   "/settings/common",
                   "/settings/admin",
+                  "/products/files",
                   //"/settings/connected-clouds",
                 ]}
                 component={FilesRoute}
@@ -470,13 +480,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PublicRoute exact path={"/wizard"} component={WizardRoute} />
               <PrivateRoute path={"/about"} component={AboutRoute} />
               <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute path={"/payments"} component={PaymentsRoute} />
               <PrivateRoute
                 restricted
                 path={"/portal-settings"}
                 component={PortalSettingsRoute}
               />
-              <PrivateRoute
+              <PublicRoute
                 path={"/preparation-portal"}
                 component={PreparationPortalRoute}
               />

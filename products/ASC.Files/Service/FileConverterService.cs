@@ -49,7 +49,7 @@ internal class FileConverterService<T> : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var serviceScope = _serviceScopeFactory.CreateScope();
+            await using var serviceScope = _serviceScopeFactory.CreateAsyncScope();
 
             var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<FileConverterService<T>>>();
 
@@ -90,7 +90,10 @@ internal class FileConverterService<T> : BackgroundService
 
             var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
 
-            logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
+            if (_conversionQueue.Count > 0)
+            {
+                logger.DebugRunCheckConvertFilesStatus(_conversionQueue.Count);
+            }
 
             var filesIsConverting = _conversionQueue
                                     .Where(x => string.IsNullOrEmpty(x.Processed))

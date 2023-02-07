@@ -87,8 +87,6 @@ class PaymentStore {
         } else {
           toastr.error(res);
         }
-      } else {
-        console.error(res);
       }
     } catch (e) {
       console.error(e);

@@ -31,11 +31,9 @@ var options = new WebApplicationOptions
 };
 
 var builder = WebApplication.CreateBuilder(options);
-builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
- {
-     config.AddJsonFile($"appsettings.runner.json", true)
+
+builder.Configuration.AddJsonFile($"appsettings.runner.json", true)
                 .AddCommandLine(args);
- });
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
@@ -51,7 +49,6 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<InstanceRegistrationContext>();
     services.AddBaseDbContext<IntegrationEventLogContext>();
     services.AddBaseDbContext<FeedDbContext>();
-    services.AddBaseDbContext<MessagesContext>();
     services.AddBaseDbContext<WebhooksDbContext>();
     services.AddBaseDbContext<MessagesContext>();
     services.AddBaseDbContext<BackupsContext>();

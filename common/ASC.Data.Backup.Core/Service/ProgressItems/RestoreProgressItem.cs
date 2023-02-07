@@ -111,7 +111,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
         try
         {
-            using var scope = _serviceScopeProvider.CreateScope();
+            await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
             _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
@@ -187,8 +187,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
                 _tenantManager.SaveTenant(restoredTenant);
                 _tenantManager.SetCurrentTenant(restoredTenant);
-                // sleep until tenants cache expires
-                Thread.Sleep(TimeSpan.FromMinutes(2));
+                TenantId = restoredTenant.Id;
 
                 _notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
             }
@@ -200,12 +199,13 @@ public class RestoreProgressItem : BaseBackupProgressItem
             File.Delete(tempFile);
 
             Percentage = 100;
-            PublishChanges();
+            Status = DistributedTaskStatus.Completed;
         }
         catch (Exception error)
         {
             _logger.ErrorRestoreProgressItem(error);
             Exception = error;
+            Status = DistributedTaskStatus.Failted;
 
             if (tenant != null)
             {

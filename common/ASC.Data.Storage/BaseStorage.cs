@@ -149,7 +149,7 @@ public abstract class BaseStorage : IDataStore
 
     public abstract Task<Stream> GetReadStreamAsync(string domain, string path);
 
-    public abstract Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
+    public abstract Task<Stream> GetReadStreamAsync(string domain, string path, long offset);
 
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream);
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl);

@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Pievienot nodaļas vadītāju",
-  "CustomNewDepartment": "{{groupCaption}} (izveidošana)",
-  "GroupAction": "Grupas darbība",
-  "SearchAddedMembers": "Meklēt pievienotos dalībniekus",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' ir veiksmīgi saglabāts"
-}

@@ -4,6 +4,7 @@
 
 ```js
 import MainButtonMobile from "@docspace/components/main-button-mobile";
+import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
 ```
 
 ```jsx
@@ -11,12 +12,12 @@ const actionOptions = [
   {
     key: "1",
     label: "New document",
-    icon: "static/images/mobile.actions.document.react.svg",
+    icon: MobileActionsFolderReactSvgUrl,
   },
   {
     key: "2",
     label: "New presentation",
-    icon: "static/images/mobile.actions.presentation.react.svg",
+    icon: MobileActionsFolderReactSvgUrl,
   },
 ];
 

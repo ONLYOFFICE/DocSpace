@@ -17,12 +17,14 @@ override_dh_auto_clean:
 	@echo "RULES.$@"
 	dh_testdir 
 	rm -rf ${CURRENT_PATH}/debian/*.service
+	rm -rf ${CURRENT_PATH}/debian/*.lintian-overrides
 	rm -rf ${SRC_PATH}/build/install/${PRODUCT}*
 
 override_dh_auto_configure:
 	@echo "RULES.$@"
 	dh_testdir 
 	dh_auto_configure
+	dh_lintian
 
 override_dh_auto_build:
 	cd ${SRC_PATH}/${SCRIPT_PATH}/systemd; \
@@ -30,25 +32,35 @@ override_dh_auto_build:
 	cd ${SRC_PATH}/${SCRIPT_PATH}; \
 	bash build-frontend.sh -sp ${SRC_PATH}; \
 	bash build-backend.sh -sp ${SRC_PATH}; \
-	bash publish-backend.sh -sp ${SRC_PATH}
+	bash publish-backend.sh -sp ${SRC_PATH} -ar "-r linux-x64"
 
-	rm ${SRC_PATH}/config/nginx/onlyoffice-login.conf
+	find ${SRC_PATH}/publish/ \
+		 -depth -type f -regex '.*\(eslintrc.*\|npmignore\|gitignore\|gitattributes\|gitmodules\|un~\|DS_Store\)' -exec rm -f {} \;
+
+	rm -rf ${SRC_PATH}/ASC.Migration.Runner/service/runtimes/linux-arm*
+	rm -f ${SRC_PATH}/config/nginx/onlyoffice-login.conf
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
 
 	json -I -f ${SRC_PATH}/config/appsettings.services.json -e "this.logPath=\"/var/log/onlyoffice/${PRODUCT}\"" -e "this.socket={ 'path': '../ASC.Socket.IO/' }" \
 	-e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.core={ 'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }"
-	
+
+	for i in ${PRODUCT} $$(ls ${CURRENT_PATH}/debian/*.install | grep -oP 'debian/\K.*' | grep -o '^[^.]*'); do \
+		cp ${CURRENT_PATH}/debian/source/lintian-overrides ${CURRENT_PATH}/debian/$$i.lintian-overrides; \
+	done
+
 override_dh_fixperms:
 	dh_fixperms
 
 override_dh_auto_install:
-	dh_installinit --no-start
 	dh_systemd_enable --no-enable
 	dh_systemd_start --no-start
 
 override_dh_strip:
-#	dh_strip --exclude=/site-packages/
+	dh_strip -Xarm --no-automatic-dbgsym
 
 override_dh_shlibdeps:
-#	dh_shlibdeps --exclude=/site-packages/
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info -Xarm -Xkafka
+
+override_dh_installinit:
+# don't do anything, silences lintian warnings "init.d-script-not-included-in-package"

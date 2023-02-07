@@ -46,6 +46,7 @@ const InvitePanel = ({
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -72,7 +73,7 @@ const InvitePanel = ({
             title,
             shareLink,
             expirationDate,
-            access: defaultAccess,
+            access: user.access || defaultAccess,
           });
         }
       });
@@ -161,16 +162,22 @@ const InvitePanel = ({
     }
 
     try {
+      setIsLoading(true);
       roomId === -1
         ? await inviteUsers(data)
         : await setRoomSecurity(roomId, data);
 
-      if (roomsView === "info_members") setUpdateRoomMembers(true);
+      setIsLoading(false);
+
+      if (roomsView === "info_members") {
+        setUpdateRoomMembers(true);
+      }
       onClose();
       toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
+      setIsLoading(false);
     }
   };
 
@@ -197,7 +204,12 @@ const InvitePanel = ({
           </StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks t={t} shareLinks={shareLinks} roomType={roomType} />
+        <ExternalLinks
+          t={t}
+          shareLinks={shareLinks}
+          getInfo={getInfo}
+          roomType={roomType}
+        />
 
         <InviteInput
           t={t}
@@ -217,12 +229,14 @@ const InvitePanel = ({
                 primary
                 onClick={onClickSend}
                 label={t("SendInvitation")}
+                isLoading={isLoading}
               />
               <Button
                 scale={true}
                 size={"normal"}
                 onClick={onClose}
                 label={t("Common:CancelButton")}
+                isDisabled={isLoading}
               />
             </StyledButtons>
           </>

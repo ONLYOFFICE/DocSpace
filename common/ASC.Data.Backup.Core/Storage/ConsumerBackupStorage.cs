@@ -64,7 +64,7 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
     public void Init(int tenant)
     {
         _isTemporary = true;
-        _store = _storageFactory.GetStorage(tenant, "backup", null);
+        _store = _storageFactory.GetStorage(tenant, "backup");
         _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 

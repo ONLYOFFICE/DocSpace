@@ -32,11 +32,8 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
-{
-    config.AddJsonFile($"appsettings.creator.json", true)
+builder.Configuration.AddJsonFile($"appsettings.creator.json", true)
                .AddCommandLine(args);
-});
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
@@ -53,7 +50,6 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<FeedDbContext>();
     services.AddBaseDbContext<MessagesContext>();
     services.AddBaseDbContext<WebhooksDbContext>();
-    services.AddBaseDbContext<MessagesContext>();
     services.AddBaseDbContext<BackupsContext>();
     services.AddBaseDbContext<FilesDbContext>();
     services.AddBaseDbContext<NotifyDbContext>();

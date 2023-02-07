@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "ເພີ່ມຫົວຫນ້າພະແນກ",
-  "CustomNewDepartment": "{{groupCaption}} (ສ້າງ)",
-  "GroupAction": "ກຸ່ມດຳເນີນການ",
-  "SearchAddedMembers": "ຄົ້ນຫາສະມາຊິກເພີ່ມ",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' ໄດ້ຖືກບັນທຶກ ສຳ ເລັດແລ້ວ"
-}

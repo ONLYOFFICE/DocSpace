@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Bölüm başkanı ekle",
-  "CustomNewDepartment": "{{groupCaption}} (oluşturma)",
-  "GroupAction": "Grup eylemi",
-  "SearchAddedMembers": "Eklenen üyeleri ara",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' başarıyla kaydedildi"
-}

@@ -7,7 +7,8 @@ import { StyledParam } from "../Params/StyledParam";
 import ToggleParam from "../Params/ToggleParam";
 import ThirdPartyComboBox from "./ThirdPartyComboBox";
 
-import Checkbox from "@docspace/components/checkbox";
+import Link from "@docspace/components/link";
+import Text from "@docspace/components/text";
 import FolderInput from "./FolderInput";
 import { getOAuthToken } from "@docspace/common/utils";
 
@@ -38,6 +39,8 @@ const ThirdPartyStorage = ({
   getOAuthToken,
 
   isDisabled,
+  currentColorScheme,
+  isRoomAdmin,
 }) => {
   const onChangeIsThirdparty = () => {
     if (isDisabled) return;
@@ -47,16 +50,23 @@ const ThirdPartyStorage = ({
         isThirdparty: !storageLocation.isThirdparty,
       });
     } else {
-      toastr.warning(
-        <div>
-          <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
-          <a href="#">Third-party services</a>
-        </div>,
-        null,
-        5000,
-        true,
-        false
+      const data = isRoomAdmin ? (
+        <Text as="p">{t("ThirdPartyStorageRoomAdminNoStorageAlert")}</Text>
+      ) : (
+        <Text as="p">
+          {t("ThirdPartyStorageNoStorageAlert")}{" "}
+          <Link
+            href="/portal-settings/integration/third-party-services"
+            type="page"
+            noHover
+            color={currentColorScheme.main.accent}
+          >
+            {t("Translations:ThirdPartyTitle")}
+          </Link>
+        </Text>
       );
+
+      toastr.warning(data, null, 5000, true, false);
     }
   };
 
@@ -80,22 +90,16 @@ const ThirdPartyStorage = ({
       storageFolderId,
     });
 
-  const onChangeIsSaveThirdpartyAccount = () => {
-    onChangeStorageLocation({
-      ...storageLocation,
-      rememberThirdpartyStorage: !storageLocation.rememberThirdpartyStorage,
-    });
-  };
-
   return (
     <StyledThirdPartyStorage>
+      {/* //TODO: Uncomment when third-party storages will be  stable
       <ToggleParam
         id="shared_third-party-storage-toggle"
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}
         isChecked={storageLocation.isThirdparty}
         onCheckedChange={onChangeIsThirdparty}
-      />
+      /> */}
 
       {storageLocation.isThirdparty && (
         <ThirdPartyComboBox
@@ -127,94 +131,80 @@ const ThirdPartyStorage = ({
           isDisabled={isDisabled}
         />
       )}
-
-      {/* {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
-        <Checkbox
-          className="thirdparty-checkbox"
-          label={t("ThirdPartyStorageRememberChoice")}
-          isChecked={storageLocation.isSaveThirdpartyAccount}
-          onChange={onChangeIsSaveThirdpartyAccount}
-        />
-      )} */}
     </StyledThirdPartyStorage>
   );
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    tagsStore,
-    filesActionsStore,
-    selectedFolderStore,
-    settingsStore,
-    dialogsStore,
-  }) => {
-    // const { getOAuthToken } = auth.settingsStore;
-    const {
-      openConnectWindow,
-      saveThirdParty,
-      deleteThirdParty,
-    } = settingsStore.thirdPartyStore;
+export default inject(({ auth, settingsStore, dialogsStore }) => {
+  const { currentColorScheme } = auth.settingsStore;
 
-    const {
-      setConnectItem,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-      setSaveThirdpartyResponse,
-    } = dialogsStore;
+  const {
+    openConnectWindow,
+    saveThirdParty,
+    deleteThirdParty,
+  } = settingsStore.thirdPartyStore;
 
-    const thirdPartyStore = settingsStore.thirdPartyStore;
+  const {
+    setConnectItem,
+    setConnectDialogVisible,
+    setRoomCreation,
+    saveThirdpartyResponse,
+    setSaveThirdpartyResponse,
+  } = dialogsStore;
 
-    const connectItems = [
-      thirdPartyStore.googleConnectItem,
-      thirdPartyStore.boxConnectItem,
-      thirdPartyStore.dropboxConnectItem,
-      thirdPartyStore.oneDriveConnectItem,
-      thirdPartyStore.nextCloudConnectItem && [
-        ...thirdPartyStore.nextCloudConnectItem,
-        "Nextcloud",
-      ],
-      thirdPartyStore.kDriveConnectItem,
-      thirdPartyStore.yandexConnectItem,
-      thirdPartyStore.ownCloudConnectItem && [
-        ...thirdPartyStore.ownCloudConnectItem,
-        "ownCloud",
-      ],
-      thirdPartyStore.webDavConnectItem,
-      thirdPartyStore.sharePointConnectItem,
-    ]
-      .map(
-        (item) =>
-          item && {
-            id: item[0],
-            className: `storage_${item[0].toLowerCase()}`,
-            providerKey: item[0],
-            isOauth: item.length > 1 && item[0] !== "WebDav",
-            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
-            ...(item[0] === "WebDav" && {
-              category: item[item.length - 1],
-            }),
-          }
-      )
-      .filter((item) => !!item);
+  const thirdPartyStore = settingsStore.thirdPartyStore;
 
-    return {
-      connectItems,
+  const connectItems = [
+    thirdPartyStore.googleConnectItem,
+    thirdPartyStore.boxConnectItem,
+    thirdPartyStore.dropboxConnectItem,
+    thirdPartyStore.oneDriveConnectItem,
+    thirdPartyStore.nextCloudConnectItem && [
+      ...thirdPartyStore.nextCloudConnectItem,
+      "Nextcloud",
+    ],
+    thirdPartyStore.kDriveConnectItem,
+    thirdPartyStore.yandexConnectItem,
+    thirdPartyStore.ownCloudConnectItem && [
+      ...thirdPartyStore.ownCloudConnectItem,
+      "ownCloud",
+    ],
+    thirdPartyStore.webDavConnectItem,
+    thirdPartyStore.sharePointConnectItem,
+  ]
+    .map(
+      (item) =>
+        item && {
+          id: item[0],
+          className: `storage_${item[0].toLowerCase()}`,
+          providerKey: item[0],
+          isOauth: item.length > 1 && item[0] !== "WebDav",
+          oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+          ...(item[0] === "WebDav" && {
+            category: item[item.length - 1],
+          }),
+        }
+    )
+    .filter((item) => !!item);
 
-      setConnectDialogVisible,
-      setRoomCreation,
+  const { isRoomAdmin } = auth;
 
-      saveThirdParty,
-      deleteThirdParty,
+  return {
+    connectItems,
 
-      saveThirdpartyResponse,
-      setSaveThirdpartyResponse,
+    setConnectDialogVisible,
+    setRoomCreation,
 
-      openConnectWindow,
-      setConnectItem,
-      getOAuthToken,
-    };
-  }
-)(observer(ThirdPartyStorage));
+    saveThirdParty,
+    deleteThirdParty,
+
+    saveThirdpartyResponse,
+    setSaveThirdpartyResponse,
+
+    openConnectWindow,
+    setConnectItem,
+    getOAuthToken,
+    currentColorScheme,
+    isRoomAdmin,
+  };
+})(observer(ThirdPartyStorage));

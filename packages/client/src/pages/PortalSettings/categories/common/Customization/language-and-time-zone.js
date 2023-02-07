@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import FieldContainer from "@docspace/components/field-container";
@@ -163,8 +164,6 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
-      nameSchemaId,
-      getCurrentCustomSchema,
       cultureNames,
       rawTimezones,
       portalTimeZoneId,
@@ -253,18 +252,14 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     if (language !== prevProps.language) {
-      i18n
-        .changeLanguage(language)
-        .then(() => {
-          const newLocaleSelectedLanguage =
-            findSelectedItemByKey(cultureNames, this.state.language.key) ||
-            cultureNames[0];
-          this.setState({
-            language: languageFromSessionStorage || newLocaleSelectedLanguage,
-          });
-        })
-        //.then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(nameSchemaId));
+      i18n.changeLanguage(language).then(() => {
+        const newLocaleSelectedLanguage =
+          findSelectedItemByKey(cultureNames, this.state.language.key) ||
+          cultureNames[0];
+        this.setState({
+          language: languageFromSessionStorage || newLocaleSelectedLanguage,
+        });
+      });
     }
     if (timezoneDefault && languageDefault) {
       this.checkChanges();
@@ -495,7 +490,7 @@ class LanguageAndTimeZone extends React.Component {
             </div>
             <HelpButton
               offsetRight={0}
-              iconName="static/images/combined.shape.svg"
+              iconName={CombinedShapeSvgUrl}
               size={12}
               tooltipContent={tooltipLanguageTimeSettings}
             />
@@ -532,7 +527,6 @@ export default inject(({ auth, setup, common }) => {
     organizationName,
     greetingSettings,
     getPortalTimezones,
-    getCurrentCustomSchema,
     cultures,
     helpLink,
     currentColorScheme,
@@ -558,7 +552,6 @@ export default inject(({ auth, setup, common }) => {
     nameSchemaId,
     organizationName,
     setLanguageAndTime,
-    getCurrentCustomSchema,
     getPortalTimezones,
     isLoaded,
     setIsLoadedLngTZSettings,

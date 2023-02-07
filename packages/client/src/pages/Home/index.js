@@ -50,6 +50,7 @@ class PureHome extends React.Component {
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+      setIsPreview,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -73,6 +74,7 @@ class PureHome extends React.Component {
               data.viewAccessability.MediaView;
             const file = { ...data, canOpenPlayer };
             setToPreviewFile(file, true);
+            setIsPreview(true);
           })
           .catch((err) => {
             toastr.error(err);
@@ -304,7 +306,7 @@ class PureHome extends React.Component {
           );
         }
         return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="Filesы">
+          <Trans t={t} i18nKey="CopyItem" ns="Files">
             {{ title }} copied
           </Trans>
         );
@@ -492,6 +494,7 @@ class PureHome extends React.Component {
       frameConfig,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -538,13 +541,19 @@ class PureHome extends React.Component {
             </Section.SectionHeader>
           )}
 
-          {!isEmptyPage && !isErrorRoomNotAvailable && (
+          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
               ) : (
                 <SectionFilterContent />
               )}
+            </Section.SectionFilter>
+          )}
+
+          {isLoadedEmptyPage && (
+            <Section.SectionFilter>
+              <div style={{ height: "32px" }} />
             </Section.SectionFilter>
           )}
 
@@ -622,9 +631,10 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
-
+      isLoadedEmptyPage,
       disableDrag,
       isErrorRoomNotAvailable,
+      setIsPreview,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -749,6 +759,7 @@ export default inject(
       setHeaderVisible,
       personal,
       setToPreviewFile,
+      setIsPreview,
       playlist,
 
       getFileInfo,
@@ -773,6 +784,7 @@ export default inject(
       setViewAs,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

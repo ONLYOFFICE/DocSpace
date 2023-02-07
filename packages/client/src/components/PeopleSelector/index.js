@@ -1,3 +1,7 @@
+import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
+import EmptyScreenPersonsSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
+
 import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -46,6 +50,7 @@ const PeopleSelector = ({
   withSelectAll,
   filter,
   excludeItems,
+  currentUserId,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -80,18 +85,35 @@ const PeopleSelector = ({
   }, [isLoading]);
 
   const toListItem = (item) => {
-    const { id, email, avatar, icon, displayName } = item;
+    const { id, email, avatar, icon, displayName, hasAvatar } = item;
 
     const role = getUserRole(item);
+
+    const userAvatar = hasAvatar ? avatar : DefaultUserPhoto;
 
     return {
       id,
       email,
-      avatar,
+      avatar: userAvatar,
       icon,
       label: displayName || email,
       role,
     };
+  };
+
+  const moveCurrentUserToTopOfList = (listUser) => {
+    const currentUserIndex = listUser.findIndex(
+      (user) => user.id === currentUserId
+    );
+
+    // return if the current user is already at the top of the list or not found
+    if (currentUserIndex < 1) return listUser;
+
+    const [currentUser] = listUser.splice(currentUserIndex, 1);
+
+    listUser.splice(0, 0, currentUser);
+
+    return listUser;
   };
 
   const loadNextPage = (startIndex, search = searchValue) => {
@@ -126,7 +148,7 @@ const PeopleSelector = ({
           })
           .map((item) => toListItem(item));
 
-        newItems = [...newItems, ...items];
+        newItems = moveCurrentUserToTopOfList([...newItems, ...items]);
 
         const newTotal = response.total - totalDifferent;
 
@@ -164,9 +186,7 @@ const PeopleSelector = ({
       items={itemsList}
       isMultiSelect={isMultiSelect}
       selectedItems={selectedItems}
-      acceptButtonLabel={
-        acceptButtonLabel || t("PeopleTranslations:AddMembers")
-      }
+      acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
       onAccept={onAccept}
       withSelectAll={withSelectAll}
       selectAllLabel={selectAllLabel || t("AllAccounts")}
@@ -206,13 +226,16 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 
 PeopleSelector.defaultProps = {
   excludeItems: [],
-  selectAllIcon: "/static/images/catalog.accounts.react.svg",
-  emptyScreenImage: "images/empty_screen_persons.svg",
-  searchEmptyScreenImage: "images/empty_screen_persons.svg",
+  selectAllIcon: CatalogAccountsReactSvgUrl,
+  emptyScreenImage: EmptyScreenPersonsSvgUrl,
+  searchEmptyScreenImage: EmptyScreenPersonsSvgUrl,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+  return {
+    theme: auth.settingsStore.theme,
+    currentUserId: auth.userStore.user.id,
+  };
 })(
   observer(
     withTranslation(["PeopleSelector", "PeopleTranslations", "Common"])(

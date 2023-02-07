@@ -64,13 +64,29 @@ public class MigrationRunner
         _creatorDbContext = creatorDbContext;
     }
 
-    public async Task Run(string backupFile, string region)
+    public async Task Run(string backupFile, string region, string fromAlias, string toAlias)
     {
         _region = region;
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
         var columnMapper = new ColumnMapper();
+        if (!string.IsNullOrEmpty(toAlias))
+        {
+            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>();
+            var fromTenant = dbContextTenant.Tenants.SingleOrDefault(q => q.Alias == fromAlias);
 
+            using var dbContextToTenant = _dbFactory.CreateDbContext<TenantDbContext>(region);
+            var toTenant = dbContextToTenant.Tenants.SingleOrDefault(q => q.Alias == toAlias);
+
+            toTenant.Status = TenantStatus.Restoring;
+            toTenant.StatusChanged = DateTime.UtcNow;
+
+            dbContextTenant.Tenants.Update(toTenant);
+            dbContextToTenant.SaveChanges();
+
+            columnMapper.SetMapping("tenants_tenants", "id", fromTenant.Id, toTenant.Id);
+            columnMapper.Commit();
+        }
         using (var dataReader = new ZipReadOperator(_backupFile))
         {
             foreach (var module in _modules)
@@ -84,8 +100,8 @@ public class MigrationRunner
 
             await DoRestoreStorage(dataReader, columnMapper);
 
+            SetTenantActiveaAndTenantOwner(columnMapper.GetTenantMapping());
             SetAdmin(columnMapper.GetTenantMapping());
-            SetTenantActive(columnMapper.GetTenantMapping());
         }
     }
 
@@ -139,16 +155,25 @@ public class MigrationRunner
         return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
     }
 
-    private void SetTenantActive(int tenantId)
+    private void SetTenantActiveaAndTenantOwner(int tenantId)
     {
-        using var dbContext = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
-        var tenant = dbContext.Tenants.Single(t=> t.Id == tenantId);
+        var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
+        Console.WriteLine("set tenant status");
         tenant.LastModified = DateTime.UtcNow;
         tenant.StatusChanged = DateTime.UtcNow;
-        dbContext.Tenants.Update(tenant);
-        dbContext.SaveChanges();
+        if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
+        {
+            
+            var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
+            tenant.OwnerId = user.Id;
+            Console.WriteLine($"set ownerId {user.Id}");
+    }
+        dbContextTenant.Tenants.Update(tenant);
+        dbContextTenant.SaveChanges();
     }
 
     private void SetAdmin(int tenantId)
@@ -157,7 +182,8 @@ public class MigrationRunner
         var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
         using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
-        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId)) {
+        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId))
+        {
             var userGroup = new UserGroup()
             {
                 Tenant = tenantId,

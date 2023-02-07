@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 import Selector from "./";
+import CustomSvgUrl from "PUBLIC_DIR/images/icons/32/room/custom.svg?url";
+import ArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
+import EmptyScreenFilter from "PUBLIC_DIR/images/empty_screen_filter.png";
 
 const StyledRowLoader = styled.div`
   width: 100%;
@@ -47,7 +50,7 @@ const getItems = (count) => {
       key: `user_${i}`,
       id: `user_${i}`,
       label: makeName() + " " + i,
-      avatar: "static/images/room.archive.svg",
+      avatar: ArchiveSvgUrl,
     });
   }
 
@@ -56,7 +59,7 @@ const getItems = (count) => {
       key: `room_${i}`,
       id: `room_${i}`,
       label: makeName() + " " + i + " room",
-      icon: "static/images/icons/32/rooms/custom.svg",
+      icon: CustomSvgUrl,
     });
   }
 
@@ -157,7 +160,7 @@ Default.args = {
   onAccept: (items, access) => console.log("accept " + items + access),
   withSelectAll: false,
   selectAllLabel: "All accounts",
-  selectAllIcon: "static/images/room.archive.svg",
+  selectAllIcon: ArchiveSvgUrl,
   onSelectAll: () => console.log("select all"),
   withAccessRights: false,
   accessRights,
@@ -167,11 +170,11 @@ Default.args = {
   withCancelButton: false,
   cancelButtonLabel: "Cancel",
   onCancel: () => console.log("cancel"),
-  emptyScreenImage: "static/images/empty_screen_filter.png",
+  emptyScreenImage: EmptyScreenFilter,
   emptyScreenHeader: "No other accounts here yet",
   emptyScreenDescription:
     "The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
-  searchEmptyScreenImage: "static/images/empty_screen_filter.png",
+  searchEmptyScreenImage: EmptyScreenFilter,
   searchEmptyScreenHeader: "No other accounts here yet search",
   searchEmptyScreenDescription:
     " SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",

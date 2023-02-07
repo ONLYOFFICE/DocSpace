@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "Adicionar chefe de departamento",
-  "CustomNewDepartment": "{{groupCaption}} (criação)",
-  "GroupAction": "Ação em grupo",
-  "SearchAddedMembers": "Pesquisar membros adicionados",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' foi salvo com sucesso"
-}

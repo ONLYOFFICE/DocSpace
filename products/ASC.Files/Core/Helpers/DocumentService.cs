@@ -258,6 +258,7 @@ public static class DocumentService
         string signatureSecret,
         IHttpClientFactory clientFactory)
     {
+        var cancellationTokenSource = new CancellationTokenSource(Timeout);
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(documentTrackerUrl),
@@ -318,8 +319,8 @@ public static class DocumentService
         request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
         string dataResponse;
-        using (var response = await httpClient.SendAsync(request))
-        using (var stream = await response.Content.ReadAsStreamAsync())
+        using (var response = await httpClient.SendAsync(request, cancellationTokenSource.Token))
+        using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
         {
             if (stream == null)
             {
@@ -600,31 +601,39 @@ public static class DocumentService
     [DebuggerDisplay("{Command} ({Key})")]
     private class CommandBody
     {
+        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public CommandMethod Command { get; set; }
 
+        [JsonProperty(PropertyName = "c", Required = Required.Always)]
         [JsonPropertyName("c")]
         public string C
         {
             get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
         }
 
+        [JsonProperty(PropertyName = "callback", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("callback")]
         public string Callback { get; set; }
 
+        [JsonProperty(PropertyName = "key", Required = Required.Always)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
+        [JsonProperty(PropertyName = "meta", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("meta")]
         public MetaData Meta { get; set; }
 
+        [JsonProperty(PropertyName = "users", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("users")]
         public string[] Users { get; set; }
 
+        [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("token")]
         public string Token { get; set; }
 
         //not used
+        [JsonProperty(PropertyName = "userdata", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("userdata")]
         public string UserData { get; set; }
     }
@@ -633,6 +642,7 @@ public static class DocumentService
     [DebuggerDisplay("{Title}")]
     public class MetaData
     {
+        [JsonProperty(PropertyName = "title")]
         [JsonPropertyName("title")]
         public string Title { get; set; }
     }
@@ -641,15 +651,19 @@ public static class DocumentService
     [DebuggerDisplay("{Height}x{Width}")]
     public class ThumbnailData
     {
+        [JsonProperty(PropertyName = "aspect")]
         [JsonPropertyName("aspect")]
         public int Aspect { get; set; }
 
+        [JsonProperty(PropertyName = "first")]
         [JsonPropertyName("first")]
         public bool First { get; set; }
 
+        [JsonProperty(PropertyName = "height")]
         [JsonPropertyName("height")]
         public int Height { get; set; }
 
+        [JsonProperty(PropertyName = "width")]
         [JsonPropertyName("width")]
         public int Width { get; set; }
     }
@@ -659,27 +673,35 @@ public static class DocumentService
     [DebuggerDisplay("SpreadsheetLayout {IgnorePrintArea} {Orientation} {FitToHeight} {FitToWidth} {Headings} {GridLines}")]
     public class SpreadsheetLayout
     {
+        [JsonProperty(PropertyName = "ignorePrintArea")]
         [JsonPropertyName("ignorePrintArea")]
         public bool IgnorePrintArea { get; set; }
 
+        [JsonProperty(PropertyName = "orientation")]
         [JsonPropertyName("orientation")]
         public string Orientation { get; set; }
 
+        [JsonProperty(PropertyName = "fitToHeight")]
         [JsonPropertyName("fitToHeight")]
         public int FitToHeight { get; set; }
 
+        [JsonProperty(PropertyName = "fitToWidth")]
         [JsonPropertyName("fitToWidth")]
         public int FitToWidth { get; set; }
 
+        [JsonProperty(PropertyName = "headings")]
         [JsonPropertyName("headings")]
         public bool Headings { get; set; }
 
+        [JsonProperty(PropertyName = "gridLines")]
         [JsonPropertyName("gridLines")]
         public bool GridLines { get; set; }
 
+        [JsonProperty(PropertyName = "margins")]
         [JsonPropertyName("margins")]
         public LayoutMargins Margins { get; set; }
 
+        [JsonProperty(PropertyName = "pageSize")]
         [JsonPropertyName("pageSize")]
         public LayoutPageSize PageSize { get; set; }
 
@@ -688,15 +710,19 @@ public static class DocumentService
         [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
         public class LayoutMargins
         {
+            [JsonProperty(PropertyName = "left")]
             [JsonPropertyName("left")]
             public string Left { get; set; }
 
+            [JsonProperty(PropertyName = "right")]
             [JsonPropertyName("right")]
             public string Right { get; set; }
 
+            [JsonProperty(PropertyName = "top")]
             [JsonPropertyName("top")]
             public string Top { get; set; }
 
+            [JsonProperty(PropertyName = "bottom")]
             [JsonPropertyName("bottom")]
             public string Bottom { get; set; }
         }
@@ -705,9 +731,11 @@ public static class DocumentService
         [DebuggerDisplay("PageSize {Width} {Height}")]
         public class LayoutPageSize
         {
+            [JsonProperty(PropertyName = "height")]
             [JsonPropertyName("height")]
             public string Height { get; set; }
 
+            [JsonProperty(PropertyName = "width")]
             [JsonPropertyName("width")]
             public string Width { get; set; }
         }
@@ -717,36 +745,47 @@ public static class DocumentService
     [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
     private class ConvertionBody
     {
+        [JsonProperty(PropertyName = "async")]
         [JsonPropertyName("async")]
         public bool Async { get; set; }
 
+        [JsonProperty(PropertyName = "filetype", Required = Required.Always)]
         [JsonPropertyName("filetype")]
         public string FileType { get; set; }
 
+        [JsonProperty(PropertyName = "key", Required = Required.Always)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
+        [JsonProperty(PropertyName = "outputtype", Required = Required.Always)]
         [JsonPropertyName("outputtype")]
         public string OutputType { get; set; }
 
+        [JsonProperty(PropertyName = "password", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("password")]
         public string Password { get; set; }
 
+        [JsonProperty(PropertyName = "title")]
         [JsonPropertyName("title")]
         public string Title { get; set; }
 
+        [JsonProperty(PropertyName = "thumbnail", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("thumbnail")]
         public ThumbnailData Thumbnail { get; set; }
 
+        [JsonProperty(PropertyName = "spreadsheetLayout", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("spreadsheetLayout")]
         public SpreadsheetLayout SpreadsheetLayout { get; set; }
 
+        [JsonProperty(PropertyName = "url", Required = Required.Always)]
         [JsonPropertyName("url")]
         public string Url { get; set; }
 
+        [JsonProperty(PropertyName = "region", Required = Required.Always)]
         [JsonPropertyName("region")]
         public string Region { get; set; }
 
+        [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("token")]
         public string Token { get; set; }
     }
@@ -755,28 +794,35 @@ public static class DocumentService
     [DebuggerDisplay("{Key}")]
     private class BuilderBody
     {
+        [JsonProperty(PropertyName = "async")]
         [JsonPropertyName("async")]
         public bool Async { get; set; }
 
+        [JsonProperty(PropertyName = "key", Required = Required.Always)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
+        [JsonProperty(PropertyName = "url", Required = Required.Always)]
         [JsonPropertyName("url")]
         public string Url { get; set; }
 
-        [JsonPropertyName("token")]
+        [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
+[JsonPropertyName("token")]
         public string Token { get; set; }
     }
 
     [Serializable]
     public class FileLink
     {
+        [JsonProperty(PropertyName = "filetype")]
         [JsonPropertyName("filetype")]
         public string FileType { get; set; }
 
+        [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [JsonPropertyName("token")]
         public string Token { get; set; }
 
+        [JsonProperty(PropertyName = "url")]
         [JsonPropertyName("url")]
         public string Url { get; set; }
     }

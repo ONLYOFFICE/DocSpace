@@ -98,12 +98,16 @@ public static class BaseDbContextExtension
     {
         var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
         services.AddPooledDbContextFactory<T>(installerOptionsAction.OptionsAction);
+
+        return services;
     }
 
-    public static void AddBaseDbContext<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
+    public static IServiceCollection AddBaseDbContext<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
     {
         var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
         services.AddDbContext<T>(installerOptionsAction.OptionsAction);
+
+        return services;
     }
 
     public static T AddOrUpdate<T, TContext>(this TContext b, DbSet<T> dbSet, T entity) where T : BaseEntity where TContext : DbContext

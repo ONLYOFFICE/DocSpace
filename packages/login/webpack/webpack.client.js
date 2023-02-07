@@ -11,6 +11,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 const baseConfig = require("./webpack.base.js");
 const pkg = require("../package.json");
 const deps = pkg.dependencies || {};
@@ -30,6 +31,22 @@ const clientConfig = {
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/login/",
     chunkFilename: "static/js/[id].[contenthash].js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      folder += result.length === 0 ? "" : "/";
+
+      return `static/${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+    },
   },
 
   performance: {
@@ -64,6 +81,33 @@ const clientConfig = {
           },
           // Compiles Sass to CSS
           "sass-loader",
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+
+            options: {
+              emitFile: false,
+              name: (resourcePath, resourceQuery) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
         ],
       },
     ],

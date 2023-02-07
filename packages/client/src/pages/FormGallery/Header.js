@@ -1,3 +1,5 @@
+﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import IconButton from "@docspace/components/icon-button";
@@ -49,7 +51,7 @@ const SectionHeaderContent = (props) => {
   return (
     <StyledContainer>
       <IconButton
-        iconName="/static/images/arrow.path.react.svg"
+        iconName={ArrowPathReactSvgUrl}
         size="17"
         isFill
         onClick={onBackToFiles}
@@ -63,7 +65,7 @@ const SectionHeaderContent = (props) => {
         <div className="info-panel-toggle-bg">
           <IconButton
             className="info-panel-toggle"
-            iconName="images/panel.react.svg"
+            iconName={PanelReactSvgUrl}
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}

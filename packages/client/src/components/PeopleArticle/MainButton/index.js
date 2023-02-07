@@ -1,3 +1,9 @@
+﻿import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import PlaneReactSvgUrl from "PUBLIC_DIR/images/plane.react.svg?url";
+import ImportReactSvgUrl from "PUBLIC_DIR/images/import.react.svg?url";
+import AddDepartmentReactSvgUrl from "PUBLIC_DIR/images/add.department.react.svg?url";
+import AddGuestReactSvgUrl from "PUBLIC_DIR/images/add.guest.react.svg?url";
+import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -96,7 +102,7 @@ class ArticleMainButtonContent extends React.Component {
         icon: combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           homepage,
-          "/images/add.employee.react.svg"
+          AddEmployeeReactSvgUrl
         ),
         label: userCaption,
         onClick: this.goToEmployeeCreate,
@@ -106,7 +112,7 @@ class ArticleMainButtonContent extends React.Component {
       //   icon: combineUrl(
       //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
-      //     "/images/add.guest.react.svg"
+      //     AddGuestReactSvgUrl
       //   ),
       //   label: guestCaption,
       //   onClick: this.goToGuestCreate,
@@ -116,7 +122,7 @@ class ArticleMainButtonContent extends React.Component {
       //   icon: combineUrl(
       //     window.DocSpaceConfig?.proxy?.url,
       //     homepage,
-      //     "/images/add.department.react.svg"
+      //     AddDepartmentReactSvgUrl
       //   ),
       //   label: groupCaption,
       //   onClick: this.goToGroupCreate,
@@ -128,7 +134,7 @@ class ArticleMainButtonContent extends React.Component {
         key: "invite-link",
         icon: combineUrl(
           window.DocSpaceConfig?.proxy?.url,
-          "/static/images/invitation.link.react.svg"
+          InvitationLinkReactSvgUrl
         ),
         label: t("PeopleTranslations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
@@ -136,7 +142,7 @@ class ArticleMainButtonContent extends React.Component {
       /* {
         icon: combineUrl(
           window.DocSpaceConfig?.proxy?.url,
-          "/static/images/plane.react.svg"
+          PlaneReactSvgUrl
         ),
         label: t("SendInvitesAgain"),
         onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
@@ -145,7 +151,7 @@ class ArticleMainButtonContent extends React.Component {
       {
         icon: combineUrl(
           window.DocSpaceConfig?.proxy?.url,
-          "/static/images/import.react.svg"
+          ImportReactSvgUrl
         ),
         label: t("ImportPeople"),
         onClick: this.onImportClick,

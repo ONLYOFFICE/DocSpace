@@ -20,6 +20,7 @@ const Accounts = ({
   canChangeUserType,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { role, id, isVisitor } = selection;
 
@@ -88,9 +89,20 @@ const Accounts = ({
     return options;
   }, [t, isAdmin, isOwner, isVisitor]);
 
+  const onAbort = () => {
+    setIsLoading(false);
+  };
+
+  const onSuccess = () => {
+    setIsLoading(false);
+  };
+
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [selection], t, false);
+      setIsLoading(true);
+      if (!changeUserType(action, [selection], onSuccess, onAbort)) {
+        setIsLoading(false);
+      }
     },
     [selection, changeUserType, t]
   );
@@ -114,6 +126,7 @@ const Accounts = ({
         displaySelectedOption
         modernView
         manualWidth={"fit-content"}
+        isLoading={isLoading}
       />
     );
 
@@ -192,7 +205,7 @@ const Accounts = ({
 
 export default inject(({ auth, peopleStore, accessRightsStore }) => {
   const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
-  const { changeType: changeUserType } = peopleStore;
+  const { changeType: changeUserType, usersStore } = peopleStore;
   const { canChangeUserType } = accessRightsStore;
 
   return {
@@ -201,6 +214,7 @@ export default inject(({ auth, peopleStore, accessRightsStore }) => {
     changeUserType,
     selfId,
     canChangeUserType,
+    loading: usersStore.operationRunning,
   };
 })(
   withTranslation([

@@ -1,6 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import ContextMenuButton from ".";
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 
 const baseData = () => [
   {
@@ -12,7 +13,7 @@ const baseData = () => [
 
 const baseProps = {
   title: "Actions",
-  iconName: "static/images/vertical-dots.react.svg",
+  iconName: VerticalDotsReactSvgUrl,
   size: 16,
   color: "#A3A9AE",
   getData: baseData,

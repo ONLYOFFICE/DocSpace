@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
@@ -19,13 +19,14 @@ import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/Recove
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-import SSOIcon from "../../../../../public/images/sso.react.svg";
+import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-
-
+import { getLogoFromPath } from "@docspace/common/utils";
+import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
+import { TenantStatus } from "@docspace/common/constants";
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
 }
@@ -41,24 +42,37 @@ const Login: React.FC<ILoginProps> = ({
   setTheme,
   logoUrls,
 }) => {
+  const isRestoringPortal =
+    portalSettings.tenantStatus === TenantStatus.PortalRestore;
+
+  useEffect(() => {
+    isRestoringPortal && window.location.replace("/preparation-portal");
+  }, []);
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
   const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
-  const { ssoLabel, ssoUrl } = capabilities;
 
+  const ssoLabel = capabilities?.ssoLabel;
+  const ssoUrl = capabilities?.ssoUrl;
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
+  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
     const theme =
       window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (systemTheme === "Base") setTheme(Base);
+    else setTheme(Dark);
+  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -69,7 +83,6 @@ const Login: React.FC<ILoginProps> = ({
     return (
       <div className="buttonWrapper">
         <SocialButton
-          //iconName="/static/images/sso.react.svg"
           IconComponent={SSOIcon}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
@@ -109,10 +122,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-            url,
-            "login",
-            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-          );
+              url,
+              "login",
+              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+            );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
@@ -177,16 +190,18 @@ const Login: React.FC<ILoginProps> = ({
   const bgPattern = getBgPattern(currentColorScheme.id);
 
   const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
+  const logoUrl = !theme.isBase
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   if (!mounted) return <></>;
+  if (isRestoringPortal) return <></>;
 
   return (
     <LoginFormWrapper
       id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      //className="with-background-pattern"
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
