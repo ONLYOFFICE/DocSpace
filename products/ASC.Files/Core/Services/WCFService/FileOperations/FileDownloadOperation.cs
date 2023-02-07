@@ -55,7 +55,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
     {
         await base.RunJob(distributedTask, cancellationToken);
 
-        using var scope = ThirdPartyOperation.CreateScope();
+        await using var scope = ThirdPartyOperation.CreateScopeAsync();
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
         var instanceCrypto = scope.ServiceProvider.GetRequiredService<InstanceCrypto>();
         var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();

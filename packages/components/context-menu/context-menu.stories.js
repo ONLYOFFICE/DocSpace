@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import ContextMenu from "./index";
 
 export default {
@@ -25,34 +25,34 @@ const Template = (args) => {
   const items = [
     {
       label: "Edit",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Preview",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       separator: true,
     },
     {
       label: "Sharing settings",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Link for portal users",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Copy external link",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Send by e-mail",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Version history",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
       items: [
         {
           label: "Show version history",
@@ -70,19 +70,19 @@ const Template = (args) => {
     },
     {
       label: "Make as favorite",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Download",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Download as",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
     {
       label: "Move or copy",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
       items: [
         {
           label: "Move to",
@@ -97,7 +97,7 @@ const Template = (args) => {
     },
     {
       label: "Rename",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
       disabled: true,
     },
     {
@@ -105,7 +105,7 @@ const Template = (args) => {
     },
     {
       label: "Quit",
-      icon: "/static/images/catalog.folder.react.svg",
+      icon: CatalogFolderReactSvgUrl,
     },
   ];
 

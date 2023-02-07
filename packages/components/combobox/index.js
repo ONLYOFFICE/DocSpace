@@ -44,11 +44,13 @@ class ComboBox extends React.Component {
       disableItemClick,
       isDisabled,
       toggleAction,
+      isLoading,
     } = this.props;
 
     if (
       isDisabled ||
       disableItemClick ||
+      isLoading ||
       (disableIconClick && e && e.target.closest(".optionalBlock"))
     )
       return;
@@ -109,8 +111,12 @@ class ComboBox extends React.Component {
       offsetLeft,
       modernView,
       withBackdrop,
-
+      isAside,
+      withBackground,
       advancedOptionsCount,
+      isMobileView,
+      withoutPadding,
+      isLoading,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -139,7 +145,18 @@ class ComboBox extends React.Component {
     let optionsCount = optionsLength;
 
     if (withAdvancedOptions) {
-      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+      const advancedOptionsWithoutSeparator = advancedOptions.props.children.filter(
+        (option) => option.key !== "s1"
+      );
+
+      const advancedOptionsWithoutSeparatorLength =
+        advancedOptionsWithoutSeparator.length;
+
+      optionsCount = advancedOptionsCount
+        ? advancedOptionsCount
+        : advancedOptionsWithoutSeparatorLength
+        ? advancedOptionsWithoutSeparatorLength
+        : 6;
     }
 
     const disableMobileView = optionsCount < 5;
@@ -155,6 +172,7 @@ class ComboBox extends React.Component {
         toggleAction={toggleAction}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
+        withoutPadding={withoutPadding}
         {...props}
       >
         <ComboButton
@@ -173,6 +191,7 @@ class ComboBox extends React.Component {
           modernView={modernView}
           fillIcon={fillIcon}
           tabIndex={tabIndex}
+          isLoading={isLoading}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -196,6 +215,9 @@ class ComboBox extends React.Component {
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
+            isAside={isAside}
+            withBackground={withBackground}
+            isMobileView={isMobileView && !disableMobileView}
           >
             {advancedOptions
               ? advancedOptions
@@ -280,25 +302,26 @@ ComboBox.propTypes = {
   comboIcon: PropTypes.string,
   manualY: PropTypes.string,
   manualX: PropTypes.string,
-  //** Dropdown manual width */
+  /** Dropdown manual width */
   manualWidth: PropTypes.string,
   displaySelectedOption: PropTypes.bool,
   fixedDirection: PropTypes.bool,
   /** Disable clicking on the item */
   disableItemClick: PropTypes.bool,
-
+  /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
   isExternalLink: PropTypes.bool,
   isPersonal: PropTypes.bool,
-
   offsetLeft: PropTypes.number,
-
-  /**Tell when combo-box should displaying at modern view */
+  /** Tell when combo-box should displaying at modern view */
   modernView: PropTypes.bool,
-
-  /**Count of advanced options  */
+  /** Count of advanced options  */
   advancedOptionsCount: PropTypes.number,
+  /** Accepts css tab-index style */
   tabIndex: PropTypes.number,
+  withoutPadding: PropTypes.bool,
+  /** Tells when a component is loading */
+  isLoading: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -319,6 +342,8 @@ ComboBox.defaultProps = {
   isExternalLink: false,
   modernView: false,
   tabIndex: -1,
+  withoutPadding: false,
+  isLoading: false,
 };
 
 export default ComboBox;

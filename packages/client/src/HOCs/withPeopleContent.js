@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -6,28 +6,31 @@ import Link from "@docspace/components/link";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Avatar from "@docspace/components/avatar";
 
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
-
 export default function withContent(WrappedContent) {
   const WithContent = (props) => {
     const {
       item,
       selectGroup,
-      fetchProfile,
-      history,
       checked,
       selectUser,
       deselectUser,
+      setBufferSelection,
 
       theme,
       getModel,
     } = props;
-    const { userName, mobilePhone, email, role, displayName, avatar } = item;
 
-    const onContentRowSelect = (checked, user) =>
+    const { mobilePhone, email, role, displayName, avatar } = item;
+
+    const onContentRowSelect = (checked, user) => {
       checked ? selectUser(user) : deselectUser(user);
+    };
+
+    const onContentRowClick = (checked, user, addToSelection = true) => {
+      checked
+        ? setBufferSelection(user, addToSelection)
+        : setBufferSelection(null);
+    };
 
     const checkedProps = { checked };
 
@@ -92,35 +95,6 @@ export default function withContent(WrappedContent) {
 
     const groups = getFormattedGroups();
 
-    /*const redirectToProfile = () => {
-      history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/accounts/view/${userName}`
-        )
-      );
-    };*/
-
-    /*const onUserNameClick = useCallback(
-      (e) => {
-        const timer = setTimeout(() => redirectToProfile(), 500);
-        e.preventDefault();
-        fetchProfile(userName).finally(() => {
-          clearTimeout(timer);
-          if (
-            combineUrl(
-              AppServerConfig.proxyURL,
-              config.homepage,
-              `/accounts/view/${userName}`
-            ) !== window.location.pathname
-          )
-            redirectToProfile();
-        });
-      },
-      [history, userName]
-    );*/
-
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
     const onEmailClick = () => window.open(`mailto:${email}`);
 
@@ -141,9 +115,9 @@ export default function withContent(WrappedContent) {
     return (
       <WrappedContent
         onContentRowSelect={onContentRowSelect}
+        onContentRowClick={onContentRowClick}
         onPhoneClick={onPhoneClick}
         onEmailClick={onEmailClick}
-        //onUserNameClick={onUserNameClick}
         groups={groups}
         checkedProps={checkedProps}
         element={element}

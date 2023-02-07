@@ -1,3 +1,4 @@
+﻿import EmptyScreenFormGalleryReactSvgUrl from "PUBLIC_DIR/images/empty_screen_form-gallery.react.svg?url";
 import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
@@ -37,7 +38,7 @@ const SectionBodyContent = ({
     <Loaders.Tiles foldersCount={0} withTitle={false} />
   ) : !hasGalleryFiles ? (
     <EmptyScreenContainer
-      imageSrc="images/empty_screen_form-gallery.react.svg"
+      imageSrc={EmptyScreenFormGalleryReactSvgUrl}
       imageAlt="Empty Screen Gallery image"
       headerText={t("GalleryEmptyScreenHeader")}
       descriptionText={t("EmptyScreenDescription")}

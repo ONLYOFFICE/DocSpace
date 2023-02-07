@@ -35,12 +35,7 @@ class TreeFoldersStore {
   getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
-    // this.treeFolders = treeFolders;
-
-    //TODO: remove after api fix
-    this.treeFolders = treeFolders
-      .filter((f) => f.rootFolderType !== FolderType.Recent)
-      .filter((f) => f.rootFolderType !== FolderType.Favorites);
+    this.treeFolders = treeFolders;
   };
 
   setIsLoadingNodes = (isLoadingNodes) => {
@@ -70,6 +65,7 @@ class TreeFoldersStore {
   isMy = (myType) => myType === FolderType.USER;
   isCommon = (commonType) => commonType === FolderType.COMMON;
   isShare = (shareType) => shareType === FolderType.SHARE;
+  isRoomRoot = (type) => type === FolderType.Rooms;
 
   getRootFolder = (rootFolderType) => {
     return this.treeFolders.find((x) => x.rootFolderType === rootFolderType);
@@ -77,8 +73,12 @@ class TreeFoldersStore {
 
   getSubfolders = (folderId) => getSubfolders(folderId);
 
-  get sharedRoomId() {
+  get myRoomsId() {
     return this.rootFoldersTitles[FolderType.Rooms]?.id;
+  }
+
+  get archiveRoomsId() {
+    return this.rootFoldersTitles[FolderType.Archive]?.id;
   }
 
   get myFolder() {
@@ -140,7 +140,10 @@ class TreeFoldersStore {
   }
 
   get isPersonalRoom() {
-    return this.myFolder && this.myFolder.id === this.selectedFolderStore.id;
+    return (
+      this.myFolder &&
+      this.myFolder.rootFolderType === this.selectedFolderStore.rootFolderType
+    );
   }
 
   get isShareFolder() {
@@ -196,6 +199,14 @@ class TreeFoldersStore {
     );
   }
 
+  get isRoom() {
+    return (
+      this.roomsFolder &&
+      this.roomsFolder.rootFolderType ===
+        this.selectedFolderStore.rootFolderType
+    );
+  }
+
   get isArchiveFolder() {
     return (
       this.archiveFolder &&
@@ -205,6 +216,10 @@ class TreeFoldersStore {
 
   get isArchiveFolderRoot() {
     return FolderType.Archive === this.selectedFolderStore.rootFolderType;
+  }
+
+  get isPersonalFolderRoot() {
+    return FolderType.USER === this.selectedFolderStore.rootFolderType;
   }
 
   get selectedKeys() {

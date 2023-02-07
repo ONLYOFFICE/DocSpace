@@ -39,6 +39,7 @@ internal class DocumentsActionMapper : IProductActionMapper
         {
             new FilesActionMapper(),
             new FoldersActionMapper(),
+            new RoomsActionMapper(),
             new SettingsActionMapper()
         };
     }
@@ -122,6 +123,50 @@ internal class FoldersActionMapper : IModuleActionMapper
                     { ActionType.Move, new[] { MessageAction.FolderMoved, MessageAction.FolderMovedFrom, MessageAction.FolderMovedWithOverwriting } },
                 }
             },
+        };
+    }
+}
+
+internal class RoomsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public RoomsActionMapper()
+    {
+        Module = ModuleType.Rooms;
+        Actions = new MessageMapsDictionary(ProductType.Documents, Module)
+        {
+            {
+                EntryType.Room, new Dictionary<ActionType, MessageAction[]>
+                {
+                    { ActionType.Create, new[] { MessageAction.RoomCreated } },
+                    {
+                        ActionType.Update, new[]
+                        {
+                            MessageAction.RoomArchived,
+                            MessageAction.RoomUnarchived,
+                            MessageAction.RoomRenamed,
+                            MessageAction.AddedRoomTags,
+                            MessageAction.DeletedRoomTags,
+                            MessageAction.RoomLogoCreated,
+                            MessageAction.RoomLogoDeleted,
+                            MessageAction.RoomUpdateAccess,
+                            MessageAction.RoomLinkUpdate,
+                        }
+                    },
+                    {
+                        ActionType.Delete, new [] { MessageAction.RoomDeleted }
+                    }
+                }
+            },
+            {
+                EntryType.Tag, new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.TagCreated }, 
+                    { ActionType.Delete, MessageAction.TagsDeleted }
+                }
+            }
         };
     }
 }

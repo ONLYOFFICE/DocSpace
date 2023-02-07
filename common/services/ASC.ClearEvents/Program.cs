@@ -65,21 +65,19 @@ try
 
     app.UseRouting();
 
-    app.UseEndpoints(endpoints =>
+    app.MapHealthChecks("/health", new HealthCheckOptions()
     {
-        endpoints.MapHealthChecks("/health", new HealthCheckOptions()
-        {
-            Predicate = _ => true,
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
-        endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-        {
-            Predicate = r => r.Name.Contains("self")
-        });
+        Predicate = _ => true,
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 
+    app.MapHealthChecks("/liveness", new HealthCheckOptions
+    {
+        Predicate = r => r.Name.Contains("self")
+    });
 
     logger.Info("Starting web host ({applicationContext})...", AppName);
+
     await app.RunWithTasksAsync();
 }
 catch (Exception ex)

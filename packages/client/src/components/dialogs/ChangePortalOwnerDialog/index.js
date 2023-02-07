@@ -1,3 +1,4 @@
+﻿import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
@@ -102,14 +103,19 @@ const ChangePortalOwnerDialog = ({
 
   const onChangeAction = () => {
     setIsLoading(true);
-    sendOwnerChange(selectedUser.id).then(() => {
-      onClose && onClose();
-      toastr.success(
-        t("Settings:ConfirmEmailSended", {
-          ownerName: selectedUser.label,
-        })
-      );
-    });
+    sendOwnerChange(selectedUser.id)
+      .then(() => {
+        onClose && onClose();
+        toastr.success(
+          t("Settings:ConfirmEmailSended", {
+            ownerName: selectedUser.label,
+          })
+        );
+      })
+      .catch((error) => {
+        toastr.error(error?.response?.data?.error?.message);
+        onClose && onClose();
+      });
   };
 
   const onCloseAction = () => {
@@ -190,7 +196,7 @@ const ChangePortalOwnerDialog = ({
               <ReactSVG
                 className="cross-icon"
                 onClick={onClearSelectedItem}
-                src="/static/images/cross.react.svg"
+                src={CrossReactSvgUrl}
               />
             </StyledSelectedOwner>
 

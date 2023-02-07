@@ -24,37 +24,56 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AuthConstants = ASC.Common.Security.Authorizing.Constants;
+
 namespace ASC.Core.Users;
 
-public class UserSecurityProvider : ISecurityObject
+public class UserSecurityProvider : SecurityObject
 {
-    public Type ObjectType { get; private set; }
-    public object SecurityId { get; private set; }
-    public string FullId => AzObjectIdHelper.GetFullObjectId(this);
+    private readonly EmployeeType _employeeType;
 
     public UserSecurityProvider(Guid userId)
     {
         SecurityId = userId;
         ObjectType = typeof(UserInfo);
+        FullId = AzObjectIdHelper.GetFullObjectId(this);
+        ObjectRolesSupported = true;
     }
 
-    public bool ObjectRolesSupported => true;
+    public UserSecurityProvider(Guid userId, EmployeeType employeeType) : this(userId)
+    {
+        _employeeType = employeeType;
+    }
 
-    public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
+    public UserSecurityProvider(EmployeeType employeeType) : this(Guid.Empty)
+    {
+        _employeeType = employeeType;
+    }
+
+    public override IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
     {
         var roles = new List<IRole>();
         if (account.ID.Equals(objectId.SecurityId))
         {
-            roles.Add(ASC.Common.Security.Authorizing.Constants.Self);
+            roles.Add(AuthConstants.Self);
         }
 
         return roles;
     }
 
-    public bool InheritSupported => false;
-
-    public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
+    protected override IEnumerable<IRole> GetTargetRoles(IRoleProvider roleProvider)
     {
-        throw new NotImplementedException();
+        return _employeeType switch
+        {
+            EmployeeType.DocSpaceAdmin => new[] { AuthConstants.DocSpaceAdmin },
+            EmployeeType.RoomAdmin => new[] { AuthConstants.RoomAdmin },
+            EmployeeType.User => new[] { AuthConstants.User },
+            _ => Array.Empty<IRole>(),
+        };
+    }
+
+    protected override IRuleData GetRuleData()
+    {
+        return null;
     }
 }

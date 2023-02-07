@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
     partial class FilesDbContextModelSnapshot : ModelSnapshot
@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -2329,6 +2329,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("folder_type")
                         .HasDefaultValueSql("'0'");
 
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("varchar(512)")
@@ -2502,6 +2506,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("foldersCount")
                         .HasDefaultValueSql("'0'");
 
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("has_logo");
+
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("char(38)")
@@ -2520,8 +2528,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasDefaultValueSql("'0'");
 
                     b.Property<bool>("Private")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasColumnName("private");
+                        .HasColumnName("private")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")

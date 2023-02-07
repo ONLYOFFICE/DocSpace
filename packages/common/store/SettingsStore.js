@@ -3,7 +3,6 @@ import api from "../api";
 import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
-  AppServerConfig,
   ThemeKeys,
   COOKIE_EXPIRATION_YEAR,
   LANGUAGE,
@@ -13,8 +12,6 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
-
-const { proxyURL } = AppServerConfig;
 
 const themes = {
   Dark: Dark,
@@ -71,18 +68,7 @@ class SettingsStore {
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
   logoUrl = "";
-  customNames = {
-    id: "Common",
-    userCaption: "User",
-    usersCaption: "Users",
-    groupCaption: "Group",
-    groupsCaption: "Groups",
-    userPostCaption: "Title",
-    regDateCaption: "Registration Date",
-    groupHeadCaption: "Head",
-    guestCaption: "Guest",
-    guestsCaption: "Guests",
-  };
+
   isDesktopClient = isDesktopEditors;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
@@ -124,7 +110,7 @@ class SettingsStore {
   };
   version = "";
   buildVersionInfo = {
-    appServer: version,
+    docspace: version,
     documentServer: "6.4.1",
   };
   debugInfo = false;
@@ -208,7 +194,10 @@ class SettingsStore {
     else newSettings = await api.settings.getSettings();
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(proxyURL, "/products/files/");
+      const dp = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        "/products/files/"
+      );
       this.setDefaultPage(dp);
     }
 
@@ -217,10 +206,11 @@ class SettingsStore {
         this.setValue(
           key,
           key === "defaultPage"
-            ? combineUrl(proxyURL, newSettings[key])
+            ? combineUrl(window.DocSpaceConfig?.proxy?.url, newSettings[key])
             : newSettings[key]
         );
         if (key === "culture") {
+          if (newSettings.wizardToken) return;
           const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
             setCookie(LANGUAGE, newSettings[key], {
@@ -228,12 +218,6 @@ class SettingsStore {
             });
           }
         }
-        // if (key === "personal") {
-        //   window.AppServer = {
-        //     ...window.AppServer,
-        //     personal: newSettings[key],
-        //   };
-        // }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
       }
@@ -248,34 +232,25 @@ class SettingsStore {
     this.folderPath = await api.files.getFolderPath(id);
   };
 
-  getCurrentCustomSchema = async (id) => {
-    let customNames = null;
-    if (window?.__ASC_INITIAL_EDITOR_STATE__?.customNames) {
-      customNames = window.__ASC_INITIAL_EDITOR_STATE__.customNames;
-      window.__ASC_INITIAL_EDITOR_STATE__.customNames = null;
-    } else customNames = await api.settings.getCurrentCustomSchema(id);
-    this.customNames = customNames;
-  };
-
   getCustomSchemaList = async () => {
     this.customSchemaList = await api.settings.getCustomSchemaList();
   };
 
   getPortalSettings = async () => {
-    const origSettings = await this.getSettings();
+    const origSettings = await this.getSettings().catch((err) => {
+      if (err?.response?.status === 404) {
+        // portal not found
+        return window.location.replace(
+          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+        );
+      }
+    });
 
     if (origSettings?.plugins?.enabled) {
       initPluginStore();
 
       this.enablePlugins = origSettings.plugins.enabled;
       this.pluginOptions = origSettings.plugins.allow;
-    }
-
-    if (
-      origSettings.nameSchemaId &&
-      this.tenantStatus !== TenantStatus.PortalRestore
-    ) {
-      this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
 
     if (origSettings.tenantAlias) {
@@ -290,11 +265,9 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls()
+      this.getWhiteLabelLogoUrls(),
+      this.getBuildVersionInfo()
     );
-
-    this.tenantStatus !== TenantStatus.PortalRestore &&
-      requests.push(this.getBuildVersionInfo());
 
     await Promise.all(requests);
 
@@ -446,7 +419,10 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+    return combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      `/login.ashx?p=${token}&code=${code}`
+    );
   };
 
   setModuleInfo = (homepage, productId) => {
@@ -515,6 +491,7 @@ class SettingsStore {
   getPortalTimezones = async (token = undefined) => {
     const timezones = await api.settings.getPortalTimezones(token);
     this.setTimezones(timezones);
+    return timezones;
   };
 
   setHeaderVisible = (isHeaderVisible) => {
@@ -565,7 +542,7 @@ class SettingsStore {
   setBuildVersionInfo = (versionInfo) => {
     this.buildVersionInfo = {
       ...this.buildVersionInfo,
-      appServer: version,
+      docspace: version,
       ...versionInfo,
     };
 

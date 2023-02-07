@@ -4,10 +4,10 @@ import styled from "styled-components";
 
 import Text from "@docspace/components/text";
 
-import DefaultIcon from "../svg/default.react.svg";
-import RootIcon from "../svg/root.react.svg";
-import DefaultTabletIcon from "../svg/default.tablet.react.svg";
-import RootTabletIcon from "../svg/root.tablet.react.svg";
+import DefaultIcon from "PUBLIC_DIR/images/default.react.svg";
+import RootIcon from "PUBLIC_DIR/images/root.react.svg";
+import DefaultTabletIcon from "PUBLIC_DIR/images/default.tablet.react.svg";
+import RootTabletIcon from "PUBLIC_DIR/images/root.tablet.react.svg";
 
 import { isMobile } from "react-device-detect";
 import {

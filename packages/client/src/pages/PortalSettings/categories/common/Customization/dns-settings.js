@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import HelpButton from "@docspace/components/help-button";
@@ -6,7 +7,6 @@ import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -78,7 +78,7 @@ const DNSSettings = (props) => {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )
@@ -125,7 +125,8 @@ const DNSSettings = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("DNSSettings")}</div>
           <HelpButton
-            iconName="static/images/combined.shape.svg"
+            offsetRight={0}
+            iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipDNSSettingsTooltip}
             className="dns-setting_helpbutton "

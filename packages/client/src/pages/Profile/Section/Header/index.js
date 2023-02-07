@@ -1,3 +1,9 @@
+﻿import EmailReactSvgUrl from "PUBLIC_DIR/images/email.react.svg?url";
+import SecurityReactSvgUrl from "PUBLIC_DIR/images/security.react.svg?url";
+import ImageReactSvgUrl from "PUBLIC_DIR/images/image.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -7,7 +13,6 @@ import IconButton from "@docspace/components/icon-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
-import { AppServerConfig } from "@docspace/common/constants";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -41,21 +46,21 @@ const Header = (props) => {
         label: t("PeopleTranslations:EmailChangeButton"),
         onClick: () => setChangeEmailVisible(true),
         disabled: false,
-        icon: "/static/images/email.react.svg",
+        icon: EmailReactSvgUrl,
       },
       {
         key: "change-password",
         label: t("PeopleTranslations:PasswordChangeButton"),
         onClick: () => setChangePasswordVisible(true),
         disabled: false,
-        icon: "/static/images/security.react.svg",
+        icon: SecurityReactSvgUrl,
       },
       {
         key: "edit-photo",
         label: t("Profile:EditPhoto"),
         onClick: () => setChangeAvatarVisible(true),
         disabled: false,
-        icon: "/static/images/image.react.svg",
+        icon: ImageReactSvgUrl,
       },
       { key: "separator", isSeparator: true },
       {
@@ -63,7 +68,7 @@ const Header = (props) => {
         label: t("PeopleTranslations:DeleteSelfProfile"),
         onClick: () => setDeleteSelfProfileDialog(true),
         disabled: false,
-        icon: "/static/images/catalog.trash.react.svg",
+        icon: CatalogTrashReactSvgUrl,
       },
     ];
   };
@@ -71,7 +76,7 @@ const Header = (props) => {
   const onClickBack = () => {
     const url = filter.toUrlParams();
     const backUrl = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       `/accounts/filter?/${url}`
     );
@@ -87,7 +92,7 @@ const Header = (props) => {
     >
       {!isVisitor && (
         <IconButton
-          iconName="/static/images/arrow.path.react.svg"
+          iconName={ArrowPathReactSvgUrl}
           size="17"
           isFill={true}
           onClick={onClickBack}
@@ -103,7 +108,7 @@ const Header = (props) => {
           className="action-button"
           directionX="right"
           title={t("Common:Actions")}
-          iconName="/static/images/vertical-dots.react.svg"
+          iconName={VerticalDotsReactSvgUrl}
           size={17}
           getData={getUserContextOptions}
           isDisabled={false}

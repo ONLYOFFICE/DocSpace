@@ -17,6 +17,7 @@ const StyledCurrentTariffContainer = styled.div`
   padding: 12px 16px;
   box-sizing: border-box;
   padding-bottom: 0;
+  border-radius: 6px;
 
   @media ${mobile} {
     flex-direction: column;

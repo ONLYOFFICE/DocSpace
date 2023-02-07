@@ -64,10 +64,15 @@ public class LogoUploader
                 reader.Read(data, 0, (int)logo.Length);
                 reader.Close();
 
-                if (logo.ContentType.Contains("svg"))
+                if (logo.ContentType.Contains("image/x-icon"))
                 {
                     result.Success = true;
-                    result.Message = await userPhotoManager.SaveTempSvg(data, setupInfo.MaxImageUploadSize);
+                    result.Message = await userPhotoManager.SaveTempPhoto(data, setupInfo.MaxImageUploadSize, "ico");
+                }
+                else if (logo.ContentType.Contains("image/svg+xml"))
+                {
+                    result.Success = true;
+                    result.Message = await userPhotoManager.SaveTempPhoto(data, setupInfo.MaxImageUploadSize, "svg");
                 }
                 else
                 {

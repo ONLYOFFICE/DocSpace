@@ -31,7 +31,7 @@ public class DbFactory
 {
     public const string DefaultConnectionStringName = "default";
 
-    internal string ConnectionStringSettings(string path = null, string connectionString = null)
+    internal string ConnectionStringSettings(string key = null, string connectionString = null, string region = "current")
     {
         if (!string.IsNullOrEmpty(connectionString))
         {
@@ -39,12 +39,12 @@ public class DbFactory
         }
         else
         {
-            if (path != null)
+            if (key != null)
             {
-                return _configurationExtension.GetConnectionStrings(path).ConnectionString;
+                return _configurationExtension.GetConnectionStrings(key, region).ConnectionString;
             }
 
-            return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName).ConnectionString;
+            return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName, region).ConnectionString;
         }
     }
 
@@ -65,19 +65,35 @@ public class DbFactory
     private DbProviderFactory _dbProviderFactory;
     private readonly IConfiguration _configuration;
     private readonly ConfigurationExtension _configurationExtension;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ICache _cache;
 
-    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
+    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension, IServiceProvider serviceProvider, ICache cache)
     {
         _configuration = configuration;
         _configurationExtension = configurationExtension;
+        _serviceProvider = serviceProvider;
+        _cache = cache;
     }
 
-    public DbConnection OpenConnection(string path = "default", string connectionString = null)
+    public T CreateDbContext<T>(string region = "current") where T : DbContext
+    {
+        var contextOptions = _cache.Get<DbContextOptionsBuilder<T>>($"context {typeof(T)} {region}");
+        if (contextOptions == null)
+        {
+            contextOptions = new DbContextOptionsBuilder<T>();
+            BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region);
+            _cache.Insert($"context {region}", contextOptions, TimeSpan.FromMinutes(15));
+        }
+        return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);
+    }
+
+    public DbConnection OpenConnection(string path = "default", string connectionString = null, string region = "current")
     {
         var connection = DbProviderFactory.CreateConnection();
         if (connection != null)
         {
-            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings(path, connectionString));
+            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings(path, connectionString, region));
             connection.Open();
         }
 

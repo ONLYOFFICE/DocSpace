@@ -3,14 +3,12 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import Error520 from "client/Error520";
-//import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Submenu from "@docspace/components/submenu";
-import CommonSettings from "./CommonSettings";
-import AdminSettings from "./AdminSettings";
+import PersonalSettings from "./CommonSettings";
+import GeneralSettings from "./AdminSettings";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
 
@@ -27,7 +25,7 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
+const SectionBodyContent = ({ isErrorSettings, history, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
 
   const setting = window.location.pathname.endsWith("/settings/common")
@@ -36,27 +34,17 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
 
   const commonSettings = {
     id: "common",
-    name: t("Common:Common"),
-    content: <CommonSettings t={t} />,
+    name: t("Common:SettingsPersonal"),
+    content: <PersonalSettings t={t} />,
   };
 
   const adminSettings = {
     id: "admin",
-    name: t("Common:AdminSettings"),
-    content: <AdminSettings t={t} />,
+    name: t("Common:SettingsGeneral"),
+    content: <GeneralSettings t={t} />,
   };
 
-  // const connectedCloud = {
-  //   id: "connected-clouds",
-  //   name: t("ThirdPartySettings"),
-  //   content: <ConnectClouds />,
-  // };
-
   const data = [adminSettings, commonSettings];
-
-  // if (enableThirdParty) {
-  //   data.push(connectedCloud);
-  // }
 
   const onSelect = useCallback(
     (e) => {
@@ -65,18 +53,24 @@ const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
       if (id === setting) return;
 
       history.push(
-        combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${id}`)
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          `/settings/${id}`
+        )
       );
     },
     [setting, history]
   );
 
+  const showAdminSettings = user.isAdmin || user.isOwner;
+
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {isVisitor ? (
-        <CommonSettings t={t} showTitle={true} />
+      {!showAdminSettings ? (
+        <PersonalSettings t={t} showTitle={true} />
       ) : (
         <Submenu
           data={data}
@@ -92,7 +86,7 @@ export default inject(({ auth, settingsStore }) => {
   const { settingsIsLoaded } = settingsStore;
 
   return {
-    isVisitor: auth.userStore.user.isVisitor,
     settingsIsLoaded,
+    user: auth.userStore.user,
   };
 })(withRouter(observer(SectionBodyContent)));

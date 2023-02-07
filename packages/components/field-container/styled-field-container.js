@@ -73,6 +73,7 @@ const Container = styled.div`
     max-width: ${(props) => (props.maxwidth ? props.maxwidth : "293px")};
     color: ${(props) =>
       props.color ? props.color : props.theme.fieldContainer.errorLabel.color};
+    padding-top: 4px;
   }
   ${(props) =>
     props.vertical ? getVerticalCss() : getHorizontalCss(props.maxLabelWidth)}

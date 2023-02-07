@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 
@@ -16,11 +17,11 @@ const DialogHeader = ({ t, isEdit, isChooseRoomType, onArrowClick }) => {
         <div className="header-with-button">
           <IconButton
             size="15px"
-            iconName="/static/images/arrow.path.react.svg"
+            iconName={ArrowPathReactSvgUrl}
             className="sharing_panel-arrow"
             onClick={onArrowClick}
           />
-          <div>{t("CreateRoom")}</div>
+          <div>{t("Files:CreateRoom")}</div>
         </div>
       )}
     </>

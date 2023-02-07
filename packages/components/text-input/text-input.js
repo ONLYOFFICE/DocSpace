@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
-import Base from "../themes/base";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import StyledTextInput from "./styled-text-input";
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -12,7 +11,7 @@ class TextInput extends React.Component {
   render() {
     // console.log(`TextInput render id=${this.props.id}`);
 
-    return <ColorTheme {...this.props} themeId={ThemeType.TextInput} />;
+    return <StyledTextInput {...this.props} />;
   }
 }
 

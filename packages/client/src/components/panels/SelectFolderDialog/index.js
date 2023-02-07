@@ -127,12 +127,15 @@ class SelectFolderDialog extends React.Component {
       setResultingFolderId,
       resultingFolderId,
       onSelectTreeNode,
+      setItemSecurity,
     } = this.props;
 
     if (+resultingFolderId === +folder[0]) return;
-    if (!!onSelectTreeNode) selectedTreeNode = treeNode.node;
+    if (!!onSelectTreeNode) selectedTreeNode = treeNode;
 
     setResultingFolderId(folder[0]);
+
+    setItemSecurity(treeNode.security);
   };
 
   onClose = () => {
@@ -188,7 +191,6 @@ class SelectFolderDialog extends React.Component {
   render() {
     const {
       t,
-      theme,
       isPanelVisible,
       zIndex,
       withoutProvider,
@@ -202,11 +204,11 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       expandedKeys,
       isDisableButton,
-      isRecycleBin,
       currentFolderId,
       selectionFiles,
-      sharedRoomId,
       resultingFolderTree,
+      operationsType,
+      securityItem,
     } = this.props;
     const { displayType, isLoadingData, isAvailable } = this.state;
 
@@ -215,24 +217,24 @@ class SelectFolderDialog extends React.Component {
       : t("Common:SaveHereButton");
     const name = dialogName ? dialogName : t("Common:SaveButton");
 
-    // console.log("Render Folder Component?", this.state);
+    const isUnavailableTree = isDisableTree || !isAvailable;
+    const isDisableMoving =
+      currentFolderId?.toString() === resultingFolderId?.toString() ||
+      !securityItem.MoveTo;
 
-    const folderSelectionDisabled =
-      resultingFolderId === sharedRoomId ||
-      resultingFolderId === sharedRoomId?.toString();
+    const isDisabledOperations =
+      operationsType === "move" ? isDisableMoving : !securityItem.CopyTo;
 
     const buttonIsDisabled =
+      isDisabledOperations ||
+      isLoadingData ||
+      isUnavailableTree ||
       isDisableButton ||
-      (isRecycleBin && currentFolderId === resultingFolderId) ||
       (selectionFiles && selectionFiles[0])?.parentId === +resultingFolderId;
-
-    const isCurrentFolder = +currentFolderId === +resultingFolderId;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
-        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
-        theme={theme}
         t={t}
         isPanelVisible={isPanelVisible}
         zIndex={zIndex}
@@ -259,10 +261,8 @@ class SelectFolderDialog extends React.Component {
       />
     ) : (
       <SelectionPanel
-        folderSelectionDisabled={folderSelectionDisabled}
         selectionFiles={selectionFiles}
         t={t}
-        theme={theme}
         isPanelVisible={isPanelVisible}
         onClose={this.onClose}
         withoutProvider={withoutProvider}
@@ -282,7 +282,6 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={buttonIsDisabled}
-        isCurrentFolder={isCurrentFolder}
       />
     );
   }
@@ -302,6 +301,7 @@ SelectFolderDialog.propTypes = {
   withoutProvider: PropTypes.bool,
   withoutImmediatelyClose: PropTypes.bool,
   isDisableTree: PropTypes.bool,
+  operationsType: PropTypes.oneOf(["copy", "move"]),
 };
 SelectFolderDialog.defaultProps = {
   id: "",
@@ -318,16 +318,11 @@ export default inject(
       selectedFolderStore,
       selectFolderDialogStore,
       filesStore,
-      auth,
       filesActionsStore,
     },
     { selectedId }
   ) => {
-    const {
-      setExpandedPanelKeys,
-      sharedRoomId,
-      fetchTreeFolders,
-    } = treeFoldersStore;
+    const { setExpandedPanelKeys, fetchTreeFolders } = treeFoldersStore;
 
     const { filter } = filesStore;
     const { setSelectedItems } = filesActionsStore;
@@ -344,14 +339,13 @@ export default inject(
       resultingFolderTree,
       setResultingFoldersTree,
       toDefault,
+      setItemSecurity,
+      securityItem,
     } = selectFolderDialogStore;
 
-    const { settingsStore } = auth;
-    const { theme } = settingsStore;
     const selectedFolderId = selectedId ? selectedId : id;
 
     return {
-      theme: theme,
       storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
@@ -362,12 +356,13 @@ export default inject(
       setProviderKey,
       filter,
       setSelectedItems,
-      sharedRoomId,
       fetchTreeFolders,
       setIsLoading,
       resultingFolderTree,
       toDefault,
       setResultingFoldersTree,
+      setItemSecurity,
+      securityItem,
     };
   }
 )(

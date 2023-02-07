@@ -29,7 +29,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
-[Scope]
+[Transient]
 internal class GoogleDriveStorage : IDisposable
 {
     private OAuth20Token _token;

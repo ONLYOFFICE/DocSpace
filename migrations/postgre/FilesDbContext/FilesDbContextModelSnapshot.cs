@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
 {
     [DbContext(typeof(FilesDbContext))]
     partial class FilesDbContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -2283,6 +2283,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("folder_type");
 
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_logo");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -2429,6 +2433,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("FoldersCount")
                         .HasColumnType("integer")
                         .HasColumnName("foldersCount");
+
+                    b.Property<bool>("HasLogo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_logo");
 
                     b.Property<Guid>("ModifiedBy")
                         .HasMaxLength(38)

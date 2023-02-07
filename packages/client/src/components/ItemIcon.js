@@ -1,21 +1,45 @@
+﻿import SecuritySvgUrl from "PUBLIC_DIR/images/security.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
+import Base from "@docspace/components/themes/base";
 
 const StyledIcon = styled.img`
-  /* width: 24px;
-  height: 24px;
-  margin-top: 4px; */
-
   ${(props) =>
     props.isRoom &&
     css`
       border-radius: 6px;
+      vertical-align: middle;
     `}
 `;
 
+const IconWrapper = styled.div`
+  ${(props) =>
+    props.isRoom &&
+    css`
+      position: relative;
+      border-radius: 6px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        border: 1px solid
+          ${(props) =>
+            props.default ? "none" : props.theme.itemIcon.borderColor};
+        border-radius: 5px;
+        overflow: hidden;
+      }
+    `}
+`;
+
+IconWrapper.defaultProps = { theme: Base };
+
 const EncryptedFileIcon = styled.div`
-  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  background: url(${SecuritySvgUrl}) no-repeat 0 0 / 16px 16px transparent;
   height: 16px;
   position: absolute;
   width: 16px;
@@ -23,49 +47,32 @@ const EncryptedFileIcon = styled.div`
   margin-left: 12px;
 `;
 
-const ItemIcon = ({
-  id,
-  icon,
-  fileExst,
-  isPrivacy,
-  viewAs,
-  isRoom,
-  // actionType,
-  // actionExtension,
-  // actionId,
-}) => {
-  // const isEdit =
-  //   (actionType !== null && actionId === id && fileExst === actionExtension) ||
-  //   id <= 0;
+const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
+  const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
 
-  // return (
-  //   <>
-  //     <StyledIcon
-  //       className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
-  //       src={icon}
-  //     />
-  //     {isPrivacy && fileExst && (
-  //       <EncryptedFileIcon isEdit={isEdit && viewAs !== "tile"} />
-  //     )}
-  //   </>
-  // );
+  const onLoadRoomIcon = () => {
+    if (!isRoom || defaultRoomIcon === icon) return;
+
+    setShowDefaultIcon(false);
+  };
 
   return (
     <>
-      <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
+      <IconWrapper isRoom={isRoom} default={showDefaultIcon}>
+        <StyledIcon
+          className={`react-svg-icon`}
+          isRoom={isRoom}
+          src={showDefaultIcon ? defaultRoomIcon : icon}
+          onLoad={onLoadRoomIcon}
+        />
+      </IconWrapper>
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore }) => {
-  // const { type, extension, id } = filesStore.fileActionStore;
-
+export default inject(({ treeFoldersStore }) => {
   return {
-    viewAs: filesStore.viewAs,
     isPrivacy: treeFoldersStore.isPrivacyFolder,
-    // actionType: type,
-    // actionExtension: extension,
-    // actionId: id,
   };
 })(observer(ItemIcon));

@@ -31,7 +31,11 @@ class UserStore {
 
     this.setIsLoading(true);
 
-    await this.loadCurrentUser();
+    try {
+      await this.loadCurrentUser();
+    } catch (e) {
+      console.error(e);
+    }
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -111,20 +115,6 @@ class UserStore {
 
   get isAuthenticated() {
     return !!this.user;
-  }
-
-  get userTheme() {
-    const systemTheme =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "Dark"
-        : "Light";
-    const theme = this.user?.theme || systemTheme;
-
-    if (theme === "System") {
-      return systemTheme;
-    }
-    return theme;
   }
 }
 

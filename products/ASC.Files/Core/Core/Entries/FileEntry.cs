@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using static ASC.Files.Core.Security.FileSecurity;
+
 namespace ASC.Files.Core;
 
 [Serializable]
@@ -110,10 +112,14 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
 {
     public T Id { get; set; }
     public T ParentId { get; set; }
+
+    public IDictionary<FilesSecurityActions, bool> Security { get; set; }
+
     private T _folderIdDisplay;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly FileDateTime _fileDateTime;
+
 
     protected FileEntry() { }
 

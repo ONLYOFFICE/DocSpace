@@ -1,3 +1,5 @@
+﻿import CrossSidebarReactSvgUrl from "PUBLIC_DIR/images/cross.sidebar.react.svg?url";
+import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
 import React from "react";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -97,7 +99,7 @@ const MobileView = ({
         key: "primary-progress",
         open: primaryProgressDataVisible,
         label: t("UploadPanel:Uploads"),
-        icon: "/static/images/cross.sidebar.react.svg",
+        icon: CrossSidebarReactSvgUrl,
         percent: primaryProgressDataPercent,
         status:
           primaryProgressDataPercent === 100 && !primaryProgressDataErrors
@@ -110,7 +112,7 @@ const MobileView = ({
         key: "secondary-progress",
         open: secondaryProgressDataStoreVisible,
         label: t("Common:OtherOperations"),
-        icon: "/static/images/mobile.actions.remove.react.svg",
+        icon: MobileActionsRemoveReactSvgUrl,
         percent: secondaryProgressDataStorePercent,
         status: `${Math.round(
           currentSecondaryProgressItem

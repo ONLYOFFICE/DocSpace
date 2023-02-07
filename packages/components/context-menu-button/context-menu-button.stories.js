@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import ContextMenuButton from "./";
 
 export default {
@@ -62,7 +62,7 @@ const Template = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   title: "Actions",
-  iconName: "/static/images/vertical-dots.react.svg",
+  iconName: VerticalDotsReactSvgUrl,
   size: 16,
   directionX: "right",
   isDisabled: false,

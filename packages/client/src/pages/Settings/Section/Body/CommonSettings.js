@@ -6,15 +6,15 @@ import Heading from "@docspace/components/heading";
 import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
-const CommonSettings = ({
+const PersonalSettings = ({
   storeOriginalFiles,
   confirmDelete,
   updateIfExist,
   forceSave,
 
   isVisitor,
-  favoritesSection,
-  recentSection,
+  //favoritesSection,
+  //recentSection,
 
   setUpdateIfExist,
   setStoreOriginal,
@@ -28,6 +28,8 @@ const CommonSettings = ({
 
   t,
   showTitle,
+  createWithoutDialog,
+  setCreateWithoutDialog,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -68,6 +70,10 @@ const CommonSettings = ({
     [setIsLoadingRecent, setRecentSetting]
   );
 
+  const onChangeCheckbox = () => {
+    setCreateWithoutDialog(!createWithoutDialog);
+  };
+
   return (
     <StyledSettings showTitle={showTitle}>
       <Box className="settings-section">
@@ -78,16 +84,24 @@ const CommonSettings = ({
         )}
         <ToggleButton
           className="toggle-btn"
+          label={t("Common:DontAskAgain")}
+          onChange={onChangeCheckbox}
+          isChecked={createWithoutDialog}
+        />
+        <ToggleButton
+          className="toggle-btn"
           label={t("OriginalCopy")}
           onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("DisplayNotification")}
-          onChange={onChangeDeleteConfirm}
-          isChecked={confirmDelete}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("DisplayNotification")}
+            onChange={onChangeDeleteConfirm}
+            isChecked={confirmDelete}
+          />
+        )}
       </Box>
 
       {/* <Box className="settings-section">
@@ -122,12 +136,14 @@ const CommonSettings = ({
         <Heading className="heading" level={2} size="xsmall">
           {t("StoringFileVersion")}
         </Heading>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("UpdateOrCreate")}
-          onChange={onChangeUpdateIfExist}
-          isChecked={updateIfExist}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("UpdateOrCreate")}
+            onChange={onChangeUpdateIfExist}
+            isChecked={updateIfExist}
+          />
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("KeepIntermediateVersion")}
@@ -139,50 +155,55 @@ const CommonSettings = ({
   );
 };
 
-export default inject(({ auth, settingsStore, treeFoldersStore }) => {
-  const {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forcesave,
+export default inject(
+  ({ auth, settingsStore, treeFoldersStore, filesStore }) => {
+    const {
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forcesave,
 
-    setUpdateIfExist,
-    setStoreOriginal,
+      setUpdateIfExist,
+      setStoreOriginal,
 
-    setConfirmDelete,
+      setConfirmDelete,
 
-    setForceSave,
+      setForceSave,
 
-    favoritesSection,
-    recentSection,
-    setFavoritesSetting,
-    setRecentSetting,
-  } = settingsStore;
+      favoritesSection,
+      recentSection,
+      setFavoritesSetting,
+      setRecentSetting,
+    } = settingsStore;
 
-  const { myFolderId, commonFolderId } = treeFoldersStore;
+    const { myFolderId, commonFolderId } = treeFoldersStore;
+    const { setCreateWithoutDialog, createWithoutDialog } = filesStore;
 
-  return {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave: forcesave,
+    return {
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forceSave: forcesave,
 
-    myFolderId,
-    commonFolderId,
-    isVisitor: auth.userStore.user.isVisitor,
-    favoritesSection,
-    recentSection,
+      myFolderId,
+      commonFolderId,
+      isVisitor: auth.userStore.user.isVisitor,
+      favoritesSection,
+      recentSection,
 
-    setUpdateIfExist,
-    setStoreOriginal,
+      setUpdateIfExist,
+      setStoreOriginal,
 
-    setConfirmDelete,
+      setConfirmDelete,
 
-    setForceSave,
+      setForceSave,
 
-    setFavoritesSetting,
-    setRecentSetting,
-    myFolderId,
-    commonFolderId,
-  };
-})(observer(CommonSettings));
+      setFavoritesSetting,
+      setRecentSetting,
+      myFolderId,
+      commonFolderId,
+      setCreateWithoutDialog,
+      createWithoutDialog,
+    };
+  }
+)(observer(PersonalSettings));

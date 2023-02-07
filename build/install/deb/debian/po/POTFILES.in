@@ -1,0 +1,3 @@
+# List of source files containing translatable strings.
+
+[type: gettext/rfc822deb] {{product}}.templates

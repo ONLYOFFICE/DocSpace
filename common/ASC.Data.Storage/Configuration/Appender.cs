@@ -33,7 +33,7 @@ public static class StorageConfigExtension
         services.TryAddSingleton(r =>
         {
             var config = new ConfigurationExtension(r.GetService<IConfiguration>());
-            return config.GetSetting<Storage>("Storage");
+            return config.GetSetting<Storage>($"{RegionSettings.Current}storage");
         });
     }
 }
@@ -97,5 +97,6 @@ public class Module
     public bool Count { get; set; } = true;
     public bool DisabledEncryption { get; set; }
     public IEnumerable<Module> Domain { get; set; }
+    public bool Cache { get; set; }
 }
 

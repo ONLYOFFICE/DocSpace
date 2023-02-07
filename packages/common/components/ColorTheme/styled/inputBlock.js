@@ -5,6 +5,7 @@ import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, hasError, theme }) =>
   $currentColorScheme &&
+  theme.isBase &&
   css`
     :focus-within {
       border-color: ${(hasError && theme.input.focusErrorBorderColor) ||

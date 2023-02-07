@@ -1,22 +1,23 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
-import { smallTablet } from "@docspace/components/utils/device";
 import toastr from "@docspace/components/toast/toastr";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import axios from "axios";
-import { combineUrl } from "@docspace/common/utils";
+//import { combineUrl } from "@docspace/common/utils";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import { Trans } from "react-i18next";
+import { getPaymentLink } from "@docspace/common/api/portal";
+import CurrentUsersCountContainer from "./sub-components/CurrentUsersCount";
 
 const StyledBody = styled.div`
   border-radius: 12px;
-  border: 1px solid #d0d5da;
+  border: ${(props) =>
+    props.theme.client.settings.payment.priceContainer.border};
   background: ${(props) =>
-    props.theme.client.settings.payment.backgroundPriceContainer};
+    props.theme.client.settings.payment.priceContainer.background};
   max-width: 320px;
 
   padding: 24px;
@@ -24,15 +25,22 @@ const StyledBody = styled.div`
 
   .payment_main-title {
     margin-bottom: 24px;
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
+      `}
   }
   .payment_price_user {
     display: flex;
     align-items: center;
     justify-content: center;
     background: ${(props) =>
-      props.theme.client.settings.payment.backgroundPrice};
+      props.theme.client.settings.payment.priceContainer.backgroundText};
     margin-top: 24px;
     min-height: 38px;
+    border-radius: 6px;
     p:first-child {
       margin-right: 8px;
     }
@@ -64,10 +72,12 @@ const PriceCalculation = ({
   isAlreadyPaid,
   isFreeAfterPaidPeriod,
   setStartPaymentLink,
+  managersCount,
 }) => {
   useEffect(() => {
     initializeInfo();
-    !isAlreadyPaid && setStartPaymentLink();
+
+    !isAlreadyPaid && setStartPaymentLink(t);
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -93,16 +103,9 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await axios
-        .put(
-          combineUrl(AppServerConfig.apiPrefix, "/portal/payment/url"),
-          { quantity: { admin: value } },
-          {
-            cancelToken: source.token,
-          }
-        )
-        .then((response) => {
-          setPaymentLink(response.data.response);
+      await getPaymentLink(value, source.token)
+        .then((link) => {
+          setPaymentLink(link);
           setIsLoading(false);
         })
         .catch((thrown) => {
@@ -111,7 +114,7 @@ const PriceCalculation = ({
             console.log("Request canceled", thrown.message);
           } else {
             console.error(thrown);
-            toastr.error(thrown);
+            toastr.error(t("ErrorNotification"));
           }
           return;
         });
@@ -122,8 +125,6 @@ const PriceCalculation = ({
     ? false
     : (!user.isOwner && !user.isAdmin) || !isPayer;
 
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
-
   const priceInfoPerManager = (
     <div className="payment_price_user">
       <Text
@@ -131,7 +132,7 @@ const PriceCalculation = ({
         fontSize={"13px"}
         color={
           isDisabled
-            ? theme.client.settings.payment.disabledPriceColor
+            ? theme.client.settings.payment.priceContainer.disablePriceColor
             : theme.client.settings.payment.priceColor
         }
         fontWeight={600}
@@ -145,7 +146,7 @@ const PriceCalculation = ({
             fontWeight={600}
             color={
               isDisabled
-                ? theme.client.settings.payment.disabledPriceColor
+                ? theme.client.settings.payment.priceContainer.disablePriceColor
                 : theme.client.settings.payment.priceColor
             }
           >
@@ -159,13 +160,15 @@ const PriceCalculation = ({
       </Text>
     </div>
   );
+
+  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
+
   return (
-    <StyledBody className="price-calculation-container">
+    <StyledBody className="price-calculation-container" isDisabled={isDisabled}>
       <Text
         fontSize="16px"
         fontWeight={600}
         noSelect
-        {...color}
         className="payment_main-title"
       >
         {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod
@@ -173,9 +176,10 @@ const PriceCalculation = ({
           : t("PriceCalculation")}
       </Text>
       {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-        <></>
+        <CurrentUsersCountContainer isNeedPlusSign={isNeedPlusSign} t={t} />
       ) : (
         <SelectUsersCountContainer
+          isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
           isAlreadyPaid={isAlreadyPaid}
@@ -204,6 +208,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     initializeInfo,
     setStartPaymentLink,
+    managersCount,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -218,6 +223,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    managersCount,
     setStartPaymentLink,
     isFreeTariff,
     setManagersCount,

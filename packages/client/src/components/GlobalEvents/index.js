@@ -7,6 +7,7 @@ import CreateEvent from "./CreateEvent";
 import RenameEvent from "./RenameEvent";
 import CreateRoomEvent from "./CreateRoomEvent";
 import EditRoomEvent from "./EditRoomEvent";
+import ChangeUserTypeEvent from "./ChangeUserTypeEvent";
 
 const GlobalEvents = () => {
   const [createDialogProps, setCreateDialogProps] = useState({
@@ -34,6 +35,11 @@ const GlobalEvents = () => {
   const [editRoomDialogProps, setEditRoomDialogProps] = useState({
     visible: false,
     item: null,
+    onClose: null,
+  });
+
+  const [changeUserTypeDialog, setChangeUserTypeDialogProps] = useState({
+    visible: false,
     onClose: null,
   });
 
@@ -106,19 +112,29 @@ const GlobalEvents = () => {
     });
   }, []);
 
+  const onChangeUserType = useCallback((e) => {
+    setChangeUserTypeDialogProps({
+      visible: true,
+      onClose: () =>
+        setChangeUserTypeDialogProps({ visible: false, onClose: null }),
+    });
+  }, []);
+
   useEffect(() => {
     window.addEventListener(Events.CREATE, onCreate);
     window.addEventListener(Events.RENAME, onRename);
     window.addEventListener(Events.ROOM_CREATE, onCreateRoom);
     window.addEventListener(Events.ROOM_EDIT, onEditRoom);
+    window.addEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
 
     return () => {
       window.removeEventListener(Events.CREATE, onCreate);
       window.removeEventListener(Events.RENAME, onRename);
       window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
       window.removeEventListener(Events.ROOM_EDIT, onEditRoom);
+      window.removeEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
     };
-  }, [onRename, onCreate, onCreateRoom, onEditRoom]);
+  }, [onRename, onCreate, onCreateRoom, onEditRoom, onChangeUserType]);
 
   return [
     createDialogProps.visible && (
@@ -132,6 +148,12 @@ const GlobalEvents = () => {
     ),
     editRoomDialogProps.visible && (
       <EditRoomEvent key={Events.ROOM_EDIT} {...editRoomDialogProps} />
+    ),
+    changeUserTypeDialog.visible && (
+      <ChangeUserTypeEvent
+        key={Events.CHANGE_USER_TYPE}
+        {...changeUserTypeDialog}
+      />
     ),
   ];
 };

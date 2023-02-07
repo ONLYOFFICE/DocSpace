@@ -60,6 +60,7 @@ const AccessRightSelect = ({
                     label={item.quota}
                     backgroundColor={item.color}
                     fontSize="9px"
+                    isPaidBadge
                   />
                 )}
               </StyledItemTitle>
@@ -83,7 +84,7 @@ const AccessRightSelect = ({
       onSelect={onSelectCurrentItem}
       options={[]}
       selectedOption={{
-        icon: currentItem.icon,
+        icon: currentItem?.icon,
         default: true,
         key: currentItem?.key,
         label: currentItem?.label,

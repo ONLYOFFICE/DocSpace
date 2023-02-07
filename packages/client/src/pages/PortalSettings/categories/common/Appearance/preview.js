@@ -1,3 +1,4 @@
+﻿import PlusPreviewSvgUrl from "PUBLIC_DIR/images/plus.preview.svg?url";
 import React, { useState, useEffect } from "react";
 import Loaders from "@docspace/common/components/Loaders";
 import ContextMenuButton from "@docspace/components/context-menu-button";
@@ -8,7 +9,7 @@ import {
   IconBox,
 } from "./StyledPreview";
 
-import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
+import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
   const {
@@ -227,7 +228,7 @@ const Preview = (props) => {
             />
           </div>
 
-          <img src="/static/images/plus.preview.svg" />
+          <img src={PlusPreviewSvgUrl} />
         </div>
         <div className="section-search background border-color">
           <div className="section-search-loader">

@@ -29,6 +29,7 @@ x-service: &x-service-base
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
     - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+    - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
 services:
   onlyoffice-elasticsearch:

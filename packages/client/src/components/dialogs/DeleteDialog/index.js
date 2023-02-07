@@ -16,7 +16,6 @@ const DeleteDialogComponent = (props) => {
     setBufferSelection,
     setRemoveMediaItem,
     setDeleteDialogVisible,
-    personal,
     visible,
     tReady,
     isLoading,
@@ -26,6 +25,8 @@ const DeleteDialogComponent = (props) => {
     isRoomDelete,
     setIsRoomDelete,
     deleteRoomsAction,
+    isPersonalRoom,
+    isRoom,
   } = props;
 
   const selection = [];
@@ -35,9 +36,9 @@ const DeleteDialogComponent = (props) => {
     const item = props.selection[i];
 
     if (!item?.isEditing) {
-      if (item?.access === 0 || item?.access === 1 || unsubscribe) {
-        selection.push(item);
-      }
+      // if (item?.access === 0 || item?.access === 1 || unsubscribe) {
+      selection.push(item);
+      // }
     }
     i++;
   }
@@ -97,9 +98,9 @@ const DeleteDialogComponent = (props) => {
 
     const itemId = selection.map((s) => s.id);
 
-    await deleteRoomsAction(itemId, translations);
-
     onClose();
+
+    await deleteRoomsAction(itemId, translations);
   };
 
   const onClose = () => {
@@ -116,38 +117,54 @@ const DeleteDialogComponent = (props) => {
 
   const moveToTrashNoteText = () => {
     const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
+    const isSingle = selection.length === 1;
 
-    if (selection.length > 1) {
-      if (isRoomDelete)
-        return `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
-      return t("MoveToTrashItems");
-    } else {
-      if (isRoomDelete)
-        return `${t("DeleteRoom")} ${t("Common:WantToContinue")}`;
+    if (isRoomDelete) {
+      return isSingle
+        ? `${t("DeleteRoom")} ${t("Common:WantToContinue")}`
+        : `${t("DeleteRooms")} ${t("Common:WantToContinue")}`;
+    }
 
-      return !isFolder
-        ? t("MoveToTrashFile")
-        : personal
-        ? ""
-        : t("MoveToTrashFolder");
+    if (isRecycleBinFolder) {
+      return isSingle
+        ? t(isFolder ? "DeleteFolder" : "DeleteFile")
+        : t("DeleteItems");
+    }
+
+    if (isPersonalRoom) {
+      return isSingle
+        ? t(
+            isFolder
+              ? "MoveToTrashFolderFromPersonal"
+              : "MoveToTrashFileFromPersonal"
+          )
+        : t("MoveToTrashItemsFromPersonal");
+    }
+
+    if (isRoom) {
+      return isSingle
+        ? t(isFolder ? "MoveToTrashFolder" : "MoveToTrashFile")
+        : t("MoveToTrashItems");
     }
   };
 
-  const title = isRoomDelete
-    ? t("EmptyTrashDialog:DeleteForeverTitle")
-    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-    ? t("Common:Confirmation")
-    : moveToTrashTitle();
+  const title =
+    isRoomDelete || isRecycleBinFolder
+      ? t("EmptyTrashDialog:DeleteForeverTitle")
+      : isPrivacyFolder || selection[0]?.providerKey
+      ? t("Common:Confirmation")
+      : moveToTrashTitle();
 
   const noteText = unsubscribe ? t("UnsubscribeNote") : moveToTrashNoteText();
 
-  const accessButtonLabel = isRoomDelete
-    ? t("EmptyTrashDialog:DeleteForeverButton")
-    : isPrivacyFolder || isRecycleBinFolder || selection[0]?.providerKey
-    ? t("Common:OKButton")
-    : unsubscribe
-    ? t("UnsubscribeButton")
-    : t("MoveToTrashButton");
+  const accessButtonLabel =
+    isRoomDelete || isRecycleBinFolder
+      ? t("EmptyTrashDialog:DeleteForeverButton")
+      : isPrivacyFolder || selection[0]?.providerKey
+      ? t("Common:OKButton")
+      : unsubscribe
+      ? t("UnsubscribeButton")
+      : t("MoveToTrashButton");
 
   return (
     <StyledDeleteDialog isLoading={!tReady} visible={visible} onClose={onClose}>
@@ -206,7 +223,12 @@ export default inject(
       unsubscribeAction,
       deleteRoomsAction,
     } = filesActionsStore;
-    const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      isRecycleBinFolder,
+      isPersonalRoom,
+      isRoom,
+    } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -217,8 +239,6 @@ export default inject(
       isRoomDelete,
       setIsRoomDelete,
     } = dialogsStore;
-
-    const { personal } = auth.settingsStore;
 
     return {
       selection: removeMediaItem
@@ -237,13 +257,13 @@ export default inject(
       unsubscribe,
 
       setRemoveMediaItem,
-
-      personal,
       setBufferSelection,
 
       isRoomDelete,
       setIsRoomDelete,
       deleteRoomsAction,
+      isPersonalRoom,
+      isRoom,
     };
   }
 )(withRouter(observer(DeleteDialog)));

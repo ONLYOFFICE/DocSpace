@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
@@ -36,6 +36,15 @@ const StyledBody = styled.div`
       margin-bottom: 9px;
       margin-left: 8px;
     }
+    .payment_price_month-text,
+    .payment_price_price-text {
+      ${(props) =>
+        props.isDisabled &&
+        css`
+          color: ${props.theme.client.settings.payment.priceContainer
+            .disableColor};
+        `};
+    }
   }
 
   button {
@@ -52,10 +61,10 @@ const TotalTariffContainer = ({
   isNeedRequest,
   currencySymbol,
 }) => {
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
+  
 
   return (
-    <StyledBody>
+    <StyledBody isDisabled={isDisabled} theme={theme}>
       <div className="payment_price_total-price">
         {isNeedRequest ? (
           <Text
@@ -80,7 +89,6 @@ const TotalTariffContainer = ({
                 fontWeight={600}
                 className="payment_price_price-text"
                 noSelect
-                {...color}
               >
                 {{ currencySymbol }}
               </Text>
@@ -90,7 +98,6 @@ const TotalTariffContainer = ({
                 fontWeight={600}
                 className="payment_price_price-text"
                 noSelect
-                {...color}
               >
                 {{ price: totalPrice }}
               </Text>
@@ -100,7 +107,6 @@ const TotalTariffContainer = ({
                 fontSize="16px"
                 className="payment_price_month-text"
                 noSelect
-                {...color}
               >
                 /month
               </Text>

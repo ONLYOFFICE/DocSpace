@@ -15,8 +15,6 @@ const FilesMediaViewer = (props) => {
     currentMediaFileId,
     deleteItemAction,
     setMediaViewerData,
-    mediaViewerMediaFormats,
-    mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
     userAccess,
@@ -29,8 +27,24 @@ const FilesMediaViewer = (props) => {
     setScrollToItem,
     setCurrentId,
     setBufferSelection,
-    mediaViewerAudioFormats,
     isFavoritesFolder,
+    archiveRoomsId,
+    onClickFavorite,
+    onShowInfoPanel,
+    onClickDownload,
+    onClickDownloadAs,
+    onClickRename,
+    onClickDelete,
+    onMoveAction,
+    onCopyAction,
+    getIcon,
+    onDuplicate,
+    extsImagePreviewed,
+    extsMediaPreviewed,
+    setIsPreview,
+    isPreview,
+    resetUrl,
+    firstLoad,
   } = props;
 
   useEffect(() => {
@@ -41,6 +55,16 @@ const FilesMediaViewer = (props) => {
       onMediaFileClick(+previewId);
     }
   }, [removeQuery, onMediaFileClick]);
+
+  useEffect(() => {
+    if (previewFile) {
+      // fetch file after preview with
+      fetchFiles(previewFile.folderId).finally(() => {
+        setIsLoading(false);
+        setFirstLoad(false);
+      });
+    }
+  }, [previewFile]);
 
   useEffect(() => {
     window.addEventListener("popstate", onButtonBackHandler);
@@ -111,41 +135,45 @@ const FilesMediaViewer = (props) => {
   };
 
   const onMediaViewerClose = (e) => {
-    if (previewFile) {
-      setIsLoading(true);
-      setFirstLoad(true);
-
-      fetchFiles(previewFile.folderId).finally(() => {
-        setIsLoading(false);
-        setFirstLoad(false);
-        setScrollToItem({ id: previewFile.id, type: "file" });
-        setBufferSelection(previewFile);
-        setToPreviewFile(null);
-      });
+    if (isPreview) {
+      setIsPreview(false);
+      resetUrl();
+      setScrollToItem({ id: previewFile.id, type: "file" });
+      setBufferSelection(previewFile);
+      setToPreviewFile(null);
     }
+    // if (previewFile) {
+    //   setIsLoading(true);
+    //   setFirstLoad(true);
+
+    //   fetchFiles(previewFile.folderId).finally(() => {
+    //     setIsLoading(false);
+    //     setFirstLoad(false);
+    //     setScrollToItem({ id: previewFile.id, type: "file" });
+    //     setBufferSelection(previewFile);
+    //     setToPreviewFile(null);
+    //   });
+    // }
 
     setMediaViewerData({ visible: false, id: null });
 
-    if (e) {
-      const url = localStorage.getItem("isFirstUrl");
+    const url = localStorage.getItem("isFirstUrl");
 
-      if (!url) {
-        return;
-      }
-
-      setScrollToItem({ id: currentMediaFileId, type: "file" });
-      const targetFile = files.find((item) => item.id === currentMediaFileId);
-      if (targetFile) setBufferSelection(targetFile);
-
-      window.history.replaceState(null, null, url);
+    if (!url) {
+      return;
     }
-  };
 
-  const mediaFormats = [...mediaViewerMediaFormats, ...mediaViewerAudioFormats];
+    setScrollToItem({ id: currentMediaFileId, type: "file" });
+    const targetFile = files.find((item) => item.id === currentMediaFileId);
+    if (targetFile) setBufferSelection(targetFile);
+
+    window.history.replaceState(null, null, url);
+  };
 
   return (
     visible && (
       <MediaViewer
+        t={t}
         userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
@@ -155,13 +183,27 @@ const FilesMediaViewer = (props) => {
         playlist={playlist}
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
+        onClickFavorite={onClickFavorite}
+        setBufferSelection={setBufferSelection}
+        archiveRoomsId={archiveRoomsId}
+        files={files}
+        onClickDownload={onClickDownload}
+        onShowInfoPanel={onShowInfoPanel}
+        onClickDownloadAs={onClickDownloadAs}
+        onClickDelete={onClickDelete}
+        onClickRename={onClickRename}
+        onMoveAction={onMoveAction}
+        onCopyAction={onCopyAction}
+        onDuplicate={onDuplicate}
         onClose={onMediaViewerClose}
+        getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
-        extsMediaPreviewed={mediaFormats} //TODO:
-        extsImagePreviewed={mediaViewerImageFormats} //TODO:
+        extsMediaPreviewed={extsMediaPreviewed}
+        extsImagePreviewed={extsImagePreviewed}
         errorLabel={t("Translations:MediaLoadError")}
-        isPreviewFile={!!previewFile}
+        isPreviewFile={firstLoad}
+        previewFile={previewFile}
         onChangeUrl={onChangeUrl}
         isFavoritesFolder={isFavoritesFolder}
       />
@@ -177,15 +219,20 @@ export default inject(
     settingsStore,
     dialogsStore,
     treeFoldersStore,
+    contextOptionsStore,
   }) => {
     const {
       files,
       userAccess,
       fetchFiles,
       setIsLoading,
+      firstLoad,
       setFirstLoad,
       setScrollToItem,
       setBufferSelection,
+      setIsPreview,
+      isPreview,
+      resetUrl,
     } = filesStore;
     const {
       visible,
@@ -197,8 +244,20 @@ export default inject(
       setCurrentId,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { extsVideo, extsImage, extsAudio } = settingsStore;
-    const { isFavoritesFolder } = treeFoldersStore;
+    const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
+    const { isFavoritesFolder, archiveRoomsId } = treeFoldersStore;
+
+    const {
+      onClickFavorite,
+      onShowInfoPanel,
+      onClickDownloadAs,
+      onClickDownload,
+      onClickRename,
+      onClickDelete,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
+    } = contextOptionsStore;
 
     return {
       files,
@@ -208,20 +267,34 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: extsImage,
-      mediaViewerMediaFormats: extsVideo,
-      mediaViewerAudioFormats: extsAudio,
+      extsImagePreviewed,
+      extsMediaPreviewed,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,
       previewFile,
       setIsLoading,
+      firstLoad,
       setFirstLoad,
       setToPreviewFile,
+      setIsPreview,
+      resetUrl,
+      isPreview,
       setScrollToItem,
       setCurrentId,
       setBufferSelection,
       isFavoritesFolder,
+      onClickFavorite,
+      onClickDownloadAs,
+      onClickDelete,
+      onClickDownload,
+      onShowInfoPanel,
+      onClickRename,
+      onMoveAction,
+      getIcon,
+      onCopyAction,
+      onDuplicate,
+      archiveRoomsId,
     };
   }
 )(

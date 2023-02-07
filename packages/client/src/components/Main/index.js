@@ -22,7 +22,7 @@ const StyledMain = styled.main`
   ${isMobileOnly &&
   css`
     height: auto;
-    min-height: 100%;
+    max-height: 100%;
     width: 100%;
   `}
 `;

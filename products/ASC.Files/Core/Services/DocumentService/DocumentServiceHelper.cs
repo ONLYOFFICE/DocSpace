@@ -317,6 +317,13 @@ public class DocumentServiceHelper
             configuration.Document.Title += $" ({file.CreateOnString})";
         }
 
+        if (_fileUtility.CanWebRestrictedEditing(file.Title))
+        {
+            var linkDao = _daoFactory.GetLinkDao();
+            var sourceId = await linkDao.GetSourceAsync(file.Id.ToString());
+            configuration.Document.IsLinkedForMe = !string.IsNullOrEmpty(sourceId);
+        }
+
         return (file, configuration, locatedInPrivateRoom);
     }
 

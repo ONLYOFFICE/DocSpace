@@ -92,7 +92,7 @@ public class FeedAggregatorService : FeedBaseService
         try
         {
             var cfg = _feedSettings;
-            using var scope = _serviceScopeFactory.CreateScope();
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
             var cache = scope.ServiceProvider.GetService<ICache>();
             var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
             baseCommonLinkUtility.Initialize(cfg.ServerRoot);

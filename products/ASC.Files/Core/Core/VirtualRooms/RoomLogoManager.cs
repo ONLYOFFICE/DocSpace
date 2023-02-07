@@ -31,16 +31,14 @@ namespace ASC.Files.Core.VirtualRooms;
 [Scope]
 public class RoomLogoManager
 {
-    private const string LogosPath = "{0}_size_{1}-{2}.{3}";
+    private const string LogosPath = "{0}_{1}.png";
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
-    private const string ActionName = "logo";
-    private const string Default = "default";
 
-    private static Size _originalLogoSize = new Size(1280, 1280);
-    private static Size _largeLogoSize = new Size(96, 96);
-    private static Size _mediumLogoSize = new Size(32, 32);
-    private static Size _smallLogoSize = new Size(16, 16);
+    private static (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
+    private static (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
+    private static (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
+    private static (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
 
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -48,13 +46,8 @@ public class RoomLogoManager
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
     private IDataStore _dataStore;
-    private readonly ICache _cache;
     private readonly FilesMessageService _filesMessageService;
-    private static readonly Regex _pattern = new Regex(@"\d+-\d+", RegexOptions.Compiled);
-    private static readonly Regex _cachePattern = new Regex(@"\d+\/\S+\/\d+\/\d+", RegexOptions.Compiled);
-    private static readonly TimeSpan _cacheLifeTime = TimeSpan.FromMinutes(30);
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly FilesLinkUtility _filesLinkUtility;
 
     public RoomLogoManager(
         StorageFactory storageFactory,
@@ -62,20 +55,16 @@ public class RoomLogoManager
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
-        AscCache cache,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor,
-        FilesLinkUtility filesLinkUtility)
+        IHttpContextAccessor httpContextAccessor)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
         _logger = logger;
-        _cache = cache;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
-        _filesLinkUtility = filesLinkUtility;
     }
 
     public bool EnableAudit { get; set; } = true;
@@ -95,52 +84,73 @@ public class RoomLogoManager
 
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
         {
-            throw new ItemNotFoundException("Virtual room not found");
+            throw new ItemNotFoundException();
         }
 
         if (room.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
         var fileName = Path.GetFileName(tempFile);
         var data = await GetTempAsync(fileName);
 
-        id = GetId(room);
+        var stringId = GetId(room);
 
-        await DeleteLogo(id);
-        await SaveWithProcessAsync(id, data, -1, new Point(x, y), new Size(width, height));
+        await SaveWithProcessAsync(stringId, data, -1, new Point(x, y), new Size(width, height));
+        await RemoveTempAsync(fileName);
+
+        room.HasLogo = true;
+
+        if (room.ProviderEntry)
+        {
+            await _daoFactory.ProviderDao.UpdateProviderInfoAsync(room.ProviderId, true);
+        }
+        else
+        {
+            await folderDao.SaveFolderAsync(room);
+        }
 
         if (EnableAudit)
         {
-            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
     }
 
-    public async Task<Folder<T>> DeleteAsync<T>(T id)
+    public async Task<Folder<T>> DeleteAsync<T>(T id, bool checkPermissions = true)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
         var room = await folderDao.GetFolderAsync(id);
 
-        if (!await _fileSecurity.CanEditRoomAsync(room))
+        if (checkPermissions && !await _fileSecurity.CanEditRoomAsync(room))
         {
-            throw new InvalidOperationException("You don't have permission to edit the room");
+            throw new InvalidOperationException(FilesCommonResource.ErrorMessage_SecurityException_EditRoom);
         }
 
-        id = GetId(room);
+        var stringId = GetId(room);
 
         try
         {
-            await DeleteLogo(id);
+            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(stringId)}*.*", false);
+            room.HasLogo = false;
+
+            if (room.ProviderEntry)
+            {
+                await _daoFactory.ProviderDao.UpdateProviderInfoAsync(room.ProviderId, false);
+            }
+            else
+            {
+                await folderDao.SaveFolderAsync(room);
+            }
 
             if (EnableAudit)
             {
-                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
-        catch (DirectoryNotFoundException e)
+        catch (Exception e)
         {
             _logger.ErrorRemoveRoomLogo(e);
         }
@@ -148,128 +158,90 @@ public class RoomLogoManager
         return room;
     }
 
-    public Logo GetLogo<T>(Folder<T> room)
+    public async ValueTask<Logo> GetLogoAsync<T>(Folder<T> room)
     {
-        var id = room.Id;
+        if (!room.HasLogo)
+        {
+            return new Logo
+            {
+                Original = string.Empty,
+                Large = string.Empty,
+                Medium = string.Empty,
+                Small = string.Empty,
+            };
+        }
+
+        var id = GetId(room);
+
+        var cacheKey = Math.Abs(room.ModifiedOn.GetHashCode());
 
         return new Logo
         {
-            Original = GetOriginalLogoUrl(id),
-            Large = GetLargeLogoUrl(id),
-            Medium = GetMediumLogoUrl(id),
-            Small = GetSmallLogoUrl(id)
+            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?_={cacheKey}",
+            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?_={cacheKey}",
+            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?_={cacheKey}",
+            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?_={cacheKey}"
         };
     }
 
     public async Task<string> SaveTempAsync(byte[] data, long maxFileSize)
     {
-        data = UserPhotoThumbnailManager.TryParseImage(data, maxFileSize, _originalLogoSize, out var imgFormat, out _, out _);
+        data = UserPhotoThumbnailManager.TryParseImage(data, maxFileSize, _originalLogoSize.Item2, out _, out _, out _);
 
-        var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
+        var fileName = $"{Guid.NewGuid()}.png";
 
         using var stream = new MemoryStream(data);
         var path = await DataStore.SaveAsync(TempDomainPath, fileName, stream);
 
-        return path.ToString();
-    }
+        var pathAsString = path.ToString();
 
-    public string GetOriginalLogoUrl<T>(T id)
-    {
-        return GetLogoUrl(id, RoomLogoSize.Original);
-    }
+        var pathWithoutQuery = pathAsString;
 
-    public string GetLargeLogoUrl<T>(T id)
-    {
-        return GetLogoUrl(id, RoomLogoSize.Large);
-    }
-
-    public string GetMediumLogoUrl<T>(T id)
-    {
-        return GetLogoUrl(id, RoomLogoSize.Medium);
-    }
-
-    public string GetSmallLogoUrl<T>(T id)
-    {
-        return GetLogoUrl(id, RoomLogoSize.Small);
-    }
-
-    public async ValueTask<string> GetMediumLogoPathAsync<T>(T id)
-    {
-        return await GetLogoPathAsync(id, _mediumLogoSize);
-    }
-
-    public async ValueTask<string> GetSmallLogoPathAsync<T>(T id)
-    {
-        return await GetLogoPathAsync(id, _smallLogoSize);
-    }
-
-    public async ValueTask<string> GetLargeLogoPathAsync<T>(T id)
-    {
-        return await GetLogoPathAsync(id, _largeLogoSize);
-    }
-
-    public async ValueTask<string> GetOriginalLogoPathAsync<T>(T id)
-    {
-        return await GetLogoPathAsync(id, null, true);
-    }
-
-    public async Task<string> GetLogoPathAsync<T>(T id, string size)
-    {
-        var room = await _daoFactory.GetFolderDao<T>().GetFolderAsync(id);
-
-        if (room == null)
+        if (pathAsString.IndexOf('?') > 0)
         {
-            throw new ItemNotFoundException("Room not found");
+            pathWithoutQuery = pathAsString.Substring(0, pathAsString.IndexOf('?'));
         }
 
-        if (!await _fileSecurity.CanReadAsync(room))
-        {
-            throw new SecurityException("You don't have permission to read the room");
-        }
-
-        if (!RoomLogoSizeExtensions.TryParse(size, true, out var result))
-        {
-            throw new ArgumentException("Size not valid", nameof(size));
-        }
-
-        id = GetId(room);
-
-        return result switch
-        {
-            RoomLogoSize.Original => await GetOriginalLogoPathAsync(id),
-            RoomLogoSize.Large => await GetLargeLogoPathAsync(id),
-            RoomLogoSize.Medium => await GetMediumLogoPathAsync(id),
-            RoomLogoSize.Small => await GetSmallLogoPathAsync(id),
-            _ => throw new NotImplementedException()
-        };
+        return pathWithoutQuery;
     }
 
-    private async Task<string> SaveWithProcessAsync<T>(T id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
+    private async Task RemoveTempAsync(string fileName)
     {
-        imageData = UserPhotoThumbnailManager.TryParseImage(imageData, maxFileSize, _originalLogoSize, out var imageFormat, out var width, out var height);
+        var index = fileName.LastIndexOf('.');
+        var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
 
-        var imageExtension = CommonPhotoManager.GetImgFormatName(imageFormat);
+        try
+        {
+            await DataStore.DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorRemoveTempPhoto(e);
+        }
+    }
 
-        var fileName = $"{ProcessFolderId(id)}_orig_{width}-{height}.{imageExtension}";
+    private async Task SaveWithProcessAsync(string id, byte[] imageData, long maxFileSize, Point position, Size cropSize)
+    {
+        imageData = UserPhotoThumbnailManager.TryParseImage(imageData, maxFileSize, _originalLogoSize.Item2, out var _, out var _, out var _);
+
+        var fileName = string.Format(LogosPath, ProcessFolderId(id), SizeName.Original.ToStringLowerFast());
 
         if (imageData == null || imageData.Length == 0)
         {
-            return string.Empty;
+            return;
         }
 
         using var stream = new MemoryStream(imageData);
-        var path = await DataStore.SaveAsync(fileName, stream);
+        await DataStore.SaveAsync(fileName, stream);
 
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _mediumLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _smallLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _largeLogoSize, position, cropSize);
-
-        return path.ToString();
     }
 
-    private async Task ResizeAndSaveAsync<T>(T id, byte[] data, long maxFileSize, Size size, Point position, Size cropSize)
+    private async Task ResizeAndSaveAsync<T>(T id, byte[] data, long maxFileSize, (SizeName, Size) size, Point position, Size cropSize)
     {
-        if (data == null || data.Length <= 0)
+        if (data is not { Length: > 0 })
         {
             throw new Web.Core.Users.UnknownImageFormatException();
         }
@@ -281,21 +253,19 @@ public class RoomLogoManager
         try
         {
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out var format);
-            var imgFormat = format;
+            using var img = Image.Load(stream, out _);
 
-            if (size != img.Size())
+            if (size.Item2 != img.Size())
             {
-                using var img2 = UserPhotoThumbnailManager.GetImage(img, size, new UserPhotoThumbnailSettings(position, cropSize));
+                using var img2 = UserPhotoThumbnailManager.GetImage(img, size.Item2, new UserPhotoThumbnailSettings(position, cropSize));
                 data = CommonPhotoManager.SaveToBytes(img2);
             }
             else
             {
                 data = CommonPhotoManager.SaveToBytes(img);
             }
-
-            var extension = CommonPhotoManager.GetImgFormatName(imgFormat);
-            var fileName = string.Format(LogosPath, ProcessFolderId(id), size.Width, size.Height, extension);
+            
+            var fileName = string.Format(LogosPath, ProcessFolderId(id), size.Item1.ToStringLowerFast());
 
             using var stream2 = new MemoryStream(data);
             await DataStore.SaveAsync(fileName, stream2);
@@ -306,87 +276,35 @@ public class RoomLogoManager
         }
     }
 
-    private string GetLogoUrl<T>(T id, RoomLogoSize size)
+    private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size)
     {
-        return $"{_filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}={ActionName}" +
-            $"&{FilesLinkUtility.FolderId}={Uri.EscapeDataString(id.ToString())}" +
-            $"&{FilesLinkUtility.Size}={size.ToStringLowerFast()}";
-    }
+        var fileName = string.Format(LogosPath, ProcessFolderId(id), size.ToStringLowerFast());
+        var uri = await DataStore.GetUriAsync(fileName);
 
-    private async ValueTask<string> GetLogoPathAsync<T>(T id, Size? size, bool original = false)
-    {
-        var key = original ? GetKey(id) : GetKey(id, size.Value);
-
-        var path = _cache.Get<string>(key);
-        if (path == Default)
-        {
-            return string.Empty;
-        }
-
-        if (!string.IsNullOrEmpty(path))
-        {
-            return await ValueTask.FromResult(path);
-        }
-
-        await LoadPathToCacheAsync(id);
-
-        path = _cache.Get<string>(key);
-
-        return path == null || path == Default ? string.Empty : path;
+        return uri.ToString();
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)
     {
-        using var stream = await DataStore.GetReadStreamAsync(TempDomainPath, fileName);
+        await using var stream = await DataStore.GetReadStreamAsync(TempDomainPath, fileName);
 
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
         while (true)
         {
-            var count = await stream.ReadAsync(buffer, 0, buffer.Length);
+            var count = await stream.ReadAsync(buffer);
             if (count == 0)
             {
                 break;
             }
 
-            data.Write(buffer, 0, count);
+            await data.WriteAsync(buffer.AsMemory(0, count));
         }
 
         return data.ToArray();
     }
 
-    private async Task LoadPathToCacheAsync<T>(T id)
-    {
-        var logoPath = await DataStore.ListFilesAsync(string.Empty, $"{ProcessFolderId(id)}*", false)
-            .Select(u => u.ToString()).ToListAsync();
-
-        if (logoPath.Count == 0)
-        {
-            SetDefaultCache(id);
-            return;
-        }
-
-        var original = logoPath.Where(u => u.Contains("orig")).FirstOrDefault();
-
-        _cache.Insert(GetKey(id), original, _cacheLifeTime);
-
-        logoPath.Remove(original);
-
-        foreach (var (k, v) in logoPath.ToDictionary(p => _pattern.Match(p).Value.Split('-')))
-        {
-            _cache.Insert(GetKey(id, new Size(int.Parse(k[0]), int.Parse(k[1]))), v, _cacheLifeTime);
-        }
-    }
-
-    private async Task DeleteLogo<T>(T id)
-    {
-        await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(id)}*.*", false);
-
-        _cache.Remove(_cachePattern);
-        _cache.Remove(GetKey(id));
-    }
-
-    private string ProcessFolderId<T>(T id)
+    private static string ProcessFolderId<T>(T id)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
@@ -395,33 +313,29 @@ public class RoomLogoManager
             : id.ToString()?.Replace("-", "").Replace("|", "");
     }
 
-    private string GetKey<T>(T id, Size size)
+    private static string GetId<T>(Folder<T> room)
     {
-        return $"{TenantId}/{id}/{size.Width}/{size.Height}";
-    }
+        if (!room.ProviderEntry)
+        {
+            return room.Id.ToString();
+        }
 
-    private string GetKey<T>(T id)
-    {
-        return $"{TenantId}/{id}/orig";
-    }
+        if (room.Id.ToString()!.Contains("sbox"))
+        {
+            return $"sbox-{room.ProviderId}";
+        }
 
-    private void SetDefaultCache<T>(T id)
-    {
-        _cache.Insert(GetKey(id), Default, _cacheLifeTime);
-        _cache.Insert(GetKey(id, _largeLogoSize), Default, _cacheLifeTime);
-        _cache.Insert(GetKey(id, _mediumLogoSize), Default, _cacheLifeTime);
-        _cache.Insert(GetKey(id, _smallLogoSize), Default, _cacheLifeTime);
-    }
+        if (room.Id.ToString()!.Contains("spoint"))
+        {
+            return $"spoint-{room.ProviderId}";
+        }
 
-    private T GetId<T>(Folder<T> room)
-    {
-        return room.ProviderEntry && (room.RootId.ToString().Contains("sbox") 
-            || room.RootId.ToString().Contains("spoint")) ? room.RootId : room.Id;
+        return room.Id.ToString();
     }
 }
 
 [EnumExtensions]
-public enum RoomLogoSize
+public enum SizeName
 {
     Original = 0,
     Large = 1,

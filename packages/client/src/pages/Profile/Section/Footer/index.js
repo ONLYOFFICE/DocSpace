@@ -1,3 +1,6 @@
+﻿import RemoveSessionSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
+import TickSvgUrl from "PUBLIC_DIR/images/tick.svg?url";
+import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -25,10 +28,10 @@ import {
 } from "./styled-active-sessions";
 
 const removeIcon = (
-  <ReactSVG className="remove-icon" src="images/remove.session.svg" />
+  <ReactSVG className="remove-icon" src={RemoveSessionSvgUrl} />
 );
 const tickIcon = (
-  <ReactSVG className="tick-icon" wrapper="span" src="images/tick.svg" />
+  <ReactSVG className="tick-icon" wrapper="span" src={TickSvgUrl} />
 );
 
 const ActiveSessions = ({
@@ -54,7 +57,7 @@ const ActiveSessions = ({
       setCurrentSession(res.loginEvent);
     });
   }, []);
-  
+
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
@@ -126,7 +129,8 @@ const ActiveSessions = ({
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
-          iconName="/static/images/info.react.svg"
+          offsetRight={0}
+          iconName={InfoReactSvgUrl}
           tooltipContent={
             <Text fontSize="13px">
               {t("Profile:LogoutAllActiveSessionsDescription")}

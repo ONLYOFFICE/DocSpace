@@ -1,7 +1,5 @@
 {
   "LblInviteAgain": "Uzaicināt vēlreiz",
   "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <1>{{email}}</1> e-pasta adresi",
-  "NotFoundTitle": "Nav atrasts neviens komandas biedrs",
-  "ReassignmentData": "Datu atkārtota piešķiršana",
   "UserStatus": "Statuss"
 }

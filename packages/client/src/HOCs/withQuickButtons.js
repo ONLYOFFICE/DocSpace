@@ -10,15 +10,14 @@ export default function withQuickButtons(WrappedComponent) {
 
       this.state = {
         isLoading: false,
-        isCanWebEdit: props.canWebEdit(props.item.fileExst),
       };
     }
 
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, t } = this.props;
-      const { locked, id, access } = item;
+      const { item, lockFileAction, t } = this.props;
+      const { locked, id, security } = item;
 
-      if ((isAdmin || access === 0) && !this.state.isLoading) {
+      if (security?.Lock && !this.state.isLoading) {
         this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .then(() =>
@@ -26,8 +25,10 @@ export default function withQuickButtons(WrappedComponent) {
               ? toastr.success(t("Translations:FileUnlocked"))
               : toastr.success(t("Translations:FileLocked"))
           )
-          .catch((err) => toastr.error(err))
-          .finally(() => this.setState({ isLoading: false }));
+          .catch(
+            (err) => toastr.error(err),
+            this.setState({ isLoading: false })
+          );
       }
       return;
     };
@@ -48,7 +49,7 @@ export default function withQuickButtons(WrappedComponent) {
     };
 
     render() {
-      const { isLoading, isCanWebEdit } = this.state;
+      const { isLoading } = this.state;
 
       const {
         t,
@@ -57,7 +58,7 @@ export default function withQuickButtons(WrappedComponent) {
         isAdmin,
         sectionWidth,
         viewAs,
-        canLockFile,
+        folderCategory,
       } = this.props;
 
       const quickButtonsComponent = (
@@ -69,10 +70,9 @@ export default function withQuickButtons(WrappedComponent) {
           isAdmin={isAdmin}
           viewAs={viewAs}
           isDisabled={isLoading}
-          isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          canLockFile={canLockFile}
+          folderCategory={folderCategory}
         />
       );
 
@@ -90,18 +90,23 @@ export default function withQuickButtons(WrappedComponent) {
       auth,
       filesActionsStore,
       dialogsStore,
-      settingsStore,
-      accessRightsStore,
+
+      treeFoldersStore,
     }) => {
       const {
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
       } = filesActionsStore;
-
+      const {
+        isPersonalFolderRoot,
+        isArchiveFolderRoot,
+        isTrashFolder,
+      } = treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
-      const { canWebEdit } = settingsStore;
-      const { canLockFile } = accessRightsStore;
+
+      const folderCategory =
+        isTrashFolder || isArchiveFolderRoot || isPersonalFolderRoot;
 
       return {
         theme: auth.settingsStore.theme,
@@ -110,8 +115,7 @@ export default function withQuickButtons(WrappedComponent) {
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
-        canWebEdit,
-        canLockFile,
+        folderCategory,
       };
     }
   )(observer(WithQuickButtons));

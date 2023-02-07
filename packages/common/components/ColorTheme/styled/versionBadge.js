@@ -1,10 +1,10 @@
 import styled, { css } from "styled-components";
-import { StyledVersionSvg } from "@docspace/client/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
 import Box from "@docspace/components/box";
+import VersionMarkIcon from "../../VersionMarkIcon";
 const getDefaultStyles = ({ $currentColorScheme, $isVersion, theme, index }) =>
   $currentColorScheme &&
   css`
-    ${StyledVersionSvg} {
+    ${VersionMarkIcon} {
       path {
         fill: ${!$isVersion
           ? theme.filesVersionHistory.badge.defaultFill

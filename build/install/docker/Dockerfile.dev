@@ -1,7 +1,7 @@
 ARG SRC_PATH="/app/onlyoffice/src"
 ARG BUILD_PATH="/var/www"
-ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
-ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
 
 FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2022-10-09"
