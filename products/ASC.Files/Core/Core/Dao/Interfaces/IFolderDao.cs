@@ -88,7 +88,7 @@ public interface IFolderDao<T>
     /// <param name="withSubfolders"></param>
     /// <param name="tagIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool exludeSubject = false);
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool exludeSubject = false, bool withOrigin = false);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
