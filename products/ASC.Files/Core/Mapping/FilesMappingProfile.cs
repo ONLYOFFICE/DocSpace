@@ -37,8 +37,8 @@ public class FilesMappingProfile : AutoMapper.Profile
         CreateMap<DbFileQuery, File<int>>()
                 .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.CreateOn))
                 .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.File.ModifiedOn))
-                .AfterMap<BaseMappingAction>()
                 .IncludeMembers(r => r.File)
+                .AfterMap<FilesCommonMappingAction>()
                 .ConstructUsingServiceLocator();
 
         CreateMap<DbFolder, Folder<int>>();

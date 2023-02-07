@@ -27,14 +27,22 @@
 namespace ASC.Files.Core.Mapping;
 
 [Scope]
-public class BaseMappingAction : IMappingAction<OriginQuery, FileEntry<int>>
+public class FilesCommonMappingAction: IMappingAction<OriginQuery, FileEntry<int>>
 {
     public void Process(OriginQuery source, FileEntry<int> destination, ResolutionContext context)
     {
         if (source.OriginRoom != null)
         {
-            destination.OriginRoomTitle = source.OriginRoom.Title;
-            destination.OriginRoomId = source.OriginRoom.Id;
+            if (!DocSpaceHelper.IsRoom(source.OriginRoom.FolderType))
+            {
+                destination.OriginRoomTitle = default;
+                destination.OriginRoomId = default;
+            }
+            else
+            {
+                destination.OriginRoomTitle = source.OriginRoom.Title;
+                destination.OriginRoomId = source.OriginRoom.Id;
+            }
         }
         
         if (source.Origin != null)
