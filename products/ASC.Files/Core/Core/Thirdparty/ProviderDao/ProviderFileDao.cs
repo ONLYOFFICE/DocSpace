@@ -162,12 +162,12 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         }
     }
 
-    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, string roomId = default, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
     {
         var selector = GetSelector(parentId);
 
         var fileDao = selector.GetFileDao(parentId);
-        var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject);
+        var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, roomId, withSubfolders, excludeSubject);
         var result = await files.Where(r => r != null).ToListAsync();
 
         foreach (var r in result)

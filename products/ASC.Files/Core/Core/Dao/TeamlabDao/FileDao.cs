@@ -276,7 +276,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, int roomId = default, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -358,7 +358,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in (withOrigin ? FromQueryWithOrigin(filesDbContext, q) : FromQuery(filesDbContext, q)).AsAsyncEnumerable())
+        var result = withOrigin ? FromQueryWithOrigin(filesDbContext, q) : FromQuery(filesDbContext, q);
+
+        if (withOrigin && roomId != default)
+        {
+            result = result.Where(r => r.OriginRoom.Id == roomId);
+        }
+        
+        await foreach (var e in result.AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }

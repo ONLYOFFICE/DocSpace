@@ -188,7 +188,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
     }
 
-    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, string roomId = default, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
