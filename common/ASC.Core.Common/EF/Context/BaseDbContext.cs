@@ -94,7 +94,7 @@ public class InstallerOptionsAction
 
 public static class BaseDbContextExtension
 {
-    public static void AddBaseDbContextPool<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
+    public static IServiceCollection AddBaseDbContextPool<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
     {
         var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
         services.AddPooledDbContextFactory<T>(installerOptionsAction.OptionsAction);

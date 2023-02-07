@@ -70,6 +70,14 @@ public class Startup
         services.AddSingleton(jsonOptions);
 
         _diHelper.AddControllers();
+        _diHelper.TryAdd<ApiSystemHelper>();
+
+        services.RegisterFeature();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
 
         if (!string.IsNullOrEmpty(_corsOrigin))
         {
