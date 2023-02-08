@@ -92,7 +92,7 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<TenantManager>();
         DIHelper.TryAdd<UserManager>();
         DIHelper.TryAdd<SocketServiceClient>();
-        DIHelper.TryAdd<FileStorageService<int>>();
+        DIHelper.TryAdd<FileStorageService>();
         DIHelper.TryAdd<FileDataProvider>();
         DIHelper.TryAdd<BuilderQueue<int>>();
         DIHelper.TryAdd<Builder<int>>();

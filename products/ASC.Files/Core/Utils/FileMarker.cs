@@ -881,7 +881,7 @@ public class FileMarker
                     }
                     else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
                     {
-                        rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<T>(_daoFactory);
+                        rootFolderId = IdConverter.Convert<T>(await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory));
                     }
 
                     if (rootFolderId != null)
