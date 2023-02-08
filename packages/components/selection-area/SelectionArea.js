@@ -42,6 +42,10 @@ class SelectionArea extends React.Component {
       countTilesInRow,
       countOfMissingTiles,
       countRowsOfFolders,
+      folderTileGap,
+      fileTileGap,
+      filesTileHeight,
+      filesHeaderHeight,
     } = this.props;
 
     const itemHeight = this.props.itemHeight ?? this.elemRect.height;
@@ -50,15 +54,12 @@ class SelectionArea extends React.Component {
 
     // Tile view
     if (viewAs === "tile") {
-      const marginLeft = 14; // TODO:remove
-      const marginTop = 14; // TODO:this
-
       if (itemIndex === 0) {
         itemTop = this.elemRect.top - scrollTop;
-        itemBottom = this.elemRect.top + itemHeight - scrollTop;
+        itemBottom = itemTop + itemHeight;
       } else if (itemType === "file") {
-        const folderHeight = 66 + marginTop; // TODO:remove
-        const fileHeight = 236 + marginTop; // TODO:this
+        const folderHeight = itemHeight + folderTileGap;
+        const fileHeight = filesTileHeight + fileTileGap;
 
         const nextRow = Math.floor(
           (itemIndex + countOfMissingTiles) / countTilesInRow
@@ -67,25 +68,19 @@ class SelectionArea extends React.Component {
         itemTop =
           this.elemRect.top +
           folderHeight * countRowsOfFolders +
+          filesHeaderHeight +
           fileHeight * (nextRow - countRowsOfFolders) -
           scrollTop;
 
-        itemBottom =
-          this.elemRect.top +
-          folderHeight * countRowsOfFolders +
-          fileHeight * (nextRow - countRowsOfFolders) -
-          scrollTop +
-          fileHeight;
+        itemBottom = itemTop + fileHeight - folderTileGap;
       } else {
         const rowIndex = Math.trunc(itemIndex / countTilesInRow);
 
         itemTop =
-          this.elemRect.top + (itemHeight + marginTop) * rowIndex - scrollTop;
-        itemBottom =
           this.elemRect.top +
-          itemHeight +
-          (itemHeight + marginTop) * rowIndex -
+          (itemHeight + folderTileGap) * rowIndex -
           scrollTop;
+        itemBottom = itemTop + itemHeight;
       }
 
       // Set left/right for item
@@ -96,25 +91,21 @@ class SelectionArea extends React.Component {
 
       if (fileIndex == 0) {
         itemLeft = this.elemRect.left;
-        itemRight = this.elemRect.left + this.elemRect.width;
+        itemRight = itemLeft + this.elemRect.width;
       } else {
         itemLeft =
-          this.elemRect.left + (this.elemRect.width + marginLeft) * fileIndex;
-        itemRight =
-          this.elemRect.left +
-          (this.elemRect.width + marginLeft) * fileIndex +
-          this.elemRect.width;
+          this.elemRect.left + (this.elemRect.width + fileTileGap) * fileIndex;
+        itemRight = itemLeft + this.elemRect.width;
       }
     } else {
       // Table/row view
 
-      if (itemIndex == 0) {
-        itemTop = this.elemRect.top + scrollTop;
-        itemBottom = this.elemRect.top + itemHeight - scrollTop;
+      if (itemIndex === 0) {
+        itemTop = this.elemRect.top - scrollTop;
+        itemBottom = itemTop + itemHeight;
       } else {
         itemTop = this.elemRect.top + itemHeight * itemIndex - scrollTop;
-        itemBottom =
-          this.elemRect.top + itemHeight + itemHeight * itemIndex - scrollTop;
+        itemBottom = itemTop + itemHeight;
       }
     }
 
@@ -274,6 +265,7 @@ class SelectionArea extends React.Component {
       viewAs,
       itemsContainerClass,
       isRooms,
+      folderHeaderHeight,
     } = this.props;
 
     if (e.target.closest(".not-selectable")) return;
@@ -305,12 +297,9 @@ class SelectionArea extends React.Component {
     const itemsContainerRect = itemsContainer[0].getBoundingClientRect();
 
     if (!isRooms && viewAs === "tile") {
-      const folderTitleHeight = 33; // TODO: fix
-
       this.elemRect.top =
-        scroll.scrollTop + itemsContainerRect.top + folderTitleHeight;
-      this.elemRect.left =
-        scroll.scrollLeft + itemsContainerRect.left + folderTitleHeight;
+        scroll.scrollTop + itemsContainerRect.top + folderHeaderHeight;
+      this.elemRect.left = scroll.scrollLeft + itemsContainerRect.left;
     } else {
       this.elemRect.top = scroll.scrollTop + itemsContainerRect.top;
       this.elemRect.left = scroll.scrollLeft + itemsContainerRect.left;
@@ -396,6 +385,7 @@ class SelectionArea extends React.Component {
       this.array = selectables;
     } else {
       this.array = [...this.array, ...selectables];
+      console.log("this.array", this.array.length);
     }
 
     this.frame().next(null);

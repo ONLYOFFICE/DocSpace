@@ -44,6 +44,14 @@ const SelectionArea = (props) => {
   const division = foldersLength % countTilesInRow;
   const countOfMissingTiles = division ? countTilesInRow - division : 0;
 
+  // const itemsContainer = document.getElementsByClassName(itemsContainerClass);
+  // const folderHeaderHeight = itemsContainer[0]
+  //   .getElementsByClassName("folder_header")[0]
+  //   .parentElement.getBoundingClientRect().height;
+  // const filesHeaderHeight = itemsContainer[0]
+  //   .getElementsByClassName("files_header")[0]
+  //   .parentElement.getBoundingClientRect().height;
+
   return isMobile || dragging ? (
     <></>
   ) : (
@@ -59,6 +67,11 @@ const SelectionArea = (props) => {
       isRooms={isRooms}
       countRowsOfFolders={countRowsOfFolders}
       countOfMissingTiles={countOfMissingTiles}
+      folderTileGap={12}
+      fileTileGap={14}
+      filesTileHeight={222}
+      folderHeaderHeight={35}
+      filesHeaderHeight={46}
     />
   );
 };
