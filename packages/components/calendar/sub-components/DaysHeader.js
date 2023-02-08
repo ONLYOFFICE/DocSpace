@@ -29,7 +29,9 @@ export const DaysHeader = ({
           setSelectedScene((prevSelectedScene) => prevSelectedScene + 1)
         }
       >
-        {observedDate.format("MMMM")} {observedDate.year()}
+        {observedDate.format("MMMM").charAt(0).toUpperCase() +
+          observedDate.format("MMMM").substring(1)}{" "}
+        {observedDate.year()}
       </Title>
       <HeaderButtons
         onLeftClick={() => onLeftClick(setObservedDate)}
