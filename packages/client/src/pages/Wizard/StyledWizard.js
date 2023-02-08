@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   width: 100vw;
   z-index: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   box-sizing: border-box;
 
   ${isMobileOnly &&
@@ -18,26 +18,42 @@ export const Wrapper = styled.div`
     width: 100%;
   `}
 
-  background-image: url("${BackgroundPatternReactSvgUrl}");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 100% 100%;
-
-  @media ${tablet} {
+  .bg-cover {
+    background-image: url("${BackgroundPatternReactSvgUrl}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     background-size: cover;
-  }
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
 
-  @media ${hugeMobile} {
-    background-image: none;
+    @media ${hugeMobile} {
+      background-image: none;
+    }
   }
 `;
 
-export const WizardContainer = styled.div`
+export const StyledContent = styled.div`
+  min-height: 100vh;
+  flex: 1 0 auto;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 auto;
-  margin-top: 100px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+`;
+
+export const WizardContainer = styled.div`
+  margin: 56px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   @media ${tablet} {
     width: 100%;
@@ -53,7 +69,7 @@ export const WizardContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 64px;
+    padding-bottom: 40px;
   }
 
   .welcome-text {
@@ -74,6 +90,11 @@ export const WizardContainer = styled.div`
 
   .password-field {
     margin: 0px !important;
+  }
+
+  .license-filed {
+    width: 100%;
+    margin-bottom: 20px;
   }
 `;
 

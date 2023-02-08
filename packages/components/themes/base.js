@@ -711,7 +711,7 @@ const Base = {
         middle: "36px",
         big: "36px",
         huge: "37px",
-        large: "43px",
+        large: "42px",
       },
     },
 
