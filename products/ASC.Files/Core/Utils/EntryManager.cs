@@ -943,6 +943,28 @@ public class EntryManager
                 return c * (isNewSortResult == 0 ? DateTime.Compare(x.ModifiedOn, y.ModifiedOn) : isNewSortResult);
             }
             ,
+            SortedByType.Room => (x, y) =>
+            {
+                var x1 = ((FileEntry<T>)x).OriginRoomTitle;
+                var x2 = ((FileEntry<T>)y).OriginRoomTitle;
+
+                if (x1 == null && x2 == null)
+                {
+                    return 0;
+                }
+                
+                if (x1 == null)
+                {
+                    return c * 1;
+                }
+                
+                if (x2 == null)
+                {
+                    return c * -1;
+                }
+
+                return c * x1.EnumerableComparer(x2);
+            },
             _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
         };
 
