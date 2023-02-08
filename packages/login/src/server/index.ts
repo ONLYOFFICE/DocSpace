@@ -78,8 +78,6 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       [key: string]: { [key: string]: {} };
     } = {};
 
-    throw new Error("Test");
-
     if (i18n && i18n?.services?.resourceStore?.data) {
       for (let key in i18n?.services?.resourceStore?.data) {
         if (key === "en" || key === currentLanguage) {
