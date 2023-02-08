@@ -172,7 +172,7 @@ public class WebhooksController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<SslSettings>();
+        var settings = _settingsManager.Load<WebHooksSettings>();
 
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
@@ -182,7 +182,7 @@ public class WebhooksController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<SslSettings>();
+        var settings = _settingsManager.Load<WebHooksSettings>();
         settings.EnableSSLVerification = isEnabled;
         _settingsManager.Save(settings);
 
@@ -192,7 +192,7 @@ public class WebhooksController : BaseSettingsController
     [HttpGet("webhook/all")]
     public IEnumerable<Webhook> Settings()
     {
-        var settings = _settingsManager.LoadSettings<WebHookDisabledKeysSettings>(_tenantManager.GetCurrentTenant().Id);
+        var settings = _settingsManager.LoadSettings<WebHooksSettings>(_tenantManager.GetCurrentTenant().Id);
 
         foreach (var w in WebhookManager.GetAll())
         {

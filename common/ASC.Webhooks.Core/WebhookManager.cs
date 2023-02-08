@@ -64,19 +64,3 @@ public class Webhook
 
     public static string GetKey(string method, string route) => $"{method}|{route}";
 }
-
-public class WebHookDisabledKeysSettings : ISettings<WebHookDisabledKeysSettings>
-{
-    public List<string> Keys { get; set; }
-
-    [JsonIgnore]
-    public Guid ID => new Guid("3B6BA277-EA3C-4B7B-AD67-B2166B15A87C");
-
-    public WebHookDisabledKeysSettings GetDefault()
-    {
-        return new WebHookDisabledKeysSettings()
-        {
-            Keys = new List<string> { }
-        };
-    }
-}

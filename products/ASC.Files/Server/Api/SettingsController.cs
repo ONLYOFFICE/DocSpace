@@ -242,7 +242,7 @@ public class SettingsController : ApiControllerBase
     [HttpGet("settings/webhook/all")]
     public IEnumerable<Webhook> Settings()
     {
-        var settings = _settingsManager.LoadSettings<WebHookDisabledKeysSettings>(_tenantManager.GetCurrentTenant().Id);
+        var settings = _settingsManager.LoadSettings<WebHooksSettings>(_tenantManager.GetCurrentTenant().Id);
 
         foreach (var w in WebhookManager.GetAll())
         {

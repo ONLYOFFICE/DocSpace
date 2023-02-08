@@ -26,21 +26,21 @@
 
 
 namespace ASC.Webhooks.Core;
+
 [Serializable]
-public class SslSettings : ISettings<SslSettings>
+public class WebHooksSettings : ISettings<WebHooksSettings>
 {
     public bool EnableSSLVerification { get; set; }
 
-    [JsonIgnore]
-    public Guid ID
-    {
-        get { return new Guid("6EFA0EAB-D033-4720-BDB3-DEB057EBC140"); }
-    }
+    public List<string> Keys { get; set; }
 
-    public SslSettings GetDefault()
+    [JsonIgnore]
+    public Guid ID => new Guid("6EFA0EAB-D033-4720-BDB3-DEB057EBC140");
+
+    public WebHooksSettings GetDefault() => new WebHooksSettings()
     {
-        return new SslSettings();
-    }
+        Keys = new List<string> { }
+    };
 }
 
 
