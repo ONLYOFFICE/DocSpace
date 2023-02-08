@@ -44,6 +44,8 @@ const FilesMediaViewer = (props) => {
     extsMediaPreviewed,
     setIsPreview,
     isPreview,
+    nextMedia,
+    prevMedia,
     resetUrl,
     firstLoad,
   } = props;
@@ -139,8 +141,8 @@ const FilesMediaViewer = (props) => {
     if (isPreview) {
       setIsPreview(false);
       resetUrl();
-      setScrollToItem({ id: previewFile.id, type: "file" });
-      if(previewFile){
+      if (previewFile) {
+        setScrollToItem({ id: previewFile.id, type: "file" });
         setBufferSelection(previewFile);
       }
       setToPreviewFile(null);
@@ -202,6 +204,8 @@ const FilesMediaViewer = (props) => {
         extsImagePreviewed={extsImagePreviewed}
         isPreviewFile={firstLoad}
         onChangeUrl={onChangeUrl}
+        nextMedia={nextMedia}
+        prevMedia={prevMedia}
       />
     )
   );
@@ -239,6 +243,8 @@ export default inject(
       previewFile,
       setToPreviewFile,
       setCurrentId,
+      nextMedia,
+      prevMedia,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
@@ -260,6 +266,8 @@ export default inject(
       files,
       playlist,
       currentPostionIndex,
+      nextMedia,
+      prevMedia,
       userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,

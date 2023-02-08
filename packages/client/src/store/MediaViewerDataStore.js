@@ -8,7 +8,7 @@ class MediaViewerDataStore {
   visible = false;
   previewFile = null;
   currentItem = null;
-  prevPostionIndex
+  prevPostionIndex = 0;
 
   constructor(filesStore, settingsStore) {
     makeAutoObservable(this);
@@ -46,6 +46,11 @@ class MediaViewerDataStore {
     this.id = id;
   };
 
+  changeUrl = (id) => {
+    const url = "/products/files/#preview/" + id;
+    window.history.pushState(null, null, url);
+  }
+
   findNearestIndex = (items, index) => {
     let found = items[0].id;
     for (const item of items) {
@@ -61,10 +66,53 @@ class MediaViewerDataStore {
   }
 
 
+  nextMedia = () => {
+
+    const { setBufferSelection, files } = this.filesStore;
+
+    const postionIndex = (this.currentPostionIndex + 1) % this.playlist.length;
+
+    if (postionIndex === 0) {
+      return
+    }
+    const currentFileId = this.playlist[postionIndex].fileId;
+
+    const targetFile = files.find((item) => item.id === currentFileId);
+
+    if (!this.isNullOrUndefined(targetFile))
+      setBufferSelection(targetFile);
+
+    const fileId = this.playlist[postionIndex].fileId;
+    this.setCurrentId(fileId);
+    this.changeUrl(fileId);
+  }
+
+  prevMedia = () => {
+    const { setBufferSelection, files } = this.filesStore;
+
+    let currentPlaylistPos = this.currentPostionIndex - 1;
+
+    if (currentPlaylistPos === -1) {
+      return
+    }
+
+    const currentFileId = this.playlist[currentPlaylistPos].fileId;
+
+    const targetFile = files.find(
+      (item) => item.id === currentFileId
+    );
+
+    if (!this.isNullOrUndefined(targetFile))
+      setBufferSelection(targetFile);
+
+    const fileId = this.playlist[currentPlaylistPos].fileId;
+    this.setCurrentId(fileId);
+    this.changeUrl(fileId);
+  }
+
+
+
   get currentPostionIndex() {
-
-    console.log("computed")
-
     if (this.playlist.length === 0) {
       return 0
     }

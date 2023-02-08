@@ -1,5 +1,5 @@
 import { isMobileOnly } from "react-device-detect";
-import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 
 import ImageViewer from "../MediaViewer/sub-components/image-viewer";
 
@@ -17,7 +17,7 @@ import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 
 
 
-function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
+function MediaViewer({ playlistPos, nextMedia, prevMedia, ...props }: MediaViewerProps): JSX.Element {
     const ctrIsPressedRef = useRef<boolean>(false);
 
     const [title, setTitle] = useState<string>("")
@@ -64,7 +64,8 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
 
         const targetFile = files.find((item) => item.id === currentFileId);
 
-        if (targetFile) setBufferSelection(targetFile);
+        if (targetFile)
+            setBufferSelection(targetFile);
 
         const { src, title } = currentFile;
 
@@ -74,12 +75,12 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
             fetchAndSetTiffDataURL(src);
         }
 
-        document.addEventListener("keydown", onKeydown, false);
-        document.addEventListener("keyup", onKeyup, false);
+        document.addEventListener("keydown", onKeydown);
+        document.addEventListener("keyup", onKeyup);
 
         return () => {
-            document.removeEventListener("keydown", onKeydown, false);
-            document.removeEventListener("keyup", onKeyup, false);
+            document.removeEventListener("keydown", onKeydown);
+            document.removeEventListener("keyup", onKeyup);
             props.onClose();
         }
     }, [])
@@ -106,13 +107,16 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
 
         const foundFile = files.find(file => file.id === fileId)
 
+        if (!isNullOrUndefined(foundFile)) {
+            setTargetFile(foundFile);
+            setBufferSelection(foundFile);
+        }
+
         setTitle(title);
-        setTargetFile(foundFile);
-        setBufferSelection(foundFile);
         setIsFavorite((playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
             FileStatus.IsFavorite)
 
-    }, [props.playlist.length, props.currentFileId, playlistPos])
+    }, [props.playlist.length, props.files.length, props.currentFileId, playlistPos])
 
 
 
@@ -255,61 +259,11 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
         return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
     }, []);
 
-
-    const prevMedia = () => {
-        const { playlist, setBufferSelection, files, onChangeUrl } = props;
-
-        let currentPlaylistPos = playlistPos - 1;
-
-        if (currentPlaylistPos === -1) {
-            return
-        }
-
-        if (currentPlaylistPos < 0)
-            currentPlaylistPos = playlist.length - 1;
-
-        const currentFileId = playlist[currentPlaylistPos].fileId;
-
-        const targetFile = files.find(
-            (item) => item.id === currentFileId
-        );
-
-        if (!isNullOrUndefined(targetFile))
-            setBufferSelection(targetFile);
-
-        const id = playlist[currentPlaylistPos].fileId;
-        onChangeUrl(id);
-    };
-
-    const nextMedia = () => {
-        console.log("next")
-
-        const { setBufferSelection, playlist, files, onChangeUrl } = props;
-
-        let currentPlaylistPos = (playlistPos + 1) % playlist.length;
-
-        if (currentPlaylistPos === 0) return;
-
-        const currentFileId = playlist[currentPlaylistPos].fileId;
-
-        const targetFile = files.find(
-            (item) => item.id === currentFileId
-        );
-
-        if (!isNullOrUndefined(targetFile))
-            setBufferSelection(targetFile);
-
-        const id = playlist[currentPlaylistPos].fileId;
-        onChangeUrl(id);
-    };
-
     const onDelete = () => {
         const { playlist, onDelete } = props;
 
-        let currentFileId =
-            playlist.length > 0
-                ? playlist.find((file) => file.id === playlistPos)?.fileId
-                : 0;
+        let currentFileId = playlist.find((file) => file.id === playlistPos)?.fileId
+
         setCanSwipeImage(false);
         if (!isNullOrUndefined(currentFileId))
             onDelete(currentFileId);
@@ -319,10 +273,8 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
     const onDownload = () => {
         const { playlist, onDownload } = props;
 
-        let currentFileId =
-            playlist.length > 0
-                ? playlist.find((file) => file.id === playlistPos)?.fileId
-                : 0;
+        let currentFileId = playlist.find((file) => file.id === playlistPos)?.fileId
+
         if (!isNullOrUndefined(currentFileId))
             onDownload(currentFileId);
     };
@@ -335,74 +287,65 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
 
 
     const onKeydown = (e: KeyboardEvent) => {
-        let isActionKey = false;
-        for (let key in ButtonKeys) {
-            if (ButtonKeys[key] === e.keyCode) {
-                e.preventDefault();
-                isActionKey = true;
-            }
+        switch (e.keyCode) {
+            case ButtonKeys.leftArrow:
+                if (document.fullscreenElement) return;
+                canSwipeImage
+                    ? ctrIsPressedRef.current
+                        ? document.getElementsByClassName("iconContainer rotateLeft")
+                            .length > 0 &&
+                        (document
+                            .getElementsByClassName("iconContainer rotateLeft")[0] as HTMLElement)
+                            .click()
+                        : prevMedia()
+                    : null;
+                break;
+            case ButtonKeys.rightArrow:
+                if (document.fullscreenElement) return;
+                canSwipeImage
+                    ? ctrIsPressedRef.current
+                        ? document.getElementsByClassName("iconContainer rotateRight")
+                            .length > 0 &&
+                        (document
+                            .getElementsByClassName("iconContainer rotateRight")[0] as HTMLElement)
+                            .click()
+                        : nextMedia()
+                    : null;
+                break;
+            case ButtonKeys.space:
+                document.getElementsByClassName("video-play").length > 0 &&
+                    (document.getElementsByClassName("video-play")[0] as HTMLElement).click();
+                break;
+            case ButtonKeys.esc:
+                if (!props.deleteDialogVisible) props.onClose();
+                break;
+            case ButtonKeys.upArrow:
+                document.getElementsByClassName("iconContainer zoomIn").length > 0 &&
+                    (document.getElementsByClassName("iconContainer zoomIn")[0] as HTMLElement).click();
+                break;
+            case ButtonKeys.downArrow:
+                document.getElementsByClassName("iconContainer zoomOut").length > 0 &&
+                    (document.getElementsByClassName("iconContainer zoomOut")[0] as HTMLElement).click();
+                break;
+            case ButtonKeys.ctr:
+                ctrIsPressedRef.current = true;
+                break;
+            case ButtonKeys.s:
+                if (ctrIsPressedRef.current) onDownload();
+                break;
+            case ButtonKeys.one:
+                ctrIsPressedRef.current &&
+                    document.getElementsByClassName("iconContainer reset").length > 0 &&
+                    (document.getElementsByClassName("iconContainer reset")[0] as HTMLElement).click();
+                break;
+            case ButtonKeys.del:
+                onDelete();
+                break;
+
+            default:
+                break;
         }
 
-        if (isActionKey) {
-            switch (e.keyCode) {
-                case ButtonKeys.leftArrow:
-                    if (document.fullscreenElement) return;
-                    canSwipeImage
-                        ? ctrIsPressedRef.current
-                            ? document.getElementsByClassName("iconContainer rotateLeft")
-                                .length > 0 &&
-                            (document
-                                .getElementsByClassName("iconContainer rotateLeft")[0] as HTMLElement)
-                                .click()
-                            : prevMedia()
-                        : null;
-                    break;
-                case ButtonKeys.rightArrow:
-                    if (document.fullscreenElement) return;
-                    canSwipeImage
-                        ? ctrIsPressedRef.current
-                            ? document.getElementsByClassName("iconContainer rotateRight")
-                                .length > 0 &&
-                            (document
-                                .getElementsByClassName("iconContainer rotateRight")[0] as HTMLElement)
-                                .click()
-                            : nextMedia()
-                        : null;
-                    break;
-                case ButtonKeys.space:
-                    document.getElementsByClassName("video-play").length > 0 &&
-                        (document.getElementsByClassName("video-play")[0] as HTMLElement).click();
-                    break;
-                case ButtonKeys.esc:
-                    if (!props.deleteDialogVisible) props.onClose();
-                    break;
-                case ButtonKeys.upArrow:
-                    document.getElementsByClassName("iconContainer zoomIn").length > 0 &&
-                        (document.getElementsByClassName("iconContainer zoomIn")[0] as HTMLElement).click();
-                    break;
-                case ButtonKeys.downArrow:
-                    document.getElementsByClassName("iconContainer zoomOut").length > 0 &&
-                        (document.getElementsByClassName("iconContainer zoomOut")[0] as HTMLElement).click();
-                    break;
-                case ButtonKeys.ctr:
-                    ctrIsPressedRef.current = true;
-                    break;
-                case ButtonKeys.s:
-                    if (ctrIsPressedRef.current) onDownload();
-                    break;
-                case ButtonKeys.one:
-                    ctrIsPressedRef.current &&
-                        document.getElementsByClassName("iconContainer reset").length > 0 &&
-                        (document.getElementsByClassName("iconContainer reset")[0] as HTMLElement).click();
-                    break;
-                case ButtonKeys.del:
-                    onDelete();
-                    break;
-
-                default:
-                    break;
-            }
-        }
     };
 
     const onClose = useCallback(() => {

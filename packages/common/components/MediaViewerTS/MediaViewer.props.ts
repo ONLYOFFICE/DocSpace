@@ -39,4 +39,7 @@ export interface MediaViewerProps {
     onDuplicate: (file: IFile, t: TranslationType) => void;
     onClickDelete: (file: IFile, t: TranslationType) => void;
     onClickDownload: (file: IFile, t: TranslationType) => void;
+
+    nextMedia: VoidFunction;
+    prevMedia: VoidFunction;
 }

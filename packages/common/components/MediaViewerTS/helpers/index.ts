@@ -1,5 +1,3 @@
-import { PlaylistType } from "../types";
-
 export const mediaTypes = Object.freeze({
     audio: 1,
     video: 2,
