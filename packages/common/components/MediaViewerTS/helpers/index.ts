@@ -45,13 +45,3 @@ type NullOrUndefined = null | undefined
 export const isNullOrUndefined = (arg: unknown): arg is NullOrUndefined => {
     return arg === undefined || arg === null;
 }
-
-export const nearestValue = (items: PlaylistType[], value: number): number => {
-    let found = items[0].id;
-    for (const item of items) {
-        if (Math.abs(item.id - value) < Math.abs(found - value)) {
-            found = item.id
-        }
-    }
-    return found
-}
