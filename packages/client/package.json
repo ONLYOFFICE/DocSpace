@@ -51,7 +51,8 @@
     "react-hotkeys-hook": "^3.4.4",
     "react-markdown": "^7.0.1",
     "react-smartbanner": "^5.1.4",
-    "react-string-format": "^0.1.4"
+    "react-string-format": "^0.1.4",
+    "windows-iana": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
