@@ -27,7 +27,7 @@ newInstance
     },
 
     backend: {
-      loadPath: loadLanguagePath(config.homepage, "NavMenu"),
+      loadPath: loadLanguagePath(config.homepage),
     },
 
     react: {

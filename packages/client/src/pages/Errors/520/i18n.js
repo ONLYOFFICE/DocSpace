@@ -25,7 +25,7 @@ newInstance
     },
 
     backend: {
-      loadPath: loadLanguagePath(config.homepage, "Errors"),
+      loadPath: loadLanguagePath(config.homepage),
     },
 
     react: {

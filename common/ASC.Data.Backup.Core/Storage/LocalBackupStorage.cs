@@ -27,7 +27,7 @@
 namespace ASC.Data.Backup.Storage;
 
 [Scope]
-public class LocalBackupStorage : IBackupStorage
+public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
 {
     public Task<string> Upload(string storageBasePath, string localPath, Guid userId)
     {
@@ -65,5 +65,10 @@ public class LocalBackupStorage : IBackupStorage
     public Task<string> GetPublicLink(string storagePath)
     {
         return Task.FromResult(string.Empty);
+    }
+
+    public Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
+    {
+        return Task.FromResult<IDataWriteOperator>(null);
     }
 }

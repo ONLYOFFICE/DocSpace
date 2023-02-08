@@ -33,6 +33,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     private readonly DropboxDaoSelector _dropboxDaoSelector;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
+    private readonly TempStream _tempStream;
 
     public DropboxFolderDao(
         IServiceProvider serviceProvider,
@@ -48,13 +49,15 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempPath tempPath,
-        AuthContext authContext)
+        AuthContext authContext,
+        TempStream tempStream)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _dropboxDaoSelector = dropboxDaoSelector;
         _fileDao = fileDao;
         _folderDao = folderDao;
+        _tempStream = tempStream;
     }
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -98,10 +101,10 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -505,5 +508,13 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         var storageMaxUploadSize = (await ProviderInfo.StorageAsync).MaxChunkedUploadFileSize;
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
     }
 }

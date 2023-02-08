@@ -580,7 +580,7 @@ internal class GoogleDriveStorage : IDisposable
         return uploadSession;
     }
 
-    public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
+    public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -589,10 +589,10 @@ internal class GoogleDriveStorage : IDisposable
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        return InternalTransferAsync(googleDriveSession, stream, chunkLength);
+        return InternalTransferAsync(googleDriveSession, stream, chunkLength, lastChunk);
     }
 
-    private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
+    private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
     {
         var request = new HttpRequestMessage
         {
@@ -601,9 +601,21 @@ internal class GoogleDriveStorage : IDisposable
         };
         request.Headers.Add("Authorization", "Bearer " + AccessToken);
         request.Content = new StreamContent(stream);
-        request.Content.Headers.ContentRange = new ContentRangeHeaderValue(googleDriveSession.BytesTransfered,
-                                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                                           googleDriveSession.BytesToTransfer);
+        if (googleDriveSession.BytesToTransfer > 0)
+        {
+            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
+                                                           googleDriveSession.BytesTransfered,
+                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                           googleDriveSession.BytesToTransfer));
+        }
+        else
+        {
+            var bytesToTransfer = lastChunk ? (googleDriveSession.BytesTransfered + chunkLength).ToString() : "*";
+            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
+                                                           googleDriveSession.BytesTransfered,
+                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                           bytesToTransfer));
+        }
         var httpClient = _clientFactory.CreateClient();
         HttpResponseMessage response;
 
