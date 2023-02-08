@@ -6,6 +6,8 @@ export { default as CatalogItemTheme } from "./catalogItem";
 
 export { default as BadgeTheme } from "./badge";
 
+export { default as CalendarTheme } from './calendar'
+
 export { default as SubmenuTextTheme } from "./submenuText";
 
 export { default as SubmenuItemLabelTheme } from "./submenuItemLabel";
