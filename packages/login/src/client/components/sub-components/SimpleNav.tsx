@@ -10,11 +10,11 @@ const StyledNav = styled.div`
   height: 48px;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.login.navBackground};
+  background-color: ${(props) => props.theme?.login?.navBackground};
 
   svg {
     path:last-child {
-      fill: ${(props) => props.theme.client.home.logoColor};
+      fill: ${(props) => props.theme.client?.home?.logoColor};
     }
   }
   @media ${hugeMobile} {
@@ -23,9 +23,11 @@ const StyledNav = styled.div`
 `;
 
 const SimpleNav = ({ theme, logoUrls }) => {
-  const logo = Object.values(logoUrls)[0];
+  const logo = logoUrls && Object.values(logoUrls)[0];
 
-  const logoUrl = !theme.isBase
+  const logoUrl = !logo
+    ? undefined
+    : !theme?.isBase
     ? getLogoFromPath(logo.path.dark)
     : getLogoFromPath(logo.path.light);
 

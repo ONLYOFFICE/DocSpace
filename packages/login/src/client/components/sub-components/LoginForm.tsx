@@ -59,7 +59,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
 
-  const { message, confirmedEmail } = match;
+  const { message, confirmedEmail } = match || {
+    message: "",
+    confirmedEmail: "",
+  };
 
   const authCallback = (profile: string) => {
     localStorage.removeItem("profile");
