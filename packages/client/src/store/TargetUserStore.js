@@ -13,8 +13,6 @@ class TargetUserStore {
   targetUser = null;
   isEditTargetUser = false;
 
-  tipsSubscription = null;
-
   changeEmailVisible = false;
   changePasswordVisible = false;
   changeNameVisible = false;
@@ -54,10 +52,7 @@ class TargetUserStore {
       return this.setTargetUser(this.peopleStore.authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
-    // if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
-    //   const tipsSubscription = await api.settings.getTipsSubscription();
-    //   this.tipsSubscription = tipsSubscription;
-    // }
+
     this.setTargetUser(user);
     return user;
     //}
@@ -110,11 +105,6 @@ class TargetUserStore {
     this.isEditTargetUser = isEditTargetUser;
   };
 
-  changeEmailSubscription = async (enabled) => {
-    this.tipsSubscription = enabled;
-    this.tipsSubscription = await api.settings.toggleTipsSubscription();
-  };
-
   setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
 
   setChangePasswordVisible = (visible) =>
@@ -147,11 +137,6 @@ class TargetUserStore {
         break;
     }
     await changeNotificationSubscription(notificationType, isEnabled);
-  };
-
-  changeTipsSubscription = async (enabled) => {
-    this.tipsSubscription = enabled;
-    this.tipsSubscription = await api.settings.toggleTipsSubscription();
   };
 }
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
-
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
