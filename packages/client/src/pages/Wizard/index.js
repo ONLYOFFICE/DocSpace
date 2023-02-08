@@ -34,6 +34,7 @@ import {
   StyledLink,
   StyledInfo,
   StyledAcceptTerms,
+  StyledContent,
 } from "./StyledWizard";
 import { getUserTimezone, getSelectZone } from "./timezonesHelper";
 
@@ -275,194 +276,197 @@ const Wizard = (props) => {
 
   return (
     <Wrapper>
-      <WizardContainer>
-        <DocspaceLogo className="docspace-logo" />
-        <Text fontWeight={700} fontSize="23px" className="welcome-text">
-          {t("WelcomeTitle")}
-        </Text>
-        <FormWrapper>
-          <Text fontWeight={600} fontSize="16px" className="form-header">
-            {t("Desc")}
+      <div className="bg-cover"></div>
+      <StyledContent>
+        <WizardContainer>
+          <DocspaceLogo className="docspace-logo" />
+          <Text fontWeight={700} fontSize="23px" className="welcome-text">
+            {t("WelcomeTitle")}
           </Text>
-          <FieldContainer
-            className="wizard-field"
-            isVertical={true}
-            labelVisible={false}
-            hasError={hasErrorEmail}
-            errorMessage={t("ErrorEmail")}
-          >
-            <EmailInput
-              name="wizard-email"
-              tabIndex={1}
-              size="large"
-              scale={true}
-              placeholder={t("Common:Email")}
-              emailSettings={emailSettings}
-              hasError={hasErrorEmail}
-              onValidateInput={onEmailChangeHandler}
-              isDisabled={isCreated}
-            />
-          </FieldContainer>
-
-          <FieldContainer
-            className="wizard-field password-field"
-            isVertical={true}
-            labelVisible={false}
-            hasError={hasErrorPass}
-            errorMessage={t("ErrorPassword")}
-          >
-            <PasswordInput
-              ref={refPassInput}
-              tabIndex={2}
-              size="large"
-              scale={true}
-              inputValue={password}
-              passwordSettings={passwordSettings}
-              isDisabled={isCreated}
-              placeholder={t("Common:Password")}
-              hideNewPasswordButton={true}
-              isDisableTooltip={true}
-              isTextTooltipVisible={false}
-              hasError={hasErrorPass}
-              onChange={onChangePassword}
-              autoComplete="current-password"
-              onValidateInput={isValidPassHandler}
-            />
-          </FieldContainer>
-          <StyledLink>
-            <IconButton
-              size="12"
-              iconName={RefreshReactSvgUrl}
-              onClick={generatePassword}
-            />
-            <Link
-              className="generate-password-link"
-              type="action"
-              fontWeight={600}
-              isHovered={true}
-              onClick={generatePassword}
-            >
-              {t("GeneratePassword")}
-            </Link>
-          </StyledLink>
-
-          {isLicenseRequired && (
+          <FormWrapper>
+            <Text fontWeight={600} fontSize="16px" className="form-header">
+              {t("Desc")}
+            </Text>
             <FieldContainer
-              className="license-filed"
+              className="wizard-field"
               isVertical={true}
               labelVisible={false}
-              hasError={hasErrorLicense}
-              errorMessage={
-                invalidLicense
-                  ? t("ErrorLicenseBody")
-                  : t("ErrorUploadLicenseFile")
-              }
+              hasError={hasErrorEmail}
+              errorMessage={t("ErrorEmail")}
             >
-              <FileInput
-                scale
+              <EmailInput
+                name="wizard-email"
+                tabIndex={1}
                 size="large"
-                accept=".lic"
-                placeholder={t("PlaceholderLicense")}
-                onInput={onLicenseFileHandler}
-                hasError={hasErrorLicense}
+                scale={true}
+                placeholder={t("Common:Email")}
+                emailSettings={emailSettings}
+                hasError={hasErrorEmail}
+                onValidateInput={onEmailChangeHandler}
+                isDisabled={isCreated}
               />
             </FieldContainer>
-          )}
-          <StyledInfo>
-            <Text color="#A3A9AE" fontWeight={400}>
-              {t("Domain")}
-            </Text>
-            <Text fontWeight={600} className="machine-name">
-              {machineName}
-            </Text>
-          </StyledInfo>
-          <StyledInfo>
-            <Text color="#A3A9AE" fontWeight={400}>
-              {t("Common:Language")}
-            </Text>
-            <ComboBox
-              withoutPadding
-              directionY="both"
-              options={cultureNames}
-              selectedOption={selectedLanguage}
-              onSelect={onLanguageSelect}
-              isDisabled={isCreated}
-              scaled={isMobileOnly}
-              scaledOptions={false}
-              size="content"
-              showDisabledItems={true}
-              dropDownMaxHeight={364}
-              manualWidth="250px"
-              isDefaultMode={!isMobileOnly}
-              withBlur={isMobileOnly}
-              fillIcon={false}
-              modernView={true}
-            />
-          </StyledInfo>
-          <StyledInfo>
-            <Text color="#A3A9AE" fontWeight={400}>
-              {t("Timezone")}
-            </Text>
-            <ComboBox
-              withoutPadding
-              directionY="both"
-              options={timezones}
-              selectedOption={selectedTimezone}
-              onSelect={onTimezoneSelect}
-              isDisabled={isCreated}
-              scaled={isMobileOnly}
-              scaledOptions={false}
-              size="content"
-              showDisabledItems={true}
-              dropDownMaxHeight={364}
-              manualWidth="350px"
-              isDefaultMode={!isMobileOnly}
-              withBlur={isMobileOnly}
-              fillIcon={false}
-              modernView={true}
-            />
-          </StyledInfo>
 
-          <StyledAcceptTerms>
-            <Checkbox
-              className="wizard-checkbox"
-              id="license"
-              name="confirm"
-              label={t("License")}
-              isChecked={agreeTerms}
-              onChange={onAgreeTermsChange}
-              isDisabled={isCreated}
-              hasError={hasErrorAgree}
-            />
-            <Link
-              type="page"
-              color={
-                hasErrorAgree
-                  ? theme.checkbox.errorColor
-                  : theme.client.wizard.linkColor
-              }
-              fontSize="13px"
-              target="_blank"
-              href={
-                urlLicense
-                  ? urlLicense
-                  : "https://gnu.org/licenses/gpl-3.0.html"
-              }
+            <FieldContainer
+              className="wizard-field password-field"
+              isVertical={true}
+              labelVisible={false}
+              hasError={hasErrorPass}
+              errorMessage={t("ErrorPassword")}
             >
-              {t("LicenseLink")}
-            </Link>
-          </StyledAcceptTerms>
+              <PasswordInput
+                ref={refPassInput}
+                tabIndex={2}
+                size="large"
+                scale={true}
+                inputValue={password}
+                passwordSettings={passwordSettings}
+                isDisabled={isCreated}
+                placeholder={t("Common:Password")}
+                hideNewPasswordButton={true}
+                isDisableTooltip={true}
+                isTextTooltipVisible={false}
+                hasError={hasErrorPass}
+                onChange={onChangePassword}
+                autoComplete="current-password"
+                onValidateInput={isValidPassHandler}
+              />
+            </FieldContainer>
+            <StyledLink>
+              <IconButton
+                size="12"
+                iconName={RefreshReactSvgUrl}
+                onClick={generatePassword}
+              />
+              <Link
+                className="generate-password-link"
+                type="action"
+                fontWeight={600}
+                isHovered={true}
+                onClick={generatePassword}
+              >
+                {t("GeneratePassword")}
+              </Link>
+            </StyledLink>
 
-          <Button
-            size="medium"
-            scale={true}
-            primary
-            label={t("Common:ContinueButton")}
-            isLoading={isCreated}
-            onClick={onContinueClick}
-          />
-        </FormWrapper>
-      </WizardContainer>
+            {isLicenseRequired && (
+              <FieldContainer
+                className="license-filed"
+                isVertical={true}
+                labelVisible={false}
+                hasError={hasErrorLicense}
+                errorMessage={
+                  invalidLicense
+                    ? t("ErrorLicenseBody")
+                    : t("ErrorUploadLicenseFile")
+                }
+              >
+                <FileInput
+                  scale
+                  size="large"
+                  accept=".lic"
+                  placeholder={t("PlaceholderLicense")}
+                  onInput={onLicenseFileHandler}
+                  hasError={hasErrorLicense}
+                />
+              </FieldContainer>
+            )}
+            <StyledInfo>
+              <Text color="#A3A9AE" fontWeight={400}>
+                {t("Domain")}
+              </Text>
+              <Text fontWeight={600} className="machine-name">
+                {machineName}
+              </Text>
+            </StyledInfo>
+            <StyledInfo>
+              <Text color="#A3A9AE" fontWeight={400}>
+                {t("Common:Language")}
+              </Text>
+              <ComboBox
+                withoutPadding
+                directionY="both"
+                options={cultureNames}
+                selectedOption={selectedLanguage}
+                onSelect={onLanguageSelect}
+                isDisabled={isCreated}
+                scaled={isMobileOnly}
+                scaledOptions={false}
+                size="content"
+                showDisabledItems={true}
+                dropDownMaxHeight={364}
+                manualWidth="250px"
+                isDefaultMode={!isMobileOnly}
+                withBlur={isMobileOnly}
+                fillIcon={false}
+                modernView={true}
+              />
+            </StyledInfo>
+            <StyledInfo>
+              <Text color="#A3A9AE" fontWeight={400}>
+                {t("Timezone")}
+              </Text>
+              <ComboBox
+                withoutPadding
+                directionY="both"
+                options={timezones}
+                selectedOption={selectedTimezone}
+                onSelect={onTimezoneSelect}
+                isDisabled={isCreated}
+                scaled={isMobileOnly}
+                scaledOptions={false}
+                size="content"
+                showDisabledItems={true}
+                dropDownMaxHeight={364}
+                manualWidth="350px"
+                isDefaultMode={!isMobileOnly}
+                withBlur={isMobileOnly}
+                fillIcon={false}
+                modernView={true}
+              />
+            </StyledInfo>
+
+            <StyledAcceptTerms>
+              <Checkbox
+                className="wizard-checkbox"
+                id="license"
+                name="confirm"
+                label={t("License")}
+                isChecked={agreeTerms}
+                onChange={onAgreeTermsChange}
+                isDisabled={isCreated}
+                hasError={hasErrorAgree}
+              />
+              <Link
+                type="page"
+                color={
+                  hasErrorAgree
+                    ? theme.checkbox.errorColor
+                    : theme.client.wizard.linkColor
+                }
+                fontSize="13px"
+                target="_blank"
+                href={
+                  urlLicense
+                    ? urlLicense
+                    : "https://gnu.org/licenses/gpl-3.0.html"
+                }
+              >
+                {t("LicenseLink")}
+              </Link>
+            </StyledAcceptTerms>
+
+            <Button
+              size="medium"
+              scale={true}
+              primary
+              label={t("Common:ContinueButton")}
+              isLoading={isCreated}
+              onClick={onContinueClick}
+            />
+          </FormWrapper>
+        </WizardContainer>
+      </StyledContent>
     </Wrapper>
   );
 };
