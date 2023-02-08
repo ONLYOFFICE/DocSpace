@@ -1,11 +1,20 @@
+import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+
 import Section from "@docspace/common/components/Section";
-import React from "react";
+
 import SectionBodyContent from "./Section/Body/index";
 import SectionHeaderContent from "./Section/Header/index";
-import { useTranslation } from "react-i18next";
+
 const NotificationComponent = (props) => {
-  const { history } = props;
+  const { history, setSelectedNode } = props;
   const { t, ready } = useTranslation("Notifications");
+
+  useEffect(() => {
+    setSelectedNode(["accounts"]);
+  }, []);
+
   return (
     <Section>
       <Section.SectionHeader>
@@ -19,4 +28,10 @@ const NotificationComponent = (props) => {
   );
 };
 
-export default NotificationComponent;
+export default inject(({ treeFoldersStore }) => {
+  const { setSelectedNode } = treeFoldersStore;
+
+  return {
+    setSelectedNode,
+  };
+})(observer(NotificationComponent));
