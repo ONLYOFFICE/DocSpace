@@ -3,15 +3,20 @@ import React from "react";
 import ToggleButton from "@docspace/components/toggle-button";
 import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const DailyFeedContainer = ({
   t,
   dailyFeedSubscriptions,
   changeSubscription,
 }) => {
-  const onChangeEmailSubscription = (e) => {
+  const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
-    changeSubscription(NotificationsType.DailyFeed, checked);
+    try {
+      await changeSubscription(NotificationsType.DailyFeed, checked);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   return (

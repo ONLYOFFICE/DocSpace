@@ -3,15 +3,19 @@ import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 import { inject, observer } from "mobx-react";
 import { NotificationsType } from "@docspace/common/constants";
-
+import toastr from "@docspace/components/toast/toastr";
 const UsefulTipsContainer = ({
   t,
   changeSubscription,
   usefulTipsSubscription,
 }) => {
-  const onChangeEmailSubscription = (e) => {
+  const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
-    changeSubscription(NotificationsType.UsefulTips, checked);
+    try {
+      await changeSubscription(NotificationsType.UsefulTips, checked);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   return (
