@@ -618,14 +618,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             await _socketManager.CreateFolderAsync(folder);
 
-            if (isRoom)
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomCreated, folder.Title);
-            }
-            else
-            {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
-            }
+            _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 
             return folder;
         }
@@ -2556,7 +2549,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, name, GetAccessString(ace.Access));
                         }
                         else
                         {
@@ -2647,7 +2640,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -2699,6 +2692,72 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         return InternalSharedUsersAsync(fileId);
+    }
+
+    public async Task<FileReference<T>> GetReferenceDataAsync(T fileId, string portalName, T sourceFileId, string path)
+    {
+        File<T> file = null;
+        var fileDao = _daoFactory.GetFileDao<T>();
+        if (portalName == _tenantManager.GetCurrentTenant().Id.ToString())
+        {
+            file = await fileDao.GetFileAsync(fileId);
+        }
+
+        if (file == null)
+        {
+            var source = await fileDao.GetFileAsync(sourceFileId);
+
+            if (source == null)
+            {
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_FileNotFound
+                };
+            }
+
+            if (!await _fileSecurity.CanReadAsync(source))
+            {
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+                };
+            }
+
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            var folder = await folderDao.GetFolderAsync(source.ParentId);
+            if (!await _fileSecurity.CanReadAsync(folder))
+            {
+                return new FileReference<T>
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder
+                };
+            }
+
+            var list = fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, path, false, false);
+            file = await list.FirstOrDefaultAsync(fileItem => fileItem.Title == path);
+        }
+
+        if (!await _fileSecurity.CanReadAsync(file))
+        {
+            return new FileReference<T>
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile
+            };
+        }
+
+        var fileReference = new FileReference<T>
+        {
+            Path = file.Title,
+            ReferenceData = new FileReferenceData<T>
+            {
+                FileKey = file.Id,
+                InstanceId = _tenantManager.GetCurrentTenant().Id.ToString()
+            },
+            Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, lastVersion: true)),
+            FileType = file.ConvertedExtension.Trim('.')
+        };
+        fileReference.Token = _documentServiceHelper.GetSignature(fileReference);
+        return fileReference;
     }
 
     public async Task<List<MentionWrapper>> InternalSharedUsersAsync(T fileId)
@@ -3281,8 +3340,10 @@ public class FileStorageService<T> //: IFileStorageService
             case FileShare.FillForms:
             case FileShare.Comment:
             case FileShare.Restrict:
+            case FileShare.RoomAdmin:
+            case FileShare.Editing:
             case FileShare.None:
-                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToString());
+                return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToStringFast());
             default:
                 return string.Empty;
         }

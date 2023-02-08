@@ -78,7 +78,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         return Task.FromResult(ToFolder(RootFolder()));
     }
-    
+
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
         SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
@@ -101,10 +101,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -449,10 +449,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                     if (ProviderInfo.FolderId == oldId)
                     {
-                        await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
-                    }
+                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
                 }
             }
+        }
         }
 
         await UpdatePathInDBAsync(oldId, newId);
@@ -508,5 +508,13 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         }
 
         return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return null;
     }
 }

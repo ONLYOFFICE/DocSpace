@@ -43,11 +43,20 @@ public class ThumbnailSettings
         set => _serverRoot = value;
     }
 
-    private int _launchFrequency;
-    public int LaunchFrequency
+    private int _boundedChannelCapacity;
+
+    public int BoundedChannelCapacity
     {
-        get => _launchFrequency != 0 ? _launchFrequency : 15;
-        set => _launchFrequency = value;
+        get => _boundedChannelCapacity != 0 ? _boundedChannelCapacity : MaxDegreeOfParallelism * 10;
+        set => _boundedChannelCapacity = value;
+    }
+
+    private int _batchSize;
+
+    public int BatchSize
+    {
+        get => _batchSize != 0 ? _batchSize : MaxDegreeOfParallelism * 10;
+        set => _batchSize = value;
     }
 
     #endregion

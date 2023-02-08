@@ -24,10 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Files.Utils;
+
 namespace ASC.Data.Backup.Storage;
 
 [Scope]
-public class DocumentsBackupStorage : IBackupStorage
+public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
 {
     private int _tenantId;
     private readonly SetupInfo _setupInfo;
@@ -36,6 +38,9 @@ public class DocumentsBackupStorage : IBackupStorage
     private readonly IDaoFactory _daoFactory;
     private readonly StorageFactory _storageFactory;
     private readonly IServiceProvider _serviceProvider;
+    private FilesChunkedUploadSessionHolder _sessionHolder;
+    private readonly TempPath _tempPath;
+    private readonly ILogger<DocumentsBackupStorage> _logger;
 
     public DocumentsBackupStorage(
         SetupInfo setupInfo,
@@ -43,7 +48,9 @@ public class DocumentsBackupStorage : IBackupStorage
         SecurityContext securityContext,
         IDaoFactory daoFactory,
         StorageFactory storageFactory,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        TempPath tempPath,
+        ILogger<DocumentsBackupStorage> logger)
     {
         _setupInfo = setupInfo;
         _tenantManager = tenantManager;
@@ -51,11 +58,15 @@ public class DocumentsBackupStorage : IBackupStorage
         _daoFactory = daoFactory;
         _storageFactory = storageFactory;
         _serviceProvider = serviceProvider;
+        _tempPath = tempPath;
+        _logger = logger;
     }
 
     public void Init(int tenantId)
     {
         _tenantId = tenantId;
+        var store = _storageFactory.GetStorage(_tenantId, "files");
+        _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory, _tempPath, _logger, store, "", _setupInfo.ChunkUploadSize);
     }
 
     public async Task<string> Upload(string folderId, string localPath, Guid userId)
@@ -195,6 +206,48 @@ public class DocumentsBackupStorage : IBackupStorage
         {
             return false;
         }
+    }
+
+    public async Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
+    {
+        _tenantManager.SetCurrentTenant(_tenantId);
+        if (!userId.Equals(Guid.Empty))
+        {
+            _securityContext.AuthenticateMeWithoutCookie(userId);
+        }
+        else
+        {
+            var tenant = _tenantManager.GetTenant(_tenantId);
+            _securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+        }
+        if (int.TryParse(storageBasePath, out var fId))
+        {
+            var uploadSession = await InitUploadChunkAsync(fId, title);
+            var folderDao = GetFolderDao<int>();
+            return folderDao.CreateDataWriteOperator(fId, uploadSession, _sessionHolder);
+        }
+        else
+        {
+            var uploadSession = await InitUploadChunkAsync(storageBasePath, title);
+            var folderDao = GetFolderDao<string>();
+            return folderDao.CreateDataWriteOperator(storageBasePath, uploadSession, _sessionHolder);
+        }
+    }
+
+    private async Task<CommonChunkedUploadSession> InitUploadChunkAsync<T>(T folderId, string title)
+    {
+        var folderDao = GetFolderDao<T>();
+        var fileDao = GetFileDao<T>();
+
+        var folder = await folderDao.GetFolderAsync(folderId);
+        var newFile = _serviceProvider.GetService<File<T>>();
+
+        newFile.Title = title;
+        newFile.ParentId = folder.Id;
+
+        var chunkedUploadSession = await fileDao.CreateUploadSessionAsync(newFile, -1);
+        chunkedUploadSession.CheckQuota = false;
+        return chunkedUploadSession;
     }
 
     private IFolderDao<T> GetFolderDao<T>()

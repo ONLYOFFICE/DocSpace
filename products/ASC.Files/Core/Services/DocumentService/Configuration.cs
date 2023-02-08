@@ -142,9 +142,11 @@ public class DocumentConfig<T>
 {
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly PathProvider _pathProvider;
+    private readonly TenantManager _tenantManager;
     private string _fileUri;
     private string _key = string.Empty;
     private string _title;
+    private FileReferenceData<T> _referenceData;
     public string FileType => Info.GetFile().ConvertedExtension.Trim('.');
     public InfoConfig<T> Info { get; set; }
     public bool IsLinkedForMe { get; set; }
@@ -157,6 +159,22 @@ public class DocumentConfig<T>
 
     public PermissionsConfig Permissions { get; set; }
     public string SharedLinkKey { get; set; }
+    public FileReferenceData<T> ReferenceData
+    {
+        get 
+        {
+            if(_referenceData == null)
+            {
+                _referenceData = new FileReferenceData<T>()
+                {
+                    FileKey = Info.GetFile().Id,
+                    InstanceId = _tenantManager.GetCurrentTenant().Id.ToString()
+                };
+            }
+
+            return _referenceData;
+        }
+    }
 
     public string Title
     {
@@ -181,12 +199,13 @@ public class DocumentConfig<T>
         }
     }
 
-    public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig<T> infoConfig)
+    public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig<T> infoConfig, TenantManager tenantManager)
     {
         Info = infoConfig;
         Permissions = new PermissionsConfig();
         _documentServiceConnector = documentServiceConnector;
         _pathProvider = pathProvider;
+        _tenantManager = tenantManager;
     }
 }
 
@@ -604,6 +623,22 @@ public class PermissionsConfig
     public bool Print { get; set; } = true;
     public bool Rename { get; set; }
     public bool Review { get; set; } = true;
+}
+
+public class FileReference<T>
+{
+    public FileReferenceData<T> ReferenceData { get; set; }
+    public string Error { get; set; }
+    public string Path { get; set; }
+    public string Url { get; set; }
+    public string FileType { get; set; }
+    public string Token { get; set; }
+}
+
+public class FileReferenceData<T>
+{
+    public T FileKey { get; set; }
+    public string InstanceId { get; set; }
 }
 
 #endregion Nested Classes

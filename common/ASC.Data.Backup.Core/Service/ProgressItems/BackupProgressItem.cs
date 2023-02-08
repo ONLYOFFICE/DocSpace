@@ -24,30 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
 
 namespace ASC.Data.Backup.Services;
 
@@ -69,6 +45,7 @@ public class BackupProgressItem : BaseBackupProgressItem
     private BackupStorageFactory _backupStorageFactory;
     private BackupRepository _backupRepository;
     private BackupPortalTask _backupPortalTask;
+    private TempStream _tempStream;
     private readonly ILogger<BackupProgressItem> _logger;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly NotifyHelper _notifyHelper;
@@ -122,33 +99,41 @@ public class BackupProgressItem : BaseBackupProgressItem
         _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
         _backupRepository = scope.ServiceProvider.GetService<BackupRepository>();
         _backupPortalTask = scope.ServiceProvider.GetService<BackupPortalTask>();
+        _tempStream = scope.ServiceProvider.GetService<TempStream>();
 
         var dateTime = _coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
         var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", _tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
 
         var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
         var storagePath = tempFile;
+        string hash;
 
         try
         {
-            var backupTask = _backupPortalTask;
+            var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
+            var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
 
-            backupTask.Init(TenantId, tempFile, _limit);
+            _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
 
-            backupTask.ProgressChanged += (sender, args) =>
+            _backupPortalTask.ProgressChanged += (sender, args) =>
             {
                 Percentage = 0.9 * args.Progress;
                 PublishChanges();
             };
 
-            await backupTask.RunJob();
+            await _backupPortalTask.RunJob();
 
-            var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
-            if (backupStorage != null)
+            if (writer.NeedUpload)
             {
                 storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
-                Link = await backupStorage.GetPublicLink(storagePath);
+                hash = BackupWorker.GetBackupHash(tempFile);
             }
+            else
+            {
+                storagePath = writer.StoragePath;
+                hash = writer.Hash;
+            }
+            Link = await backupStorage.GetPublicLink(storagePath);
 
             var repo = _backupRepository;
 
@@ -165,7 +150,7 @@ public class BackupProgressItem : BaseBackupProgressItem
                     CreatedOn = DateTime.UtcNow,
                     ExpiresOn = _storageType == BackupStorageType.DataStore ? DateTime.UtcNow.AddDays(1) : DateTime.MinValue,
                     StorageParams = JsonConvert.SerializeObject(StorageParams),
-                    Hash = BackupWorker.GetBackupHash(tempFile),
+                    Hash = hash,
                     Removed = false
                 });
 

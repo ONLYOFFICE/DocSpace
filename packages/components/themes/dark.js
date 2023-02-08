@@ -1685,6 +1685,7 @@ const Dark = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#292929",
     hoverFillColorOff: "#3D3D3D",
 
@@ -2301,6 +2302,8 @@ const Dark = {
       color: grayMaxLight,
       textColor: "#858585",
     },
+
+    animationColor: "rgba(82, 153, 224, 0.16)",
   },
 
   advancedSelector: {

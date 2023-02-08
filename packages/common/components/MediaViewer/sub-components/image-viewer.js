@@ -178,6 +178,7 @@ class ImageViewer extends React.Component {
       onClose,
       userAccess,
       title,
+      errorTitle,
       onPrevClick,
       onNextClick,
       playlist,
@@ -374,6 +375,7 @@ class ImageViewer extends React.Component {
           visible={visible}
           zoomSpeed={0.25}
           title={title}
+          errorTitle={errorTitle}
           contextModel={contextModel}
           generateContextMenu={generateContextMenu}
           isImage={isImage}

@@ -154,13 +154,10 @@ class MediaViewer extends React.Component {
     ) {
       if (playlist.length > 0) {
         this.updateHammer();
-
-        const newPlaylistPos =
-          playlistPos < playlist.length
-            ? playlist.length !== prevProps.playlist.length
-              ? playlistPos + 1
-              : playlistPos
-            : 0;
+        //switching from index to id
+        const newPlaylistPos = currentFileId
+          ? playlist.find((file) => file.fileId === currentFileId)?.id ?? 0
+          : 0;
 
         this.setState({
           playlist: playlist,
@@ -449,8 +446,9 @@ class MediaViewer extends React.Component {
   };
 
   onClose = (e) => {
-    this.props.onClose(e);
+    //fix memory leak
     this.setState({ visible: false });
+    this.props.onClose(e);
   };
 
   getTiffDataURL = (src) => {
@@ -508,7 +506,7 @@ class MediaViewer extends React.Component {
 
     const archiveRoom =
       archiveRoomsId === targetFile.rootFolderId ||
-      (!targetFile.security.Rename && !targetFile.security.Delete);
+      (!targetFile?.security?.Rename && !targetFile?.security?.Delete);
     const { title } = currentFile;
 
     let isImage = false;
@@ -679,6 +677,7 @@ class MediaViewer extends React.Component {
             audioIcon={audioIcon}
             onDownloadClick={this.onDownload}
             archiveRoom={archiveRoom}
+            errorTitle={t("Files:MediaError")}
             //    isFavoritesFolder={isFavoritesFolder}
           />
         )}

@@ -4,18 +4,25 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
+
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
+const fs = require("fs");
+const { readdir } = require("fs").promises;
 
 const path = require("path");
+
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
 const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
+
+const isAlreadyBuilding = false;
 
 const config = {
   entry: "./src/index",
@@ -98,7 +105,7 @@ const config = {
 
       folder += result.length === 0 ? "" : "/";
 
-      return `${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+      return `static/${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
     },
   },
 
@@ -110,13 +117,49 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif|ico)$/i,
+        test: /\.(png|jpe?g|gif|ico|woff2)$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
       },
       {
         test: /\.svg$/i,
         type: "asset/resource",
+        generator: {
+          emit: false,
+        },
         resourceQuery: /url/, // *.svg?url
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: { not: [/url/] }, // exclude if *.json?url,
+        loader: "json-loader",
       },
       {
         test: /\.svg$/i,
@@ -140,7 +183,6 @@ const config = {
           fullySpecified: false,
         },
       },
-      { test: /\.json$/, loader: "json-loader" },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],

@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,11 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.ThumbnailBuilder;
+namespace ASC.Data.Storage.ZipOperators;
 
-[Singletone(Additional = typeof(WorkerExtension))]
-public class FileDataQueue
+public interface IDataWriteOperator : IAsyncDisposable
 {
-    internal static readonly ConcurrentDictionary<object, FileData<int>> Queue
-        = new ConcurrentDictionary<object, FileData<int>>();
+    Task WriteEntryAsync(string key, Stream stream);
+    bool NeedUpload { get; }
+    string Hash { get; }
+    string StoragePath { get; }
+}
+
+public interface IDataReadOperator : IDisposable
+{
+    Stream GetEntry(string key);
+    IEnumerable<string> GetEntries(string key);
+    IEnumerable<string> GetDirectories(string key);
+
 }
