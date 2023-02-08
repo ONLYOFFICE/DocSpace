@@ -44,7 +44,7 @@ public abstract class FileEntryDto
         get => _updated < Created ? Created : _updated;
         set => _updated = value;
     }
-
+    public ApiDateTime? AutoDelete { get; set; }
     public FolderType RootFolderType { get; set; }
     public EmployeeDto UpdatedBy { get; set; }
     public bool? ProviderItem { get; set; }
@@ -142,7 +142,8 @@ public class FileEntryDtoHelper
             OriginId = entry.OriginId,
             OriginTitle = entry.OriginTitle,
             OriginRoomId = entry.OriginRoomId,
-            OriginRoomTitle = entry.OriginRoomTitle
+            OriginRoomTitle = entry.OriginRoomTitle,
+            AutoDelete = entry.DeletedPermanentlyOn != default ? _apiDateTimeHelper.Get(entry.DeletedPermanentlyOn) : null
         };
     }
 }
