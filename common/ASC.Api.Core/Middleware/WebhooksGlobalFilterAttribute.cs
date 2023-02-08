@@ -33,13 +33,17 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     private Stream _bodyStream;
     private readonly IWebhookPublisher _webhookPublisher;
     private readonly ILogger<WebhooksGlobalFilterAttribute> _logger;
-    private static readonly List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
+    private readonly SettingsManager _settingsManager;
 
-    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, ILogger<WebhooksGlobalFilterAttribute> logger)
+    public WebhooksGlobalFilterAttribute(
+        IWebhookPublisher webhookPublisher,
+        ILogger<WebhooksGlobalFilterAttribute> logger,
+        SettingsManager settingsManager)
     {
         _stream = new MemoryStream();
         _webhookPublisher = webhookPublisher;
         _logger = logger;
+        _settingsManager = settingsManager;
     }
 
     public override void OnResultExecuting(ResultExecutingContext context)
@@ -104,12 +108,17 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     {
         var (method, routePattern) = GetData(context);
 
-        if (!_methodList.Contains(method))
+        if (routePattern == null)
         {
             return true;
         }
 
-        if (routePattern == null)
+        if (!WebhookManager.Contains(method, routePattern))
+        {
+            return true;
+        }
+
+        if (_settingsManager.Load<WebHookDisabledKeysSettings>().Keys.Contains(Webhook.GetKey(method, routePattern)))
         {
             return true;
         }

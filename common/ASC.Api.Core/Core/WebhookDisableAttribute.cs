@@ -24,26 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.People;
+namespace ASC.Api.Core.Core;
 
-public class Startup : BaseStartup
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class WebhookDisableAttribute : Attribute
 {
-    protected override bool ConfirmAddScheme => true;
-
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
-    {
-        WebhooksEnabled = true;
-    }
-
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-
-        services.AddBaseDbContextPool<FilesDbContext>();
-
-        services.AddScoped<UsersInRoomChecker>();
-
-        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
-        services.AddScoped<UsersInRoomStatistic>();
-    }
 }

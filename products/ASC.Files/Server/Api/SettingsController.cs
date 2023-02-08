@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Webhooks.Core;
+
 using Module = ASC.Api.Core.Module;
 
 namespace ASC.Files.Api;
@@ -33,17 +35,23 @@ public class SettingsController : ApiControllerBase
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
 
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        SettingsManager settingsManager,
+        TenantManager tenantManager) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
+        _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
     }
 
     /// <summary>
@@ -229,5 +237,19 @@ public class SettingsController : ApiControllerBase
     public List<FileShare> ChangeDafaultAccessRights(List<FileShare> value)
     {
         return _fileStorageServiceString.ChangeDafaultAccessRights(value);
+    }
+
+    [HttpGet("settings/webhook/all")]
+    public IEnumerable<Webhook> Settings()
+    {
+        var settings = _settingsManager.LoadSettings<WebHookDisabledKeysSettings>(_tenantManager.GetCurrentTenant().Id);
+
+        foreach (var w in WebhookManager.GetAll())
+        {
+            if (!settings.Keys.Any(key => key.Equals(w.Key)))
+            {
+                yield return w;
+            }
+        }
     }
 }

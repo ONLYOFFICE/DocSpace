@@ -35,6 +35,7 @@ public class WebhooksController : BaseSettingsController
     private readonly IMapper _mapper;
     private readonly WebhookPublisher _webhookPublisher;
     private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
 
     public WebhooksController(
         ApiContext context,
@@ -46,7 +47,8 @@ public class WebhooksController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
         WebhookPublisher webhookPublisher,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        TenantManager tenantManager)
         : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _context = context;
@@ -55,6 +57,7 @@ public class WebhooksController : BaseSettingsController
         _mapper = mapper;
         _webhookPublisher = webhookPublisher;
         _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
     }
 
     [HttpGet("webhook")]
@@ -184,5 +187,19 @@ public class WebhooksController : BaseSettingsController
         _settingsManager.Save(settings);
 
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
+    }
+
+    [HttpGet("webhook/all")]
+    public IEnumerable<Webhook> Settings()
+    {
+        var settings = _settingsManager.LoadSettings<WebHookDisabledKeysSettings>(_tenantManager.GetCurrentTenant().Id);
+
+        foreach (var w in WebhookManager.GetAll())
+        {
+            if (!settings.Keys.Any(key => key.Equals(w.Key)))
+            {
+                yield return w;
+            }
+        }
     }
 }

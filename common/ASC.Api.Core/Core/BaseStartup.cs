@@ -45,6 +45,7 @@ public abstract class BaseStartup
     protected DIHelper DIHelper { get; }
     protected bool LoadProducts { get; set; } = true;
     protected bool LoadConsumers { get; } = true;
+    protected bool WebhooksEnabled { get; set; }
 
     public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
@@ -292,7 +293,7 @@ public abstract class BaseStartup
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapCustom();
+            endpoints.MapCustom(WebhooksEnabled);
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {

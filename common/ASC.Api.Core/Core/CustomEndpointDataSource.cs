@@ -76,12 +76,44 @@ public class CustomEndpointDataSource : EndpointDataSource
 
 public static class EndpointExtension
 {
-    public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints, bool webhooksEnabled = false)
     {
         endpoints.MapControllers();
+        if (webhooksEnabled)
+        {
+            endpoints.RegisterWebhooks();
+        }
         var sources = endpoints.DataSources.First();
         endpoints.DataSources.Clear();
         endpoints.DataSources.Add(new CustomEndpointDataSource(sources));
+
+        return endpoints;
+    }
+
+    private static IEndpointRouteBuilder RegisterWebhooks(this IEndpointRouteBuilder endpoints)
+    {
+        var toRegister = endpoints.DataSources.First().Endpoints
+            .Cast<RouteEndpoint>()
+            .SelectMany(r =>
+            {
+                var result = new List<Webhook>();
+                var httpMethodMetadata = r.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault();
+                var disabled = r.Metadata.OfType<WebhookDisableAttribute>().FirstOrDefault();
+
+                if (disabled == null)
+                {
+                    foreach (var httpMethod in httpMethodMetadata.HttpMethods)
+                    {
+                        result.Add(new Webhook { Method = httpMethod, Route = r.RoutePattern.RawText });
+                    }
+                }
+                return result;
+            })
+            .Where(r => WebhookManager.MethodList.Contains(r.Method))
+            .DistinctBy(r => $"{r.Method}|{r.Route}")
+            .ToList();
+
+        WebhookManager.Register(toRegister);
 
         return endpoints;
     }

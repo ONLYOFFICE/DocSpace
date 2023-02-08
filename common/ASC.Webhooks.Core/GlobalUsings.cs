@@ -35,5 +35,6 @@ global using ASC.Core.Common.Settings;
 global using ASC.Web.Webhooks;
 global using ASC.Webhooks.Core.EF.Context;
 global using ASC.Webhooks.Core.EF.Model;
+global using ASC.Webhooks.Core.Resources;
 
 global using Microsoft.EntityFrameworkCore;

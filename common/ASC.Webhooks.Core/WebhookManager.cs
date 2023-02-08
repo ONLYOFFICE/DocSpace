@@ -24,26 +24,59 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.People;
+namespace ASC.Webhooks.Core;
 
-public class Startup : BaseStartup
+public static class WebhookManager
 {
-    protected override bool ConfirmAddScheme => true;
-
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
+    public static readonly IReadOnlyList<string> MethodList = new List<string>
     {
-        WebhooksEnabled = true;
+        "POST",
+        "UPDATE",
+        "DELETE"
+    };
+
+    private static readonly List<Webhook> _webhooks = new List<Webhook>();
+
+    public static void Register(IEnumerable<Webhook> routes)
+    {
+        _webhooks.AddRange(routes);
     }
 
-    public override void ConfigureServices(IServiceCollection services)
+    public static bool Contains(string method, string route)
     {
-        base.ConfigureServices(services);
+        return _webhooks.Any(r => r.Key == Webhook.GetKey(method, route));
+    }
 
-        services.AddBaseDbContextPool<FilesDbContext>();
+    public static IReadOnlyList<Webhook> GetAll()
+    {
+        return _webhooks;
+    }
+}
 
-        services.AddScoped<UsersInRoomChecker>();
+public class Webhook
+{
+    public string Key { get => GetKey(Method, Route); }
+    public string Name { get => WebHookResource.ResourceManager.GetString(Key) ?? ""; }
+    public string Description { get => WebHookResource.ResourceManager.GetString($"{Key}_Description") ?? ""; }
+    public string Route { get; set; }
+    public string Method { get; set; }
+    public bool Disabled { get; set; }
 
-        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
-        services.AddScoped<UsersInRoomStatistic>();
+    public static string GetKey(string method, string route) => $"{method}|{route}";
+}
+
+public class WebHookDisabledKeysSettings : ISettings<WebHookDisabledKeysSettings>
+{
+    public List<string> Keys { get; set; }
+
+    [JsonIgnore]
+    public Guid ID => new Guid("3B6BA277-EA3C-4B7B-AD67-B2166B15A87C");
+
+    public WebHookDisabledKeysSettings GetDefault()
+    {
+        return new WebHookDisabledKeysSettings()
+        {
+            Keys = new List<string> { }
+        };
     }
 }
