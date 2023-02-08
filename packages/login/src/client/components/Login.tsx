@@ -43,7 +43,7 @@ const Login: React.FC<ILoginProps> = ({
   logoUrls,
 }) => {
   const isRestoringPortal =
-    portalSettings.tenantStatus === TenantStatus.PortalRestore;
+    portalSettings?.tenantStatus === TenantStatus.PortalRestore;
 
   useEffect(() => {
     isRestoringPortal && window.location.replace("/preparation-portal");
@@ -52,7 +52,11 @@ const Login: React.FC<ILoginProps> = ({
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
+  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings || {
+    enabledJoin: false,
+    greetingSettings: false,
+    enableAdmMess: false,
+  };
 
   const ssoLabel = capabilities?.ssoLabel;
   const ssoUrl = capabilities?.ssoUrl;
@@ -96,7 +100,7 @@ const Login: React.FC<ILoginProps> = ({
   const oauthDataExists = () => {
     let existProviders = 0;
     providers && providers.length > 0;
-    providers.map((item) => {
+    providers?.map((item) => {
       if (!providersData[item.provider]) return;
       existProviders++;
     });
@@ -187,10 +191,12 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
-  const bgPattern = getBgPattern(currentColorScheme.id);
+  const bgPattern = getBgPattern(currentColorScheme?.id);
 
-  const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme.isBase
+  const logo = logoUrls && Object.values(logoUrls)[1];
+  const logoUrl = !logo
+    ? undefined
+    : !theme?.isBase
     ? getLogoFromPath(logo.path.dark)
     : getLogoFromPath(logo.path.light);
 
@@ -242,7 +248,7 @@ const Login: React.FC<ILoginProps> = ({
           <LoginForm
             isDesktop={!!isDesktopEditor}
             isLoading={isLoading}
-            hashSettings={portalSettings.passwordHash}
+            hashSettings={portalSettings?.passwordHash}
             setIsLoading={setIsLoading}
             onRecoverDialogVisible={onRecoverDialogVisible}
             match={match}
