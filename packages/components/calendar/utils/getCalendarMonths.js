@@ -1,8 +1,9 @@
 import moment from "moment";
 
 export const getCalendarMonths = (observedDate) => {
-  // prettier-ignore
-  const months = moment.monthsShort();
+  const months = moment
+    .monthsShort()
+    .map((month) => (month[0].toUpperCase() + month.substring(1)));
 
   const monthsObjs = months.map((month) => ({
     key: `${observedDate.year()}-${moment().month(month).format("M")}`,
