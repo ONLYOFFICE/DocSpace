@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.ApiSystem.Classes;
+namespace ASC.Api.Core.Auth;
 
 [Scope]
 public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
@@ -34,11 +34,6 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     private readonly ApiSystemHelper _apiSystemHelper;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public AuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) :
-        base(options, logger, encoder, clock)
-    {
-    }
 
     public AuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -53,9 +48,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
         base(options, logger, encoder, clock)
     {
         _configuration = configuration;
-
         _log = log;
-
         _apiSystemHelper = apiSystemHelper;
         _machinePseudoKeys = machinePseudoKeys;
         _httpContextAccessor = httpContextAccessor;
@@ -152,7 +145,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
     private void Authenticate()
     {
-        var account = Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == Core.Configuration.Constants.CoreSystem.ID);
+        var account = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == ASC.Core.Configuration.Constants.CoreSystem.ID);
 
         var claims = new List<Claim>
             {

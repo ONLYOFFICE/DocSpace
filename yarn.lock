@@ -2790,6 +2790,7 @@ __metadata:
     webpack: 5.52.1
     webpack-cli: 4.10.0
     webpack-dev-server: 4.3.1
+    windows-iana: ^5.1.0
   languageName: unknown
   linkType: soft
 
@@ -25503,6 +25504,13 @@ __metadata:
   bin:
     window-size: cli.js
   checksum: 409accca0b1373c69897400e3cc6a56a2acc8a6ba9009f0cd8e4adda4ebf308e50425d3bd375c0c08efb803c8f0b09d84d7266faa05422b3fadfe6ee422d0aef
+  languageName: node
+  linkType: hard
+
+"windows-iana@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "windows-iana@npm:5.1.0"
+  checksum: 0dc9ababde5f839e83a4bcd448347d8da563efd9e23ce61ac777e9992774ff85de2a9f343f87b80b37b181742fe4d783cff3ba39191cfedb6357ae7d5f58aadc
   languageName: node
   linkType: hard
 

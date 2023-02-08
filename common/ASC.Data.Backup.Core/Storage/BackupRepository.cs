@@ -30,12 +30,12 @@ namespace ASC.Data.Backup.Storage;
 public class BackupRepository : IBackupRepository
 {
     private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
-    private readonly DbFactory _dbFactory;
+    private readonly CreatorDbContext _creatorDbContext;
 
-    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory, DbFactory dbFactory)
+    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory, CreatorDbContext creatorDbContext)
     {
         _dbContextFactory = dbContextFactory;
-        _dbFactory = dbFactory;
+        _creatorDbContext = creatorDbContext;
     }
 
     public void SaveBackupRecord(BackupRecord backup)
@@ -87,7 +87,7 @@ public class BackupRepository : IBackupRepository
             backup.Id = Guid.NewGuid();
         });
 
-        var backupContextByNewTenant = _dbFactory.CreateDbContext<BackupsContext>(region);
+        var backupContextByNewTenant = _creatorDbContext.CreateDbContext<BackupsContext>(region);
         backupContextByNewTenant.Backups.AddRange(backups);
         backupContextByNewTenant.SaveChanges();
     }

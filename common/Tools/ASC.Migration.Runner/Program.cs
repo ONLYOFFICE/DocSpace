@@ -33,27 +33,30 @@ var options = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Configuration.AddJsonFile($"appsettings.runner.json", true)
-                     .AddCommandLine(args);
+                .AddCommandLine(args);
 
-builder.Services.AddScoped<EFLoggerFactory>()
-    .AddBaseDbContext<AccountLinkContext>()
-    .AddBaseDbContext<CoreDbContext>()
-    .AddBaseDbContext<TenantDbContext>()
-    .AddBaseDbContext<UserDbContext>()
-    .AddBaseDbContext<TelegramDbContext>()
-    .AddBaseDbContext<FirebaseDbContext>()
-    .AddBaseDbContext<CustomDbContext>()
-    .AddBaseDbContext<WebstudioDbContext>()
-    .AddBaseDbContext<InstanceRegistrationContext>()
-    .AddBaseDbContext<IntegrationEventLogContext>()
-    .AddBaseDbContext<FeedDbContext>()
-    .AddBaseDbContext<MessagesContext>()
-    .AddBaseDbContext<WebhooksDbContext>()
-    .AddBaseDbContext<MessagesContext>()
-    .AddBaseDbContext<BackupsContext>()
-    .AddBaseDbContext<FilesDbContext>()
-    .AddBaseDbContext<NotifyDbContext>()
-    .AddBaseDbContext<UrlShortenerFakeDbContext>();
+builder.WebHost.ConfigureServices((hostContext, services) =>
+{
+    services.AddScoped<EFLoggerFactory>();
+    services.AddBaseDbContext<AccountLinkContext>();
+    services.AddBaseDbContext<CoreDbContext>();
+    services.AddBaseDbContext<TenantDbContext>();
+    services.AddBaseDbContext<UserDbContext>();
+    services.AddBaseDbContext<TelegramDbContext>();
+    services.AddBaseDbContext<FirebaseDbContext>();
+    services.AddBaseDbContext<CustomDbContext>();
+    services.AddBaseDbContext<WebstudioDbContext>();
+    services.AddBaseDbContext<InstanceRegistrationContext>();
+    services.AddBaseDbContext<IntegrationEventLogContext>();
+    services.AddBaseDbContext<FeedDbContext>();
+    services.AddBaseDbContext<WebhooksDbContext>();
+    services.AddBaseDbContext<MessagesContext>();
+    services.AddBaseDbContext<BackupsContext>();
+    services.AddBaseDbContext<FilesDbContext>();
+    services.AddBaseDbContext<NotifyDbContext>();
+    services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+    services.AddBaseDbContext<TeamlabSiteContext>();
+});
 
 var app = builder.Build();
 
@@ -62,5 +65,5 @@ var providersInfo = app.Configuration.GetSection("options").Get<Options>();
 foreach (var providerInfo in providersInfo.Providers)
 {
     var migrationCreator = new MigrationRunner(app.Services);
-    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo);
+    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo, providersInfo.TeamlabsiteProviders.SingleOrDefault(q => q.Provider == providerInfo.Provider));
 }
