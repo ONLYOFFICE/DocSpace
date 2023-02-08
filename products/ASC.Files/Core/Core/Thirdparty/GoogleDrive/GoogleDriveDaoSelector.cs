@@ -29,8 +29,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 [Scope(Additional = typeof(GoogleDriveDaoSelectorExtension))]
 internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProviderInfo>, IDaoSelector
 {
-    protected internal override string Name => "GoogleDrive";
-    protected internal override string Id => "drive";
+    static GoogleDriveDaoSelector()
+    {
+        Name = "GoogleDrive";
+        Id = "drive";
+    }
 
     public GoogleDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)

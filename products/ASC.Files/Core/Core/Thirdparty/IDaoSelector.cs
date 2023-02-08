@@ -35,13 +35,3 @@ internal interface IDaoSelector : IDisposable
     string ConvertId(string id);
     string GetIdCode(string id);
 }
-
-internal interface IDaoSelector<T> where T : class, IProviderInfo
-{
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>;
-    IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>;
-    IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao;
-    string ConvertId(string id);
-    string GetIdCode(string id);
-}

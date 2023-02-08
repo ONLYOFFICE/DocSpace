@@ -119,16 +119,14 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
     {
-
-        foreach (var selector in _selectorFactory.GetSelectors())
+        foreach (var group in _selectorFactory.GetSelectors(fileIds))
         {
-            var selectorLocal = selector;
-            var matchedIds = fileIds.Where(selectorLocal.IsMatch);
-
-            if (!matchedIds.Any())
+            var selectorLocal = group.Key;
+            if (selectorLocal == null)
             {
                 continue;
             }
+            var matchedIds = group.ToList();
 
             foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
             {
@@ -147,15 +145,14 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public async IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
     {
-        foreach (var selector in _selectorFactory.GetSelectors())
+        foreach (var group in _selectorFactory.GetSelectors(fileIds))
         {
-            var selectorLocal = selector;
-            var matchedIds = fileIds.Where(selectorLocal.IsMatch);
-
-            if (!matchedIds.Any())
+            var selectorLocal = group.Key;
+            if (selectorLocal == null)
             {
                 continue;
             }
+            var matchedIds = group.ToList();
 
             foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
             {

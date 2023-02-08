@@ -29,8 +29,11 @@ namespace ASC.Files.Thirdparty.SharePoint;
 [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
 internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
 {
-    protected internal override string Name => "sharepoint";
-    protected internal override string Id => "spoint";
+    static SharePointDaoSelector()
+    {
+        Name = "sharepoint";
+        Id = "spoint";
+    }
 
     public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)

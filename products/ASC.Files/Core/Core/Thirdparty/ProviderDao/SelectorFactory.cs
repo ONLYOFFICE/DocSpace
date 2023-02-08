@@ -26,25 +26,12 @@
 
 namespace ASC.Files.Core.Core.Thirdparty.ProviderDao;
 
-[Scope]
-internal class SelectorFactory : IDisposable
+[Singletone]
+internal class SelectorFactory
 {
-    private List<IDaoSelector> _selectors;
-    private List<IDaoSelector> Selectors
-    {
-        get => _selectors ??= new List<IDaoSelector>
-        {
-            //Fill in selectors  
-            _serviceProvider.GetService<SharpBoxDaoSelector>(),
-            _serviceProvider.GetService<SharePointDaoSelector>(),
-            _serviceProvider.GetService<GoogleDriveDaoSelector>(),
-            _serviceProvider.GetService<BoxDaoSelector>(),
-            _serviceProvider.GetService<DropboxDaoSelector>(),
-            _serviceProvider.GetService<OneDriveDaoSelector>()
-        };
-    }
-
     private readonly IServiceProvider _serviceProvider;
+
+    private Regex Selector => new Regex(@"^(?'selector'.*)-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
 
     public SelectorFactory(
         IServiceProvider serviceProvider)
@@ -54,19 +41,33 @@ internal class SelectorFactory : IDisposable
 
     public IDaoSelector GetSelector(string id)
     {
-        return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
+        var selector = Match(id);
+        if (selector == SharpBoxDaoSelector.Id)
+            return _serviceProvider.GetService<SharpBoxDaoSelector>();
+        else if (selector == SharePointDaoSelector.Id)
+            return _serviceProvider.GetService<SharePointDaoSelector>();
+        else if (selector == GoogleDriveDaoSelector.Id)
+            return _serviceProvider.GetService<GoogleDriveDaoSelector>();
+        else if (selector == BoxDaoSelector.Id)
+            return _serviceProvider.GetService<BoxDaoSelector>();
+        else if (selector == DropboxDaoSelector.Id)
+            return _serviceProvider.GetService<DropboxDaoSelector>();
+        else if (selector == OneDriveDaoSelector.Id)
+            return _serviceProvider.GetService<OneDriveDaoSelector>();
+        else
+            return null;
     }
 
-    public IEnumerable<IDaoSelector> GetSelectors()
+    public IEnumerable<IGrouping<IDaoSelector, string>> GetSelectors(IEnumerable<string> ids)
     {
-        return Selectors;
+        var groups = ids.GroupBy(GetSelector);
+        return groups;
     }
 
-    public void Dispose()
+    private string Match(string id)
     {
-        if (_selectors != null)
-        {
-            _selectors.ForEach(r => r.Dispose());
-        }
+        var match = Selector.Match(id);
+
+        return match.Success ? match.Groups["selector"].Value : "";
     }
 }

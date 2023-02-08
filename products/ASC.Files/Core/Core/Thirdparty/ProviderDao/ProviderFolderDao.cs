@@ -112,15 +112,14 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
-        foreach (var selector in _selectorFactory.GetSelectors())
+        foreach (var group in _selectorFactory.GetSelectors(roomsIds))
         {
-            var selectorLocal = selector;
-            var matchedIds = roomsIds.Where(selectorLocal.IsMatch).ToList();
-
-            if (matchedIds.Count == 0)
+            var selectorLocal = group.Key;
+            if (selectorLocal == null)
             {
                 continue;
             }
+            var matchedIds = group.ToList();
 
             result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                 .ToAsyncEnumerable()
@@ -166,15 +165,14 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
-        foreach (var selector in _selectorFactory.GetSelectors())
+        foreach (var group in _selectorFactory.GetSelectors(folderIds))
         {
-            var selectorLocal = selector;
-            var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
-
-            if (matchedIds.Count == 0)
+            var selectorLocal = group.Key;
+            if (selectorLocal == null)
             {
                 continue;
             }
+            var matchedIds = group.ToList();
 
             result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                 .ToAsyncEnumerable()
