@@ -1,8 +1,10 @@
 import React from "react";
-import IconButton from "@docspace/components/icon-button";
 import config from "PACKAGE_FILE";
+
+import IconButton from "@docspace/components/icon-button";
 import { combineUrl } from "@docspace/common/utils";
 import Headline from "@docspace/common/components/Headline";
+
 import { StyledSectionHeader } from "../../StyledComponent";
 
 const SectionHeaderContent = ({ history, t }) => {

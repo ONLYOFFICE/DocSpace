@@ -1,5 +1,6 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
+
 import ToggleButton from "@docspace/components/toggle-button";
 import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";

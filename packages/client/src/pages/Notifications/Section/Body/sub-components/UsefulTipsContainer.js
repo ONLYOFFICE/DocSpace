@@ -2,6 +2,7 @@ import React from "react";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 import { inject, observer } from "mobx-react";
+
 import { NotificationsType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 const UsefulTipsContainer = ({

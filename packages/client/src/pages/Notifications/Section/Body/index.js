@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
-import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
-import DailyFeedContainer from "./sub-components/DailyFeedContainer";
-import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
-import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
+
+import Text from "@docspace/components/text";
 import { NotificationsType } from "@docspace/common/constants";
 import { getNotificationSubscription } from "@docspace/common/api/settings";
 import Loaders from "@docspace/common/components/Loaders";
 import toastr from "@docspace/components/toast/toastr";
+
+import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
+import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
+import DailyFeedContainer from "./sub-components/DailyFeedContainer";
+import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
 import {
   StyledSectionBodyContent,
   StyledTextContent,
