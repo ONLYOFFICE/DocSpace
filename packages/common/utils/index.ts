@@ -276,6 +276,8 @@ export function getProviderTranslation(provider, t) {
 
 export function getLanguage(lng) {
   try {
+    if (!lng) return lng;
+
     let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;
 
     const splitted = lng.split("-");
