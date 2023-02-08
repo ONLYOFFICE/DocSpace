@@ -74,7 +74,7 @@ public class MigrationCreator
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider,
         IMapper mapper,
-CreatorDbContext сreatorDbContext)
+        CreatorDbContext сreatorDbContext)
     {
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
@@ -86,7 +86,7 @@ CreatorDbContext сreatorDbContext)
         _creatorDbContext = сreatorDbContext;
     }
 
-    public string Create(string fromAlias, string userName, string mail, string toRegion, string toAlias)
+    public async Task<string> Create(string fromAlias, string userName, string mail, string toRegion, string toAlias)
     {
         Init(fromAlias, userName, mail, toRegion, toAlias);
 
@@ -94,9 +94,9 @@ CreatorDbContext сreatorDbContext)
         CheckCountManager();
         var fileName = _userName + ".tar.gz";
         var path = Path.Combine(_pathToSave, fileName);
-        using (var writer = new ZipWriteOperator(_tempStream, path))
+        await using (var writer = new ZipWriteOperator(_tempStream, path))
         {
-            DoMigrationDb(id, writer);
+            await DoMigrationDb(id, writer);
             DoMigrationStorage(id, writer);
         }
         return fileName;
@@ -111,13 +111,13 @@ CreatorDbContext сreatorDbContext)
         _fromAlias = fromAlias;
         _toAlias = toAlias;
 
-        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>();
+        using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>();
         var tenant = dbContextTenant.Tenants.SingleOrDefault(q => q.Alias == _fromAlias);
 
         if (tenant == null)
         {
             throw new ArgumentException("tenant was not found");
-    }
+        }
         _fromTenantId = tenant.Id;
 
         _modules = string.IsNullOrEmpty(_toAlias)
@@ -129,9 +129,9 @@ CreatorDbContext сreatorDbContext)
     {
         try
         {
-            using var userDbContext = _dbFactory.CreateDbContext<UserDbContext>();
+            using var userDbContext = _creatorDbContext.CreateDbContext<UserDbContext>();
             User user = null;
-            if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail)) 
+            if (string.IsNullOrEmpty(_userName) || string.IsNullOrEmpty(_mail))
             {
                 if (string.IsNullOrEmpty(_userName))
                 {
@@ -147,10 +147,10 @@ CreatorDbContext сreatorDbContext)
             {
                 user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
             }
-            if (!string.IsNullOrEmpty(_toAlias)) 
+            if (!string.IsNullOrEmpty(_toAlias))
             {
-                using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
-                using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
+                using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_toRegion);
+                using var userDbContextToregion = _creatorDbContext.CreateDbContext<UserDbContext>(_toRegion);
                 var tenant = dbContextTenant.Tenants.SingleOrDefault(t => t.Alias == _toAlias);
                 if (tenant == null)
                 {
@@ -178,20 +178,21 @@ CreatorDbContext сreatorDbContext)
 
     private void CheckCountManager()
     {
-        if (!string.IsNullOrEmpty(_toAlias)) {
-            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+        if (!string.IsNullOrEmpty(_toAlias))
+        {
+            using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_toRegion);
             var tenant = dbContextTenant.Tenants.SingleOrDefault(t => t.Alias == _toAlias);
 
-            using var coreDbContext = _dbFactory.CreateDbContext<CoreDbContext>(_toRegion);
+            using var coreDbContext = _creatorDbContext.CreateDbContext<CoreDbContext>(_toRegion);
             var qouta = coreDbContext.Quotas
                  .Where(r => r.Tenant == tenant.Id)
                  .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                  .SingleOrDefault();
 
-            using var userDbContextToregion = _dbFactory.CreateDbContext<UserDbContext>(_toRegion);
+            using var userDbContextToregion = _creatorDbContext.CreateDbContext<UserDbContext>(_toRegion);
             var usersCount = userDbContextToregion.Users
-                .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new {u, ug})
-                .Where(q=> q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
+                .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new { u, ug })
+                .Where(q => q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
             if (usersCount > qouta.CountRoomAdmin)
             {
                 throw new ArgumentException("user count exceed");
@@ -200,7 +201,7 @@ CreatorDbContext сreatorDbContext)
     }
 
 
-    private void DoMigrationDb(Guid id, IDataWriteOperator writer)
+    private async Task DoMigrationDb(Guid id, IDataWriteOperator writer)
     {
         if (!string.IsNullOrEmpty(_toAlias))
         {
@@ -208,7 +209,7 @@ CreatorDbContext сreatorDbContext)
             {
                 var tenantsModule = _moduleProvider.AllModules.Single(q => q.ModuleName == ModuleName.Tenants);
                 var coreUserTable = tenantsModule.Tables.Single(q => q.Name == "core_user");
-                ArhiveTable(coreUserTable, writer, tenantsModule, connection, id);
+                await ArhiveTable(coreUserTable, writer, tenantsModule, connection, id);
             }
         }
 
@@ -224,69 +225,69 @@ CreatorDbContext сreatorDbContext)
                     {
                         continue;
                     }
-                    ArhiveTable(table, writer, module, connection, id);
+                    await ArhiveTable(table, writer, module, connection, id);
                 }
             }
         }
     }
 
-    private void ArhiveTable(TableInfo table, IDataWriteOperator writer, IModuleSpecifics module, DbConnection connection, Guid id)
+    private async Task ArhiveTable(TableInfo table, IDataWriteOperator writer, IModuleSpecifics module, DbConnection connection, Guid id)
     {
-                    Console.WriteLine($"backup table {table.Name}");
-                    using (var data = new DataTable(table.Name))
+        Console.WriteLine($"backup table {table.Name}");
+        using (var data = new DataTable(table.Name))
+        {
+            ActionInvoker.Try(
+                state =>
+                {
+                    data.Clear();
+                    int counts;
+                    var offset = 0;
+                    do
                     {
-                        ActionInvoker.Try(
-                            state =>
-                            {
-                                data.Clear();
-                                int counts;
-                                var offset = 0;
-                                do
-                                {
-                                    var t = (TableInfo)state;
-                                    var dataAdapter = _dbFactory.CreateDataAdapter();
+                        var t = (TableInfo)state;
+                        var dataAdapter = _dbFactory.CreateDataAdapter();
                         dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _fromTenantId, t, _limit, offset, id).WithTimeout(600);
-                                    counts = ((DbDataAdapter)dataAdapter).Fill(data);
-                                    offset += _limit;
-                                } while (counts == _limit);
+                        counts = ((DbDataAdapter)dataAdapter).Fill(data);
+                        offset += _limit;
+                    } while (counts == _limit);
 
-                            },
-                            table,
-                            maxAttempts: 5,
-                            onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
+                },
+                table,
+                maxAttempts: 5,
+                onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
 
-                        foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
-                        {
-                            col.DateTimeMode = DataSetDateTime.Unspecified;
-                        }
+            foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
+            {
+                col.DateTimeMode = DataSetDateTime.Unspecified;
+            }
 
-                        module.PrepareData(data);
+            module.PrepareData(data);
 
-                        if (data.TableName == "tenants_tenants")
-                        {
-                            ChangeAlias(data);
-                            ChangeName(data);
-                        }
+            if (data.TableName == "tenants_tenants")
+            {
+                ChangeAlias(data);
+                ChangeName(data);
+            }
 
             if (data.TableName == "files_bunch_objects")
             {
                 ClearCommonBunch(data);
             }
 
-            WriteEnrty(data, writer, module);
+            await WriteEnrty(data, writer, module);
         }
     }
 
-    private void WriteEnrty(DataTable data, IDataWriteOperator writer, IModuleSpecifics module)
+    private async Task WriteEnrty(DataTable data, IDataWriteOperator writer, IModuleSpecifics module)
     {
-                        using (var file = _tempStream.Create())
-                        {
-                            data.WriteXml(file, XmlWriteMode.WriteSchema);
-                            data.Clear();
+        using (var file = _tempStream.Create())
+        {
+            data.WriteXml(file, XmlWriteMode.WriteSchema);
+            data.Clear();
 
-                            writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
-                        }
-                    }
+            await writer.WriteEntryAsync(KeyHelper.GetTableZipKey(module, data.TableName), file);
+        }
+    }
 
     private void ChangeAlias(DataTable data)
     {
@@ -319,7 +320,7 @@ CreatorDbContext сreatorDbContext)
             }
             catch (Exception ex)
             {
-                var last = NewAlias.Substring(NewAlias.Length-1);
+                var last = NewAlias.Substring(NewAlias.Length - 1);
                 if (int.TryParse(last, out var lastNumber))
                 {
                     NewAlias = NewAlias.Substring(0, NewAlias.Length - 1) + (lastNumber + 1);
@@ -356,7 +357,7 @@ CreatorDbContext сreatorDbContext)
 
     private void ClearCommonBunch(DataTable data)
     {
-        for(var i = 0; i < data.Rows.Count; i++)
+        for (var i = 0; i < data.Rows.Count; i++)
         {
             if (data.Rows[i]["right_node"].ToString().EndsWith('/'))
             {
@@ -366,7 +367,7 @@ CreatorDbContext сreatorDbContext)
         }
     }
 
-    private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
+    private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         Console.WriteLine($"start backup storage");
         var fileGroups = GetFilesGroup(id);
@@ -377,11 +378,11 @@ CreatorDbContext сreatorDbContext)
             {
                 var storage = _storageFactory.GetStorage(_fromTenantId, group.Key);
                 var file1 = file;
-                ActionInvoker.Try(state =>
+                await ActionInvoker.Try(async state =>
                 {
                     var f = (BackupFileInfo)state;
                     using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
-                    writer.WriteEntry(file1.GetZipKey(), fileStream);
+                    await writer.WriteEntryAsync(file1.GetZipKey(), fileStream);
                 }, file, 5);
             }
             Console.WriteLine($"end backup fileGroup: {group.Key}");
@@ -396,14 +397,14 @@ CreatorDbContext сreatorDbContext)
         using (var tmpFile = _tempStream.Create())
         {
             restoreInfoXml.WriteTo(tmpFile);
-            writer.WriteEntry(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
+            await writer.WriteEntryAsync(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
         }
         Console.WriteLine($"end backup storage");
     }
 
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
     {
-        var files =   GetFilesToProcess(id).ToList();
+        var files = GetFilesToProcess(id).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
@@ -412,7 +413,7 @@ CreatorDbContext сreatorDbContext)
     {
         var files = new List<BackupFileInfo>();
 
-        var filesDbContext = _dbFactory.CreateDbContext<FilesDbContext>();
+        var filesDbContext = _creatorDbContext.CreateDbContext<FilesDbContext>();
 
         var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
 
@@ -448,7 +449,7 @@ CreatorDbContext сreatorDbContext)
             list.AddRange(files);
         }
 
-        if (files.Any()) 
+        if (files.Any())
         {
             Console.WriteLine($"file {dbFile.Id} found");
         }

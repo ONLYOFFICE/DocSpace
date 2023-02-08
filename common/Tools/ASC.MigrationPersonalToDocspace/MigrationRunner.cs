@@ -72,10 +72,10 @@ public class MigrationRunner
         var columnMapper = new ColumnMapper();
         if (!string.IsNullOrEmpty(toAlias))
         {
-            using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>();
+            using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>();
             var fromTenant = dbContextTenant.Tenants.SingleOrDefault(q => q.Alias == fromAlias);
 
-            using var dbContextToTenant = _dbFactory.CreateDbContext<TenantDbContext>(region);
+            using var dbContextToTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(region);
             var toTenant = dbContextToTenant.Tenants.SingleOrDefault(q => q.Alias == toAlias);
 
             toTenant.Status = TenantStatus.Restoring;
@@ -160,18 +160,18 @@ public class MigrationRunner
         using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
         using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
-        var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
+        var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
         Console.WriteLine("set tenant status");
         tenant.LastModified = DateTime.UtcNow;
         tenant.StatusChanged = DateTime.UtcNow;
         if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
         {
-            
+
             var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
             tenant.OwnerId = user.Id;
             Console.WriteLine($"set ownerId {user.Id}");
-    }
+        }
         dbContextTenant.Tenants.Update(tenant);
         dbContextTenant.SaveChanges();
     }
