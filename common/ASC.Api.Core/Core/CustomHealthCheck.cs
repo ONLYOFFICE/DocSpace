@@ -88,6 +88,13 @@ public static class CustomHealthCheck
 
         if (redisConfiguration != null)
         {
+            //  https://github.com/imperugo/StackExchange.Redis.Extensions/issues/513
+            if (configuration.GetSection("Redis").GetValue<string>("User") != null)
+            {
+                redisConfiguration.ConfigurationOptions.User = configuration.GetSection("Redis").GetValue<string>("User");
+            }
+
+
             hcBuilder.AddRedis(redisConfiguration.ConfigurationOptions.ToString(),
                                name: "redis",
                                tags: new string[] { "redis" },

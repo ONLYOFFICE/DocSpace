@@ -76,18 +76,6 @@ public class DbFactory
         _cache = cache;
     }
 
-    public T CreateDbContext<T>(string region = "current") where T : DbContext
-    {
-        var contextOptions = _cache.Get<DbContextOptionsBuilder<T>>($"context {typeof(T)} {region}");
-        if (contextOptions == null)
-        {
-            contextOptions = new DbContextOptionsBuilder<T>();
-            BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region);
-            _cache.Insert($"context {region}", contextOptions, TimeSpan.FromMinutes(15));
-        }
-        return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);
-    }
-
     public DbConnection OpenConnection(string path = "default", string connectionString = null, string region = "current")
     {
         var connection = DbProviderFactory.CreateConnection();
