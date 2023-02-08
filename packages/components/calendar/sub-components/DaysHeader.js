@@ -1,16 +1,6 @@
 import { HeaderContainer, Title } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
 
-const onLeftClick = (setObservedDate) =>
-  setObservedDate((prevObservedDate) =>
-    prevObservedDate.clone().subtract(1, "month")
-  );
-
-const onRightClick = (setObservedDate) =>
-  setObservedDate((prevObservedDate) =>
-    prevObservedDate.clone().add(1, "month")
-  );
-
 export const DaysHeader = ({
   observedDate,
   setObservedDate,
@@ -18,24 +8,34 @@ export const DaysHeader = ({
   minDate,
   maxDate,
 }) => {
+  const onTitleClick = () =>
+    setSelectedScene((prevSelectedScene) => prevSelectedScene + 1);
+
+  const onLeftClick = () =>
+    setObservedDate((prevObservedDate) =>
+      prevObservedDate.clone().subtract(1, "month")
+    );
+
+  const onRightClick = () =>
+    setObservedDate((prevObservedDate) =>
+      prevObservedDate.clone().add(1, "month")
+    );
+
   const isLeftDisabled =
     observedDate.clone().subtract(1, "month").endOf("month") < minDate;
   const isRightDisabled =
     observedDate.clone().add(1, "month").startOf("month") > maxDate;
+
   return (
     <HeaderContainer>
-      <Title
-        onClick={() =>
-          setSelectedScene((prevSelectedScene) => prevSelectedScene + 1)
-        }
-      >
+      <Title onClick={onTitleClick}>
         {observedDate.format("MMMM").charAt(0).toUpperCase() +
           observedDate.format("MMMM").substring(1)}{" "}
         {observedDate.year()}
       </Title>
       <HeaderButtons
-        onLeftClick={() => onLeftClick(setObservedDate)}
-        onRightClick={() => onRightClick(setObservedDate)}
+        onLeftClick={onLeftClick}
+        onRightClick={onRightClick}
         isLeftDisabled={isLeftDisabled}
         isRightDisabled={isRightDisabled}
       />
