@@ -45,7 +45,7 @@ public class SslHelper
             return true;
         }
 
-        var settings = _settingsManager.Load<SslSettings>();
+        var settings = _settingsManager.Load<WebHooksSettings>();
 
         if (!settings.EnableSSLVerification)
         {
@@ -56,5 +56,5 @@ public class SslHelper
     }
 }
 
-public class SslException : Exception {}
+public class SslException : Exception { }
 
