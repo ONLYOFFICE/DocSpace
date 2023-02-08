@@ -167,7 +167,7 @@ internal class GoogleDriveProviderInfo : IProviderInfo
     }
 }
 
-[Scope(Additional = typeof(GoogleDriveProviderInfoExtention))]
+[Transient(Additional = typeof(GoogleDriveProviderInfoExtention))]
 internal class GoogleDriveStorageDisposableWrapper : IDisposable
 {
     internal GoogleDriveStorage Storage { get; set; }

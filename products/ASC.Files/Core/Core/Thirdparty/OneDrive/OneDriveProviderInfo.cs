@@ -132,7 +132,7 @@ internal class OneDriveProviderInfo : IProviderInfo
     }
 }
 
-[Scope(Additional = typeof(OneDriveProviderInfoExtention))]
+[Transient(Additional = typeof(OneDriveProviderInfoExtention))]
 internal class OneDriveStorageDisposableWrapper : IDisposable
 {
     internal OneDriveStorage Storage { get; private set; }

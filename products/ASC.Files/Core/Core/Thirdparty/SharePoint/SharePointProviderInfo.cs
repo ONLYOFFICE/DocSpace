@@ -664,7 +664,7 @@ public class SharePointProviderInfo : IProviderInfo
     }
 }
 
-[Singletone]
+[Transient]
 public class SharePointProviderInfoHelper
 {
     private readonly TimeSpan _cacheExpiration;

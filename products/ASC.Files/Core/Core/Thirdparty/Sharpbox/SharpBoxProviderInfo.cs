@@ -115,7 +115,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
     private readonly SharpBoxStorageDisposableWrapper _wrapper;
 }
 
-[Scope]
+[Transient]
 class SharpBoxStorageDisposableWrapper : IDisposable
 {
     public CloudStorage Storage { get; private set; }

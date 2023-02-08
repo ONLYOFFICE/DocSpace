@@ -156,7 +156,7 @@ internal class BoxProviderInfo : IProviderInfo
     }
 }
 
-[Scope]
+[Transient]
 internal class BoxStorageDisposableWrapper : IDisposable
 {
     public BoxStorage Storage { get; private set; }

@@ -141,7 +141,7 @@ internal class DropboxProviderInfo : IProviderInfo
     }
 }
 
-[Scope(Additional = typeof(DropboxStorageDisposableWrapperExtention))]
+[Transient(Additional = typeof(DropboxStorageDisposableWrapperExtention))]
 internal class DropboxStorageDisposableWrapper : IDisposable
 {
     public DropboxStorage Storage { get; private set; }
