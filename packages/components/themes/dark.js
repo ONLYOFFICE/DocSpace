@@ -1684,6 +1684,7 @@ const Dark = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#292929",
     hoverFillColorOff: "#3D3D3D",
 
