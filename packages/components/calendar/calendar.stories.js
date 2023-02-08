@@ -1,13 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Calendar from "./";
+import moment from "moment";
 
 export default {
   title: "Components/Calendar",
   component: Calendar,
   argTypes: {
-    themeColor: { control: "color" },
-    selectedDate: { control: "date" },
-    openToDate: { control: "date" },
     maxDate: { control: "date" },
     minDate: { control: "date" },
     locale: {
@@ -53,23 +51,36 @@ export default {
   },
 };
 
-const Template = (args) => {
+const Template = ({ locale, minDate, maxDate, ...args }) => {
+  const [selectedDate, setSelectedDate] = useState(moment());
   return (
     <Calendar
+      selectedDate={selectedDate}
+      onChange={(value) => {
+        if (value instanceof Function) {
+          setSelectedDate((prevSelectedDate) => {
+            const result = value(prevSelectedDate);
+            //onChange with result
+            return result;
+          });
+        } else {
+          setSelectedDate(value);
+          //onChange with value
+        }
+      }}
+      minDate={minDate}
+      maxDate={maxDate}
+      locale={locale}
       {...args}
-      maxDate={new Date(args.maxDate)}
-      selectedDate={new Date(args.selectedDate)}
-      openToDate={new Date(args.openToDate)}
-      minDate={new Date(args.minDate)}
-      locale="en"
     />
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
+  locale: "en",
   maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
   minDate: new Date("1970/01/01"),
-  selectedDate: new Date(),
-  openToDate: new Date(),
+  id: "",
+  className: "",
 };
