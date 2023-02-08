@@ -4,17 +4,18 @@ import moment from "moment";
 
 import { Container } from "./styled-components";
 import { Days, Months, Years } from "./sub-components";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const Calendar = () => {
   moment.locale("en");
   const [selectedDate, setSelectedDate] = useState(moment());
   const [observedDate, setObservedDate] = useState(moment());
   const [selectedScene, setSelectedScene] = useState(0);
-  const minDate = moment('2020-12-31');
-  const maxDate = moment('2030-12-1');
+  const minDate = moment("2020-12-31");
+  const maxDate = moment("2030-12-1");
 
   return (
-    <Container>
+    <ColorTheme themeId={ThemeType.Calendar}>
       {selectedScene === 0 ? (
         <Days
           observedDate={observedDate}
@@ -44,7 +45,7 @@ const Calendar = () => {
           maxDate={maxDate}
         />
       )}
-    </Container>
+    </ColorTheme>
   );
 };
 
