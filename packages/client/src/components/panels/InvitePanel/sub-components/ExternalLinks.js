@@ -39,10 +39,10 @@ const ExternalLinks = ({
   const inputsRef = useRef();
 
   useEffect(() => {
-    if (shareLinks[0]?.expirationDate) toggleLinks();
+    if (shareLinks[0]?.expirationDate) toggleLinks(false);
   }, [shareLinks]);
 
-  const toggleLinks = (e) => {
+  const toggleLinks = (withCopy = true) => {
     let link = null;
     if (!shareLinks.length) return;
 
@@ -58,7 +58,7 @@ const ExternalLinks = ({
 
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(link?.shareLink);
+    if (!linksVisible && withCopy) copyLink(link?.shareLink);
   };
 
   const disableLink = () => {
