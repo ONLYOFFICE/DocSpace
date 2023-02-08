@@ -114,11 +114,16 @@ class TargetUserStore {
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 
-  setSubscriptions = async (badges, roomsActivity, dailyFeed, tips) => {
-    this.badgesSubscription = badges;
-    this.roomsActivitySubscription = roomsActivity;
-    this.dailyFeedSubscriptions = dailyFeed;
-    this.usefulTipsSubscription = tips;
+  setSubscriptions = async (
+    isEnableBadges,
+    isEnableRoomsActivity,
+    isEnableDailyFeed,
+    isEnableTips
+  ) => {
+    this.badgesSubscription = isEnableBadges;
+    this.roomsActivitySubscription = isEnableRoomsActivity;
+    this.dailyFeedSubscriptions = isEnableDailyFeed;
+    this.usefulTipsSubscription = isEnableTips;
   };
 
   changeSubscription = async (notificationType, isEnabled) => {
