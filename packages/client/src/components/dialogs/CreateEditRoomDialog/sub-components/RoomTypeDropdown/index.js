@@ -9,6 +9,12 @@ const StyledRoomTypeDropdown = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  .backdrop-active {
+    top: -64px;
+    backdrop-filter: unset;
+    background: rgba(6, 22, 38, 0.2);
+  }
 `;
 
 const RoomTypeDropdown = ({

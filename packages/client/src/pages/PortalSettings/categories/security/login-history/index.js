@@ -20,6 +20,7 @@ const LoginHistory = (props) => {
     getLifetimeAuditSettings,
     setLifetimeAuditSettings,
     securityLifetime,
+    isAuditAvailable,
   } = props;
 
   useEffect(() => {
@@ -66,13 +67,14 @@ const LoginHistory = (props) => {
           storagePeriod={t("StoragePeriod")}
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
-          downloadText={t("LoginDownloadText")}
+          downloadText={t("DownloadStatisticsText")}
           lifetime={securityLifetime.loginHistoryLifeTime}
           securityLifetime={securityLifetime}
           setLifetimeAuditSettings={setLifetimeAuditSettings}
           content={getContent()}
           downloadReport={t("DownloadReportBtn")}
           getReport={getLoginHistoryReport}
+          isSettingNotPaid={!isAuditAvailable}
         />
       )}
     </>
@@ -91,6 +93,8 @@ export default inject(({ setup, auth }) => {
   } = setup;
   const { theme } = auth.settingsStore;
 
+  const { isAuditAvailable } = auth.currentQuotaStore;
+
   return {
     getLoginHistory,
     getLifetimeAuditSettings,
@@ -100,5 +104,6 @@ export default inject(({ setup, auth }) => {
     theme,
     viewAs,
     getLoginHistoryReport,
+    isAuditAvailable,
   };
 })(withTranslation("Settings")(withRouter(LoginHistory)));

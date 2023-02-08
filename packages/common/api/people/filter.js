@@ -12,6 +12,8 @@ const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
 const DEFAULT_PAYMENTS = null;
 
+const ACTIVE_EMPLOYEE_STATUS = 1;
+
 const EMPLOYEE_STATUS = "employeestatus";
 const ACTIVATION_STATUS = "activationstatus";
 const ROLE = "employeeType";
@@ -28,6 +30,21 @@ class Filter {
     return new Filter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
   }
 
+  static getFilterWithOutDisabledUser() {
+    return new Filter(
+      DEFAULT_PAGE,
+      DEFAULT_PAGE_COUNT,
+      DEFAULT_TOTAL,
+      DEFAULT_SORT_BY,
+      DEFAULT_SORT_ORDER,
+      ACTIVE_EMPLOYEE_STATUS,
+      DEFAULT_ACTIVATION_STATUS,
+      DEFAULT_ROLE,
+      DEFAULT_SEARCH,
+      DEFAULT_GROUP,
+      DEFAULT_PAYMENTS
+    );
+  }
   static getFilter(location) {
     if (!location) return this.getDefault();
 

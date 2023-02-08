@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -76,16 +76,16 @@
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.cs.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.el.resx">
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.el-GR.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.fi.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ja.resx">
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ja-JP.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ko.resx">
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ko-KR.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.lv.resx">
@@ -112,7 +112,7 @@
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.tr.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.uk.resx">
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.uk-UA.resx">
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.vi.resx">
@@ -158,16 +158,16 @@
     <EmbeddedResource Update="PublicResources\Resource.cs.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\Resource.el.resx">
+    <EmbeddedResource Update="PublicResources\Resource.el-GR.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\Resource.fi.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\Resource.ja.resx">
+    <EmbeddedResource Update="PublicResources\Resource.ja-JP.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\Resource.ko.resx">
+    <EmbeddedResource Update="PublicResources\Resource.ko-KR.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\Resource.lv.resx">
@@ -194,7 +194,7 @@
     <EmbeddedResource Update="PublicResources\Resource.tr.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\Resource.uk.resx">
+    <EmbeddedResource Update="PublicResources\Resource.uk-UA.resx">
       <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\Resource.vi.resx">
@@ -240,16 +240,16 @@
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.cs.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.el.resx">
+    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.el-GR.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.fi.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ja.resx">
+    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ja-JP.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ko.resx">
+    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.ko-KR.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.lv.resx">
@@ -276,7 +276,7 @@
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.tr.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.uk.resx">
+    <EmbeddedResource Update="PublicResources\UserControlsCommonResource.uk-UA.resx">
       <DependentUpon>UserControlsCommonResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.vi.resx">
@@ -322,13 +322,13 @@
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.cs.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.el.resx">
+    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.el-GR.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.fi.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.ja.resx">
+    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.ja-JP.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.lv.resx">
@@ -349,7 +349,7 @@
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.tr.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.uk.resx">
+    <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.uk-UA.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.vi.resx">
@@ -392,10 +392,10 @@
     <EmbeddedResource Update="PublicResources\CustomModeResource.bg.resx">
       <DependentUpon>CustomModeResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\CustomModeResource.el.resx">
+    <EmbeddedResource Update="PublicResources\CustomModeResource.el-GR.resx">
       <DependentUpon>CustomModeResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\CustomModeResource.ja.resx">
+    <EmbeddedResource Update="PublicResources\CustomModeResource.ja-JP.resx">
       <DependentUpon>CustomModeResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\CustomModeResource.pl.resx">
@@ -419,12 +419,12 @@
     <Protobuf Include="protos\user_photo_manager_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GoogleAuthenticator" Version="2.5.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+    <PackageReference Include="GoogleAuthenticator" Version="3.0.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
-    <PackageReference Include="Twilio" Version="5.6.0" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
+    <PackageReference Include="Twilio" Version="5.81.2" />
   </ItemGroup>
 </Project>

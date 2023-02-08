@@ -229,7 +229,27 @@ internal class ProviderAccountDao : IProviderDao
         return true;
     }
 
-    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType roomType, bool @private)
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, bool hasLogo)
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var forUpdate = await filesDbContext.ThirdpartyAccount
+            .Where(r => r.Id == linkId)
+            .Where(r => r.TenantId == TenantID)
+            .FirstOrDefaultAsync();
+
+        if (forUpdate == null)
+        {
+            return false;
+        }
+
+        forUpdate.HasLogo = hasLogo;
+
+        await filesDbContext.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, string title, string folderId, FolderType roomType, bool @private)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var forUpdate = await filesDbContext.ThirdpartyAccount
@@ -246,6 +266,7 @@ internal class ProviderAccountDao : IProviderDao
         forUpdate.FolderId = folderId;
         forUpdate.FolderType = FolderType.VirtualRooms;
         forUpdate.Private = @private;
+        forUpdate.Title = title;
 
         await filesDbContext.SaveChangesAsync();
 
@@ -496,6 +517,7 @@ internal class ProviderAccountDao : IProviderDao
         var folderId = input.FolderId;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
         var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
+        var hasLogo = input.HasLogo;
 
         if (key == ProviderTypes.Box)
         {
@@ -515,6 +537,7 @@ internal class ProviderAccountDao : IProviderDao
             box.FolderType = folderType;
             box.FolderId = folderId;
             box.Private = privateRoom;
+            box.HasLogo = hasLogo;
 
             return box;
         }
@@ -537,6 +560,7 @@ internal class ProviderAccountDao : IProviderDao
             drop.FolderType = folderType;
             drop.FolderId = folderId;
             drop.Private = privateRoom;
+            drop.HasLogo = hasLogo;
 
             return drop;
         }
@@ -559,6 +583,7 @@ internal class ProviderAccountDao : IProviderDao
             sh.FolderType = folderType;
             sh.FolderId = folderId;
             sh.Private = privateRoom;
+            sh.HasLogo = hasLogo;
 
             return sh;
         }
@@ -581,6 +606,7 @@ internal class ProviderAccountDao : IProviderDao
             gd.FolderType = folderType;
             gd.FolderId = folderId;
             gd.Private = privateRoom;
+            gd.HasLogo = hasLogo;
 
             return gd;
         }
@@ -603,6 +629,7 @@ internal class ProviderAccountDao : IProviderDao
             od.FolderType = folderType;
             od.FolderId = folderId;
             od.Private = privateRoom;
+            od.HasLogo = hasLogo;
 
             return od;
         }
@@ -633,6 +660,7 @@ internal class ProviderAccountDao : IProviderDao
         sharpBoxProviderInfo.FolderType = folderType;
         sharpBoxProviderInfo.FolderId = folderId;
         sharpBoxProviderInfo.Private = privateRoom;
+        sharpBoxProviderInfo.HasLogo = hasLogo;
 
         return sharpBoxProviderInfo;
     }

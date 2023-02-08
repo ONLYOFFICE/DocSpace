@@ -5,7 +5,6 @@ import SelectionStore from "./SelectionStore";
 //import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
 
@@ -16,6 +15,8 @@ class SettingsSetupStore {
   logoutVisible = false;
   logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
+
+  isLoadingDownloadReport = false;
 
   security = {
     accessRight: {
@@ -70,6 +71,10 @@ class SettingsSetupStore {
       await authStore.settingsStore.getIpRestrictions();
       await authStore.settingsStore.getSessionLifetime();
     }
+  };
+
+  setIsLoadingDownloadReport = (state) => {
+    this.isLoadingDownloadReport = state;
   };
 
   setIsInit = (isInit) => {
@@ -142,7 +147,7 @@ class SettingsSetupStore {
       "",
       "",
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         `${config.homepage}/portal-settings/security/access-rights/admins`,
         `/filter?page=${filter.page}` //TODO: Change url by category
       )
@@ -237,6 +242,7 @@ class SettingsSetupStore {
 
   setLifetimeAuditSettings = async (data) => {
     await api.settings.setLifetimeAuditSettings(data);
+    this.getLifetimeAuditSettings();
   };
 
   setSecurityLifeTime = (lifetime) => {
@@ -268,9 +274,16 @@ class SettingsSetupStore {
   };
 
   getAuditTrailReport = async () => {
-    const res = await api.settings.getAuditTrailReport();
-    window.open(res);
-    return this.setAuditTrailReport(res);
+    try {
+      this.setIsLoadingDownloadReport(true);
+      const res = await api.settings.getAuditTrailReport();
+      window.open(res);
+      return this.setAuditTrailReport(res);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.setIsLoadingDownloadReport(false);
+    }
   };
 
   setGreetingTitle = async (greetingTitle) => {
@@ -352,6 +365,10 @@ class SettingsSetupStore {
 
   removeSession = (id) => {
     return api.settings.removeActiveSession(id);
+  };
+
+  getAllSettings = () => {
+    return api.settings.getSettings();
   };
 
   setLogoutVisible = (visible) => (this.logoutVisible = visible);

@@ -53,7 +53,7 @@ public class FileMarkerHelper<T>
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var socketManager = scope.ServiceProvider.GetService<SocketManager>();
             await fileMarker.ExecMarkFileAsNewAsync(obj, socketManager);
@@ -276,6 +276,16 @@ public class FileMarker
             {
                 var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
                 userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
+
+                var room = parentFolders.Where(f => DocSpaceHelper.IsRoom(f.FolderType)).FirstOrDefault();
+
+                if (room.CreateBy != obj.CurrentAccountId)
+                {
+                    var roomOwnerEntries = parentFolders.Cast<FileEntry>().Concat(new[] { obj.FileEntry }).ToList();
+                    userEntriesData.Add(room.CreateBy, roomOwnerEntries);
+
+                    RemoveFromCahce(virtualRoomsFolderId, room.CreateBy);
+                }
 
                 if (obj.FileEntry.ProviderEntry)
                 {
@@ -868,6 +878,10 @@ public class FileMarker
                     else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
                     {
                         cacheFolderId = rootFolderId = shareFolder;
+                    }
+                    else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
+                    {
+                        rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<T>(_daoFactory);
                     }
 
                     if (rootFolderId != null)

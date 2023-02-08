@@ -1,4 +1,5 @@
 import React from "react";
+import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
 
 import IconButton from "@docspace/components/icon-button";
 import { Base } from "@docspace/components/themes";
@@ -22,7 +23,7 @@ const FilterButton = ({
   isRooms,
   isAccounts,
   id,
-  title
+  title,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
@@ -33,7 +34,7 @@ const FilterButton = ({
   return (
     <>
       <StyledButton id={id} onClick={changeShowFilterBlock} title={title}>
-        <IconButton iconName="/static/images/filter.react.svg" size={16} />
+        <IconButton iconName={FilterReactSvrUrl} size={16} />
         {selectedFilterValue && selectedFilterValue.length > 0 && (
           <ColorTheme themeId={ThemeType.IndicatorFilterButton} />
         )}

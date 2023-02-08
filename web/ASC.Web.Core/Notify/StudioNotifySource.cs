@@ -115,6 +115,9 @@ public class StudioNotifySource : NotifySource
                 Actions.StorageDecryptionSuccess,
                 Actions.StorageDecryptionError,
 
+                Actions.SaasRoomInvite,
+                Actions.SaasDocSpaceInvite,
+
                 Actions.SaasAdminActivationV1,
                 Actions.EnterpriseAdminActivationV1,
                 Actions.EnterpriseWhitelabelAdminActivationV1,

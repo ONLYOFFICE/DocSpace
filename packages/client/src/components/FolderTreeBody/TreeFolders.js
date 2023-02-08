@@ -1,3 +1,19 @@
+﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
+import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
+import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";
+import CatalogFavoritesReactSvgUrl from "PUBLIC_DIR/images/catalog.favorites.react.svg?url";
+import CatalogRecentReactSvgUrl from "PUBLIC_DIR/images/catalog.recent.react.svg?url";
+import CatalogPrivateReactSvgUrl from "PUBLIC_DIR/images/catalog.private.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
+import CloudServicesGoogleDriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.google.drive.react.svg?url";
+import CloudServicesBoxReactSvgUrl from "PUBLIC_DIR/images/cloud.services.box.react.svg?url";
+import CloudServicesDropboxReactSvgUrl from "PUBLIC_DIR/images/cloud.services.dropbox.react.svg?url";
+import CloudServicesOnedriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.onedrive.react.svg?url";
+import CloudServicesKdriveReactSvgUrl from "PUBLIC_DIR/images/cloud.services.kdrive.react.svg?url";
+import CloudServicesYandexReactSvgUrl from "PUBLIC_DIR/images/cloud.services.yandex.react.svg?url";
+import CloudServicesNextcloudReactSvgUrl from "PUBLIC_DIR/images/cloud.services.nextcloud.react.svg?url";
+import CloudServicesWebdavReactSvgUrl from "PUBLIC_DIR/images/cloud.services.webdav.react.svg?url";
 import React from "react";
 import TreeMenu from "@docspace/components/tree-menu";
 import TreeNode from "@docspace/components/tree-menu/sub-components/tree-node";
@@ -78,9 +94,21 @@ class TreeFolders extends React.Component {
     this.selectionFoldersId = [];
   }
 
+  setItemSecurityRights = (data) => {
+    const { selectedKeys, setItemSecurity } = this.props;
+    const selectedFolder = data.find(
+      (x) => x.id.toString() === selectedKeys[0]
+    );
+
+    selectedFolder && setItemSecurity(selectedFolder.security);
+  };
   componentDidMount() {
-    const { selectionFiles } = this.props;
+    const { selectionFiles, expandedPanelKeys = [], data } = this.props;
     this.props.isLoadingNodes && this.props.setIsLoadingNodes(false);
+
+    const isRootFolder = expandedPanelKeys.length === 0;
+
+    isRootFolder && this.setItemSecurityRights(data);
 
     if (selectionFiles) {
       for (let item of selectionFiles) {
@@ -98,67 +126,66 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconUrl = "/static/images/catalog.folder.react.svg";
+    let iconUrl = CatalogFolderReactSvgUrl;
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconUrl = "/static/images/catalog.user.react.svg";
+        iconUrl = CatalogUserReactSvgUrl;
         break;
       case FolderType.SHARE:
-        iconUrl = "/static/images/catalog.share.react.svg";
+        iconUrl = CatalogSharedReactSvgUrl;
         break;
       case FolderType.COMMON:
-        iconUrl = "/static/images/catalog.portfolio.react.svg";
+        iconUrl = CatalogPortfolioReactSvgUrl;
         break;
       case FolderType.Favorites:
-        iconUrl = "/static/images/catalog.favorites.react.svg";
+        iconUrl = CatalogFavoritesReactSvgUrl;
         break;
       case FolderType.Recent:
-        iconUrl = "/static/images/catalog.recent.react.svg";
+        iconUrl = CatalogRecentReactSvgUrl;
         break;
       case FolderType.Privacy:
-        iconUrl = "/static/images/catalog.private.react.svg";
+        iconUrl = CatalogPrivateReactSvgUrl;
         break;
       case FolderType.TRASH:
-        iconUrl = "/static/images/catalog.trash.react.svg";
+        iconUrl = CatalogTrashReactSvgUrl;
         break;
       default:
         break;
     }
 
-    if (item.parentId !== 0)
-      iconUrl = "/static/images/catalog.folder.react.svg";
+    if (item.parentId !== 0) iconUrl = CatalogFolderReactSvgUrl;
 
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
+        iconUrl = CloudServicesGoogleDriveReactSvgUrl;
         break;
       case "Box":
-        iconUrl = "/static/images/cloud.services.box.react.svg";
+        iconUrl = CloudServicesBoxReactSvgUrl;
         break;
       case "DropboxV2":
-        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
+        iconUrl = CloudServicesDropboxReactSvgUrl;
         break;
       case "OneDrive":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
+        iconUrl = CloudServicesOnedriveReactSvgUrl;
         break;
       case "SharePoint":
-        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
+        iconUrl = CloudServicesOnedriveReactSvgUrl;
         break;
       case "kDrive":
-        iconUrl = "/static/images/cloud.services.kdrive.react.svg";
+        iconUrl = CloudServicesKdriveReactSvgUrl;
         break;
       case "Yandex":
-        iconUrl = "/static/images/cloud.services.yandex.react.svg";
+        iconUrl = CloudServicesYandexReactSvgUrl;
         break;
       case "NextCloud":
-        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
+        iconUrl = CloudServicesNextcloudReactSvgUrl;
         break;
       case "OwnCloud":
-        iconUrl = "/static/images/catalog.folder.react.svg";
+        iconUrl = CatalogFolderReactSvgUrl;
         break;
       case "WebDav":
-        iconUrl = "/static/images/cloud.services.webdav.react.svg";
+        iconUrl = CloudServicesWebdavReactSvgUrl;
         break;
       default:
         break;
@@ -259,6 +286,7 @@ class TreeFolders extends React.Component {
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
             path={path}
+            security={item.security}
           >
             {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
@@ -294,6 +322,7 @@ class TreeFolders extends React.Component {
           providerKey={item.providerKey}
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
+          security={item.security}
         />
       );
     });
@@ -386,7 +415,12 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = (treeNode, isExpand) => {
-    const { data: incomingDate, certainFolders, roomsFolderId } = this.props;
+    const {
+      data: incomingDate,
+      certainFolders,
+      roomsFolderId,
+      expandedPanelKeys,
+    } = this.props;
     isExpand && this.setState({ isExpand: true });
     //console.log("load data...", treeNode);
 
@@ -411,6 +445,11 @@ class TreeFolders extends React.Component {
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         !certainFolders && this.props.setTreeFolders(treeData);
 
+        const isLastFoldersLevel =
+          expandedPanelKeys[expandedPanelKeys.length - 1] === data.listIds[0];
+
+        isLastFoldersLevel && this.setItemSecurityRights(data.folders);
+
         if (
           data.listIds[0] == roomsFolderId &&
           this.props.onSelect &&
@@ -418,8 +457,14 @@ class TreeFolders extends React.Component {
         ) {
           const roomsIndex = treeData.findIndex((f) => f.id == roomsFolderId);
           const firstRoomsNodeId = treeData[roomsIndex]?.folders[0]?.id;
+
           this.selectedRootRoom = false;
-          this.props.onSelect([firstRoomsNodeId], treeNode);
+
+          treeData[roomsIndex]?.folders[0] &&
+            this.props.onSelect(
+              [firstRoomsNodeId],
+              treeData[roomsIndex]?.folders[0]
+            );
         }
       })
       .catch((err) => console.log("err", err))
@@ -435,14 +480,17 @@ class TreeFolders extends React.Component {
         this.onLoadData(treeNode.node, true);
       }
     } else if (isRoom) {
-      this.props.onSelect([treeNode.node.children[0].id], treeNode);
+      this.props.onSelect(
+        [treeNode.node.children[0].id],
+        treeNode.node.children[0]
+      );
     }
 
     this.props.setExpandedPanelKeys(expandedKeys);
   };
 
   onSelect = (folder, treeNode) => {
-    const { onSelect, expandedPanelKeys, roomsFolderId } = this.props;
+    const { onSelect, expandedPanelKeys = [], roomsFolderId } = this.props;
 
     const newExpandedPanelKeys = JSON.parse(JSON.stringify(expandedPanelKeys));
     newExpandedPanelKeys.push(folder[0]);
@@ -453,7 +501,7 @@ class TreeFolders extends React.Component {
       return;
     }
 
-    onSelect && onSelect(folder, treeNode);
+    onSelect && onSelect(folder, treeNode.node);
   };
 
   onDragOver = (data) => {
@@ -559,7 +607,13 @@ TreeFolders.defaultProps = {
 
 export default inject(
   (
-    { auth, filesStore, treeFoldersStore, selectedFolderStore },
+    {
+      auth,
+      filesStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      selectFolderDialogStore,
+    },
     { useDefaultSelectedKeys, selectedKeys }
   ) => {
     const { selection, dragging, setDragging } = filesStore;
@@ -576,8 +630,9 @@ export default inject(
       roomsFolderId,
     } = treeFoldersStore;
     const { id, parentId: selectedNodeParentId } = selectedFolderStore;
-
+    const { setItemSecurity } = selectFolderDialogStore;
     return {
+      setItemSecurity,
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,

@@ -8,8 +8,8 @@ import {
 } from "@docspace/components/utils/device";
 
 import { Base } from "@docspace/components/themes";
-import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import MenuIcon from "PUBLIC_DIR/images/menu.react.svg";
+import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 
 const StyledArticle = styled.article`
   position: relative;
@@ -80,7 +80,8 @@ const StyledArticle = styled.article`
 
     .scroll-body {
       overflow-x: hidden !important;
-      height: calc(100% - 200px);
+      height: ${(props) =>
+        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
       padding: 0 20px !important;
 
       @media ${tablet} {
@@ -335,6 +336,7 @@ const StyledUserName = styled.div`
   max-width: 131px;
   min-width: 131px;
   padding-left: 12px;
+  cursor: pointer;
 `;
 
 const StyledProfileWrapper = styled.div`
@@ -344,6 +346,7 @@ const StyledProfileWrapper = styled.div`
   left: 0;
   min-width: 251px;
   max-width: 251px;
+  background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};

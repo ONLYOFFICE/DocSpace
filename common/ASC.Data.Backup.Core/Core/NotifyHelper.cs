@@ -132,7 +132,6 @@ public class NotifyHelper
                 Actions.RestoreCompletedV115,
                 new IRecipient[] { user },
                 new[] { StudioNotifyService.EMailSenderName },
-                null,
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
         }
     }

@@ -5,7 +5,7 @@ import Heading from "@docspace/components/heading";
 import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
-const AdminSettings = ({
+const GeneralSettings = ({
   storeForceSave,
   setStoreForceSave,
   enableThirdParty,
@@ -33,6 +33,7 @@ const AdminSettings = ({
           isChecked={storeForceSave}
         />
       </Box>
+      {/* //TODO: Uncomment when third-party storages will be  stable
       <Box className="settings-section">
         <Heading className="heading" level={2} size="xsmall">
           {t("ThirdPartyAccounts")}
@@ -43,7 +44,7 @@ const AdminSettings = ({
           onChange={onChangeThirdParty}
           isChecked={enableThirdParty}
         />
-      </Box>
+      </Box> */}
     </StyledSettings>
   );
 };
@@ -62,4 +63,4 @@ export default inject(({ settingsStore }) => {
     enableThirdParty,
     setEnableThirdParty,
   };
-})(observer(AdminSettings));
+})(observer(GeneralSettings));

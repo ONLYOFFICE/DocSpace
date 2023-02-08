@@ -1,3 +1,4 @@
+﻿import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import React from "react";
 import { withRouter } from "react-router";
 import CatalogItem from "@docspace/components/catalog-item";
@@ -5,12 +6,11 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig } from "@docspace/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 
-const iconUrl = "/static/images/catalog.settings.react.svg";
+const iconUrl = CatalogSettingsReactSvgUrl;
 
 const PureSettingsItem = ({
   match,
@@ -19,7 +19,6 @@ const PureSettingsItem = ({
   setExpandSettingsTree,
   setSelectedFolder,
   history,
-  setIsLoading,
   t,
   showText,
   toggleArticleOpen,
@@ -27,10 +26,8 @@ const PureSettingsItem = ({
   const { setting } = match.params;
 
   React.useEffect(() => {
-    setIsLoading(true);
     setSelectedNode([setting]);
-    setIsLoading(false);
-  }, [setting, setIsLoading, setSelectedNode]);
+  }, [setting, setSelectedNode]);
 
   React.useEffect(() => {
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
@@ -43,7 +40,11 @@ const PureSettingsItem = ({
     setExpandSettingsTree(["common"]);
     if (isMobile() || isMobileOnly) toggleArticleOpen();
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/settings/common"
+      )
     );
   }, [
     setSelectedFolder,
@@ -73,20 +74,13 @@ const SettingsItem = withTranslation(["FilesSettings", "Common"])(
 );
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { setIsLoading } = filesStore;
+  ({ auth, settingsStore, treeFoldersStore, selectedFolderStore }) => {
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const { expandedSetting, setExpandSettingsTree } = settingsStore;
     return {
       expandedSetting,
-      setIsLoading,
+
       setSelectedFolder,
       setSelectedNode,
       setExpandSettingsTree,

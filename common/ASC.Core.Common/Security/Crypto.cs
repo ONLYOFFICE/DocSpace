@@ -60,7 +60,7 @@ public static class Crypto
         {
             using var ms = new MemoryStream();
             using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
-            using var plainTextStream = new MemoryStream(Convert.FromBase64String(data));
+            using var plainTextStream = new MemoryStream(Encoding.Unicode.GetBytes(data));
             plainTextStream.CopyTo(ss);
             ss.FlushFinalBlock();
             hasher.Clear();

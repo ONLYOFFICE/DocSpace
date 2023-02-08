@@ -1,5 +1,7 @@
 import React from "react";
 import SocialButton from "./";
+import ShareGoogleReactSvgUrl from "PUBLIC_DIR/images/share.google.react.svg?url";
+import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg?url";
 
 export default {
   title: "Components/SocialButtons",
@@ -17,10 +19,10 @@ export default {
       control: {
         type: "select",
         options: [
-          "static/images/share.google.react.svg",
+          ShareGoogleReactSvgUrl,
           //"ShareFacebookIcon",
           //"ShareTwitterIcon",
-          "static/images/share.linkedin.react.svg",
+          ShareLinkedinReactSvgUrl,
         ],
       },
     },
@@ -34,6 +36,6 @@ const Template = ({ onClick, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   label: "Base SocialButton",
-  iconName: "static/images/share.google.react.svg",
+  iconName: ShareGoogleReactSvgUrl,
   isDisabled: false,
 };

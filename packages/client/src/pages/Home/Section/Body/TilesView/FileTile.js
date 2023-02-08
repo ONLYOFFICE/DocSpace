@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ const FileTile = (props) => {
     checkedProps,
     getIcon,
     onFilesClick,
+    onDoubleClick,
     onMouseClick,
     isActive,
     isEdit,
@@ -50,7 +51,27 @@ const FileTile = (props) => {
     onSelectTag,
     onSelectOption,
     columnCount,
+    isRooms,
+    withCtrlSelect,
+    withShiftSelect,
+    setUploadedFileIdWithVersion,
   } = props;
+
+  const [isHighlight, setIsHighlight] = React.useState(false);
+
+  useEffect(() => {
+    setIsHighlight(false);
+  }, []);
+
+  useEffect(() => {
+    if (!item.upgradeVersion) return;
+
+    setIsHighlight(true);
+
+    return () => {
+      if (isHighlight) setUploadedFileIdWithVersion(null);
+    };
+  }, [item, isHighlight]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -67,9 +88,10 @@ const FileTile = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
+      icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      defaultRoomIcon={item.defaultRoomIcon}
     />
   );
 
@@ -101,9 +123,9 @@ const FileTile = (props) => {
           isPrivacy={isPrivacy}
           isDragging={dragging}
           dragging={dragging && isDragging}
-          onClick={onMouseClick}
+          // onClick={onMouseClick}
           thumbnailClick={onFilesClick}
-          onDoubleClick={onFilesClick}
+          onDoubleClick={onDoubleClick}
           checked={checkedProps}
           contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
@@ -118,6 +140,10 @@ const FileTile = (props) => {
           selectTag={onSelectTag}
           selectOption={onSelectOption}
           columnCount={columnCount}
+          isRooms={isRooms}
+          withCtrlSelect={withCtrlSelect}
+          withShiftSelect={withShiftSelect}
+          isHighlight={isHighlight}
         >
           <FilesTileContent
             item={item}
@@ -131,11 +157,27 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore, filesStore }) => {
+export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
   const { getIcon } = settingsStore;
-  const { setSelection } = filesStore;
+  const {
+    setSelection,
+    withCtrlSelect,
+    withShiftSelect,
+    setUploadedFileIdWithVersion,
+  } = filesStore;
 
-  return { getIcon, setSelection };
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
+
+  return {
+    getIcon,
+    setSelection,
+    isRooms,
+    withCtrlSelect,
+    withShiftSelect,
+    setUploadedFileIdWithVersion,
+  };
 })(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(

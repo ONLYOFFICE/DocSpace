@@ -1,6 +1,6 @@
 [Unit]
 Description=DocSpace-${SERVICE_NAME}
-After=network.target syslog.target
+After=network.target
 
 [Service]
 Type=${SERVICE_TYPE}

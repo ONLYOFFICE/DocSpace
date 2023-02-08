@@ -1,3 +1,5 @@
+﻿import DepartmentsGroupReactSvgUrl from "PUBLIC_DIR/images/departments.group.react.svg?url";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import Filter from "@docspace/common/api/people/filter";
@@ -9,12 +11,11 @@ import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import CatalogItem from "@docspace/components/catalog-item";
 import withLoader from "../../../HOCs/withLoader";
 
-const departmentsIcon = "images/departments.group.react.svg";
-const groupIcon = "/static/images/catalog.folder.react.svg";
+const departmentsIcon = DepartmentsGroupReactSvgUrl;
+const groupIcon = CatalogFolderReactSvgUrl;
 
 const ArticleBodyContent = ({
   selectedKey,
@@ -67,7 +68,7 @@ const ArticleBodyContent = ({
 
         const urlFilter = newFilter.toUrlParams();
         const url = combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           `/accounts/filter?${urlFilter}`
         );

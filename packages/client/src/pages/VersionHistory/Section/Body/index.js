@@ -24,15 +24,15 @@ class SectionBodyContent extends React.Component {
     const fileId = match.params.fileId || this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
-      this.getFileVersions(fileId, fileAccess);
+      this.getFileVersions(fileId, this.props.fileSecurity);
       setFirstLoad(false);
     }
   }
 
-  getFileVersions = (fileId, fileAccess) => {
+  getFileVersions = (fileId, fileSecurity) => {
     const { fetchFileVersions, setIsLoading } = this.props;
     setIsLoading(true);
-    fetchFileVersions(fileId, fileAccess).then(() => setIsLoading(false));
+    fetchFileVersions(fileId, fileSecurity).then(() => setIsLoading(false));
   };
 
   onSetRestoreProcess = (restoring) => {
@@ -142,7 +142,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     versions,
     fetchFileVersions,
     fileId,
-    fileAccess,
+    fileSecurity,
   } = versionHistoryStore;
 
   return {
@@ -150,7 +150,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     isLoading,
     versions,
     fileId,
-    fileAccess,
+    fileSecurity,
     setFirstLoad,
     setIsLoading,
     fetchFileVersions,

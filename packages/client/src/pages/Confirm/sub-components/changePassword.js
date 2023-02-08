@@ -67,7 +67,18 @@ const ChangePasswordForm = (props) => {
         tryRedirectTo(defaultPage);
       })
       .catch((error) => {
-        toastr.error(t(`${error}`));
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        toastr.error(t(`${errorMessage}`));
         setIsLoading(false);
       });
   };

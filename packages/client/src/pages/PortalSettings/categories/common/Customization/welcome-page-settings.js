@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import FieldContainer from "@docspace/components/field-container";
@@ -10,7 +11,6 @@ import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -249,7 +249,7 @@ class WelcomePageSettings extends React.Component {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )
@@ -318,7 +318,8 @@ class WelcomePageSettings extends React.Component {
               {t("CustomTitlesWelcome")}
             </div>
             <HelpButton
-              iconName="static/images/combined.shape.svg"
+              offsetRight={0}
+              iconName={CombinedShapeSvgUrl}
               size={12}
               tooltipContent={tooltipCustomTitlesTooltip}
             />

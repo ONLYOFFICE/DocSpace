@@ -46,7 +46,6 @@ class MediaViewerDataStore {
   };
 
   get playlist() {
-    const { isMediaOrImage } = this.settingsStore;
     const { files } = this.filesStore;
 
     const filesList = [...files];
@@ -59,6 +58,9 @@ class MediaViewerDataStore {
         fileId: this.currentItem.fileId,
         src: this.currentItem.fileInfo.viewUrl,
         title: this.currentItem.fileInfo.title,
+        fileExst: this.currentItem.fileInfo.fileExst,
+        fileStatus: this.currentItem.fileInfo.fileStatus,
+        canShare: this.currentItem.fileInfo.canShare,
       });
 
       return playlist;
@@ -66,23 +68,27 @@ class MediaViewerDataStore {
 
     if (filesList.length > 0) {
       filesList.forEach((file) => {
-        const canOpenPlayer = isMediaOrImage(file.fileExst);
+        const canOpenPlayer =
+          file.viewAccessability.ImageView || file.viewAccessability.MediaView;
         if (canOpenPlayer) {
           playlist.push({
             id: id,
             fileId: file.id,
             src: file.viewUrl,
             title: file.title,
+            fileExst: file.fileExst,
+            fileStatus: file.fileStatus,
+            canShare: file.canShare,
           });
           id++;
         }
       });
     } else if (this.previewFile) {
       playlist.push({
+        ...this.previewFile,
         id: id,
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
-        title: this.previewFile.title,
       });
     }
 

@@ -1,8 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 
-import { EmployeeType, EmployeeStatus } from "@docspace/common/constants";
-
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
@@ -13,7 +11,6 @@ import {
   ChangeUserStatusDialog,
   SendInviteDialog,
   DeleteUsersDialog,
-  InviteDialog,
   ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
@@ -31,7 +28,6 @@ const Dialogs = ({
   disableDialogVisible,
   sendInviteDialogVisible,
   deleteDialogVisible,
-  invitationDialogVisible,
 
   changeNameVisible,
   setChangeNameVisible,
@@ -96,13 +92,7 @@ const Dialogs = ({
           onClose={closeDialogs}
         />
       )}
-      {invitationDialogVisible && (
-        <InviteDialog
-          visible={invitationDialogVisible}
-          onClose={closeDialogs}
-          onCloseButton={closeDialogs}
-        />
-      )}
+
       {changeNameVisible && (
         <ChangeNameDialog
           visible={changeNameVisible}
@@ -131,7 +121,6 @@ export default inject(({ auth, peopleStore }) => {
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
-    invitationDialogVisible,
   } = peopleStore.dialogStore;
 
   const { user: profile } = auth.userStore;
@@ -156,7 +145,6 @@ export default inject(({ auth, peopleStore }) => {
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
-    invitationDialogVisible,
 
     changeNameVisible,
     setChangeNameVisible,

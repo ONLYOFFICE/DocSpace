@@ -727,7 +727,7 @@ class SsoFormStore {
   };
 
   validate = (string) => {
-    if (string.trim().length === 0) throw new Error("EmptyFieldErrorMessage");
+    if (string.trim().length === 0) throw new Error("EmptyFieldError");
     else return true;
   };
 

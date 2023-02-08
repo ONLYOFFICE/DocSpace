@@ -1,6 +1,4 @@
 {
-  "AddAccount": "Добави профил",
-  "AddAuthor": "Добави автор",
   "ArchivingData": "Архивиране на данни",
   "ConnectingAccount": "Свързване на профил",
   "Copy": "Копирай",
@@ -32,7 +30,7 @@
   "MobileAndroid": "Вземете ONLYOFFICE Documents в Google Play",
   "MobileIos": "Изтеглете ONLYOFFICE Documents от App Store",
   "MobileLinux": "Изтеглете ONLYOFFICE настолни редактори за Linux",
-  "MobileMac": "Изтеглете ONLYOFFICE настолни редактори за Mac OS",
+  "MobileMac": "Изтеглете ONLYOFFICE настолни редактори за macOS",
   "MobileWin": "Изтеглете ONLYOFFICE настолни редактори за Windows",
   "MoveHere": "Премести се тук",
   "MoveToOperation": "Преместване",

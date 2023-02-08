@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import TreeMenu from "../tree-menu";
 import TreeNode from "../tree-menu/sub-components/tree-node";
-import CatalogDepartmentsIcon from "../public/static/images/catalog.departments.react.svg";
-import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
-import ExpanderDownIcon from "../public/static/images/expander-down.react.svg";
-import ExpanderRightIcon from "../public/static/images/expander-right.react.svg";
+import CatalogDepartmentsReactSvg from "PUBLIC_DIR/images/catalog.departments.react.svg";
+import CatalogFolderReactSvg from "PUBLIC_DIR/images/catalog.folder.react.svg";
+import ExpanderDownReactSvg from "PUBLIC_DIR/images/expander-down.react.svg";
+import ExpanderRightReactSvg from "PUBLIC_DIR/images/expander-right.react.svg";
 
 export default {
   title: "Examples/Tree",
@@ -123,7 +123,7 @@ const Template = (args) => {
             key={item.key}
             icon={
               item.root ? (
-                <CatalogDepartmentsIcon
+                <CatalogDepartmentsReactSvg
                   size="scale"
                   isfill={true}
                   color="dimgray"
@@ -143,7 +143,11 @@ const Template = (args) => {
           title={item.title}
           icon={
             !item.root ? (
-              <CatalogFolderIcon size="scale" isfill={true} color="dimgray" />
+              <CatalogFolderReactSvg
+                size="scale"
+                isfill={true}
+                color="dimgray"
+              />
             ) : (
               ""
             )
@@ -158,9 +162,11 @@ const Template = (args) => {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon width="8px" isfill={true} color="dimgray" />;
+      return <ExpanderDownReactSvg width="8px" isfill={true} color="dimgray" />;
     } else {
-      return <ExpanderRightIcon width="8px" isfill={true} color="dimgray" />;
+      return (
+        <ExpanderRightReactSvg width="8px" isfill={true} color="dimgray" />
+      );
     }
   };
 

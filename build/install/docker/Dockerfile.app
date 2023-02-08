@@ -1,7 +1,7 @@
 ARG SRC_PATH="/app/onlyoffice/src"
 ARG BUILD_PATH="/var/www"
-ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:6.0"
-ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:6.0"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
 
 FROM $DOTNET_SDK AS base
 ARG RELEASE_DATE="2016-06-22"
@@ -295,6 +295,16 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.Web.HealthChecks.UI ##
+FROM dotnetrun AS healthchecks
+WORKDIR ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service
+
+COPY --chown=onlyoffice:onlyoffice docker-healthchecks-entrypoint.sh ./docker-healthchecks-entrypoint.sh
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service/ .
+
+ENTRYPOINT ["./docker-healthchecks-entrypoint.sh"]
+CMD ["ASC.Web.HealthChecks.UI.dll", "ASC.Web.HealthChecks.UI"]
 
 ## ASC.Migration.Runner ##
 FROM $DOTNET_RUN AS onlyoffice-migration-runner

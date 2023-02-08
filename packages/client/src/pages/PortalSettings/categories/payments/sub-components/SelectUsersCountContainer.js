@@ -3,9 +3,8 @@ import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Slider from "@docspace/components/slider";
-import PlusIcon from "../../../../../../public/images/plus.react.svg";
-import MinusIcon from "../../../../../../public/images/minus.react.svg";
-import { smallTablet } from "@docspace/components/utils/device";
+import PlusIcon from "PUBLIC_DIR/images/payment.plus.react.svg";
+import MinusIcon from "PUBLIC_DIR/images/minus.react.svg";
 import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
 import SelectTotalSizeContainer from "./SelectTotalSizeContainer";
@@ -28,7 +27,7 @@ const StyledBody = styled.div`
     .slider-track-value_min,
     .slider-track-value_max {
       color: ${(props) =>
-        props.theme.avatarEditorBody.slider.trackNumber.color};
+        props.theme.client.settings.payment.priceContainer.trackNumberColor};
     }
 
     .slider-track-value_max {
@@ -49,10 +48,12 @@ const StyledBody = styled.div`
     margin-left: 20px;
     margin-right: 20px;
     padding: 0;
+    font-weight: 700;
     ${(props) =>
       props.isDisabled &&
       css`
-        color: ${props.theme.text.disableColor};
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
       `};
   }
 
@@ -76,24 +77,36 @@ const StyledBody = styled.div`
       cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     }
     .circle {
+      position: relative;
       background: ${(props) =>
         props.theme.client.settings.payment.rectangleColor};
-      display: flex;
       border: 1px solid
         ${(props) => props.theme.client.settings.payment.rectangleColor};
       border-radius: 50%;
       width: 38px;
       height: 38px;
-      justify-content: center;
-      -ms-align-items: center;
-      align-items: center;
+
       svg {
+        position: absolute;
         path {
           fill: ${(props) =>
             props.isDisabled
-              ? props.theme.text.disableColor
+              ? props.theme.client.settings.payment.priceContainer.disableColor
               : props.theme.text.color};
         }
+      }
+    }
+
+    .minus-icon {
+      svg {
+        top: 44%;
+        left: 28%;
+      }
+    }
+    .plus-icon {
+      svg {
+        top: 30%;
+        left: 27%;
       }
     }
   }
@@ -107,6 +120,13 @@ const StyledBody = styled.div`
   .payment-users_text {
     margin-bottom: 4px;
     text-align: center;
+
+    ${(props) =>
+      props.isDisabled &&
+      css`
+        color: ${props.theme.client.settings.payment.priceContainer
+          .disableColor};
+      `}
   }
 `;
 
@@ -124,6 +144,7 @@ const SelectUsersCountContainer = ({
   isLessCountThanAcceptable,
   step,
   addedManagersCountTitle,
+  isNeedPlusSign,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -188,8 +209,6 @@ const SelectUsersCountContainer = ({
     setTotalPrice(numberValue);
   };
 
-  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
-
   const value = isNeedPlusSign
     ? maxAvailableManagersCount + "+"
     : managersCount + "";
@@ -203,20 +222,22 @@ const SelectUsersCountContainer = ({
   const onchangeNumberProp =
     isDisabled || isUpdatingTariff ? {} : { onChange: onChangeNumber };
 
-  const color = isDisabled ? { color: theme.text.disableColor } : {};
-
   return (
     <StyledBody
       className="select-users-count-container"
       theme={theme}
       isDisabled={isDisabled || isUpdatingTariff}
     >
-      <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
+      <Text noSelect fontWeight={600} className="payment-users_text">
         {addedManagersCountTitle}
       </Text>
       <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />
       <div className="payment-users">
-        <div className="circle" {...onClickProp} data-operation={"minus"}>
+        <div
+          className="circle minus-icon"
+          {...onClickProp}
+          data-operation={"minus"}
+        >
           <MinusIcon {...onClickProp} className="payment-score" />
         </div>
 
@@ -227,7 +248,11 @@ const SelectUsersCountContainer = ({
           value={value}
           {...onchangeNumberProp}
         />
-        <div className="circle" {...onClickProp} data-operation={"plus"}>
+        <div
+          className="circle plus-icon"
+          {...onClickProp}
+          data-operation={"plus"}
+        >
           <PlusIcon {...onClickProp} className="payment-score" />
         </div>
       </div>

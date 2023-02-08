@@ -19,6 +19,7 @@ import {
   getStorageRegions,
 } from "@docspace/common/api/settings";
 import FloatingButton from "@docspace/common/components/FloatingButton";
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 let selectedStorageType = "";
 
@@ -66,16 +67,19 @@ class ManualBackup extends React.Component {
       t,
       setThirdPartyStorage,
       setStorageRegions,
+      setConnectedThirdPartyAccount,
     } = this.props;
     try {
       getProgress(t);
 
       //if (isDocSpace) {
-      const [backupStorage, storageRegions] = await Promise.all([
+      const [account, backupStorage, storageRegions] = await Promise.all([
+        getSettingsThirdParty(),
         getBackupStorage(),
         getStorageRegions(),
       ]);
 
+      setConnectedThirdPartyAccount(account);
       setThirdPartyStorage(backupStorage);
       setStorageRegions(storageRegions);
       //   } else {
@@ -260,11 +264,7 @@ class ManualBackup extends React.Component {
           <Text isBold fontSize="16px">
             {t("DataBackup")}
           </Text>
-          {renderTooltip(
-            t("ManualBackupHelp") +
-              " " +
-              t("ManualBackupHelpNote", { organizationName })
-          )}
+          {renderTooltip(t("ManualBackupHelp"))}
         </div>
         <Text className="backup_modules-description">
           {t("ManualBackupDescription")}
@@ -392,6 +392,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setThirdPartyStorage,
     setStorageRegions,
     saveToLocalStorage,
+    setConnectedThirdPartyAccount,
   } = backup;
   const { currentTariffStatusStore } = auth;
   const { organizationName } = auth.settingsStore;
@@ -417,5 +418,6 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     rootFoldersTitles,
     fetchTreeFolders,
     saveToLocalStorage,
+    setConnectedThirdPartyAccount,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

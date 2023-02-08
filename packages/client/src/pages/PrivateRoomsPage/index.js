@@ -1,3 +1,4 @@
+﻿import DarkGeneralPngUrl from "PUBLIC_DIR/images/dark_general.png";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
@@ -122,7 +123,7 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
         <Link href="/">
           <img
             className="privacy-rooms-logo"
-            src="images/dark_general.png"
+            src={DarkGeneralPngUrl}
             width="320"
             height="181"
             alt="Logo"

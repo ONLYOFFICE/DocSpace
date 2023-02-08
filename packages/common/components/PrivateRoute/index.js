@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@docspace/components/loader";
 //import Section from "../Section";
@@ -9,8 +9,7 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
-import { AppServerConfig, TenantStatus } from "../../constants";
-import CurrentTariffStatus from "../../store/CurrentTariffStatusStore";
+import { TenantStatus } from "../../constants";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -30,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     tenantStatus,
     isNotPaidPeriod,
     withManager,
+    isLogout,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -56,12 +56,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
       console.log("PrivateRoute render Redirect to login", rest);
       const redirectPath = wizardCompleted ? "/login" : "/wizard";
+
+      const isHomeUrl = props.location.pathname === "/";
+
+      if (wizardCompleted && !isHomeUrl && !isLogout) {
+        sessionStorage.setItem("referenceUrl", window.location.href);
+      }
+
       return window.location.replace(redirectPath);
       // return (
       //   <Redirect
       //     to={{
       //       pathname: combineUrl(
-      //         AppServerConfig.proxyURL,
+      //         window.DocSpaceConfig?.proxy?.url,
       //         wizardCompleted ? "/login" : "/wizard"
       //       ),
       //       state: { from: props.location },
@@ -99,7 +106,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/preparation-portal"
             ),
             state: { from: props.location },
@@ -120,7 +127,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-settings/payments/portal-payments"
             ),
             state: { from: props.location },
@@ -129,10 +136,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (tenantStatus !== TenantStatus.PortalRestore && isPortalUrl) {
-      return window.location.replace("/");
-    }
-
+ 
     if (
       isNotPaidPeriod &&
       isLoaded &&
@@ -144,7 +148,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               "/portal-unavailable"
             ),
             state: { from: props.location },
@@ -222,6 +226,7 @@ export default inject(({ auth }) => {
     isAdmin,
     settingsStore,
     currentTariffStatusStore,
+    isLogout,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -243,5 +248,6 @@ export default inject(({ auth }) => {
     wizardCompleted,
     tenantStatus,
     personal,
+    isLogout,
   };
 })(observer(PrivateRoute));

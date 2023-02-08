@@ -29,32 +29,40 @@ namespace ASC.Data.Storage;
 [Singletone(Additional = typeof(StorageConfigExtension))]
 public class StorageFactoryConfig
 {
-    public Configuration.Storage Section { get; }
+    private readonly Configuration.Storage _section;
+    private readonly ConfigurationExtension _configurationExtension;
 
-    public StorageFactoryConfig(Configuration.Storage storage)
+    public StorageFactoryConfig(Configuration.Storage storage, ConfigurationExtension configurationExtension)
     {
-        Section = storage;
+        _section = storage;
+        _configurationExtension = configurationExtension;
     }
 
-    public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
+    public IEnumerable<string> GetModuleList(string region = "current", bool exceptDisabledMigration = false)
     {
-        return Section.Module
+        return GetStorage(region).Module
                 .Where(x => x.Visible && (!exceptDisabledMigration || !x.DisableMigrate))
             .Select(x => x.Name);
     }
 
-    public IEnumerable<string> GetDomainList(string configpath, string modulename)
+    public IEnumerable<string> GetDomainList(string modulename, string region = "current")
     {
-        if (Section == null)
+        var section = GetStorage(region);
+        if (section == null)
         {
             throw new ArgumentException("config section not found");
         }
 
-        return Section.Module
+        return section.Module
             .Single(x => x.Name.Equals(modulename, StringComparison.OrdinalIgnoreCase))
             .Domain
             .Where(x => x.Visible)
             .Select(x => x.Name);
+    }
+
+    public Configuration.Storage GetStorage(string region)
+    {
+        return region == "current" ? _section : _configurationExtension.GetSetting<Configuration.Storage>($"regions:{region}:storage");
     }
 }
 
@@ -127,26 +135,21 @@ public class StorageFactory
         _coreBaseSettings = coreBaseSettings;
     }
 
-    public IDataStore GetStorage(int? tenant, string module)
-    {
-        return GetStorage(string.Empty, tenant, module);
-    }
-
-    public IDataStore GetStorage(string configpath, int? tenant, string module)
+    public IDataStore GetStorage(int? tenant, string module, string region = "current")
     {
         var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
         tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetStorage(configpath, tenant, module, tenantQuotaController);
+        return GetStorage(tenant, module, tenantQuotaController, region);
     }
 
-    public IDataStore GetStorage(string configpath, int? tenant, string module, IQuotaController controller)
+    public IDataStore GetStorage(int? tenant, string module, IQuotaController controller, string region = "current")
     {
         var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
         tenant = tenant ?? -2;
 
-        var section = _storageFactoryConfig.Section;
+        var section = _storageFactoryConfig.GetStorage(region);
         if (section == null)
         {
             throw new InvalidOperationException("config section not found");
@@ -154,14 +157,14 @@ public class StorageFactory
 
         var settings = _settingsManager.LoadForTenant<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
-        return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
+        return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller, region);
     }
 
-    public IDataStore GetStorageFromConsumer(string configpath, int? tenant, string module, DataStoreConsumer consumer)
+    public IDataStore GetStorageFromConsumer(int? tenant, string module, DataStoreConsumer consumer, string region = "current")
     {
         var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
-        var section = _storageFactoryConfig.Section;
+        var section = _storageFactoryConfig.GetStorage(region);
         if (section == null)
         {
             throw new InvalidOperationException("config section not found");
@@ -173,9 +176,9 @@ public class StorageFactory
         return GetDataStore(tenantPath, module, consumer, tenantQuotaController);
     }
 
-    private IDataStore GetDataStore(string tenantPath, string module, DataStoreConsumer consumer, IQuotaController controller)
+    private IDataStore GetDataStore(string tenantPath, string module, DataStoreConsumer consumer, IQuotaController controller, string region = "current")
     {
-        var storage = _storageFactoryConfig.Section;
+        var storage = _storageFactoryConfig.GetStorage(region);
         var moduleElement = storage.GetModuleElement(module);
         if (moduleElement == null)
         {

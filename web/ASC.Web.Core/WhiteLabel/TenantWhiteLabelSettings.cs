@@ -562,7 +562,13 @@ public class TenantWhiteLabelSettingsHelper
             return partnerLogoPath;
         }
 
-        return _webImageSupplier.GetAbsoluteWebPath($"logo/" + BuildLogoFileName(type, "svg", dark));
+        var ext = type switch
+        {
+            WhiteLabelLogoTypeEnum.Favicon => "ico",
+            _ => "svg"
+        };
+
+        return _webImageSupplier.GetAbsoluteWebPath($"logo/" + BuildLogoFileName(type, ext, dark));
     }
 
     private async Task<string> GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
@@ -645,11 +651,6 @@ public class TenantWhiteLabelSettingsHelper
         if (CanBeDark(type))
         {
             return $"{(dark ? "dark_" : "")}{type.ToString().ToLowerInvariant()}.{fileExt}";
-        }
-
-        if (type == WhiteLabelLogoTypeEnum.Favicon)
-        {
-            return "favicon.ico";
         }
 
         return $"{type.ToString().ToLowerInvariant()}.{fileExt}";

@@ -3,17 +3,20 @@ import React from "react";
 import ComboBox from "./";
 import RadioButton from "../radio-button";
 import DropDownItem from "../drop-down-item";
-import NavLogoIcon from "../../../public/images/nav.logo.opened.react.svg";
+import NavLogoIcon from "PUBLIC_DIR/images/nav.logo.opened.react.svg";
+import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react.svg?url";
+import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 
 const comboOptions = [
   {
     key: 1,
-    icon: "static/images/catalog.employee.react.svg",
+    icon: CatalogEmployeeReactSvgUrl,
     label: "Option 1",
   },
   {
     key: 2,
-    icon: "static/images/catalog.guest.react.svg",
+    icon: CatalogGuestReactSvgUrl,
     label: "Option 2",
   },
   {
@@ -27,7 +30,7 @@ const comboOptions = [
   },
   {
     key: 5,
-    icon: "static/images/copy.react.svg",
+    icon: CopyReactSvgUrl,
     label: "Option 5",
   },
   {

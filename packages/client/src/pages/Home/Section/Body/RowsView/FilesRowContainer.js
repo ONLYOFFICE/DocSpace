@@ -9,6 +9,18 @@ import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
 const StyledRowContainer = styled(RowContainer)`
+  .row-list-item:first-child {
+    .row-selected {
+      .files-row {
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        margin-top: -1px;
+        padding-top: 0px;
+        padding-bottom: 1px;
+        ${marginStyles};
+      }
+    }
+  }
   .row-selected + .row-wrapper:not(.row-selected) {
     .files-row {
       border-top: ${(props) =>
@@ -39,7 +51,6 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      padding-bottom: 1px;
       ${marginStyles}
     }
     .files-row::after {
@@ -50,8 +61,10 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -1px;
-      ${marginStyles}
+      margin-top: -2px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      ${marginStyles};
     }
   }
 `;
@@ -69,6 +82,7 @@ const FilesRowContainer = ({
   hasMoreFiles,
   isRooms,
   withPaging,
+  setUploadedFileIdWithVersion,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -103,6 +117,7 @@ const FilesRowContainer = ({
           item={item}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
+          setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
         />
       ))}
     </StyledRowContainer>
@@ -118,6 +133,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     roomsFilterTotal,
+    setUploadedFileIdWithVersion,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -135,5 +151,6 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     hasMoreFiles,
     isRooms,
     withPaging,
+    setUploadedFileIdWithVersion,
   };
 })(observer(FilesRowContainer));

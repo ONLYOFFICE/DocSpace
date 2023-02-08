@@ -20,7 +20,6 @@ class DialogsStore {
   deleteDialogVisible = false;
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
-  thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
@@ -57,6 +56,8 @@ class DialogsStore {
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
   createRoomDialogVisible = false;
+  createRoomConfirmDialogVisible = false;
+  changeUserTypeDialogVisible = false;
 
   constructor(
     authStore,
@@ -138,10 +139,6 @@ class DialogsStore {
     this.deleteThirdPartyDialogVisible = deleteThirdPartyDialogVisible;
   };
 
-  setThirdPartyMoveDialogVisible = (thirdPartyMoveDialogVisible) => {
-    this.thirdPartyMoveDialogVisible = thirdPartyMoveDialogVisible;
-  };
-
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
@@ -170,10 +167,6 @@ class DialogsStore {
 
   setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
     this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
-  };
-
-  setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
-    this.thirdPartyDialogVisible = thirdPartyDialogVisible;
   };
 
   setDestFolderId = (destFolderId) => {
@@ -311,6 +304,14 @@ class DialogsStore {
     this.createRoomDialogVisible = createRoomDialogVisible;
   };
 
+  setCreateRoomConfirmDialogVisible = (createRoomConfirmDialogVisible) => {
+    this.createRoomConfirmDialogVisible = createRoomConfirmDialogVisible;
+  };
+
+  setChangeUserTypeDialogVisible = (changeUserTypeDialogVisible) => {
+    this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -323,7 +324,6 @@ class DialogsStore {
       this.deleteDialogVisible ||
       this.downloadDialogVisible ||
       this.emptyTrashDialogVisible ||
-      this.thirdPartyDialogVisible ||
       this.newFilesPanelVisible ||
       this.conflictResolveDialogVisible ||
       this.convertDialogVisible ||
@@ -335,7 +335,9 @@ class DialogsStore {
       this.archiveDialogVisible ||
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible ||
-      this.createRoomDialogVisible
+      this.createRoomDialogVisible ||
+      this.createRoomConfirmDialogVisible ||
+      this.changeUserTypeDialogVisible
     );
   }
 

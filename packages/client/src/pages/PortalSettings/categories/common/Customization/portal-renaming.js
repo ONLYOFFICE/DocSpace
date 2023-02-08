@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -7,7 +8,6 @@ import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -31,6 +31,7 @@ const PortalRenaming = (props) => {
     tenantAlias,
     initSettings,
     setIsLoaded,
+    getAllSettings,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -70,6 +71,14 @@ const PortalRenaming = (props) => {
   const isLoadedSetting = isLoaded && tReady;
 
   const [isCustomizationView, setIsCustomizationView] = useState(false);
+
+  const [domainValidator, setDomainValidator] = useState(null);
+
+  useEffect(() => {
+    getAllSettings().then((res) => {
+      setDomainValidator(res.domainValidator);
+    });
+  }, []);
 
   useEffect(() => {
     setDocumentTitle(t("PortalRenaming"));
@@ -114,8 +123,19 @@ const PortalRenaming = (props) => {
     setPortalRename(portalName)
       .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
       .catch((error) => {
-        setErrorValue(error);
-        saveToSessionStorage("errorValue", error);
+        let errorMessage = "";
+        if (typeof error === "object") {
+          errorMessage =
+            error?.response?.data?.error?.message ||
+            error?.statusText ||
+            error?.message ||
+            "";
+        } else {
+          errorMessage = error;
+        }
+
+        setErrorValue(errorMessage);
+        saveToSessionStorage("errorValue", errorMessage);
       })
       .finally(() => setIsLoadingPortalNameSave(false));
 
@@ -163,16 +183,28 @@ const PortalRenaming = (props) => {
   };
 
   const onValidateInput = (value) => {
-    const validDomain = new RegExp("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$", "i");
+    const validDomain = new RegExp(domainValidator.regex);
 
     switch (true) {
       case value === "":
         setErrorValue(t("PortalNameEmpty"));
         saveToSessionStorage("errorValue", t("PortalNameEmpty"));
         break;
-      case value.length < 6 || value.length > 50:
-        setErrorValue(t("PortalNameLength"));
-        saveToSessionStorage("errorValue", t("PortalNameLength"));
+      case value.length < domainValidator.minLength ||
+        value.length > domainValidator.maxLength:
+        setErrorValue(
+          t("PortalNameLength", {
+            minLength: domainValidator.minLength,
+            maxLength: domainValidator.maxLength,
+          })
+        );
+        saveToSessionStorage(
+          "errorValue",
+          t("PortalNameLength", {
+            minLength: domainValidator.minLength,
+            maxLength: domainValidator.maxLength,
+          })
+        );
         break;
       case !validDomain.test(value):
         setErrorValue(t("PortalNameIncorrect"));
@@ -213,7 +245,7 @@ const PortalRenaming = (props) => {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )
@@ -263,7 +295,8 @@ const PortalRenaming = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
-            iconName="static/images/combined.shape.svg"
+            offsetRight={0}
+            iconName={CombinedShapeSvgUrl}
             size={12}
             tooltipContent={tooltipPortalRenamingTooltip}
           />
@@ -293,7 +326,7 @@ const PortalRenaming = (props) => {
 
 export default inject(({ auth, setup, common }) => {
   const { theme, tenantAlias } = auth.settingsStore;
-  const { setPortalRename } = setup;
+  const { setPortalRename, getAllSettings } = setup;
   const {
     isLoaded,
     setIsLoadedPortalRenaming,
@@ -308,6 +341,7 @@ export default inject(({ auth, setup, common }) => {
     tenantAlias,
     initSettings,
     setIsLoaded,
+    getAllSettings,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

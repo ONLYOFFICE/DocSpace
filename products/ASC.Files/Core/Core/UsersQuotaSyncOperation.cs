@@ -127,7 +127,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
     {
         try
         {
-            using var scope = _serviceScopeFactory.CreateScope();
+           await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
             var _tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var _userManager = scope.ServiceProvider.GetRequiredService<UserManager>();

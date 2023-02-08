@@ -48,6 +48,9 @@ internal static partial class BuilderLogger
     [LoggerMessage(Level = LogLevel.Debug, Message = "CropImage: FileId: {fileId}. Successfully saved.")]
     public static partial void DebugCropImageSuccessfullySaved(this ILogger logger, string fileId);
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "MakeThumbnail: FileId: {fileId}, ThumbnailUrl: {url}, ResultPercent: {percent}, Attempt: {attempt}. Exception in process generate document thumbnails")]
+    public static partial void WarningMakeThumbnail(this ILogger logger, string fileId, string url, int percent, int attempt, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "BuildThumbnails: filesWithoutThumbnails.Count: {count}.")]
     public static partial void ErrorBuildThumbnailsCount(this ILogger logger, int count, Exception exception);
 

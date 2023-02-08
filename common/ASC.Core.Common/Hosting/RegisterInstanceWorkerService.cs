@@ -35,6 +35,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     private readonly int _intervalCheckRegisterInstanceInSeconds;
     public static readonly string InstanceId =
         $"{typeof(T).GetFormattedName()}_{DateTime.UtcNow.Ticks}";
+    private readonly bool _isSingletoneMode;
 
     public RegisterInstanceWorkerService(
         ILogger<RegisterInstanceWorkerService<T>> logger,
@@ -51,16 +52,29 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
             _intervalCheckRegisterInstanceInSeconds = 1;
         }
 
-        _intervalCheckRegisterInstanceInSeconds = _intervalCheckRegisterInstanceInSeconds*1000;
+        if (!bool.TryParse(configuration["core:hosting:singletonMode"], out _isSingletoneMode))
+        {
+            _isSingletoneMode = true;
+        }
+
+
+        _intervalCheckRegisterInstanceInSeconds = _intervalCheckRegisterInstanceInSeconds * 1000;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        if (_isSingletoneMode)
+        {
+            _logger.InformationWorkerSingletone();
+
+            return;
+        }
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                using var scope = _serviceProvider.CreateScope();
+                await using var scope = _serviceProvider.CreateAsyncScope();
 
                 var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
 
@@ -82,7 +96,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     {
         try
         {
-            using var scope = _serviceProvider.CreateScope();
+            await using var scope = _serviceProvider.CreateAsyncScope();
 
             var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
 

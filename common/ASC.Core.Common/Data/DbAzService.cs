@@ -161,7 +161,7 @@ class DbAzService : IAzService
     private void InsertRecord(AzRecord r)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<AzRecord, Acl>(r));
+        userDbContext.AddOrUpdate(userDbContext.Acl, _mapper.Map<AzRecord, Acl>(r));
         userDbContext.SaveChanges();
     }
 }

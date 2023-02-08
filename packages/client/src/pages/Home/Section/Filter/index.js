@@ -1,3 +1,5 @@
+﻿import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
@@ -166,8 +168,32 @@ const SectionFilterContent = ({
   isPersonalRoom,
   setCurrentRoomsFilter,
   providers,
+  searchTitleOpenLocation,
+  isLoadedLocationFiles,
+  setIsLoadedSearchFiles,
+  isLoadedEmptyPage,
+  isEmptyPage,
+  clearSearch,
+  setClearSearch,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+  const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isEmptyPage) {
+      setIsLoadedFilter(isLoadedEmptyPage);
+    }
+
+    if (!isEmptyPage && !isLoadedEmptyPage) {
+      setIsLoadedFilter(true);
+    }
+  }, [isLoadedEmptyPage, isEmptyPage]);
+
+  React.useEffect(() => {
+    if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
+
+    onSearch(searchTitleOpenLocation);
+  }, [searchTitleOpenLocation, isLoadedLocationFiles, onSearch]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -279,15 +305,17 @@ const SectionFilterContent = ({
           setIsLoading(false)
         );
       } else {
+        setIsLoadedSearchFiles(false);
         const newFilter = filter.clone();
         newFilter.page = 0;
         newFilter.search = data;
 
         setIsLoading(true);
 
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        fetchFiles(selectedFolderId, newFilter).finally(() => {
+          setIsLoading(false);
+          setIsLoadedSearchFiles(true);
+        });
       }
     },
     [
@@ -298,6 +326,7 @@ const SectionFilterContent = ({
       selectedFolderId,
       filter,
       roomsFilter,
+      setIsLoadedSearchFiles,
     ]
   );
 
@@ -354,14 +383,21 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return isRooms
+    return searchTitleOpenLocation
+      ? searchTitleOpenLocation
+      : isRooms
       ? roomsFilter.filterValue
         ? roomsFilter.filterValue
         : ""
       : filter.search
       ? filter.search
       : "";
-  }, [isRooms, roomsFilter.filterValue, filter.search]);
+  }, [
+    isRooms,
+    roomsFilter.filterValue,
+    filter.search,
+    searchTitleOpenLocation,
+  ]);
 
   const getSelectedSortData = React.useCallback(() => {
     const currentFilter = isRooms ? roomsFilter : filter;
@@ -542,7 +578,7 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
+    // return filterValues;
     const currentFilterValues = [];
 
     setSelectedFilterValues((value) => {
@@ -747,6 +783,12 @@ const SectionFilterContent = ({
 
           ...images,
           ...media,
+          {
+            id: "filter_type-all-files",
+            key: FilterType.FilesOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("AllFiles").toLowerCase(),
+          },
         ];
 
     const subjectOptions = [
@@ -891,7 +933,6 @@ const SectionFilterContent = ({
             label: "",
             withOptions: true,
             options: [
-              { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
               {
                 id: "filter_folders_with-subfolders",
                 key: FilterKeys.withSubfolders,
@@ -925,38 +966,36 @@ const SectionFilterContent = ({
         filterOptions.push(...contentOptions);
       }
 
-      if (!isPersonalRoom) {
-        const authorOption = [
-          {
-            key: FilterGroups.filterAuthor,
-            group: FilterGroups.filterAuthor,
-            label: t("ByAuthor"),
-            isHeader: true,
-            withMultiItems: true,
-          },
-          {
-            id: "filter_author-me",
-            key: FilterKeys.me,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:MeLabel"),
-          },
-          {
-            id: "filter_author-other",
-            key: FilterKeys.other,
-            group: FilterGroups.filterAuthor,
-            label: t("Common:OtherLabel"),
-          },
-          {
-            id: "filter_author-user",
-            key: FilterKeys.user,
-            group: FilterGroups.filterAuthor,
-            label: t("Translations:AddAuthor"),
-            isSelector: true,
-          },
-        ];
+      const authorOption = [
+        {
+          key: FilterGroups.filterAuthor,
+          group: FilterGroups.filterAuthor,
+          label: t("ByAuthor"),
+          isHeader: true,
+          withMultiItems: true,
+        },
+        {
+          id: "filter_author-me",
+          key: FilterKeys.me,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:MeLabel"),
+        },
+        {
+          id: "filter_author-other",
+          key: FilterKeys.other,
+          group: FilterGroups.filterAuthor,
+          label: t("Common:OtherLabel"),
+        },
+        {
+          id: "filter_author-user",
+          key: FilterKeys.user,
+          group: FilterGroups.filterAuthor,
+          label: t("Translations:ChooseFromList"),
+          isSelector: true,
+        },
+      ];
 
-        filterOptions.push(...authorOption);
-      }
+      filterOptions.push(...authorOption);
 
       filterOptions.push(...typeOptions);
     }
@@ -978,13 +1017,13 @@ const SectionFilterContent = ({
         id: "view-switch_rows",
         value: "row",
         label: t("ViewList"),
-        icon: "/static/images/view-rows.react.svg",
+        icon: ViewRowsReactSvgUrl,
       },
       {
         id: "view-switch_tiles",
         value: "tile",
         label: t("ViewTiles"),
-        icon: "/static/images/view-tiles.react.svg",
+        icon: ViewTilesReactSvgUrl,
         callback: createThumbnails,
       },
     ];
@@ -1110,7 +1149,7 @@ const SectionFilterContent = ({
           ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
-        if (availableSort?.includes("Author") && !isPersonalRoom) {
+        if (availableSort?.includes("Author")) {
           const idx = availableSort.findIndex((x) => x === "Author");
           const hide =
             infoPanelVisible &&
@@ -1276,6 +1315,10 @@ const SectionFilterContent = ({
     }
   };
 
+  if (!isLoadedFilter) {
+    return <Loaders.Filter />;
+  }
+
   return (
     <FilterInput
       t={t}
@@ -1301,12 +1344,21 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      clearSearch={clearSearch}
+      setClearSearch={setClearSearch}
     />
   );
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore, tagsStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    tagsStore,
+    filesActionsStore,
+  }) => {
     const {
       fetchFiles,
       filter,
@@ -1318,6 +1370,10 @@ export default inject(
       createThumbnails,
       setCurrentRoomsFilter,
       thirdPartyStore,
+      clearSearch,
+      setClearSearch,
+      isLoadedEmptyPage,
+      isEmptyPage,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1325,7 +1381,7 @@ export default inject(
     const { fetchTags } = tagsStore;
 
     const { user } = auth.userStore;
-    const { customNames, personal } = auth.settingsStore;
+    const { personal } = auth.settingsStore;
     const {
       isFavoritesFolder,
       isRecentFolder,
@@ -1338,8 +1394,14 @@ export default inject(
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
+    const {
+      searchTitleOpenLocation,
+      setSearchTitleOpenLocation,
+      isLoadedLocationFiles,
+      setIsLoadedSearchFiles,
+    } = filesActionsStore;
+
     return {
-      customNames,
       user,
       userId: user.id,
       selectedFolderId: selectedFolderStore.id,
@@ -1364,6 +1426,17 @@ export default inject(
       infoPanelVisible,
       setCurrentRoomsFilter,
       providers,
+
+      searchTitleOpenLocation,
+      setSearchTitleOpenLocation,
+      isLoadedLocationFiles,
+      setIsLoadedSearchFiles,
+
+      isLoadedEmptyPage,
+      isEmptyPage,
+
+      clearSearch,
+      setClearSearch,
     };
   }
 )(

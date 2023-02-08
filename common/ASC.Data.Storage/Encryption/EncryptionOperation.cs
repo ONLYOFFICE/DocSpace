@@ -31,7 +31,6 @@ namespace ASC.Data.Storage.Encryption;
 [Transient(Additional = typeof(EncryptionOperationExtension))]
 public class EncryptionOperation : DistributedTaskProgress
 {
-    private const string ConfigPath = "";
     private const string ProgressFileName = "EncryptionProgress.tmp";
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -58,12 +57,12 @@ public class EncryptionOperation : DistributedTaskProgress
 
     protected override async Task DoJob()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);
         _tenants = tenantManager.GetTenants(false);
-        _modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
+        _modules = storageFactoryConfig.GetModuleList(exceptDisabledMigration: true);
         _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
         Percentage = 10;
@@ -92,7 +91,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(tenant.Id, module));
                 }
 
                 await Parallel.ForEachAsync(dictionary, async (elem, token) =>
@@ -130,7 +129,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
     private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILogger log)
     {
-        var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+        var domains = storageFactoryConfig.GetDomainList(module).ToList();
 
         domains.Add(string.Empty);
 
@@ -259,7 +258,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module);
+                var store = (DiscDataStore)storageFactory.GetStorage(tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {

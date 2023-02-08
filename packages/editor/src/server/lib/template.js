@@ -12,7 +12,7 @@ export default function template(
   const { title } = pkg;
   const { error } = initialEditorState;
   const editorUrl = initialEditorState?.config?.editorUrl;
-  const faviconHref = getFavicon(initialEditorState?.config?.documentType);
+  const faviconHref = getFavicon(initialEditorState?.logoUrls);
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
@@ -48,6 +48,21 @@ export default function template(
       tempElm.style.backgroundColor =
         localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
       console.log("It's Editor INIT");
+      fetch("/static/scripts/config.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+        return response.json();
+      })
+      .then((config) => {
+        window.DocSpaceConfig = {
+          ...config,
+        };
+      })
+      .catch((e) => {
+        console.error(e);
+      });
     </script>
     ${editorApiScript} 
 
@@ -70,7 +85,8 @@ export default function template(
           <link rel="manifest" href="/manifest.json" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
-          <link rel="apple-touch-icon" href="/appIcon.png" />
+          <link rel="apple-touch-icon" href=${faviconHref} />
+          <link rel="android-touch-icon" href=${faviconHref} />
           ${styleTags}   
           <style type="text/css">
             .loadmask {

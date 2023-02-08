@@ -15,7 +15,6 @@ export const OwnerArchiveRoomsActions = Object.freeze({
   ...ArchiveRoomsActions,
   viewUsers: true,
   viewInfo: true,
-  deleteUsers: true,
   restore: true,
   delete: true,
 });
@@ -24,7 +23,6 @@ export const RoomAdminArchiveRoomsActions = Object.freeze({
   ...ArchiveRoomsActions,
   viewUsers: true,
   viewInfo: true,
-  deleteUsers: true,
 });
 
 export const EditorArchiveRoomsActions = Object.freeze({

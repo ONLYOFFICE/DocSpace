@@ -37,6 +37,8 @@ public class DocSpaceLinkHelper
     private readonly MessageTarget _messageTarget;
     private readonly Signature _signature;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly UserManager _userManager;
+    private readonly AuthManager _authManager;
 
     public TimeSpan ExpirationInterval => _emailValidationKeyProvider.ValidEmailKeyInterval;
     public TimeSpan ExpirationVisitInterval => _emailValidationKeyProvider.ValidVisitLinkInterval;
@@ -47,7 +49,9 @@ public class DocSpaceLinkHelper
         MessageService messageService,
         Signature signature,
         IDbContextFactory<MessagesContext> dbContextFactory,
-        EmailValidationKeyProvider emailValidationKeyProvider)
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        UserManager userManager,
+        AuthManager authManager)
     {
         _httpContextAccessor = httpContextAccessor;
         _messageTarget = messageTarget;
@@ -55,6 +59,8 @@ public class DocSpaceLinkHelper
         _dbContextFactory = dbContextFactory;
         _signature = signature;
         _emailValidationKeyProvider = emailValidationKeyProvider;
+        _userManager = userManager;
+        _authManager = authManager;
     }
 
     public string MakeKey(Guid linkId)
@@ -83,9 +89,14 @@ public class DocSpaceLinkHelper
 
         if (result == ValidationResult.Ok)
         {
-            var canUsed = CanUsed(email, key, ExpirationVisitInterval);
+            var user = _userManager.GetUserByEmail(email);
 
-            if (!canUsed)
+            if (user == ASC.Core.Users.Constants.LostUser || _authManager.GetUserPasswordStamp(user.Id) != DateTime.MinValue)
+            {
+                return ValidationResult.Invalid;
+            }
+
+            if (!CanUsed(email, key, ExpirationVisitInterval))
             {
                 return ValidationResult.Expired;
             }

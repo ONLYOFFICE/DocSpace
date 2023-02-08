@@ -183,25 +183,6 @@ public class BackupService : IBackupService
         return _backupWorker.TempFolder;
     }
 
-    public List<TransferRegion> GetTransferRegions()
-    {
-        var settings = _configuration.GetSetting<BackupSettings>("backup");
-
-        return settings.WebConfigs.Elements.Select(configElement =>
-        {
-            var config = Utils.ConfigurationProvider.Open(PathHelper.ToRootedConfigPath(configElement.Path));
-            var baseDomain = config.AppSettings.Settings["core:base-domain"].Value;
-
-            return new TransferRegion
-            {
-                Name = configElement.Region,
-                BaseDomain = baseDomain,
-                IsCurrentRegion = configElement.Region.Equals(settings.WebConfigs.CurrentRegion, StringComparison.InvariantCultureIgnoreCase)
-            };
-        })
-        .ToList();
-    }
-
     public void CreateSchedule(CreateScheduleRequest request)
     {
         _backupRepository.SaveBackupSchedule(
