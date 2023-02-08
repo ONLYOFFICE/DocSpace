@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -9,8 +8,7 @@ import { StyledWrapper } from "./styled-subscriptions";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 const Subscription = (props) => {
-  const { t } = useTranslation(["Notifications", "Common"]);
-  const { history } = props;
+  const { history, t } = props;
 
   const onButtonClick = () => {
     history.push(
@@ -25,11 +23,11 @@ const Subscription = (props) => {
   return (
     <StyledWrapper>
       <Text fontSize="16px" fontWeight={700}>
-        {t("Notifications")}
+        {t("Notifications:Notifications")}
       </Text>
       <Button
-        size="normalDesktop"
-        label={t("ManageNotifications")}
+        size="small"
+        label={t("Notifications:ManageNotifications")}
         onClick={onButtonClick}
       />
     </StyledWrapper>
