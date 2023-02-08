@@ -8,7 +8,7 @@ class MediaViewerDataStore {
   visible = false;
   previewFile = null;
   currentItem = null;
-  _currentPostionIndex
+  prevPostionIndex
 
   constructor(filesStore, settingsStore) {
     makeAutoObservable(this);
@@ -46,26 +46,40 @@ class MediaViewerDataStore {
     this.id = id;
   };
 
-  get currentPostionIndex(){ 
-
-   let temp = this.playlist.find(file => file.fileId === this.id)?.id
-  
-   if(temp === undefined || temp === null){
-      const value = this._currentPostionIndex
-
-      if( this.playlist <= 0) return 0
-
-      temp = this.playlist[0].id;
-      for (const item of this.playlist) {
-          if (Math.abs(item.id - value) < Math.abs(temp - value)) {
-            temp = item.id
-          }
+  findNearestIndex = (items, index) => {
+    let found = items[0].id;
+    for (const item of items) {
+      if (Math.abs(item.id - index) < Math.abs(found - index)) {
+        found = item.id
       }
-   }
-   runInAction(()=>{
-     this._currentPostionIndex = temp
-   })
-   return temp;
+    }
+    return found
+  }
+
+  isNullOrUndefined = (arg) => {
+    return arg === undefined || arg === null;
+  }
+
+
+  get currentPostionIndex() {
+
+    console.log("computed")
+
+    if (this.playlist.length === 0) {
+      return 0
+    }
+
+    let index = this.playlist.find(file => file.fileId === this.id)?.id
+
+    if (this.isNullOrUndefined(index)) {
+      index = this.findNearestIndex(this.playlist, this.prevPostionIndex)
+    }
+
+    runInAction(() => {
+      this.prevPostionIndex = index
+    })
+
+    return index;
   };
 
   get playlist() {
@@ -106,6 +120,11 @@ class MediaViewerDataStore {
           id++;
         }
       });
+      if (this.previewFile) {
+        runInAction(() => {
+          this.previewFile = null;
+        })
+      }
     } else if (this.previewFile) {
       playlist.push({
         ...this.previewFile,
