@@ -69,9 +69,10 @@ const SelectionArea = (props) => {
       countOfMissingTiles={countOfMissingTiles}
       folderTileGap={12}
       fileTileGap={14}
+      foldersTileHeight={66}
       filesTileHeight={222}
       folderHeaderHeight={35}
-      filesHeaderHeight={46}
+      filesHeaderHeight={countRowsOfFolders ? 46 : 0}
     />
   );
 };

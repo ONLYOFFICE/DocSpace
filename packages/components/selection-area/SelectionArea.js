@@ -14,8 +14,6 @@ class SelectionArea extends React.Component {
 
     this.selectableNodes = new Set();
 
-    this.array = [];
-
     this.elemRect = {};
   }
 
@@ -44,6 +42,7 @@ class SelectionArea extends React.Component {
       countRowsOfFolders,
       folderTileGap,
       fileTileGap,
+      foldersTileHeight,
       filesTileHeight,
       filesHeaderHeight,
     } = this.props;
@@ -58,7 +57,7 @@ class SelectionArea extends React.Component {
         itemTop = this.elemRect.top - scrollTop;
         itemBottom = itemTop + itemHeight;
       } else if (itemType === "file") {
-        const folderHeight = itemHeight + folderTileGap;
+        const folderHeight = foldersTileHeight + folderTileGap;
         const fileHeight = filesTileHeight + fileTileGap;
 
         const nextRow = Math.floor(
@@ -187,7 +186,7 @@ class SelectionArea extends React.Component {
     const { selectableClass, onMove, viewAs } = this.props;
     const selectableItems = document.getElementsByClassName(selectableClass);
 
-    const selectables = [...selectableItems, ...this.array];
+    const selectables = [...selectableItems, ...this.selectableNodes];
 
     for (let i = 0; i < selectables.length; i++) {
       const node = selectables[i];
@@ -209,21 +208,10 @@ class SelectionArea extends React.Component {
       const isIntersects = this.isIntersects(+itemIndex, itemType);
 
       if (isIntersects) {
-        if (!this.selectableNodes.has(node)) {
-          added.push(node);
-        }
+        added.push(node);
 
         newSelected.push(node);
-        this.selectableNodes.add(node);
-      }
-    }
-
-    for (let node of this.selectableNodes) {
-      const isContains = document.contains(node);
-      const isIncludes = newSelected.includes(node);
-
-      if (!isIncludes && isContains) {
-        this.selectableNodes.delete(node);
+      } else {
         removed.push(node);
       }
     }
@@ -351,9 +339,8 @@ class SelectionArea extends React.Component {
 
     this.scrollSpeed.x = 0;
     this.scrollSpeed.y = 0;
-    this.selectableNodes.clear();
 
-    this.array = [];
+    this.selectableNodes.clear();
 
     this.frame()?.cancel();
 
@@ -380,12 +367,9 @@ class SelectionArea extends React.Component {
       this.props.selectableClass
     );
 
-    // TODO:
-    if (!this.array.length) {
-      this.array = selectables;
-    } else {
-      this.array = [...this.array, ...selectables];
-      console.log("this.array", this.array.length);
+    for (let i = 0; i < selectables.length; i++) {
+      const node = selectables[i];
+      this.selectableNodes.add(node);
     }
 
     this.frame().next(null);
