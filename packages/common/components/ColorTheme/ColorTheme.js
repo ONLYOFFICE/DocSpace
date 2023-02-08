@@ -5,6 +5,7 @@ import {
   ButtonTheme,
   MainButtonTheme,
   CatalogItemTheme,
+  CalendarTheme,
   BadgeTheme,
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
@@ -183,6 +184,15 @@ const ColorTheme = forwardRef(
       case ThemeType.TextInput: {
         return (
           <TextInputTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.Calendar: {
+        return (
+          <CalendarTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}
