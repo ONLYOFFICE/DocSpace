@@ -5938,7 +5938,7 @@ __metadata:
   dependencies:
     agentkeepalive: ^4.2.1
     cacache: ^16.1.0
-    http-cache-semantics: ^4.1.0
+    http-cache-semantics: ^4.1.1
     http-proxy-agent: ^5.0.0
     https-proxy-agent: ^5.0.0
     is-lambda: ^1.0.1
