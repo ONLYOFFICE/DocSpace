@@ -953,12 +953,14 @@ class FilesActionStore {
 
             if (foundIndex == -1) return;
 
-            const count = treeFolders[foundIndex].newItems;
+            runInAction(() => {
+              const count = treeFolders[foundIndex].newItems;
 
-            treeFolders[foundIndex].newItems =
-              newCount >= 0 ? count - newCount : 0;
+              treeFolders[foundIndex].newItems =
+                newCount >= 0 ? count - newCount : 0;
 
-            this.treeFoldersStore.fetchTreeFolders();
+              this.treeFoldersStore.fetchTreeFolders();
+            });
           })
           .then(() => toastr.success(t("RoomNotificationsDisabled")));
       case "unmute":
@@ -973,11 +975,13 @@ class FilesActionStore {
 
             if (foundIndex == -1) return;
 
-            const count = treeFolders[foundIndex].newItems;
+            runInAction(() => {
+              const count = treeFolders[foundIndex].newItems;
 
-            treeFolders[foundIndex].newItems = count + newCount;
+              treeFolders[foundIndex].newItems = count + newCount;
 
-            this.treeFoldersStore.fetchTreeFolders();
+              this.treeFoldersStore.fetchTreeFolders();
+            });
           })
           .then(() => toastr.success(t("RoomNotificationsEnabled")));
     }
