@@ -7,6 +7,10 @@ import styled from "styled-components";
 
 const StyledHeader = styled.div`
   display: flex;
+  align-items: center;
+  .arrow-button {
+    margin-right: 16px;
+  }
 `;
 const SectionHeaderContent = ({ history, t }) => {
   const onClickBack = () => {
@@ -27,7 +31,7 @@ const SectionHeaderContent = ({ history, t }) => {
         onClick={onClickBack}
         className="arrow-button"
       />
-      <Headline fontSize="16px" fontWeight={700}>
+      <Headline type="content" truncate>
         {t("Notifications")}
       </Headline>
     </StyledHeader>
