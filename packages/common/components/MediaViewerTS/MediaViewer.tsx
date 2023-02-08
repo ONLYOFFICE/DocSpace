@@ -5,7 +5,7 @@ import ImageViewer from "../MediaViewer/sub-components/image-viewer";
 
 import { MediaViewerProps } from './MediaViewer.props';
 import { FileStatus } from "@docspace/common/constants";
-import { ButtonKeys, isNullOrUndefined, mapSupplied, mediaTypes, nearestValue } from "./helpers";
+import { ButtonKeys, isNullOrUndefined, mapSupplied, mediaTypes } from "./helpers";
 
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
@@ -45,7 +45,7 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
     useEffect(() => {
         const fileId = props.playlist[playlistPos]?.fileId;
 
-        if (fileId !== undefined && props.currentFileId !== fileId) {
+        if (!isNullOrUndefined(fileId) && props.currentFileId !== fileId) {
             props.onChangeUrl(fileId)
         }
 
@@ -87,18 +87,10 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
 
     useEffect(() => {
 
-        const { playlist, currentFileId, onEmptyPlaylistError, files } = props
-
-        let newPlaylistPos = currentFileId
-            ? playlist.find((file) => file.fileId === currentFileId)?.id
-            : 0;
-
-        if (isNullOrUndefined(newPlaylistPos)) {
-            newPlaylistPos = nearestValue(playlist, playlistPos)
-        }
+        const { playlist, onEmptyPlaylistError, files, setBufferSelection } = props
 
 
-        const { src, title, fileId } = playlist[newPlaylistPos]
+        const { src, title, fileId } = playlist[playlistPos]
         const ext = getFileExtension(title);
 
 
@@ -112,13 +104,15 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
             fetchAndSetTiffDataURL(src);
         }
 
+        const foundFile = files.find(file => file.id === fileId)
 
-        setTargetFile(files.find(file => file.id === fileId))
         setTitle(title);
+        setTargetFile(foundFile);
+        setBufferSelection(foundFile);
         setIsFavorite((playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
             FileStatus.IsFavorite)
 
-    }, [props.playlist, props.currentFileId])
+    }, [props.playlist.length, props.currentFileId, playlistPos])
 
 
 
@@ -262,9 +256,6 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
     }, []);
 
 
-
-
-
     const prevMedia = () => {
         const { playlist, setBufferSelection, files, onChangeUrl } = props;
 
@@ -291,9 +282,11 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
     };
 
     const nextMedia = () => {
+        console.log("next")
+
         const { setBufferSelection, playlist, files, onChangeUrl } = props;
 
-        let currentPlaylistPos = (playlistPos + 1) % playlist.length;;
+        let currentPlaylistPos = (playlistPos + 1) % playlist.length;
 
         if (currentPlaylistPos === 0) return;
 
@@ -317,7 +310,6 @@ function MediaViewer({ playlistPos, ...props }: MediaViewerProps): JSX.Element {
             playlist.length > 0
                 ? playlist.find((file) => file.id === playlistPos)?.fileId
                 : 0;
-
         setCanSwipeImage(false);
         if (!isNullOrUndefined(currentFileId))
             onDelete(currentFileId);
