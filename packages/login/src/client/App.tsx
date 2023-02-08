@@ -6,6 +6,7 @@ import CodeLogin from "./components/CodeLogin";
 import initLoginStore from "../store";
 import { Provider as MobxProvider } from "mobx-react";
 import SimpleNav from "../client/components/sub-components/SimpleNav";
+import { wrongPortalNameUrl } from "@docspace/common/constants";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -17,9 +18,9 @@ const App: React.FC<ILoginProps> = (props) => {
     if (window && props.error) {
       const { status, standalone, message } = props.error;
 
-      if (status === 404 || !standalone) {
+      if (status === 404 && !standalone) {
         window.location.replace(
-          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+          `${wrongPortalNameUrl}?url=${window.location.hostname}`
         );
       }
 
