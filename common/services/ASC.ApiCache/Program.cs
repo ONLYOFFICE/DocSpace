@@ -33,7 +33,7 @@ var options = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddApiSystemConfiguration(builder.Environment)
+                     .AddApiCacheConfiguration()
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 

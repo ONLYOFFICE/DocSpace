@@ -36,6 +36,7 @@ public class MigrationCreator
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
     private readonly IMapper _mapper;
+    private readonly CreatorDbContext _creatorDbContext;
 
     private List<IModuleSpecifics> _modules;
     private string _pathToSave;
@@ -72,7 +73,8 @@ public class MigrationCreator
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider,
-        IMapper mapper)
+        IMapper mapper,
+CreatorDbContext сreatorDbContext)
     {
         _tenantDomainValidator = tenantDomainValidator;
         _tempStream = tempStream;
@@ -81,6 +83,7 @@ public class MigrationCreator
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
         _mapper = mapper;
+        _creatorDbContext = сreatorDbContext;
     }
 
     public string Create(string fromAlias, string userName, string mail, string toRegion, string toAlias)
@@ -114,7 +117,7 @@ public class MigrationCreator
         if (tenant == null)
         {
             throw new ArgumentException("tenant was not found");
-        }
+    }
         _fromTenantId = tenant.Id;
 
         _modules = string.IsNullOrEmpty(_toAlias)
@@ -229,41 +232,41 @@ public class MigrationCreator
 
     private void ArhiveTable(TableInfo table, IDataWriteOperator writer, IModuleSpecifics module, DbConnection connection, Guid id)
     {
-        Console.WriteLine($"backup table {table.Name}");
-        using (var data = new DataTable(table.Name))
-        {
-            ActionInvoker.Try(
-                state =>
-                {
-                    data.Clear();
-                    int counts;
-                    var offset = 0;
-                    do
+                    Console.WriteLine($"backup table {table.Name}");
+                    using (var data = new DataTable(table.Name))
                     {
-                        var t = (TableInfo)state;
-                        var dataAdapter = _dbFactory.CreateDataAdapter();
+                        ActionInvoker.Try(
+                            state =>
+                            {
+                                data.Clear();
+                                int counts;
+                                var offset = 0;
+                                do
+                                {
+                                    var t = (TableInfo)state;
+                                    var dataAdapter = _dbFactory.CreateDataAdapter();
                         dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _fromTenantId, t, _limit, offset, id).WithTimeout(600);
-                        counts = ((DbDataAdapter)dataAdapter).Fill(data);
-                        offset += _limit;
-                    } while (counts == _limit);
+                                    counts = ((DbDataAdapter)dataAdapter).Fill(data);
+                                    offset += _limit;
+                                } while (counts == _limit);
 
-                },
-                table,
-                maxAttempts: 5,
-                onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
+                            },
+                            table,
+                            maxAttempts: 5,
+                            onFailure: error => { throw ThrowHelper.CantBackupTable(table.Name, error); });
 
-            foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
-            {
-                col.DateTimeMode = DataSetDateTime.Unspecified;
-            }
+                        foreach (var col in data.Columns.Cast<DataColumn>().Where(col => col.DataType == typeof(DateTime)))
+                        {
+                            col.DateTimeMode = DataSetDateTime.Unspecified;
+                        }
 
-            module.PrepareData(data);
+                        module.PrepareData(data);
 
-            if (data.TableName == "tenants_tenants")
-            {
-                ChangeAlias(data);
-                ChangeName(data);
-            }
+                        if (data.TableName == "tenants_tenants")
+                        {
+                            ChangeAlias(data);
+                            ChangeName(data);
+                        }
 
             if (data.TableName == "files_bunch_objects")
             {
@@ -276,14 +279,14 @@ public class MigrationCreator
 
     private void WriteEnrty(DataTable data, IDataWriteOperator writer, IModuleSpecifics module)
     {
-        using (var file = _tempStream.Create())
-        {
-            data.WriteXml(file, XmlWriteMode.WriteSchema);
-            data.Clear();
+                        using (var file = _tempStream.Create())
+                        {
+                            data.WriteXml(file, XmlWriteMode.WriteSchema);
+                            data.Clear();
 
-            writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
-        }
-    }
+                            writer.WriteEntry(KeyHelper.GetTableZipKey(module, data.TableName), file);
+                        }
+                    }
 
     private void ChangeAlias(DataTable data)
     {
@@ -340,7 +343,7 @@ public class MigrationCreator
 
     private List<string> GetAliases()
     {
-        using var dbContext = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+        using var dbContext = _creatorDbContext.CreateDbContext<TenantDbContext>(_toRegion);
         var tenants = dbContext.Tenants.Select(t => t.Alias).ToList();
         var forbidens = dbContext.TenantForbiden.Select(tf => tf.Address).ToList();
         return tenants.Union(forbidens).ToList();

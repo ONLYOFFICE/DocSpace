@@ -24,48 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.ComponentModel.DataAnnotations;
-global using System.Diagnostics;
-global using System.Globalization;
-global using System.Net;
-global using System.Net.Http.Headers;
-global using System.Text;
 global using System.Text.Json.Serialization;
-global using System.Text.RegularExpressions;
-global using System.Web;
-global using System.Web.Http.Filters;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Auth;
 global using ASC.Api.Core.Core;
 global using ASC.Api.Core.Extensions;
-global using ASC.Api.Core.Middleware;
-global using ASC.ApiSystem;
-global using ASC.ApiSystem.Classes;
-global using ASC.ApiSystem.Interfaces;
-global using ASC.ApiSystem.Models;
+global using ASC.ApiCache;
+global using ASC.ApiCache.Helpers;
+global using ASC.ApiCache.Models;
 global using ASC.Common;
-global using ASC.Common.Caching;
 global using ASC.Common.Logging;
-global using ASC.Common.Utils;
-global using ASC.Core;
-global using ASC.Core.Billing;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.EF.Teamlabsite.Context;
+global using ASC.Core.Common.EF.Teamlabsite.Model;
 global using ASC.Core.Common.Hosting;
-global using ASC.Core.Common.Settings;
 global using ASC.Core.Tenants;
-global using ASC.Core.Users;
 global using ASC.EventBus.Extensions.Logger;
 global using ASC.Feed.Context;
 global using ASC.MessagingSystem.EF.Context;
-global using ASC.Security.Cryptography;
 global using ASC.Web.Core.Helpers;
-global using ASC.Web.Core.PublicResources;
-global using ASC.Web.Core.Users;
-global using ASC.Web.Core.Utility;
-global using ASC.Web.Core.Utility.Settings;
-global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.EF.Context;
 
@@ -77,10 +56,7 @@ global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-
-global using Newtonsoft.Json.Linq;
 
 global using NLog;

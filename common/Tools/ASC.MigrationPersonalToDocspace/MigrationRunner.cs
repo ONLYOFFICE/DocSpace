@@ -34,6 +34,7 @@ public class MigrationRunner
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly ModuleProvider _moduleProvider;
     private readonly ILogger<RestoreDbModuleTask> _logger;
+    private readonly CreatorDbContext _creatorDbContext;
 
     private string _backupFile;
     private string _region;
@@ -52,13 +53,15 @@ public class MigrationRunner
         StorageFactory storageFactory,
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider,
-        ILogger<RestoreDbModuleTask> logger)
+        ILogger<RestoreDbModuleTask> logger,
+        CreatorDbContext creatorDbContext)
     {
         _dbFactory = dbFactory;
         _storageFactory = storageFactory;
         _storageFactoryConfig = storageFactoryConfig;
         _moduleProvider = moduleProvider;
         _logger = logger;
+        _creatorDbContext = creatorDbContext;
     }
 
     public async Task Run(string backupFile, string region, string fromAlias, string toAlias)
@@ -154,8 +157,8 @@ public class MigrationRunner
 
     private void SetTenantActiveaAndTenantOwner(int tenantId)
     {
-        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
-        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+        using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
         var tenant = dbContextTenant.Tenants.Single(t=> t.Id == tenantId);
         tenant.Status = TenantStatus.Active;
@@ -168,16 +171,16 @@ public class MigrationRunner
             var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
             tenant.OwnerId = user.Id;
             Console.WriteLine($"set ownerId {user.Id}");
-        }
+    }
         dbContextTenant.Tenants.Update(tenant);
         dbContextTenant.SaveChanges();
     }
 
     private void SetAdmin(int tenantId)
     {
-        using var dbContextTenant = _dbFactory.CreateDbContext<TenantDbContext>(_region);
+        using var dbContextTenant = _creatorDbContext.CreateDbContext<TenantDbContext>(_region);
         var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
-        using var dbContextUser = _dbFactory.CreateDbContext<UserDbContext>(_region);
+        using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
         if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId))
         {
