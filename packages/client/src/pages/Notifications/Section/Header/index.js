@@ -3,15 +3,8 @@ import IconButton from "@docspace/components/icon-button";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import Headline from "@docspace/common/components/Headline";
-import styled from "styled-components";
+import { StyledSectionHeader } from "../../StyledComponent";
 
-const StyledHeader = styled.div`
-  display: flex;
-  align-items: center;
-  .arrow-button {
-    margin-right: 16px;
-  }
-`;
 const SectionHeaderContent = ({ history, t }) => {
   const onClickBack = () => {
     history.push(
@@ -23,7 +16,7 @@ const SectionHeaderContent = ({ history, t }) => {
     );
   };
   return (
-    <StyledHeader>
+    <StyledSectionHeader>
       <IconButton
         iconName="/static/images/arrow.path.react.svg"
         size="17"
@@ -34,7 +27,7 @@ const SectionHeaderContent = ({ history, t }) => {
       <Headline type="content" truncate>
         {t("Notifications")}
       </Headline>
-    </StyledHeader>
+    </StyledSectionHeader>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
-import styled from "styled-components";
+
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import RoomsActivityContainer from "./sub-components/RoomsActivityContainer";
@@ -10,29 +10,10 @@ import { NotificationsType } from "@docspace/common/constants";
 import { getNotificationSubscription } from "@docspace/common/api/settings";
 import Loaders from "@docspace/common/components/Loaders";
 import toastr from "@docspace/components/toast/toastr";
-
-const StyledBodyContent = styled.div`
-  .notification-container {
-    display: grid;
-    max-width: 660px;
-    grid-template-columns: 1fr 120px;
-    margin-bottom: 24px;
-
-    .toggle-btn {
-      padding-left: 46px;
-    }
-  }
-  .badges-container {
-    margin-bottom: 40px;
-  }
-`;
-
-const StyledTextContent = styled.div`
-  margin-bottom: 24px;
-  height: 39px;
-  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
-  max-width: 700px;
-`;
+import {
+  StyledSectionBodyContent,
+  StyledTextContent,
+} from "../../StyledComponent";
 
 let timerId = null;
 const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
@@ -128,10 +109,10 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
   );
 
   return (
-    <StyledBodyContent>
+    <StyledSectionBodyContent>
       {badgesContent}
       {emailContent}
-    </StyledBodyContent>
+    </StyledSectionBodyContent>
   );
 };
 
