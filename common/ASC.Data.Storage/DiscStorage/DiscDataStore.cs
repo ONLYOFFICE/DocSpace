@@ -110,7 +110,7 @@ public class DiscDataStore : BaseStorage
         throw new FileNotFoundException("File not found", Path.GetFullPath(target));
     }
 
-    public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         ArgumentNullException.ThrowIfNull(path);
 
@@ -123,13 +123,16 @@ public class DiscDataStore : BaseStorage
             {
                 stream.Seek(offset, SeekOrigin.Begin);
             }
+            else if (0 < offset)
+            {
+                throw new InvalidOperationException("Seek stream is not impossible");
+            }
 
             return Task.FromResult(stream);
         }
 
         throw new FileNotFoundException("File not found", Path.GetFullPath(target));
     }
-
 
     public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType, string contentDisposition)
     {
@@ -759,5 +762,16 @@ public class DiscDataStore : BaseStorage
         {
             throw new FileNotFoundException("file not found", target);
         }
+    }
+
+    public override Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+
+        var target = GetTarget(domain, path);              
+        var lastModificationDate = File.Exists(target) ? File.GetLastWriteTimeUtc(target) : throw new FileNotFoundException("File not found" + target);
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return Task.FromResult(etag);
     }
 }

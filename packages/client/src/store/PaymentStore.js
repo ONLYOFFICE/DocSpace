@@ -87,8 +87,6 @@ class PaymentStore {
         } else {
           toastr.error(res);
         }
-      } else {
-        console.error(res);
       }
     } catch (e) {
       console.error(e);
@@ -97,17 +95,6 @@ class PaymentStore {
 
   setPaymentLink = async (link) => {
     this.paymentLink = link;
-  };
-  updatePayment = async (adminCount) => {
-    try {
-      const res = await api.portal.updatePayment(adminCount);
-      console.log("updatePayment", res);
-      if (res !== true) {
-        console.error(res);
-      }
-    } catch (e) {
-      toastr.error(e);
-    }
   };
 
   setIsLoading = (isLoading) => {
@@ -153,9 +140,13 @@ class PaymentStore {
     }
   };
 
-  setStartPaymentLink = async () => {
-    const link = await api.portal.getPaymentLink(this.managersCount);
-    this.setPaymentLink(link);
+  setStartPaymentLink = async (t) => {
+    try {
+      const link = await api.portal.getPaymentLink(this.managersCount);
+      this.setPaymentLink(link);
+    } catch (e) {
+      toastr.error(t("ErrorNotification"));
+    }
   };
 
   setTotalPrice = (value) => {

@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 
 using Newtonsoft.Json;
 
-namespace Frontend.Translations.Tests.Models;
+namespace Frontend.Tests.Models;
 
 public class SpellCheckResult
 {

@@ -4,14 +4,13 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig, RoomSearchArea } from "@docspace/common/constants";
+import { RoomSearchArea } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
 import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
-//import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -99,16 +98,13 @@ const ArticleBodyContent = (props) => {
 
             history.push(
               combineUrl(
-                AppServerConfig.proxyURL,
+                window.DocSpaceConfig?.proxy?.url,
                 homepage,
                 `${url}?${filterParamsStr}`
               )
             );
           })
           .finally(() => {
-            if (isMobileOnly || isMobile()) {
-              toggleArticleOpen();
-            }
             if (filesSection) {
               setIsLoading(false);
             } else {
@@ -130,21 +126,26 @@ const ArticleBodyContent = (props) => {
               const pathname = `${url}?${filterParamsStr}`;
 
               history.push(
-                combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+                combineUrl(
+                  window.DocSpaceConfig?.proxy?.url,
+                  config.homepage,
+                  pathname
+                )
               );
             }
           })
           .catch((err) => toastr.error(err))
           .finally(() => {
-            if (isMobileOnly || isMobile()) {
-              toggleArticleOpen();
-            }
             if (filesSection) {
               setIsLoading(false);
             } else {
               hideLoader();
             }
           });
+      }
+
+      if (isMobileOnly || isMobile()) {
+        toggleArticleOpen();
       }
     },
     [categoryType, roomsFolderId, archiveFolderId]
@@ -174,7 +175,6 @@ const ArticleBodyContent = (props) => {
 
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
-          {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
           <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&

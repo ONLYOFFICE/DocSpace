@@ -214,9 +214,9 @@ public class SettingsController : ApiControllerBase
     }
 
     [HttpPut("settings/autocleanup")]
-    public AutoCleanUpData ChangeAutomaticallyCleanUp(bool set, DateToAutoCleanUp gap)
+    public AutoCleanUpData ChangeAutomaticallyCleanUp(AutoCleanupRequestDto inDto)
     {
-        return _fileStorageService.ChangeAutomaticallyCleanUp(set, gap);
+        return _fileStorageService.ChangeAutomaticallyCleanUp(inDto.Set, inDto.Gap);
     }
 
     [HttpPut("settings/dafaultaccessrights")]

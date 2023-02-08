@@ -1,12 +1,12 @@
-import React from "react";
+﻿import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Box from "@docspace/components/box";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
+import { hugeMobile } from "@docspace/components/utils/device";
 
 const Header = styled.header`
   align-items: left;
@@ -22,7 +22,7 @@ const Header = styled.header`
     @media (max-width: 768px) {
       width: 475px;
     }
-    @media (max-width: 375px) {
+    @media ${hugeMobile} {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -56,8 +56,12 @@ const HeaderUnAuth = ({
   wizardToken,
   isAuthenticated,
   isLoaded,
+  logoUrl,
+  theme,
 }) => {
   const { t } = useTranslation("NavMenu");
+
+  const logo = !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light;
 
   return (
     <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
@@ -70,13 +74,7 @@ const HeaderUnAuth = ({
         {!isAuthenticated && isLoaded ? (
           <div>
             <a className="header-logo-wrapper" href="/">
-              <img
-                className="header-logo-icon"
-                src={combineUrl(
-                  AppServerConfig.proxyURL,
-                  "/static/images/logo.docspace.react.svg"
-                )}
-              />
+              <img className="header-logo-icon" src={logo} />
             </a>
           </div>
         ) : (
@@ -98,11 +96,14 @@ HeaderUnAuth.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded } = auth;
-  const { enableAdmMess, wizardToken } = settingsStore;
+  const { enableAdmMess, wizardToken, logoUrl, theme } = settingsStore;
+
   return {
     enableAdmMess,
     wizardToken,
     isAuthenticated,
     isLoaded,
+    logoUrl,
+    theme,
   };
 })(observer(HeaderUnAuth));

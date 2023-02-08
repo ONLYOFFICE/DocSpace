@@ -3,11 +3,9 @@ import { inject, observer } from "mobx-react";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import PropTypes from "prop-types";
 import ContextMenu from "@docspace/components/context-menu";
-import { isDesktop } from "react-device-detect";
 import Link from "@docspace/components/link";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
@@ -97,7 +95,7 @@ class Tile extends React.PureComponent {
     setIsInfoPanelVisible(false);
 
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
 

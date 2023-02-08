@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <AssemblyTitle>ASC.Notify.Textile</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Notify.Textile</Product>
@@ -57,13 +57,13 @@
     <EmbeddedResource Update="Resources\NotifyTemplateResource.cs.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.el.resx">
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.el-GR.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.fi.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.ja.resx">
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ja-JP.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.lv.resx">
@@ -84,7 +84,7 @@
     <EmbeddedResource Update="Resources\NotifyTemplateResource.tr.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\NotifyTemplateResource.uk.resx">
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.uk-UA.resx">
       <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\NotifyTemplateResource.vi.resx">

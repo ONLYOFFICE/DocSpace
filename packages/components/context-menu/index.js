@@ -166,6 +166,7 @@ class ContextMenu extends Component {
         if (this.props.scaled) {
           this.menuRef.current.style.width = rects.width + "px";
         }
+        this.menuRef.current.style.minWidth = "210px";
       }
 
       this.menuRef.current.style.left = left + "px";

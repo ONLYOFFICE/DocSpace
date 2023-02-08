@@ -1,11 +1,24 @@
+﻿import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import { find, cloneDeep } from "lodash";
 import {
   EmployeeActivationStatus,
   EmployeeStatus,
 } from "@docspace/common/constants";
-import { isAdmin } from "@docspace/common/utils";
-import { id } from "PACKAGE_FILE";
-//const { isAdmin } = utils;
+
+import PhoneIconUrl from "PUBLIC_DIR/images/phone.react.svg?url";
+import MobileIconUrl from "PUBLIC_DIR/images/mobile.react.svg?url";
+import GmailIconUrl from "PUBLIC_DIR/images/gmail.react.svg?url";
+import SkypeIconUrl from "PUBLIC_DIR/images/skype.react.svg?url";
+import MsnIconUrl from "PUBLIC_DIR/images/windows.msn.react.svg?url";
+import IcqIconUrl from "PUBLIC_DIR/images/icq.react.svg?url";
+import JabberIconUrl from "PUBLIC_DIR/images/jabber.react.svg?url";
+import AimIconUrl from "PUBLIC_DIR/images/aim.react.svg?url";
+import FacebookIconUrl from "PUBLIC_DIR/images/share.facebook.react.svg?url";
+import LivejournalIconUrl from "PUBLIC_DIR/images/livejournal.react.svg?url";
+import MyspaceIconUrl from "PUBLIC_DIR/images/myspace.react.svg?url";
+import TwitterIconUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
+import BloggerIconUrl from "PUBLIC_DIR/images/blogger.react.svg?url";
+import YahooIconUrl from "PUBLIC_DIR/images/yahoo.react.svg?url";
 
 export const getUserStatus = (user) => {
   if (
@@ -25,82 +38,72 @@ export const getUserStatus = (user) => {
   }
 };
 
-export const getUserRole = (user) => {
-  if (user.isOwner) return "owner";
-  else if (isAdmin(user, id))
-    //TODO: Change to People Product Id const
-    return "admin";
-  //TODO: Need refactoring
-  else if (user.isVisitor) return "user";
-  else return "manager";
-};
-
 export const getUserContactsPattern = () => {
   return {
     contact: [
       {
         type: "mail",
-        icon: "/static/images/mail.react.svg",
+        icon: MailReactSvgUrl,
         link: "mailto:{0}",
       },
       {
         type: "phone",
-        icon: "/images/phone.react.svg",
+        icon: PhoneIconUrl,
         link: "tel:{0}",
       },
       {
         type: "mobphone",
-        icon: "/images/mobile.react.svg",
+        icon: MobileIconUrl,
         link: "tel:{0}",
       },
       {
         type: "gmail",
-        icon: "/images/gmail.react.svg",
+        icon: GmailIconUrl,
         link: "mailto:{0}",
       },
       {
         type: "skype",
-        icon: "/images/skype.react.svg",
+        icon: SkypeIconUrl,
         link: "skype:{0}?userinfo",
       },
-      { type: "msn", icon: "/images/windows.msn.react.svg" },
+      { type: "msn", icon: MsnIconUrl },
       {
         type: "icq",
-        icon: "/images/icq.react.svg",
+        icon: IcqIconUrl,
         link: "https://www.icq.com/people/{0}",
       },
-      { type: "jabber", icon: "/images/jabber.react.svg" },
-      { type: "aim", icon: "/images/aim.react.svg" },
+      { type: "jabber", icon: JabberIconUrl },
+      { type: "aim", icon: AimIconUrl },
     ],
     social: [
       {
         type: "facebook",
-        icon: "/images/share.facebook.react.svg",
+        icon: FacebookIconUrl,
         link: "https://facebook.com/{0}",
       },
       {
         type: "livejournal",
-        icon: "/images/livejournal.react.svg",
+        icon: LivejournalIconUrl,
         link: "https://{0}.livejournal.com",
       },
       {
         type: "myspace",
-        icon: "/images/myspace.react.svg",
+        icon: MyspaceIconUrl,
         link: "https://myspace.com/{0}",
       },
       {
         type: "twitter",
-        icon: "/images/share.twitter.react.svg",
+        icon: TwitterIconUrl,
         link: "https://twitter.com/{0}",
       },
       {
         type: "blogger",
-        icon: "/images/blogger.react.svg",
+        icon: BloggerIconUrl,
         link: "https://{0}.blogspot.com",
       },
       {
         type: "yahoo",
-        icon: "/images/yahoo.react.svg",
+        icon: YahooIconUrl,
         link: "mailto:{0}@yahoo.com",
       },
     ],
@@ -145,31 +148,4 @@ export function toEmployeeWrapper(profile) {
   };
 
   return cloneDeep({ ...emptyData, ...profile });
-}
-
-export function mapGroupsToGroupSelectorOptions(groups) {
-  return groups.map((group) => {
-    return {
-      key: group.id,
-      label: group.name,
-      manager: group.manager,
-      total: 0,
-    };
-  });
-}
-
-export function mapGroupSelectorOptionsToGroups(options) {
-  return options.map((option) => {
-    return {
-      id: option.key,
-      name: option.label,
-      manager: option.manager,
-    };
-  });
-}
-
-export function filterGroupSelectorOptions(options, template) {
-  return options.filter((option) => {
-    return template ? option.label.indexOf(template) > -1 : true;
-  });
 }

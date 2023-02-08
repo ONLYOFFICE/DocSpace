@@ -8,7 +8,7 @@ import { isMobileOnly } from "react-device-detect";
 import { mobile } from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
-const borderColor = globalColors.grayLightMid;
+
 const INPUT_LENGTH = "350px";
 const TEXT_LENGTH = "700px";
 const commonStyles = css`
@@ -29,7 +29,6 @@ const commonStyles = css`
   }
   .radio-button_text {
     margin-right: 7px;
-    margin-left: 4px;
     font-size: 13px;
     font-weight: 600;
   }
@@ -104,6 +103,9 @@ const StyledAutoBackup = styled.div`
   .auto-backup_third-party-module {
     margin-top: 16px;
     margin-left: 24px;
+    button {
+      margin-bottom: 16px;
+    }
   }
   .automatic-backup_main {
     margin-bottom: 30px;
@@ -174,6 +176,10 @@ const StyledRestoreBackup = styled.div`
   ${commonStyles}
   .restore-backup_third-party-module {
     margin-top: 16px;
+
+    button {
+      margin-bottom: 16px;
+    }
   }
   .restore-description {
     max-width: ${TEXT_LENGTH};
@@ -185,7 +191,7 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: #f21c0e;
+    color: ${(props) => props.theme.client.settings.backup.warningColor};
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -232,7 +238,7 @@ const StyledModules = styled.div`
   margin-bottom: 24px;
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`};
-    margin-left: 29px;
+    margin-left: 25px;
     max-width: 700px;
   }
 `;
@@ -328,17 +334,12 @@ const StyledBackup = styled.div`
     display: flex;
     margin-bottom: 12px;
     display: grid;
-    grid-template-columns: minmax(100px, 310px) 32px;
+
+    ${(props) =>
+      props.isConnectedAccount
+        ? "grid-template-columns:minmax(100px,  310px) 32px"
+        : "grid-template-columns:minmax(100px,  350px) 32px"};
     grid-gap: 8px;
-  }
-  .backup_third-party-combo {
-    .combo-button {
-      justify-content: flex-start;
-      .combo-button-label {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
   }
 
   .backup_modules-separation {
@@ -449,41 +450,13 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
     margin-left: 16px;
     margin-right: 16px;
+    color: ${(props) => props.theme.client.settings.backup.textColor};
   }
-  #backup-list_help {
-    display: flex;
-    background-color: ${(props) => props.theme.backgroundColor};
-    margin-bottom: 16px;
-  }
-  .backup-list_tooltip {
-    margin-left: 8px;
-  }
+
   .backup-list_content {
     display: grid;
-    height: calc(100% - 32px);
+    height: 100%;
     grid-template-rows: max-content auto max-content;
-    .backup-list_agreement-text {
-      user-select: none;
-      div:first-child {
-        display: inline-block;
-      }
-    }
-    .backup-list_footer {
-      padding: 16px 16px 0 16px;
-      ${(props) => !props.isEmpty && `border-top: 1px solid ${borderColor}`};
-      margin-left: -16px;
-      margin-right: -16px;
-      .restore_dialog-button {
-        display: flex;
-        button:first-child {
-          margin-right: 10px;
-          width: 50%;
-        }
-        button:last-child {
-          width: 50%;
-        }
-      }
-    }
   }
 `;
 const StyledSettingsHeader = styled.div`

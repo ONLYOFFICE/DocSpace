@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React, { useCallback } from "react";
 import IconButton from "@docspace/components/icon-button";
 import Headline from "@docspace/common/components/Headline";
@@ -6,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 
 const Wrapper = styled.div`
   display: grid;
@@ -30,14 +30,16 @@ const SectionHeaderContent = (props) => {
   const { t } = useTranslation("People");
 
   const onClickBack = useCallback(() => {
-    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
+    history.push(
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage)
+    );
   }, [history]);
 
   return (
     <Wrapper>
       <div style={{ width: "17px" }}>
         <IconButton
-          iconName="/static/images/arrow.path.react.svg"
+          iconName={ArrowPathReactSvgUrl}
           // color="#A3A9AE"
           size="17"
           // hoverColor="#657077"

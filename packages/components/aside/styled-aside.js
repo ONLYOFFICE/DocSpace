@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 
 import { isMobile } from "react-device-detect";
 
@@ -57,6 +57,10 @@ const StyledAside = styled(Container)`
     width: 100%;
     max-width: 100%;
     transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+
+    aside:not(:first-child) {
+      height: 100%;
+    }
   }
 
   &.modal-dialog-aside {
@@ -74,29 +78,37 @@ const StyledAside = styled(Container)`
 StyledAside.defaultProps = { theme: Base };
 
 const StyledControlContainer = styled.div`
-  display: flex;
+  display: none;
 
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
 
-  border-radius: 100px;
   cursor: pointer;
 
   align-items: center;
   justify-content: center;
   z-index: 450;
 
-  top: 14px;
-  left: -34px;
+  @media ${tablet} {
+    display: flex;
+
+    top: 18px;
+    left: -27px;
+  }
 
   ${isMobile &&
   css`
-    top: 14px;
+    display: flex;
+
+    top: 18px;
+    left: -27px;
   `}
 
   @media (max-width: 428px) {
-    top: -34px;
+    display: flex;
+
+    top: -27px;
     right: 10px;
     left: unset;
   }
@@ -104,7 +116,7 @@ const StyledControlContainer = styled.div`
 
 StyledControlContainer.defaultProps = { theme: Base };
 
-const StyledCrossIcon = styled(CrossIcon)`
+const StyledCrossIcon = styled(CrossReactSvg)`
   width: 17px;
   height: 17px;
   z-index: 455;

@@ -120,8 +120,18 @@ const TfaActivationForm = withLoader((props) => {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
         history.push("/");
       }
-    } catch (e) {
-      setError(e);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          err?.response?.data?.error?.message ||
+          err?.statusText ||
+          err?.message ||
+          "";
+      } else {
+        errorMessage = err;
+      }
+      setError(errorMessage);
       toastr.error(e);
     }
     setIsLoading(false);

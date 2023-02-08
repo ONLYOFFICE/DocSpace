@@ -44,7 +44,7 @@ CORE=" --core:products:folder=${BASE_DIR}/products --core:products:subfolder=ser
 
 SERVICE_NAME=(
 	api
-	urlshortener
+	api-system
 	socket
 	studio-notify
 	notify 
@@ -53,15 +53,13 @@ SERVICE_NAME=(
 	files-services
 	studio
 	backup
-	telegram-service
 	ssoauth
-	webhooks-service
 	clear-events
 	backup-background
-	migration
 	doceditor
 	migration-runner
 	login
+	healthchecks
 	)
 
 reassign_values (){
@@ -71,10 +69,10 @@ reassign_values (){
 		WORK_DIR="${BASE_DIR}/studio/ASC.Web.Api/"
 		EXEC_FILE="ASC.Web.Api.dll"
 	;;
-	urlshortener )
-		SERVICE_PORT="5029"
-		WORK_DIR="${BASE_DIR}/services/ASC.UrlShortener/"
-		EXEC_FILE="index.js"
+	api-system )
+		SERVICE_PORT="5010"
+		WORK_DIR="${BASE_DIR}/services/ASC.ApiSystem/"
+		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	socket )
 		SERVICE_PORT="5028"
@@ -116,20 +114,10 @@ reassign_values (){
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
 	;;
-	telegram-service )
-		SERVICE_PORT="51702"
-		WORK_DIR="${BASE_DIR}/services/ASC.TelegramService/"
-		EXEC_FILE="ASC.TelegramService.dll"
-	;;
 	ssoauth )
 		SERVICE_PORT="9834"
 		WORK_DIR="${BASE_DIR}/services/ASC.SsoAuth/"
 		EXEC_FILE="app.js"
-	;;
-	webhooks-service )
-		SERVICE_PORT="5031"
-		WORK_DIR="${BASE_DIR}/services/ASC.Webhooks.Service/"
-		EXEC_FILE="ASC.Webhooks.Service.dll"
 	;;
 	clear-events )
 		SERVICE_PORT="5027"
@@ -140,11 +128,6 @@ reassign_values (){
 		SERVICE_PORT="5032"
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup.BackgroundTasks/"
 		EXEC_FILE="ASC.Data.Backup.BackgroundTasks.dll"
-	;;
-	migration )
-		SERVICE_PORT="5018"
-		WORK_DIR="${BASE_DIR}/services/ASC.Migration/"
-		EXEC_FILE="ASC.Migration.dll"
 	;;
 	doceditor )
 		SERVICE_PORT="5013"
@@ -159,6 +142,11 @@ reassign_values (){
 		SERVICE_PORT="5011"
 		WORK_DIR="${BASE_DIR}/products/ASC.Login/login/"
 		EXEC_FILE="server.js"
+	;;
+	healthchecks )
+		SERVICE_PORT="5033"
+		WORK_DIR="${BASE_DIR}/services/ASC.Web.HealthChecks.UI/"
+		EXEC_FILE="ASC.Web.HealthChecks.UI.dll"
 	;;
   esac
   SERVICE_NAME="$1"

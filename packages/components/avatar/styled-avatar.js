@@ -2,10 +2,10 @@ import styled from "styled-components";
 
 import Base from "../themes/base";
 import NoUserSelect from "../utils/commonStyles";
-import { CameraIcon } from "./svg";
+import { CameraReactSvg } from "./svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
-const EmptyIcon = styled(CameraIcon)`
+const EmptyIcon = styled(CameraReactSvg)`
   ${commonIconsStyles}
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
 `;

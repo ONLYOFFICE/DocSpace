@@ -1,3 +1,4 @@
+﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -8,11 +9,11 @@ import toastr from "@docspace/components/toast/toastr";
 import copy from "copy-to-clipboard";
 
 const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
-  const { t } = useTranslation("InviteDialog");
+  const { t } = useTranslation("Translations");
 
   const onCopyClick = () => {
     copy(placeholder);
-    toastr.success(t("InviteDialog:LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   return (
@@ -26,7 +27,7 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
         isDisabled
         name={name}
         placeholder={placeholder}
-        iconName="/static/images/copy.react.svg"
+        iconName={CopyReactSvgUrl}
         iconSize={16}
         onIconClick={onCopyClick}
       />

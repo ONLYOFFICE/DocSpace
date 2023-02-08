@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SearchReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 import InputBlock from ".";
 import Button from "../button";
 import IconButton from "../icon-button";
@@ -40,7 +41,7 @@ const Template = ({ optionsMultiSelect, onChange, ...args }) => {
               size={16}
               color=""
               key={i}
-              iconName="static/images/settings.react.svg"
+              iconName={SettingsReactSvgUrl}
             />
           );
           break;
@@ -80,6 +81,6 @@ Default.args = {
   iconSize: 0,
   mask: null,
   isDisabled: false,
-  iconName: "static/images/search.react.svg",
+  iconName: SearchReactSvgUrl,
   isIconFill: false,
 };

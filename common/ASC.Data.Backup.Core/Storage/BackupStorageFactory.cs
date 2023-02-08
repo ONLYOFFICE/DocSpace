@@ -70,19 +70,18 @@ public class BackupStorageFactory
     {
         var settings = _configuration.GetSetting<BackupSettings>("backup");
 
-
         switch (type)
         {
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
                 {
-                    _documentsBackupStorage.Init(tenantId, null);
+                    _documentsBackupStorage.Init(tenantId);
 
                     return _documentsBackupStorage;
                 }
             case BackupStorageType.DataStore:
                 {
-                    _consumerBackupStorage.Init(tenantId, null);
+                    _consumerBackupStorage.Init(tenantId);
 
                     return _consumerBackupStorage;
                 }

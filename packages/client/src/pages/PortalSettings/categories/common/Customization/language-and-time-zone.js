@@ -1,3 +1,4 @@
+﻿import CombinedShapeSvgUrl from "PUBLIC_DIR/images/combined.shape.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import FieldContainer from "@docspace/components/field-container";
@@ -11,7 +12,6 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl, setCookie } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
 import { isMobileOnly } from "react-device-detect";
@@ -164,8 +164,6 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
-      nameSchemaId,
-      getCurrentCustomSchema,
       cultureNames,
       rawTimezones,
       portalTimeZoneId,
@@ -254,18 +252,14 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     if (language !== prevProps.language) {
-      i18n
-        .changeLanguage(language)
-        .then(() => {
-          const newLocaleSelectedLanguage =
-            findSelectedItemByKey(cultureNames, this.state.language.key) ||
-            cultureNames[0];
-          this.setState({
-            language: languageFromSessionStorage || newLocaleSelectedLanguage,
-          });
-        })
-        //.then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(nameSchemaId));
+      i18n.changeLanguage(language).then(() => {
+        const newLocaleSelectedLanguage =
+          findSelectedItemByKey(cultureNames, this.state.language.key) ||
+          cultureNames[0];
+        this.setState({
+          language: languageFromSessionStorage || newLocaleSelectedLanguage,
+        });
+      });
     }
     if (timezoneDefault && languageDefault) {
       this.checkChanges();
@@ -386,7 +380,7 @@ class LanguageAndTimeZone extends React.Component {
 
       history.push(
         combineUrl(
-          AppServerConfig.proxyURL,
+          window.DocSpaceConfig?.proxy?.url,
           config.homepage,
           "/portal-settings/common/customization"
         )
@@ -495,7 +489,8 @@ class LanguageAndTimeZone extends React.Component {
               {t("StudioTimeLanguageSettings")}
             </div>
             <HelpButton
-              iconName="static/images/combined.shape.svg"
+              offsetRight={0}
+              iconName={CombinedShapeSvgUrl}
               size={12}
               tooltipContent={tooltipLanguageTimeSettings}
             />
@@ -532,7 +527,6 @@ export default inject(({ auth, setup, common }) => {
     organizationName,
     greetingSettings,
     getPortalTimezones,
-    getCurrentCustomSchema,
     cultures,
     helpLink,
     currentColorScheme,
@@ -558,7 +552,6 @@ export default inject(({ auth, setup, common }) => {
     nameSchemaId,
     organizationName,
     setLanguageAndTime,
-    getCurrentCustomSchema,
     getPortalTimezones,
     isLoaded,
     setIsLoadedLngTZSettings,

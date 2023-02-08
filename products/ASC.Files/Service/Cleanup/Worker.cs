@@ -33,13 +33,11 @@ namespace ASC.Files.AutoCleanUp;
 [Singletone]
 public class Worker
 {
-    private readonly TimeSpan _period;
     private readonly ILogger<Worker> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public Worker(IConfiguration configuration, ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
     {
-        _period = TimeSpan.Parse(configuration.GetValue<string>("files:autoCleanUp:period") ?? "0:5:0");
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
     }
@@ -53,7 +51,7 @@ public class Worker
 
         List<TenantUserSettings> activeTenantsUsers;
 
-        using (var scope = _serviceScopeFactory.CreateScope())
+        await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
             using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
             activeTenantsUsers = GetTenantsUsers(dbContext);
@@ -61,7 +59,6 @@ public class Worker
 
         if (!activeTenantsUsers.Any())
         {
-            _logger.InfoWaitingForData(_period);
             return;
         }
 
@@ -79,16 +76,17 @@ public class Worker
 
         try
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
             {
                 var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+                tenantManager.SetCurrentTenant(tenantUser.TenantId);
+
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();
                 var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
                 var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
                 var fileStorageService = scope.ServiceProvider.GetRequiredService<Web.Files.Services.WCFService.FileStorageService>();
                 var fileDateTime = scope.ServiceProvider.GetRequiredService<FileDateTime>();
 
-                tenantManager.SetCurrentTenant(tenantUser.TenantId);
                 var userAccount = authManager.GetAccountByID(tenantUser.TenantId, tenantUser.UserId);
 
                 if (userAccount == ASC.Core.Configuration.Constants.Guest)
@@ -102,18 +100,18 @@ public class Worker
                 var folderDao = daoFactory.GetFolderDao<int>();
                 var now = DateTime.UtcNow;
 
-                var filesList = new List<JsonElement>();
-                var foldersList = new List<JsonElement>();
+                var filesList = new List<int>();
+                var foldersList = new List<int>();
 
                 var trashId = await folderDao.GetFolderIDTrashAsync(false, tenantUser.UserId);
 
                 foldersList.AddRange((await folderDao.GetFoldersAsync(trashId).ToListAsync())
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
-                    .Select(f => JsonDocument.Parse(JsonSerializer.Serialize(f.Id)).RootElement));
+                    .Select(f => f.Id));
 
                 filesList.AddRange((await fileDao.GetFilesAsync(trashId, null, default(FilterType), false, Guid.Empty, string.Empty, false).ToListAsync())
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
-                    .Select(y => JsonDocument.Parse(JsonSerializer.Serialize(y.Id)).RootElement));
+                    .Select(y => y.Id));
 
                 _logger.InfoCleanUp(tenantUser.TenantId, trashId);
 
@@ -130,7 +128,7 @@ public class Worker
                         break;
                     }
 
-                    Thread.Sleep(100);
+                    await Task.Delay(100);
                 }
 
                 _logger.InfoCleanUpFinish(tenantUser.TenantId, trashId);
@@ -150,7 +148,7 @@ public class Worker
             .Join(dbContext.WebstudioSettings, a => a.Id, b => b.TenantId, (tenants, settings) => new { tenants, settings })
             .Where(x => x.tenants.Status == TenantStatus.Active &&
                         x.settings.Id == filesSettingsId &&
-                        JsonExtensions.JsonValue(nameof(x.settings.Data).ToLower(), "AutomaticallyCleanUp.IsAutoCleanUp") == "true")
+                        Convert.ToBoolean(JsonExtensions.JsonValue(nameof(x.settings.Data).ToLower(), "AutomaticallyCleanUp.IsAutoCleanUp")) == true)
             .Select(r => new TenantUserSettings()
             {
                 TenantId = r.tenants.Id,

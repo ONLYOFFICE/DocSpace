@@ -40,8 +40,10 @@ public class RestorePortalTask : PortalTaskBase
     private readonly LicenseReader _licenseReader;
     private readonly TenantManager _tenantManager;
     private readonly AscCacheNotify _ascCacheNotify;
+    private readonly BackupRepository _backupRepository;
     private readonly ILogger<RestorePortalTask> _options;
     private readonly ILogger<RestoreDbModuleTask> _logger;
+    private string _region;
 
     public RestorePortalTask(
         DbFactory dbFactory,
@@ -53,7 +55,8 @@ public class RestorePortalTask : PortalTaskBase
         LicenseReader licenseReader,
         TenantManager tenantManager,
         AscCacheNotify ascCacheNotify,
-        ModuleProvider moduleProvider)
+        ModuleProvider moduleProvider,
+        BackupRepository backupRepository)
         : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
         _coreBaseSettings = coreBaseSettings;
@@ -62,9 +65,10 @@ public class RestorePortalTask : PortalTaskBase
         _ascCacheNotify = ascCacheNotify;
         _options = options;
         _logger = logger;
+        _backupRepository = backupRepository;
     }
 
-    public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
+    public void Init(string region, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(fromFilePath);
 
@@ -76,7 +80,8 @@ public class RestorePortalTask : PortalTaskBase
         BackupFilePath = fromFilePath;
         UpgradesPath = upgradesPath;
         _columnMapper = columnMapper ?? new ColumnMapper();
-        Init(tenantId, toConfigPath);
+        _region = region;
+        Init(tenantId);
     }
 
     public override async Task RunJob()
@@ -103,7 +108,7 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var module in modulesToProcess)
                 {
-                    var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, StorageFactory, StorageFactoryConfig, ModuleProvider);
+                    var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, _columnMapper, DbFactory, ReplaceDate, Dump, _region, StorageFactory, StorageFactoryConfig, ModuleProvider);
                     restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
 
                     foreach (var tableName in _ignoredTables)
@@ -113,6 +118,7 @@ public class RestorePortalTask : PortalTaskBase
 
                     await restoreTask.RunJob();
                 }
+                _backupRepository.MigrationBackupRecords(TenantId, _columnMapper.GetTenantMapping(), _region);
             }
 
             _options.DebugEndRestoreData();
@@ -180,7 +186,7 @@ public class RestorePortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed);
+            var storageModules = StorageFactoryConfig.GetModuleList(_region).Where(IsStorageModuleAllowed);
             var tenants = _tenantManager.GetTenants(false);
 
             stepscount += storageModules.Count() * tenants.Count;
@@ -353,7 +359,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
+                var storage = StorageFactory.GetStorage(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -407,8 +413,8 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id, module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var storage = StorageFactory.GetStorage(tenant.Id, module, _region);
+                var domains = StorageFactoryConfig.GetDomainList(module, _region).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
 

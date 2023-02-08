@@ -1,3 +1,4 @@
+﻿import ExpanderDownReactSvgUrl from "PUBLIC_DIR/images/expander-down.react.svg?url";
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -231,7 +232,7 @@ const ThirdPartyComboBox = ({
           </Text>
           <ReactSVG
             className="set_room_params-thirdparty-combobox-expander"
-            src={"/static/images/expander-down.react.svg"}
+            src={ExpanderDownReactSvgUrl}
           />
         </div>
 
@@ -261,6 +262,7 @@ const ThirdPartyComboBox = ({
           maxHeight={isHugeMobile() ? 158 : 382}
           directionY={dropdownDirection}
           marginTop={dropdownDirection === "bottom" ? "4px" : "-36px"}
+          hasItems={isOpen}
         >
           {thirdparties.map((thirdparty) => (
             <DropDownItem

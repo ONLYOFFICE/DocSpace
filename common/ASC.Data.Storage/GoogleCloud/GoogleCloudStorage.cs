@@ -142,7 +142,7 @@ public class GoogleCloudStorage : BaseStorage
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         var tempStream = _tempStream.Create();
 
@@ -854,4 +854,17 @@ public class GoogleCloudStorage : BaseStorage
         return _moduleAcl;
     }
 
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        var storage = GetStorage();
+        var objectName = MakePath(domain, path);
+
+        var obj = await storage.GetObjectAsync(_bucket, objectName);
+
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.Updated ?? obj.TimeCreated ?? DateTime.MinValue;
+
+        var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
+
+        return etag;
+    }
 }

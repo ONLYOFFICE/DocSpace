@@ -26,7 +26,7 @@ const StyledComponent = styled.div`
   .category-description {
     margin-top: 5px;
     line-height: 20px;
-    color: #657077;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
     margin-bottom: 20px;
     max-width: 700px;
   }
@@ -100,9 +100,9 @@ const Customization = (props) => {
       {!isLoadedPage ? (
         <LoaderDescriptionCustomization />
       ) : (
-        <div className="category-description">{`${t(
-          "Settings:CustomizationDescription"
-        )}`}</div>
+        <div className="category-description">
+          {t("Settings:CustomizationDescription")}
+        </div>
       )}
       <LanguageAndTimeZone isMobileView={isMobile} />
       <StyledSettingsSeparator />

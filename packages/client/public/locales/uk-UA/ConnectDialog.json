@@ -1,7 +1,6 @@
 {
   "Account": "Обліковий запис",
   "ConnectFolderTitle": "Заголовок папки",
-  "ConnectMakeShared": "Надати спільний доступ та помістити в папку \"Загальне\"",
   "ConnectionUrl": "URL-адреса підключення",
   "Login": "Вхід",
   "Reconnect": "Перепідключитися"

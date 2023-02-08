@@ -24,11 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Core.Thirdparty.ProviderDao;
-
 namespace ASC.Files.Thirdparty.ProviderDao;
 
-internal abstract class ProviderDaoBase : ThirdPartyProviderDao
+internal class ProviderDaoBase : ThirdPartyProviderDao
 {
     private int _tenantID;
     private int TenantID
@@ -44,12 +42,6 @@ internal abstract class ProviderDaoBase : ThirdPartyProviderDao
         }
     }
 
-    protected readonly IServiceProvider _serviceProvider;
-    protected readonly TenantManager _tenantManager;
-    protected readonly CrossDao _crossDao;
-    protected readonly SelectorFactory _selectorFactory;
-    protected readonly ISecurityDao<string> _securityDao;
-
     public ProviderDaoBase(
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
@@ -59,10 +51,16 @@ internal abstract class ProviderDaoBase : ThirdPartyProviderDao
     {
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
-        _crossDao = crossDao;
-        _selectorFactory = selectorFactory;
         _securityDao = securityDao;
+        _selectorFactory = selectorFactory;
+        _crossDao = crossDao;
     }
+
+    protected readonly IServiceProvider _serviceProvider;
+    protected readonly TenantManager _tenantManager;
+    protected readonly ISecurityDao<string> _securityDao;
+    protected readonly SelectorFactory _selectorFactory;
+    protected readonly CrossDao _crossDao;
 
     protected bool IsCrossDao(string id1, string id2)
     {
@@ -72,6 +70,24 @@ internal abstract class ProviderDaoBase : ThirdPartyProviderDao
         }
 
         return !Equals(_selectorFactory.GetSelector(id1).GetIdCode(id1), _selectorFactory.GetSelector(id2).GetIdCode(id2));
+    }
+
+    protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
+    {
+        var pureShareRecords = await _securityDao.GetPureShareRecordsAsync(entries).ToListAsync();
+        var ids = pureShareRecords
+            //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
+            .Select(x => x.EntryId).Distinct();
+
+        foreach (var id in ids)
+        {
+            var firstEntry = entries.FirstOrDefault(y => y.Id.Equals(id));
+
+            if (firstEntry != null)
+            {
+                firstEntry.Shared = true;
+            }
+        }
     }
 
     protected internal Task<File<string>> PerformCrossDaoFileCopyAsync(string fromFileId, string toFolderId, bool deleteSourceFile)
@@ -88,7 +104,7 @@ internal abstract class ProviderDaoBase : ThirdPartyProviderDao
     protected async Task<File<int>> PerformCrossDaoFileCopyAsync(string fromFileId, int toFolderId, bool deleteSourceFile)
     {
         var fromSelector = _selectorFactory.GetSelector(fromFileId);
-        using var scope = _serviceProvider.CreateScope();
+        await using var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(TenantID);
 
@@ -117,23 +133,5 @@ internal abstract class ProviderDaoBase : ThirdPartyProviderDao
             fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
             toRootFolderId, _serviceProvider.GetService<IFolderDao<int>>(), _serviceProvider.GetService<IFileDao<int>>(), r => r,
             deleteSourceFolder, cancellationToken);
-    }
-
-    protected async Task SetSharedPropertyAsync(IEnumerable<FileEntry<string>> entries)
-    {
-        var pureShareRecords = await _securityDao.GetPureShareRecordsAsync(entries).ToListAsync();
-        var ids = pureShareRecords
-            //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-            .Select(x => x.EntryId).Distinct();
-
-        foreach (var id in ids)
-        {
-            var firstEntry = entries.FirstOrDefault(y => y.Id.Equals(id));
-
-            if (firstEntry != null)
-            {
-                firstEntry.Shared = true;
-            }
-        }
     }
 }

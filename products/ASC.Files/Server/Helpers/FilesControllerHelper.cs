@@ -247,6 +247,8 @@ public class FilesControllerHelper : FilesHelperBase
             file = result.Key;
         }
 
+        await _socketManager.UpdateFileAsync(file);
+
         return await GetFileInfoAsync(file.Id);
     }
 

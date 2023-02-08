@@ -29,12 +29,9 @@ namespace ASC.Files.Thirdparty.Sharpbox;
 [Transient]
 internal class SharpBoxProviderInfo : IProviderInfo
 {
-    public int ID { get; set; }
-    public Guid Owner { get; set; }
-    private readonly ILogger<SharpBoxProviderInfo> _logger;
-
     private nSupportedCloudConfigurations _providerKey;
-    public AuthData AuthData { get; set; }
+    private readonly ILogger<SharpBoxProviderInfo> _logger;
+    private readonly SharpBoxStorageDisposableWrapper _wrapper;
 
     public SharpBoxProviderInfo(SharpBoxStorageDisposableWrapper storageDisposableWrapper, ILogger<SharpBoxProviderInfo> logger)
     {
@@ -42,37 +39,40 @@ internal class SharpBoxProviderInfo : IProviderInfo
         _logger = logger;
     }
 
-    public void Dispose()
+    public AuthData AuthData { get; set; }
+    public bool HasLogo { get; set; }
+    public bool Private { get; set; }
+    public DateTime CreateOn { get; set; }
+    public FolderType FolderType { get; set; }
+    public Guid Owner { get; set; }
+    public int ID { get; set; }
+    public string CustomerTitle { get; set; }
+    public string FolderId { get; set; }
+
+    public string ProviderKey
     {
-        if (StorageOpened)
-        {
-            Storage.Close();
-        }
+        get => _providerKey.ToString();
+        set => _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true);
     }
+
+    public string RootFolderId => "sbox-" + ID;
+    public FolderType RootFolderType { get; set; }
 
     internal CloudStorage Storage
     {
         get
         {
-            if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
+            
+            if (!_wrapper.TryGetStorage(ID, out var storage) || !storage.IsOpened)
             {
-                return _wrapper.CreateStorage(AuthData, _providerKey);
+                return _wrapper.CreateStorage(AuthData, _providerKey, ID);
             }
 
-            return _wrapper.Storage;
+            return storage;
         }
     }
 
-    internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
-
-    public string CustomerTitle { get; set; }
-    public DateTime CreateOn { get; set; }
-    public string RootFolderId => "sbox-" + ID;
-
-    public void UpdateTitle(string newtitle)
-    {
-        CustomerTitle = newtitle;
-    }
+    internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
 
     public Task<bool> CheckAccessAsync()
     {
@@ -92,6 +92,14 @@ internal class SharpBoxProviderInfo : IProviderInfo
         }
     }
 
+    public void Dispose()
+    {
+        if (StorageOpened)
+        {
+            Storage.Close();
+        }
+    }
+
     public Task InvalidateStorageAsync()
     {
         if (_wrapper != null)
@@ -102,27 +110,39 @@ internal class SharpBoxProviderInfo : IProviderInfo
         return Task.CompletedTask;
     }
 
-    public string ProviderKey
+    public void UpdateTitle(string newtitle)
     {
-        get => _providerKey.ToString();
-        set => _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true);
+        CustomerTitle = newtitle;
     }
-
-    public FolderType RootFolderType { get; set; }
-    public FolderType FolderType { get; set; }
-    public string FolderId { get; set; }
-    public bool Private { get; set; }
-    private readonly SharpBoxStorageDisposableWrapper _wrapper;
 }
 
 [Transient]
-class SharpBoxStorageDisposableWrapper : IDisposable
+internal class SharpBoxStorageDisposableWrapper : IDisposable
 {
-    public CloudStorage Storage { get; private set; }
+    private readonly ConcurrentDictionary<int, CloudStorage> _storages =
+        new ConcurrentDictionary<int, CloudStorage>();
 
-    public SharpBoxStorageDisposableWrapper() { }
+    public SharpBoxStorageDisposableWrapper()
+    { }
 
-    internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey)
+    public void Dispose()
+    {
+        foreach (var (key, storage) in _storages)
+        {
+            if (storage != null && storage.IsOpened)
+            {
+                storage.Close();
+                _storages.Remove(key, out _);
+            }
+        }
+    }
+
+    internal bool TryGetStorage(int id, out CloudStorage storage)
+    {
+        return _storages.TryGetValue(id, out storage);
+    }
+
+    internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey, int id)
     {
         var prms = Array.Empty<object>();
         if (!string.IsNullOrEmpty(_authData.Url))
@@ -151,15 +171,8 @@ class SharpBoxStorageDisposableWrapper : IDisposable
             storage.Open(config, new GenericNetworkCredentials { Password = _authData.Password, UserName = _authData.Login });
         }
 
-        return Storage = storage;
-    }
+        _storages.TryAdd(id, storage);
 
-    public void Dispose()
-    {
-        if (Storage != null && Storage.IsOpened)
-        {
-            Storage.Close();
-            Storage = null;
-        }
+        return storage;
     }
 }

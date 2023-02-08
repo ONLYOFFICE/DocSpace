@@ -57,11 +57,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var fileDao = selector.GetFileDao(fileId);
         var result = await fileDao.GetFileAsync(selector.ConvertId(fileId));
 
-        if (result != null)
-        {
-            await SetSharedPropertyAsync(new[] { result });
-        }
-
         return result;
     }
 
@@ -72,11 +67,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var fileDao = selector.GetFileDao(fileId);
         var result = await fileDao.GetFileAsync(selector.ConvertId(fileId), fileVersion);
 
-        if (result != null)
-        {
-            await SetSharedPropertyAsync(new[] { result });
-        }
-
         return result;
     }
 
@@ -85,11 +75,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var selector = _selectorFactory.GetSelector(parentId);
         var fileDao = selector.GetFileDao(parentId);
         var result = await fileDao.GetFileAsync(selector.ConvertId(parentId), title);
-
-        if (result != null)
-        {
-            await SetSharedPropertyAsync(new[] { result });
-        }
 
         return result;
     }
@@ -100,11 +85,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         var fileDao = selector.GetFileDao(fileId);
         var result = await fileDao.GetFileAsync(selector.ConvertId(fileId), fileVersion);
-
-        if (result != null)
-        {
-            await SetSharedPropertyAsync(new[] { result });
-        }
 
         return result;
     }
@@ -188,8 +168,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         var fileDao = selector.GetFileDao(parentId);
         var files = fileDao.GetFilesAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject);
         var result = await files.Where(r => r != null).ToListAsync();
-
-        await SetSharedPropertyAsync(result);
 
         foreach (var r in result)
         {

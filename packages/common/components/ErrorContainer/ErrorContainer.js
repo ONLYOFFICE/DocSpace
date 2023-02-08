@@ -14,6 +14,7 @@ const ErrorContainer = (props) => {
     buttonText,
     buttonUrl,
     children,
+    customizedBodyText,
     ...rest
   } = props;
 
@@ -333,14 +334,30 @@ const ErrorContainer = (props) => {
         </svg>
       </div>
       {headerText && (
-        <Headline id="header" type="header">
+        <Headline id="header" type="header" theme={rest?.theme}>
           {headerText}
         </Headline>
       )}
-      {bodyText && <Text id="text">{bodyText}</Text>}
+      {bodyText && (
+        <Text id="text" theme={rest?.theme}>
+          {bodyText}
+        </Text>
+      )}
+      {customizedBodyText && (
+        <Text
+          id="customized-text"
+          fontWeight={600}
+          theme={rest?.theme}
+          fontSize="13px"
+        >
+          {customizedBodyText}
+        </Text>
+      )}
+
       {buttonText && buttonUrl && (
         <div id="button-container">
           <Button
+            theme={rest?.theme}
             id="button"
             size="normal"
             scale

@@ -25,7 +25,7 @@ const globalColors = {
   blueLightMid: "#265A8F",
   strongBlue: "#316AC5",
 
-  blueDenim : "#5299E0",
+  blueDenim: "#5299E0",
   blueDenimTransparent: "rgba(82, 153, 224, 0.85)",
   blueMaya: "#4A8ACA",
   blueSky: "#96C1EC",
@@ -47,15 +47,15 @@ const globalColors = {
   warningColor: "#f1ca92",
   red: "#c30",
   darkRed: "#A60000",
-  activeSuccess: "#CAE796",
-  activeError: "#FFBFAA",
-  activeInfo: "#F1DA92",
-  activeWarning: "#F1CA92",
+  activeSuccess: "#E3F7BE",
+  activeError: "#F7CDBE",
+  activeInfo: "#F8F7BF",
+  activeWarning: "#F7E6BE",
 
-  hoverSuccess: "#BCDF7E",
-  hoverError: "#FFA98D",
-  hoverInfo: "#EED27B",
-  hoverWarning: "#EEB97B",
+  hoverSuccess: "#E3F7BE",
+  hoverError: "#F7CDBE",
+  hoverInfo: "#F8F7BF",
+  hoverWarning: "#F7E6BE",
 };
 
 export default globalColors;

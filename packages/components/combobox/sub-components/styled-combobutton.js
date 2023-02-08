@@ -1,21 +1,32 @@
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 import Base from "../../themes/base";
 import NoUserSelect from "../../utils/commonStyles";
+
+import TriangleDownIcon from "PUBLIC_DIR/images/triangle.down.react.svg";
+import commonIconsStyles from "../../utils/common-icons-style";
+
+import Loader from "../../loader";
+
+const StyledTriangleDownIcon = styled(TriangleDownIcon)`
+  ${commonIconsStyles}
+`;
 
 const modernViewButton = css`
   height: ${(props) => props.theme.comboBox.button.heightModernView};
   background: ${(props) =>
-    props.isOpen
-      ? props.theme.comboBox.button.activeBackgroundModernView
+    props.isOpen || props.isLoading
+      ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.backgroundModernView};
 
-  border: none;
+  border: none !important;
+  padding-right: 0px;
 `;
 
 const hoverModernViewButton = css`
   background: ${(props) =>
-    props.isOpen
-      ? props.theme.comboBox.button.activeBackgroundModernView
+    props.isOpen || props.isLoading
+      ? props.theme.comboBox.button.focusBackgroundModernView
       : props.theme.comboBox.button.hoverBackgroundModernView} !important;
 `;
 
@@ -39,7 +50,19 @@ const StyledComboButton = styled.div`
 
   ${NoUserSelect};
 
-  padding-left: ${(props) => props.theme.comboBox.button.paddingLeft};
+  padding-left: ${(props) =>
+    props.size === "content"
+      ? props.theme.comboBox.button.paddingLeft
+      : props.theme.comboBox.button.selectPaddingLeft};
+
+  padding-right: ${(props) =>
+    props.size === "content"
+      ? props.displayArrow
+        ? props.theme.comboBox.button.paddingRight
+        : props.theme.comboBox.button.paddingRightNoArrow
+      : props.displayArrow
+      ? props.theme.comboBox.button.selectPaddingRight
+      : props.theme.comboBox.button.selectPaddingRightNoArrow};
 
   background: ${(props) =>
     !props.noBorder
@@ -79,15 +102,26 @@ const StyledComboButton = styled.div`
 
   ${(props) => props.modernView && modernViewButton}
 
-  :hover {
-    ${(props) => props.modernView && hoverModernViewButton}
 
+  .optionalBlock {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.isOpen
+            ? props.theme.iconButton.hoverColor
+            : props.theme.iconButton.color};
+      }
+    }
+  }
+  :hover {
     border-color: ${(props) =>
       props.isOpen
         ? props.theme.comboBox.button.hoverBorderColorOpen
         : props.theme.comboBox.button.hoverBorderColor};
     cursor: ${(props) =>
-      props.isDisabled || (!props.containOptions && !props.withAdvancedOptions)
+      props.isDisabled ||
+      (!props.containOptions && !props.withAdvancedOptions) ||
+      props.isLoading
         ? "default"
         : "pointer"};
 
@@ -96,8 +130,19 @@ const StyledComboButton = styled.div`
       `
       border-color: ${props.theme.comboBox.button.hoverDisabledBorderColor};
     `}
+
+    ${(props) => props.modernView && hoverModernViewButton}
+
+    .optionalBlock {
+      svg {
+        path {
+          fill: ${(props) => props.theme.iconButton.hoverColor};
+        }
+      }
+    }
   }
   .combo-button-label {
+    visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
     margin-right: ${(props) =>
       props.noBorder
         ? props.theme.comboBox.label.marginRight
@@ -124,12 +169,25 @@ const StyledComboButton = styled.div`
       props.isOpen
         ? props.theme.comboBox.button.hoverBorderColorOpen
         : props.theme.comboBox.button.hoverBorderColor};
+
+    .optionalBlock {
+      svg {
+        path {
+          fill: ${(props) =>
+            props.isOpen
+              ? props.theme.iconButton.hoverColor
+              : props.theme.iconButton.color};
+        }
+      }
+    }
   }
 `;
 StyledComboButton.defaultProps = { theme: Base };
 
 const StyledOptionalItem = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
+
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 
   path {
     fill: ${(props) =>
@@ -148,6 +206,8 @@ const StyledIcon = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
+
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 
   .combo-button_selected-icon {
     path {
@@ -174,33 +234,51 @@ StyledIcon.defaultProps = { theme: Base };
 
 const StyledArrowIcon = styled.div`
   display: flex;
-  align-self: start;
+  align-self: center;
+
+  visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 
   .combo-buttons_expander-icon {
     path {
-      fill: ${(props) => props.theme.comboBox.arrow.fillColor};
+      fill: ${(props) => props.theme.comboBox.label.selectedColor};
     }
   }
 
   width: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.width : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.width : "0px"};
   flex: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.flex : "0px"};
-  margin-top: ${(props) =>
-    props.noBorder
-      ? props.theme.comboBox.arrow.marginTopWithBorder
-      : props.theme.comboBox.arrow.marginTop};
+    props.displayArrow ? props.theme.comboBox.arrow.flex : "0px"};
   margin-right: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.marginRight : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
   margin-left: ${(props) =>
-    props.needDisplay ? props.theme.comboBox.arrow.marginLeft : "0px"};
+    props.displayArrow ? props.theme.comboBox.arrow.marginLeft : "0px"};
 
   ${(props) =>
     props.isOpen &&
     `
     transform: scale(1, -1);
   `}
+
+  ${isMobileOnly &&
+  css`
+    margin-left: auto;
+  `}
 `;
+
 StyledArrowIcon.defaultProps = { theme: Base };
 
-export { StyledArrowIcon, StyledIcon, StyledOptionalItem, StyledComboButton };
+const StyledLoader = styled(Loader)`
+  position: absolute;
+  margin-left: ${(props) =>
+    props.displaySize === "content" ? "-16px" : "-8px"};
+  margin-top: 2px;
+`;
+
+export {
+  StyledArrowIcon,
+  StyledIcon,
+  StyledOptionalItem,
+  StyledComboButton,
+  StyledTriangleDownIcon,
+  StyledLoader,
+};

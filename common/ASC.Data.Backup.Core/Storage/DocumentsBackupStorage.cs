@@ -32,7 +32,6 @@ namespace ASC.Data.Backup.Storage;
 public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
 {
     private int _tenantId;
-    private string _webConfigPath;
     private readonly SetupInfo _setupInfo;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
@@ -63,12 +62,11 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         _logger = logger;
     }
 
-    public void Init(int tenantId, string webConfigPath)
+    public void Init(int tenantId)
     {
         _tenantId = tenantId;
-        _webConfigPath = webConfigPath;
-        var store = _storageFactory.GetStorage(_webConfigPath, _tenantId, "files");
-        _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory,_tempPath, _logger, store, "", _setupInfo.ChunkUploadSize);
+        var store = _storageFactory.GetStorage(_tenantId, "files");
+        _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory, _tempPath, _logger, store, "", _setupInfo.ChunkUploadSize);
     }
 
     public async Task<string> Upload(string folderId, string localPath, Guid userId)
@@ -261,7 +259,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
     {
         // hack: create storage using webConfigPath and put it into DataStoreCache
         // FileDao will use this storage and will not try to create the new one from service config
-        _storageFactory.GetStorage(_webConfigPath, _tenantId, "files");
+        _storageFactory.GetStorage(_tenantId, "files");
         return _daoFactory.GetFileDao<T>();
     }
 }

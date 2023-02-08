@@ -28,15 +28,13 @@ const getTreeItems = (data, path, t) => {
       case "AccessRights":
         return t("AccessRights");
       case "ManagementCategoryCommon":
-        return t("Common:Common");
-      case "Customization":
         return t("Customization");
+      case "SettingsGeneral":
+        return t("SettingsGeneral");
       case "StudioTimeLanguageSettings":
         return t("StudioTimeLanguageSettings");
       case "CustomTitles":
         return t("CustomTitles");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
@@ -57,6 +55,8 @@ const getTreeItems = (data, path, t) => {
         return t("Payments");
       case "SingleSignOn":
         return t("SingleSignOn");
+      case "DeveloperTools":
+        return t("DeveloperTools");
       default:
         throw new Error("Unexpected translation key");
     }
@@ -137,7 +137,7 @@ class ArticleBodyContent extends React.Component {
 
     if (prevProps.location.pathname !== this.props.location.pathname) {
       if (this.props.location.pathname.includes("payments")) {
-        this.setState({ selectedKeys: ["4-0"] });
+        this.setState({ selectedKeys: ["7-0"] });
       }
 
       if (this.props.location.pathname.includes("common")) {
@@ -176,16 +176,14 @@ class ArticleBodyContent extends React.Component {
     switch (tKey) {
       case "AccessRights":
         return t("Common:AccessRights");
-      case "Common:Common":
-        return t("Common:Common");
       case "Customization":
         return t("Customization");
+      case "SettingsGeneral":
+        return t("SettingsGeneral");
       case "StudioTimeLanguageSettings":
         return t("StudioTimeLanguageSettings");
       case "CustomTitlesWelcome":
         return t("CustomTitlesWelcome");
-      case "TeamTemplate":
-        return t("TeamTemplate");
       case "ManagementCategorySecurity":
         return t("ManagementCategorySecurity");
       case "PortalAccess":
@@ -208,6 +206,8 @@ class ArticleBodyContent extends React.Component {
         return t("RestoreBackup");
       case "PortalDeletion":
         return t("PortalDeletion");
+      case "DeveloperTools":
+        return t("DeveloperTools");
       default:
         throw new Error("Unexpected translation key");
     }
@@ -249,21 +249,10 @@ class ArticleBodyContent extends React.Component {
           isActive={item.key === selectedKeys[0][0]}
           onClick={() => this.onSelect(item.key)}
           folderId={item.id}
+          style={{ marginTop: `${item.key.includes(7) ? "16px" : "0"}` }}
         />
       );
     });
-
-    const settingsHeader = (
-      <CatalogItem
-        key={"settings-header"}
-        isHeader={true}
-        isFirstHeader={true}
-        showText={showText}
-        text={`${t("Common:Settings")}`}
-      />
-    );
-
-    items.unshift(settingsHeader);
 
     return items;
   };

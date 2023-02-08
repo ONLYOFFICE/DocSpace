@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import StyledHeading from "./StyledHeadline";
+import { classNames } from "@docspace/components/utils/classNames";
 
-const Headline = ({ type, ...props }) => {
+const Headline = ({ type, className, ...props }) => {
   //console.log("Headline render");
   return (
     <StyledHeading
       headlineType={type}
+      className={classNames("headline-heading", className)}
       {...props}
-      className={`headline-heading ${props?.className}`}
     />
   );
 };

@@ -1,14 +1,14 @@
+﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import React from "react";
 import { withRouter } from "react-router";
 import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import config from "PACKAGE_FILE";
 
-const iconUrl = "/static/images/catalog.accounts.react.svg";
+const iconUrl = CatalogAccountsReactSvgUrl;
 
 const PureAccountsItem = ({
   showText,
@@ -25,7 +25,11 @@ const PureAccountsItem = ({
     setSelectedNode(["accounts", "filter"]);
 
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, "/accounts")
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/accounts"
+      )
     );
     toggleArticleOpen();
   }, [setSelectedFolder, setSelectedNode, history]);

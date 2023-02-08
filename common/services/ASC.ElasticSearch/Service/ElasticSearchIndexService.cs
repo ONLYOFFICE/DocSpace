@@ -69,7 +69,7 @@ public class ElasticSearchIndexService : BackgroundService
             _logger.ErrorSubscribeOnStart(e);
         }
 
-        using var scope = _serviceScopeFactory.CreateScope();
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer>();
 
         while (!factoryIndexer.CheckState(false))
@@ -138,14 +138,14 @@ public class ElasticSearchIndexService : BackgroundService
 
             IEnumerable<Type> wrappers;
 
-            using (var scope = _serviceScopeFactory.CreateScope())
+            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
             {
                 wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Select(r => r.GetType()).ToList();
             }
 
             await Parallel.ForEachAsync(wrappers, async (wrapper, token) =>
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
+                await using (var scope = _serviceScopeFactory.CreateAsyncScope())
                 {
                     await IndexProduct((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
                 }

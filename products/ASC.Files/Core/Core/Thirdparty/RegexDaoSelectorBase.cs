@@ -34,7 +34,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
     public static string Id { get; protected set; }
     protected Regex Selector => new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
 
-    private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
+    private Dictionary<string, BaseProviderInfo<T>> Providers { get; set; }
 
     protected RegexDaoSelectorBase(
         IServiceProvider serviceProvider,
@@ -42,7 +42,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
     {
         _serviceProvider = serviceProvider;
         _daoFactory = daoFactory;
-        Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
+        Providers = new Dictionary<string, BaseProviderInfo<T>>();
     }
 
     public virtual string ConvertId(string id)
@@ -104,17 +104,20 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
 
     private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
     {
-        var providerKey = $"{id}{typeof(T1)}";
-        if (Providers.TryGetValue(providerKey, out var provider))
-        {
-            return (T1)provider;
-        }
-
+        var providerKey = $"{id}";
+        var info = Providers.Get(providerKey);
         var res = _serviceProvider.GetService<T1>();
 
-        res.Init(GetInfo(id), this);
+        if (info != null)
+        {
+            res.Init(info, this);
+            return res;
+        }
 
-        Providers.Add(providerKey, res);
+        info = GetInfo(id);
+        res.Init(info, this);
+
+        Providers.Add(providerKey, info);
 
         return res;
     }
@@ -150,7 +153,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
     public async Task UpdateProviderFolderId(T provider, string id)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, id, provider.FolderType, provider.Private);
+        await dbDao.UpdateProviderInfoAsync(provider.ID, provider.CustomerTitle, id, provider.FolderType, provider.Private);
         provider.FolderId = id;
     }
 
@@ -169,9 +172,9 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
 
     public void Dispose()
     {
-        foreach (var p in Providers)
+        foreach (var p in Providers.Values)
         {
-            p.Value.Dispose();
+            p.ProviderInfo.Dispose();
         }
     }
 }

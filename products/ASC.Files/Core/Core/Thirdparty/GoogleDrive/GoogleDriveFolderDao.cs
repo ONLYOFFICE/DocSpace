@@ -76,14 +76,15 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         return GetRootFolderAsync("");
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
+        IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.GoogleDrive))
         {
-            return AsyncEnumerable.Empty<Folder<string>>();
+            yield break;
         }
 
-        var rooms = GetFoldersAsync(parentId);
+        var rooms = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
         rooms = FilterByRoomType(rooms, filterType);
         rooms = FilterBySubject(rooms, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
@@ -93,32 +94,13 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
             rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        rooms = FilterByTags(rooms, withoutTags, tags);
+        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
-        return rooms;
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
-        IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
-    {
-        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.GoogleDrive))
+        await foreach (var room in rooms)
         {
-            return AsyncEnumerable.Empty<Folder<string>>();
+            yield return room;
         }
-
-        var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
-
-        folders = FilterByRoomType(folders, filterType);
-        folders = FilterBySubject(folders, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-        }
-
-        folders = FilterByTags(folders, withoutTags, tags);
-
-        return folders;
     }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
@@ -460,6 +442,11 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         }
         else
         {
+            if (DocSpaceHelper.IsRoom(folder.FolderType))
+            {
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+            }
+
             //rename folder
             driveFolder.Name = newTitle;
             var storage = await ProviderInfo.StorageAsync;

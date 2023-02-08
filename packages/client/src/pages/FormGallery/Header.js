@@ -1,9 +1,10 @@
+﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import IconButton from "@docspace/components/icon-button";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
-import { AppServerConfig } from "@docspace/common/constants";
 import {
   StyledHeadline,
   StyledContainer,
@@ -39,7 +40,7 @@ const SectionHeaderContent = (props) => {
     const pathname = `${url}?${filterParamsStr}`;
 
     history.push(
-      combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
 
@@ -50,7 +51,7 @@ const SectionHeaderContent = (props) => {
   return (
     <StyledContainer>
       <IconButton
-        iconName="/static/images/arrow.path.react.svg"
+        iconName={ArrowPathReactSvgUrl}
         size="17"
         isFill
         onClick={onBackToFiles}
@@ -64,7 +65,7 @@ const SectionHeaderContent = (props) => {
         <div className="info-panel-toggle-bg">
           <IconButton
             className="info-panel-toggle"
-            iconName="images/panel.react.svg"
+            iconName={PanelReactSvgUrl}
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}

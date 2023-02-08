@@ -15,6 +15,12 @@ const StyledErrorContainer = styled.div`
   border: 0;
   box-sizing: border-box;
 
+  .error_description_link {
+    color: #2da7db;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   #container {
     position: relative;
     margin: 12px 0 60px 0;
@@ -45,7 +51,9 @@ const StyledErrorContainer = styled.div`
     display: inline-block;
     margin: 0 0 36px 0;
   }
-
+  #customized-text {
+    color: ${(props) => props.theme.errorContainer.bodyText};
+  }
   @media screen and (max-width: 960px) {
     body {
       padding: 24px 24px 0 24px;

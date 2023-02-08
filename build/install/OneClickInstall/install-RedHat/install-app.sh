@@ -83,8 +83,6 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	fi
 	
 	${package_manager} -y install ${package_sysname}-documentserver
-
-	systemctl restart supervisord
 	
 expect << EOF
 	
@@ -125,6 +123,32 @@ elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 	${package_manager} -y update ${package_sysname}-documentserver
 fi
 
+{ ${package_manager} check-update ${product}; PRODUCT_CHECK_UPDATE=$?; } || true
+if [ "$PRODUCT_INSTALLED" = "false" ]; then
+	${package_manager} install -y ${product}
+	${product}-configuration \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
+elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
+	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
+	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
+	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
+	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
+	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
+
+	${package_manager} -y update ${product}
+	${product}-configuration \
+		-e ${ENVIRONMENT} \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
+fi
+
 NGINX_ROOT_DIR="/etc/nginx"
 
 NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
@@ -139,31 +163,7 @@ if rpm -q "firewalld"; then
 	systemctl restart firewalld.service
 fi
 
-{ ${package_manager} check-update ${package_sysname}-${product}; PRODUCT_CHECK_UPDATE=$?; } || true
-if [ "$PRODUCT_INSTALLED" = "false" ]; then
-	${package_manager} install -y ${package_sysname}-${product}
-	${product}-configuration.sh \
-		-mysqlh ${MYSQL_SERVER_HOST} \
-		-mysqld ${MYSQL_SERVER_DB_NAME} \
-		-mysqlu ${MYSQL_SERVER_USER} \
-		-mysqlp ${MYSQL_ROOT_PASS}
-elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
-	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
-	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
-
-	${package_manager} -y update ${package_sysname}-${product}
-	${product}-configuration.sh \
-		-e ${ENVIRONMENT} \
-		-mysqlh ${MYSQL_SERVER_HOST} \
-		-mysqld ${MYSQL_SERVER_DB_NAME} \
-		-mysqlu ${MYSQL_SERVER_USER} \
-		-mysqlp ${MYSQL_ROOT_PASS}
-fi
+systemctl restart nginx
 
 echo ""
 echo "$RES_INSTALL_SUCCESS"

@@ -100,6 +100,8 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
+  white-space: pre-line;
+
   #modal-scroll > .scroll-body {
     ${isMobile && "margin-right: 0 !important"}
     padding-right: 16px !important;

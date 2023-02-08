@@ -22,5 +22,5 @@
   "SetAppDescription": "L'authentification à deux facteurs est activée. Configurez votre application d'authentification pour continuer à travailler sur le portail. Vous pouvez utiliser Google Authenticator pour <1>Android</1> et <4>iOS</4> ou Authenticator pour <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Pour connecter l'app, scannez le code QR ou saisissez manuellement votre clé secrète <1>{{ secretKey }}</1>, puis saisissez un code à 6 chiffres de votre app dans le champ ci-dessous.",
   "SetAppTitle": "Configurez votre application d'authentification",
-  "WelcomeUser": "Bienvenue sur notre portail ! Pour commencer, enregistrez-vous, ou connectez-vous via les réseaux sociaux."
+  "WelcomeUser": "Bienvenue sur notre portail !\nPour commencer, enregistrez-vous, ou connectez-vous via les réseaux sociaux."
 }

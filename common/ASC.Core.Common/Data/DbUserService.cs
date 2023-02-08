@@ -219,19 +219,33 @@ public class EFUserService : IUserService
 
         q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
+        var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
+        q = orderedQuery;
+
         if (!string.IsNullOrEmpty(sortBy))
         {
             if (sortBy == "type")
             {
-                var q1 = from user in q join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID)) 
-                         on user.Id equals userGroup.Userid into joinedGroup from @group in joinedGroup.DefaultIfEmpty() select new { user, @group };
+                var q1 = from user in q
+                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID))
+                         on user.Id equals userGroup.Userid into joinedGroup
+                         from @group in joinedGroup.DefaultIfEmpty()
+                         select new { user, @group };
 
-                q = sortOrderAsc ? q1.OrderBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user)
-                    : q1.OrderByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+                if (sortOrderAsc)
+                {
+                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
+                       .ThenBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user);
+                }
+                else
+                {
+                    q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
+                        .ThenByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+                }
             }
             else
             {
-                q = q.OrderBy(sortBy, sortOrderAsc);
+                q = orderedQuery.ThenBy(sortBy, sortOrderAsc);
             }
         }
 
@@ -257,6 +271,15 @@ public class EFUserService : IUserService
 
         return GetUserQuery(userDbContext, tenant)
             .ProjectTo<UserInfo>(_mapper.ConfigurationProvider);
+    }
+
+    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    {
+        var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var tenants = userDbContext.Users.Where(u => u.LastModified > from).Select(u => u.Tenant).Distinct().ToList();
+
+        return tenants;
     }
 
     public void RemoveGroup(int tenant, Guid id)
@@ -412,7 +435,7 @@ public class EFUserService : IUserService
         var dbGroup = _mapper.Map<Group, DbGroup>(group);
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(r => r.Groups, dbGroup);
+        userDbContext.AddOrUpdate(userDbContext.Groups, dbGroup);
         userDbContext.SaveChanges();
 
         return group;
@@ -465,7 +488,7 @@ public class EFUserService : IUserService
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
 
-            userDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
+            userDbContext.AddOrUpdate(userDbContext.Users, _mapper.Map<UserInfo, User>(user));
             userDbContext.SaveChanges();
             tx.Commit();
         });
@@ -491,7 +514,7 @@ public class EFUserService : IUserService
             if (user != null)
             {
                 user.LastModified = userGroupRef.LastModified;
-                userDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
+                userDbContext.AddOrUpdate(userDbContext.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
             }
 
             userDbContext.SaveChanges();
@@ -516,7 +539,7 @@ public class EFUserService : IUserService
         };
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(r => r.UserSecurity, us);
+        userDbContext.AddOrUpdate(userDbContext.UserSecurity, us);
         userDbContext.SaveChanges();
     }
 
@@ -547,7 +570,7 @@ public class EFUserService : IUserService
                     userPhoto.Photo = photo;
                 }
 
-                userDbContext.AddOrUpdate(r => r.Photos, userPhoto);
+                userDbContext.AddOrUpdate(userDbContext.Photos, userPhoto);
             }
             else if (userPhoto != null)
             {

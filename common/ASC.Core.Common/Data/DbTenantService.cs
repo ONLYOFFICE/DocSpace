@@ -350,7 +350,7 @@ public class DbTenantService : ITenantService
                     LastModified = DateTime.UtcNow
                 };
 
-                tenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
+                tenantDbContext.AddOrUpdate(tenantDbContext.CoreSettings, settings);
             }
 
             tenantDbContext.SaveChanges();
@@ -366,7 +366,7 @@ public class DbTenantService : ITenantService
         // characters
         if (validateCharacters)
         {
-            TenantDomainValidator.ValidateDomainCharacters(domain);
+            _tenantDomainValidator.ValidateDomainCharacters(domain);
         }
 
         using var tenantDbContext = _dbContextFactory.CreateDbContext();

@@ -1,3 +1,8 @@
+﻿import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
+import AccessEditFormReactSvgUrl from "PUBLIC_DIR/images/access.edit.form.react.svg?url";
+import FileActionsConvertEditDocReactSvgUrl from "PUBLIC_DIR/images/file.actions.convert.edit.doc.react.svg?url";
+import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Badge from "@docspace/components/badge";
@@ -18,7 +23,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  background: ${(props) => props.theme.filesBadges.color};
+  background: ${(props) => props.theme.filesBadges.backgroundColor};
   padding: 6px;
   border-radius: 4px;
   box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
@@ -58,11 +63,9 @@ const Badges = ({
   newItems,
   sectionWidth,
   item,
-  canWebEdit,
   isTrashFolder,
   isPrivacyFolder,
   isDesktopClient,
-  canConvert,
   accessToEdit,
   showNew,
   onFilesClick,
@@ -71,7 +74,6 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
-  canViewVersionFileHistory,
 }) => {
   const {
     id,
@@ -105,17 +107,13 @@ const Badges = ({
   const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
 
   const iconForm =
-    sizeBadge === "medium"
-      ? "/static/images/access.edit.form.medium.react.svg"
-      : "/static/images/access.edit.form.react.svg";
+    sizeBadge === "medium" ? FormFillRectSvgUrl : AccessEditFormReactSvgUrl;
 
-  const iconEdit = !isForm
-    ? "/static/images/file.actions.convert.edit.doc.react.svg"
-    : iconForm;
+  const iconEdit = !isForm ? FileActionsConvertEditDocReactSvgUrl : iconForm;
 
-  const iconRefresh = "/static/images/refresh.react.svg";
+  const iconRefresh = RefreshReactSvgUrl;
 
-  const iconPin = "images/unpin.react.svg";
+  const iconPin = UnpinReactSvgUrl;
 
   const unpinIconProps = {
     "data-id": id,
@@ -143,7 +141,7 @@ const Badges = ({
     "data-id": id,
   };
 
-  const onShowVersionHistoryProp = canViewVersionFileHistory
+  const onShowVersionHistoryProp = item.security?.ReadHistory
     ? { onClick: onShowVersionHistory }
     : {};
 
@@ -161,7 +159,7 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {canConvert && !isTrashFolder && (
+      {item.viewAccessability?.Convert && !isTrashFolder && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
@@ -176,7 +174,7 @@ const Badges = ({
           <Badge
             {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
-            backgroundColor={theme.filesBadges.backgroundColor}
+            backgroundColor={theme.filesBadges.badgeBackgroundColor}
             label={t("VersionBadge", { version: countVersions })}
             {...onShowVersionHistoryProp}
             noHover={true}
