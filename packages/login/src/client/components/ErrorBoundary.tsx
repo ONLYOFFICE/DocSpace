@@ -31,11 +31,13 @@ const Error520: React.FC<IError520Props> = ({ match }) => {
       ? Dark
       : Base;
 
+  const themeProps = theme ? { theme } : {};
+
   return (
     <ErrorContainer
       headerText={t("SomethingWentWrong")}
       bodyText={error}
-      theme={theme}
+      {...themeProps}
     />
   );
 };
