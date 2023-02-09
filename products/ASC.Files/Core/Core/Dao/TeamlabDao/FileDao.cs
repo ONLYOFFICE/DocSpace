@@ -276,7 +276,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, int roomId = default, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -357,15 +357,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 }
                 break;
         }
-
-        var result = withOrigin ? FromQueryWithOrigin(filesDbContext, q) : FromQuery(filesDbContext, q);
-
-        if (withOrigin && roomId != default)
-        {
-            result = result.Where(r => r.OriginRoom.Id == roomId);
-        }
         
-        await foreach (var e in result.AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1720,43 +1713,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             });
     }
 
-    private IQueryable<DbFileQuery> FromQueryWithOrigin(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
-    {
-        return dbFiles
-            .Select(r => new DbFileQuery
-            {
-                File = r,
-                Root = (from f in filesDbContext.Folders
-                        where f.Id ==
-                              (from t in filesDbContext.Tree
-                                  where t.FolderId == r.ParentId
-                                  orderby t.Level descending
-                                  select t.ParentId
-                              ).FirstOrDefault()
-                        where f.TenantId == r.TenantId
-                        select f
-                    ).FirstOrDefault(),
-                Origin = filesDbContext.Folders.AsNoTracking()
-                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id.ToString() == filesDbContext.TagLink.AsNoTracking()
-                        .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.File)
-                        .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => new {t.Name, t.Type})
-                        .Where(t => t.Type == TagType.Origin)
-                        .Select(t => t.Name)
-                        .FirstOrDefault()),
-                OriginRoom = filesDbContext.Folders.AsNoTracking()
-                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id == filesDbContext.Tree.AsNoTracking()
-                        .Where(tree => tree.FolderId.ToString() == filesDbContext.TagLink.AsNoTracking()
-                            .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.File)
-                            .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => new {t.Name, t.Type})
-                            .Where(t => t.Type == TagType.Origin)
-                            .Select(t => t.Name)
-                            .FirstOrDefault())
-                        .OrderByDescending(tree => tree.Level).Skip(1)
-                        .Select(t => t.ParentId)
-                        .FirstOrDefault())
-            });
-    }
-
     protected internal Task<DbFile> InitDocumentAsync(DbFile dbFile)
     {
         if (!_factoryIndexer.CanIndexByContent(dbFile))
@@ -1805,7 +1761,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     }
 }
 
-public class DbFileQuery : OriginQuery
+public class DbFileQuery
 {
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }

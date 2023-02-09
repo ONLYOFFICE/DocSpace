@@ -229,7 +229,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, int roomId = default, bool withSubfolders = false, bool excludeSubject = false, bool withOrigin = false)
+    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -282,15 +282,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
             }
         }
-
-        var result = withOrigin ? FromQueryWithOrigin(filesDbContext, q) : FromQueryWithShared(filesDbContext, q);
-
-        if (withOrigin && roomId != default)
-        {
-            result = result.Where(r => r.OriginRoom.Id == roomId);
-        }
-
-        await foreach (var e in result.AsAsyncEnumerable())
+        
+        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -1343,6 +1336,31 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
+    public IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var originDates = Query(filesDbContext.TagLink).AsNoTracking()
+            .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
+            .Join(filesDbContext.Tag.AsNoTracking()
+                .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
+            .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
+            .Select(r => new OriginData
+            {
+                OriginRoom = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == TenantID && 
+                                                                          f.Id == filesDbContext.Tree.AsNoTracking()
+                                                                              .Where(t => t.FolderId == Convert.ToInt32(r.Key))
+                                                                              .OrderByDescending(t => t.Level)
+                                                                              .Select(t => t.ParentId)
+                                                                              .Skip(1)
+                                                                              .FirstOrDefault()),
+                OriginFolder = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == TenantID && f.Id == Convert.ToInt32(r.Key)),
+                Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
+            });
+
+        return originDates.AsAsyncEnumerable();
+    }
+
     #endregion
 
     protected internal IQueryable<DbFolder> GetFolderQuery(FilesDbContext filesDbContext, Expression<Func<DbFolder, bool>> where = null)
@@ -1373,45 +1391,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                             select f
                            ).FirstOrDefault()
                 };
-
-        return e;
-    }
-
-    protected IQueryable<DbFolderQuery> FromQueryWithOrigin(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFolders)
-    {
-        var e = from r in dbFolders
-            select new DbFolderQuery
-            {
-                Folder = r,
-                Root = (from f in filesDbContext.Folders
-                        where f.Id ==
-                              (from t in filesDbContext.Tree
-                                  where t.FolderId == r.ParentId
-                                  orderby t.Level descending
-                                  select t.ParentId
-                              ).FirstOrDefault()
-                        where f.TenantId == r.TenantId
-                        select f
-                    ).FirstOrDefault(),
-                Origin = filesDbContext.Folders.AsNoTracking()
-                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id.ToString() == filesDbContext.TagLink.AsNoTracking()
-                        .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.Folder)
-                        .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type })
-                        .Where(t => t.Type == TagType.Origin)
-                        .Select(t => t.Name)
-                        .FirstOrDefault()),
-                OriginRoom = filesDbContext.Folders.AsNoTracking()
-                    .FirstOrDefault(f => f.TenantId == TenantID && f.Id == filesDbContext.Tree.AsNoTracking()
-                        .Where(tree => tree.FolderId.ToString() == filesDbContext.TagLink.AsNoTracking()
-                            .Where(l => l.TenantId == TenantID && Convert.ToInt32(l.EntryId) == r.Id && l.EntryType == FileEntryType.Folder)
-                            .Join(filesDbContext.Tag.AsNoTracking(), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type })
-                            .Where(t => t.Type == TagType.Origin)
-                            .Select(t => t.Name)
-                            .FirstOrDefault())
-                        .OrderByDescending(tree => tree.Level).Skip(1)
-                        .Select(t => t.ParentId)
-                        .FirstOrDefault())
-            };
 
         return e;
     }
@@ -1762,7 +1741,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     }
 }
 
-public class DbFolderQuery : OriginQuery
+public class DbFolderQuery
 {
     public DbFolder Folder { get; set; }
     public DbFolder Root { get; set; }
@@ -1779,4 +1758,11 @@ public class ParentRoomPair
 {
     public int FolderId { get; set; }
     public int ParentRoomId { get; set; }
+}
+
+public class OriginData
+{
+    public DbFolder OriginRoom { get; set; }
+    public DbFolder OriginFolder { get; set; }
+    public HashSet<KeyValuePair<string, FileEntryType>> Entries { get; set; }
 }

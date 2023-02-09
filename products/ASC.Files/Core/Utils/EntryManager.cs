@@ -375,7 +375,6 @@ public class EntryManager
         bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var total = 0;
-        var withOrigin = false;
 
         if (parent == null)
         {
@@ -439,8 +438,8 @@ public class EntryManager
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
 
-            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, roomId, withSubfolders);
-            var files = fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, roomId, withSubfolders);
+            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText,  withSubfolders);
+            var files = fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
             //share
             var shared = _fileSecurity.GetPrivacyForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
@@ -465,11 +464,10 @@ public class EntryManager
             if (parent.FolderType == FolderType.TRASH)
             {
                 withSubfolders = false;
-                withOrigin = true;
             }
 
-            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, roomId, withSubfolders, excludeSubject, withOrigin);
-            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, roomId, withSubfolders, excludeSubject, withOrigin);
+            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
+            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject);
 
             var task1 = _fileSecurity.FilterReadAsync(folders).ToListAsync();
             var task2 = _fileSecurity.FilterReadAsync(files).ToListAsync();
@@ -494,6 +492,11 @@ public class EntryManager
                 {
                     entries.AddRange(items);
                 }
+            }
+            
+            if (parent.FolderType == FolderType.TRASH)
+            { 
+                entries = await GetWithOriginAsync(entries, (int)Convert.ChangeType(roomId, typeof(int)));
             }
         }
 
@@ -1860,6 +1863,41 @@ public class EntryManager
         await tagDao.SaveTags(tag);
     }
 
+    private async Task<List<FileEntry>> GetWithOriginAsync(List<FileEntry> entries, int filterRoomId)
+    {
+        var result = new List<FileEntry>(entries.Count);
+        var needFiltering = filterRoomId != default;
+        var folderDao = _daoFactory.GetFolderDao<int>();
+
+        var originsData = await folderDao.GetOriginsDataAsync(entries.Cast<FileEntry<int>>().Select(e => e.Id)).ToListAsync();
+
+        foreach (var entry in entries)
+        {
+            var fileEntry = (FileEntry<int>)entry;
+            var data = originsData.FirstOrDefault(data => data.Entries.Contains(new KeyValuePair<string, FileEntryType>(fileEntry.Id.ToString(), fileEntry.FileEntryType)));
+
+            if (data?.OriginRoom != null)
+            {
+                fileEntry.OriginRoomId = data.OriginRoom.Id;
+                fileEntry.OriginRoomTitle = data.OriginRoom.Title;
+            }
+            
+            if (needFiltering && fileEntry.OriginRoomId != filterRoomId)
+            {
+                continue;
+            }
+
+            if (data?.OriginFolder != null)
+            {
+                fileEntry.OriginId = data.OriginFolder.Id;
+                fileEntry.OriginTitle = data.OriginFolder.FolderType == FolderType.USER ? FilesUCResource.MyFiles : data.OriginFolder.Title;
+            }
+
+            result.Add(entry);
+        }
+
+        return result;
+    }
 
     //Long operation
     public async Task DeleteSubitemsAsync<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao, ILinkDao linkDao)
