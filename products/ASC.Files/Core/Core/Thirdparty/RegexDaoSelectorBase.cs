@@ -30,9 +30,10 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IDaoFactory _daoFactory;
-    public static string Name { get; protected set; }
-    public static string Id { get; protected set; }
-    protected Regex Selector => new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
+    protected internal abstract string Name { get; }
+    protected internal abstract string Id { get; }
+    public Regex Selector => _selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
+    private Regex _selector;
 
     private Dictionary<string, BaseProviderInfo<T>> Providers { get; set; }
 

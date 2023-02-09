@@ -65,7 +65,7 @@ internal class BoxProviderInfo : IProviderInfo
     public Guid Owner { get; set; }
     public bool Private { get; set; }
     public string ProviderKey { get; set; }
-    public string RootFolderId => "box-" + ID;
+    public string RootFolderId => $"{Selectors.Box.Id}-" + ID;
     public FolderType RootFolderType { get; set; }
     public OAuth20Token Token { get; set; }
     internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
@@ -252,26 +252,26 @@ public class BoxProviderInfoHelper
         {
             if (i.ResetAll)
             {
-                _cacheChildItems.Remove(new Regex("^box-" + i.Key + ".*"));
-                _cacheFile.Remove(new Regex("^boxf-" + i.Key + ".*"));
-                _cacheFolder.Remove(new Regex("^boxd-" + i.Key + ".*"));
+                _cacheChildItems.Remove(new Regex($"^{Selectors.Box.Id}-" + i.Key + ".*"));
+                _cacheFile.Remove(new Regex($"^{Selectors.Box.Id}f-" + i.Key + ".*"));
+                _cacheFolder.Remove(new Regex($"^{Selectors.Box.Id}d-" + i.Key + ".*"));
             }
 
             if (!i.IsFileExists)
             {
-                _cacheChildItems.Remove("box-" + i.Key);
+                _cacheChildItems.Remove($"{Selectors.Box.Id}-" + i.Key);
 
-                _cacheFolder.Remove("boxd-" + i.Key);
+                _cacheFolder.Remove($"{Selectors.Box.Id}d-" + i.Key);
             }
             else
             {
                 if (i.IsFileExists)
                 {
-                    _cacheFile.Remove("boxf-" + i.Key);
+                    _cacheFile.Remove($"{Selectors.Box.Id}f-" + i.Key);
                 }
                 else
                 {
-                    _cacheFolder.Remove("boxd-" + i.Key);
+                    _cacheFolder.Remove($"{Selectors.Box.Id}d-" + i.Key);
                 }
             }
         }, CacheNotifyAction.Remove);
@@ -307,13 +307,13 @@ public class BoxProviderInfoHelper
 
     internal async ValueTask<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
     {
-        var file = _cacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
+        var file = _cacheFile.Get<BoxFile>($"{Selectors.Box.Id}f-" + id + "-" + boxFileId);
         if (file == null)
         {
             file = await storage.GetFileAsync(boxFileId);
             if (file != null)
             {
-                _cacheFile.Insert("boxf-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(_cacheExpiration));
+                _cacheFile.Insert($"{Selectors.Box.Id}f-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(_cacheExpiration));
             }
         }
 
@@ -322,13 +322,13 @@ public class BoxProviderInfoHelper
 
     internal async Task<BoxFolder> GetBoxFolderAsync(BoxStorage storage, int id, string boxFolderId)
     {
-        var folder = _cacheFolder.Get<BoxFolder>("boxd-" + id + "-" + boxFolderId);
+        var folder = _cacheFolder.Get<BoxFolder>($"{Selectors.Box.Id}d-" + id + "-" + boxFolderId);
         if (folder == null)
         {
             folder = await storage.GetFolderAsync(boxFolderId);
             if (folder != null)
             {
-                _cacheFolder.Insert("boxd-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(_cacheExpiration));
+                _cacheFolder.Insert($"{Selectors.Box.Id}d-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(_cacheExpiration));
             }
         }
 
@@ -337,12 +337,12 @@ public class BoxProviderInfoHelper
 
     internal async Task<List<BoxItem>> GetBoxItemsAsync(BoxStorage storage, int id, string boxFolderId)
     {
-        var items = _cacheChildItems.Get<List<BoxItem>>("box-" + id + "-" + boxFolderId);
+        var items = _cacheChildItems.Get<List<BoxItem>>($"{Selectors.Box.Id}-" + id + "-" + boxFolderId);
 
         if (items == null)
         {
             items = await storage.GetItemsAsync(boxFolderId);
-            _cacheChildItems.Insert("box-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
+            _cacheChildItems.Insert($"{Selectors.Box.Id}-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return items;

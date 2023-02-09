@@ -28,7 +28,7 @@ namespace ASC.Files.Thirdparty.Sharpbox;
 
 internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
 {
-    protected override string Id => "sbox";
+    protected override string Id => Selectors.SharpBox.Id;
 
     protected SharpBoxDaoBase(
         IServiceProvider serviceProvider,

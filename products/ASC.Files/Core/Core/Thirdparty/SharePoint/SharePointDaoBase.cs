@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.SharePoint;
 
 internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 {
-    protected override string Id => "spoint";
+    protected override string Id => Selectors.SharePoint.Id;
 
     public SharePointDaoBase(
         IServiceProvider serviceProvider,

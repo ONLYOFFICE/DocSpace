@@ -320,14 +320,14 @@ public class RoomLogoManager
             return room.Id.ToString();
         }
 
-        if (room.Id.ToString()!.Contains("sbox"))
+        if (room.Id.ToString()!.Contains(Selectors.SharpBox.Id))
         {
-            return $"sbox-{room.ProviderId}";
+            return $"{Selectors.SharpBox.Id}-{room.ProviderId}";
         }
 
-        if (room.Id.ToString()!.Contains("spoint"))
+        if (room.Id.ToString()!.Contains(Selectors.SharePoint.Id))
         {
-            return $"spoint-{room.ProviderId}";
+            return $"{Selectors.SharePoint.Id}-{room.ProviderId}";
         }
 
         return room.Id.ToString();

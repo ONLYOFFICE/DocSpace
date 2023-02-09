@@ -28,7 +28,7 @@ namespace ASC.Files.Thirdparty.Dropbox;
 
 internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
 {
-    protected override string Id => "dropbox";
+    protected override string Id => Selectors.Dropbox.Id;
 
     protected DropboxDaoBase(
         IServiceProvider serviceProvider,

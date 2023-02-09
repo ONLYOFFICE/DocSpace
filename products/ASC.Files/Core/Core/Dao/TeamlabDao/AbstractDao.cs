@@ -157,12 +157,12 @@ public class AbstractDao
     {
         object result;
 
-        if (id.ToString().StartsWith("sbox")
-            || id.ToString().StartsWith("box")
-            || id.ToString().StartsWith("dropbox")
-            || id.ToString().StartsWith("spoint")
-            || id.ToString().StartsWith("drive")
-            || id.ToString().StartsWith("onedrive"))
+        if (id.ToString().StartsWith(Selectors.SharpBox.Id)
+            || id.ToString().StartsWith(Selectors.Box.Id)
+            || id.ToString().StartsWith(Selectors.Dropbox.Id)
+            || id.ToString().StartsWith(Selectors.SharePoint.Id)
+            || id.ToString().StartsWith(Selectors.GoogleDrive.Id)
+            || id.ToString().StartsWith(Selectors.OneDrive.Id))
         {
             result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
         }

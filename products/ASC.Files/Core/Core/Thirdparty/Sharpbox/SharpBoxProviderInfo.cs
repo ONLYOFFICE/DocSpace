@@ -55,7 +55,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
         set => _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true);
     }
 
-    public string RootFolderId => "sbox-" + ID;
+    public string RootFolderId => $"{Selectors.SharpBox.Id}-" + ID;
     public FolderType RootFolderType { get; set; }
 
     internal CloudStorage Storage

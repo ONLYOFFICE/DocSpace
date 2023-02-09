@@ -29,11 +29,8 @@ namespace ASC.Files.Thirdparty.Sharpbox;
 [Scope(Additional = typeof(SharpBoxDaoSelectorExtension))]
 internal class SharpBoxDaoSelector : RegexDaoSelectorBase<SharpBoxProviderInfo>, IDaoSelector
 {
-    static SharpBoxDaoSelector()
-    {
-        Name = "SharpBox";
-        Id = "sbox";
-    }
+    protected internal override string Name => Selectors.SharpBox.Name;
+    protected internal override string Id => Selectors.SharpBox.Id;
 
     public SharpBoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)

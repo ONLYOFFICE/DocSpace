@@ -29,11 +29,8 @@ namespace ASC.Files.Thirdparty.Box;
 [Scope(Additional = typeof(BoxDaoSelectorExtension))]
 internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector
 {
-    static BoxDaoSelector()
-    {
-        Name = "Box";
-        Id = "box";
-    }
+    protected internal override string Name => Selectors.Box.Name;
+    protected internal override string Id => Selectors.Box.Id;
 
     public BoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)

@@ -807,12 +807,12 @@ internal abstract class BaseTagDao<T> : AbstractDao
             .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
             .Where(r => r.account.UserId != subject &&
                         r.account.FolderType == FolderType.USER &&
-                        (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("box-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("spoint-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("onedrive-" + r.account.Id))
+                        (r.mapping.Id.StartsWith($"{Selectors.SharpBox.Id}-" + r.account.Id) ||
+                        r.mapping.Id.StartsWith($"{Selectors.Box.Id}-" + r.account.Id) ||
+                        r.mapping.Id.StartsWith($"{Selectors.Dropbox.Id}-" + r.account.Id) ||
+                        r.mapping.Id.StartsWith($"{Selectors.SharePoint.Id} -" + r.account.Id) ||
+                        r.mapping.Id.StartsWith($"{Selectors.GoogleDrive.Id}-" + r.account.Id) ||
+                        r.mapping.Id.StartsWith($"{Selectors.OneDrive.Id}-" + r.account.Id))
                 )
                 .Select(r => r.tagLink)
                 .Distinct()
@@ -1080,12 +1080,12 @@ internal class TagDao : BaseTagDao<int>, ITagDao<int>
         {
             var folderIds = await _getThirdpartyAccountQuery(filesDbContext, tenantId, parentFolder.FolderType, subject).ToListAsync();
 
-            var thirdpartyFolderIds = folderIds.ConvertAll(r => "sbox-" + r)
-                                                .Concat(folderIds.ConvertAll(r => $"box-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"dropbox-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"spoint-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"drive-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"))
+            var thirdpartyFolderIds = folderIds.ConvertAll(r => $"{Selectors.SharpBox.Id}-" + r)
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.Box.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.Dropbox.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.SharePoint.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.GoogleDrive.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.OneDrive.Id}-{r}"))
                                                 .ToList();
 
             if (thirdpartyFolderIds.Count > 0)

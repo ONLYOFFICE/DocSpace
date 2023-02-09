@@ -46,13 +46,13 @@ public class OneDriveProviderInfoHelper
             ResetMemoryCache(i);
             if (i.ResetAll)
             {
-                _cacheChildItems.Remove(new Regex("^onedrivei-" + i.Key + ".*"));
-                _cacheItem.Remove(new Regex("^onedrive-" + i.Key + ".*"));
+                _cacheChildItems.Remove(new Regex($"^{Selectors.OneDrive.Id}i-" + i.Key + ".*"));
+                _cacheItem.Remove(new Regex($"^{Selectors.OneDrive.Id}-" + i.Key + ".*"));
             }
             else
             {
-                _cacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
-                _cacheItem.Remove("onedrive-" + i.Key);
+                _cacheChildItems.Remove(new Regex($"{Selectors.OneDrive.Id}i-" + i.Key));
+                _cacheItem.Remove($"{Selectors.OneDrive.Id}-" + i.Key);
             }
         }, CacheNotifyAction.Remove);
     }
@@ -77,13 +77,13 @@ public class OneDriveProviderInfoHelper
 
     internal async Task<Item> GetOneDriveItemAsync(OneDriveStorage storage, int id, string itemId)
     {
-        var file = _cacheItem.Get<Item>("onedrive-" + id + "-" + itemId);
+        var file = _cacheItem.Get<Item>($"{Selectors.OneDrive.Id}-" + id + "-" + itemId);
         if (file == null)
         {
             file = await storage.GetItemAsync(itemId);
             if (file != null)
             {
-                _cacheItem.Insert("onedrive-" + id + "-" + itemId, file, DateTime.UtcNow.Add(_cacheExpiration));
+                _cacheItem.Insert($"{Selectors.OneDrive.Id}-" + id + "-" + itemId, file, DateTime.UtcNow.Add(_cacheExpiration));
             }
         }
 
@@ -92,12 +92,12 @@ public class OneDriveProviderInfoHelper
 
     internal async Task<List<Item>> GetOneDriveItemsAsync(OneDriveStorage storage, int id, string onedriveFolderId)
     {
-        var items = _cacheChildItems.Get<List<Item>>("onedrivei-" + id + "-" + onedriveFolderId);
+        var items = _cacheChildItems.Get<List<Item>>($"{Selectors.OneDrive.Id}i-" + id + "-" + onedriveFolderId);
 
         if (items == null)
         {
             items = await storage.GetItemsAsync(onedriveFolderId);
-            _cacheChildItems.Insert("onedrivei-" + id + "-" + onedriveFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
+            _cacheChildItems.Insert($"{Selectors.OneDrive.Id}i-" + id + "-" + onedriveFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return items;
@@ -116,8 +116,8 @@ public class OneDriveProviderInfoHelper
         }
         else
         {
-            _cacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
-            _cacheItem.Remove("onedrive-" + i.Key);
+            _cacheChildItems.Remove(new Regex($"{Selectors.OneDrive.Id}i-" + i.Key));
+            _cacheItem.Remove($"{Selectors.OneDrive.Id}-" + i.Key);
         }
     }
 }
@@ -146,7 +146,7 @@ internal class OneDriveProviderInfo : IProviderInfo
     public Guid Owner { get; set; }
     public bool Private { get; set; }
     public string ProviderKey { get; set; }
-    public string RootFolderId => "onedrive-" + ID;
+    public string RootFolderId => $"{Selectors.OneDrive.Id}-" + ID;
     public FolderType RootFolderType { get; set; }
     public OAuth20Token Token { get; set; }
     internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;

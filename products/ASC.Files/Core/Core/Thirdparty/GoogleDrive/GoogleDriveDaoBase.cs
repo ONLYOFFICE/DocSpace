@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 
 internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>
 {
-    protected override string Id => "drive";
+    protected override string Id => Selectors.GoogleDrive.Id;
 
     protected GoogleDriveDaoBase(
         IServiceProvider serviceProvider,

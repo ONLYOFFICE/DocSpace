@@ -28,7 +28,7 @@ namespace ASC.Files.Thirdparty.Box;
 
 internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 {
-    protected override string Id => "box";
+    protected override string Id => Selectors.Box.Id;
 
     protected BoxDaoBase(
         IServiceProvider serviceProvider,

@@ -28,7 +28,7 @@ namespace ASC.Files.Thirdparty.OneDrive;
 
 internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
 {
-    protected override string Id => "onedrive";
+    protected override string Id => Selectors.OneDrive.Id;
 
     protected OneDriveDaoBase(
         IServiceProvider serviceProvider,

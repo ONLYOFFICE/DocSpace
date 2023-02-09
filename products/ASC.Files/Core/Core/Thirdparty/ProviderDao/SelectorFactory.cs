@@ -42,17 +42,17 @@ internal class SelectorFactory
     public IDaoSelector GetSelector(string id)
     {
         var selector = Match(id);
-        if (selector == SharpBoxDaoSelector.Id)
+        if (selector == Selectors.SharpBox.Id)
             return _serviceProvider.GetService<SharpBoxDaoSelector>();
-        else if (selector == SharePointDaoSelector.Id)
+        else if (selector == Selectors.SharePoint.Id)
             return _serviceProvider.GetService<SharePointDaoSelector>();
-        else if (selector == GoogleDriveDaoSelector.Id)
+        else if (selector == Selectors.GoogleDrive.Id)
             return _serviceProvider.GetService<GoogleDriveDaoSelector>();
-        else if (selector == BoxDaoSelector.Id)
+        else if (selector == Selectors.Box.Id)
             return _serviceProvider.GetService<BoxDaoSelector>();
-        else if (selector == DropboxDaoSelector.Id)
+        else if (selector == Selectors.Dropbox.Id)
             return _serviceProvider.GetService<DropboxDaoSelector>();
-        else if (selector == OneDriveDaoSelector.Id)
+        else if (selector == Selectors.OneDrive.Id)
             return _serviceProvider.GetService<OneDriveDaoSelector>();
         else
             return null;

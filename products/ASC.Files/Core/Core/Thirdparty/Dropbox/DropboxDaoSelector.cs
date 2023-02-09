@@ -29,11 +29,8 @@ namespace ASC.Files.Thirdparty.Dropbox;
 [Scope(Additional = typeof(DropboxDaoSelectorExtension))]
 internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, IDaoSelector
 {
-    static DropboxDaoSelector()
-    {
-        Name = "Dropbox";
-        Id = "dropbox";
-    }
+    protected internal override string Name => Selectors.Dropbox.Name;
+    protected internal override string Id => Selectors.Dropbox.Id;
 
     public DropboxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
