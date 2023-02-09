@@ -11,6 +11,7 @@ const SelectionArea = (props) => {
     getCountTilesInRow,
     isRooms,
     foldersLength,
+    isInfoPanelVisible,
   } = props;
 
   const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
@@ -22,7 +23,7 @@ const SelectionArea = (props) => {
     return () => {
       window.removeEventListener("resize", onResize);
     };
-  });
+  }, [isInfoPanelVisible]);
 
   const onResize = () => {
     setTilesCount();
@@ -77,7 +78,7 @@ const SelectionArea = (props) => {
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore }) => {
+export default inject(({ auth, filesStore, treeFoldersStore }) => {
   const {
     dragging,
     viewAs,
@@ -86,6 +87,7 @@ export default inject(({ filesStore, treeFoldersStore }) => {
     folders,
   } = filesStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
@@ -96,5 +98,6 @@ export default inject(({ filesStore, treeFoldersStore }) => {
     getCountTilesInRow,
     isRooms,
     foldersLength: folders.length,
+    isInfoPanelVisible,
   };
 })(observer(SelectionArea));

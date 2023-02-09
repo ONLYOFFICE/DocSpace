@@ -68,6 +68,7 @@ const StyledTileContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: fit-content;
 
     div {
       cursor: pointer !important;
