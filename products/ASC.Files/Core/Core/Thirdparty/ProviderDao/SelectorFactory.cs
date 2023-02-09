@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.Core.Thirdparty.ProviderDao;
 
-[Singletone]
+[Scope(Additional = typeof(SelectorFactoryExtension))]
 internal class SelectorFactory
 {
     private readonly IServiceProvider _serviceProvider;
@@ -69,5 +69,18 @@ internal class SelectorFactory
         var match = Selector.Match(id);
 
         return match.Success ? match.Groups["selector"].Value : "";
+    }
+}
+
+public static class SelectorFactoryExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<SharpBoxDaoSelector>();
+        services.TryAdd<SharePointDaoSelector>();
+        services.TryAdd<OneDriveDaoSelector>();
+        services.TryAdd<GoogleDriveDaoSelector>();
+        services.TryAdd<DropboxDaoSelector>();
+        services.TryAdd<BoxDaoSelector>();
     }
 }
