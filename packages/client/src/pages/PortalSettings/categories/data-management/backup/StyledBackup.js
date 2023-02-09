@@ -72,13 +72,18 @@ const StyledManualBackup = styled.div`
   .manual-backup_buttons {
     margin-top: 16px;
     margin-left: 24px;
+    @media ${mobile} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     button:first-child {
       width: 50%;
-      max-width: 164px;
+      max-width: 155px;
       margin-right: 8px;
     }
     button:last-child {
-      max-width: 164px;
+      max-width: 155px;
       width: calc(50% - 8px);
     }
   }
