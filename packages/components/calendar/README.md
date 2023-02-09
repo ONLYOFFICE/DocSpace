@@ -29,3 +29,4 @@ import Calendar from "@docspace/components/calendar";
 | `maxDate`      |     `date`     |    -     |       -       | `new Date("3000/01/01")`  | Maximum date that the user can select.                       |
 | `minDate`      |     `date`     |    -     |       -       | `new Date("1970/01/01")`  | Minimum date that the user can select.                       |
 | `onChange`     |     `func`     |    -     |       -       |             -             | Function called when the user select a day                   |
+| `style   `     |  `obj`, `arr`  |    -     |       -       |             -             | Accepts css style                                            |

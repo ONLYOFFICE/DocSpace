@@ -13,6 +13,7 @@ const Calendar = ({
   maxDate,
   id,
   className,
+  style
 }) => {
   moment.locale(locale);
   const setSelectedDate = onChange;
@@ -22,7 +23,7 @@ const Calendar = ({
   maxDate = moment(maxDate);
 
   return (
-    <ColorTheme themeId={ThemeType.Calendar} id={id} className={className}>
+    <ColorTheme themeId={ThemeType.Calendar} id={id} className={className} style={style}>
       {selectedScene === 0 ? (
         <Days
           observedDate={observedDate}
@@ -71,6 +72,8 @@ Calendar.PropTypes = {
   minDate: PropTypes.object,
   /** Specifies the maximum selectable date */
   maxDate: PropTypes.object,
+  /** Accepts css style */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Calendar.defaultProps = {
