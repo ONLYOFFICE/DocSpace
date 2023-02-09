@@ -113,17 +113,15 @@ public class BackupProgressItem : BaseBackupProgressItem
             var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
             var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
 
-            var backupTask = _backupPortalTask;
+            _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
 
-            backupTask.Init(TenantId, tempFile, _limit, writer);
-
-            backupTask.ProgressChanged += (sender, args) =>
+            _backupPortalTask.ProgressChanged += (sender, args) =>
             {
                 Percentage = 0.9 * args.Progress;
                 PublishChanges();
             };
 
-            await backupTask.RunJob();
+            await _backupPortalTask.RunJob();
 
             if (writer.NeedUpload)
             {

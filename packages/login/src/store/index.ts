@@ -15,7 +15,7 @@ class LoginStore {
 
   setTheme = (theme) => {
     this.theme = theme;
-  }
+  };
 
   setCurrentColorScheme = (currentColorScheme: ITheme) => {
     this.currentColorScheme = currentColorScheme;

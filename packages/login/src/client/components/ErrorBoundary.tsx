@@ -1,15 +1,18 @@
 import React from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { useTranslation } from "react-i18next";
+import { Dark, Base } from "@docspace/components/themes";
 
 interface IError520Props {
   match?: {
     params: MatchType;
   };
+  theme?: any;
 }
 
 interface IErrorBoundaryProps extends IError520Props {
   onError?: (error: any, errorInfo: any) => void;
+  theme?: any;
   children?: React.ReactNode;
 }
 
@@ -21,8 +24,21 @@ const Error520: React.FC<IError520Props> = ({ match }) => {
   const { t } = useTranslation(["Common"]);
   const { error } = (match && match.params) || {};
 
+  const theme =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? Dark
+      : Base;
+
+  const themeProps = theme ? { theme } : {};
+
   return (
-    <ErrorContainer headerText={t("SomethingWentWrong")} bodyText={error} />
+    <ErrorContainer
+      headerText={t("SomethingWentWrong")}
+      bodyText={error}
+      {...themeProps}
+    />
   );
 };
 
