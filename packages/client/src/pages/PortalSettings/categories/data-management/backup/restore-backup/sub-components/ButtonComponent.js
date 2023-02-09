@@ -89,7 +89,7 @@ const ButtonContainer = (props) => {
         return;
       }
     }
-    debugger;
+
     try {
       await startRestore(backupId, storageType, storageParams, isNotification);
       setTenantStatus(TenantStatus.PortalRestore);
