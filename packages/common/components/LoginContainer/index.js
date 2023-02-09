@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
 const LoginContainer = styled.div`
+  user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
