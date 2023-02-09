@@ -24,7 +24,7 @@ const History = ({
   isLoadedSearchFiles,
   getFolderInfo,
   getFileInfo,
-  setSelectionFiles,
+  setIdFileAnimation,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -44,7 +44,7 @@ const History = ({
     requestInfo(+itemOpenLocation.id).then((res) => {
       if (itemOpenLocation.isFolder) res.isFolder = true;
 
-      setSelectionFiles([res]);
+      setIdFileAnimation(res.id);
       setSelection(res);
     });
   }, [
@@ -53,7 +53,7 @@ const History = ({
     itemOpenLocation,
     getFolderInfo,
     getFileInfo,
-    setSelectionFiles,
+    setIdFileAnimation,
   ]);
 
   const fetchHistory = async (itemId) => {
@@ -169,7 +169,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     getHistory,
     getFolderInfo,
     getFileInfo,
-    setSelection: setSelectionFiles,
+    setIdFileAnimation,
   } = filesStore;
   const {
     checkAndOpenLocationAction,
@@ -197,6 +197,6 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     isLoadedSearchFiles,
     getFolderInfo,
     getFileInfo,
-    setSelectionFiles,
+    setIdFileAnimation,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

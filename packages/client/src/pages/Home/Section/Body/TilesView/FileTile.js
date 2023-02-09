@@ -54,7 +54,7 @@ const FileTile = (props) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   } = props;
 
   const [isHighlight, setIsHighlight] = React.useState(false);
@@ -64,12 +64,12 @@ const FileTile = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!item.upgradeVersion) return;
+    if (!item.showAnimation) return;
 
     setIsHighlight(true);
 
     return () => {
-      if (isHighlight) setUploadedFileIdWithVersion(null);
+      if (isHighlight) setIdFileAnimation(null);
     };
   }, [item, isHighlight]);
 
@@ -163,7 +163,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     setSelection,
     withCtrlSelect,
     withShiftSelect,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -176,7 +176,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   };
 })(
   withTranslation(["Files", "InfoPanel"])(

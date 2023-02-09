@@ -120,7 +120,8 @@ class FilesStore {
   isLoadedEmptyPage = false;
   isPreview = false;
   tempFilter = null;
-  uploadedFileIdWithVersion = null;
+
+  idFileAnimation = null;
   thumbnails = new Set();
 
   constructor(
@@ -462,8 +463,8 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
-    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
+  setIdFileAnimation = (idFileAnimation) => {
+    this.idFileAnimation = idFileAnimation;
   };
 
   checkSelection = (file) => {
@@ -2352,7 +2353,7 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const upgradeVersion = id === this.uploadedFileIdWithVersion;
+      const showAnimation = id === this.idFileAnimation;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
@@ -2430,7 +2431,7 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
-        upgradeVersion,
+        showAnimation,
         created,
         createdBy,
         encrypted,

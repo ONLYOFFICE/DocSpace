@@ -244,6 +244,12 @@ const StyledTile = styled.div`
   .new-items {
     min-width: 16px;
   }
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      ${animationStyles}
+    `}
 `;
 
 const StyledFileTileTop = styled.div`

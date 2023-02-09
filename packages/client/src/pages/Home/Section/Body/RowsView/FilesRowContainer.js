@@ -82,7 +82,7 @@ const FilesRowContainer = ({
   hasMoreFiles,
   isRooms,
   withPaging,
-  setUploadedFileIdWithVersion,
+  setIdFileAnimation,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -117,7 +117,7 @@ const FilesRowContainer = ({
           item={item}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
-          setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
+          setIdFileAnimation={setIdFileAnimation}
         />
       ))}
     </StyledRowContainer>
@@ -133,7 +133,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     roomsFilterTotal,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -151,6 +151,6 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     hasMoreFiles,
     isRooms,
     withPaging,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   };
 })(observer(FilesRowContainer));

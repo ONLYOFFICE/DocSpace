@@ -251,7 +251,7 @@ const SimpleFilesRow = (props) => {
     isRooms,
 
     folderCategory,
-    setUploadedFileIdWithVersion,
+    setIdFileAnimation,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
@@ -283,11 +283,11 @@ const SimpleFilesRow = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!item.upgradeVersion) return;
+    if (!item.showAnimation) return;
 
     isMounted = true;
     setIsHighlight(true);
-    setUploadedFileIdWithVersion(null);
+    setIdFileAnimation(null);
 
     timeoutRef.current = setTimeout(() => {
       isMounted && setIsHighlight(false);
