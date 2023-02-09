@@ -218,7 +218,7 @@ const SortButton = ({
 
   React.useEffect(() => {
     if (isMobileOnly) {
-      setMainButtonMobileVisible(!isOpen);
+      setMainButtonMobileVisible && setMainButtonMobileVisible(!isOpen);
     }
   }, [isOpen]);
 
