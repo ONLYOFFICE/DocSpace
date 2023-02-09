@@ -9,21 +9,18 @@ import {
 } from "@docspace/common/api/settings";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
 import toastr from "@docspace/components/toast/toastr";
-import { RadioButtonGroup } from "@docspace/components";
-import { StyledRestoreBackup } from "../StyledBackup";
+import RadioButtonGroup from "@docspace/components/radio-button-group";
+import { BackupStorageType } from "@docspace/common/constants";
+import Checkbox from "@docspace/components/checkbox";
 import Text from "@docspace/components/text";
+
 import LocalFileModule from "./sub-components/LocalFileModule";
 import ThirdPartyStoragesModule from "./sub-components/ThirdPartyStoragesModule";
 import ThirdPartyResourcesModule from "./sub-components/ThirdPartyResourcesModule";
-import Checkbox from "@docspace/components/checkbox";
-import Button from "@docspace/components/button";
-import FloatingButton from "@docspace/common/components/FloatingButton";
-import { BackupStorageType, TenantStatus } from "@docspace/common/constants";
-import { startRestore } from "@docspace/common/api/portal";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 import BackupListModalDialog from "./sub-components/backup-list";
 import RoomsModule from "./sub-components/RoomsModule";
+import ButtonContainer from "./sub-components/ButtonComponent";
+import { StyledRestoreBackup } from "../StyledBackup";
 
 const LOCAL_FILE = "localFile",
   BACKUP_ROOM = "backupRoom",
@@ -40,7 +37,6 @@ const {
   LocalFileModuleType,
 } = BackupStorageType;
 
-let storageId = null;
 const RestoreBackup = (props) => {
   const {
     getProgress,
@@ -51,15 +47,8 @@ const RestoreBackup = (props) => {
     clearProgressInterval,
     isEnableRestore,
     setRestoreResource,
-    downloadingProgress,
-    isMaxProgress,
     buttonSize,
-    restoreResource,
     history,
-    socketHelper,
-    getStorageParams,
-    setTenantStatus,
-    standalone,
   } = props;
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
@@ -68,8 +57,6 @@ const RestoreBackup = (props) => {
     confirmation: false,
   });
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isUploadingLocalFile, setIsUploadingLocalFile] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isVisibleBackupListDialog, setIsVisibleBackupListDialog] = useState(
     false
   );
@@ -96,7 +83,10 @@ const RestoreBackup = (props) => {
       toastr.error(error);
     }
 
-    return () => clearProgressInterval();
+    return () => {
+      clearProgressInterval();
+      setRestoreResource(null);
+    };
   }, []);
 
   const onChangeRadioButton = (e) => {
@@ -114,24 +104,6 @@ const RestoreBackup = (props) => {
     setCheckboxState({ ...checkboxState, [name]: checked });
   };
 
-  const localFileUploading = async () => {
-    try {
-      const checkedFile = await request({
-        baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage),
-        method: "post",
-        url: `/backupFileUpload.ashx`,
-        responseType: "text",
-        data: restoreResource,
-      });
-
-      return checkedFile;
-    } catch (e) {
-      toastr.error(e);
-      setIsUploadingLocalFile(false);
-      return null;
-    }
-  };
-
   const getStorageType = () => {
     switch (radioButtonState) {
       case LOCAL_FILE:
@@ -144,77 +116,7 @@ const RestoreBackup = (props) => {
         return StorageModuleType;
     }
   };
-  const onRestoreClick = async () => {
-    const isCheckedThirdPartyStorage = radioButtonState === STORAGE_SPACE;
 
-    if (isCheckedThirdPartyStorage) {
-      const requiredFieldsFilled = isFormReady();
-      if (!requiredFieldsFilled) return;
-    }
-    setIsLoading(true);
-
-    let storageParams = [],
-      tempObj = {};
-
-    const backupId = "";
-    const storageType = getStorageType().toString();
-
-    if (isCheckedThirdPartyStorage) {
-      storageParams = getStorageParams(true, null, storageId);
-    } else {
-      tempObj.key = "filePath";
-      tempObj.value =
-        radioButtonState === LOCAL_FILE && !standalone ? "" : restoreResource;
-
-      storageParams.push(tempObj);
-    }
-
-    if (!standalone && radioButtonState === LOCAL_FILE) {
-      const isUploadedFile = localFileUploading();
-
-      if (!isUploadedFile) {
-        setIsLoading(false);
-        return;
-      }
-
-      if (isUploadedFile?.Message) {
-        toastr.error(isUploadedFile.Message);
-        setIsUploadingLocalFile(false);
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    try {
-      await startRestore(
-        backupId,
-        storageType,
-        storageParams,
-        checkboxState.notification
-      );
-      setTenantStatus(TenantStatus.PortalRestore);
-
-      socketHelper.emit({
-        command: "restore-backup",
-      });
-
-      setIsUploadingLocalFile(false);
-
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/preparation-portal"
-        )
-      );
-    } catch (e) {
-      toastr.error(error);
-
-      setIsUploadingLocalFile(false);
-    }
-
-    setIsLoading(false);
-  };
   const onClickBackupList = () => {
     setIsVisibleBackupListDialog(true);
   };
@@ -228,12 +130,13 @@ const RestoreBackup = (props) => {
   };
 
   const onSetStorageId = (id) => {
-    storageId = id;
+    setRestoreResource(id);
   };
 
   const radioButtonContent = (
     <>
       <RadioButtonGroup
+        name="restore_backup"
         orientation="vertical"
         fontSize="13px"
         fontWeight="400"
@@ -303,37 +206,6 @@ const RestoreBackup = (props) => {
     </>
   );
 
-  const buttonContent = (
-    <>
-      <Button
-        className="restore-backup_button"
-        label={t("Common:Restore")}
-        onClick={onRestoreClick}
-        primary
-        isDisabled={
-          isLoading ||
-          isUploadingLocalFile ||
-          !isMaxProgress ||
-          !checkboxState.confirmation ||
-          !isEnableRestore ||
-          !restoreResource
-        }
-        isLoading={isUploadingLocalFile || isLoading}
-        size={buttonSize}
-        tabIndex={10}
-      />
-
-      {downloadingProgress > 0 && !isMaxProgress && (
-        <FloatingButton
-          className="layout-progress-bar"
-          icon="file"
-          alert={false}
-          percent={downloadingProgress}
-        />
-      )}
-    </>
-  );
-
   const onClickVersionListProp = isEnableRestore
     ? { onClick: onClickBackupList }
     : {};
@@ -360,10 +232,9 @@ const RestoreBackup = (props) => {
 
       {isVisibleBackupListDialog && (
         <BackupListModalDialog
-          isVisibleBackupListDialog={isVisibleBackupListDialog}
+          isVisibleDialog={isVisibleBackupListDialog}
           onModalClose={onModalClose}
           isNotify={checkboxState.notification}
-          isCopyingToLocal={!isMaxProgress}
           history={history}
         />
       )}
@@ -386,54 +257,44 @@ const RestoreBackup = (props) => {
         label={t("UserAgreement")}
         isDisabled={!isEnableRestore}
       />
-      {buttonContent}
+      <ButtonContainer
+        isConfirmed={checkboxState.confirmation}
+        isNotification={checkboxState.notification}
+        getStorageType={getStorageType}
+        radioButtonState={radioButtonState}
+        isCheckedThirdPartyStorage={radioButtonState === STORAGE_SPACE}
+        isCheckedLocalFile={radioButtonState === LOCAL_FILE}
+        history={history}
+        t={t}
+        buttonSize={buttonSize}
+      />
     </StyledRestoreBackup>
   );
 };
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
+  const { isTabletView } = settingsStore;
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const {
-    socketHelper,
-
-    isTabletView,
-    setTenantStatus,
-    standalone,
-  } = settingsStore;
-  const {
-    downloadingProgress,
     getProgress,
     clearProgressInterval,
     setStorageRegions,
     setThirdPartyStorage,
-    isFormReady,
-    getStorageParams,
     setConnectedThirdPartyAccount,
     setRestoreResource,
-    restoreResource,
   } = backup;
 
   const buttonSize = isTabletView ? "normal" : "small";
-  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
-  const isMaxProgress = downloadingProgress === 100;
+
   return {
-    isMaxProgress,
-    standalone,
-    setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,
     buttonSize,
     setConnectedThirdPartyAccount,
-
     clearProgressInterval,
-    downloadingProgress,
-    socketHelper,
-    isFormReady,
-
     getProgress,
-    getStorageParams,
     setRestoreResource,
-    restoreResource,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));
