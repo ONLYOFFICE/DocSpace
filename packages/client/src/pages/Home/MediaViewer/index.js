@@ -48,7 +48,14 @@ const FilesMediaViewer = (props) => {
     prevMedia,
     resetUrl,
     firstLoad,
+    setSelection,
   } = props;
+
+  useEffect(() => {
+    if (visible) {
+      resetSelection();
+    }
+  }, [visible]);
 
   useEffect(() => {
     const previewId = queryString.parse(location.search).preview;
@@ -91,6 +98,10 @@ const FilesMediaViewer = (props) => {
     window.history.pushState(null, null, url);
   };
 
+  const resetSelection = () => {
+    setSelection([]);
+  };
+
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -110,9 +121,6 @@ const FilesMediaViewer = (props) => {
       setMediaViewerData(item);
     }
   };
-
-  const canDelete = (fileId) => true; //TODO:
-  const canDownload = (fileId) => true; //TODO:
 
   const onDeleteMediaFile = (id) => {
     const translations = {
@@ -147,18 +155,6 @@ const FilesMediaViewer = (props) => {
       }
       setToPreviewFile(null);
     }
-    // if (previewFile) {
-    //   setIsLoading(true);
-    //   setFirstLoad(true);
-
-    //   fetchFiles(previewFile.folderId).finally(() => {
-    //     setIsLoading(false);
-    //     setFirstLoad(false);
-    //     setScrollToItem({ id: previewFile.id, type: "file" });
-    //     setBufferSelection(previewFile);
-    //     setToPreviewFile(null);
-    //   });
-    // }
 
     setMediaViewerData({ visible: false, id: null });
 
@@ -233,6 +229,7 @@ export default inject(
       setIsPreview,
       isPreview,
       resetUrl,
+      setSelection,
     } = filesStore;
     const {
       visible,
@@ -301,6 +298,7 @@ export default inject(
       onCopyAction,
       onDuplicate,
       archiveRoomsId,
+      setSelection,
     };
   }
 )(

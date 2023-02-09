@@ -81,7 +81,6 @@ function MediaViewer({ playlistPos, nextMedia, prevMedia, ...props }: MediaViewe
         return () => {
             document.removeEventListener("keydown", onKeydown);
             document.removeEventListener("keyup", onKeyup);
-            props.onClose();
         }
     }, [])
 
