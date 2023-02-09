@@ -54,7 +54,7 @@ const FileTile = (props) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setIdFileAnimation,
+    setFileHighlight,
   } = props;
 
   const [isHighlight, setIsHighlight] = React.useState(false);
@@ -69,7 +69,7 @@ const FileTile = (props) => {
     setIsHighlight(true);
 
     return () => {
-      if (isHighlight) setIdFileAnimation(null);
+      if (isHighlight) setFileHighlight(null);
     };
   }, [item, isHighlight]);
 
@@ -163,7 +163,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     setSelection,
     withCtrlSelect,
     withShiftSelect,
-    setIdFileAnimation,
+    setFileHighlight,
   } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -176,7 +176,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setIdFileAnimation,
+    setFileHighlight,
   };
 })(
   withTranslation(["Files", "InfoPanel"])(

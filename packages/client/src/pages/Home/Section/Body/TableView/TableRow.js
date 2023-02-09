@@ -37,7 +37,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
-    setIdFileAnimation,
+    setFileHighlight,
   } = props;
   const [isHighlight, setIsHighlight] = React.useState(false);
   const { acceptBackground, background } = theme.dragAndDrop;
@@ -114,7 +114,7 @@ const FilesTableRow = (props) => {
 
     isMounted = true;
     setIsHighlight(true);
-    setIdFileAnimation(null);
+    setFileHighlight(null);
 
     timeoutRef.current = setTimeout(() => {
       isMounted && setIsHighlight(false);

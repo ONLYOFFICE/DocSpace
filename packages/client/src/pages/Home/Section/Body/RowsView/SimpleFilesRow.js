@@ -251,7 +251,7 @@ const SimpleFilesRow = (props) => {
     isRooms,
 
     folderCategory,
-    setIdFileAnimation,
+    setFileHighlight,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
@@ -287,7 +287,7 @@ const SimpleFilesRow = (props) => {
 
     isMounted = true;
     setIsHighlight(true);
-    setIdFileAnimation(null);
+    setFileHighlight(null);
 
     timeoutRef.current = setTimeout(() => {
       isMounted && setIsHighlight(false);

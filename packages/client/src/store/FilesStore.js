@@ -121,7 +121,7 @@ class FilesStore {
   isPreview = false;
   tempFilter = null;
 
-  idFileAnimation = null;
+  fileHighlight = null;
   thumbnails = new Set();
 
   constructor(
@@ -463,8 +463,8 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setIdFileAnimation = (idFileAnimation) => {
-    this.idFileAnimation = idFileAnimation;
+  setFileHighlight = (fileHighlight) => {
+    this.fileHighlight = fileHighlight;
   };
 
   checkSelection = (file) => {
@@ -2353,7 +2353,7 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const showAnimation = id === this.idFileAnimation;
+      const showAnimation = id === this.fileHighlight;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
