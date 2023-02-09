@@ -132,6 +132,7 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   max-width: 100vw !important;
+  user-select: none;
 
   ${commonStyles};
 

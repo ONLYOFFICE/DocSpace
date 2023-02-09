@@ -48,6 +48,7 @@ const StyledGridWrapper = styled.div`
 const StyledTileContainer = styled.div`
   position: relative;
   height: 100%;
+  user-select: none;
 
   .tile-item-wrapper {
     position: relative;
