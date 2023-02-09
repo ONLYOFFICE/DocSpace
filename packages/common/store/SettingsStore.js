@@ -137,6 +137,7 @@ class SettingsStore {
   companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
+  standalone = false;
 
   constructor() {
     makeAutoObservable(this);
