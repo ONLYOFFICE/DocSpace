@@ -170,6 +170,8 @@ const SortButton = ({
 
   onSort,
   viewSelectorVisible,
+
+  setMainButtonMobileVisible,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -213,6 +215,12 @@ const SortButton = ({
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);
   }, []);
+
+  React.useEffect(() => {
+    if (isMobileOnly) {
+      setMainButtonMobileVisible(!isOpen);
+    }
+  }, [isOpen]);
 
   const onOptionClick = React.useCallback(
     (e) => {

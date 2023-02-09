@@ -175,6 +175,7 @@ const SectionFilterContent = ({
   isEmptyPage,
   clearSearch,
   setClearSearch,
+  setMainButtonMobileVisible,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -1346,6 +1347,7 @@ const SectionFilterContent = ({
       filterTitle={t("Filter")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
+      setMainButtonMobileVisible={setMainButtonMobileVisible}
     />
   );
 };
@@ -1369,6 +1371,7 @@ export default inject(
       viewAs,
       createThumbnails,
       setCurrentRoomsFilter,
+      setMainButtonMobileVisible,
       thirdPartyStore,
       clearSearch,
       setClearSearch,
@@ -1437,6 +1440,8 @@ export default inject(
 
       clearSearch,
       setClearSearch,
+
+      setMainButtonMobileVisible,
     };
   }
 )(
