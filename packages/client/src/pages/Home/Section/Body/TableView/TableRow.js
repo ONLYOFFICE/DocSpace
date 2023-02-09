@@ -39,7 +39,7 @@ const FilesTableRow = (props) => {
     isRooms,
     setFileHighlight,
   } = props;
-  const [isHighlight, setIsHighlight] = React.useState(false);
+  const [startAnimation, setStartAnimation] = React.useState(false);
   const { acceptBackground, background } = theme.dragAndDrop;
 
   let timeoutRef = React.useRef(null);
@@ -99,7 +99,7 @@ const FilesTableRow = (props) => {
   }, [checkedProps, isActive, showHotkeyBorder]);
 
   React.useEffect(() => {
-    setIsHighlight(false);
+    setStartAnimation(false);
 
     return () => {
       if (timeoutRef.current) {
@@ -110,14 +110,14 @@ const FilesTableRow = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (!item.showAnimation) return;
+    if (!item.isAnimation) return;
 
     isMounted = true;
-    setIsHighlight(true);
+    setStartAnimation(true);
     setFileHighlight(null);
 
     timeoutRef.current = setTimeout(() => {
-      isMounted && setIsHighlight(false);
+      isMounted && setStartAnimation(false);
     }, 2000);
   }, [item]);
 
@@ -165,7 +165,7 @@ const FilesTableRow = (props) => {
             : t("Translations:TitleShowActions")
         }
         isRoom={item.isRoom}
-        isHighlight={isHighlight}
+        startAnimation={startAnimation}
       >
         {isRooms ? (
           <RoomsRowDataComponent

@@ -76,7 +76,7 @@ const StyledSimpleFilesRow = styled(Row)`
     `}
 
   ${(props) =>
-    props.isHighlight &&
+    props.startAnimation &&
     css`
       ${checkedStyle}
 
@@ -255,7 +255,7 @@ const SimpleFilesRow = (props) => {
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
-  const [isHighlight, setIsHighlight] = React.useState(false);
+  const [startAnimation, setStartAnimation] = React.useState(false);
 
   let timeoutRef = React.useRef(null);
   let isMounted;
@@ -273,7 +273,7 @@ const SimpleFilesRow = (props) => {
   );
 
   useEffect(() => {
-    setIsHighlight(false);
+    setStartAnimation(false);
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -283,14 +283,14 @@ const SimpleFilesRow = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!item.showAnimation) return;
+    if (!item.isAnimation) return;
 
     isMounted = true;
-    setIsHighlight(true);
+    setStartAnimation(true);
     setFileHighlight(null);
 
     timeoutRef.current = setTimeout(() => {
-      isMounted && setIsHighlight(false);
+      isMounted && setStartAnimation(false);
     }, 2000);
   }, [item]);
 
@@ -373,7 +373,7 @@ const SimpleFilesRow = (props) => {
           isSmallContainer={isSmallContainer}
           isRooms={isRooms}
           folderCategory={folderCategory}
-          isHighlight={isHighlight}
+          startAnimation={startAnimation}
         >
           <FilesRowContent
             item={item}

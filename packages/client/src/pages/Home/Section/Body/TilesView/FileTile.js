@@ -57,21 +57,21 @@ const FileTile = (props) => {
     setFileHighlight,
   } = props;
 
-  const [isHighlight, setIsHighlight] = React.useState(false);
+  const [startAnimation, setStartAnimation] = React.useState(false);
 
   useEffect(() => {
-    setIsHighlight(false);
+    setStartAnimation(false);
   }, []);
 
   useEffect(() => {
-    if (!item.showAnimation) return;
+    if (!item.isAnimation) return;
 
-    setIsHighlight(true);
+    setStartAnimation(true);
 
     return () => {
-      if (isHighlight) setFileHighlight(null);
+      if (startAnimation) setFileHighlight(null);
     };
-  }, [item, isHighlight]);
+  }, [item, startAnimation]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -143,7 +143,7 @@ const FileTile = (props) => {
           isRooms={isRooms}
           withCtrlSelect={withCtrlSelect}
           withShiftSelect={withShiftSelect}
-          isHighlight={isHighlight}
+          startAnimation={startAnimation}
         >
           <FilesTileContent
             item={item}

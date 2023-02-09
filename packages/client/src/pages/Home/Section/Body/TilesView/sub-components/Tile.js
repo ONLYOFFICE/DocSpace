@@ -164,7 +164,7 @@ const StyledTile = styled.div`
     `}
 
   ${(props) =>
-    props.isHighlight &&
+    props.startAnimation &&
     css`
       .file-tile-bottom {
         ${animationStyles}
@@ -246,7 +246,7 @@ const StyledTile = styled.div`
   }
 
   ${(props) =>
-    props.isHighlight &&
+    props.startAnimation &&
     css`
       ${animationStyles}
     `}
@@ -280,7 +280,7 @@ const StyledFileTileTop = styled.div`
   }
 
   ${(props) =>
-    props.isHighlight &&
+    props.startAnimation &&
     css`
       ${animationStyles}
     `}
@@ -537,7 +537,7 @@ class Tile extends React.PureComponent {
       columnCount,
       selectTag,
       selectOption,
-      isHighlight,
+      startAnimation,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -627,7 +627,7 @@ class Tile extends React.PureComponent {
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
         isThirdParty={item.providerType}
-        isHighlight={isHighlight}
+        startAnimation={startAnimation}
       >
         {isFolder || (!fileExst && id === -1) ? (
           isRoom ? (
@@ -789,7 +789,7 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isMedia={item.canOpenPlayer}
-              isHighlight={isHighlight}
+              startAnimation={startAnimation}
             >
               {icon}
             </StyledFileTileTop>
