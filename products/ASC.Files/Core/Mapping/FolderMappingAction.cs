@@ -27,7 +27,7 @@
 namespace ASC.Files.Core.Mapping;
 
 [Scope]
-public class FolderMappingAction : FilesCommonMappingAction, IMappingAction<DbFolderQuery, Folder<int>>
+public class FolderMappingAction : IMappingAction<DbFolderQuery, Folder<int>>
 {
     public void Process(DbFolderQuery source, Folder<int> destination, ResolutionContext context)
     {
@@ -92,7 +92,5 @@ public class FolderMappingAction : FilesCommonMappingAction, IMappingAction<DbFo
                 destination.RootId = destination.Id;
             }
         }
-        
-        Process((OriginQuery)source, destination, context);
     }
 }

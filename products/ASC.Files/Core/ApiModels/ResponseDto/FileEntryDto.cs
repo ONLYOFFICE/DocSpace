@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-#nullable enable
 using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
@@ -44,7 +43,7 @@ public abstract class FileEntryDto
         get => _updated < Created ? Created : _updated;
         set => _updated = value;
     }
-    public ApiDateTime? AutoDelete { get; set; }
+    public ApiDateTime AutoDelete { get; set; }
     public FolderType RootFolderType { get; set; }
     public EmployeeDto UpdatedBy { get; set; }
     public bool? ProviderItem { get; set; }
