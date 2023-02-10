@@ -16,7 +16,7 @@ const reactWindowBodyStyles = css`
 `;
 
 const StyledTableContainer = styled.div`
-  -moz-user-select: none;
+  user-select: none;
 
   width: 100%;
   max-width: 100%;

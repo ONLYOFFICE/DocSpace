@@ -15,6 +15,7 @@ import {
 import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
+  user-select: none;
   width: 100%;
   height: ${(props) =>
     isMobileOnly && isIOS ? "calc(var(--vh, 1vh) * 100)" : props.contentHeight};

@@ -101,6 +101,7 @@ class FilesStore {
   pageItemsLength = null;
   isHidePagination = false;
   trashIsEmpty = false;
+  mainButtonMobileVisible = true;
   filesIsLoading = false;
 
   isEmptyPage = false;
@@ -695,9 +696,9 @@ class FilesStore {
         },
       });
 
-      this.files?.forEach((file) =>
-        console.log("[WS] subscribe to file's changes", file.id, file.title)
-      );
+      // this.files?.forEach((file) =>
+      //   console.log("[WS] subscribe to file's changes", file.id, file.title)
+      // );
     }
 
     this.createThumbnails();
@@ -863,6 +864,73 @@ class FilesStore {
 
   setSelection = (selection) => {
     this.selection = selection;
+  };
+
+  setSelections = (added, removed, clear = false) => {
+    if (clear) {
+      this.selection = [];
+    }
+
+    let newSelections = JSON.parse(JSON.stringify(this.selection));
+
+    for (let item of added) {
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -3).join("_");
+
+      if (fileType === "file") {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
+
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          isFound &&
+            newSelections.push(
+              this.filesList.find((f) => f.id == id && !f.isFolder)
+            );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
+
+        const selectableFolder = this.filesList.find(
+          (f) => f.id == id && f.isFolder
+        );
+        selectableFolder.isFolder = true;
+
+        isFound && newSelections.push(selectableFolder);
+      }
+    }
+
+    for (let item of removed) {
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -3).join("_");
+
+      if (fileType === "file") {
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          newSelections = newSelections.filter(
+            (f) => !(f.id == id && !f.isFolder)
+          );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        newSelections = newSelections.filter(
+          (f) => !(f.id == id && f.isFolder)
+        );
+      }
+    }
+
+    this.setSelection(newSelections);
   };
 
   setBufferSelection = (bufferSelection) => {
@@ -2826,51 +2894,6 @@ class FilesStore {
     return this.getOptions(selection, true);
   };
 
-  setSelections = (items) => {
-    if (!items.length && !this.selection.length) return;
-
-    //if (items.length !== this.selection.length) {
-    const newSelection = [];
-
-    for (let item of items) {
-      const value = item.getAttribute("value");
-      const splitValue = value && value.split("_");
-
-      const fileType = splitValue[0];
-      // const id =
-      //   splitValue[splitValue.length - 1] === "draggable"
-      //     ? splitValue.slice(1, -1).join("_")
-      //     : splitValue.slice(1, -1).join("_");
-
-      const id = splitValue.slice(1, -1).join("_");
-
-      if (fileType === "file") {
-        this.activeFiles.findIndex((f) => f == id) === -1 &&
-          //newSelection.push(this.files.find((f) => f.id == id));
-          newSelection.push(
-            this.filesList.find((f) => f.id == id && !f.isFolder)
-          );
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
-        //const selectableFolder = this.folders.find((f) => f.id == id);
-        const selectableFolder = this.filesList.find(
-          (f) => f.id == id && f.isFolder
-        );
-        selectableFolder.isFolder = true;
-        newSelection.push(selectableFolder);
-      }
-    }
-
-    //this.selected === "close" && this.setSelected("none");
-
-    //need fo table view
-    const clearSelection = Object.values(
-      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
-    );
-
-    this.setSelection(clearSelection);
-    //}
-  };
-
   getShareUsers(folderIds, fileIds) {
     return api.files.getShareFiles(fileIds, folderIds);
   }
@@ -3064,6 +3087,10 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  setMainButtonMobileVisible = (visible) => {
+    this.mainButtonMobileVisible = visible;
   };
 
   get roomsFilterTotal() {

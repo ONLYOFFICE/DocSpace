@@ -47,6 +47,8 @@ const FilterInput = React.memo(
 
     clearSearch,
     setClearSearch,
+
+    onSortButtonClick,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -161,6 +163,7 @@ const FilterInput = React.memo(
               viewAs={viewAs === "table" ? "row" : viewAs}
               viewSettings={viewSettings}
               onChangeViewAs={onChangeViewAs}
+              onSortButtonClick={onSortButtonClick}
               viewSelectorVisible={
                 viewSettings &&
                 viewSelectorVisible &&
