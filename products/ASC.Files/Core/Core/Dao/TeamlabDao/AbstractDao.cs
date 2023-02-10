@@ -157,7 +157,8 @@ public class AbstractDao
     {
         object result;
 
-        if (Selectors.All.Any(s => sId.StartsWith(s)))
+        var sId = id.ToString();
+        if (Selectors.All.Any(s => sId.StartsWith(s.Id)))
         {
             result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
         }
