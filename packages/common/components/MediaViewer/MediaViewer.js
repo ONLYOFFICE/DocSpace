@@ -572,7 +572,7 @@ class MediaViewer extends React.Component {
           label: t("MoveTo"),
           icon: MoveReactSvgUrl,
           onClick: onMoveAction,
-          disabled: !targetFile.security.Move,
+          disabled: !targetFile?.security?.Move,
         },
         // {
         //   key: "download-as",
@@ -587,7 +587,7 @@ class MediaViewer extends React.Component {
           label: t("Translations:Copy"),
           icon: CopyReactSvgUrl,
           onClick: onCopyAction,
-          disabled: !targetFile.security.Copy,
+          disabled: !targetFile?.security?.Copy,
         },
         {
           id: "option_create-copy",
@@ -595,27 +595,27 @@ class MediaViewer extends React.Component {
           label: t("Common:Duplicate"),
           icon: DuplicateReactSvgUrl,
           onClick: () => onDuplicate(targetFile, t),
-          disabled: !targetFile.security.Duplicate,
+          disabled: !targetFile?.security?.Duplicate,
         },
         {
           key: "rename",
           label: t("Rename"),
           icon: RenameReactSvgUrl,
           onClick: () => onClickRename(targetFile),
-          disabled: !targetFile.security.Rename,
+          disabled: !targetFile?.security?.Rename,
         },
 
         {
           key: "separator0",
           isSeparator: true,
-          disabled: !targetFile.security.Delete,
+          disabled: !targetFile?.security?.Delete,
         },
         {
           key: "delete",
           label: t("Common:Delete"),
           icon: TrashReactSvgUrl,
           onClick: () => onClickDelete(targetFile, t),
-          disabled: !targetFile.security.Delete,
+          disabled: !targetFile?.security?.Delete,
         },
       ];
 
