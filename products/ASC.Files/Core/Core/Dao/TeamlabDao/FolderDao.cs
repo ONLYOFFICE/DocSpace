@@ -1679,14 +1679,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
                 .Select(r => new OriginData
                 {
-                    OriginRoom = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == tenantId &&
+                    OriginRoom = filesDbContext.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId &&
                                                                             f.Id == filesDbContext.Tree.AsNoTracking()
                                                                                 .Where(t => t.FolderId == Convert.ToInt32(r.Key))
                                                                                 .OrderByDescending(t => t.Level)
                                                                                 .Select(t => t.ParentId)
                                                                                 .Skip(1)
                                                                                 .FirstOrDefault()),
-                    OriginFolder = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
+                    OriginFolder = filesDbContext.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
                     Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
                 }));
 
