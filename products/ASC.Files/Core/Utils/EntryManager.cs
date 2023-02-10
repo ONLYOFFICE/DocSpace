@@ -1876,7 +1876,7 @@ public class EntryManager
             var fileEntry = (FileEntry<int>)entry;
             var data = originsData.FirstOrDefault(data => data.Entries.Contains(new KeyValuePair<string, FileEntryType>(fileEntry.Id.ToString(), fileEntry.FileEntryType)));
 
-            if (data?.OriginRoom != null)
+            if (data?.OriginRoom != null && DocSpaceHelper.IsRoom(data.OriginRoom.FolderType))
             {
                 fileEntry.OriginRoomId = data.OriginRoom.Id;
                 fileEntry.OriginRoomTitle = data.OriginRoom.Title;
