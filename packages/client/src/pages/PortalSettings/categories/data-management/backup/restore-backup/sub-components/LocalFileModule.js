@@ -5,7 +5,7 @@ import FileInput from "@docspace/components/file-input";
 import TextInput from "@docspace/common/components/ColorTheme/styled/textInput";
 
 let timerId = null;
-const LocalFile = ({ standalone, setRestoreResource }) => {
+const LocalFile = ({ standalone, setRestoreResource, isEnableRestore }) => {
   const [value, setValue] = useState("");
 
   const onClickInput = (file) => {
@@ -31,7 +31,7 @@ const LocalFile = ({ standalone, setRestoreResource }) => {
       onInput={onClickInput}
       scale
       className="restore-backup_input"
-      webkitdirectory
+      isDisabled={!isEnableRestore}
     />
   );
 
@@ -44,6 +44,7 @@ const LocalFile = ({ standalone, setRestoreResource }) => {
       scale
       className="restore-backup_input"
       placeholder="Enter  path"
+      isDisabled={!isEnableRestore}
     />
   );
 
@@ -51,10 +52,13 @@ const LocalFile = ({ standalone, setRestoreResource }) => {
 };
 
 export default inject(({ auth, backup }) => {
-  const { standalone } = auth.settingsStore;
+  const { settingsStore, currentQuotaStore } = auth;
+  const { standalone } = settingsStore;
   const { setRestoreResource } = backup;
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
 
   return {
+    isEnableRestore: isRestoreAndAutoBackupAvailable,
     standalone,
     setRestoreResource,
   };
