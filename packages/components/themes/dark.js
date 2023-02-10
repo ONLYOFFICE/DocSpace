@@ -825,15 +825,6 @@ const Dark = {
   },
 
   textArea: {
-    width: "100%",
-    height: "90%",
-    border: "none",
-    outline: "none",
-    resize: "none",
-    overflow: "hidden",
-    padding: "5px 8px 2px 8px",
-    fontSize: "13px",
-    lineHeight: "1.5",
 
     disabledColor: "#474747",
 
