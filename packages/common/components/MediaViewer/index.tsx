@@ -80,10 +80,10 @@ function MediaViewer({
       fetchAndSetTiffDataURL(src);
     }
 
-    document.addEventListener("keyup", onKeyup);
+    document.addEventListener("keydown", onKeydown);
 
     return () => {
-      document.removeEventListener("keyup", onKeyup);
+      document.removeEventListener("keydown", onKeydown);
     };
   }, []);
 
@@ -280,7 +280,7 @@ function MediaViewer({
     if (!isNullOrUndefined(currentFileId)) onDownload(currentFileId);
   };
 
-  const onKeyup = (event: KeyboardEvent) => {
+  const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
 
     if (code in KeyboardEventKeys) {
