@@ -4,10 +4,9 @@ import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import PasswordInput from "@docspace/components/password-input";
 import Button from "@docspace/components/button";
-import Section from "@docspace/common/components/Section";
 import FieldContainer from "@docspace/components/field-container";
 import { inject, observer } from "mobx-react";
-import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
+import { StyledPage, StyledBody, StyledContent } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import { createPasswordHash } from "@docspace/common/utils";
@@ -91,80 +90,72 @@ const ChangePasswordForm = (props) => {
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          <div className="password-form">
-            <Text fontSize="16px" fontWeight="600" className="subtitle">
-              {t("PassworResetTitle")}
-            </Text>
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={isPasswordErrorShow && !passwordValid}
-              errorMessage={`${t(
-                "Common:PasswordLimitMessage"
-              )}: ${getPasswordErrorMessage(t, settings)}`}
-            >
-              <PasswordInput
-                simpleView={false}
-                passwordSettings={settings}
-                id="password"
-                inputName="password"
-                placeholder={t("Common:Password")}
-                type="password"
-                inputValue={password}
+          <FormWrapper>
+            <div className="password-form">
+              <Text fontSize="16px" fontWeight="600" className="subtitle">
+                {t("PassworResetTitle")}
+              </Text>
+              <FieldContainer
+                isVertical={true}
+                labelVisible={false}
                 hasError={isPasswordErrorShow && !passwordValid}
-                size="large"
-                scale
-                tabIndex={1}
-                autoComplete="current-password"
-                onChange={onChangePassword}
-                onValidateInput={onValidatePassword}
-                onBlur={onBlurPassword}
-                onKeyDown={onKeyPress}
-                tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-                tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
-                  settings ? settings.minLength : 8
-                }`}
-                tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
-                tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
-                tooltipPasswordSpecial={`${t(
-                  "Common:PasswordLimitSpecialSymbols"
-                )}`}
-                generatePasswordTitle={t("Wizard:GeneratePassword")}
-              />
-            </FieldContainer>
-          </div>
+                errorMessage={`${t(
+                  "Common:PasswordLimitMessage"
+                )}: ${getPasswordErrorMessage(t, settings)}`}
+              >
+                <PasswordInput
+                  simpleView={false}
+                  passwordSettings={settings}
+                  id="password"
+                  inputName="password"
+                  placeholder={t("Common:Password")}
+                  type="password"
+                  inputValue={password}
+                  hasError={isPasswordErrorShow && !passwordValid}
+                  size="large"
+                  scale
+                  tabIndex={1}
+                  autoComplete="current-password"
+                  onChange={onChangePassword}
+                  onValidateInput={onValidatePassword}
+                  onBlur={onBlurPassword}
+                  onKeyDown={onKeyPress}
+                  tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+                  tooltipPasswordLength={`${t(
+                    "Common:PasswordMinimumLength"
+                  )}: ${settings ? settings.minLength : 8}`}
+                  tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+                  tooltipPasswordCapital={`${t(
+                    "Common:PasswordLimitUpperCase"
+                  )}`}
+                  tooltipPasswordSpecial={`${t(
+                    "Common:PasswordLimitSpecialSymbols"
+                  )}`}
+                  generatePasswordTitle={t("Wizard:GeneratePassword")}
+                />
+              </FieldContainer>
+            </div>
 
-          <Button
-            primary
-            size="medium"
-            scale
-            label={t("Common:Create")}
-            tabIndex={5}
-            onClick={onSubmit}
-            isDisabled={isLoading}
-          />
-        </FormWrapper>
-      </StyledBody>
+            <Button
+              primary
+              size="medium"
+              scale
+              label={t("Common:Create")}
+              tabIndex={5}
+              onClick={onSubmit}
+              isDisabled={isLoading}
+            />
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const ChangePasswordFormWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <ChangePasswordForm {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -191,7 +182,7 @@ export default inject(({ auth, setup }) => {
 })(
   withRouter(
     withTranslation(["Confirm", "Common", "Wizard"])(
-      withLoader(observer(ChangePasswordFormWrapper))
+      withLoader(observer(ChangePasswordForm))
     )
   )
 );
