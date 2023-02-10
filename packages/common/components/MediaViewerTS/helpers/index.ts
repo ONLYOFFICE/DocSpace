@@ -8,13 +8,26 @@ export const ButtonKeys = Object.freeze({
     rightArrow: 39,
     upArrow: 38,
     downArrow: 40,
-    space: 32,
     esc: 27,
+    space: 32,
     ctr: 17,
     one: 49,
     del: 46,
     s: 83,
 });
+
+
+export enum KeyboardEventKeys {
+    ArrowRight = "ArrowRight",
+    ArrowLeft = "ArrowLeft",
+    Escape = "Escape",
+    Space = "Space",
+    Delete = "Delete",
+    KeyS = "KeyS",
+    Numpad1 = "Numpad1",
+    Digit1 = "Digit1",
+}
+
 
 
 export const mapSupplied = {

@@ -5,7 +5,7 @@ import ImageViewer from "../MediaViewer/sub-components/image-viewer";
 
 import { MediaViewerProps } from './MediaViewer.props';
 import { FileStatus } from "@docspace/common/constants";
-import { ButtonKeys, isNullOrUndefined, mapSupplied, mediaTypes } from "./helpers";
+import { ButtonKeys, isNullOrUndefined, KeyboardEventKeys, mapSupplied, mediaTypes } from "./helpers";
 
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
@@ -75,11 +75,9 @@ function MediaViewer({ playlistPos, nextMedia, prevMedia, ...props }: MediaViewe
             fetchAndSetTiffDataURL(src);
         }
 
-        document.addEventListener("keydown", onKeydown);
         document.addEventListener("keyup", onKeyup);
 
         return () => {
-            document.removeEventListener("keydown", onKeydown);
             document.removeEventListener("keyup", onKeyup);
         }
     }, [])
@@ -278,66 +276,64 @@ function MediaViewer({ playlistPos, nextMedia, prevMedia, ...props }: MediaViewe
             onDownload(currentFileId);
     };
 
-    const onKeyup = useCallback((e: KeyboardEvent) => {
-        if (ButtonKeys.ctr === e.keyCode) {
-            ctrIsPressedRef.current = false;
+
+    const onKeyup = (event: KeyboardEvent) => {
+
+        const { code, ctrlKey } = event;
+
+        if (code in KeyboardEventKeys) {
+            event.preventDefault();
         }
-    }, []);
 
+        switch (code) {
+            case KeyboardEventKeys.ArrowLeft:
+                if (document.fullscreenElement || !canSwipeImage) return;
 
-    const onKeydown = (e: KeyboardEvent) => {
-        switch (e.keyCode) {
-            case ButtonKeys.leftArrow:
-                if (document.fullscreenElement) return;
-                canSwipeImage
-                    ? ctrIsPressedRef.current
-                        ? document.getElementsByClassName("iconContainer rotateLeft")
-                            .length > 0 &&
-                        (document
-                            .getElementsByClassName("iconContainer rotateLeft")[0] as HTMLElement)
-                            .click()
-                        : prevMedia()
-                    : null;
+                if (ctrlKey) {
+                    const rotateLeftElement = document.getElementsByClassName("iconContainer rotateLeft")?.[0] as HTMLElement | undefined;
+                    rotateLeftElement?.click()
+                } else {
+                    prevMedia()
+                }
+
                 break;
-            case ButtonKeys.rightArrow:
-                if (document.fullscreenElement) return;
-                canSwipeImage
-                    ? ctrIsPressedRef.current
-                        ? document.getElementsByClassName("iconContainer rotateRight")
-                            .length > 0 &&
-                        (document
-                            .getElementsByClassName("iconContainer rotateRight")[0] as HTMLElement)
-                            .click()
-                        : nextMedia()
-                    : null;
+
+            case KeyboardEventKeys.ArrowRight:
+                if (document.fullscreenElement || !canSwipeImage) return;
+
+                if (ctrlKey) {
+                    const rotateRightElement = document.getElementsByClassName("iconContainer rotateRight")?.[0] as HTMLElement | undefined;
+                    rotateRightElement?.click()
+                } else {
+                    nextMedia()
+                }
+
                 break;
-            case ButtonKeys.space:
-                document.getElementsByClassName("video-play").length > 0 &&
-                    (document.getElementsByClassName("video-play")[0] as HTMLElement).click();
+
+            case KeyboardEventKeys.Space:
+                const videoPlayElement = document.getElementsByClassName("video-play")?.[0] as HTMLElement | undefined;
+
+                videoPlayElement?.click();
+
                 break;
-            case ButtonKeys.esc:
+
+            case KeyboardEventKeys.Escape:
                 if (!props.deleteDialogVisible) props.onClose();
                 break;
-            case ButtonKeys.upArrow:
-                document.getElementsByClassName("iconContainer zoomIn").length > 0 &&
-                    (document.getElementsByClassName("iconContainer zoomIn")[0] as HTMLElement).click();
+
+            case KeyboardEventKeys.KeyS:
+                if (ctrlKey) onDownload();
                 break;
-            case ButtonKeys.downArrow:
-                document.getElementsByClassName("iconContainer zoomOut").length > 0 &&
-                    (document.getElementsByClassName("iconContainer zoomOut")[0] as HTMLElement).click();
+
+            case KeyboardEventKeys.Digit1:
+            case KeyboardEventKeys.Numpad1:
+                if (ctrlKey) {
+                    const resetElement = document.getElementsByClassName("iconContainer reset")?.[0] as HTMLElement | undefined;
+                    resetElement?.click();
+                }
                 break;
-            case ButtonKeys.ctr:
-                ctrIsPressedRef.current = true;
-                break;
-            case ButtonKeys.s:
-                if (ctrIsPressedRef.current) onDownload();
-                break;
-            case ButtonKeys.one:
-                ctrIsPressedRef.current &&
-                    document.getElementsByClassName("iconContainer reset").length > 0 &&
-                    (document.getElementsByClassName("iconContainer reset")[0] as HTMLElement).click();
-                break;
-            case ButtonKeys.del:
+
+            case KeyboardEventKeys.Delete:
                 onDelete();
                 break;
 
