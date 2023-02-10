@@ -1,6 +1,0 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="8.5" cy="8.5" r="7.5" stroke="white" stroke-width="2"/>
-<path d="M17.5 19.5L13 15L15 13L19.5 17.5L17.5 19.5Z" fill="white"/>
-<rect x="8" y="5" width="1" height="7" fill="white"/>
-<rect x="12" y="8" width="1" height="7" transform="rotate(90 12 8)" fill="white"/>
-</svg>

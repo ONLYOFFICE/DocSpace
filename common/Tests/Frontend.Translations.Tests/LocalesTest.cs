@@ -34,6 +34,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Frontend.Tests;
+using Frontend.Tests.Models;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -41,9 +44,9 @@ using NUnit.Framework;
 
 using WeCantSpell.Hunspell;
 
-namespace Frontend.Translations.Tests;
+namespace Frontend.Tests;
 
-public class Tests
+public class LocalesTest
 {
     public static string BasePath
     {
@@ -165,30 +168,20 @@ public class Tests
 
         TestContext.Progress.WriteLine($"Found TranslationFiles = {TranslationFiles.Count()}. First path is '{TranslationFiles.FirstOrDefault()?.FilePath}'");
 
+        var searchPatern = @"\.js|\.jsx|\.ts|\.tsx";
+
         var javascriptFiles = (from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
-                               from filePath in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
-                               where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.js") && !filePath.Contains(".stories.js")
+                               from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
+                               where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                               && !filePath.Contains(".test.js")
+                               && !filePath.Contains(".stories.js")
+                               && !filePath.Contains(".test.ts")
+                               && !filePath.Contains(".stories.ts")
+                               && !filePath.Contains(".test.tsx")
+                               && !filePath.Contains(".stories.tsx")
                                select Utils.ConvertPathToOS(filePath))
                               .ToList();
-
-        javascriptFiles.AddRange(from wsPath in Workspaces
-                                 let clientDir = Path.Combine(BasePath, wsPath)
-                                 from filePath in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
-                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.jsx") && !filePath.Contains(".stories.jsx")
-                                 select Utils.ConvertPathToOS(filePath));
-
-        javascriptFiles.AddRange(from wsPath in Workspaces
-                                 let clientDir = Path.Combine(BasePath, wsPath)
-                                 from filePath in Directory.EnumerateFiles(clientDir, "*.ts", SearchOption.AllDirectories)
-                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.ts") && !filePath.Contains(".stories.ts")
-                                 select Utils.ConvertPathToOS(filePath));
-
-        javascriptFiles.AddRange(from wsPath in Workspaces
-                                 let clientDir = Path.Combine(BasePath, wsPath)
-                                 from filePath in Directory.EnumerateFiles(clientDir, "*.tsx", SearchOption.AllDirectories)
-                                 where !filePath.Contains(Utils.ConvertPathToOS("dist/")) && !filePath.Contains(".test.tsx") && !filePath.Contains(".stories.tsx")
-                                 select Utils.ConvertPathToOS(filePath));
 
         TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
 

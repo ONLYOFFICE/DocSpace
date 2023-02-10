@@ -6,7 +6,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import SimulatePassword from "../../SimulatePassword";
 import StyledComponent from "./StyledConvertPasswordDialog";
-import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { openDocEditor } from "@docspace/client/src/helpers/filesUtils";
 import combineUrl from "@docspace/common/utils/combineUrl";
@@ -23,7 +22,7 @@ const ConvertPasswordDialogComponent = (props) => {
     setFormCreationInfo,
     setPasswordEntryProcess,
     isDesktop,
-    editCompleteAction,
+    completeAction,
     fileCopyAs,
   } = props;
   const inputRef = React.useRef(null);
@@ -58,7 +57,11 @@ const ConvertPasswordDialogComponent = (props) => {
     tab =
       !isDesktop && formCreationInfo.fileInfo.fileExst && formCreationInfo.open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              "/doceditor"
+            ),
             "_blank"
           )
         : null;
@@ -92,8 +95,19 @@ const ConvertPasswordDialogComponent = (props) => {
             onClose();
           })
           .catch((err) => {
-            if (err.indexOf("password") == -1) {
-              toastr.error(err, t("Common:Warning"));
+            let errorMessage = "";
+            if (typeof err === "object") {
+              errorMessage =
+                err?.response?.data?.error?.message ||
+                err?.statusText ||
+                err?.message ||
+                "";
+            } else {
+              errorMessage = err;
+            }
+
+            if (errorMessage.indexOf("password") == -1) {
+              toastr.error(errorMessage, t("Common:Warning"));
               return;
             }
 
@@ -111,19 +125,31 @@ const ConvertPasswordDialogComponent = (props) => {
           .then((file) => {
             toastr.success(t("SuccessfullyCreated", { fileTitle: newTitle }));
             onClose();
+
             open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => {
-            editCompleteAction(fileInfo);
+            completeAction(fileInfo);
           })
           .catch((err) => {
-            if (err.indexOf("password") == -1) {
-              toastr.error(err, t("Common:Warning"));
+            let errorMessage = "";
+            if (typeof err === "object") {
+              errorMessage =
+                err?.response?.data?.error?.message ||
+                err?.statusText ||
+                err?.message ||
+                "";
+            } else {
+              errorMessage = err;
+            }
+            if (errorMessage.indexOf("password") == -1) {
+              toastr.error(errorMessage, t("Common:Warning"));
               return;
             }
 
             toastr.error(t("CreationError"), t("Common:Warning"));
-            open && openDocEditor(null, null, tab);
+
+            // open && openDocEditor(null, null, tab);
             if (_isMounted) {
               setPasswordValid(false);
               focusInput();
@@ -195,27 +221,25 @@ const ConvertPasswordDialogComponent = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <StyledComponent isTabletView={isTabletView}>
-          <div className="convert-password_footer">
-            <Button
-              id="convert-password-dialog_button-accept"
-              className="convert-password-dialog_button"
-              key="ContinueButton"
-              label={t("Common:SaveButton")}
-              size="small"
-              primary
-              onClick={onConvert}
-              isLoading={isLoading}
-            />
-            <Button
-              className="convert-password-dialog_button"
-              key="CloseButton"
-              label={t("Common:CloseButton")}
-              size="small"
-              onClick={onClose}
-            />
-          </div>
-        </StyledComponent>
+        <Button
+          id="convert-password-dialog_button-accept"
+          className="convert-password-dialog_button"
+          key="ContinueButton"
+          label={t("Common:SaveButton")}
+          size="normal"
+          scale
+          primary
+          onClick={onConvert}
+          isLoading={isLoading}
+        />
+        <Button
+          className="convert-password-dialog_button"
+          key="CloseButton"
+          label={t("Common:CloseButton")}
+          scale
+          size="normal"
+          onClick={onClose}
+        />
       </ModalDialog.Footer>
     </ModalDialog>
   );
@@ -237,7 +261,7 @@ export default inject(
     } = dialogsStore;
     const { copyAsAction, fileCopyAs } = uploadDataStore;
     const { setPasswordEntryProcess } = filesStore;
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
     const { settingsStore } = auth;
     const { isTabletView, isDesktopClient } = settingsStore;
 
@@ -251,7 +275,7 @@ export default inject(
       setFormCreationInfo,
       setPasswordEntryProcess,
       isDesktop: isDesktopClient,
-      editCompleteAction,
+      completeAction,
     };
   }
 )(observer(ConvertPasswordDialog));

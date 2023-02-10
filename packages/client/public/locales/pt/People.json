@@ -1,7 +1,5 @@
 {
   "LblInviteAgain": "Convidar novamente",
   "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{{{email}}</1>",
-  "NotFoundTitle": "Não foram encontrados colegas de equipa",
-  "ReassignmentData": "Retribuição de dados",
   "UserStatus": "Estado"
 }

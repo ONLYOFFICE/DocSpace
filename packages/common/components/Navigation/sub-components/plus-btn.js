@@ -1,5 +1,8 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
+
+import PlusReactSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+
 import IconButton from "@docspace/components/icon-button";
 import ContextMenu from "@docspace/components/context-menu";
 
@@ -30,7 +33,7 @@ const PlusButton = (props) => {
     <div ref={ref} className={className}>
       <IconButton
         onClick={onClick}
-        iconName="images/plus.svg"
+        iconName={PlusReactSvgUrl}
         id={props.id}
         size={15}
         isFill

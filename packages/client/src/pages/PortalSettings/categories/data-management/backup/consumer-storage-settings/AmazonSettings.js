@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import TextInput from "@docspace/components/text-input";
@@ -257,7 +258,8 @@ class AmazonSettings extends React.Component {
       return (
         <>
           <HelpButton
-            iconName={"/static/images/help.react.svg"}
+            offsetRight={0}
+            iconName={HelpReactSvgUrl}
             tooltipContent={
               <>
                 <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">
@@ -321,6 +323,7 @@ class AmazonSettings extends React.Component {
             dropDownMaxHeight={300}
             isDisabled={this.isDisabled}
             tabIndex={2}
+            showDisabledItems
           />
         </StyledBody>
 
@@ -393,6 +396,7 @@ class AmazonSettings extends React.Component {
             dropDownMaxHeight={300}
             isDisabled={this.isDisabled}
             tabIndex={7}
+            showDisabledItems
           />
         </StyledBody>
 
@@ -436,6 +440,7 @@ class AmazonSettings extends React.Component {
                   dropDownMaxHeight={300}
                   isDisabled={this.isDisabled}
                   tabIndex={8}
+                  showDisabledItems
                 />
 
                 {managedKeys.label === this.customerManager && (

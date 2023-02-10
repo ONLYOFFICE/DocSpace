@@ -52,6 +52,11 @@ const Details = ({
     }
   }, [selection]);
 
+  const currentIcon =
+    !selection.isArchive && selection?.logo?.large
+      ? selection?.logo?.large
+      : getInfoPanelItemIcon(selection, 96);
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
@@ -68,9 +73,12 @@ const Details = ({
         <StyledNoThumbnail>
           <img
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom && selection.logo?.large && "custom-logo"
+              selection.isRoom &&
+              !selection.isArchive &&
+              selection.logo?.large &&
+              "custom-logo"
             }`}
-            src={getInfoPanelItemIcon(selection, 96)}
+            src={currentIcon}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>

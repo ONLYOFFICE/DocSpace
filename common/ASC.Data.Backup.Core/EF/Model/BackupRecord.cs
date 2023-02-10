@@ -29,24 +29,17 @@ namespace ASC.Data.Backup.EF.Model;
 public class BackupRecord : BaseEntity
 {
     public Guid Id { get; set; }
-
     public int TenantId { get; set; }
-
     public bool IsScheduled { get; set; }
     public string Name { get; set; }
     public string Hash { get; set; }
-
     public BackupStorageType StorageType { get; set; }
-
     public string StorageBasePath { get; set; }
-
     public string StoragePath { get; set; }
-
     public DateTime CreatedOn { get; set; }
-
     public DateTime ExpiresOn { get; set; }
-
     public string StorageParams { get; set; }
+    public bool Removed { get; set; }
 
     public override object[] GetKeys()
     {
@@ -149,6 +142,11 @@ public static class BackupRecordExtension
                 .HasColumnType("varchar(64)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.Removed)
+                .HasColumnName("removed")
+                .HasColumnType("tinyint(1)")
+                .IsRequired();
         });
     }
     public static void PgSqlAddBackupRecord(this ModelBuilder modelBuilder)
@@ -238,6 +236,12 @@ public static class BackupRecordExtension
                 .HasMaxLength(64)
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.Removed)
+                .HasColumnName("removed")
+                .HasColumnType("int")
+                .HasMaxLength(10)
+                .IsRequired();
         });
     }
 }

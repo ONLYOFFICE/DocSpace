@@ -10,6 +10,7 @@ Custom tooltip
 import Tooltip from "@docspace/components/tooltip";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
+import QuestionReactSvgUrl from 'PUBLIC_DIR/images/question.react.svg?url";
 ```
 
 ```jsx
@@ -21,7 +22,7 @@ import Text from "@docspace/components/text";
     data-offset="{'top': 100, 'right': 100}"
     data-place="top"
   >
-    <IconButton isClickable={true} size={20} iconName="static/images/question.react.svg" />
+    <IconButton isClickable={true} size={20} iconName={QuestionReactSvgUrl} />
   </div>
   <Tooltip
     id="tooltipContent"

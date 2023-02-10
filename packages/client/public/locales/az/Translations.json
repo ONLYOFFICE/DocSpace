@@ -1,6 +1,4 @@
 {
-  "AddAccount": "Akkauntu qoşmaq",
-  "AddAuthor": "Müəllif Əlavə et",
   "ArchivingData": "Məlumatların arxivləşdirilməsi",
   "ConnectingAccount": "Akkauntun qoşulması",
   "Copy": "Köçür",
@@ -32,7 +30,7 @@
   "MobileAndroid": "Google Play-dən ONLYOFFICE Sənədlərini əldə edin",
   "MobileIos": "App Store-da ONLYOFFICE Sənədləri endirin",
   "MobileLinux": "Linux üçün ONLYOFFICE Masaüstü Redaktorları endirin",
-  "MobileMac": "Mac OS üçün ONLYOFFICE Masaüstü Redaktorları endirin",
+  "MobileMac": "macOS üçün ONLYOFFICE Masaüstü Redaktorları endirin",
   "MobileWin": "Windows üçün ONLYOFFICE Masaüstü Redaktorları endirin",
   "MoveHere": "Bura köçürün",
   "MoveToOperation": "Yer dəyişdirmə",

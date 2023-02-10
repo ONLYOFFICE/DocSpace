@@ -8,7 +8,7 @@ import RadioButton from "@docspace/components/radio-button";
 import toastr from "@docspace/components/toast/toastr";
 import { startRestore } from "@docspace/common/api/portal";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig, BackupStorageType } from "@docspace/common/constants";
+import { BackupStorageType, TenantStatus } from "@docspace/common/constants";
 import { request } from "@docspace/common/api/client";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
@@ -23,6 +23,7 @@ import {
 } from "@docspace/common/api/settings";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 const {
   DocumentModuleType,
@@ -38,10 +39,10 @@ class RestoreBackup extends React.Component {
       isNotify: true,
       isVisibleDialog: false,
       isPanelVisible: false,
-      isCheckedDocuments: true,
+      isCheckedDocuments: false,
       isCheckedThirdParty: false,
       isCheckedThirdPartyStorage: false,
-      isCheckedLocalFile: false,
+      isCheckedLocalFile: true,
       selectedFileId: "",
       selectedFile: "",
 
@@ -66,23 +67,20 @@ class RestoreBackup extends React.Component {
       t,
       setThirdPartyStorage,
       setStorageRegions,
+      setConnectedThirdPartyAccount,
     } = this.props;
 
     try {
       getProgress(t);
-      const [
-        //commonThirdPartyList,
-        backupStorage,
-        storageRegions,
-      ] = await Promise.all([
-        //   getThirdPartyCommonFolderTree(),
+      const [account, backupStorage, storageRegions] = await Promise.all([
+        getSettingsThirdParty(),
         getBackupStorage(),
         getStorageRegions(),
       ]);
 
+      setConnectedThirdPartyAccount(account);
       setThirdPartyStorage(backupStorage);
       setStorageRegions(storageRegions);
-      // commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
 
       this.setState({
         isInitialLoading: false,
@@ -189,7 +187,12 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
     } = this.state;
-    const { history, socketHelper, getStorageParams } = this.props;
+    const {
+      history,
+      socketHelper,
+      getStorageParams,
+      setTenantStatus,
+    } = this.props;
 
     if (!this.canRestore()) {
       this.setState({
@@ -227,7 +230,10 @@ class RestoreBackup extends React.Component {
     try {
       if (isCheckedLocalFile) {
         checkedFile = await request({
-          baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
+          baseURL: combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            config.homepage
+          ),
           method: "post",
           url: `/backupFileUpload.ashx`,
           responseType: "text",
@@ -250,6 +256,7 @@ class RestoreBackup extends React.Component {
     }
 
     startRestore(backupId, storageType, storageParams, isNotify)
+      .then(() => setTenantStatus(TenantStatus.PortalRestore))
       .then(() => {
         socketHelper.emit({
           command: "restore-backup",
@@ -259,7 +266,7 @@ class RestoreBackup extends React.Component {
       .then(() =>
         history.push(
           combineUrl(
-            AppServerConfig.proxyURL,
+            window.DocSpaceConfig?.proxy?.url,
             config.homepage,
             "/preparation-portal"
           )
@@ -282,7 +289,6 @@ class RestoreBackup extends React.Component {
       t,
       history,
       downloadingProgress,
-      organizationName,
       buttonSize,
       theme,
       isEnableRestore,
@@ -313,8 +319,6 @@ class RestoreBackup extends React.Component {
       ? { onClick: this.onClickBackupList }
       : {};
 
-    // const isDisabledThirdParty = commonThirdPartyList?.length === 0;
-
     const isMaxProgress = downloadingProgress === 100;
 
     return isInitialLoading ? (
@@ -326,6 +330,16 @@ class RestoreBackup extends React.Component {
             {t("RestoreBackupDescription")}
           </Text>
         </div>
+
+        <RadioButton
+          label={t("LocalFile")}
+          name={"isCheckedLocalFile"}
+          key={4}
+          isChecked={isCheckedLocalFile}
+          isDisabled={!isEnableRestore}
+          {...commonRadioButtonProps}
+        />
+
         <RadioButton
           label={t("RoomsModule")}
           name={"isCheckedDocuments"}
@@ -353,15 +367,6 @@ class RestoreBackup extends React.Component {
           {...commonRadioButtonProps}
         />
 
-        <RadioButton
-          label={t("LocalFile")}
-          name={"isCheckedLocalFile"}
-          key={4}
-          isChecked={isCheckedLocalFile}
-          isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
-        />
-
         <div className="restore-backup_modules">
           {isCheckedDocuments && (
             <RoomsModule
@@ -382,6 +387,7 @@ class RestoreBackup extends React.Component {
               onClickInput={this.onClickInput}
               onSelectFile={this.onSelectFile}
               isError={isFileSelectedError}
+              buttonSize={buttonSize}
             />
           )}
           {isCheckedThirdPartyStorage && (
@@ -481,7 +487,7 @@ class RestoreBackup extends React.Component {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { socketHelper, theme, isTabletView, organizationName } = settingsStore;
+  const { socketHelper, theme, isTabletView, setTenantStatus } = settingsStore;
   const {
     downloadingProgress,
     getProgress,
@@ -490,16 +496,18 @@ export default inject(({ auth, backup }) => {
     setThirdPartyStorage,
     isFormReady,
     getStorageParams,
+    setConnectedThirdPartyAccount,
   } = backup;
 
   const buttonSize = isTabletView ? "normal" : "small";
   const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   return {
+    setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,
     buttonSize,
-
+    setConnectedThirdPartyAccount,
     theme,
     clearProgressInterval,
     downloadingProgress,
@@ -508,6 +516,5 @@ export default inject(({ auth, backup }) => {
 
     getProgress,
     getStorageParams,
-    organizationName,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

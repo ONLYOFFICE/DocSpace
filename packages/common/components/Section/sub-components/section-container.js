@@ -42,6 +42,7 @@ const StyledSectionContainer = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  user-select: none;
 
   width: 100%;
   max-width: 100%;
@@ -74,13 +75,15 @@ const StyledSectionContainer = styled.section`
 
   .layout-progress-bar {
     position: fixed;
-    right: 15px;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
     bottom: 21px;
   }
 
   .layout-progress-second-bar {
     position: fixed;
-    right: 15px;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
     bottom: 83px;
   }
 

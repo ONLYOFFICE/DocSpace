@@ -1,3 +1,7 @@
+﻿import IconCropperGridSvgUrl from "PUBLIC_DIR/images/icon-cropper-grid.svg?url";
+import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
+import ZoomMinusReactSvgUrl from "PUBLIC_DIR/images/zoom-minus.react.svg?url";
+import ZoomPlusReactSvgUrl from "PUBLIC_DIR/images/zoom-plus.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
@@ -139,9 +143,12 @@ const IconCropper = ({
   };
 
   const handleImageChange = throttle(() => {
-    if (editorRef) {
+    try {
+      if (!editorRef) return;
       const newPreveiwImage = editorRef.getImageScaledToCanvas()?.toDataURL();
       setPreviewIcon(newPreveiwImage);
+    } catch (e) {
+      console.error(e);
     }
   }, 300);
 
@@ -155,10 +162,7 @@ const IconCropper = ({
   return (
     <StyledIconCropper className="icon_cropper">
       <div className="icon_cropper-crop_area">
-        <ReactSVG
-          className="icon_cropper-grid"
-          src="images/icon-cropper-grid.svg"
-        />
+        <ReactSVG className="icon_cropper-grid" src={IconCropperGridSvgUrl} />
         <AvatarEditor
           ref={setEditorRef}
           image={uploadedFile}
@@ -173,6 +177,7 @@ const IconCropper = ({
           onPositionChange={handlePositionChange}
           onImageReady={handleImageChange}
           disableHiDPIScaling
+          crossOrigin="anonymous"
         />
       </div>
 
@@ -181,7 +186,7 @@ const IconCropper = ({
         onClick={handleDeleteImage}
         title={t("Common:Delete")}
       >
-        <ReactSVG src={"images/trash.react.svg"} />
+        <ReactSVG src={TrashReactSvgUrl} />
         <div className="icon_cropper-delete_button-text">
           {t("Common:Delete")}
         </div>
@@ -192,7 +197,7 @@ const IconCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomOutClick}
-          iconName={"/static/images/zoom-minus.react.svg"}
+          iconName={ZoomMinusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}
@@ -210,7 +215,7 @@ const IconCropper = ({
           className="icon_cropper-zoom-container-button"
           size="16"
           onClick={handleZoomInClick}
-          iconName={"/static/images/zoom-plus.react.svg"}
+          iconName={ZoomPlusReactSvgUrl}
           isFill={true}
           isClickable={false}
           isDisabled={isDisabled}

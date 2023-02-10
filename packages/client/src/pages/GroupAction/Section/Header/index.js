@@ -1,3 +1,4 @@
+﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
@@ -47,7 +48,7 @@ class SectionHeaderContent extends React.Component {
     return (
       <Wrapper>
         <IconButton
-          iconName="/static/images/arrow.path.react.svg"
+          iconName={ArrowPathReactSvgUrl}
           size="17"
           isFill={true}
           onClick={this.onClickBack}

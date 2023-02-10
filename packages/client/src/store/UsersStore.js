@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import DefaultUserPhotoSize32PngUrl from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
@@ -16,6 +17,7 @@ class UsersStore {
   users = [];
   providers = [];
   accountsIsIsLoading = false;
+  operationRunning = false;
 
   constructor(peopleStore, authStore) {
     this.peopleStore = peopleStore;
@@ -63,6 +65,10 @@ class UsersStore {
     this.providers = providers;
   };
 
+  setOperationRunning = (operationRunning) => {
+    this.operationRunning = operationRunning;
+  };
+
   employeeWrapperToMemberModel = (profile) => {
     const comment = profile.notes;
     const department = profile.groups
@@ -103,34 +109,27 @@ class UsersStore {
     });
   };
 
-  updateUserType = async (type, userIds, filter, fromType) => {
-    const { changeAdmins } = this.peopleStore.setupStore;
+  updateUserType = async (type, userIds, filter) => {
+    let toType = 0;
+
+    switch (type) {
+      case "admin":
+        toType = EmployeeType.Admin;
+        break;
+      case "user":
+        toType = EmployeeType.Guest;
+        break;
+      case "manager":
+        toType = EmployeeType.User;
+    }
 
     try {
-      switch (type) {
-        case EmployeeType.DocSpaceAdmin:
-          await changeAdmins(userIds, fullAccessId, true);
-          break;
-        case EmployeeType.RoomAdmin:
-        case EmployeeType.User:
-          const actions = [];
-          if (fromType.includes("admin")) {
-            actions.push(changeAdmins(userIds, fullAccessId, false));
-          }
-          if (fromType.includes("user")) {
-            actions.push(api.people.updateUserType(EmployeeType.User, userIds));
-          }
-
-          await Promise.all(actions);
-          break;
-      }
-
-      await this.getUsersList(filter);
+      await api.people.updateUserType(toType, userIds);
     } catch (e) {
-      await this.getUsersList(filter);
-
       throw new Error(e);
     }
+
+    await this.getUsersList(filter);
   };
 
   updateProfileInUsers = async (updatedProfile) => {
@@ -343,7 +342,7 @@ class UsersStore {
   }
 
   getUsersByQuery = async (query) => {
-    const filter = Filter.getDefault();
+    const filter = Filter.getFilterWithOutDisabledUser();
 
     filter.search = query;
     filter.pageCount = 100;
@@ -358,6 +357,7 @@ class UsersStore {
       id,
       displayName,
       avatar,
+      hasAvatar,
       email,
       isOwner,
       isAdmin: isAdministrator,
@@ -387,6 +387,8 @@ class UsersStore {
       status
     );
 
+    const currentAvatar = hasAvatar ? avatar : DefaultUserPhotoSize32PngUrl;
+
     return {
       id,
       status,
@@ -397,7 +399,8 @@ class UsersStore {
       isAdmin: isAdministrator,
       isVisitor,
       displayName,
-      avatar,
+      avatar: currentAvatar,
+      hasAvatar,
       email,
       userName,
       mobilePhone,

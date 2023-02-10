@@ -33,6 +33,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     private readonly DropboxDaoSelector _dropboxDaoSelector;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
+    private readonly TempStream _tempStream;
 
     public DropboxFolderDao(
         IServiceProvider serviceProvider,
@@ -48,13 +49,15 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempPath tempPath,
-        AuthContext authContext)
+        AuthContext authContext,
+        TempStream tempStream)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
     {
         _crossDao = crossDao;
         _dropboxDaoSelector = dropboxDaoSelector;
         _fileDao = fileDao;
         _folderDao = folderDao;
+        _tempStream = tempStream;
     }
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -77,14 +80,14 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return GetRootFolderAsync(fileId);
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.DropBox))
         {
-            return AsyncEnumerable.Empty<Folder<string>>();
+            yield break;
         }
 
-        var rooms = GetFoldersAsync(parentId);
+        var rooms = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
         rooms = FilterByRoomType(rooms, filterType);
         rooms = FilterBySubject(rooms, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
@@ -94,32 +97,14 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        rooms = FilterByTags(rooms, withoutTags, tags);
+        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
-        return rooms;
-    }
-
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+        await foreach (var room in rooms)
     {
-        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.DropBox))
-        {
-            return AsyncEnumerable.Empty<Folder<string>>();
+            yield return room;
         }
-
-        var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
-
-        folders = FilterByRoomType(folders, filterType);
-        folders = FilterBySubject(folders, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
-
-        folders = FilterByTags(folders, withoutTags, tags);
-
-        return folders;
-    }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -459,6 +444,11 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         }
         else
         {
+            if (DocSpaceHelper.IsRoom(folder.FolderType))
+            {
+                await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+            }
+
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync);
 
             //rename folder
@@ -518,5 +508,13 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         var storageMaxUploadSize = (await ProviderInfo.StorageAsync).MaxChunkedUploadFileSize;
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
+    }
+
+    public IDataWriteOperator CreateDataWriteOperator(
+            string folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
     }
 }

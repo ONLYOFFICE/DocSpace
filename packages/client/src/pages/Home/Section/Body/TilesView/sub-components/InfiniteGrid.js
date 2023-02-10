@@ -161,7 +161,7 @@ const InfiniteGrid = (props) => {
     }
 
     // Added line of loaders
-    while (cards.length !== countTilesInRow) {
+    while (countTilesInRow > cards.length && cards.length !== countTilesInRow) {
       const key = `tiles-loader_${countTilesInRow - cards.length}`;
       cards.push(
         <Loaders.Tile

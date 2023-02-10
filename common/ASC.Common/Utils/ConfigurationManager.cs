@@ -63,7 +63,7 @@ public class ConfigurationExtension
     public ConfigurationExtension(IConfiguration configuration)
     {
         _configuration = configuration;
-        _connectionStringSettings = new Lazy<ConnectionStringCollection>(new ConnectionStringCollection(GetSettings<ConnectionStringSettings>("ConnectionStrings")));
+        _connectionStringSettings = new Lazy<ConnectionStringCollection>(new ConnectionStringCollection(GetSettings<ConnectionStringSettings>($"{RegionSettings.Current}ConnectionStrings")));
     }
 
     public IEnumerable<T> GetSettings<T>(string section) where T : new()
@@ -101,8 +101,16 @@ public class ConfigurationExtension
         return _connectionStringSettings.Value;
     }
 
-    public ConnectionStringSettings GetConnectionStrings(string key)
+    public ConnectionStringSettings GetConnectionStrings(string key, string region = "current")
     {
-        return GetConnectionStrings()[key];
+        if (region == "current")
+        {
+            return GetConnectionStrings()[key];
+        }
+        else
+        {
+            var connectionStrings = new ConnectionStringCollection(GetSettings<ConnectionStringSettings>($"regions:{region}:ConnectionStrings"));
+            return connectionStrings[key];
+        }
     }
 }

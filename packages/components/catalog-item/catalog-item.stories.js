@@ -1,5 +1,8 @@
 import React from "react";
 import CatalogItem from "./";
+import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
+import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
+import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 
 export default {
   title: "Components/CatalogItem",
@@ -38,7 +41,7 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  icon: "/static/images/catalog.folder.react.svg",
+  icon: CatalogFolderReactSvgUrl,
   text: "Documents",
   showText: true,
   showBadge: true,
@@ -50,7 +53,7 @@ const OnlyIcon = () => {
   return (
     <div style={{ width: "52px" }}>
       <CatalogItem
-        icon={"/static/images/catalog.folder.react.svg"}
+        icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
         showText={false}
         showBadge={false}
@@ -65,7 +68,7 @@ const OnlyIconWithBadge = () => {
   return (
     <div style={{ width: "52px" }}>
       <CatalogItem
-        icon={"/static/images/catalog.guest.react.svg"}
+        icon={CatalogGuestReactSvgUrl}
         text={"My documents"}
         showText={false}
         showBadge={true}
@@ -80,7 +83,7 @@ const InitialIcon = () => {
   return (
     <div style={{ width: "52px" }}>
       <CatalogItem
-        icon={"/static/images/catalog.folder.react.svg"}
+        icon={CatalogFolderReactSvgUrl}
         text={"Documents"}
         showText={false}
         showBadge={false}
@@ -99,11 +102,11 @@ const WithBadgeIcon = () => {
   return (
     <div style={{ width: "250px" }}>
       <CatalogItem
-        icon={"/static/images/catalog.folder.react.svg"}
+        icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
         showText={true}
         showBadge={true}
-        iconBadge={"/static/images/catalog.trash.react.svg"}
+        iconBadge={CatalogTrashReactSvgUrl}
       />
     </div>
   );
@@ -115,7 +118,7 @@ const TwoItem = () => {
   return (
     <div style={{ width: "250px" }}>
       <CatalogItem
-        icon={"/static/images/catalog.folder.react.svg"}
+        icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
         showText={true}
         showBadge={true}
@@ -129,14 +132,14 @@ const TwoItem = () => {
         }}
       />
       <CatalogItem
-        icon={"/static/images/catalog.folder.react.svg"}
+        icon={CatalogFolderReactSvgUrl}
         text={"Some text"}
         showText={true}
         showBadge={true}
         onClick={() => {
           console.log("clicked item");
         }}
-        iconBadge={"/static/images/catalog.trash.react.svg"}
+        iconBadge={CatalogTrashReactSvgUrl}
         onClickBadge={() => {
           console.log("clicked badge");
         }}

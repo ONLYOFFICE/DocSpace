@@ -64,7 +64,7 @@ public class AWSSender : SmtpSender, IDisposable
             try
             {
                 _logger.DebugSendTo(m.TenantId, m.Reciever);
-                using var scope = _serviceProvider.CreateScope();
+                await using var scope = _serviceProvider.CreateAsyncScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(m.TenantId);
 

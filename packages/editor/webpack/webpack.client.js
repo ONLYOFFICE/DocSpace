@@ -8,10 +8,10 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
-const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
-const { proxyURL } = AppServerConfig;
+
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
+
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
 const baseConfig = require("./webpack.base.js");
 
@@ -32,6 +32,22 @@ const clientConfig = {
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/doceditor/",
     chunkFilename: "static/js/[id].[contenthash].js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      folder += result.length === 0 ? "" : "/";
+
+      return `static/${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
+    },
   },
 
   performance: {
@@ -41,6 +57,32 @@ const clientConfig = {
 
   module: {
     rules: [
+      {
+        test: /\.json$/,
+        resourceQuery: /url/,
+        type: "javascript/auto",
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.s[ac]ss$/i,
         use: [
@@ -77,11 +119,7 @@ const clientConfig = {
       name: "editor",
       filename: "remoteEntry.js",
       remotes: {
-        client: `client@${combineUrl(proxyURL, "/remoteEntry.js")}`,
-        // files: `files@${combineUrl(
-        //   proxyURL,
-        //   "/products/files/remoteEntry.js"
-        // )}`,
+        client: "client@/remoteEntry.js",
       },
       exposes: {
         "./app": "./src/client/index.js",
@@ -91,10 +129,6 @@ const clientConfig = {
     new ExternalTemplateRemotesPlugin(),
     new CopyPlugin({
       patterns: [
-        {
-          context: path.resolve(process.cwd(), "public"),
-          from: "images/**/*.*",
-        },
         {
           context: path.resolve(process.cwd(), "public"),
           from: "locales/**/*.json",

@@ -678,7 +678,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
         uploadSession.BytesUploaded += chunkLength;
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }
@@ -690,7 +690,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return uploadSession.File;
     }
 
-    private async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    public async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
     {
         if (uploadSession.Items.ContainsKey("OneDriveSession"))
         {

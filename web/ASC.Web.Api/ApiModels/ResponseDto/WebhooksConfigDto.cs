@@ -28,6 +28,8 @@ namespace ASC.Web.Api.ApiModels.ResponseDto;
 
 public class WebhooksConfigDto : IMapFrom<WebhooksConfig>
 {
+    public int Id { get; set; }
+    public string Name { get; set; }
     public string Uri { get; set; }
     public string SecretKey { get; set; }
     public bool Enabled { get; set; }

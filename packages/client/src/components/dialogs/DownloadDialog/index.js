@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { StyledDownloadDialog } from "./StyledDownloadDialog";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -16,6 +16,7 @@ class DownloadDialogComponent extends React.Component {
       documents,
       spreadsheets,
       presentations,
+      masterForms,
       other,
     } = this.props.sortedFiles;
 
@@ -38,11 +39,18 @@ class DownloadDialogComponent extends React.Component {
         format: null,
         files: presentations,
       },
+      masterForms: {
+        isChecked: true,
+        isIndeterminate: false,
+        format: null,
+        files: masterForms,
+      },
       other: {
         isChecked: true,
         isIndeterminate: false,
         files: other,
       },
+      modalDialogToggle: "modalDialogToggle",
     };
   }
 
@@ -53,6 +61,7 @@ class DownloadDialogComponent extends React.Component {
       ...this.state.documents.files,
       ...this.state.spreadsheets.files,
       ...this.state.presentations.files,
+      ...this.state.masterForms.files,
       ...this.state.other.files,
     ];
 
@@ -195,6 +204,9 @@ class DownloadDialogComponent extends React.Component {
       case "presentations":
         this.updateDocsState("presentations", itemId);
         break;
+      case "masterForms":
+        this.updateDocsState("masterForms", itemId);
+        break;
       case "other":
         this.updateDocsState("other", itemId);
         break;
@@ -205,7 +217,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, tReady, visible, extsConvertible } = this.props;
+    const { t, tReady, visible, extsConvertible, theme } = this.props;
 
     const {
       files: documents,
@@ -229,6 +241,13 @@ class DownloadDialogComponent extends React.Component {
     } = this.state.presentations;
 
     const {
+      files: masterForms,
+      isChecked: checkedMasterFormsTitle,
+      isIndeterminate: indeterminateMasterFormsTitle,
+      format: masterFormsTitleFormat,
+    } = this.state.masterForms;
+
+    const {
       files: other,
       isChecked: checkedOtherTitle,
       isIndeterminate: indeterminateOtherTitle,
@@ -238,12 +257,14 @@ class DownloadDialogComponent extends React.Component {
       documents.filter((f) => f.checked).length +
       spreadsheets.filter((f) => f.checked).length +
       presentations.filter((f) => f.checked).length +
+      masterForms.filter((f) => f.checked).length +
       other.filter((f) => f.checked).length;
 
     const isSingleFile = isCheckedLength <= 1;
 
     const downloadContentProps = {
       t,
+      theme,
       extsConvertible,
       onSelectFormat: this.onSelectFormat,
       onRowSelect: this.onRowSelect,
@@ -254,10 +275,12 @@ class DownloadDialogComponent extends React.Component {
       this.state.documents.files.length +
       this.state.spreadsheets.files.length +
       this.state.presentations.files.length +
+      this.state.masterForms.files.length +
       this.state.other.files.length +
       (this.state.documents.files.length > 1 && 1) +
       (this.state.spreadsheets.files.length > 1 && 1) +
       (this.state.presentations.files.length > 1 && 1) +
+      (this.state.masterForms.files.length > 1 && 1) +
       (this.state.other.files.length > 1 && 1);
 
     return (
@@ -273,10 +296,14 @@ class DownloadDialogComponent extends React.Component {
       >
         <ModalDialog.Header>{t("Translations:DownloadAs")}</ModalDialog.Header>
 
-        <ModalDialog.Body>
+        <ModalDialog.Body className={this.state.modalDialogToggle}>
           <div className="download-dialog-description">
             <Text noSelect>{t("ChooseFormatText")}.</Text>
-            {!isSingleFile && <Text noSelect>{t("ConvertToZip")}</Text>}
+            {!isSingleFile && (
+              <Text noSelect>
+                <Trans t={t} i18nKey="ConvertToZip" />
+              </Text>
+            )}
           </div>
           {documents.length > 0 && (
             <DownloadContent
@@ -311,6 +338,18 @@ class DownloadDialogComponent extends React.Component {
               titleFormat={presentationsTitleFormat || t("OriginalFormat")}
               type="presentations"
               title={t("Translations:Presentations")}
+            />
+          )}
+
+          {masterForms.length > 0 && (
+            <DownloadContent
+              {...downloadContentProps}
+              isChecked={checkedMasterFormsTitle}
+              isIndeterminate={indeterminateMasterFormsTitle}
+              items={masterForms}
+              titleFormat={masterFormsTitleFormat || t("OriginalFormat")}
+              type="masterForms"
+              title={t("Translations:FormTemplates")}
             />
           )}
 
@@ -360,9 +399,10 @@ const DownloadDialog = withTranslation([
 ])(DownloadDialogComponent);
 
 export default inject(
-  ({ filesStore, dialogsStore, filesActionsStore, settingsStore }) => {
+  ({ auth, filesStore, dialogsStore, filesActionsStore, settingsStore }) => {
     const { sortedFiles } = filesStore;
     const { extsConvertible } = settingsStore;
+    const { theme } = auth.settingsStore;
 
     const {
       downloadDialogVisible: visible,
@@ -378,6 +418,8 @@ export default inject(
 
       setDownloadDialogVisible,
       downloadFiles,
+
+      theme,
     };
   }
 )(withRouter(observer(DownloadDialog)));

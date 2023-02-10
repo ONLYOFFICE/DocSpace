@@ -17,6 +17,7 @@ const Row = memo(({ data, index, style }) => {
     t,
     setHasErrors,
     roomType,
+    isOwner,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -33,6 +34,7 @@ const Row = memo(({ data, index, style }) => {
         inviteItems={inviteItems}
         setHasErrors={setHasErrors}
         roomType={roomType}
+        isOwner={isOwner}
       />
     </StyledRow>
   );
@@ -45,6 +47,7 @@ const ItemsList = ({
   changeInviteItem,
   setHasErrors,
   roomType,
+  isOwner,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
@@ -79,6 +82,7 @@ const ItemsList = ({
           changeInviteItem,
           setHasErrors,
           roomType,
+          isOwner,
           t,
         }}
         outerElementType={CustomScrollbarsVirtualList}
@@ -89,12 +93,14 @@ const ItemsList = ({
   );
 };
 
-export default inject(({ dialogsStore }) => {
+export default inject(({ auth, dialogsStore }) => {
   const { setInviteItems, inviteItems, changeInviteItem } = dialogsStore;
+  const { isOwner } = auth.userStore.user;
 
   return {
     setInviteItems,
     inviteItems,
     changeInviteItem,
+    isOwner,
   };
 })(observer(ItemsList));

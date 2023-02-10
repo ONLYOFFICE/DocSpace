@@ -51,7 +51,7 @@ const TypeCell = ({ t, item, sideColor }) => {
   const Exst = fileExst ? fileExst.slice(1).toUpperCase() : "";
 
   return (
-    <StyledText fontSize="12px" fontWeight="400" color={sideColor} truncate>
+    <StyledText fontSize="12px" fontWeight="600" color={sideColor} truncate>
       {type} {Exst}
     </StyledText>
   );

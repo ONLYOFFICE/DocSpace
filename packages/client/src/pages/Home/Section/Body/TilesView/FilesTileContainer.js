@@ -94,7 +94,6 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       useReactWindow={!withPaging}
       headingFolders={t("Translations:Folders")}
       headingFiles={t("Translations:Files")}
-      headingRooms={t("Common:Rooms")}
     >
       {filesList.map((item, index) => {
         return index % 11 == 0 ? (
@@ -102,6 +101,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             sectionWidth={sectionWidth}
             selectableRef={onSetTileRef}
             thumbSize={thumbSize}
@@ -113,6 +113,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             sectionWidth={sectionWidth}
             thumbSize={thumbSize}
             columnCount={columnCount}

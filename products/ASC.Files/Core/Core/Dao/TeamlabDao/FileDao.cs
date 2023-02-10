@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -23,6 +23,8 @@
 // All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+using Microsoft.OneDrive.Sdk;
 
 using Document = ASC.ElasticSearch.Document;
 
@@ -115,7 +117,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -127,7 +129,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query)
+        var dbFile = await FromQuery(filesDbContext, query)
             .SingleOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
@@ -147,7 +149,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -166,7 +168,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         query = query.OrderByDescending(r => r.Version);
 
-        var dbFile = await FromQueryWithShared(filesDbContext, query).FirstOrDefaultAsync();
+        var dbFile = await FromQuery(filesDbContext, query).FirstOrDefaultAsync();
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -176,7 +178,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -192,7 +194,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var query = GetFileQuery(filesDbContext, r => fileIds.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -255,7 +257,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in (checkShared ? FromQueryWithShared(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
+        await foreach (var e in (checkShared ? FromQuery(filesDbContext, query) : FromQuery(filesDbContext, query)).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -358,7 +360,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -366,7 +368,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset);
+        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), offset);
     }
 
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
@@ -393,21 +395,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return SaveFileAsync(file, fileStream, true);
     }
 
-    public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
+    public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
+        var maxChunkedUploadSize = await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
         }
 
-        return InternalSaveFileAsync(file, fileStream, checkQuota);
-    }
-
-    private async Task<File<int>> InternalSaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
-    {
         if (checkQuota && _coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
@@ -585,18 +582,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
+        return InternalReplaceFileVersionAsync(file, fileStream);
+    }
+
+    private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
+    {
+        var maxChunkedUploadSize = await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
 
         if (maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
         }
 
-        return InternalReplaceFileVersionAsync(file, fileStream);
-    }
-
-    private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
-    {
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
             var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
@@ -775,11 +772,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            var fromFolders = Query(filesDbContext.Files)
+            var fromFolders = await Query(filesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.ParentId)
                 .Distinct()
-                .AsAsyncEnumerable();
+                .ToListAsync();
 
             var toDeleteLinks = Query(filesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             filesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
@@ -808,7 +805,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             await tx.CommitAsync();
 
-            var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId));
+            foreach (var folderId in fromFolders)
+            {
+                await RecalculateFilesCountAsync(folderId);
+            }
 
             if (deleteFolder)
             {
@@ -819,8 +819,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 await _factoryIndexer.DeleteAsync(toDeleteFile);
             }
-
-            await forEachTask;
         });
     }
 
@@ -975,6 +973,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             copy.ConvertedType = file.ConvertedType;
             copy.Comment = FilesCommonResource.CommentCopy;
             copy.Encrypted = file.Encrypted;
+            copy.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
             using (var stream = await GetFileStreamAsync(file))
             {
@@ -986,12 +985,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    using (var thumbnail = await GetThumbnailAsync(file, size.Width, size.Height))
-                    {
-                        await SaveThumbnailAsync(copy, thumbnail, size.Width, size.Height);
-                    }
-                    copy.ThumbnailStatus = Thumbnail.Created;
+                    await _globalStore.GetStore().CopyAsync(String.Empty,
+                                         GetUniqThumbnailPath(file, size.Width, size.Height),
+                                         String.Empty,
+                                         GetUniqThumbnailPath(copy, size.Width, size.Height));                 
                 }
+
+                await SetThumbnailStatusAsync(copy, Thumbnail.Created);
+
+                copy.ThumbnailStatus = Thumbnail.Created;
             }
 
             return copy;
@@ -1168,15 +1170,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await _chunkedUploadSessionHolder.UploadChunkAsync(uploadSession, stream, chunkLength);
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
+            uploadSession.BytesTotal = uploadSession.BytesUploaded;
             uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }
 
         return uploadSession.File;
     }
 
-    private async Task<File<int>> FinalizeUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
+    public async Task<File<int>> FinalizeUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
     {
         await _chunkedUploadSessionHolder.FinalizeUploadSessionAsync(uploadSession);
 
@@ -1307,7 +1310,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1321,7 +1324,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = GetFileQuery(filesDbContext, r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
 
-            return FromQueryWithShared(filesDbContext, query).AsAsyncEnumerable()
+            return FromQuery(filesDbContext, query).AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(
                     f =>
@@ -1334,7 +1337,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var query = BuildSearch(GetFileQuery(filesDbContext, r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
 
-            return FromQueryWithShared(filesDbContext, query)
+            return FromQuery(filesDbContext, query)
                 .AsAsyncEnumerable()
                 .Select(e => _mapper.Map<DbFileQuery, File<int>>(e))
                 .Where(f =>
@@ -1466,64 +1469,55 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    public async IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1Task = filesDbContext.Files
             .Where(r => r.ModifiedOn > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
+            .Select(r => r.TenantId)
+            .Distinct();
 
         await foreach (var q in q1Task.AsAsyncEnumerable())
         {
             yield return q;
         }
 
-        var q2Task = filesDbContext.Security
-            .Where(r => r.TimeStamp > fromTime)
-            .GroupBy(r => r.TenantId)
-            .Where(r => r.Any())
-            .Select(r => r.Key);
-
-        await foreach (var q in q2Task.AsAsyncEnumerable())
+        if (includeSecurity)
         {
-            yield return q;
+            var q2Task = filesDbContext.Security
+            .Where(r => r.TimeStamp > fromTime)
+            .Select(r => r.TenantId)
+            .Distinct();
+
+            await foreach (var q in q2Task.AsAsyncEnumerable())
+            {
+                yield return q;
+            }
         }
     }
 
     private const string ThumbnailTitle = "thumb";
 
-    public Task SaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
-    {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
 
-        return InternalSaveThumbnailAsync(file, thumbnail, width, height);
-    }
-
-    private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail, int width, int height)
+    public async Task SetThumbnailStatusAsync(File<int> file, Thumbnail status)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
+
         var toUpdate = await filesDbContext.Files
-            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+                            .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
-        if (toUpdate != null)
-        {
-            toUpdate.ThumbnailStatus = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
-            await filesDbContext.SaveChangesAsync();
-        }
+        toUpdate.ThumbnailStatus = status;
 
-        if (thumbnail == null)
-        {
-            return;
-        }
+        await filesDbContext.SaveChangesAsync();
+    }
 
+
+    public string GetUniqThumbnailPath(File<int> file, int width, int height)
+    {
         var thumnailName = GetThumnailName(width, height);
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+
+        return GetUniqFilePath(file, thumnailName);
     }
 
     public async Task<Stream> GetThumbnailAsync(int fileId, int width, int height)
@@ -1666,10 +1660,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
         var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
         var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
 
         return from r in dbFiles
                select new DbFileQuery
@@ -1688,33 +1679,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    Shared = (from f in filesDbContext.Security
                              where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && !denyArray.Contains(f.Subject)
                              select f
-                             ).Any(),
-                   IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                      select f)
-                             .Any(),
-                   Deny = (from f in filesDbContext.Security
-                           where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                           select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                             ).Any()
                };
     }
 
     protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
     {
-        var fileType = FileEntryType.File;
-        var cId = _authContext.CurrentAccount.ID;
-        var denyArray = new[] { FileConstant.DenyDownloadId, FileConstant.DenySharingId };
-        var denyDownload = FileConstant.DenyDownloadId;
-        var denySharing = FileConstant.DenySharingId;
-
         return dbFiles
             .Select(r => new DbFileQuery
             {
@@ -1728,23 +1698,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                          ).FirstOrDefault()
                         where f.TenantId == r.TenantId
                         select f
-                          ).FirstOrDefault(),
-                Shared = true,
-                IsFillFormDraft = (from f in filesDbContext.FilesLink
-                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                                   select f)
-                             .Any(),
-                Deny = (from f in filesDbContext.Security
-                        where f.EntryType == fileType && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId && denyArray.Contains(f.Subject)
-                        select f
-                            ).GroupBy(a => a.EntryId,
-                            (a, b) =>
-                            new DbFileDeny
-                            {
-                                DenyDownload = b.Any(c => c.Subject == denyDownload),
-                                DenySharing = b.Any(c => c.Subject == denySharing)
-                            })
-                            .FirstOrDefault(),
+                          ).FirstOrDefault()
             });
     }
 
@@ -1801,8 +1755,6 @@ public class DbFileQuery
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
-    public bool IsFillFormDraft { get; set; }
-    public DbFileDeny Deny { get; set; }
 }
 
 public class DbFileDeny

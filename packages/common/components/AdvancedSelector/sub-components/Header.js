@@ -3,11 +3,13 @@ import React from "react";
 import Heading from "@docspace/components/heading";
 import IconButton from "@docspace/components/icon-button";
 
+import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
+
 const Header = ({ headerLabel, onArrowClickAction }) => {
   return (
     <div className="header">
       <IconButton
-        iconName="/static/images/arrow.path.react.svg"
+        iconName={ArrowPathReactSvgUrl}
         size="17"
         isFill={true}
         className="arrow-button"

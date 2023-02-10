@@ -170,7 +170,7 @@ public class DbSettingsManager
                     Data = data
                 };
 
-                webstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
+                webstudioDbContext.AddOrUpdate(webstudioDbContext.WebstudioSettings, s);
 
                 webstudioDbContext.SaveChanges();
             }

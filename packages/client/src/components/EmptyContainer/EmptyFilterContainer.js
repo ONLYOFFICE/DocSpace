@@ -1,3 +1,5 @@
+﻿import EmptyScreenFilterAltSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt.svg?url";
+import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -16,6 +18,9 @@ const EmptyFilterContainer = ({
   fetchRooms,
   linkStyles,
   isRooms,
+  isArchiveFolder,
+  isRoomsFolder,
+  setClearSearch,
 }) => {
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = isRooms
@@ -24,7 +29,13 @@ const EmptyFilterContainer = ({
 
   const onResetFilter = () => {
     setIsLoading(true);
-    if (isRooms) {
+
+    if (isArchiveFolder) {
+      setClearSearch(true);
+      return;
+    }
+
+    if (isRoomsFolder) {
       const newFilter = RoomsFilter.getDefault();
       fetchRooms(selectedFolderId, newFilter)
         .catch((err) => toastr.error(err))
@@ -43,7 +54,7 @@ const EmptyFilterContainer = ({
         className="empty-folder_container-icon"
         size="12"
         onClick={onResetFilter}
-        iconName="/static/images/clear.empty.filter.svg"
+        iconName={ClearEmptyFilterSvgUrl}
         isFill
       />
       <Link onClick={onResetFilter} {...linkStyles}>
@@ -56,7 +67,7 @@ const EmptyFilterContainer = ({
     <EmptyContainer
       headerText={t("Common:NotFoundTitle")}
       descriptionText={descriptionText}
-      imageSrc="images/empty_screen_filter_alt.svg"
+      imageSrc={EmptyScreenFilterAltSvgUrl}
       buttons={buttons}
     />
   );
@@ -74,6 +85,9 @@ export default inject(
       selectedFolderId: selectedFolderStore.id,
       setIsLoading: filesStore.setIsLoading,
       isRooms,
+      isArchiveFolder,
+      isRoomsFolder,
+      setClearSearch: filesStore.setClearSearch,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

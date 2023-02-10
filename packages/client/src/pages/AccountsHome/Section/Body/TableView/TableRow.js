@@ -86,16 +86,7 @@ const StyledPeopleRow = styled(TableRow)`
 
       .combo-button-label {
         font-size: 13px;
-        font-weight: 400;
-        color: ${(props) => props.sideInfoColor};
-      }
-
-      .combo-buttons_arrow-icon {
-        svg {
-          path {
-            fill: ${(props) => props.sideInfoColor};
-          }
-        }
+        font-weight: 600;
       }
     }
   }
@@ -128,6 +119,7 @@ const PeopleTableRow = (props) => {
     element,
     checkedProps,
     onContentRowSelect,
+    onContentRowClick,
     onEmailClick,
 
     isOwner,
@@ -154,14 +146,12 @@ const PeopleTableRow = (props) => {
 
   const isPending = statusType === "pending" || statusType === "disabled";
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const nameColor = isPending
     ? theme.peopleTableRow.pendingNameColor
     : theme.peopleTableRow.nameColor;
   const sideInfoColor = theme.peopleTableRow.sideInfoColor;
-
-  const onChange = (e) => {
-    onContentRowSelect && onContentRowSelect(e.target.checked, item);
-  };
 
   const getTypesOptions = React.useCallback(() => {
     const options = [];
@@ -194,29 +184,40 @@ const PeopleTableRow = (props) => {
     return options;
   }, [t, isOwner, isVisitor]);
 
+  const onAbort = () => {
+    setIsLoading(false);
+  };
+
+  const onSuccess = () => {
+    setIsLoading(false);
+  };
+
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [item], t, true);
+      setIsLoading(true);
+      if (!changeUserType(action, [item], onSuccess, onAbort)) {
+        setIsLoading(false);
+      }
     },
-    [item, changeUserType, t]
+    [item, changeUserType]
   );
 
-  const getRoomsOptions = React.useCallback(() => {
-    const options = [];
+  // const getRoomsOptions = React.useCallback(() => {
+  //   const options = [];
 
-    fakeRooms.forEach((room) => {
-      options.push(
-        <DropDownItem key={room.name} noHover={true}>
-          {room.name} &nbsp;
-          <Text fontSize="13px" fontWeight={600} color={sideInfoColor} truncate>
-            ({room.role})
-          </Text>
-        </DropDownItem>
-      );
-    });
+  //   fakeRooms.forEach((room) => {
+  //     options.push(
+  //       <DropDownItem key={room.name} noHover={true}>
+  //         {room.name} &nbsp;
+  //         <Text fontSize="13px" fontWeight={600} color={sideInfoColor} truncate>
+  //           ({room.role})
+  //         </Text>
+  //       </DropDownItem>
+  //     );
+  //   });
 
-    return <>{options.map((option) => option)}</>;
-  }, []);
+  //   return <>{options.map((option) => option)}</>;
+  // }, []);
 
   const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
@@ -235,14 +236,6 @@ const PeopleTableRow = (props) => {
 
   const isChecked = checkedProps.checked;
 
-  const userContextClick = React.useCallback(() => {
-    if (isSeveralSelection && isChecked) {
-      return;
-    }
-
-    setBufferSelection(item);
-  }, [isSeveralSelection, isChecked, item, setBufferSelection]);
-
   const renderTypeCell = () => {
     const typesOptions = getTypesOptions();
 
@@ -258,6 +251,8 @@ const PeopleTableRow = (props) => {
         size="content"
         displaySelectedOption
         modernView
+        manualWidth={"fit-content"}
+        isLoading={isLoading}
       />
     );
 
@@ -266,7 +261,7 @@ const PeopleTableRow = (props) => {
         type="page"
         title={position}
         fontSize="13px"
-        fontWeight={400}
+        fontWeight={600}
         color={sideInfoColor}
         truncate
         noSelect
@@ -283,6 +278,34 @@ const PeopleTableRow = (props) => {
 
   const typeCell = renderTypeCell();
 
+  const onChange = (e) => {
+    //console.log("onChange");
+    onContentRowSelect && onContentRowSelect(e.target.checked, item);
+  };
+
+  const onRowContextClick = React.useCallback(() => {
+    //console.log("userContextClick");
+    onContentRowClick && onContentRowClick(!isChecked, item, false);
+  }, [isChecked, item, onContentRowClick]);
+
+  const onRowClick = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".type-combobox") ||
+      e.target.closest(".paid-badge") ||
+      e.target.closest(".pending-badge") ||
+      e.target.closest(".disabled-badge") ||
+      e.detail === 0
+    ) {
+      return;
+    }
+
+    //console.log("onRowClick");
+
+    onContentRowClick && onContentRowClick(!isChecked, item);
+  };
+
   return (
     <StyledWrapper
       className={`user-item ${
@@ -294,8 +317,9 @@ const PeopleTableRow = (props) => {
         className="table-row"
         sideInfoColor={sideInfoColor}
         checked={isChecked}
-        fileContextClick={userContextClick}
         isActive={isActive}
+        onClick={onRowClick}
+        fileContextClick={onRowContextClick}
         {...contextOptionsProps}
       >
         <TableCell className={"table-container_user-name-cell"}>
@@ -379,10 +403,11 @@ const PeopleTableRow = (props) => {
             type="page"
             title={email}
             fontSize="13px"
-            fontWeight={400}
+            fontWeight={600}
             color={sideInfoColor}
             onClick={onEmailClick}
             isTextOverflow
+            enableUserSelect
           >
             {email}
           </Link>

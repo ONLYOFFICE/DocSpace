@@ -10,7 +10,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import { isMobileOnly } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 import { mobile, tablet } from "@docspace/components/utils/device";
-import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
+import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 import Portal from "@docspace/components/portal";
 
 const StyledWrapper = styled.div`
@@ -49,7 +49,6 @@ const StyledDropDown = styled(DropDown)`
 `;
 
 const StyledControlContainer = styled.div`
-  background: transparent;
   width: 24px;
   height: 24px;
   position: absolute;
@@ -70,8 +69,8 @@ const StyledControlContainer = styled.div`
 StyledControlContainer.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
-  width: 17px;
-  height: 17px;
+  width: 12px;
+  height: 12px;
   path {
     fill: ${(props) => props.theme.catalog.control.fill};
   }

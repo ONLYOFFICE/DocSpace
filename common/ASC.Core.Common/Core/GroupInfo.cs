@@ -71,4 +71,5 @@ public class GroupInfo : IRole, IRecipientsGroup
     string IRecipient.Name => Name;
     public string AuthenticationType => "ASC";
     public bool IsAuthenticated => false;
+    public string Key => ID.ToString();
 }

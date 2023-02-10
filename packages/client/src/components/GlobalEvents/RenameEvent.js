@@ -19,7 +19,7 @@ const RenameEvent = ({
   updateFile,
   renameFolder,
 
-  editCompleteAction,
+  completeAction,
   clearActiveOperations,
 
   setEventDialogVisible,
@@ -42,7 +42,6 @@ const RenameEvent = ({
   const onUpdate = React.useCallback((e, value) => {
     const originalTitle = getTitleWithoutExst(item);
 
-    setIsLoading(true);
     let timerId;
 
     const isSameTitle =
@@ -52,11 +51,10 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
-      setIsLoading(false);
 
       onClose();
 
-      return editCompleteAction(item, type);
+      return completeAction(item, type);
     } else {
       timerId = setTimeout(() => {
         isFile ? addActiveItems([item.id]) : addActiveItems(null, [item.id]);
@@ -65,7 +63,7 @@ const RenameEvent = ({
 
     isFile
       ? updateFile(item.id, value)
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .then(() =>
             toastr.success(
               t("FileRenamed", {
@@ -76,18 +74,17 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item, type);
+            completeAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations([item.id]);
 
-            setIsLoading(false);
             onClose();
           })
       : renameFolder(item.id, value)
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .then(() => {
             if (selectedFolderId === item.id) {
               setSelectedFolder({ title: value });
@@ -101,14 +98,13 @@ const RenameEvent = ({
           })
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item, type);
+            completeAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations(null, [item.id]);
 
-            setIsLoading(false);
             onClose();
           });
   }, []);
@@ -124,7 +120,6 @@ const RenameEvent = ({
     <Dialog
       t={t}
       visible={eventDialogVisible}
-      title={t("Home:Rename")}
       title={t("Files:Rename")}
       startValue={startValue}
       onSave={onUpdate}
@@ -151,7 +146,7 @@ export default inject(
 
     const { id, setSelectedFolder } = selectedFolderStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
 
     const { clearActiveOperations } = uploadDataStore;
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
@@ -162,7 +157,7 @@ export default inject(
       updateFile,
       renameFolder,
 
-      editCompleteAction,
+      completeAction,
 
       clearActiveOperations,
       setEventDialogVisible,

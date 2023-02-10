@@ -64,9 +64,23 @@ class BackupStore {
 
   storageRegions = [];
   selectedThirdPartyAccount = null;
+  connectedThirdPartyAccount = null;
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setConnectedThirdPartyAccount = (account) => {
+    this.connectedThirdPartyAccount = account;
+  };
+
+  get isTheSameThirdPartyAccount() {
+    if (this.connectedThirdPartyAccount && this.selectedThirdPartyAccount)
+      return (
+        this.connectedThirdPartyAccount.providerKey ===
+        this.selectedThirdPartyAccount.provider_key
+      );
+    return true;
   }
 
   deleteSchedule = (weekdayArr) => {
@@ -595,24 +609,6 @@ class BackupStore {
       default:
         return "";
     }
-  };
-
-  oAuthPopup = (url, modal) => {
-    let newWindow = modal;
-
-    if (modal) {
-      newWindow.location = url;
-    }
-
-    try {
-      let params =
-        "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
-      newWindow = modal ? newWindow : window.open(url, "Authorization", params);
-    } catch (err) {
-      newWindow = modal ? newWindow : window.open(url, "Authorization");
-    }
-
-    return newWindow;
   };
 }
 

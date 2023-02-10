@@ -22,5 +22,5 @@
   "SetAppDescription": "Omogočena je dvofaktorska avtentikacija. Za nadaljevanje dela na portalu konfigurirajte aplikacijo za avtentikacijo. Google Authenticator lahko uporabite za <1>Android</1> in <4>iOS</4> ali Avtentikator za <8>Windows Telefon</8>.",
   "SetAppInstallDescription": "Če želite povezati aplikacijo, skenirajte kodo QR ali ročno vnesite svoj skrivni ključ <1>{{ secretKey }}</1>, nato vnesite 6-mestno kodo iz aplikacije v polje spodaj.",
   "SetAppTitle": "Konfigurirajte vašo aplikacijo za avtentikacijo",
-  "WelcomeUser": "Dobrodošli na našem portalu! Za začetek se registrirajte ali se prijavite prek družbenih omrežij."
+  "WelcomeUser": "Dobrodošli na našem portalu!\nZa začetek se registrirajte ali se prijavite prek družbenih omrežij."
 }

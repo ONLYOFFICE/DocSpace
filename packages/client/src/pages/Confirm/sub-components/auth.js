@@ -13,7 +13,7 @@ const Auth = (props) => {
     loginWithConfirmKey({
       ConfirmData: {
         Email: linkData.email,
-        Key: linkData.confirmHeader,
+        Key: linkData.key,
       },
     })
       .then((res) => {

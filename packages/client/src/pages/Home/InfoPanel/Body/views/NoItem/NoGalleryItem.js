@@ -1,3 +1,4 @@
+﻿import FormGallerySearchReactSvgUrl from "PUBLIC_DIR/images/form-gallery-search.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
@@ -15,7 +16,7 @@ const NoGalleryItem = ({ t }) => {
     <StyledGalleryEmptyScreen className="info-panel_gallery-empty-screen">
       <img
         className="info-panel_gallery-empty-screen-img"
-        src="images/form-gallery-search.react.svg"
+        src={FormGallerySearchReactSvgUrl}
         alt="Empty Screen Gallery image"
       />
       <Text textAlign="center">

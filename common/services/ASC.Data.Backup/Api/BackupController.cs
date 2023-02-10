@@ -197,6 +197,7 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
     [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
+    [AllowAnonymous]
     [AllowNotPayment]
     public BackupProgress GetRestoreProgress()
     {
@@ -208,35 +209,5 @@ public class BackupController : ControllerBase
     public object GetTempPath()
     {
         return _backupHandler.GetTmpFolder();
-    }
-
-    ///<visible>false</visible>
-    [HttpGet("enablerestore")]
-    public bool EnableRestore()
-    {
-        try
-        {
-            _backupHandler.DemandPermissionsRestore();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    ///<visible>false</visible>
-    [HttpGet("enableAutoBackup")]
-    public bool EnableAutoBackup()
-    {
-        try
-        {
-            _backupHandler.DemandPermissionsAutoBackup();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 }

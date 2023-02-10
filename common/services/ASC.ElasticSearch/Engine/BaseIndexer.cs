@@ -123,7 +123,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
             yield return getData(ids[i], ids[i + 1], lastIndexed);
         }
 
-        webstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
+        webstudioDbContext.AddOrUpdate(webstudioDbContext.WebstudioIndex, new DbWebstudioIndex()
         {
             IndexName = Wrapper.IndexName,
             LastModified = now

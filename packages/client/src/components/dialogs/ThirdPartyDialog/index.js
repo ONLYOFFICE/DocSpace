@@ -1,3 +1,4 @@
+﻿import ActionsPlusIconReactSvgUrl from "PUBLIC_DIR/images/actions.plus.icon.react.svg?url";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
@@ -143,7 +144,7 @@ const ServiceItem = (props) => {
       {isMobile ? (
         <SelectorAddButton
           onClick={onClick}
-          iconName="/static/images/actions.plus.icon.react.svg"
+          iconName={ActionsPlusIconReactSvgUrl}
           className="service-btn service-btn-icon"
           title={t("Common:Connect")}
           {...dataProps}

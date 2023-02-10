@@ -92,7 +92,7 @@ const InfiniteGrid = (props) => {
     }
 
     // Added line of loaders
-    while (cards.length !== countTilesInRow) {
+    while (countTilesInRow > cards.length && cards.length !== countTilesInRow) {
       const key = `tiles-loader_${countTilesInRow - cards.length}`;
       cards.push(
         <Loaders.Tile
@@ -128,7 +128,7 @@ const InfiniteGrid = (props) => {
   );
 };
 
-export default inject(({ filesStore, oformsStore }) => {
+export default inject(({ auth, filesStore, oformsStore }) => {
   const {
     oformFiles,
     hasMoreForms,
@@ -139,6 +139,7 @@ export default inject(({ filesStore, oformsStore }) => {
   const { getCountTilesInRow } = filesStore;
 
   const filesLength = oformFiles.length;
+  const { isVisible } = auth.infoPanelStore;
 
   return {
     filesList: oformFiles,
@@ -147,5 +148,6 @@ export default inject(({ filesStore, oformsStore }) => {
     fetchMoreFiles: loadMoreForms,
     filesLength,
     getCountTilesInRow,
+    isVisible,
   };
 })(observer(InfiniteGrid));

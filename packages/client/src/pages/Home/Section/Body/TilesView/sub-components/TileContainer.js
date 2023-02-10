@@ -48,6 +48,7 @@ const StyledGridWrapper = styled.div`
 const StyledTileContainer = styled.div`
   position: relative;
   height: 100%;
+  user-select: none;
 
   .tile-item-wrapper {
     position: relative;
@@ -68,6 +69,7 @@ const StyledTileContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: fit-content;
 
     div {
       cursor: pointer !important;
@@ -179,7 +181,6 @@ class TileContainer extends React.PureComponent {
       style,
       headingFolders,
       headingFiles,
-      headingRooms,
     } = this.props;
 
     const { selectedFilterData } = this.state;
@@ -213,16 +214,6 @@ class TileContainer extends React.PureComponent {
 
     const renderTile = (
       <>
-        {Rooms.length > 0 && (
-          <Heading
-            size="xsmall"
-            id={"room-tile-heading"}
-            className="tile-items-heading"
-          >
-            {headingRooms}
-          </Heading>
-        )}
-
         {Rooms.length > 0 ? (
           useReactWindow ? (
             Rooms

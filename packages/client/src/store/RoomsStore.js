@@ -1,12 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import api from "@appserver/common/api";
-import { AppServerConfig, RoomsType } from "@appserver/common/constants";
+import api from "@docspace/common/api";
+import { RoomsType } from "@docspace/common/constants";
 
 import toastr from "studio/toastr";
 
-import history from "@appserver/common/history";
+import history from "@docspace/common/history";
 
-import { combineUrl } from "@appserver/common/utils";
+import { combineUrl } from "@docspace/common/utils";
 
 import config from "../../package.json";
 
@@ -72,7 +72,7 @@ class RoomsStore {
     const urlFilter = filter.toUrlParams();
     history.push(
       combineUrl(
-        AppServerConfig.proxyURL,
+        window.DocSpaceConfig?.proxy?.url,
         config.homepage,
         `/rooms?${urlFilter}`
       )

@@ -64,9 +64,8 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private RestorePortalTask _restorePortalTask;
     private readonly CoreBaseSettings _coreBaseSettings;
 
-    private string _currentRegion;
+    private string _region;
     private string _upgradesPath;
-    private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
         IConfiguration configuration,
@@ -92,16 +91,16 @@ public class RestoreProgressItem : BaseBackupProgressItem
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
-    public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion, Dictionary<string, string> configPaths)
+    public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string region = "current")
     {
         TenantId = request.TenantId;
         Notify = request.NotifyAfterCompletion;
         StoragePath = request.FilePathOrId;
         StorageType = request.StorageType;
+        StorageParams = request.StorageParams;
         TempFolder = tempFolder;
         _upgradesPath = upgradesPath;
-        _currentRegion = currentRegion;
-        _configPaths = configPaths;
+        _region = region;
     }
 
     protected override async Task DoJob()
@@ -112,8 +111,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
         try
         {
-
-            using var scope = _serviceScopeProvider.CreateScope();
+            await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
             _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
@@ -150,7 +148,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             columnMapper.Commit();
 
             var restoreTask = _restorePortalTask;
-            restoreTask.Init(_configPaths[_currentRegion], tempFile, TenantId, columnMapper, _upgradesPath);
+            restoreTask.Init(_region, tempFile, TenantId, columnMapper, _upgradesPath);
             restoreTask.ProgressChanged += (sender, args) =>
             {
                 Percentage = Percentage = 10d + 0.65 * args.Progress;
@@ -189,8 +187,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
                 _tenantManager.SaveTenant(restoredTenant);
                 _tenantManager.SetCurrentTenant(restoredTenant);
-                // sleep until tenants cache expires
-                Thread.Sleep(TimeSpan.FromMinutes(2));
+                TenantId = restoredTenant.Id;
 
                 _notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
             }
@@ -202,12 +199,13 @@ public class RestoreProgressItem : BaseBackupProgressItem
             File.Delete(tempFile);
 
             Percentage = 100;
-            PublishChanges();
+            Status = DistributedTaskStatus.Completed;
         }
         catch (Exception error)
         {
             _logger.ErrorRestoreProgressItem(error);
             Exception = error;
+            Status = DistributedTaskStatus.Failted;
 
             if (tenant != null)
             {

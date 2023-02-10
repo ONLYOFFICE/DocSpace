@@ -13,8 +13,6 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
-// import Link from "@docspace/components/link";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -34,7 +32,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const params = filter.toUrlParams();
 
     const url = combineUrl(
-      AppServerConfig.proxyURL,
+      window.DocSpaceConfig?.proxy?.url,
       homepage,
       `/accounts/filter?${params}`
     );
@@ -50,17 +48,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => onClose());
     });
-  };
-
-  onReassignDataClick = () => {
-    const { homepage, user } = this.props;
-    history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        homepage,
-        `/reassign/${user.userName}`
-      )
-    );
   };
 
   render() {
@@ -82,17 +69,17 @@ class DeleteProfileEverDialogComponent extends React.Component {
               ns="DeleteProfileEverDialog"
               t={t}
             >
-              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>
+              {{ userCaption: t("Common:User") }}{" "}
+              <strong>{{ user: user.displayName }}</strong>
               will be deleted. User personal documents which are available to
-              others will be deleted. To avoid this, you must start the data
-              reassign process before deleting.
+              others will be deleted.
             </Trans>
           </Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
-            label={t("Common:OKButton")}
+            label={t("Common:Delete")}
             size="normal"
             primary={true}
             scale
@@ -124,9 +111,8 @@ DeleteProfileEverDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => ({
+  inject(({ peopleStore }) => ({
     homepage: config.homepage,
-    userCaption: auth.settingsStore.customNames.userCaption,
     setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(DeleteProfileEverDialog))
 );

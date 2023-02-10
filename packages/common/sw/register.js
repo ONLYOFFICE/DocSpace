@@ -7,7 +7,7 @@ import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import { LANGUAGE } from "../constants";
-import { loadLanguagePath, getCookie } from "../utils";
+import { getCookie } from "../utils";
 
 i18n
   .use(Backend)

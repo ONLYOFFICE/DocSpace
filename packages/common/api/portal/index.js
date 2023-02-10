@@ -239,13 +239,14 @@ export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
 
-export function getPaymentLink(adminCount, currency) {
+export function getPaymentLink(adminCount, cancelToken) {
   return request({
     method: "put",
     url: `/portal/payment/url`,
     data: {
       quantity: { admin: adminCount },
     },
+    cancelToken,
   });
 }
 

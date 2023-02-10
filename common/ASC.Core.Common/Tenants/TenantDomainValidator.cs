@@ -29,20 +29,37 @@ namespace ASC.Core.Tenants;
 [Singletone]
 public class TenantDomainValidator
 {
-    private static readonly Regex _validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
-                                                          RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    private readonly Regex _validDomain;
 
-    public readonly int MinLength;
-    private const int MaxLength = 100;
+    public string Regex { get; }
+    public int MinLength { get; }
+    public int MaxLength { get; }
 
     public TenantDomainValidator(IConfiguration configuration)
     {
+        MaxLength = 100;
+
+        if (int.TryParse(configuration["web:alias:max"], out var defaultMaxLength))
+        {
+            MaxLength = Math.Max(3, Math.Min(MaxLength, defaultMaxLength));
+        }
+
         MinLength = 6;
 
         if (int.TryParse(configuration["web:alias:min"], out var defaultMinLength))
         {
             MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
         }
+
+        Regex = $"^[a-z0-9]([a-z0-9-]){{1,{MaxLength - 2}}}[a-z0-9]$";
+
+        var regexpFromConfig = configuration["web:alias:regex"];
+        if (!string.IsNullOrEmpty(regexpFromConfig))
+        {
+            Regex = regexpFromConfig;
+        }
+
+        _validDomain = new Regex(Regex, RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     public void ValidateDomainLength(string domain)
@@ -54,7 +71,7 @@ public class TenantDomainValidator
         }
     }
 
-    public static void ValidateDomainCharacters(string domain)
+    public void ValidateDomainCharacters(string domain)
     {
         if (!_validDomain.IsMatch(domain))
         {

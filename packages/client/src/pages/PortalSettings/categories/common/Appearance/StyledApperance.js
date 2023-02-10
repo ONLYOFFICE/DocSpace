@@ -1,8 +1,10 @@
+﻿import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
 import styled from "styled-components";
 
 const StyledComponent = styled.div`
   padding-top: 3px;
   width: 100%;
+  max-width: 575px;
 
   .header {
     font-weight: 700;
@@ -40,7 +42,7 @@ const StyledComponent = styled.div`
     border-radius: 8px;
     cursor: pointer;
     background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
-      url("/static/images/plus.theme.svg") no-repeat center;
+      url(${PlusThemeSvgUrl}) no-repeat center;
   }
 
   .add-theme {

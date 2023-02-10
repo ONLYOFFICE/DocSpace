@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import Box from "../box";
 import ViewSelector from "./";
 
+import ViewRowsReactSvg from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvg from "PUBLIC_DIR/images/view-tiles.react.svg?url";
+import EyeReactSvg from "PUBLIC_DIR/images/eye.react.svg?url";
+
 export default {
   title: "Components/ViewSelector",
   component: ViewSelector,
@@ -52,16 +56,16 @@ Default.args = {
   viewSettings: [
     {
       value: "row",
-      icon: "/static/images/view-rows.react.svg",
+      icon: ViewRowsReactSvg,
     },
     {
       value: "tile",
-      icon: "/static/images/view-tiles.react.svg",
+      icon: ViewTilesReactSvg,
       callback: () => console.log("callback tile click"),
     },
     {
       value: "some",
-      icon: "/static/images/eye.react.svg",
+      icon: EyeReactSvg,
       callback: () => console.log("callback some click"),
     },
   ],

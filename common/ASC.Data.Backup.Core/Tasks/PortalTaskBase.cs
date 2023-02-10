@@ -45,8 +45,8 @@ public abstract class PortalTaskBase
     protected ILogger Logger { get; set; }
     public int Progress { get; private set; }
     public int TenantId { get; private set; }
-    public string ConfigPath { get; private set; }
     public bool ProcessStorage { get; set; }
+    protected IDataWriteOperator WriteOperator { get; set; }
     protected ModuleProvider ModuleProvider { get; set; }
     protected DbFactory DbFactory { get; set; }
 
@@ -63,10 +63,9 @@ public abstract class PortalTaskBase
         DbFactory = dbFactory;
     }
 
-    public void Init(int tenantId, string configPath)
+    public void Init(int tenantId)
     {
         TenantId = tenantId;
-        ConfigPath = configPath;
     }
 
     public void IgnoreModule(ModuleName moduleName)
@@ -95,10 +94,10 @@ public abstract class PortalTaskBase
     protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(int tenantId)
     {
         var files = new List<BackupFileInfo>();
-        foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
+        foreach (var module in StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed))
         {
-            var store = StorageFactory.GetStorage(ConfigPath, tenantId, module);
-            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
+            var store = StorageFactory.GetStorage(tenantId, module);
+            var domains = StorageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)
             {

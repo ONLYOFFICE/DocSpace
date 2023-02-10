@@ -1,15 +1,21 @@
+﻿import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
+import HotkeysReactSvgUrl from "PUBLIC_DIR/images/hotkeys.react.svg?url";
+import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
+import PaymentsReactSvgUrl from "PUBLIC_DIR/images/payments.react.svg?url";
+import HelpCenterReactSvgUrl from "PUBLIC_DIR/images/help.center.react.svg?url";
+import SupportReactSvgUrl from "PUBLIC_DIR/images/support.react.svg?url";
+import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
-const { proxyURL } = AppServerConfig;
-
-const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
+const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
-const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+//const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
@@ -110,7 +116,9 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      window.location.replace(combineUrl(proxyURL, "/login"));
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+      );
     });
   };
 
@@ -136,8 +144,8 @@ class ProfileActionsStore {
     const settings = isAdmin
       ? {
           key: "user-menu-settings",
-          icon: "/static/images/catalog.settings.react.svg",
-          label: t("Common:Settings"),
+          icon: CatalogSettingsReactSvgUrl,
+          label: t("Common:SettingsDocSpace"),
           onClick: () => this.onSettingsClick(settingsUrl),
         }
       : null;
@@ -153,7 +161,7 @@ class ProfileActionsStore {
     ) {
       hotkeys = {
         key: "user-menu-hotkeys",
-        icon: "/static/images/hotkeys.react.svg",
+        icon: HotkeysReactSvgUrl,
         label: t("Common:Hotkeys"),
         onClick: this.onHotkeysClick,
       };
@@ -162,39 +170,39 @@ class ProfileActionsStore {
     const actions = [
       {
         key: "user-menu-profile",
-        icon: "/static/images/profile.react.svg",
+        icon: ProfileReactSvgUrl,
         label: t("Common:Profile"),
         onClick: this.onProfileClick,
       },
       settings,
       isAdmin && {
         key: "user-menu-payments",
-        icon: "/static/images/payments.react.svg",
+        icon: PaymentsReactSvgUrl,
         label: t("Common:PaymentsTitle"),
         onClick: this.onPaymentsClick,
       },
       {
         key: "user-menu-help-center",
-        icon: "/static/images/help.center.react.svg",
+        icon: HelpCenterReactSvgUrl,
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
       },
       {
         key: "user-menu-support",
-        icon: "/static/images/support.react.svg",
+        icon: SupportReactSvgUrl,
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
       },
       {
         key: "user-menu-video",
-        icon: "/static/images/video.guides.react.svg",
+        icon: VideoGuidesReactSvgUrl,
         label: t("Common:VideoGuides"),
         onClick: this.onVideoGuidesClick,
       },
       hotkeys,
       {
         key: "user-menu-about",
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
@@ -204,7 +212,7 @@ class ProfileActionsStore {
       },
       {
         key: "user-menu-logout",
-        icon: "/static/images/logout.react.svg",
+        icon: LogoutReactSvgUrl,
         label: t("Common:LogoutButton"),
         onClick: this.onLogoutClick,
         isButton: true,
@@ -214,7 +222,7 @@ class ProfileActionsStore {
     if (debugInfo) {
       actions.splice(3, 0, {
         key: "user-menu-debug",
-        icon: "/static/images/info.outline.react.svg",
+        icon: InfoOutlineReactSvgUrl,
         label: "Debug Info",
         onClick: this.onDebugClick,
       });

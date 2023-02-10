@@ -20,7 +20,7 @@ const Button = React.forwardRef((props, ref) => {
           primary={primary}
         />
       )}
-      <div className="button-content">
+      <div className="button-content not-selectable">
         {icon && <div className="icon">{icon}</div>}
         {label}
       </div>
@@ -36,12 +36,7 @@ Button.propTypes = {
   /** Size of button.
 
    The normal size equals 36px and 40px in height on the Desktop and Touchcreen devices. */
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal",
-    "medium",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,
   /** Icon node element */

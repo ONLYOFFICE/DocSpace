@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
+import { classNames } from "../utils/classNames";
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
     smallWhite: {
@@ -87,7 +88,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       {...rest}
       style={{ ...style, ...view }}
       tabIndex={-1}
-      className={`${props.scrollclass} scroll-body`}
+      className={classNames("scroll-body", props.scrollclass)}
     />
   );
 

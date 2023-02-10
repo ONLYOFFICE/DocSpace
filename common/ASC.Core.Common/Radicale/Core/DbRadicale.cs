@@ -39,7 +39,7 @@ public class DbRadicale
     public void SaveCardDavUser(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(r => r.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
+        userDbContext.AddOrUpdate(userDbContext.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
         userDbContext.SaveChanges();
     }
 

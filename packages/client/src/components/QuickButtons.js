@@ -1,3 +1,7 @@
+﻿import FileActionsLockedReactSvgUrl from "PUBLIC_DIR/images/file.actions.locked.react.svg?url";
+import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
+import FileActionsFavoriteReactSvgUrl from "PUBLIC_DIR/images/file.actions.favorite.react.svg?url";
+import FavoriteReactSvgUrl from "PUBLIC_DIR/images/favorite.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import IconButton from "@docspace/components/icon-button";
@@ -16,17 +20,14 @@ const QuickButtons = (props) => {
     item,
     theme,
     sectionWidth,
-    isTrashFolder,
     onClickLock,
     isDisabled,
     onClickFavorite,
     viewAs,
-    isCanWebEdit,
-    canLockFile,
+    folderCategory,
   } = props;
 
-  const { id, locked, fileStatus, title, fileExst, access, folderType } = item;
-  const canLockFileAbility = canLockFile(item);
+  const { id, locked, fileStatus, title, fileExst } = item;
 
   const isFavorite =
     (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
@@ -34,16 +35,16 @@ const QuickButtons = (props) => {
   const isTile = viewAs === "tile";
 
   const iconLock = locked
-    ? "/static/images/file.actions.locked.react.svg"
-    : "/static/images/locked.react.svg";
+    ? FileActionsLockedReactSvgUrl
+    : LockedReactSvgUrl;
 
   const colorLock = locked
     ? theme.filesQuickButtons.sharedColor
     : theme.filesQuickButtons.color;
 
   const iconFavorite = isFavorite
-    ? "/static/images/file.actions.favorite.react.svg"
-    : "/static/images/favorite.react.svg";
+    ? FileActionsFavoriteReactSvgUrl
+    : FavoriteReactSvgUrl;
 
   const colorFavorite = isFavorite
     ? theme.filesQuickButtons.sharedColor
@@ -58,8 +59,7 @@ const QuickButtons = (props) => {
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
-  const isAvailableLockFile =
-    canLockFileAbility && fileExst && displayBadges && isCanWebEdit;
+  const isAvailableLockFile = !folderCategory && fileExst && displayBadges;
 
   return (
     <div className="badges additional-badges">
@@ -67,7 +67,6 @@ const QuickButtons = (props) => {
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconLock}
-          locked={locked}
           className="badge lock-file icons-group"
           size={sizeQuickButton}
           data-id={id}

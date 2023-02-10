@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
@@ -6,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
 import Avatar from "@docspace/components/avatar";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 const StyledContainer = styled.div`
   display: flex;
   background: ${(props) => props.theme.client.settings.payment.backgroundColor};
@@ -14,7 +15,7 @@ const StyledContainer = styled.div`
   padding: 16px;
   box-sizing: border-box;
   margin-top: 16px;
-
+  border-radius: 6px;
   .change-payer,
   .payer-info {
     margin-left: 3px;
@@ -34,14 +35,13 @@ const StyledContainer = styled.div`
     grid-gap: 4px;
 
     .payer-info_description {
-
-
       p {
         margin-right: 3px;
       }
       div {
         display: inline-block;
         margin: auto 0;
+        height: 14px;
       }
     }
     .payer-info_account-link {
@@ -68,7 +68,7 @@ const PayerInformationContainer = ({
 
   const renderTooltip = (
     <HelpButton
-      iconName={"/static/images/help.react.svg"}
+      iconName={HelpReactSvgUrl}
       tooltipContent={
         <>
           <Text isBold>{t("Payer")}</Text>
@@ -92,6 +92,7 @@ const PayerInformationContainer = ({
           className="change-payer"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("ChangePayer")}
         </ColorTheme>
@@ -114,6 +115,7 @@ const PayerInformationContainer = ({
           className="payer-info_account-link"
           tag="a"
           themeId={ThemeType.Link}
+          target="_blank"
         >
           {t("StripeCustomerPortal")}
         </ColorTheme>
@@ -156,7 +158,9 @@ const PayerInformationContainer = ({
     );
   };
 
-  const avatarUrl = payerInfo ? { source: payerInfo.avatar } : {};
+  const avatarUrl = payerInfo
+    ? { source: payerInfo.hasAvatar ? payerInfo.avatar : DefaultUserPhoto }
+    : {};
 
   return (
     <StyledContainer style={style} theme={theme}>

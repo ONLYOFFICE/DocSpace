@@ -1,3 +1,4 @@
+﻿import EmptyScreenInfoPanelPngUrl from "PUBLIC_DIR/images/empty_screen_info_panel.png";
 import React from "react";
 
 import { StyledNoItemContainer } from "../../styles/noItem";
@@ -9,7 +10,7 @@ const NoFileOrFolderItem = ({ t }) => {
         <img
           size="96px"
           className="no-thumbnail-img"
-          src="images/empty_screen_info_panel.png"
+          src={EmptyScreenInfoPanelPngUrl}
         />
       </div>
 
