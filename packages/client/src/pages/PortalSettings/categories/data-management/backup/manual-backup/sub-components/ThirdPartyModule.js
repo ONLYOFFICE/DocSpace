@@ -145,7 +145,7 @@ class ThirdPartyModule extends React.Component {
 
         {connectedThirdPartyAccount?.id && isTheSameThirdPartyAccount && (
           <Button
-            label={t("Common:Duplicate")}
+            label={t("Common:CreateCopy")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled || selectedFolder === ""}
