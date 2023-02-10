@@ -222,6 +222,8 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
+
+        itemIndex,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -235,7 +237,9 @@ export default function withFileActions(WrappedFileItem) {
         ? "_draggable"
         : item.providerKey
         ? `_${item.providerKey}`
-        : "";
+        : "_false";
+
+      value += `_index_${itemIndex}`;
 
       const isShareable = allowShareIn && item.canShare;
 

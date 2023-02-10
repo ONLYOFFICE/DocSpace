@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { isMobileOnly } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 
 import ComboBox from "@docspace/components/combobox";
@@ -170,6 +169,8 @@ const SortButton = ({
 
   onSort,
   viewSelectorVisible,
+
+  onSortButtonClick,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -213,6 +214,10 @@ const SortButton = ({
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);
   }, []);
+
+  React.useEffect(() => {
+    onSortButtonClick && onSortButtonClick(!isOpen);
+  }, [isOpen]);
 
   const onOptionClick = React.useCallback(
     (e) => {

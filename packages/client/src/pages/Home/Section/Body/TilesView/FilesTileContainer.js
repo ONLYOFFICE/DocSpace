@@ -101,6 +101,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             sectionWidth={sectionWidth}
             selectableRef={onSetTileRef}
             thumbSize={thumbSize}
@@ -112,6 +113,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             sectionWidth={sectionWidth}
             thumbSize={thumbSize}
             columnCount={columnCount}
