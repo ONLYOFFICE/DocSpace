@@ -5,7 +5,7 @@ import ImageViewer from "../MediaViewer/sub-components/image-viewer";
 
 import { MediaViewerProps } from './MediaViewer.props';
 import { FileStatus } from "@docspace/common/constants";
-import { ButtonKeys, isNullOrUndefined, KeyboardEventKeys, mapSupplied, mediaTypes } from "./helpers";
+import { isNullOrUndefined, KeyboardEventKeys, mapSupplied, mediaTypes } from "./helpers";
 
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
@@ -18,7 +18,6 @@ import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 
 
 function MediaViewer({ playlistPos, nextMedia, prevMedia, ...props }: MediaViewerProps): JSX.Element {
-    const ctrIsPressedRef = useRef<boolean>(false);
 
     const [title, setTitle] = useState<string>("")
     const [canSwipeImage, setCanSwipeImage] = useState<boolean>(true);

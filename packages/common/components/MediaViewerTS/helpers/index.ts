@@ -3,19 +3,6 @@ export const mediaTypes = Object.freeze({
     video: 2,
 });
 
-export const ButtonKeys = Object.freeze({
-    leftArrow: 37,
-    rightArrow: 39,
-    upArrow: 38,
-    downArrow: 40,
-    esc: 27,
-    space: 32,
-    ctr: 17,
-    one: 49,
-    del: 46,
-    s: 83,
-});
-
 
 export enum KeyboardEventKeys {
     ArrowRight = "ArrowRight",
