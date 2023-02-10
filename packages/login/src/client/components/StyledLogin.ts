@@ -60,5 +60,11 @@ export const LoginContent = styled.div`
     margin: 0 auto;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
+
+    @media ${hugeMobile} {
+      min-height: 100%;
+      justify-content: start;
+    }
+
 `;
 
