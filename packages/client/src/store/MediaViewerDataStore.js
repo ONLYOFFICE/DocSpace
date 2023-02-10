@@ -49,43 +49,40 @@ class MediaViewerDataStore {
   changeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
     window.history.pushState(null, null, url);
-  }
+  };
 
   findNearestIndex = (items, index) => {
     let found = items[0].id;
     for (const item of items) {
       if (Math.abs(item.id - index) < Math.abs(found - index)) {
-        found = item.id
+        found = item.id;
       }
     }
-    return found
-  }
+    return found;
+  };
 
   isNullOrUndefined = (arg) => {
     return arg === undefined || arg === null;
-  }
-
+  };
 
   nextMedia = () => {
-
     const { setBufferSelection, files } = this.filesStore;
 
     const postionIndex = (this.currentPostionIndex + 1) % this.playlist.length;
 
     if (postionIndex === 0) {
-      return
+      return;
     }
     const currentFileId = this.playlist[postionIndex].fileId;
 
     const targetFile = files.find((item) => item.id === currentFileId);
 
-    if (!this.isNullOrUndefined(targetFile))
-      setBufferSelection(targetFile);
+    if (!this.isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
 
     const fileId = this.playlist[postionIndex].fileId;
     this.setCurrentId(fileId);
     this.changeUrl(fileId);
-  }
+  };
 
   prevMedia = () => {
     const { setBufferSelection, files } = this.filesStore;
@@ -93,42 +90,37 @@ class MediaViewerDataStore {
     let currentPlaylistPos = this.currentPostionIndex - 1;
 
     if (currentPlaylistPos === -1) {
-      return
+      return;
     }
 
     const currentFileId = this.playlist[currentPlaylistPos].fileId;
 
-    const targetFile = files.find(
-      (item) => item.id === currentFileId
-    );
+    const targetFile = files.find((item) => item.id === currentFileId);
 
-    if (!this.isNullOrUndefined(targetFile))
-      setBufferSelection(targetFile);
+    if (!this.isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
 
     const fileId = this.playlist[currentPlaylistPos].fileId;
     this.setCurrentId(fileId);
     this.changeUrl(fileId);
-  }
-
-
+  };
 
   get currentPostionIndex() {
     if (this.playlist.length === 0) {
-      return 0
+      return 0;
     }
 
-    let index = this.playlist.find(file => file.fileId === this.id)?.id
+    let index = this.playlist.find((file) => file.fileId === this.id)?.id;
 
     if (this.isNullOrUndefined(index)) {
-      index = this.findNearestIndex(this.playlist, this.prevPostionIndex)
+      index = this.findNearestIndex(this.playlist, this.prevPostionIndex);
     }
 
     runInAction(() => {
-      this.prevPostionIndex = index
-    })
+      this.prevPostionIndex = index;
+    });
 
     return index;
-  };
+  }
 
   get playlist() {
     const { files } = this.filesStore;
@@ -171,7 +163,7 @@ class MediaViewerDataStore {
       if (this.previewFile) {
         runInAction(() => {
           this.previewFile = null;
-        })
+        });
       }
     } else if (this.previewFile) {
       playlist.push({
