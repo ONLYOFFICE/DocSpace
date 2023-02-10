@@ -1,4 +1,4 @@
-import { NullOrUndefined } from "../types";
+import { IFile, NullOrUndefined } from "../types";
 
 export const mediaTypes = Object.freeze({
   audio: 1,
@@ -39,4 +39,14 @@ export const mapSupplied = {
 
 export const isNullOrUndefined = (arg: unknown): arg is NullOrUndefined => {
   return arg === undefined || arg === null;
+};
+
+export const findNearestIndex = (items: IFile[], index: number): number => {
+  let found = items[0].id;
+  for (const item of items) {
+    if (Math.abs(item.id - index) < Math.abs(found - index)) {
+      found = item.id;
+    }
+  }
+  return found;
 };

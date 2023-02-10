@@ -1,4 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import {
+  isNullOrUndefined,
+  findNearestIndex,
+} from "@docspace/common/components/MediaViewerV2/helpers";
 
 class MediaViewerDataStore {
   filesStore;
@@ -51,20 +55,6 @@ class MediaViewerDataStore {
     window.history.pushState(null, null, url);
   };
 
-  findNearestIndex = (items, index) => {
-    let found = items[0].id;
-    for (const item of items) {
-      if (Math.abs(item.id - index) < Math.abs(found - index)) {
-        found = item.id;
-      }
-    }
-    return found;
-  };
-
-  isNullOrUndefined = (arg) => {
-    return arg === undefined || arg === null;
-  };
-
   nextMedia = () => {
     const { setBufferSelection, files } = this.filesStore;
 
@@ -77,7 +67,7 @@ class MediaViewerDataStore {
 
     const targetFile = files.find((item) => item.id === currentFileId);
 
-    if (!this.isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
+    if (!isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
 
     const fileId = this.playlist[postionIndex].fileId;
     this.setCurrentId(fileId);
@@ -97,7 +87,7 @@ class MediaViewerDataStore {
 
     const targetFile = files.find((item) => item.id === currentFileId);
 
-    if (!this.isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
+    if (!isNullOrUndefined(targetFile)) setBufferSelection(targetFile);
 
     const fileId = this.playlist[currentPlaylistPos].fileId;
     this.setCurrentId(fileId);
@@ -111,8 +101,8 @@ class MediaViewerDataStore {
 
     let index = this.playlist.find((file) => file.fileId === this.id)?.id;
 
-    if (this.isNullOrUndefined(index)) {
-      index = this.findNearestIndex(this.playlist, this.prevPostionIndex);
+    if (isNullOrUndefined(index)) {
+      index = findNearestIndex(this.playlist, this.prevPostionIndex);
     }
 
     runInAction(() => {
