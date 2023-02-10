@@ -1307,7 +1307,7 @@ const SectionFilterContent = ({
 
   const onSortButtonClick = (isOpen) => {
     if (isMobileOnly) {
-      setMainButtonMobileVisible && setMainButtonMobileVisible(isOpen);
+      setMainButtonMobileVisible(isOpen);
     }
   };
 
