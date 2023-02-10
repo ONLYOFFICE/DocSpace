@@ -35,7 +35,9 @@ const template: Template = (
     ? `${t("Authorization")} – ${organizationName}`
     : title;
 
-  const favicon = getLogoFromPath(initLoginState.logoUrls[2]?.path?.light);
+  const favicon = getLogoFromPath(
+    initLoginState?.logoUrls && initLoginState?.logoUrls[2]?.path?.light
+  );
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")

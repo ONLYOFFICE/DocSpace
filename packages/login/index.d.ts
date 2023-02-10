@@ -56,6 +56,7 @@ declare global {
     utcHoursOffset: number;
     utcOffset: string;
     version: string;
+    standalone: boolean;
   }
 
   interface IBuildInfo {
@@ -89,15 +90,23 @@ declare global {
     selected: number;
     themes: ITheme[];
   }
+
+  interface IError {
+    status: number;
+    standalone: boolean;
+    message: string | undefined;
+  }
+
   interface IInitialState {
-    portalSettings: IPortalSettings;
-    buildInfo: IBuildInfo;
-    providers: ProvidersType;
-    capabilities: ICapabilities;
-    match: MatchType;
-    currentColorScheme: ITheme;
-    isAuth: boolean;
-    logoUrls: any;
+    portalSettings?: IPortalSettings;
+    buildInfo?: IBuildInfo;
+    providers?: ProvidersType;
+    capabilities?: ICapabilities;
+    match?: MatchType;
+    currentColorScheme?: ITheme;
+    isAuth?: boolean;
+    logoUrls?: any;
+    error?: IError;
   }
 
   interface DevRequest {

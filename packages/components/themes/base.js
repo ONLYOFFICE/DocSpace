@@ -711,7 +711,7 @@ const Base = {
         middle: "36px",
         big: "36px",
         huge: "37px",
-        large: "43px",
+        large: "42px",
       },
     },
 
@@ -1693,6 +1693,7 @@ const Base = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#D0D5DA",
     hoverFillColorOff: "#A3A9AE",
     fillCircleColor: white,

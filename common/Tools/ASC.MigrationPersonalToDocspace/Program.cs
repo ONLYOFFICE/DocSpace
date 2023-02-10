@@ -75,15 +75,15 @@ builder.Services.RegisterFeature()
     .AddCacheNotify(config);
 
 
-    var diHelper = new DIHelper();
-    diHelper.Configure(builder.Services);
+var diHelper = new DIHelper();
+diHelper.Configure(builder.Services);
 
-    diHelper.TryAdd<MigrationCreator>();
-    diHelper.TryAdd<MigrationRunner>();
+diHelper.TryAdd<MigrationCreator>();
+diHelper.TryAdd<MigrationRunner>();
 
 
 
-if(string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
+if (string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
 {
     throw new Exception("username or email must be entered");
 }
@@ -91,7 +91,7 @@ if(string.IsNullOrEmpty(param.UserName) && string.IsNullOrEmpty(param.Mail))
 var app = builder.Build();
 Console.WriteLine("backup start");
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = migrationCreator.Create(param.FromAlias, param.UserName, param.Mail, param.ToRegion, param.ToAlias);
+var fileName = await migrationCreator.Create(param.FromAlias, param.UserName, param.Mail, param.ToRegion, param.ToAlias);
 Console.WriteLine("backup was success");
 
 Console.WriteLine("restore start");
@@ -122,10 +122,10 @@ public sealed class Options
     [Option('m', "mail", Required = false, HelpText = "enter username or mail for find user")]
     public string Mail { get; set; }
 
-    [Option('t' ,"toRegion", Required = true)]
+    [Option('t', "toRegion", Required = true)]
     public string ToRegion { get; set; }
 
-    [Option('f' ,"fromRegion", Required = false, Default = "personal")]
+    [Option('f', "fromRegion", Required = false, Default = "personal")]
     public string FromRegion { get; set; }
 
     [Option("toAlias", Required = false, HelpText = "if you wish migration to already exist portal, enter the alias")]
