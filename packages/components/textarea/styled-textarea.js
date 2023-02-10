@@ -51,16 +51,19 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
 }))`
   ${commonInputStyle};
 
-  width: ${(props) => props.theme.textArea.width};
-  height: ${(props) => props.theme.textArea.height};
-  border: ${(props) => props.theme.textArea.border};
-  outline: ${(props) => props.theme.textArea.outline};
-  resize: ${(props) => props.theme.textArea.resize};
-  overflow: ${(props) => props.theme.textArea.overflow};
-  padding: ${(props) => props.theme.textArea.padding};
+  min-width: 600px;
+  max-width: 1200px;
+
+  width: 100%;
+  height: fit-content;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  padding: 5px 8px 2px 42px;
   font-size: ${(props) => props.fontSize + "px"};
-  font-family: ${(props) => props.theme.fontFamily};
-  line-height: ${(props) => props.theme.textArea.lineHeight};
+  font-family: Open Sans, sans-serif, Arial;
+  line-height: 1.5;
 
   :focus-within {
     border-color: ${(props) => props.theme.textArea.focusBorderColor};
@@ -72,31 +75,31 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
 
   ::-webkit-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: ${(props) => props.theme.fontFamily};
+    font-family: Open Sans, sans-serif, Arial;
     user-select: none;
   }
 
   :-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: ${(props) => props.theme.fontFamily};
+    font-family: Open Sans, sans-serif, Arial;
     user-select: none;
   }
 
   ::-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: ${(props) => props.theme.fontFamily};
+    font-family: Open Sans, sans-serif, Arial;
     user-select: none;
   }
 
   :-ms-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: ${(props) => props.theme.fontFamily};
+    font-family: Open Sans, sans-serif, Arial;
     user-select: none;
   }
 
   ::placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: ${(props) => props.theme.fontFamily};
+    font-family: Open Sans, sans-serif, Arial;
     user-select: none;
   }
 `;
@@ -111,6 +114,7 @@ const StyledCopyIcon = styled.img`
   top: 8px;
   width: 16px;
   height: 16px;
+  z-index: 2;
 
   :hover {
     cursor: pointer;
@@ -121,4 +125,30 @@ StyledCopyIcon.defaultProps = {
   theme: Base,
 };
 
-export { StyledTextarea, StyledScrollbar, StyledCopyIcon };
+const Wrapper = styled.div`
+  position: relative;
+`;
+
+const Numeration = styled.pre`
+  display: block;
+  position: absolute;
+  font-size: ${(props) => props.fontSize + "px"};
+  font-family: Open Sans, sans-serif, Arial;
+  line-height: 1.5;
+  z-index: 2;
+  margin: 0;
+  top: 6px;
+  left: 18px;
+  text-align: right;
+  color: #a3a9ae;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+`;
+
+Numeration.defaultProps = {
+  theme: Base,
+};
+
+export { StyledTextarea, StyledScrollbar, StyledCopyIcon, Wrapper, Numeration };
