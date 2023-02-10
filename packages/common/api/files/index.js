@@ -32,6 +32,17 @@ export function openEdit(fileId, version, doc, view) {
   return request(options);
 }
 
+export function getReferenceData(object) {
+  const data = object;
+  const options = {
+    method: "post",
+    url: `/files/file/referencedata`,
+    data,
+  };
+
+  return request(options);
+}
+
 export function getFolderInfo(folderId) {
   const options = {
     method: "get",

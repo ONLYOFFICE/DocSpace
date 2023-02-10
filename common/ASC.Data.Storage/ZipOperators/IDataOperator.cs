@@ -24,11 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
+namespace ASC.Data.Storage.ZipOperators;
 
-public interface IDataWriteOperator : IDisposable
+public interface IDataWriteOperator : IAsyncDisposable
 {
-    void WriteEntry(string key, Stream stream);
+    Task WriteEntryAsync(string key, Stream stream);
+    bool NeedUpload { get; }
+    string Hash { get; }
+    string StoragePath { get; }
 }
 
 public interface IDataReadOperator : IDisposable
@@ -36,4 +39,5 @@ public interface IDataReadOperator : IDisposable
     Stream GetEntry(string key);
     IEnumerable<string> GetEntries(string key);
     IEnumerable<string> GetDirectories(string key);
+
 }
