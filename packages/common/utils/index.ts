@@ -466,7 +466,7 @@ export const getConvertedSize = (t, size) => {
   );
 };
 
-export const getBgPattern = (colorSchemeId: number) => {
+export const getBgPattern = (colorSchemeId: number | undefined) => {
   switch (colorSchemeId) {
     case 1:
       return `url('${BackgroundPatternReactSvgUrl}')`;

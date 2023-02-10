@@ -62,7 +62,7 @@ public class ApiSystemHelper
     {
         try
         {
-            var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+            var data = "{\"portalName\":\"" + HttpUtility.UrlEncode(domain) + "\"}";
             await SendToApiAsync(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
         }
         catch (WebException exception)
@@ -107,7 +107,7 @@ public class ApiSystemHelper
 
     public async Task AddTenantToCacheAsync(string domain, Guid userId)
     {
-        var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+        var data = "{\"portalName\":\"" + HttpUtility.UrlEncode(domain) + "\"}";
         await SendToApiAsync(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
     }
 
@@ -147,7 +147,7 @@ public class ApiSystemHelper
 
         if (data != null)
         {
-            request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            request.Content = new StringContent(data, Encoding.UTF8, "application/json");
         }
 
         var httpClient = _clientFactory.CreateClient();

@@ -121,11 +121,11 @@ export const getCategoryType = (location) => {
     } else if (pathname.indexOf("archive") > -1) {
       categoryType = CategoryType.Archive;
     }
-  } else if (pathname.startsWith("/favorite") > -1) {
+  } else if (pathname.startsWith("/favorite")) {
     categoryType = CategoryType.Favorite;
-  } else if (pathname.startsWith("/recent") > -1) {
+  } else if (pathname.startsWith("/recent")) {
     categoryType = CategoryType.Recent;
-  } else if (pathname.startsWith("/trash") > -1) {
+  } else if (pathname.startsWith("/trash")) {
     categoryType = CategoryType.Trash;
   }
 

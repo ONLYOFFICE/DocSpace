@@ -32,18 +32,22 @@ public enum Provider
     MySql
 }
 
-public static class BaseDbContextExtension
+public class InstallerOptionsAction
 {
-    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder)
+    private readonly string _region;
+    private readonly string _nameConnectionString;
+
+    public InstallerOptionsAction(string region, string nameConnectionString)
     {
-        OptionsAction(sp, optionsBuilder, "current");
+        _region = region;
+        _nameConnectionString = nameConnectionString;
     }
 
-    public static void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder, string region)
+    public void OptionsAction(IServiceProvider sp, DbContextOptionsBuilder optionsBuilder)
     {
         var configuration = new ConfigurationExtension(sp.GetRequiredService<IConfiguration>());
         var migrateAssembly = configuration["testAssembly"];
-        var connectionString = configuration.GetConnectionStrings("default", region);
+        var connectionString = configuration.GetConnectionStrings(_nameConnectionString, _region);
         var loggerFactory = sp.GetRequiredService<EFLoggerFactory>();
 
         optionsBuilder.UseLoggerFactory(loggerFactory);
@@ -86,17 +90,22 @@ public static class BaseDbContextExtension
                 break;
         }
     }
+}
 
-    public static IServiceCollection AddBaseDbContextPool<T>(this IServiceCollection services) where T : DbContext
+public static class BaseDbContextExtension
+{
+    public static IServiceCollection AddBaseDbContextPool<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
     {
-        services.AddPooledDbContextFactory<T>(OptionsAction);
+        var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
+        services.AddPooledDbContextFactory<T>(installerOptionsAction.OptionsAction);
 
         return services;
     }
 
-    public static IServiceCollection AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddBaseDbContext<T>(this IServiceCollection services, string region = "current", string nameConnectionString = "default") where T : DbContext
     {
-        services.AddDbContext<T>(OptionsAction);
+        var installerOptionsAction = new InstallerOptionsAction(region, nameConnectionString);
+        services.AddDbContext<T>(installerOptionsAction.OptionsAction);
 
         return services;
     }
