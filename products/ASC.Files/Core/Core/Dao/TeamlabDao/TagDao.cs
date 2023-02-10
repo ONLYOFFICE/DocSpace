@@ -608,6 +608,14 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         filesDbContext.TagLink.RemoveRange(toDelete);
         await filesDbContext.SaveChangesAsync();
+
+        var any = await Query(filesDbContext.TagLink).AnyAsync(r => tagsIds.Contains(r.TagId));
+        if (!any)
+        {
+            var tagToDelete = await Query(filesDbContext.Tag).Where(r => tagsIds.Contains(r.Id)).ToListAsync();
+            filesDbContext.Tag.RemoveRange(tagToDelete);
+            await filesDbContext.SaveChangesAsync();
+        }
     }
 
     public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)

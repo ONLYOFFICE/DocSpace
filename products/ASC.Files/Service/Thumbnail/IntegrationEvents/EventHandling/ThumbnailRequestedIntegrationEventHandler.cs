@@ -24,22 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Threading.Channels;
+
+using ASC.Files.ThumbnailBuilder;
+
 namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
 [Scope]
 public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandler<ThumbnailRequestedIntegrationEvent>
 {
     private readonly ILogger _logger;
+    private readonly ChannelWriter<IEnumerable<FileData<int>>> _channelWriter;
+    private readonly FileDataProvider _fileDataProvider;
 
     private ThumbnailRequestedIntegrationEventHandler() : base()
     {
 
     }
 
-    public ThumbnailRequestedIntegrationEventHandler(ILogger<ThumbnailRequestedIntegrationEventHandler> logger)
+    public ThumbnailRequestedIntegrationEventHandler(
+        ILogger<ThumbnailRequestedIntegrationEventHandler> logger,
+        FileDataProvider fileDataProvider,
+        ChannelWriter<IEnumerable<FileData<int>>> channelWriter)
     {
         _logger = logger;
+        _channelWriter = channelWriter;
+        _fileDataProvider = fileDataProvider;
     }
+
 
     public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
@@ -47,14 +59,15 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            foreach (var fileId in @event.FileIds)
+            var freezingThumbnails = await _fileDataProvider.GetFreezingThumbnailsAsync();
+
+            var rawData = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl))
+                          .Union(freezingThumbnails);                                          
+
+            if (await _channelWriter.WaitToWriteAsync())
             {
-                var fileData = new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl);
-
-                FileDataQueue.Queue.TryAdd(fileId, fileData);
+                await _channelWriter.WriteAsync(rawData);
             }
-
-            await Task.CompletedTask;
         }
     }
 }

@@ -35,6 +35,12 @@ public static class ServiceCollectionExtension
 
         if (redisConfiguration != null)
         {
+            //  https://github.com/imperugo/StackExchange.Redis.Extensions/issues/513
+            if (configuration.GetSection("Redis").GetValue<string>("User") != null)
+            {
+                redisConfiguration.ConfigurationOptions.User = configuration.GetSection("Redis").GetValue<string>("User");
+            }
+
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
 
             services.AddSingleton(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
@@ -59,6 +65,12 @@ public static class ServiceCollectionExtension
 
         if (redisConfiguration != null)
         {
+            //  https://github.com/imperugo/StackExchange.Redis.Extensions/issues/513
+            if (configuration.GetSection("Redis").GetValue<string>("User") != null)
+            {
+                redisConfiguration.ConfigurationOptions.User = configuration.GetSection("Redis").GetValue<string>("User");
+            }
+
             services.AddStackExchangeRedisCache(config =>
             {
                 config.ConfigurationOptions = redisConfiguration.ConfigurationOptions;

@@ -36,12 +36,12 @@ const InfoPanelBodyContent = ({
 
   const isSeveralItems = props.selectedItems?.length > 1;
 
-  const isNoItem =
-    (isGallery && !gallerySelected) ||
-    (!selection?.title && !isSeveralItems && !isAccounts) ||
-    ((isRootFolder || isAccounts) &&
-      selection?.isSelectedFolder &&
-      !selection?.wasContextMenuSelection);
+  const isNoItem = isGallery
+    ? !gallerySelected
+    : (!selection?.title && !isSeveralItems && !isAccounts) ||
+      ((isRootFolder || isAccounts) &&
+        selection?.isSelectedFolder &&
+        !selection?.wasContextMenuSelection);
 
   const defaultProps = {
     selection,
@@ -114,13 +114,14 @@ const InfoPanelBodyContent = ({
 
     const currentFolderRoomId =
       selectedFolder?.pathParts &&
-      selectedFolder?.pathParts?.length === 2 &&
+      selectedFolder?.pathParts?.length > 1 &&
       selectedFolder.pathParts[1];
 
     const storeRoomId = selectionParentRoom?.id;
     if (!currentFolderRoomId || currentFolderRoomId === storeRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+
     if (storeRoomId === newSelectionParentRoom.id) return;
 
     setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
@@ -145,7 +146,7 @@ const InfoPanelBodyContent = ({
   if (!selection && !isGallery) return null;
 
   return (
-    <StyledInfoPanelBody>
+    <StyledInfoPanelBody isAccounts={isAccounts}>
       {!isNoItem && (
         <ItemTitle {...defaultProps} selectionLength={selectedItems.length} />
       )}
@@ -154,7 +155,7 @@ const InfoPanelBodyContent = ({
   );
 };
 
-export default inject(({ auth, selectedFolderStore }) => {
+export default inject(({ auth, selectedFolderStore, oformsStore }) => {
   const {
     selection,
     setSelection,
@@ -171,6 +172,8 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
   } = auth.infoPanelStore;
 
+  const { gallerySelected } = oformsStore;
+
   const { isRootFolder } = selectedFolderStore;
 
   const selectedItems = auth.infoPanelStore.getSelectedItems();
@@ -183,6 +186,8 @@ export default inject(({ auth, selectedFolderStore }) => {
     calculateSelection,
     normalizeSelection,
     isItemChanged,
+
+    selectionParentRoom,
     setSelectionParentRoom,
     roomsView,
     fileView,
@@ -195,5 +200,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     selectedFolder,
 
     isRootFolder,
+    gallerySelected,
   };
 })(withRouter(observer(InfoPanelBodyContent)));

@@ -1,31 +1,39 @@
+﻿import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
 
 import api from "@docspace/common/api";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomsType } from "@docspace/common/constants";
+import { iconSize32 } from "@docspace/common/utils/image-helpers";
 
 import Loaders from "@docspace/common/components/Loaders";
 
 import Selector from "@docspace/components/selector";
-import { Backdrop } from "@docspace/components";
 
 const pageCount = 100;
 
 const getRoomLogo = (roomType) => {
-  const path = `images/icons/32`;
+  let path = "";
   switch (roomType) {
     case RoomsType.CustomRoom:
-      return `${path}/room/custom.svg`;
+      path = "custom.svg";
+      break;
     case RoomsType.FillingFormsRoom:
-      return `${path}/room/filling.form.svg`;
+      path = "filling.form.svg";
+      break;
     case RoomsType.EditingRoom:
-      return `${path}/room/editing.svg`;
+      path = "editing.svg";
+      break;
     case RoomsType.ReadOnlyRoom:
-      return `${path}/room/view.only.svg`;
+      path = "view.only.svg";
+      break;
     case RoomsType.ReviewRoom:
-      return `${path}/room/review.svg`;
+      path = "review.svg";
+      break;
   }
+
+  return iconSize32.get(path);
 };
 
 const convertToItems = (folders) => {
@@ -188,16 +196,16 @@ const RoomSelector = ({
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.png"}
+      emptyScreenImage={emptyScreenImage || EmptyScreenCorporateSvgUrl}
       emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
       emptyScreenDescription={
         emptyScreenDescription || t("EmptyRoomsDescription")
       }
       searchEmptyScreenImage={
-        searchEmptyScreenImage || "images/empty_screen_corporate.png"
+        searchEmptyScreenImage || EmptyScreenCorporateSvgUrl
       }
       searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
+        searchEmptyScreenHeader || t("Common:NotFoundTitle")
       }
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")

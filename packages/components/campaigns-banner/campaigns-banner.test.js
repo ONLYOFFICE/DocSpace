@@ -1,6 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import CampaignsBanner from ".";
+import CampaignsCloudPng from "PUBLIC_DIR/images/campaigns.cloud.png";
 
 describe("<CampaignsBanner />", () => {
   it("renders without error", () => {
@@ -9,7 +10,7 @@ describe("<CampaignsBanner />", () => {
         headerLabel="ONLYOFFICE for business"
         textLabel="Docs, projects, clients & emails"
         btnLabel="START FREE TRIAL"
-        img="static/images/campaign.cloud.png"
+        img={CampaignsCloudPng}
         btnLink="https://onlyoffice.com"
       />
     );

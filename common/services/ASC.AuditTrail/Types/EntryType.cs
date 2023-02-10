@@ -27,5 +27,7 @@ public enum EntryType
     FieldDescription,
     OpportunityMilestone,
     User,
-    Group
+    Group,
+    Room,
+    Tag
 }

@@ -8,7 +8,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import Link from "@docspace/components/link";
 import ProfileMenu from "./profile-menu";
 import api from "@docspace/common/api";
-
+import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import ToggleButton from "@docspace/components/toggle-button";
 import Button from "@docspace/components/button";
 
@@ -120,7 +120,7 @@ class ProfileActions extends React.PureComponent {
 
   getAvatar = async () => {
     const user = await api.people.getUser();
-    const avatar = user.avatar;
+    const avatar = user.hasAvatar ? user.avatar : DefaultUserPhoto;
     this.setState({ avatar: avatar });
   };
 

@@ -20,7 +20,7 @@ clientsClaim();
 
 // PRECACHING
 
-const prefix = "appserver";
+const prefix = "docspace";
 
 // Setting custom cache name
 setCacheNameDetails({

@@ -1,3 +1,4 @@
+import { getAppearanceTheme } from "@docspace/common/api/settings";
 import express, { Response } from "express";
 import template from "./lib/template";
 import path from "path";
@@ -12,6 +13,7 @@ import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
+import { getLanguage } from "@docspace/common/utils";
 import { initSSR } from "@docspace/common/api/client";
 import dns from "dns";
 
@@ -30,26 +32,35 @@ const app = express();
 app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(cookieParser());
-app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
+app.use(
+  "/login",
+  express.static(path.resolve(path.join(__dirname, "client")), {
+    // don`t delete
+    // https://github.com/pillarjs/send/issues/110
+    cacheControl: false,
+  })
+);
 
 app.use(logger("dev", { stream: stream }));
 
 app.get("*", async (req: ILoginRequest, res: Response, next) => {
   const { i18n, cookies, headers, query, t, url } = req;
-  let initialState: IInitialState;
+  let initialState: IInitialState = {};
   let assets: assetsType;
+  let standalone = false;
 
   initSSR(headers);
 
   try {
     initialState = await getInitialState(query);
 
-    if (initialState.isAuth) {
+    if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
       next();
     }
 
-    let currentLanguage = initialState.portalSettings.culture;
+    let currentLanguage: string = initialState?.portalSettings?.culture || "en";
+    standalone = initialState?.portalSettings?.standalone ? true : false;
 
     if (cookies && cookies[LANGUAGE]) {
       currentLanguage = cookies[LANGUAGE];
@@ -59,10 +70,21 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       });
     }
 
+    currentLanguage = getLanguage(currentLanguage);
+
     if (i18n) await i18n.changeLanguage(currentLanguage);
 
-    let initialI18nStore = {};
-    if (i18n) initialI18nStore = i18n.services.resourceStore.data;
+    let initialI18nStore: {
+      [key: string]: { [key: string]: {} };
+    } = {};
+
+    if (i18n && i18n?.services?.resourceStore?.data) {
+      for (let key in i18n?.services?.resourceStore?.data) {
+        if (key === "en" || key === currentLanguage) {
+          initialI18nStore[key] = i18n.services.resourceStore.data[key];
+        }
+      }
+    }
 
     assets = await getAssets();
 
@@ -84,7 +106,42 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
     if (e instanceof Error) {
       message = e.message;
     }
+
+    const status = e?.response?.status === 404 ? 404 : 520;
+
+    if (status !== 404 && !initialState.currentColorScheme) {
+      const availableThemes: IThemes = await getAppearanceTheme();
+
+      const currentColorScheme = availableThemes.themes.find((theme) => {
+        return availableThemes.selected === theme.id;
+      });
+
+      initialState.currentColorScheme = currentColorScheme;
+    }
+
+    initialState.error = {
+      status,
+      standalone,
+      message,
+    };
+
+    const { component, styleTags } = renderApp(i18n, initialState, url);
+
+    assets = await getAssets();
+
+    const htmlString = template(
+      initialState,
+      component,
+      styleTags,
+      {},
+      "en",
+      assets,
+      t
+    );
+
     winston.error(message);
+
+    res.send(htmlString);
   }
 });
 

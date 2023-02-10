@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import toastr from "@docspace/components/toast/toastr";
 
-import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
 
 import config from "PACKAGE_FILE";
@@ -22,7 +21,6 @@ const CreateEvent = ({
   templateId,
   fromTemplate,
   onClose,
-
   setIsLoading,
   createFile,
   createFolder,
@@ -30,13 +28,14 @@ const CreateEvent = ({
   openDocEditor,
   setIsUpdatingRowItem,
   gallerySelected,
+  setGallerySelected,
   setCreatedItem,
 
   parentId,
 
   isPrivacy,
   isDesktop,
-  editCompleteAction,
+  completeAction,
 
   clearActiveOperations,
   fileCopyAs,
@@ -49,11 +48,19 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
+  createWithoutDialog,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
 
   const { t } = useTranslation(["Translations", "Common"]);
+
+  const onCloseAction = () => {
+    if (gallerySelected) {
+      setGallerySelected && setGallerySelected(null);
+    }
+    onClose && onClose();
+  };
 
   React.useEffect(() => {
     const defaultName = getDefaultFileName(extension);
@@ -67,7 +74,14 @@ const CreateEvent = ({
     }
 
     setHeaderTitle(defaultName);
-    setEventDialogVisible(true);
+
+    if (!extension) return setEventDialogVisible(true);
+
+    if (!createWithoutDialog) {
+      setEventDialogVisible(true);
+    } else {
+      onSave(null, title || defaultName);
+    }
 
     return () => {
       setEventDialogVisible(false);
@@ -82,7 +96,7 @@ const CreateEvent = ({
 
     setIsLoading(true);
 
-    const newValue = value;
+    let newValue = value;
 
     if (value.trim() === "") {
       newValue =
@@ -96,7 +110,11 @@ const CreateEvent = ({
     let tab =
       !isDesktop && extension && open
         ? window.open(
-            combineUrl(AppServerConfig.proxyURL, config.homepage, "/doceditor"),
+            combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              config.homepage,
+              `/doceditor`
+            ),
             "_blank"
           )
         : null;
@@ -109,14 +127,14 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(item, type, true))
+        .then(() => completeAction(item, type, true))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
           createdFolderId && folderIds.push(createdFolderId);
 
           clearActiveOperations(null, folderIds);
-          onClose();
+          onCloseAction();
           return setIsLoading(false);
         });
     } else {
@@ -129,10 +147,21 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((err) => {
-            if (err.indexOf("password") == -1) {
-              toastr.error(err, t("Common:Warning"));
+            let errorMessage = "";
+            if (typeof err === "object") {
+              errorMessage =
+                err?.response?.data?.error?.message ||
+                err?.statusText ||
+                err?.message ||
+                "";
+            } else {
+              errorMessage = err;
+            }
+
+            if (errorMessage.indexOf("password") == -1) {
+              toastr.error(errorMessage, t("Common:Warning"));
               return;
             }
 
@@ -154,14 +183,14 @@ const CreateEvent = ({
             });
             setConvertPasswordDialogVisible(true);
 
-            open && openDocEditor(null, null, tab);
+            // open && openDocEditor(null, null, null);
           })
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else if (fromTemplate) {
@@ -176,17 +205,16 @@ const CreateEvent = ({
             createdFileId = file.id;
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
-
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       } else {
@@ -215,14 +243,14 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(item, type))
+          .then(() => completeAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
 
             clearActiveOperations(fileIds);
-            onClose();
+            onCloseAction();
             return setIsLoading(false);
           });
       }
@@ -231,9 +259,9 @@ const CreateEvent = ({
 
   const onCancel = React.useCallback(
     (e) => {
-      onClose && onClose();
+      onCloseAction && onCloseAction();
     },
-    [onClose]
+    [onCloseAction]
   );
 
   return (
@@ -244,7 +272,9 @@ const CreateEvent = ({
       startValue={startValue}
       onSave={onSave}
       onCancel={onCancel}
-      onClose={onClose}
+      onClose={onCloseAction}
+      isCreateDialog={true}
+      extension={extension}
     />
   );
 };
@@ -270,9 +300,9 @@ export default inject(
       setCreatedItem,
     } = filesStore;
 
-    const { gallerySelected } = oformsStore;
+    const { gallerySelected, setGallerySelected } = oformsStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { completeAction } = filesActionsStore;
 
     const { clearActiveOperations, fileCopyAs } = uploadDataStore;
 
@@ -291,6 +321,8 @@ export default inject(
       eventDialogVisible,
     } = dialogsStore;
 
+    const { createWithoutDialog } = filesStore;
+
     return {
       setEventDialogVisible,
       eventDialogVisible,
@@ -301,6 +333,7 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       gallerySelected,
+      setGallerySelected,
       setCreatedItem,
 
       parentId,
@@ -308,7 +341,7 @@ export default inject(
       isDesktop: isDesktopClient,
       isPrivacy: isPrivacyFolder,
       isTrashFolder: isRecycleBinFolder,
-      editCompleteAction,
+      completeAction,
 
       clearActiveOperations,
       fileCopyAs,
@@ -318,6 +351,8 @@ export default inject(
 
       replaceFileStream,
       setEncryptionAccess,
+
+      createWithoutDialog,
     };
   }
 )(observer(CreateEvent));

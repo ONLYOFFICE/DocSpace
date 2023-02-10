@@ -148,7 +148,7 @@ public class S3Storage : BaseStorage
         return GetReadStreamAsync(domain, path, 0);
     }
 
-    public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+    public override async Task<Stream> GetReadStreamAsync(string domain, string path, long offset)
     {
         var request = new GetObjectRequest
         {
@@ -381,6 +381,12 @@ public class S3Storage : BaseStorage
 
         using var s3 = GetClient();
         await s3.AbortMultipartUploadAsync(request);
+    }
+
+    public override IDataWriteOperator CreateDataWriteOperator(CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder)
+    {
+        return new S3ZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
     }
 
     #endregion
@@ -1004,7 +1010,12 @@ public class S3Storage : BaseStorage
     {
         var uri = new Uri(preSignedURL);
         var signedPart = uri.PathAndQuery.TrimStart('/');
-        return new UnencodedUri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
+
+        var baseUri = uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot;
+
+        if (preSignedURL.StartsWith(baseUri.ToString())) return uri;
+
+        return new UnencodedUri(baseUri, signedPart);
     }
 
     private Task InvalidateCloudFrontAsync(params string[] paths)
@@ -1438,6 +1449,21 @@ public class S3Storage : BaseStorage
         return method;
     }
 
+    public override async Task<string> GetFileEtagAsync(string domain, string path)
+    {
+        using var client = GetClient();
+
+        var getObjectMetadataRequest = new GetObjectMetadataRequest
+        {
+            BucketName = _bucket,
+            Key = MakePath(domain, path)
+        };
+
+        var el = await client.GetObjectMetadataAsync(getObjectMetadataRequest);
+
+        return el.ETag;
+    }
+  
     private enum EncryptionMethod
     {
         None,

@@ -73,6 +73,7 @@ public class Folder<T> : FileEntry<T>, IFolder
     public string FolderUrl { get; set; }
     public bool Pinned { get; set; }
     public bool Private { get; set; }
+    public bool HasLogo { get; set; }
     public override bool IsNew
     {
         get => Convert.ToBoolean(NewForMe);

@@ -210,6 +210,35 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
                 filesDbContext.RemoveRange(linkForDelete);
                 await filesDbContext.AddRangeAsync(linkForInsert);
 
+
+                var filesSourceForDelete = await Query(filesDbContext.FilesLink)
+                    .Where(l => l.SourceId == oldHashID).ToListAsync();
+
+                var filesSourceForInsert = filesSourceForDelete.Select(l => new DbFilesLink
+                {
+                    TenantId = l.TenantId,
+                    SourceId = newHashID,
+                    LinkedId = l.LinkedId,
+                    LinkedFor = l.LinkedFor,
+                });
+
+                filesDbContext.RemoveRange(filesSourceForDelete);
+                await filesDbContext.AddRangeAsync(filesSourceForInsert);
+
+                var filesLinkedForDelete = await Query(filesDbContext.FilesLink)
+                    .Where(l => l.LinkedId == oldHashID).ToListAsync();
+
+                var filesLinkedForInsert = filesLinkedForDelete.Select(l => new DbFilesLink
+                {
+                    TenantId = l.TenantId,
+                    SourceId = l.SourceId,
+                    LinkedId = newHashID,
+                    LinkedFor = l.LinkedFor,
+                });
+
+                filesDbContext.RemoveRange(filesLinkedForDelete);
+                await filesDbContext.AddRangeAsync(filesLinkedForInsert);
+
                 await filesDbContext.SaveChangesAsync();
             }
 
@@ -310,6 +339,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
         folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
         folder.Private = ProviderInfo.Private;
+        folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)

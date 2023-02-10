@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import styled, { css } from "styled-components";
 import { smallTablet } from "../../utils/device";
 import IconButton from "../../icon-button";
@@ -59,7 +59,7 @@ const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
       <IconButton
         size="17px"
         className="close-button"
-        iconName="/static/images/cross.react.svg"
+        iconName={CrossIconReactSvgUrl}
       />
     </StyledCloseButtonWrapper>
   );

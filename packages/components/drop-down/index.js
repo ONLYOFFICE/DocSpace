@@ -209,7 +209,7 @@ class DropDown extends React.PureComponent {
   getItemHeight = (item) => {
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
 
-    if (item && item.props.disabled) return 0;
+    //if (item && item.props.disabled) return 0;
 
     let height = item?.props.height;
     let heightTablet = item?.props.heightTablet;
@@ -242,22 +242,28 @@ class DropDown extends React.PureComponent {
   };
 
   renderDropDown() {
-    const { maxHeight, children, showDisabledItems, theme } = this.props;
+    const {
+      maxHeight,
+      children,
+      showDisabledItems,
+      theme,
+      isMobileView,
+    } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
-    const rowHeights = React.Children.map(children, (child) =>
+    let cleanChildren = children;
+    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+
+    const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
     );
     const getItemSize = (index) => rowHeights[index];
-    const fullHeight = children && rowHeights.reduce((a, b) => a + b, 0);
+    const fullHeight = cleanChildren && rowHeights.reduce((a, b) => a + b, 0);
     const calculatedHeight =
       fullHeight > 0 && fullHeight < maxHeight ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight
       ? { height: calculatedHeight + "px" }
       : {};
-
-    let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
 
     return (
       <StyledDropdown
@@ -268,6 +274,7 @@ class DropDown extends React.PureComponent {
         manualY={manualY}
         isExternalLink={this.props.isExternalLink}
         isPersonal={this.props.isPersonal}
+        isMobileView={isMobileView}
         {...dropDownMaxHeightProp}
       >
         {maxHeight ? (
@@ -307,7 +314,13 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, withBlur = false, open } = this.props;
+    const {
+      withBackdrop = true,
+      withBlur = false,
+      open,
+      isAside,
+      withBackground,
+    } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["click, touchend"] } : {};
 
     return (
@@ -318,6 +331,8 @@ class DropDownContainer extends React.Component {
             zIndex={199}
             onClick={this.toggleDropDown}
             withoutBlur={!withBlur}
+            isAside={isAside}
+            withBackground={withBackground}
           />
         ) : null}
         <EnhancedComponent

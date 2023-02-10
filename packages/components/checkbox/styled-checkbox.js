@@ -38,6 +38,16 @@ const StyledLabel = styled.label`
 
   svg {
     ${(props) =>
+      props.hasError &&
+      css`
+        rect {
+          stroke: ${(props) => props.theme.checkbox.errorColor} !important;
+        }
+        path {
+          fill: ${(props) => props.theme.checkbox.errorColor} !important;
+        }
+      `}
+    ${(props) =>
       !props.isIndeterminate && !props.isDisabled
         ? css`
             rect {
@@ -100,14 +110,40 @@ const StyledLabel = styled.label`
         ? css`
             cursor: pointer;
 
-            rect:nth-child(2) {
+            rect:nth-child(1) {
               stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
             }
           `
         : css`
           cursor: pointer;
-          rect:nth-child(2) {
+          rect:nth-child(1) {
               stroke: ${(props) => props.theme.checkbox.hoverBorderColor};
+            }
+          rect:last-child {
+              fill: ${(props) => props.theme.checkbox.hoverIndeterminateColor};
+            `}
+  }
+
+  &:active {
+    ${(props) =>
+      props.isDisabled
+        ? css`
+            cursor: not-allowed;
+          `
+        : !props.isIndeterminate
+        ? css`
+            cursor: pointer;
+
+            rect:nth-child(1) {
+              stroke: ${(props) => props.theme.checkbox.pressedBorderColor};
+              fill: ${(props) => props.theme.checkbox.pressedFillColor};
+            }
+          `
+        : css`
+          cursor: pointer;
+          rect:nth-child(1) {
+              stroke: ${(props) => props.theme.checkbox.pressedBorderColor};
+              fill: ${(props) => props.theme.checkbox.pressedFillColor};
             }
           rect:last-child {
               fill: ${(props) => props.theme.checkbox.hoverIndeterminateColor};
@@ -122,6 +158,8 @@ const StyledLabel = styled.label`
     color: ${(props) =>
       props.isDisabled
         ? props.theme.text.disableColor
+        : props.hasError
+        ? props.theme.checkbox.errorColor
         : props.theme.text.color};
     margin-top: -2px;
   }

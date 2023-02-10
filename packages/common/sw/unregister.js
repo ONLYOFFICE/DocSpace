@@ -8,7 +8,7 @@ function clearCaches() {
           if (
             key.startsWith("workbox-") ||
             key.startsWith("wb6-") ||
-            key.startsWith("appserver-")
+            key.startsWith("docspace-")
           ) {
             return caches.delete(key);
           }

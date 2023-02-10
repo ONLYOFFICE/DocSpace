@@ -10,7 +10,7 @@ import Text from "@docspace/components/text";
 
 import SsoTextInput from "./SsoTextInput";
 import FileInput from "@docspace/components/file-input";
-import UploadIcon from "@docspace/client/public/images/actions.upload.react.svg";
+import UploadIcon from "PUBLIC_DIR/images/actions.upload.react.svg";
 import { Base } from "@docspace/components/themes";
 
 const StyledUploadIcon = styled(UploadIcon)`

@@ -28,7 +28,7 @@ using ThumbnailSize = Dropbox.Api.Files.ThumbnailSize;
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-[Scope]
+[Transient]
 internal class DropboxStorage : IDisposable
 {
     public bool IsOpened { get; private set; }

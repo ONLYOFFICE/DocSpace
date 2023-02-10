@@ -4,19 +4,25 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
+
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const combineUrl = require("@docspace/common/utils/combineUrl");
 const minifyJson = require("@docspace/common/utils/minifyJson");
-const AppServerConfig = require("@docspace/common/constants/AppServerConfig");
+const beforeBuild = require("@docspace/common/utils/beforeBuild");
 const sharedDeps = require("@docspace/common/constants/sharedDependencies");
+const fs = require("fs");
+const { readdir } = require("fs").promises;
 
 const path = require("path");
+
 const pkg = require("./package.json");
 const deps = pkg.dependencies || {};
-const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
+const homepage = pkg.homepage; //combineUrl(window.DocSpaceConfig?.proxy?.url, pkg.homepage);
 const title = pkg.title;
 const version = pkg.version;
+
+const isAlreadyBuilding = false;
 
 const config = {
   entry: "./src/index",
@@ -74,6 +80,7 @@ const config = {
     },
     alias: {
       PUBLIC_DIR: path.resolve(__dirname, "../../public"),
+      ASSETS_DIR: path.resolve(__dirname, "./public"),
       SRC_DIR: path.resolve(__dirname, "./src"),
       PACKAGE_FILE: path.resolve(__dirname, "package.json"),
     },
@@ -82,9 +89,24 @@ const config = {
   output: {
     publicPath: "auto",
     chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
     filename: "static/js/[name].[contenthash].bundle.js",
+    assetModuleFilename: (pathData) => {
+      //console.log({ pathData });
+
+      let result = pathData.filename
+        .substr(pathData.filename.indexOf("public/"))
+        .split("/")
+        .slice(1);
+
+      result.pop();
+
+      let folder = result.join("/");
+
+      folder += result.length === 0 ? "" : "/";
+
+      return `static/${folder}[name][ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+    },
   },
 
   performance: {
@@ -95,21 +117,54 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif|ico)$/i,
+        test: /\.(png|jpe?g|gif|ico|woff2)$/i,
         type: "asset/resource",
         generator: {
-          filename: "static/images/[hash][ext][query]",
+          emit: false,
         },
       },
       {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
+        test: /\.svg$/i,
+        type: "asset/resource",
+        generator: {
+          emit: false,
         },
+        resourceQuery: /url/, // *.svg?url
       },
       {
-        test: /\.react.svg$/,
+        test: /\.json$/,
+        resourceQuery: /url/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              emitFile: false,
+              name: (resourcePath) => {
+                let result = resourcePath
+                  .split(`public${path.sep}`)[1]
+                  .split(path.sep);
+
+                result.pop();
+
+                let folder = result.join("/");
+
+                folder += result.length === 0 ? "" : "/";
+
+                return `${folder}[name].[ext]?hash=[contenthash]`; // `${folder}/[name].[contenthash][ext]`;
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.json$/,
+        resourceQuery: { not: [/url/] }, // exclude if *.json?url,
+        loader: "json-loader",
+      },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
         use: [
           {
             loader: "@svgr/webpack",
@@ -121,7 +176,13 @@ const config = {
           },
         ],
       },
-      { test: /\.json$/, loader: "json-loader" },
+      {
+        test: /\.m?js/,
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
@@ -184,10 +245,10 @@ const config = {
 
     new CopyPlugin({
       patterns: [
-        {
-          context: path.resolve(__dirname, "public"),
-          from: "images/**/*.*",
-        },
+        // {
+        //   context: path.resolve(__dirname, "public"),
+        //   from: "images/**/*.*",
+        // },
         {
           context: path.resolve(__dirname, "public"),
           from: "locales/**/*.json",
@@ -211,22 +272,11 @@ module.exports = (env, argv) => {
   }
 
   const remotes = {
-    client: `client@${combineUrl(AppServerConfig.proxyURL, "/remoteEntry.js")}`,
-    // people: `people@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/people/remoteEntry.js"
-    // )}`,
-    // files: `files@${combineUrl(
-    //   AppServerConfig.proxyURL,
-    //   "/products/files/remoteEntry.js"
-    // )}`,
+    client: "client@/remoteEntry.js",
   };
 
   if (!env.personal) {
-    remotes.login = `login@${combineUrl(
-      AppServerConfig.proxyURL,
-      "/login/remoteEntry.js"
-    )}`;
+    remotes.login = "login@/login/remoteEntry.js";
   }
 
   config.plugins.push(
@@ -256,7 +306,6 @@ module.exports = (env, argv) => {
           "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
-        "./GroupSelector": "./src/components/GroupSelector",
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
@@ -271,9 +320,9 @@ module.exports = (env, argv) => {
   if (!!env.hideText) {
     config.plugins.push(
       new HtmlWebpackPlugin({
+        title: title,
         template: "./public/index.html",
         publicPath: homepage,
-        title: title,
         base: `${homepage}/`,
         custom: `<style type="text/css">
           div,

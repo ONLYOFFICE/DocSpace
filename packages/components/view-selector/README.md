@@ -6,6 +6,8 @@ Actions with a button.
 
 ```js
 import { ViewSelector } from "app-components";
+import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
+import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 ```
 
 ### View Settings
@@ -14,12 +16,12 @@ import { ViewSelector } from "app-components";
 const viewSettings = [
   {
     value: "row",
-    icon: "/static/images/row.react.svg",
+    icon: ViewRowsReactSvgUrl,
   },
   {
     value: "tile",
 
-    icon: "/static/images/tile.react.svg",
+    icon: ViewTilesReactSvgUrl,
     callback: createThumbnails,
   },
 ];

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.Backups
 {
     [DbContext(typeof(BackupsContext))]
     partial class BackupsContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -210,6 +210,11 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("name")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<int>("Removed")
+                        .HasMaxLength(10)
+                        .HasColumnType("int")
+                        .HasColumnName("removed");
 
                     b.Property<string>("StorageBasePath")
                         .ValueGeneratedOnAdd()

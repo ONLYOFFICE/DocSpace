@@ -1,7 +1,0 @@
-{
-  "AddHeadOfDepartment": "添加部门负责人",
-  "CustomNewDepartment": "{{groupCaption}}（创建）",
-  "GroupAction": "群组操作",
-  "SearchAddedMembers": "搜索已添加的成员",
-  "SuccessSaveGroup": "{{groupCaption}}‘{{ groupName }}’已成功保存"
-}

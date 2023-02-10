@@ -1,3 +1,4 @@
+﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -18,7 +19,6 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
-import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -32,8 +32,8 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    rootFolderType,
-    canViewUsers,
+    // rootFolderType,
+    // selectionParentRoom,
   } = props;
 
   const isRooms = getIsRooms();
@@ -51,7 +51,7 @@ const InfoPanelHeaderContent = (props) => {
   const setHistory = () => setView("info_history");
   const setDetails = () => setView("info_details");
 
-  const isArchiveRoot = rootFolderType === FolderType.Archive;
+  //const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
@@ -73,12 +73,12 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
+  // const selectionRoomRights = selectionParentRoom
+  //   ? selectionParentRoom.security?.Read
+  //   : selection?.security?.Read;
 
-  const roomsSubmenu = isArchiveRoot
-    ? canViewUsers(selection)
-      ? [{ ...submenuData[0] }, { ...submenuData[2] }]
-      : [{ ...submenuData[2] }]
-    : [...submenuData];
+  const roomsSubmenu = [...submenuData];
+
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   const isTablet =
@@ -102,7 +102,7 @@ const InfoPanelHeaderContent = (props) => {
               <IconButton
                 id="info-panel-toggle--close"
                 className="info-panel-toggle"
-                iconName="images/panel.react.svg"
+                iconName={PanelReactSvgUrl}
                 size="16"
                 isFill={true}
                 onClick={closeInfoPanel}
@@ -133,7 +133,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
+export default inject(({ auth, selectedFolderStore }) => {
   const {
     selection,
     setIsVisible,
@@ -144,9 +144,12 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
+    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canViewUsers } = accessRightsStore;
+  const {
+    isRootFolder,
+    // rootFolderType
+  } = selectedFolderStore;
 
   return {
     selection,
@@ -160,13 +163,15 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
 
     isRootFolder,
-    rootFolderType,
-    canViewUsers,
+    //  rootFolderType,
+
+    //selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
-    withLoader(observer(InfoPanelHeaderContent))(
-      <Loaders.InfoPanelHeaderLoader />
-    )
+    InfoPanelHeaderContent
+    // withLoader(observer(InfoPanelHeaderContent))(
+    //   <Loaders.InfoPanelHeaderLoader />
+    // )
   )
 );

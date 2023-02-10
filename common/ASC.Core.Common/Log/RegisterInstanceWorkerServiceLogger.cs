@@ -34,6 +34,9 @@ internal static partial class RegisterInstanceWorkerServiceLogger
     [LoggerMessage(Level = LogLevel.Trace, Message = "Worker running at: {time}")]
     public static partial void TraceWorkingRunnging(this ILogger logger, DateTimeOffset time);
 
+    [LoggerMessage(Level = LogLevel.Information, Message = "Instance Worker running in singletone mode")]
+    public static partial void InformationWorkerSingletone(this ILogger logger);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "UnRegister Instance {instanceName} running at: {time}.")]
     public static partial void InformationUnRegister(this ILogger logger, string instanceName, DateTimeOffset time);
 

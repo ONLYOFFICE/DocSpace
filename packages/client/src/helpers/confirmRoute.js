@@ -7,7 +7,6 @@ import Section from "@docspace/common/components/Section";
 import { checkConfirmLink } from "@docspace/common/api/user"; //TODO: Move AuthStore
 import { combineUrl, getObjectByLocation } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
-import { AppServerConfig } from "@docspace/common/constants";
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
@@ -54,25 +53,37 @@ class ConfirmRoute extends React.Component {
             });
             break;
           case ValidationResult.Invalid:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+            console.error("invlid link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
           case ValidationResult.Expired:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+            console.error("expired link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
           default:
-            history.push(
-              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+            console.error("unknown link");
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error"
             );
             break;
         }
       })
       .catch((error) => {
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, path, `/error=${error}`)
+        console.error(error);
+        window.location.href = combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          path,
+          "/error"
         );
       });
   }

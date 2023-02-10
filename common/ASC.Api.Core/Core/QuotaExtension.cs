@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Core;
 public static class QuotaExtension
 {
-    public static void RegisterFeature(this IServiceCollection services)
+    public static IServiceCollection RegisterFeature(this IServiceCollection services)
     {
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomAdminChecker>();
         services.AddScoped<TenantQuotaFeatureCheckerCount<CountRoomAdminFeature>, CountRoomAdminChecker>();
@@ -49,5 +49,7 @@ public static class QuotaExtension
 
         services.AddScoped<TenantQuotaFeatureChecker<MaxFileSizeFeature, long>, MaxFileSizeChecker>();
         services.AddScoped<ITenantQuotaFeatureStat<MaxFileSizeFeature, long>, MaxFileSizeStatistic>();
+
+        return services;
     }
 }

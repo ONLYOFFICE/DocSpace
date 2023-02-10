@@ -24,6 +24,7 @@ import {
   SectionPagingContent,
 } from "./Section";
 import MediaViewer from "./MediaViewer";
+import SelectionArea from "./SelectionArea";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 //import config from "PACKAGE_FILE";
@@ -46,10 +47,11 @@ class PureHome extends React.Component {
       setFirstLoad,
       setToPreviewFile,
       playlist,
-      isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
+      setIsPreview,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -68,9 +70,12 @@ class PureHome extends React.Component {
       setTimeout(() => {
         getFileInfo(fileId)
           .then((data) => {
-            const canOpenPlayer = isMediaOrImage(data.fileExst);
+            const canOpenPlayer =
+              data.viewAccessability.ImageView ||
+              data.viewAccessability.MediaView;
             const file = { ...data, canOpenPlayer };
             setToPreviewFile(file, true);
+            setIsPreview(true);
           })
           .catch((err) => {
             toastr.error(err);
@@ -302,7 +307,7 @@ class PureHome extends React.Component {
           );
         }
         return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="Filesы">
+          <Trans t={t} i18nKey="CopyItem" ns="Files">
             {{ title }} copied
           </Trans>
         );
@@ -465,6 +470,7 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
+      isErrorRoomNotAvailable,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -479,16 +485,13 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-      personal,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isFrame,
       showTitle,
       showFilter,
       frameConfig,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -499,6 +502,8 @@ class PureHome extends React.Component {
       <>
         <MediaViewer />
         <DragTooltip />
+        <SelectionArea />
+
         <Section
           withPaging={withPaging}
           dragging={dragging}
@@ -506,7 +511,6 @@ class PureHome extends React.Component {
           withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
-          setSelections={this.props.setSelections}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
@@ -525,21 +529,29 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <Section.SectionHeader>
-            {isFrame ? (
-              showTitle && <SectionHeaderContent />
-            ) : (
-              <SectionHeaderContent />
-            )}
-          </Section.SectionHeader>
+          {!isErrorRoomNotAvailable && (
+            <Section.SectionHeader>
+              {isFrame ? (
+                showTitle && <SectionHeaderContent />
+              ) : (
+                <SectionHeaderContent />
+              )}
+            </Section.SectionHeader>
+          )}
 
-          {!isEmptyPage && (
+          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
               ) : (
                 <SectionFilterContent />
               )}
+            </Section.SectionFilter>
+          )}
+
+          {isLoadedEmptyPage && (
+            <Section.SectionFilter>
+              <div style={{ height: "32px" }} />
             </Section.SectionFilter>
           )}
 
@@ -598,7 +610,6 @@ export default inject(
       alreadyFetchingRooms,
       setAlreadyFetchingRooms,
       selection,
-      setSelections,
       dragging,
       setDragging,
       setIsLoading,
@@ -617,8 +628,10 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
-
+      isLoadedEmptyPage,
       disableDrag,
+      isErrorRoomNotAvailable,
+      setIsPreview,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -668,12 +681,8 @@ export default inject(
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
 
     const {
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setFrameConfig,
       frameConfig,
       isFrame,
@@ -698,9 +707,6 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -721,7 +727,7 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
-
+      isErrorRoomNotAvailable,
       isRoomsFolder,
       isArchiveFolder,
 
@@ -736,15 +742,14 @@ export default inject(
       alreadyFetchingRooms,
       setAlreadyFetchingRooms,
       setUploadPanelVisible,
-      setSelections,
       startUpload,
       uploadEmptyFolders,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setToPreviewFile,
+      setIsPreview,
       playlist,
-      isMediaOrImage: settingsStore.isMediaOrImage,
+
       getFileInfo,
       gallerySelected,
       setIsUpdatingRowItem,
@@ -767,6 +772,7 @@ export default inject(
       setViewAs,
       withPaging,
       isEmptyPage,
+      isLoadedEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

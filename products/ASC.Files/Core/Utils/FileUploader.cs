@@ -47,6 +47,7 @@ public class FileUploader
     private readonly IServiceProvider _serviceProvider;
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly FileTrackerHelper _fileTracker;
+    private readonly SocketManager _socketManager;
 
     public FileUploader(
         FilesSettingsHelper filesSettingsHelper,
@@ -66,7 +67,8 @@ public class FileUploader
         EntryManager entryManager,
         IServiceProvider serviceProvider,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-        FileTrackerHelper fileTracker)
+        FileTrackerHelper fileTracker,
+        SocketManager socketManager)
     {
         _filesSettingsHelper = filesSettingsHelper;
         _fileUtility = fileUtility;
@@ -86,6 +88,7 @@ public class FileUploader
         _serviceProvider = serviceProvider;
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
         _fileTracker = fileTracker;
+        _socketManager = socketManager;
     }
 
     public Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
@@ -213,8 +216,8 @@ public class FileUploader
                     newFolder.ParentId = folderId;
 
                     folderId = await folderDao.SaveFolderAsync(newFolder);
-
                     folder = await folderDao.GetFolderAsync(folderId);
+                    await _socketManager.CreateFolderAsync(folder);
                     _filesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                 }
 
@@ -316,7 +319,7 @@ public class FileUploader
 
         if (chunkLength > _setupInfo.ChunkUploadSize)
         {
-            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
+            throw FileSizeComment.GetFileSizeException(await _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
         }
 
         var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);
@@ -331,7 +334,7 @@ public class FileUploader
         var dao = _daoFactory.GetFileDao<T>();
         await dao.UploadChunkAsync(uploadSession, stream, chunkLength);
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             var linkDao = _daoFactory.GetLinkDao();
             await linkDao.DeleteAllLinkAsync(uploadSession.File.Id.ToString());

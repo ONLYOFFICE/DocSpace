@@ -184,8 +184,7 @@ class QuotasStore {
     const res = await api.portal.getPortalQuota();
     if (!res) return;
 
-    this.currentPortalQuota = res;
-    this.currentPortalQuotaFeatures = res.features;
+    this.setPortalQuotaValue(res);
   };
 }
 

@@ -72,7 +72,7 @@ const Selector = ({
 
   const onClearSearchAction = React.useCallback(() => {
     onClearSearch && onClearSearch();
-    setIsSearch(true);
+    setIsSearch(false);
   }, [onClearSearch]);
 
   const onSelectAction = (item) => {
@@ -258,7 +258,10 @@ const Selector = ({
           newSelectedItems.length !== renderedItems.length &&
           newSelectedItems.length !== 0
         }
-        isAllChecked={newSelectedItems.length === renderedItems.length}
+        isAllChecked={
+          newSelectedItems.length === renderedItems.length &&
+          renderedItems.length !== 0
+        }
         placeholder={searchPlaceholder}
         value={searchValue}
         onSearch={onSearchAction}

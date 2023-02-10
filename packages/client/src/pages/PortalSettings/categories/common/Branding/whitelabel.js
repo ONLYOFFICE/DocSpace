@@ -15,7 +15,11 @@ import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 import Logo from "./sub-components/logo";
-import { generateLogo, getLogoOptions } from "../../../utils/generateLogo";
+import {
+  generateLogo,
+  getLogoOptions,
+  uploadLogo,
+} from "../../../utils/whiteLabelHelper";
 import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
@@ -100,32 +104,33 @@ const WhiteLabel = (props) => {
     }
   };
 
-  const onChangeLogo = (e) => {
+  const onChangeLogo = async (e) => {
     const id = e.target.id.split("_");
     const index = id[1];
     const theme = id[2];
 
     let file = e.target.files[0];
 
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const img = e.target.result;
+    const { data } = await uploadLogo(file);
 
+    if (data.Success) {
+      const url = data.Message;
       const newArr = logoUrlsWhiteLabel;
 
       if (theme === "light") {
-        newArr[index - 1].path.light = img;
+        newArr[index - 1].path.light = url;
       } else if (theme === "dark") {
-        newArr[index - 1].path.dark = img;
+        newArr[index - 1].path.dark = url;
       }
 
       setLogoUrlsWhiteLabel(newArr);
-    };
+    } else {
+      console.error(data.Message);
+      toastr.error(data.Message);
+    }
   };
 
   const onSave = async () => {
-    console.log(logoUrlsWhiteLabel);
     let logosArr = [];
 
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
@@ -168,9 +173,8 @@ const WhiteLabel = (props) => {
     <LoaderWhiteLabel />
   ) : (
     <WhiteLabelWrapper>
-      <Text className="subtitle" color="#657077">
-        {t("BrandingSubtitle")}
-      </Text>
+      <Text className="subtitle">{t("BrandingSubtitle")}</Text>
+
       <div className="header-container">
         <Text fontSize="16px" fontWeight="700">
           {t("WhiteLabel")}
@@ -195,7 +199,7 @@ const WhiteLabel = (props) => {
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerCompanyName"
-          labelText={t("CompanyNameForCanvasLogo")}
+          labelText={t("Common:CompanyName")}
           isVertical={true}
           className="settings_unavailable"
         >

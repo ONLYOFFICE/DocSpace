@@ -1,3 +1,4 @@
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
@@ -15,12 +16,45 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import { combineUrl } from "@docspace/common/utils";
-import { AppServerConfig } from "@docspace/common/constants";
 import Checkbox from "@docspace/components/checkbox";
 import HelpButton from "@docspace/components/help-button";
 import config from "PACKAGE_FILE";
 import { StyledBackupList } from "../../../StyledBackup";
 import BackupListBody from "./BackupListBody";
+import { TenantStatus } from "@docspace/common/constants";
+import styled from "styled-components";
+
+const StyledModalDialog = styled(ModalDialog)`
+  .restore_footer {
+    width: 100%;
+    .restore_dialog-button {
+      display: flex;
+      button:first-child {
+        margin-right: 10px;
+        width: 50%;
+      }
+      button:last-child {
+        width: 50%;
+      }
+    }
+    #backup-list_help {
+      display: flex;
+      background-color: ${(props) => props.theme.backgroundColor};
+      margin-bottom: 16px;
+    }
+
+    .backup-list_agreement-text {
+      user-select: none;
+      div:first-child {
+        display: inline-block;
+      }
+    }
+
+    .backup-list_tooltip {
+      margin-left: 8px;
+    }
+  }
+`;
 
 class BackupListModalDialog extends React.Component {
   constructor(props) {
@@ -89,7 +123,7 @@ class BackupListModalDialog extends React.Component {
   };
   onRestorePortal = () => {
     const { selectedFileId } = this.state;
-    const { isNotify, history, socketHelper, t } = this.props;
+    const { isNotify, history, socketHelper, t, setTenantStatus } = this.props;
 
     if (!selectedFileId) {
       toastr.error(t("RecoveryFileNotSelected"));
@@ -106,6 +140,7 @@ class BackupListModalDialog extends React.Component {
       ];
 
       startRestore(backupId, storageType, storageParams, isNotify)
+        .then(() => setTenantStatus(TenantStatus.PortalRestore))
         .then(() => {
           socketHelper.emit({
             command: "restore-backup",
@@ -114,7 +149,7 @@ class BackupListModalDialog extends React.Component {
         .then(() =>
           history.push(
             combineUrl(
-              AppServerConfig.proxyURL,
+              window.DocSpaceConfig?.proxy?.url,
               config.homepage,
               "/preparation-portal"
             )
@@ -159,15 +194,17 @@ class BackupListModalDialog extends React.Component {
     );
 
     return (
-      <ModalDialog
+      <StyledModalDialog
+        displayType="aside"
         visible={isVisibleDialog}
         onClose={onModalClose}
-        displayType="aside"
-        withoutBodyScroll
-        contentHeight="100%"
-        contentPaddingBottom="0px"
+        withFooterBorder
       >
-        <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
+        <ModalDialog.Header>
+          <Text fontSize="21px" fontWeight={700}>
+            {t("BackupList")}
+          </Text>
+        </ModalDialog.Header>
         <ModalDialog.Body>
           <StyledBackupList
             isCopyingToLocal={isCopyingToLocal}
@@ -202,7 +239,6 @@ class BackupListModalDialog extends React.Component {
                   ) : (
                     <Text
                       fontSize="12px"
-                      color="#A3A9AE"
                       textAlign="center"
                       className="backup-restore_empty-list"
                     >
@@ -211,53 +247,52 @@ class BackupListModalDialog extends React.Component {
                   )
                 ) : (
                   <div className="loader" key="loader">
-                    <Loaders.ListLoader />
-                  </div>
-                )}
-              </div>
-
-              <div className="backup-list_footer">
-                {filesList.length > 0 && (
-                  <div>
-                    <div id="backup-list_help">
-                      <Checkbox
-                        truncate
-                        className="backup-list_checkbox"
-                        onChange={this.onChangeCheckbox}
-                        isChecked={isChecked}
-                      />
-                      <Text as="span" className="backup-list_agreement-text">
-                        {t("UserAgreement")}
-                        <HelpButton
-                          className="backup-list_tooltip"
-                          offsetLeft={100}
-                          iconName={"/static/images/help.react.svg"}
-                          getContent={helpContent}
-                          tooltipMaxWidth={"286px"}
-                        />
-                      </Text>
-                    </div>
-                    <div className="restore_dialog-button">
-                      <Button
-                        primary
-                        size="normal"
-                        label={t("Common:Restore")}
-                        onClick={this.onRestorePortal}
-                        isDisabled={isCopyingToLocal || !isChecked}
-                      />
-                      <Button
-                        size="normal"
-                        label={t("Common:CloseButton")}
-                        onClick={onModalClose}
-                      />
-                    </div>
+                    <Loaders.ListLoader count={7} />
                   </div>
                 )}
               </div>
             </div>
           </StyledBackupList>
         </ModalDialog.Body>
-      </ModalDialog>
+
+        <ModalDialog.Footer>
+          <div className="restore_footer">
+            <div id="backup-list_help">
+              <Checkbox
+                truncate
+                className="backup-list_checkbox"
+                onChange={this.onChangeCheckbox}
+                isChecked={isChecked}
+              />
+              <Text as="span" className="backup-list_agreement-text">
+                {t("UserAgreement")}
+                <HelpButton
+                  className="backup-list_tooltip"
+                  offsetLeft={100}
+                  iconName={HelpReactSvgUrl}
+                  getContent={helpContent}
+                  tooltipMaxWidth={"286px"}
+                />
+              </Text>
+            </div>
+
+            <div className="restore_dialog-button">
+              <Button
+                primary
+                size="normal"
+                label={t("Common:Restore")}
+                onClick={this.onRestorePortal}
+                isDisabled={isCopyingToLocal || !isChecked}
+              />
+              <Button
+                size="normal"
+                label={t("Common:CloseButton")}
+                onClick={onModalClose}
+              />
+            </div>
+          </div>
+        </ModalDialog.Footer>
+      </StyledModalDialog>
     );
   }
 }
@@ -269,9 +304,10 @@ BackupListModalDialog.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { socketHelper, theme } = settingsStore;
+  const { socketHelper, theme, setTenantStatus } = settingsStore;
 
   return {
+    setTenantStatus,
     theme,
     socketHelper,
   };

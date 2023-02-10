@@ -51,11 +51,14 @@ public class CultureMiddleware
 
         if (culture == null)
         {
-            culture = tenantManager.GetCurrentTenant().GetCulture();
+            culture = tenantManager.GetCurrentTenant(false)?.GetCulture();
         }
 
-        Thread.CurrentThread.CurrentCulture = culture;
-        Thread.CurrentThread.CurrentUICulture = culture;
+        if (culture != null)
+        {
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+        }
 
         await _next.Invoke(context);
     }

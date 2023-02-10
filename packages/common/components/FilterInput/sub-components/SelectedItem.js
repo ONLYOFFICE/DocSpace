@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
@@ -24,6 +25,10 @@ const StyledSelectedItem = styled.div`
 
   background: ${(props) => props.theme.filterInput.selectedItems.background};
 
+  :hover {
+    background: ${(props) =>
+      props.theme.filterInput.selectedItems.hoverBackground};
+  }
   .selected-item_label {
     line-height: 20px;
     margin-right: 10px;
@@ -46,7 +51,7 @@ const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
       </Text>
       <IconButton
         className="selected-tag-removed"
-        iconName={"/static/images/cross.react.svg"}
+        iconName={CrossReactSvgUrl}
         size={12}
         onClick={onRemove}
         isFill

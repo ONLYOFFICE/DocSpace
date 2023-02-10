@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
-import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import Panels from "../../components/FilesPanels";
 
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
@@ -27,6 +26,10 @@ const SessionLifetimePage = lazy(() =>
 
 const CommonSettings = lazy(() => import("./categories/common/index.js"));
 
+const DeveloperTools = lazy(() =>
+  import("./categories/developer-tools/index.js")
+);
+
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );
@@ -44,7 +47,6 @@ const DNSSettings = lazy(() =>
 const PortalRenaming = lazy(() =>
   import("./categories/common/Customization/portal-renaming")
 );
-const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 
 const Integration = lazy(() => import("./categories/integration"));
 const Payments = lazy(() => import("./categories/payments"));
@@ -67,7 +69,10 @@ const WhiteLabel = lazy(() =>
 );
 
 const Branding = lazy(() => import("./categories/common/branding"));
-const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/portal-settings");
+const PROXY_BASE_URL = combineUrl(
+  window.DocSpaceConfig?.proxy?.url,
+  "/portal-settings"
+);
 
 const COMMON_URLS = [
   PROXY_BASE_URL,
@@ -75,6 +80,12 @@ const COMMON_URLS = [
   combineUrl(PROXY_BASE_URL, "/common/customization"),
   combineUrl(PROXY_BASE_URL, "/common/branding"),
   combineUrl(PROXY_BASE_URL, "/common/appearance"),
+];
+
+const DEVELOPER_URLS = [
+  PROXY_BASE_URL,
+  combineUrl(PROXY_BASE_URL, "/developer"),
+  combineUrl(PROXY_BASE_URL, "/developer/tools"),
 ];
 
 const CUSTOMIZATION_URLS = [
@@ -167,7 +178,10 @@ const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deactivation"),
 ];
 
-const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
+const ERROR_404_URL = combineUrl(
+  window.DocSpaceConfig?.proxy?.url,
+  "/error/404"
+);
 
 const Settings = () => {
   return (
@@ -191,7 +205,6 @@ const Settings = () => {
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
-          <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
 
@@ -222,6 +235,7 @@ const Settings = () => {
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
+          <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
 
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />

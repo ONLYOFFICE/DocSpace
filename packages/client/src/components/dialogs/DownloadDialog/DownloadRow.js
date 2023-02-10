@@ -71,6 +71,7 @@ const DownloadRow = (props) => {
         {file.checked && !isOther && (
           <LinkWithDropdown
             className="download-dialog-link"
+            dropDownClassName="download-dialog-dropDown"
             isOpen={dropDownIsOpen}
             dropdownType="alwaysDashed"
             containerMinWidth="fit-content"

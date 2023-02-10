@@ -108,6 +108,7 @@ const DropBox = React.forwardRef(
       maxHeight,
       isOpen,
       isDesktop,
+      isDesktopClient,
     },
     ref
   ) => {
@@ -157,6 +158,7 @@ const DropBox = React.forwardRef(
             canCreate={canCreate}
             isDropBox={true}
             isInfoPanelVisible={isInfoPanelVisible}
+            isDesktopClient={isDesktopClient}
           >
             <ArrowButton
               isRootFolder={isRootFolder}

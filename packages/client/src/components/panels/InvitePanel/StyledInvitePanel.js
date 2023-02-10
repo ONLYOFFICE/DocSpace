@@ -49,7 +49,7 @@ const StyledSubHeader = styled(Heading)`
   font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  margin: 20px 0;
+  margin: 16px 0;
 
   ${(props) =>
     props.inline &&
@@ -83,6 +83,14 @@ const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
   margin-left: 16px;
   margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+
+  .input-link {
+    height: 32px;
+
+    > input {
+      height: 30px;
+    }
+  }
 `;
 
 const StyledAccessSelector = styled.div`
@@ -113,7 +121,6 @@ const StyledComboBox = styled(ComboBox)`
 
   .combo-button {
     border-radius: 3px;
-    height: auto;
   }
 `;
 
@@ -121,7 +128,7 @@ const StyledInviteInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  ${fillAvailableWidth}
+  width: 100%;
   margin-bottom: 20px;
 
   .header_aside-panel {

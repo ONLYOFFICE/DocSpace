@@ -37,12 +37,16 @@ const InvitePanel = ({
   adminLink,
   defaultAccess,
   inviteUsers,
+  setInfoPanelIsMobileHidden,
   reloadSelectionParentRoom,
+  setUpdateRoomMembers,
+  roomsView,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -69,7 +73,7 @@ const InvitePanel = ({
             title,
             shareLink,
             expirationDate,
-            access: defaultAccess,
+            access: user.access || defaultAccess,
           });
         }
       });
@@ -118,6 +122,7 @@ const InvitePanel = ({
   }, [inviteItems]);
 
   const onClose = () => {
+    setInfoPanelIsMobileHidden(false);
     setInvitePanelOptions({
       visible: false,
       hideSelector: false,
@@ -157,14 +162,22 @@ const InvitePanel = ({
     }
 
     try {
+      setIsLoading(true);
       roomId === -1
         ? await inviteUsers(data)
         : await setRoomSecurity(roomId, data);
+
+      setIsLoading(false);
+
+      if (roomsView === "info_members") {
+        setUpdateRoomMembers(true);
+      }
       onClose();
       toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
+      setIsLoading(false);
     }
   };
 
@@ -191,7 +204,12 @@ const InvitePanel = ({
           </StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks t={t} shareLinks={shareLinks} roomType={roomType} />
+        <ExternalLinks
+          t={t}
+          shareLinks={shareLinks}
+          getInfo={getInfo}
+          roomType={roomType}
+        />
 
         <InviteInput
           t={t}
@@ -211,12 +229,14 @@ const InvitePanel = ({
                 primary
                 onClick={onClickSend}
                 label={t("SendInvitation")}
+                isLoading={isLoading}
               />
               <Button
                 scale={true}
                 size={"normal"}
                 onClick={onClose}
                 label={t("Common:CancelButton")}
+                isDisabled={isLoading}
               />
             </StyledButtons>
           </>
@@ -244,7 +264,13 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
   const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
-  const { reloadSelectionParentRoom } = auth.infoPanelStore;
+  const {
+    setIsMobileHidden: setInfoPanelIsMobileHidden,
+    reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
+    filesView,
+  } = auth.infoPanelStore;
 
   const {
     getPortalInviteLinks,
@@ -285,7 +311,10 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     guestLink,
     adminLink,
     inviteUsers,
+    setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
+    setUpdateRoomMembers,
+    roomsView,
   };
 })(
   withTranslation([

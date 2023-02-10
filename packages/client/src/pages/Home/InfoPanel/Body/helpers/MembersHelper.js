@@ -49,12 +49,12 @@ class MembersHelper {
     };
   };
 
-  getOptionsByRoomType = (roomType, withDeleteOption = false) => {
+  getOptionsByRoomType = (roomType, canChangeUserRole = false) => {
     if (!roomType) return;
 
     const options = this.getOptions();
 
-    const deleteOption = withDeleteOption
+    const deleteOption = canChangeUserRole
       ? [
           { key: "s2", isSeparator: true },
           {

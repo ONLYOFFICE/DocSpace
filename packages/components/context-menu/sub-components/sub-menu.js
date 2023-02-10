@@ -5,7 +5,7 @@ import ObjectUtils from "../../utils/objectUtils";
 import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
-import ArrowIcon from "../svg/arrow.right.react.svg";
+import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
 
 //import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
@@ -126,9 +126,10 @@ const SubMenu = (props) => {
       "p-disabled": item.disabled,
     });
     const subMenuIconClassName = "p-submenu-icon";
+
     const icon =
       item.icon &&
-      (item.icon.includes("https://") || item.icon.includes("http://") ? (
+      (!item.icon.includes("images/") ? (
         <img src={item.icon} className={iconClassName} />
       ) : (
         <ReactSVG wrapper="span" className={iconClassName} src={item.icon} />

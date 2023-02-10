@@ -26,7 +26,7 @@ const Confirm = ({ match }) => {
   //console.log("Confirm render");
   const path = match.path;
   return (
-    <ConfirmWrapper>
+    <>
       <Switch>
         <ConfirmRoute
           forUnauthorized
@@ -93,7 +93,7 @@ const Confirm = ({ match }) => {
 
         {/* <Route component={Error404} /> */}
       </Switch>
-    </ConfirmWrapper>
+    </>
   );
 };
 

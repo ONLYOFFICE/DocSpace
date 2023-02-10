@@ -11,16 +11,16 @@ import {
   IconBox,
 } from "./StyledFloatingButton";
 
-import ButtonUploadIcon from "../../../../public/images/button.upload.react.svg";
-import ButtonFileIcon from "../../../../public/images/button.file.react.svg";
-import ButtonTrashIcon from "../../../../public/images/button.trash.react.svg";
-import ButtonMoveIcon from "../../../../public/images/button.move.react.svg";
-import ButtonDuplicateIcon from "../../../../public/images/button.duplicate.react.svg";
-import ButtonAlertIcon from "../../../../public/images/button.alert.react.svg";
+import ButtonUploadIcon from "PUBLIC_DIR/images/button.upload.react.svg";
+import ButtonFileIcon from "PUBLIC_DIR/images/button.file.react.svg";
+import ButtonTrashIcon from "PUBLIC_DIR/images/button.trash.react.svg";
+import ButtonMoveIcon from "PUBLIC_DIR/images/button.move.react.svg";
+import ButtonDuplicateIcon from "PUBLIC_DIR/images/button.duplicate.react.svg";
+import ButtonAlertIcon from "PUBLIC_DIR/images/button.alert.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import ButtonPlusIcon from "../../../../public/images/actions.button.plus.react.svg";
-import ButtonMinusIcon from "../../../../public/images/actions.button.minus.react.svg";
-import CloseIcon from "../../../../public/images/close-icon.react.svg";
+import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
+import ButtonMinusIcon from "PUBLIC_DIR/images/actions.button.minus.react.svg";
+import CloseIcon from "PUBLIC_DIR/images/close-icon.react.svg";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 

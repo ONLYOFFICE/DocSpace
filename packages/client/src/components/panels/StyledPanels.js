@@ -124,13 +124,6 @@ const StyledVersionHistoryPanel = styled.div`
 
 StyledVersionHistoryPanel.defaultProps = { theme: Base };
 
-const StyledAddGroupsPanel = styled.div`
-  ${PanelStyles}
-  .combo-button-label {
-    font-size: 14px;
-  }
-`;
-
 const StyledEmbeddingPanel = styled.div`
   ${PanelStyles}
 `;
@@ -678,7 +671,6 @@ StyledModalRowContainer.defaultProps = { theme: Base };
 
 export {
   StyledAsidePanel,
-  StyledAddGroupsPanel,
   StyledEmbeddingPanel,
   StyledVersionHistoryPanel,
   StyledContent,

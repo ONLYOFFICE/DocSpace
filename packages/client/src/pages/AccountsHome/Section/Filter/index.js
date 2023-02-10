@@ -66,7 +66,6 @@ const SectionFilterContent = ({
   fetchPeople,
   filter,
   groups,
-  customNames,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
@@ -126,8 +125,6 @@ const SectionFilterContent = ({
 
   // TODO: change translation keys
   const getData = async () => {
-    const { userCaption } = customNames;
-
     const statusItems = [
       {
         id: "filter_status-user",
@@ -179,7 +176,7 @@ const SectionFilterContent = ({
         id: "filter_type-user",
         key: EmployeeType.Guest,
         group: "filter-type",
-        label: userCaption,
+        label: t("Common:User"),
       },
     ];
 
@@ -258,6 +255,12 @@ const SectionFilterContent = ({
         label: t("Common:Type"),
         default: true,
       },
+      {
+        id: "sory-by_email",
+        key: "email",
+        label: t("Common:Email"),
+        default: true,
+      },
     ];
   }, [t]);
 
@@ -274,7 +277,6 @@ const SectionFilterContent = ({
 
   //TODO: add new options from filter after update backend
   const getSelectedFilterData = React.useCallback(async () => {
-    const { userCaption } = customNames;
     const filterValues = [];
 
     if (filter.employeeStatus || filter.activationStatus) {
@@ -311,7 +313,7 @@ const SectionFilterContent = ({
           label = t("Common:RoomAdmin");
           break;
         case EmployeeType.Guest:
-          label = userCaption;
+          label = t("Common:User");
           break;
         default:
           label = "";
@@ -397,7 +399,6 @@ const SectionFilterContent = ({
     filter.payments,
     filter.group,
     t,
-    customNames,
   ]);
 
   //TODO: add new options from filter after update backend
@@ -466,8 +467,7 @@ export default withRouter(
       groupsStore,
       viewAs,
     } = peopleStore;
-    const { settingsStore, userStore, isLoaded, isAdmin } = auth;
-    const { customNames } = settingsStore;
+    const { userStore, isLoaded, isAdmin } = auth;
     const { user } = userStore;
     const { groups } = groupsStore;
     const { getUsersList: fetchPeople } = usersStore;
@@ -475,7 +475,6 @@ export default withRouter(
     const { setIsLoading } = loadingStore;
 
     return {
-      customNames,
       isLoaded,
       isAdmin,
       user,
@@ -488,12 +487,9 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation([
-          "People",
-          "Common",
-          "PeopleTranslations",
-          "GroupSelector",
-        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
+        withTranslation(["People", "Common", "PeopleTranslations"])(
+          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
+        )
       )
     )
   )

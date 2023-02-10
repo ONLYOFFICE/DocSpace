@@ -95,8 +95,11 @@ public class PaymentController : ControllerBase
     [HttpPut("payment/update")]
     public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
+        var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
+        var payer = _userManager.GetUserByEmail(payerId);
+
         if (!_tariffService.GetPayments(Tenant.Id).Any() ||
-            !_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID))
+            _securityContext.CurrentAccount.ID != payer.Id)
         {
             return false;
         }

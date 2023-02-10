@@ -1,6 +1,7 @@
 import React from "react";
 import AccessRightSelect from "@docspace/components/access-right-select";
 import { getAccessOptions } from "../utils";
+import { isMobileOnly } from "react-device-detect";
 
 import { StyledAccessSelector } from "../StyledInvitePanel";
 
@@ -32,6 +33,9 @@ const AccessSelector = ({
         fixedDirection={true}
         manualWidth={width + "px"}
         isDefaultMode={false}
+        withBackdrop={isMobileOnly}
+        isAside={true}
+        withBackground={isMobileOnly}
       />
     </StyledAccessSelector>
   );

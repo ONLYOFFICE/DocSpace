@@ -5,15 +5,12 @@
   "DisabledEmployeeStatus": "Deaktivováno",
   "EmailChangeButton": "Změnit emailovou adresu",
   "EnableUserButton": "Aktivovat",
-  "InviteLinkTitle": "Odkaz s pozvánkou",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Změnit heslo",
   "PendingTitle": "Čekající",
-  "ReassignData": "Znovu přiřadit data",
   "RemoveData": "Odstranit osobní údaje",
   "SendInviteAgain": "Odeslat pozvánku ještě jednou",
   "SuccessChangeUserStatus": "Stav uživatele byl úspěšně změněn",
   "SuccessDeletePersonalData": "Osobní údaje byly úspěšně odstraněny",
-  "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána",
-  "maxSizeFileError": "Maximální velikost souboru překročena"
+  "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána"
 }
