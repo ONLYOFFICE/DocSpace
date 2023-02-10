@@ -5,7 +5,7 @@ import FileInput from "@docspace/components/file-input";
 import TextInput from "@docspace/common/components/ColorTheme/styled/textInput";
 
 let timerId = null;
-const LocalFile = ({ standalone, setRestoreResource, isEnableRestore }) => {
+const LocalFile = ({ standalone, setRestoreResource, isEnableRestore, t }) => {
   const [value, setValue] = useState("");
 
   const onClickInput = (file) => {
@@ -43,7 +43,7 @@ const LocalFile = ({ standalone, setRestoreResource, isEnableRestore }) => {
       size="base"
       scale
       className="restore-backup_input"
-      placeholder="Enter  path"
+      placeholder={t("EnterPath")}
       isDisabled={!isEnableRestore}
     />
   );

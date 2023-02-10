@@ -157,7 +157,7 @@ const RestoreBackup = (props) => {
 
   const backupModules = (
     <div className="restore-backup_modules">
-      {radioButtonState === LOCAL_FILE && <LocalFileModule />}
+      {radioButtonState === LOCAL_FILE && <LocalFileModule t={t} />}
 
       {radioButtonState === BACKUP_ROOM && (
         <RoomsModule
