@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Linq;
+
 using ASC.Files.Core.Core.Thirdparty.ProviderDao;
 
 namespace ASC.Data.Backup.Tasks.Modules;
@@ -174,8 +176,8 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             preparedRow = new Dictionary<string, object>();
 
             object folderId = null;
-
-            var sboxId = Regex.Replace(row[1].ToString(), @"(?<=(?:" + $"{Selectors.SharpBox.Id}-|{Selectors.Box.Id}-|{Selectors.Dropbox.Id}-|{Selectors.SharePoint.Id}-|{Selectors.GoogleDrive.Id}-|{Selectors.OneDrive.Id}-" + @"))\d+", match =>
+            var ids = string.Join("-|", Selectors.All.Select(s => s.Id));
+            var sboxId = Regex.Replace(row[1].ToString(), @"(?<=(?:" + $"{ids}-" + @"))\d+", match =>
             {
                 folderId = columnMapper.GetMapping("files_thirdparty_account", "id", match.Value);
 

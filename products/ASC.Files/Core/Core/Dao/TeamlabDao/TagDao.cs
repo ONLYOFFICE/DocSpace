@@ -807,12 +807,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
             .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
             .Where(r => r.account.UserId != subject &&
                         r.account.FolderType == FolderType.USER &&
-                        (r.mapping.Id.StartsWith($"{Selectors.SharpBox.Id}-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith($"{Selectors.Box.Id}-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith($"{Selectors.Dropbox.Id}-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith($"{Selectors.SharePoint.Id} -" + r.account.Id) ||
-                        r.mapping.Id.StartsWith($"{Selectors.GoogleDrive.Id}-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith($"{Selectors.OneDrive.Id}-" + r.account.Id))
+                        Selectors.All.Any(s => r.mapping.Id.StartsWith($"{s.Id}-" + r.account.Id))
                 )
                 .Select(r => r.tagLink)
                 .Distinct()

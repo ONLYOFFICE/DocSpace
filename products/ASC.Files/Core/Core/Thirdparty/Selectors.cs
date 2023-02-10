@@ -32,6 +32,8 @@ public static class Selectors
     public static readonly Selector Box = new Selector() { Name = "Box", Id = "box" };
     public static readonly Selector Dropbox = new Selector() { Name = "Dropbox", Id = "dropbox" };
     public static readonly Selector OneDrive = new Selector() { Name = "OneDrive", Id = "onedrive" };
+
+    public static readonly List<Selector> All = new List<Selector>() { SharpBox, SharePoint, GoogleDrive, Box, Dropbox, OneDrive };
 }
 
 public class Selector
