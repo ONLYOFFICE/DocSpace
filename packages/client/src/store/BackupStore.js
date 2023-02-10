@@ -354,8 +354,8 @@ class BackupStore {
     getFromLocalStorage("LocalCopyStorage") &&
       removeLocalStorage("LocalCopyStorage");
 
-    // getFromLocalStorage("LocalCopyThirdPartyStorageType") &&
-    //   removeLocalStorage("LocalCopyThirdPartyStorageType");
+    getFromLocalStorage("LocalCopyThirdPartyStorageType") &&
+      removeLocalStorage("LocalCopyThirdPartyStorageType");
 
     getFromLocalStorage("LocalCopyThirdPartyStorageValues") &&
       removeLocalStorage("LocalCopyThirdPartyStorageValues");
