@@ -347,23 +347,11 @@ class MediaViewer extends React.Component {
 
   onDelete = () => {
     const { playlist, playlistPos } = this.state;
-    const { archiveRoomsId } = this.props;
 
     let currentFileId =
       playlist.length > 0
         ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
-
-    const targetFile = this.props.files.find(
-      (item) => item.id === currentFileId
-    );
-
-    const canDelete =
-      targetFile?.security?.Delete &&
-      archiveRoomsId !== targetFile.rootFolderId;
-
-    if (!canDelete) return;
-
     this.props.onDelete && this.props.onDelete(currentFileId);
     this.setState({
       canSwipeImage: false,
