@@ -113,6 +113,15 @@ const ButtonContainer = (props) => {
     }
   };
 
+  const isButtonDisabled =
+    isLoading ||
+    isUploadingLocalFile ||
+    !isMaxProgress ||
+    !isConfirmed ||
+    !isEnableRestore ||
+    !restoreResource;
+  const isLoadingButton = isUploadingLocalFile || isLoading;
+
   return (
     <>
       <Button
@@ -120,15 +129,8 @@ const ButtonContainer = (props) => {
         label={t("Common:Restore")}
         onClick={onRestoreClick}
         primary
-        isDisabled={
-          isLoading ||
-          isUploadingLocalFile ||
-          !isMaxProgress ||
-          !isConfirmed ||
-          !isEnableRestore ||
-          !restoreResource
-        }
-        isLoading={isUploadingLocalFile || isLoading}
+        isDisabled={isButtonDisabled}
+        isLoading={isLoadingButton}
         size={buttonSize}
         tabIndex={10}
       />
