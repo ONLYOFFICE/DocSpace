@@ -108,7 +108,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             {
                 continue;
             }
-            var matchedIds = group.ToList();
+            var matchedIds = group.Value;
 
             result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                 .ToAsyncEnumerable()
@@ -204,7 +204,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             {
                 continue;
             }
-            var matchedIds = group.ToList();
+            var matchedIds = group.Value;
 
             result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                 .ToAsyncEnumerable()

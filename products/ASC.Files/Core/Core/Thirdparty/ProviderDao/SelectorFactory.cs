@@ -42,6 +42,11 @@ internal class SelectorFactory
     public IDaoSelector GetSelector(string id)
     {
         var selector = Match(id);
+        return GetSelectorInternal(selector);
+    }
+
+    private IDaoSelector GetSelectorInternal(string selector)
+    {
         if (selector == Selectors.SharpBox.Id)
             return _serviceProvider.GetService<SharpBoxDaoSelector>();
         else if (selector == Selectors.SharePoint.Id)
@@ -58,10 +63,15 @@ internal class SelectorFactory
             return null;
     }
 
-    public IEnumerable<IGrouping<IDaoSelector, string>> GetSelectors(IEnumerable<string> ids)
+    public Dictionary<IDaoSelector, List<string>> GetSelectors(IEnumerable<string> ids)
     {
-        var groups = ids.GroupBy(GetSelector);
-        return groups;
+        var groups = ids.GroupBy(Match);
+        var dict = new Dictionary<IDaoSelector, List<string>>();
+        foreach ( var group in groups)
+        {
+            dict.Add(GetSelectorInternal(group.Key), group.ToList());
+        }
+        return dict;
     }
 
     private string Match(string id)

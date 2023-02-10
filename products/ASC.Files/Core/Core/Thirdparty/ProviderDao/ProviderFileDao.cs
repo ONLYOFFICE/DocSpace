@@ -106,7 +106,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
             {
                 continue;
             }
-            var matchedIds = group.ToList();
+            var matchedIds = group.Value;
 
             foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
             {
@@ -132,7 +132,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
             {
                 continue;
             }
-            var matchedIds = group.ToList();
+            var matchedIds = group.Value;
 
             foreach (var matchedId in matchedIds.GroupBy(selectorLocal.GetIdCode))
             {
