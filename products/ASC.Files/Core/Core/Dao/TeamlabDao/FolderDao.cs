@@ -1340,25 +1340,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var originDates = Query(filesDbContext.TagLink).AsNoTracking()
-            .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
-            .Join(filesDbContext.Tag.AsNoTracking()
-                .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
-            .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
-            .Select(r => new OriginData
-            {
-                OriginRoom = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == TenantID && 
-                                                                          f.Id == filesDbContext.Tree.AsNoTracking()
-                                                                              .Where(t => t.FolderId == Convert.ToInt32(r.Key))
-                                                                              .OrderByDescending(t => t.Level)
-                                                                              .Select(t => t.ParentId)
-                                                                              .Skip(1)
-                                                                              .FirstOrDefault()),
-                OriginFolder = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == TenantID && f.Id == Convert.ToInt32(r.Key)),
-                Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
-            });
-
-        return originDates.AsAsyncEnumerable();
+        return _getOriginsDataQuery(filesDbContext, entriesIds, TenantID);
     }
 
     #endregion
@@ -1686,6 +1668,27 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             _ => FolderType.CustomRoom,
         };
     }
+
+    private static readonly Func<FilesDbContext, IEnumerable<int>, int, IAsyncEnumerable<OriginData>> _getOriginsDataQuery =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext filesDbContext, IEnumerable<int> entriesIds, int tenantId) =>
+            filesDbContext.TagLink.AsNoTracking()
+                .Where(l => l.TenantId == tenantId)
+                .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
+                .Join(filesDbContext.Tag.AsNoTracking()
+                    .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
+                .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
+                .Select(r => new OriginData
+                {
+                    OriginRoom = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == tenantId &&
+                                                                            f.Id == filesDbContext.Tree.AsNoTracking()
+                                                                                .Where(t => t.FolderId == Convert.ToInt32(r.Key))
+                                                                                .OrderByDescending(t => t.Level)
+                                                                                .Select(t => t.ParentId)
+                                                                                .Skip(1)
+                                                                                .FirstOrDefault()),
+                    OriginFolder = filesDbContext.Folders.FirstOrDefault(f => f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
+                    Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
+                }));
 
     private string GetProjectTitle(object folderID)
     {
