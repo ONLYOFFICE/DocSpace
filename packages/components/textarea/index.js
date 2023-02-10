@@ -4,6 +4,8 @@ import {
   StyledTextarea,
   StyledScrollbar,
   StyledCopyIcon,
+  Wrapper,
+  Numeration,
 } from "./styled-textarea";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import Toast from "@docspace/components/toast";
@@ -43,6 +45,18 @@ const Textarea = ({
   const [isError, setIsError] = useState(hasError);
   const [modifiedValue, setModifiedValue] = useState(value);
 
+  const lineHeight = 1.5;
+  const padding = 7;
+  const textareaHeight = isJSONField
+    ? modifiedValue.split("\n").length * fontSize * lineHeight + padding + 4
+    : heightTextArea;
+
+  const numerationValue = [];
+
+  for (let i = 1; i <= modifiedValue.split("\n").length; i++) {
+    numerationValue.push(i);
+  }
+
   useEffect(() => {
     if (isJSONField) {
       if (modifiedValue && isJSON(modifiedValue)) {
@@ -60,17 +74,7 @@ const Textarea = ({
   }, [areaSelect]);
 
   return (
-    <ColorTheme
-      themeId={ThemeType.Textarea}
-      className={className}
-      style={style}
-      stype="preMediumBlack"
-      isDisabled={isDisabled}
-      hasError={isError}
-      heightScale={heightScale}
-      heighttextarea={heightTextArea}
-    >
-      <Toast />
+    <Wrapper>
       {isJSONField && (
         <StyledCopyIcon
           src={copyIcon}
@@ -80,24 +84,41 @@ const Textarea = ({
           }}
         />
       )}
-
-      <StyledTextarea
-        id={id}
-        placeholder={placeholder}
-        onChange={(e) => onChange && onChange(e)}
-        maxLength={maxLength}
-        name={name}
-        tabIndex={tabIndex}
+      {isJSONField && (
+        <Numeration fontSize={fontSize}>
+          {numerationValue.join("\n")}
+        </Numeration>
+      )}
+      <ColorTheme
+        themeId={ThemeType.Textarea}
+        className={className}
+        style={style}
+        stype="preMediumBlack"
         isDisabled={isDisabled}
-        disabled={isDisabled}
-        readOnly={isReadOnly}
-        value={isJSONField ? modifiedValue : value}
-        fontSize={fontSize}
-        color={color}
-        autoFocus={autoFocus}
-        ref={areaRef}
-      />
-    </ColorTheme>
+        hasError={isError}
+        heightScale={heightScale}
+        heighttextarea={textareaHeight}
+      >
+        <Toast />
+
+        <StyledTextarea
+          id={id}
+          placeholder={placeholder}
+          onChange={(e) => onChange && onChange(e)}
+          maxLength={maxLength}
+          name={name}
+          tabIndex={tabIndex}
+          isDisabled={isDisabled}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          value={isJSONField ? modifiedValue : value}
+          fontSize={fontSize}
+          color={color}
+          autoFocus={autoFocus}
+          ref={areaRef}
+        />
+      </ColorTheme>
+    </Wrapper>
   );
 };
 
