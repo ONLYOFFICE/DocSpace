@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   isNullOrUndefined,
   findNearestIndex,
-} from "@docspace/common/components/MediaViewerV2/helpers";
+} from "@docspace/common/components/MediaViewer/helpers";
 
 class MediaViewerDataStore {
   filesStore;

@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import queryString from "query-string";
 import history from "@docspace/common/history";
-import MediaViewer from "@docspace/common/components/MediaViewerV2";
+import MediaViewer from "@docspace/common/components/MediaViewer";
 
 const FilesMediaViewer = (props) => {
   const {

@@ -1,7 +1,7 @@
 import { isMobileOnly } from "react-device-detect";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
-import ImageViewer from "../MediaViewer/sub-components/image-viewer";
+import ImageViewer from "./sub-components/image-viewer";
 
 import { MediaViewerProps } from "./MediaViewer.props";
 import { FileStatus } from "@docspace/common/constants";
