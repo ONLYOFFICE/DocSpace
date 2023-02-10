@@ -170,7 +170,7 @@ const SortButton = ({
   onSort,
   viewSelectorVisible,
 
-  onSornButtonClick,
+  onSortButtonClick,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -216,7 +216,7 @@ const SortButton = ({
   }, []);
 
   React.useEffect(() => {
-    onSornButtonClick && onSornButtonClick(!isOpen);
+    onSortButtonClick && onSortButtonClick(!isOpen);
   }, [isOpen]);
 
   const onOptionClick = React.useCallback(

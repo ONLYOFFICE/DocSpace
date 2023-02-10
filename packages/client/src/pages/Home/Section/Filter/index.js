@@ -1305,7 +1305,7 @@ const SectionFilterContent = ({
     ]
   );
 
-  const onSornButtonClick = (isOpen) => {
+  const onSortButtonClick = (isOpen) => {
     if (isMobileOnly) {
       setMainButtonMobileVisible && setMainButtonMobileVisible(isOpen);
     }
@@ -1354,7 +1354,7 @@ const SectionFilterContent = ({
       filterTitle={t("Filter")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
-      onSornButtonClick={onSornButtonClick}
+      onSortButtonClick={onSortButtonClick}
     />
   );
 };
