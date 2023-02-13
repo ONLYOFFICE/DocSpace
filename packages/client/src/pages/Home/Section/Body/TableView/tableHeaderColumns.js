@@ -137,7 +137,7 @@ export const trashColumns = [
     title: t("ByErasure"),
     enable: this.props.erasureColumnIsEnabled,
     resizable: true,
-    sortBy: "DateAndTime",
+    sortBy: "DateAndTimeAutoDelete",
     onClick: this.onFilter,
     onChange: this.onColumnChange,
   },
