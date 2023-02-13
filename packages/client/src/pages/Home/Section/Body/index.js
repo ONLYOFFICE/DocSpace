@@ -188,7 +188,6 @@ const SectionBodyContent = (props) => {
     const splitValue = treeDataValue && treeDataValue.split(" ");
     const isDragging = splitValue && splitValue.includes("dragging");
     const treeValue = isDragging ? splitValue[0] : null;
-    const treeProvider = splitValue && splitValue[splitValue.length - 1];
 
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
@@ -201,21 +200,20 @@ const SectionBodyContent = (props) => {
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
-    const providerKey = value ? value.split("_")[2]?.trim() : treeProvider;
 
     setStartDrag(false);
     setDragging(false);
-    onMoveTo(folderId, title, providerKey);
+    onMoveTo(folderId, title);
     isDragActive = false;
     return;
   };
 
-  const onMoveTo = (destFolderId, title, providerKey) => {
+  const onMoveTo = (destFolderId, title) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
-    moveDragItems(id, title, providerKey, {
+    moveDragItems(id, title, {
       copy: t("Common:CopyOperation"),
       move: t("Translations:MoveToOperation"),
-    }); //TODO: then catch
+    });
   };
 
   const onDropEvent = () => {

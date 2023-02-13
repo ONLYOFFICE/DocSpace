@@ -2438,7 +2438,7 @@ class FilesStore {
       const previewUrl = canOpenPlayer
         ? this.getItemUrl(id, false, needConvert, canOpenPlayer)
         : null;
-      const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const contextOptions = this.getFilesContextOptions(item);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       const iconSize = this.viewAs === "table" ? 24 : 32;
