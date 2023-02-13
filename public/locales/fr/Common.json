@@ -66,7 +66,7 @@
   "DomainIpAddress": "Les domaines sous forme d'adresse IP ne sont pas pris en charge",
   "Done": "Terminé",
   "Download": "Télécharger",
-  "Duplicate": "Créer une copie",
+  "CreateCopy": "Créer une copie",
   "EditButton": "Modifier",
   "Email": "E-mail",
   "EmptyEmail": "Aucun e-mail n'a été analysé",
