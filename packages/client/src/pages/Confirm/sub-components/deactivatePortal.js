@@ -101,7 +101,7 @@ export default inject(({ auth }) => ({
 }))(
   withRouter(
     withTranslation(["Confirm", "Settings", "Common"])(
-      withLoader(observer(DeactivatePoDeactivatePortalrtalWrapper))
+      withLoader(observer(DeactivatePortal))
     )
   )
 );
