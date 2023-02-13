@@ -140,15 +140,6 @@ class PaymentStore {
     }
   };
 
-  setStartPaymentLink = async (t) => {
-    try {
-      const link = await api.portal.getPaymentLink(this.managersCount);
-      this.setPaymentLink(link);
-    } catch (e) {
-      toastr.error(t("ErrorNotification"));
-    }
-  };
-
   setTotalPrice = (value) => {
     const price = this.getTotalCostByFormula(value);
     if (price !== this.totalPrice) this.totalPrice = price;
