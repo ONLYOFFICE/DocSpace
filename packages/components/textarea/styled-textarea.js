@@ -51,16 +51,14 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
 }))`
   ${commonInputStyle};
 
-  min-width: 600px;
-  max-width: 1200px;
-
   width: 100%;
   height: fit-content;
   border: none;
   outline: none;
   resize: none;
   overflow: hidden;
-  padding: 5px 8px 2px 42px;
+  padding: 5px 8px 2px;
+  padding-left: ${(props) => (props.isJSONField ? "42px" : "8px")};
   font-size: ${(props) => props.fontSize + "px"};
   font-family: Open Sans, sans-serif, Arial;
   line-height: 1.5;
@@ -127,6 +125,9 @@ StyledCopyIcon.defaultProps = {
 
 const Wrapper = styled.div`
   position: relative;
+
+  min-width: ${(props) => (props.isJSONField ? "600px" : "none")};
+  max-width: ${(props) => (props.isJSONField ? "1200px" : "none")};
 `;
 
 const Numeration = styled.pre`
@@ -141,6 +142,7 @@ const Numeration = styled.pre`
   left: 18px;
   text-align: right;
   color: #a3a9ae;
+
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
