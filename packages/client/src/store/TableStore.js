@@ -3,12 +3,15 @@ import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
 const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
+const TABLE_TRASH_COLUMNS = `trashTableColumns_ver-${TableVersions.Trash}`;
 
 const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
 const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
+const COLUMNS_TRASH_SIZE = `trashColumnsSize_ver-${TableVersions.Trash}`;
 
 const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
 const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
+const COLUMNS_TRASH_SIZE_INFO_PANEL = `trashColumnsSizeInfoPanel_ver-${TableVersions.Trash}`;
 
 class TableStore {
   authStore;
@@ -22,6 +25,7 @@ class TableStore {
 
   nameColumnIsEnabled = true; // always true
   authorColumnIsEnabled = false;
+  erasureColumnIsEnabled = true;
   createdColumnIsEnabled = true;
   modifiedColumnIsEnabled = true;
   sizeColumnIsEnabled = true;
@@ -54,18 +58,27 @@ class TableStore {
   setAuthorColumn = (enable) => {
     this.authorColumnIsEnabled = enable;
   };
+
   setCreatedColumn = (enable) => {
     this.createdColumnIsEnabled = enable;
   };
+
   setModifiedColumn = (enable) => {
     this.modifiedColumnIsEnabled = enable;
   };
+
+  setErasureColumn = (enable) => {
+    this.erasureColumnIsEnabled = enable;
+  };
+
   setSizeColumn = (enable) => {
     this.sizeColumnIsEnabled = enable;
   };
+
   setTypeColumn = (enable) => {
     this.typeColumnIsEnabled = enable;
   };
+
   setQuickButtonsColumn = (enable) => {
     this.quickButtonsColumnIsEnabled = enable;
   };
@@ -75,7 +88,11 @@ class TableStore {
     const splitColumns = storageColumns && storageColumns.split(",");
 
     if (splitColumns) {
-      const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+      const {
+        isRoomsFolder,
+        isArchiveFolder,
+        isTrashFolder,
+      } = this.treeFoldersStore;
       const isRooms = isRoomsFolder || isArchiveFolder;
 
       if (isRooms) {
@@ -83,14 +100,25 @@ class TableStore {
         this.setRoomColumnTags(splitColumns.includes("Tags"));
         this.setRoomColumnOwner(splitColumns.includes("Owner"));
         this.setRoomColumnActivity(splitColumns.includes("Activity"));
-      } else {
+        return;
+      }
+
+      if (isTrashFolder) {
         this.setAuthorColumn(splitColumns.includes("Author"));
         this.setCreatedColumn(splitColumns.includes("Created"));
-        this.setModifiedColumn(splitColumns.includes("Modified"));
+        this.setErasureColumn(splitColumns.includes("Erasure"));
         this.setSizeColumn(splitColumns.includes("Size"));
         this.setTypeColumn(splitColumns.includes("Type"));
         this.setQuickButtonsColumn(splitColumns.includes("QuickButtons"));
+        return;
       }
+
+      this.setModifiedColumn(splitColumns.includes("Modified"));
+      this.setAuthorColumn(splitColumns.includes("Author"));
+      this.setCreatedColumn(splitColumns.includes("Created"));
+      this.setSizeColumn(splitColumns.includes("Size"));
+      this.setTypeColumn(splitColumns.includes("Type"));
+      this.setQuickButtonsColumn(splitColumns.includes("QuickButtons"));
     }
   };
 
@@ -107,6 +135,9 @@ class TableStore {
         return;
       case "Modified":
         this.setModifiedColumn(!this.modifiedColumnIsEnabled);
+        return;
+      case "Erasure":
+        this.setErasureColumn(!this.erasureColumnIsEnabled);
         return;
       case "Size":
         this.setSizeColumn(!this.sizeColumnIsEnabled);
@@ -155,32 +186,50 @@ class TableStore {
   };
 
   get tableStorageName() {
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const userId = this.authStore.userStore.user.id;
 
     return isRooms
       ? `${TABLE_ROOMS_COLUMNS}=${userId}`
+      : isTrashFolder
+      ? `${TABLE_TRASH_COLUMNS}=${userId}`
       : `${TABLE_COLUMNS}=${userId}`;
   }
 
   get columnStorageName() {
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const userId = this.authStore.userStore.user.id;
 
     return isRooms
       ? `${COLUMNS_ROOMS_SIZE}=${userId}`
+      : isTrashFolder
+      ? `${COLUMNS_TRASH_SIZE}=${userId}`
       : `${COLUMNS_SIZE}=${userId}`;
   }
 
   get columnInfoPanelStorageName() {
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const userId = this.authStore.userStore.user.id;
 
     return isRooms
       ? `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`
+      : isTrashFolder
+      ? `${COLUMNS_TRASH_SIZE_INFO_PANEL}=${userId}`
       : `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
   }
 
@@ -192,6 +241,11 @@ class TableStore {
     const userId = this.authStore.userStore.user.id;
     return `${COLUMNS_ROOMS_SIZE}=${userId}`;
   }
+  get trashColumnStorageName() {
+    const userId = this.authStore.userStore.user.id;
+    return `${COLUMNS_TRASH_SIZE}=${userId}`;
+  }
+
   get filesColumnInfoPanelStorageName() {
     const userId = this.authStore.userStore.user.id;
     return `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
@@ -199,6 +253,10 @@ class TableStore {
   get roomsColumnInfoPanelStorageName() {
     const userId = this.authStore.userStore.user.id;
     return `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`;
+  }
+  get trashColumnInfoPanelStorageName() {
+    const userId = this.authStore.userStore.user.id;
+    return `${COLUMNS_TRASH_SIZE_INFO_PANEL}=${userId}`;
   }
 }
 
