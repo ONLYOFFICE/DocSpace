@@ -280,7 +280,7 @@ const StyledFileTileTop = styled.div`
   }
 
   ${(props) =>
-    props.startAnimation &&
+    props.isHighlight &&
     css`
       ${animationStyles}
     `}
