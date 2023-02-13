@@ -264,7 +264,8 @@ class SelectionArea extends React.Component {
       e.target.closest(".not-selectable") ||
       e.target.closest(".tile-selected") ||
       e.target.closest(".table-row-selected") ||
-      e.target.closest(".row-selected")
+      e.target.closest(".row-selected") ||
+      !e.target.closest("#sectionScroll")
     )
       return;
 
