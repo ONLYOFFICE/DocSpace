@@ -2353,8 +2353,6 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const isAnimation = id === this.fileHighlight;
-
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2431,7 +2429,6 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
-        isAnimation,
         created,
         createdBy,
         encrypted,
