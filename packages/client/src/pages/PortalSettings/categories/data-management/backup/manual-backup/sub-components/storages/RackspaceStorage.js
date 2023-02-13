@@ -48,7 +48,7 @@ class RackspaceStorage extends React.Component {
 
         <div className="manual-backup_buttons">
           <Button
-            label={t("Common:Duplicate")}
+            label={t("Common:CreateCopy")}
             onClick={onMakeCopyIntoStorage}
             primary
             isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
