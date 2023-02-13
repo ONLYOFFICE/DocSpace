@@ -115,9 +115,7 @@ const FilesRowContainer = ({
         <SimpleFilesRow
           id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
           key={
-            item?.version
-              ? `${item.id}_${item.version}`
-              : `${item.id}_${item.index}`
+            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
           }
           item={item}
           sectionWidth={sectionWidth}

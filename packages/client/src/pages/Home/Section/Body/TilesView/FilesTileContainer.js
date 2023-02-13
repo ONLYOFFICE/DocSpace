@@ -102,7 +102,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             key={
               item?.version
                 ? `${item.id}_${item.version}`
-                : `${item.id}_${item.index}`
+                : `${item.id}_${index}`
             }
             item={item}
             sectionWidth={sectionWidth}
@@ -117,7 +117,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             key={
               item?.version
                 ? `${item.id}_${item.version}`
-                : `${item.id}_${item.index}`
+                : `${item.id}_${index}`
             }
             item={item}
             sectionWidth={sectionWidth}

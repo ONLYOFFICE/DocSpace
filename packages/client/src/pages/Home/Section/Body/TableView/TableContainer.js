@@ -202,7 +202,7 @@ const Table = ({
               key={
                 item?.version
                   ? `${item.id}_${item.version}`
-                  : `${item.id}_${item.index}`
+                  : `${item.id}_${index}`
               }
               item={item}
               index={index}
