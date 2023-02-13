@@ -66,7 +66,7 @@
   "DomainIpAddress": "Domains als IP-Adressen werden nicht unterstützt",
   "Done": "Fertig",
   "Download": "Herunterladen",
-  "Duplicate": "Kopie erstellen",
+  "CreateCopy": "Kopie erstellen",
   "EditButton": "Bearbeiten",
   "Email": "E-Mail",
   "EmptyEmail": "Kein E-Mail wurde eingegeben",

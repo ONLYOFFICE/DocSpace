@@ -101,6 +101,7 @@ class FilesStore {
   pageItemsLength = null;
   isHidePagination = false;
   trashIsEmpty = false;
+  mainButtonMobileVisible = true;
   filesIsLoading = false;
 
   isEmptyPage = false;
@@ -3086,6 +3087,10 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  setMainButtonMobileVisible = (visible) => {
+    this.mainButtonMobileVisible = visible;
   };
 
   get roomsFilterTotal() {

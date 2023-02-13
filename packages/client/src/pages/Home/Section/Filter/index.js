@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
 
@@ -175,6 +176,7 @@ const SectionFilterContent = ({
   isEmptyPage,
   clearSearch,
   setClearSearch,
+  setMainButtonMobileVisible,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -1303,6 +1305,12 @@ const SectionFilterContent = ({
     ]
   );
 
+  const onSortButtonClick = (isOpen) => {
+    if (isMobileOnly) {
+      setMainButtonMobileVisible(isOpen);
+    }
+  };
+
   const clearAll = () => {
     if (isRooms) {
       setIsLoading(true);
@@ -1346,6 +1354,7 @@ const SectionFilterContent = ({
       filterTitle={t("Filter")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
+      onSortButtonClick={onSortButtonClick}
     />
   );
 };
@@ -1369,6 +1378,7 @@ export default inject(
       viewAs,
       createThumbnails,
       setCurrentRoomsFilter,
+      setMainButtonMobileVisible,
       thirdPartyStore,
       clearSearch,
       setClearSearch,
@@ -1437,6 +1447,8 @@ export default inject(
 
       clearSearch,
       setClearSearch,
+
+      setMainButtonMobileVisible,
     };
   }
 )(
