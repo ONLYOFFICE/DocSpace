@@ -2,9 +2,8 @@ import React from "react";
 import { StyledText } from "./CellStyles";
 import moment from "moment";
 
-const ErasureCell = ({ t, autoDelete, sideColor }) => {
-  const daysRemaining = 30 - moment().diff(autoDelete, "days");
-
+const ErasureCell = ({ t, item, sideColor }) => {
+  const daysRemaining = Math.abs(moment().diff(item.autoDelete, "days"));
   const title = t("Files:DaysRemaining", { daysRemaining });
 
   return (
