@@ -11,7 +11,6 @@ import {
   StyledBadgesContainer,
   StyledQuickButtonsContainer,
 } from "../StyledTable";
-import ErasureCell from "./ErasureCell";
 
 const RowDataComponent = (props) => {
   const {

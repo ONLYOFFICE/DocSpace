@@ -267,8 +267,8 @@ export const connectedCloudsTypeIcon = (key) => {
   }
 };
 
-export const getErasure = (autoDelete) => {
-  let daysRemaining = 30 - moment().diff(autoDelete, "days");
+export const getDaysRemaining = (autoDelete) => {
+  let daysRemaining = moment(autoDelete).diff(moment(), "days");
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
 };

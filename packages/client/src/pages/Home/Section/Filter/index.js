@@ -1083,6 +1083,12 @@ const SectionFilterContent = ({
       label: t("Common:Owner"),
       default: true,
     };
+    const room = {
+      id: "sort-by_room",
+      key: "Room",
+      label: t("Common:Room"),
+      default: true,
+    };
     const erasure = {
       id: "sort-by_erasure",
       key: "Erasure",
@@ -1179,6 +1185,15 @@ const SectionFilterContent = ({
             infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(creationDate);
+        }
+        if (availableSort?.includes("Room")) {
+          const idx = availableSort.findIndex((x) => x === "Room");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(room);
         }
         if (availableSort?.includes("Erasure")) {
           const idx = availableSort.findIndex((x) => x === "Erasure");

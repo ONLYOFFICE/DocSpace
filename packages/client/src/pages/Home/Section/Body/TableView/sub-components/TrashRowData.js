@@ -12,11 +12,13 @@ import {
   StyledQuickButtonsContainer,
 } from "../StyledTable";
 import ErasureCell from "./ErasureCell";
+import RoomCell from "./RoomCell";
 
 const TrashRowDataComponent = (props) => {
   const {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
+    roomColumnIsEnabled,
     erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,
@@ -85,6 +87,22 @@ const TrashRowDataComponent = (props) => {
         >
           <DateCell
             create
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
+        </TableCell>
+      ) : (
+        <div />
+      )}
+
+      {roomColumnIsEnabled ? (
+        <TableCell
+          style={
+            !roomColumnIsEnabled ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+        >
+          <RoomCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
@@ -170,6 +188,7 @@ export default inject(({ tableStore }) => {
   const {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
+    roomColumnIsEnabled,
     erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,
@@ -179,6 +198,7 @@ export default inject(({ tableStore }) => {
   return {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
+    roomColumnIsEnabled,
     erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,

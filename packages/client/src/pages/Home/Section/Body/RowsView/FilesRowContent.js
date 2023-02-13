@@ -14,7 +14,6 @@ import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
 import { desktop } from "@docspace/components/utils/device";
-import { getErasure } from "SRC_DIR/helpers/filesUtils";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -105,7 +104,7 @@ const FilesRowContent = ({
     providerKey,
     title,
     isRoom,
-    autoDelete,
+    daysRemaining,
   } = item;
 
   return (
@@ -143,7 +142,7 @@ const FilesRowContent = ({
         >
           {isTrashFolder
             ? t("Files:DaysRemaining", {
-                daysRemaining: getErasure(autoDelete),
+                daysRemaining,
               })
             : updatedDate && updatedDate}
         </Text>
