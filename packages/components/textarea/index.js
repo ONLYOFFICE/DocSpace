@@ -57,6 +57,10 @@ const Textarea = ({
     numerationValue.push(i);
   }
 
+  function onTextareaClick() {
+    areaRef.current.select();
+  }
+
   useEffect(() => {
     if (isJSONField) {
       if (modifiedValue && isJSON(modifiedValue)) {
@@ -74,7 +78,10 @@ const Textarea = ({
   }, [areaSelect]);
 
   return (
-    <Wrapper>
+    <Wrapper
+      isJSONField={isJSONField}
+      onFocus={isJSONField ? onTextareaClick : undefined}
+    >
       {isJSONField && (
         <StyledCopyIcon
           src={copyIcon}
@@ -103,6 +110,7 @@ const Textarea = ({
 
         <StyledTextarea
           id={id}
+          isJSONField={isJSONField}
           placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}
           maxLength={maxLength}
