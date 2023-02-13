@@ -1,7 +1,7 @@
 import { isMobileOnly } from "react-device-detect";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
-import ImageViewer from "./sub-components/image-viewer";
+import ViewerWrapper from "./sub-components/ViewerWrapper";
 
 import { MediaViewerProps } from "./MediaViewer.props";
 import { FileStatus } from "@docspace/common/constants";
@@ -415,7 +415,7 @@ function MediaViewer({
   return (
     <>
       {canOpen && (
-        <ImageViewer
+        <ViewerWrapper
           userAccess={props.userAccess}
           visible={props.visible}
           title={title}
