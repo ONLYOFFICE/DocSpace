@@ -17,7 +17,6 @@ const ButtonContainer = (props) => {
     isConfirmed,
     getStorageType,
     isNotification,
-    standalone,
     restoreResource,
     isCheckedThirdPartyStorage,
     isCheckedLocalFile,
@@ -69,12 +68,12 @@ const ButtonContainer = (props) => {
       storageParams = getStorageParams(true, null, restoreResource);
     } else {
       tempObj.key = "filePath";
-      tempObj.value = isCheckedLocalFile && !standalone ? "" : restoreResource;
+      tempObj.value = isCheckedLocalFile ? "" : restoreResource;
 
       storageParams.push(tempObj);
     }
 
-    if (!standalone && isCheckedLocalFile) {
+    if (isCheckedLocalFile) {
       const isUploadedFile = await localFileUploading();
 
       if (!isUploadedFile) {
@@ -149,7 +148,7 @@ const ButtonContainer = (props) => {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { socketHelper, setTenantStatus, standalone } = settingsStore;
+  const { socketHelper, setTenantStatus } = settingsStore;
   const {
     downloadingProgress,
     isFormReady,
@@ -161,7 +160,6 @@ export default inject(({ auth, backup }) => {
   const isMaxProgress = downloadingProgress === 100;
   return {
     isMaxProgress,
-    standalone,
     setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     downloadingProgress,
