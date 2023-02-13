@@ -66,7 +66,7 @@
   "DomainIpAddress": "Domény jako IP adresa nejsou podporovány",
   "Done": "Hotovo",
   "Download": "Stáhnout",
-  "Duplicate": "Vytvořit kopii",
+  "CreateCopy": "Vytvořit kopii",
   "EditButton": "Upravit",
   "Email": "E-mail",
   "EmptyEmail": "Nebyl analyzován žádný e-mail",

@@ -27,7 +27,6 @@ function MediaViewer({
   ...props
 }: MediaViewerProps): JSX.Element {
   const [title, setTitle] = useState<string>("");
-  const [canSwipeImage, setCanSwipeImage] = useState<boolean>(true);
   const [fileUrl, setFileUrl] = useState<string>(() => {
     const { playlist, currentFileId } = props;
     const item = playlist.find(
@@ -79,12 +78,6 @@ function MediaViewer({
     if (ext === ".tiff" || ext === ".tif") {
       fetchAndSetTiffDataURL(src);
     }
-
-    document.addEventListener("keydown", onKeydown);
-
-    return () => {
-      document.removeEventListener("keydown", onKeydown);
-    };
   }, []);
 
   useEffect(() => {
@@ -120,6 +113,19 @@ function MediaViewer({
     props.files.length,
     props.currentFileId,
     playlistPos,
+  ]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeydown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeydown);
+    };
+  }, [
+    props.playlist.length,
+    props.files.length,
+    playlistPos,
+    props.deleteDialogVisible,
   ]);
 
   const getContextModel = () => {
@@ -271,7 +277,6 @@ function MediaViewer({
 
     if (!canDelete) return;
 
-    setCanSwipeImage(false);
     if (!isNullOrUndefined(currentFileId)) onDelete(currentFileId);
   };
 
@@ -290,10 +295,11 @@ function MediaViewer({
     if (code in KeyboardEventKeys) {
       event.preventDefault();
     }
+    if (props.deleteDialogVisible) return;
 
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:
-        if (document.fullscreenElement || !canSwipeImage) return;
+        if (document.fullscreenElement) return;
 
         if (ctrlKey) {
           const rotateLeftElement = document.getElementsByClassName(
@@ -307,7 +313,7 @@ function MediaViewer({
         break;
 
       case KeyboardEventKeys.ArrowRight:
-        if (document.fullscreenElement || !canSwipeImage) return;
+        if (document.fullscreenElement) return;
 
         if (ctrlKey) {
           const rotateRightElement = document.getElementsByClassName(

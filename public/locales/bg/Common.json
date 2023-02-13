@@ -66,7 +66,7 @@
   "DomainIpAddress": "Домейни като IP адрес не се поддържат",
   "Done": "Готово",
   "Download": "Изтегли",
-  "Duplicate": "Създай копие",
+  "CreateCopy": "Създай копие",
   "EditButton": "Редактирай",
   "Email": "Имейл",
   "EmptyEmail": "Никой имейл не е анализиран",
