@@ -14,6 +14,7 @@ import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
 import { desktop } from "@docspace/components/utils/device";
+import { getErasure } from "SRC_DIR/helpers/filesUtils";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -94,6 +95,7 @@ const FilesRowContent = ({
   quickButtons,
   theme,
   isRooms,
+  isTrashFolder,
 }) => {
   const {
     contentLength,
@@ -103,6 +105,7 @@ const FilesRowContent = ({
     providerKey,
     title,
     isRoom,
+    autoDelete,
   } = item;
 
   return (
@@ -138,7 +141,11 @@ const FilesRowContent = ({
           // color={sideColor}
           className="row_update-text"
         >
-          {updatedDate && updatedDate}
+          {isTrashFolder
+            ? t("Files:DaysRemaining", {
+                daysRemaining: getErasure(autoDelete),
+              })
+            : updatedDate && updatedDate}
         </Text>
 
         <Text
@@ -166,8 +173,9 @@ const FilesRowContent = ({
   );
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, treeFoldersStore }) => {
+  const { isRecycleBinFolder } = treeFoldersStore;
+  return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
 })(
   observer(
     withRouter(

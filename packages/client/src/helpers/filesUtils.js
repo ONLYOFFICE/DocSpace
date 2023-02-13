@@ -13,6 +13,7 @@ import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
 import { addFileToRecentlyViewed } from "@docspace/common/api/files";
 import i18n from "./i18n";
+import moment from "moment";
 
 import { request } from "@docspace/common/api/client";
 
@@ -264,4 +265,10 @@ export const connectedCloudsTypeIcon = (key) => {
       return CloudServicesWebdavReactSvgUrl;
     default:
   }
+};
+
+export const getErasure = (autoDelete) => {
+  let daysRemaining = 30 - moment().diff(autoDelete, "days");
+  if (daysRemaining <= 0) return "<1";
+  return "" + daysRemaining;
 };

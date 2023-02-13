@@ -1,10 +1,9 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
-import moment from "moment";
+import { getErasure } from "SRC_DIR/helpers/filesUtils";
 
 const ErasureCell = ({ t, autoDelete, sideColor }) => {
-  const daysRemaining = 30 - moment().diff(autoDelete, "days");
-
+  const daysRemaining = getErasure(autoDelete);
   const title = t("Files:DaysRemaining", { daysRemaining });
 
   return (
