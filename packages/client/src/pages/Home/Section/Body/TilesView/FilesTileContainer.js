@@ -99,7 +99,11 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
         return index % 11 == 0 ? (
           <FileTile
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
+            key={
+              item?.version
+                ? `${item.id}_${item.version}`
+                : `${item.id}_${item.index}`
+            }
             item={item}
             sectionWidth={sectionWidth}
             selectableRef={onSetTileRef}
@@ -110,7 +114,11 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
         ) : (
           <FileTile
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
+            key={
+              item?.version
+                ? `${item.id}_${item.version}`
+                : `${item.id}_${item.index}`
+            }
             item={item}
             sectionWidth={sectionWidth}
             thumbSize={thumbSize}

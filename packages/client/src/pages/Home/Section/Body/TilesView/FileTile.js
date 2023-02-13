@@ -55,23 +55,16 @@ const FileTile = (props) => {
     withCtrlSelect,
     withShiftSelect,
     setFileHighlight,
+    fileHighlight,
   } = props;
 
-  const [startAnimation, setStartAnimation] = React.useState(false);
+  const [isHighlight, setIsHighlight] = React.useState(false);
 
   useEffect(() => {
-    setStartAnimation(false);
-  }, []);
-
-  useEffect(() => {
-    if (!item.isAnimation) return;
-
-    setStartAnimation(true);
-
-    return () => {
-      if (startAnimation) setFileHighlight(null);
-    };
-  }, [item, startAnimation]);
+    if (fileHighlight !== item.id) return;
+    setIsHighlight(true);
+    setFileHighlight(null);
+  }, [fileHighlight, item.id]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -143,7 +136,7 @@ const FileTile = (props) => {
           isRooms={isRooms}
           withCtrlSelect={withCtrlSelect}
           withShiftSelect={withShiftSelect}
-          startAnimation={startAnimation}
+          isHighlight={isHighlight}
         >
           <FilesTileContent
             item={item}
@@ -164,6 +157,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     withCtrlSelect,
     withShiftSelect,
     setFileHighlight,
+    fileHighlight,
   } = filesStore;
 
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -177,6 +171,7 @@ export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
     withCtrlSelect,
     withShiftSelect,
     setFileHighlight,
+    fileHighlight,
   };
 })(
   withTranslation(["Files", "InfoPanel"])(

@@ -83,6 +83,7 @@ const FilesRowContainer = ({
   isRooms,
   withPaging,
   setFileHighlight,
+  fileHighlight,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -113,11 +114,16 @@ const FilesRowContainer = ({
       {filesList.map((item, index) => (
         <SimpleFilesRow
           id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-          key={`${item.id}_${index}`}
+          key={
+            item?.version
+              ? `${item.id}_${item.version}`
+              : `${item.id}_${item.index}`
+          }
           item={item}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
           setFileHighlight={setFileHighlight}
+          fileHighlight={fileHighlight}
         />
       ))}
     </StyledRowContainer>
@@ -134,6 +140,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     hasMoreFiles,
     roomsFilterTotal,
     setFileHighlight,
+    fileHighlight,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -152,5 +159,6 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     isRooms,
     withPaging,
     setFileHighlight,
+    fileHighlight,
   };
 })(observer(FilesRowContainer));

@@ -177,7 +177,7 @@ const StyledTableRow = styled(TableRow)`
     `}
 
   ${(props) =>
-    props.startAnimation &&
+    props.isHighlight &&
     css`
       .table-container_cell:not(.table-container_element-wrapper) {
         animation: Highlight 2s 1;
