@@ -81,6 +81,7 @@ const FilesRowContainer = ({
   fetchMoreFiles,
   hasMoreFiles,
   isRooms,
+  isTrashFolder,
   withPaging,
   setUploadedFileIdWithVersion,
 }) => {
@@ -98,6 +99,8 @@ const FilesRowContainer = ({
       viewAs !== "table" && setViewAs("table");
     }
   }, [sectionWidth]);
+
+  console.log(filesList[0]);
 
   return (
     <StyledRowContainer
@@ -118,6 +121,7 @@ const FilesRowContainer = ({
           itemIndex={index}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
+          isTrashFolder={isTrashFolder}
           setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
         />
       ))}
@@ -137,7 +141,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     setUploadedFileIdWithVersion,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
   const { withPaging } = auth.settingsStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
@@ -151,6 +155,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     isRooms,
+    isTrashFolder,
     withPaging,
     setUploadedFileIdWithVersion,
   };
