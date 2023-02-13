@@ -225,7 +225,7 @@ export default function withFileActions(WrappedFileItem) {
 
         itemIndex,
       } = this.props;
-      const { fileExst, access, id } = item;
+      const { access, id } = item;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -233,11 +233,7 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable
-        ? "_draggable"
-        : item.providerKey
-        ? `_${item.providerKey}`
-        : "_false";
+      value += draggable ? "_draggable" : "_false";
 
       value += `_index_${itemIndex}`;
 
