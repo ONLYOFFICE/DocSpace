@@ -95,6 +95,7 @@ export type ContextMenuType = {
   icon: string;
   disabled: boolean;
   onClick: VoidFunction;
+  isSeparator?: undefined;
 };
 
 export type SeparatorType = {
