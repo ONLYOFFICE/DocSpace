@@ -1,29 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import Button from "@docspace/components/button";
-import Checkbox from "@docspace/components/checkbox";
-import Text from "@docspace/components/text";
-import RadioButton from "@docspace/components/radio-button";
-import toastr from "@docspace/components/toast/toastr";
-import { startRestore } from "@docspace/common/api/portal";
-import { combineUrl } from "@docspace/common/utils";
-import { BackupStorageType, TenantStatus } from "@docspace/common/constants";
-import { request } from "@docspace/common/api/client";
-import { StyledRestoreBackup } from "./../StyledBackup";
-import BackupListModalDialog from "./sub-components/backup-list";
-import RoomsModule from "./sub-components/RoomsModule";
-import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
-import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
-import LocalFile from "./sub-components/LocalFileModule";
-import config from "PACKAGE_FILE";
+
+import { getSettingsThirdParty } from "@docspace/common/api/files";
 import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
-import FloatingButton from "@docspace/common/components/FloatingButton";
-import { getSettingsThirdParty } from "@docspace/common/api/files";
+import toastr from "@docspace/components/toast/toastr";
+import RadioButtonGroup from "@docspace/components/radio-button-group";
+import { BackupStorageType } from "@docspace/common/constants";
+import Checkbox from "@docspace/components/checkbox";
+import Text from "@docspace/components/text";
+
+import LocalFileModule from "./sub-components/LocalFileModule";
+import ThirdPartyStoragesModule from "./sub-components/ThirdPartyStoragesModule";
+import ThirdPartyResourcesModule from "./sub-components/ThirdPartyResourcesModule";
+import BackupListModalDialog from "./sub-components/backup-list";
+import RoomsModule from "./sub-components/RoomsModule";
+import ButtonContainer from "./sub-components/ButtonComponent";
+import { StyledRestoreBackup } from "../StyledBackup";
+
+const LOCAL_FILE = "localFile",
+  BACKUP_ROOM = "backupRoom",
+  DISK_SPACE = "thirdPartyDiskSpace",
+  STORAGE_SPACE = "thirdPartyStorageSpace";
+
+const NOTIFICATION = "notification",
+  CONFIRMATION = "confirmation";
 
 const {
   DocumentModuleType,
@@ -31,47 +36,38 @@ const {
   StorageModuleType,
   LocalFileModuleType,
 } = BackupStorageType;
-class RestoreBackup extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isChecked: false,
-      isNotify: true,
-      isVisibleDialog: false,
-      isPanelVisible: false,
-      isCheckedDocuments: false,
-      isCheckedThirdParty: false,
-      isCheckedThirdPartyStorage: false,
-      isCheckedLocalFile: true,
-      selectedFileId: "",
-      selectedFile: "",
 
-      isFileSelectedError: false,
-      isInitialLoading: true,
-      checkingRecoveryData: false,
-    };
+const RestoreBackup = (props) => {
+  const {
+    getProgress,
+    t,
+    setThirdPartyStorage,
+    setStorageRegions,
+    setConnectedThirdPartyAccount,
+    clearProgressInterval,
+    isEnableRestore,
+    setRestoreResource,
+    buttonSize,
+    history,
+  } = props;
 
-    this.switches = [
-      "isCheckedLocalFile",
-      "isCheckedDocuments",
-      "isCheckedThirdParty",
-      "isCheckedThirdPartyStorage",
-    ];
+  const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
+  const [checkboxState, setCheckboxState] = useState({
+    notification: true,
+    confirmation: false,
+  });
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isVisibleBackupListDialog, setIsVisibleBackupListDialog] = useState(
+    false
+  );
+  const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] = useState(
+    false
+  );
 
-    this.storageId = "";
-  }
-
-  setBasicSettings = async () => {
-    const {
-      getProgress,
-      t,
-      setThirdPartyStorage,
-      setStorageRegions,
-      setConnectedThirdPartyAccount,
-    } = this.props;
-
+  useEffect(async () => {
     try {
       getProgress(t);
+
       const [account, backupStorage, storageRegions] = await Promise.all([
         getSettingsThirdParty(),
         getBackupStorage(),
@@ -82,439 +78,223 @@ class RestoreBackup extends React.Component {
       setThirdPartyStorage(backupStorage);
       setStorageRegions(storageRegions);
 
-      this.setState({
-        isInitialLoading: false,
-      });
+      setIsInitialLoading(false);
     } catch (error) {
       toastr.error(error);
-
-      this.setState({
-        isInitialLoading: false,
-      });
-    }
-  };
-
-  componentDidMount() {
-    this.setBasicSettings();
-  }
-
-  componentWillUnmount() {
-    const { clearProgressInterval } = this.props;
-    clearProgressInterval();
-  }
-  onChangeCheckbox = () => {
-    this.setState({
-      isChecked: !this.state.isChecked,
-    });
-  };
-  onChangeCheckboxNotify = () => {
-    this.setState({
-      isNotify: !this.state.isNotify,
-    });
-  };
-  onClickBackupList = () => {
-    this.setState({
-      isVisibleDialog: !this.state.isVisibleDialog,
-    });
-  };
-  onModalClose = () => {
-    this.setState({
-      isVisibleDialog: false,
-    });
-  };
-  onClickInput = () => {
-    this.setState({
-      isPanelVisible: true,
-    });
-  };
-  onPanelClose = () => {
-    this.setState({
-      isPanelVisible: false,
-    });
-  };
-  onClickShowStorage = (e) => {
-    let newStateObj = {};
-    const name = e.target.name;
-    newStateObj[name] = true;
-    const newState = this.switches.filter((el) => el !== name);
-    newState.forEach((name) => (newStateObj[name] = false));
-    this.setState({
-      ...newStateObj,
-    });
-  };
-  onSelectFile = (file) => {
-    this.setState({
-      selectedFileId: file.id,
-    });
-  };
-  onSelectLocalFile = (data) => {
-    this.setState({
-      selectedFile: data,
-    });
-  };
-  canRestore = () => {
-    const {
-      isCheckedDocuments,
-      isCheckedLocalFile,
-      selectedFileId,
-      selectedFile,
-      isCheckedThirdPartyStorage,
-      isCheckedThirdParty,
-    } = this.state;
-
-    const { isFormReady } = this.props;
-
-    if (isCheckedDocuments || isCheckedThirdParty) {
-      if (!selectedFileId) return false;
-      return true;
-    }
-    if (isCheckedLocalFile) {
-      if (!selectedFile) return false;
-      return true;
     }
 
-    if (isCheckedThirdPartyStorage) {
-      return isFormReady();
-    }
-  };
-  onRestoreClick = async () => {
-    const {
-      isNotify,
-      isCheckedDocuments,
-      isCheckedLocalFile,
-      selectedFileId,
-      selectedFile,
-      isCheckedThirdPartyStorage,
-      isCheckedThirdParty,
-    } = this.state;
-    const {
-      history,
-      socketHelper,
-      getStorageParams,
-      setTenantStatus,
-    } = this.props;
-
-    if (!this.canRestore()) {
-      this.setState({
-        isFileSelectedError: true,
-      });
-      return;
-    }
-    this.setState({
-      checkingRecoveryData: true,
-      isFileSelectedError: false,
-    });
-    let storageParams = [];
-    let obj = {};
-    const backupId = "";
-    const storageType = isCheckedDocuments
-      ? `${DocumentModuleType}`
-      : isCheckedThirdParty
-      ? `${ResourcesModuleType}`
-      : isCheckedLocalFile
-      ? `${LocalFileModuleType}`
-      : `${StorageModuleType}`;
-
-    if (isCheckedThirdPartyStorage) {
-      storageParams = getStorageParams(true, null, this.storageId);
-    } else {
-      obj.key = "filePath";
-      if (isCheckedDocuments || isCheckedThirdParty) {
-        obj.value = selectedFileId;
-      } else {
-        obj.value = "";
-      }
-      storageParams.push(obj);
-    }
-    let checkedFile;
-    try {
-      if (isCheckedLocalFile) {
-        checkedFile = await request({
-          baseURL: combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage
-          ),
-          method: "post",
-          url: `/backupFileUpload.ashx`,
-          responseType: "text",
-          data: selectedFile,
-        });
-      }
-    } catch (e) {
-      toastr.error(e);
-      this.setState({
-        checkingRecoveryData: false,
-      });
-      return;
-    }
-    if (isCheckedLocalFile && checkedFile?.Message) {
-      toastr.error(checkedFile.Message);
-      this.setState({
-        checkingRecoveryData: false,
-      });
-      return;
-    }
-
-    startRestore(backupId, storageType, storageParams, isNotify)
-      .then(() => setTenantStatus(TenantStatus.PortalRestore))
-      .then(() => {
-        socketHelper.emit({
-          command: "restore-backup",
-        });
-      })
-      .then(() => this.setState({ checkingRecoveryData: false }))
-      .then(() =>
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage,
-            "/preparation-portal"
-          )
-        )
-      )
-      .catch((error) => {
-        toastr.error(error);
-        this.setState({
-          checkingRecoveryData: false,
-        });
-      });
-  };
-
-  onSetStorageId = (storageId) => {
-    this.storageId = storageId;
-  };
-
-  render() {
-    const {
-      t,
-      history,
-      downloadingProgress,
-      buttonSize,
-      theme,
-      isEnableRestore,
-    } = this.props;
-    const {
-      isChecked,
-      isInitialLoading,
-      isNotify,
-      isVisibleDialog,
-      isPanelVisible,
-      isCheckedDocuments,
-      isCheckedThirdParty,
-      isCheckedThirdPartyStorage,
-      isCheckedLocalFile,
-      checkingRecoveryData,
-      isFileSelectedError,
-    } = this.state;
-
-    const commonRadioButtonProps = {
-      fontSize: "13px",
-      fontWeight: "400",
-      value: "value",
-      className: "backup_radio-button",
-      onClick: this.onClickShowStorage,
+    return () => {
+      clearProgressInterval();
+      setRestoreResource(null);
     };
+  }, []);
 
-    const onClickVersionListProp = isEnableRestore
-      ? { onClick: this.onClickBackupList }
-      : {};
+  const onChangeRadioButton = (e) => {
+    const value = e.target.value;
+    if (value === radioButtonState) return;
 
-    const isMaxProgress = downloadingProgress === 100;
+    setRestoreResource(null);
+    setRadioButtonState(value);
+  };
 
-    return isInitialLoading ? (
-      <RestoreBackupLoader />
-    ) : (
-      <StyledRestoreBackup theme={theme} isEnableRestore={isEnableRestore}>
-        <div className="restore-description">
-          <Text className="restore-description settings_unavailable">
-            {t("RestoreBackupDescription")}
-          </Text>
-        </div>
+  const onChangeCheckbox = (e) => {
+    const name = e.target.name;
+    const checked = e.target.checked;
 
-        <RadioButton
-          label={t("LocalFile")}
-          name={"isCheckedLocalFile"}
-          key={4}
-          isChecked={isCheckedLocalFile}
+    setCheckboxState({ ...checkboxState, [name]: checked });
+  };
+
+  const getStorageType = () => {
+    switch (radioButtonState) {
+      case LOCAL_FILE:
+        return LocalFileModuleType;
+      case BACKUP_ROOM:
+        return DocumentModuleType;
+      case DISK_SPACE:
+        return ResourcesModuleType;
+      case STORAGE_SPACE:
+        return StorageModuleType;
+    }
+  };
+
+  const onClickBackupList = () => {
+    setIsVisibleBackupListDialog(true);
+  };
+
+  const onClickInput = () => {
+    setIsVisibleSelectFileDialog(true);
+  };
+  const onModalClose = () => {
+    setIsVisibleBackupListDialog(false);
+    setIsVisibleSelectFileDialog(false);
+  };
+
+  const onSetStorageId = (id) => {
+    setRestoreResource(id);
+  };
+
+  const radioButtonContent = (
+    <>
+      <RadioButtonGroup
+        name="restore_backup"
+        orientation="vertical"
+        fontSize="13px"
+        fontWeight="400"
+        className="backup_radio-button"
+        options={[
+          { value: LOCAL_FILE, label: t("LocalFile") },
+          { value: BACKUP_ROOM, label: t("RoomsModule") },
+          { value: DISK_SPACE, label: t("ThirdPartyResource") },
+          { value: STORAGE_SPACE, label: t("ThirdPartyStorage") },
+        ]}
+        onClick={onChangeRadioButton}
+        selected={radioButtonState}
+        spacing="16px"
+        isDisabled={!isEnableRestore}
+      />
+    </>
+  );
+
+  const backupModules = (
+    <div className="restore-backup_modules">
+      {radioButtonState === LOCAL_FILE && <LocalFileModule t={t} />}
+
+      {radioButtonState === BACKUP_ROOM && (
+        <RoomsModule
           isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
+          t={t}
+          isPanelVisible={isVisibleSelectFileDialog}
+          onClose={onModalClose}
+          onClickInput={onClickInput}
+          onSelectFile={(file) => setRestoreResource(file.id)}
         />
-
-        <RadioButton
-          label={t("RoomsModule")}
-          name={"isCheckedDocuments"}
-          key={1}
-          isChecked={isCheckedDocuments}
-          isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
+      )}
+      {radioButtonState === DISK_SPACE && (
+        <ThirdPartyResourcesModule
+          t={t}
+          isPanelVisible={isVisibleSelectFileDialog}
+          onClose={onModalClose}
+          onClickInput={onClickInput}
+          onSelectFile={(file) => setRestoreResource(file.id)}
+          buttonSize={buttonSize}
         />
+      )}
+      {radioButtonState === STORAGE_SPACE && (
+        <ThirdPartyStoragesModule onSetStorageId={onSetStorageId} />
+      )}
+    </div>
+  );
 
-        <RadioButton
-          label={t("ThirdPartyResource")}
-          name={"isCheckedThirdParty"}
-          key={2}
-          isChecked={isCheckedThirdParty}
-          isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
-        />
+  const warningContent = (
+    <>
+      <Text className="restore-backup_warning settings_unavailable" noSelect>
+        {t("Common:Warning")}
+        {"!"}
+      </Text>
+      <Text
+        className="restore-backup_warning-description settings_unavailable"
+        noSelect
+      >
+        {t("RestoreBackupWarningText")}
+      </Text>
+      <Text
+        className="restore-backup_warning-link settings_unavailable"
+        noSelect
+      >
+        {t("RestoreBackupResetInfoWarningText")}
+      </Text>
+    </>
+  );
 
-        <RadioButton
-          label={t("ThirdPartyStorage")}
-          name={"isCheckedThirdPartyStorage"}
-          key={3}
-          isChecked={isCheckedThirdPartyStorage}
-          isDisabled={!isEnableRestore}
-          {...commonRadioButtonProps}
-        />
+  const onClickVersionListProp = isEnableRestore
+    ? { onClick: onClickBackupList }
+    : {};
 
-        <div className="restore-backup_modules">
-          {isCheckedDocuments && (
-            <RoomsModule
-              isDisabled={!isEnableRestore}
-              t={t}
-              isPanelVisible={isPanelVisible}
-              onClose={this.onPanelClose}
-              onClickInput={this.onClickInput}
-              onSelectFile={this.onSelectFile}
-              isError={isFileSelectedError}
-            />
-          )}
-          {isCheckedThirdParty && (
-            <ThirdPartyResources
-              t={t}
-              isPanelVisible={isPanelVisible}
-              onClose={this.onPanelClose}
-              onClickInput={this.onClickInput}
-              onSelectFile={this.onSelectFile}
-              isError={isFileSelectedError}
-              buttonSize={buttonSize}
-            />
-          )}
-          {isCheckedThirdPartyStorage && (
-            <ThirdPartyStorages
-              onResetFormSettings={this.onResetFormSettings}
-              onSetStorageId={this.onSetStorageId}
-            />
-          )}
-          {isCheckedLocalFile && (
-            <LocalFile
-              hasError={isFileSelectedError}
-              onSelectLocalFile={this.onSelectLocalFile}
-            />
-          )}
-        </div>
-
-        <Text
-          className="restore-backup_list settings_unavailable"
-          {...onClickVersionListProp}
-          noSelect
-        >
-          {t("BackupList")}
+  if (isInitialLoading) return <RestoreBackupLoader />;
+  console.log("index render");
+  return (
+    <StyledRestoreBackup isEnableRestore={isEnableRestore}>
+      <div className="restore-description">
+        <Text className="restore-description settings_unavailable">
+          {t("RestoreBackupDescription")}
         </Text>
+      </div>
+      {radioButtonContent}
+      {backupModules}
 
-        {isVisibleDialog && (
-          <BackupListModalDialog
-            isVisibleDialog={isVisibleDialog}
-            onModalClose={this.onModalClose}
-            isNotify={isNotify}
-            isCopyingToLocal={!isMaxProgress}
-            history={history}
-          />
-        )}
-        <Checkbox
-          truncate
-          className="restore-backup-checkbox_notification"
-          onChange={this.onChangeCheckboxNotify}
-          isChecked={isNotify}
-          label={t("SendNotificationAboutRestoring")}
-          isDisabled={!isEnableRestore}
+      <Text
+        className="restore-backup_list settings_unavailable"
+        {...onClickVersionListProp}
+        noSelect
+      >
+        {t("BackupList")}
+      </Text>
+
+      {isVisibleBackupListDialog && (
+        <BackupListModalDialog
+          isVisibleDialog={isVisibleBackupListDialog}
+          onModalClose={onModalClose}
+          isNotify={checkboxState.notification}
+          history={history}
         />
-
-        <Text className="restore-backup_warning settings_unavailable" noSelect>
-          {t("Common:Warning")}
-          {"!"}
-        </Text>
-        <Text
-          className="restore-backup_warning-description settings_unavailable"
-          noSelect
-        >
-          {t("RestoreBackupWarningText")}
-        </Text>
-        <Text
-          className="restore-backup_warning-link settings_unavailable"
-          noSelect
-        >
-          {t("RestoreBackupResetInfoWarningText")}
-        </Text>
-
-        <Checkbox
-          truncate
-          className="restore-backup-checkbox"
-          onChange={this.onChangeCheckbox}
-          isChecked={isChecked}
-          label={t("UserAgreement")}
-          isDisabled={!isEnableRestore}
-        />
-
-        <Button
-          className="restore-backup_button"
-          label={t("Common:Restore")}
-          onClick={this.onRestoreClick}
-          primary
-          isDisabled={
-            checkingRecoveryData ||
-            !isMaxProgress ||
-            !isChecked ||
-            !isEnableRestore
-          }
-          isLoading={checkingRecoveryData}
-          size={buttonSize}
-          tabIndex={10}
-        />
-
-        {downloadingProgress > 0 && downloadingProgress !== 100 && (
-          <FloatingButton
-            className="layout-progress-bar"
-            icon="file"
-            alert={false}
-            percent={downloadingProgress}
-          />
-        )}
-      </StyledRestoreBackup>
-    );
-  }
-}
+      )}
+      <Checkbox
+        truncate
+        name={NOTIFICATION}
+        className="restore-backup-checkbox_notification"
+        onChange={onChangeCheckbox}
+        isChecked={checkboxState.notification}
+        label={t("SendNotificationAboutRestoring")}
+        isDisabled={!isEnableRestore}
+      />
+      {warningContent}
+      <Checkbox
+        truncate
+        name={CONFIRMATION}
+        className="restore-backup-checkbox"
+        onChange={onChangeCheckbox}
+        isChecked={checkboxState.confirmation}
+        label={t("UserAgreement")}
+        isDisabled={!isEnableRestore}
+      />
+      <ButtonContainer
+        isConfirmed={checkboxState.confirmation}
+        isNotification={checkboxState.notification}
+        getStorageType={getStorageType}
+        radioButtonState={radioButtonState}
+        isCheckedThirdPartyStorage={radioButtonState === STORAGE_SPACE}
+        isCheckedLocalFile={radioButtonState === LOCAL_FILE}
+        history={history}
+        t={t}
+        buttonSize={buttonSize}
+      />
+    </StyledRestoreBackup>
+  );
+};
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { socketHelper, theme, isTabletView, setTenantStatus } = settingsStore;
+  const { isTabletView } = settingsStore;
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const {
-    downloadingProgress,
     getProgress,
     clearProgressInterval,
     setStorageRegions,
     setThirdPartyStorage,
-    isFormReady,
-    getStorageParams,
     setConnectedThirdPartyAccount,
+    setRestoreResource,
   } = backup;
 
   const buttonSize = isTabletView ? "normal" : "small";
-  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
+
   return {
-    setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,
     buttonSize,
     setConnectedThirdPartyAccount,
-    theme,
     clearProgressInterval,
-    downloadingProgress,
-    socketHelper,
-    isFormReady,
-
     getProgress,
-    getStorageParams,
+    setRestoreResource,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

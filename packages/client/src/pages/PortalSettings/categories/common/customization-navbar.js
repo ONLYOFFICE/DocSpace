@@ -38,7 +38,7 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: #657077;
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
       max-width: 1024px;
       line-height: 20px;
