@@ -273,6 +273,10 @@ function MediaViewer({
     let currentFileId = playlist.find((file) => file.id === playlistPos)
       ?.fileId;
 
+    const canDelete = targetFile?.security?.Delete;
+
+    if (!canDelete) return;
+
     if (!isNullOrUndefined(currentFileId)) onDelete(currentFileId);
   };
 
