@@ -2381,6 +2381,7 @@ class FilesStore {
     const newItem = items.map((item) => {
       const {
         access,
+        autoDelete,
         comment,
         contentLength,
         created,
@@ -2395,6 +2396,9 @@ class FilesStore {
         id,
         logo,
         locked,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         parentId,
         pureContentLength,
         rootFolderType,
@@ -2494,6 +2498,7 @@ class FilesStore {
 
       return {
         access,
+        autoDelete,
         //checked,
         comment,
         contentLength,
@@ -2535,6 +2540,9 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         previewUrl,
         folderUrl,
         href,
