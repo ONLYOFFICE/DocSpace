@@ -262,9 +262,18 @@ class SelectionArea extends React.Component {
 
     if (
       e.target.closest(".not-selectable") ||
-      e.target.closest(".row-selected")
+      e.target.closest(".tile-selected") ||
+      e.target.closest(".table-row-selected") ||
+      e.target.closest(".row-selected") ||
+      !e.target.closest("#sectionScroll")
     )
       return;
+
+    if (e.target.tagName === "A") {
+      const node = e.target.closest("." + selectableClass);
+      onMove && onMove({ added: [node], removed: [], clear: true });
+      return;
+    }
 
     const selectables = document.getElementsByClassName(selectableClass);
     if (!selectables.length) return;
