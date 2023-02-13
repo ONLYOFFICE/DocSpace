@@ -87,3 +87,20 @@ export interface IFile {
   viewUrl: string;
   webUrl: string;
 }
+
+export type ContextMenuType = {
+  id?: string;
+  key: string;
+  label: string;
+  icon: string;
+  disabled: boolean;
+  onClick: VoidFunction;
+};
+
+export type SeparatorType = {
+  key: string;
+  isSeparator: boolean;
+  disabled: boolean;
+};
+
+export type ContextMenuModel = ContextMenuType | SeparatorType;
