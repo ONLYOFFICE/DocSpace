@@ -5,7 +5,7 @@ import {
 } from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
-import { mobile } from "@docspace/components/utils/device";
+import { hugeMobile, tablet, mobile } from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
 
@@ -72,19 +72,34 @@ const StyledManualBackup = styled.div`
   .manual-backup_buttons {
     margin-top: 16px;
     margin-left: 24px;
-    @media ${mobile} {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
     button:first-child {
-      width: 50%;
-      max-width: 155px;
+      max-width: 124px;
       margin-right: 8px;
     }
     button:last-child {
-      max-width: 155px;
-      width: calc(50% - 8px);
+      max-width: 153px;
+    }
+
+    @media ${tablet} {
+      button:first-child {
+        max-width: 129px;
+      }
+      button:last-child {
+        max-width: 160px;
+      }
+    }
+
+    @media ${hugeMobile} {
+      button:first-child {
+        max-width: 155px;
+      }
+      button:last-child {
+        max-width: 155px;
+      }
     }
   }
   .manual-backup_storages-module {
