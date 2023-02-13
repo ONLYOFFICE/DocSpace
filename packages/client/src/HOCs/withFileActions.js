@@ -87,7 +87,9 @@ export default function withFileActions(WrappedFileItem) {
       const { isThirdPartyFolder } = item;
 
       const notSelectable = e.target.closest(".not-selectable");
-      const isFileName = e.target.classList.contains("item-file-name");
+      const isFileName =
+        e.target.classList.contains("item-file-name") ||
+        e.target.classList.contains("row-content-link");
 
       if (
         isPrivacy ||
