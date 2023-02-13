@@ -111,6 +111,8 @@ const ArticleMainButtonContent = (props) => {
     canCreateFiles,
 
     setInvitePanelOptions,
+
+    mainButtonMobileVisible,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -443,6 +445,7 @@ const ArticleMainButtonContent = (props) => {
               actionOptions={actions}
               buttonOptions={uploadActions}
               isRooms={isRoomsFolder}
+              mainButtonMobileVisible={mainButtonMobileVisible}
               onMainButtonClick={onCreateRoom}
             />
           )}
@@ -508,7 +511,13 @@ export default inject(
     selectedFolderStore,
     accessRightsStore,
   }) => {
-    const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
+    const {
+      isLoaded,
+      firstLoad,
+      isLoading,
+      canCreate,
+      mainButtonMobileVisible,
+    } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -564,6 +573,8 @@ export default inject(
       isAdmin,
       isOwner,
       isVisitor,
+
+      mainButtonMobileVisible,
     };
   }
 )(
