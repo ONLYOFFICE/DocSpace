@@ -1,18 +1,20 @@
-import { ContextMenuModel } from "../../types";
+import { ContextMenuModel, PlaylistType } from "../../types";
 
-interface ViewerProps {
+interface ViewerWrapperProps {
   userAccess: boolean;
   visible: boolean;
   title: string;
-  images: [{ src: string; alt: string }];
+  images: { src: string; alt: string }[];
   inactive: boolean;
-  playlist: number;
+  playlist: PlaylistType[];
   playlistPos: number;
+
   isFavorite: boolean;
   isImage: boolean;
   isAudio: boolean;
   isVideo: boolean;
   isPreviewFile: boolean;
+
   archiveRoom: boolean;
 
   errorTitle: string;
@@ -28,4 +30,4 @@ interface ViewerProps {
   contextModel: () => ContextMenuModel[];
 }
 
-export default ViewerProps;
+export default ViewerWrapperProps;
