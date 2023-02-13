@@ -262,14 +262,12 @@ function MediaViewer({
   }, []);
 
   const onDelete = () => {
-    const { playlist, onDelete, archiveRoomsId } = props;
+    const { playlist, onDelete } = props;
 
     let currentFileId = playlist.find((file) => file.id === playlistPos)
       ?.fileId;
 
-    const canDelete =
-      targetFile?.security?.Delete &&
-      archiveRoomsId !== targetFile?.rootFolderId;
+    const canDelete = targetFile?.security?.Delete;
 
     if (!canDelete) return;
 
