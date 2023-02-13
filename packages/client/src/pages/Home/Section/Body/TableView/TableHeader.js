@@ -14,9 +14,11 @@ class FilesTableHeader extends React.Component {
   }
 
   getTableColumns = (fromUpdate = false) => {
-    const { t, isRooms, getColumns } = this.props;
+    const { t, isRooms, isTrashFolder, getColumns } = this.props;
 
     const defaultColumns = [];
+
+    console.log("GET TABLE COLUMNS");
 
     if (isRooms) {
       const columns = [
@@ -68,7 +70,72 @@ class FilesTableHeader extends React.Component {
           onClick: this.onRoomsFilter,
         },
       ];
-
+      defaultColumns.push(...columns);
+    } else if (isTrashFolder) {
+      const columns = [
+        {
+          key: "Name",
+          title: t("Common:Name"),
+          resizable: true,
+          enable: this.props.nameColumnIsEnabled,
+          default: true,
+          sortBy: "AZ",
+          minWidth: 210,
+          onClick: this.onFilter,
+        },
+        {
+          key: "Author",
+          title: t("ByAuthor"),
+          enable: this.props.authorColumnIsEnabled,
+          resizable: true,
+          sortBy: "Author",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Created",
+          title: t("ByCreation"),
+          enable: this.props.createdColumnIsEnabled,
+          resizable: true,
+          sortBy: "DateAndTimeCreation",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Erasure",
+          title: t("ByErasure"),
+          enable: this.props.erasureColumnIsEnabled,
+          resizable: true,
+          sortBy: "DateAndTime",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Size",
+          title: t("Common:Size"),
+          enable: this.props.sizeColumnIsEnabled,
+          resizable: true,
+          sortBy: "Size",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Type",
+          title: t("Common:Type"),
+          enable: this.props.typeColumnIsEnabled,
+          resizable: true,
+          sortBy: "Type",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "QuickButtons",
+          title: "",
+          enable: this.props.quickButtonsColumnIsEnabled,
+          defaultSize: 75,
+          resizable: false,
+        },
+      ];
       defaultColumns.push(...columns);
     } else {
       const columns = [
@@ -135,7 +202,6 @@ class FilesTableHeader extends React.Component {
           resizable: false,
         },
       ];
-
       defaultColumns.push(...columns);
     }
 
@@ -194,7 +260,10 @@ class FilesTableHeader extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.isRooms !== prevProps.isRooms) {
+    if (
+      this.props.isRooms !== prevProps.isRooms ||
+      this.props.isTrashFolder !== prevProps.isTrashFolder
+    ) {
       return this.getTableColumns(true);
     }
 
@@ -352,7 +421,12 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const { isRecentFolder, isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const {
+      isRecentFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
@@ -371,6 +445,7 @@ export default inject(
       authorColumnIsEnabled,
       createdColumnIsEnabled,
       modifiedColumnIsEnabled,
+      erasureColumnIsEnabled,
       sizeColumnIsEnabled,
       typeColumnIsEnabled,
       quickButtonsColumnIsEnabled,
@@ -416,6 +491,7 @@ export default inject(
       authorColumnIsEnabled,
       createdColumnIsEnabled,
       modifiedColumnIsEnabled,
+      erasureColumnIsEnabled,
       sizeColumnIsEnabled,
       typeColumnIsEnabled,
       quickButtonsColumnIsEnabled,
@@ -429,6 +505,7 @@ export default inject(
       getColumns,
       setColumnEnable,
       isRooms,
+      isTrashFolder,
     };
   }
 )(

@@ -13,11 +13,11 @@ import {
 } from "../StyledTable";
 import ErasureCell from "./ErasureCell";
 
-const RowDataComponent = (props) => {
+const TrashRowDataComponent = (props) => {
   const {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
-    modifiedColumnIsEnabled,
+    erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,
     quickButtonsColumnIsEnabled,
@@ -93,14 +93,14 @@ const RowDataComponent = (props) => {
         <div />
       )}
 
-      {modifiedColumnIsEnabled ? (
+      {erasureColumnIsEnabled ? (
         <TableCell
           style={
-            !modifiedColumnIsEnabled ? { background: "none" } : dragStyles.style
+            !erasureColumnIsEnabled ? { background: "none" } : dragStyles.style
           }
           {...selectionProp}
         >
-          <DateCell
+          <ErasureCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
@@ -170,7 +170,7 @@ export default inject(({ tableStore }) => {
   const {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
-    modifiedColumnIsEnabled,
+    erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,
     quickButtonsColumnIsEnabled,
@@ -179,9 +179,9 @@ export default inject(({ tableStore }) => {
   return {
     authorColumnIsEnabled,
     createdColumnIsEnabled,
-    modifiedColumnIsEnabled,
+    erasureColumnIsEnabled,
     sizeColumnIsEnabled,
     typeColumnIsEnabled,
     quickButtonsColumnIsEnabled,
   };
-})(observer(RowDataComponent));
+})(observer(TrashRowDataComponent));
