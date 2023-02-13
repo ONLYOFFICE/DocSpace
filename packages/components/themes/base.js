@@ -845,7 +845,6 @@ const Base = {
   },
 
   textArea: {
-
     disabledColor: grayLight,
 
     focusBorderColor: blueMain,
@@ -854,6 +853,8 @@ const Base = {
 
     scrollWidth: "100%",
     scrollHeight: "91px",
+
+    numerationColor: "#A3A9AE",
   },
 
   link: {

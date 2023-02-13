@@ -141,7 +141,7 @@ const Numeration = styled.pre`
   top: 6px;
   left: 18px;
   text-align: right;
-  color: #a3a9ae;
+  color: ${(props) => props.theme.textArea.numerationColor};
 
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */

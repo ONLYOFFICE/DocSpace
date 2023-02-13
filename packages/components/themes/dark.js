@@ -837,7 +837,6 @@ const Dark = {
   },
 
   textArea: {
-
     disabledColor: "#474747",
 
     focusBorderColor: grayMaxLight,
@@ -846,6 +845,8 @@ const Dark = {
 
     scrollWidth: "100%",
     scrollHeight: "91px",
+
+    numerationColor: "#858585",
   },
 
   link: {
