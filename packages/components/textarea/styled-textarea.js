@@ -5,6 +5,7 @@ import TextareaAutosize from "react-autosize-textarea";
 import Scrollbar from "../scrollbar/index";
 import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
+import { CopyIcon } from "./svg";
 
 const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => (
   <Scrollbar {...props} />
@@ -106,13 +107,14 @@ StyledTextarea.defaultProps = {
   theme: Base,
 };
 
-const StyledCopyIcon = styled.img`
+const StyledCopyIcon = styled(CopyIcon)`
   position: absolute;
   right: 8px;
   top: 8px;
   width: 16px;
   height: 16px;
   z-index: 2;
+  filter: ${(props) => props.theme.textArea.copyIconFilter};
 
   :hover {
     cursor: pointer;
