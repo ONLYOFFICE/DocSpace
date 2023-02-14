@@ -855,6 +855,9 @@ const Base = {
     scrollHeight: "91px",
 
     numerationColor: "#A3A9AE",
+
+    copyIconFilter:
+      "invert(71%) sepia(1%) saturate(1597%) hue-rotate(166deg) brightness(100%) contrast(73%)",
   },
 
   link: {

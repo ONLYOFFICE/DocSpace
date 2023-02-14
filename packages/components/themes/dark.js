@@ -847,6 +847,9 @@ const Dark = {
     scrollHeight: "91px",
 
     numerationColor: "#858585",
+
+    copyIconFilter:
+      "invert(62%) sepia(0%) saturate(0%) hue-rotate(119deg) brightness(85%) contrast(87%)",
   },
 
   link: {
