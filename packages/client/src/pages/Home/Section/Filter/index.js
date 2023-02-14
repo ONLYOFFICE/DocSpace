@@ -177,6 +177,7 @@ const SectionFilterContent = ({
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
+  setSearchTitleOpenLocation,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -195,7 +196,13 @@ const SectionFilterContent = ({
     if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
 
     onSearch(searchTitleOpenLocation);
-  }, [searchTitleOpenLocation, isLoadedLocationFiles, onSearch]);
+    setSearchTitleOpenLocation(null);
+  }, [
+    searchTitleOpenLocation,
+    isLoadedLocationFiles,
+    onSearch,
+    setSearchTitleOpenLocation,
+  ]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -385,9 +392,7 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return searchTitleOpenLocation
-      ? searchTitleOpenLocation
-      : isRooms
+    return isRooms
       ? roomsFilter.filterValue
         ? roomsFilter.filterValue
         : ""

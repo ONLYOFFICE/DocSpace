@@ -25,6 +25,7 @@ const History = ({
   getFolderInfo,
   getFileInfo,
   setFileHighlight,
+  setItemOpenLocation,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -36,8 +37,7 @@ const History = ({
   }, []);
 
   useEffect(() => {
-    if (!(searchTitleOpenLocation && isLoadedSearchFiles && itemOpenLocation))
-      return;
+    if (!(isLoadedSearchFiles && itemOpenLocation)) return;
 
     const requestInfo = itemOpenLocation.isFolder ? getFolderInfo : getFileInfo;
 
@@ -46,14 +46,15 @@ const History = ({
 
       setFileHighlight(res.id);
       setSelection(res);
+      setItemOpenLocation(null);
     });
   }, [
-    searchTitleOpenLocation,
     isLoadedSearchFiles,
     itemOpenLocation,
     getFolderInfo,
     getFileInfo,
     setFileHighlight,
+    setItemOpenLocation,
   ]);
 
   const fetchHistory = async (itemId) => {
@@ -176,6 +177,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     searchTitleOpenLocation,
     itemOpenLocation,
     isLoadedSearchFiles,
+    setItemOpenLocation,
   } = filesActionsStore;
 
   const { user } = userStore;
@@ -198,5 +200,6 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     getFolderInfo,
     getFileInfo,
     setFileHighlight,
+    setItemOpenLocation,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));
