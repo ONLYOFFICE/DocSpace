@@ -80,12 +80,12 @@ export const Viewer = (props) => {
       };
     }
     return () => document.removeEventListener("touchstart", onTouch);
-  }, [isPlay, isOpenContextMenu]);
+  }, [isPlay, isOpenContextMenu, isImage]);
 
   function resetTimer() {
     setPanelVisible(true);
     clearTimeout(timer);
-    timer = setTimeout(() => setPanelVisible(false), 5000);
+    timer = setTimeout(() => setPanelVisible(false), 2500);
     setImageTimer(timer);
   }
 
