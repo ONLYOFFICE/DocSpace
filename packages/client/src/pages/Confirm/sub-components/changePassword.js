@@ -44,7 +44,7 @@ const ChangePasswordForm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setIsLoading(true);
 
     if (!password.trim()) {
@@ -56,30 +56,29 @@ const ChangePasswordForm = (props) => {
       return;
     }
 
-    const hash = createPasswordHash(password, hashSettings);
-    const { uid, confirmHeader } = linkData;
-    changePassword(uid, hash, confirmHeader)
-      .then(() => logout())
-      .then(() => {
-        setIsLoading(false);
-        toastr.success(t("ChangePasswordSuccess"));
-        tryRedirectTo(defaultPage);
-      })
-      .catch((error) => {
-        let errorMessage = "";
-        if (typeof error === "object") {
-          errorMessage =
-            error?.response?.data?.error?.message ||
-            error?.statusText ||
-            error?.message ||
-            "";
-        } else {
-          errorMessage = error;
-        }
+    try {
+      const hash = createPasswordHash(password, hashSettings);
+      const { uid, confirmHeader } = linkData;
+      await changePassword(uid, hash, confirmHeader);
+      logout();
+      setIsLoading(false);
+      toastr.success(t("ChangePasswordSuccess"));
+      tryRedirectTo(defaultPage);
+    } catch (error) {
+      let errorMessage = "";
+      if (typeof error === "object") {
+        errorMessage =
+          error?.response?.data?.error?.message ||
+          error?.statusText ||
+          error?.message ||
+          "";
+      } else {
+        errorMessage = error;
+      }
 
-        toastr.error(t(`${errorMessage}`));
-        setIsLoading(false);
-      });
+      toastr.error(t(`${errorMessage}`));
+      setIsLoading(false);
+    }
   };
 
   const onKeyPress = (event) => {
