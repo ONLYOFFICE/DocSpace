@@ -100,8 +100,6 @@ const FilesRowContainer = ({
     }
   }, [sectionWidth]);
 
-  console.log(filesList[0]);
-
   return (
     <StyledRowContainer
       className="files-row-container"
