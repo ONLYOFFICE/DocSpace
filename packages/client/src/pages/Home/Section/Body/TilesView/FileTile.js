@@ -95,12 +95,14 @@ const FileTile = (props) => {
     />
   );
 
+  const activeClass = checkedProps || isActive ? "tile-selected" : "";
+
   return (
     <div ref={props.selectableRef} id={id}>
       <StyledDragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.fileExst}`}
+        className={`files-item ${className} ${activeClass} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
