@@ -106,6 +106,7 @@ const FilesRowContent = ({
     providerKey,
     title,
     isRoom,
+    daysRemaining,
   } = item;
 
   return (
@@ -141,9 +142,9 @@ const FilesRowContent = ({
           // color={sideColor}
           className="row_update-text"
         >
-          {isTrashFolder && autoDelete
+          {isTrashFolder
             ? t("Files:DaysRemaining", {
-                daysRemaining: Math.abs(moment().diff(item.autoDelete, "days")),
+                daysRemaining,
               })
             : updatedDate && updatedDate}
         </Text>
@@ -173,8 +174,9 @@ const FilesRowContent = ({
   );
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, treeFoldersStore }) => {
+  const { isRecycleBinFolder } = treeFoldersStore;
+  return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
 })(
   observer(
     withRouter(

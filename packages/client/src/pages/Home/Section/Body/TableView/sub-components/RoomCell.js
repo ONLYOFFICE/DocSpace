@@ -1,22 +1,20 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
 
-const ErasureCell = ({ t, sideColor, item }) => {
-  const { daysRemaining } = item;
-  const title = t("Files:DaysRemaining", { daysRemaining });
-
+const RoomCell = ({ t, sideColor, item }) => {
+  const { originTitle } = item;
   return (
     <StyledText
-      title={title}
+      title={originTitle}
       fontSize="12px"
       fontWeight={600}
       color={sideColor}
       className="row_update-text"
       truncate
     >
-      {title}
+      {originTitle}
     </StyledText>
   );
 };
 
-export default ErasureCell;
+export default RoomCell;

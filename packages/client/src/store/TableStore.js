@@ -25,6 +25,7 @@ class TableStore {
 
   nameColumnIsEnabled = true; // always true
   authorColumnIsEnabled = false;
+  roomColumnIsEnabled = true;
   erasureColumnIsEnabled = true;
   createdColumnIsEnabled = true;
   modifiedColumnIsEnabled = true;
@@ -67,6 +68,10 @@ class TableStore {
     this.modifiedColumnIsEnabled = enable;
   };
 
+  setRoomColumn = (enable) => {
+    this.roomColumnIsEnabled = enable;
+  };
+
   setErasureColumn = (enable) => {
     this.erasureColumnIsEnabled = enable;
   };
@@ -105,7 +110,8 @@ class TableStore {
 
       if (isTrashFolder) {
         this.setAuthorColumn(splitColumns.includes("Author"));
-        this.setCreatedColumn(splitColumns.includes("Created"));
+        //this.setCreatedColumn(splitColumns.includes("Created"));
+        this.setRoomColumn(splitColumns.includes("Room"));
         this.setErasureColumn(splitColumns.includes("Erasure"));
         this.setSizeColumn(splitColumns.includes("Size"));
         this.setTypeColumn(splitColumns.includes("Type"));
@@ -135,6 +141,9 @@ class TableStore {
         return;
       case "Modified":
         this.setModifiedColumn(!this.modifiedColumnIsEnabled);
+        return;
+      case "Room":
+        this.setRoomColumn(!this.roomColumnIsEnabled);
         return;
       case "Erasure":
         this.setErasureColumn(!this.erasureColumnIsEnabled);

@@ -16,7 +16,10 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import {
+  getDaysRemaining,
+  openDocEditor as openEditor,
+} from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -2382,6 +2385,7 @@ class FilesStore {
       const {
         access,
         autoDelete,
+        originTitle,
         comment,
         contentLength,
         created,
@@ -2442,7 +2446,7 @@ class FilesStore {
       const previewUrl = canOpenPlayer
         ? this.getItemUrl(id, false, needConvert, canOpenPlayer)
         : null;
-      const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const contextOptions = this.getFilesContextOptions(item);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       const iconSize = this.viewAs === "table" ? 24 : 32;
@@ -2498,7 +2502,8 @@ class FilesStore {
 
       return {
         access,
-        autoDelete,
+        daysRemaining: autoDelete && getDaysRemaining(autoDelete),
+        originTitle,
         //checked,
         comment,
         contentLength,
