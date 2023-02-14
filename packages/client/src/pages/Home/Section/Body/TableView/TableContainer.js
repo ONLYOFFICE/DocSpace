@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
@@ -175,6 +175,38 @@ const Table = ({
     }
   }, []);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => (
+      <TableRow
+        id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+        key={
+          item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+        }
+        item={item}
+        itemIndex={index}
+        index={index}
+        setFirsElemChecked={setFirsElemChecked}
+        setHeaderBorder={setHeaderBorder}
+        theme={theme}
+        tagCount={tagCount}
+        isRooms={isRooms}
+        hideColumns={hideColumns}
+        setFileHighlight={setFileHighlight}
+        fileHighlight={fileHighlight}
+      />
+    ));
+  }, [
+    filesList,
+    setFirsElemChecked,
+    setHeaderBorder,
+    theme,
+    tagCount,
+    isRooms,
+    hideColumns,
+    setFileHighlight,
+    fileHighlight,
+  ]);
+
   return (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
@@ -195,27 +227,7 @@ const Table = ({
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         itemHeight={49}
       >
-        {filesList.map((item, index) => (
-          <TableRow
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={
-              item?.version
-                ? `${item.id}_${item.version}`
-                : `${item.id}_${index}`
-            }
-            item={item}
-            itemIndex={index}
-            index={index}
-            setFirsElemChecked={setFirsElemChecked}
-            setHeaderBorder={setHeaderBorder}
-            theme={theme}
-            tagCount={tagCount}
-            isRooms={isRooms}
-            hideColumns={hideColumns}
-            setFileHighlight={setFileHighlight}
-            fileHighlight={fileHighlight}
-          />
-        ))}
+        {filesListNode}
       </TableBody>
     </StyledTableContainer>
   );

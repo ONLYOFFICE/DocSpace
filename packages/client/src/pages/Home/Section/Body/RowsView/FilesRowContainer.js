@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { inject, observer } from "mobx-react";
 import RowContainer from "@docspace/components/row-container";
 import SimpleFilesRow from "./SimpleFilesRow";
@@ -100,6 +100,23 @@ const FilesRowContainer = ({
     }
   }, [sectionWidth]);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => (
+      <SimpleFilesRow
+        id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+        key={
+          item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+        }
+        item={item}
+        itemIndex={index}
+        sectionWidth={sectionWidth}
+        isRooms={isRooms}
+        setFileHighlight={setFileHighlight}
+        fileHighlight={fileHighlight}
+      />
+    ));
+  }, [filesList, sectionWidth, isRooms, setFileHighlight, fileHighlight]);
+
   return (
     <StyledRowContainer
       className="files-row-container"
@@ -111,20 +128,7 @@ const FilesRowContainer = ({
       useReactWindow={!withPaging}
       itemHeight={59}
     >
-      {filesList.map((item, index) => (
-        <SimpleFilesRow
-          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-          key={
-            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
-          }
-          item={item}
-          itemIndex={index}
-          sectionWidth={sectionWidth}
-          isRooms={isRooms}
-          setFileHighlight={setFileHighlight}
-          fileHighlight={fileHighlight}
-        />
-      ))}
+      {filesListNode}
     </StyledRowContainer>
   );
 };
