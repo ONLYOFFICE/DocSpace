@@ -126,7 +126,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="row-el" fontSize="13px" noSelect>
+          <Text className="row-el" fontSize="13px">
             {t("DocumentManagement")}:
           </Text>
           <ColorTheme
@@ -149,7 +149,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="row-el" fontSize="13px" noSelect>
+          <Text className="row-el" fontSize="13px">
             {t("OnlineEditors")}:
           </Text>
           <ColorTheme
@@ -171,7 +171,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="row-el" fontSize="13px" noSelect>
+          <Text className="row-el" fontSize="13px">
             {t("SoftwareLicense")}:{" "}
           </Text>
           <Text className="row-el" fontSize="13px" fontWeight="600">
@@ -179,12 +179,12 @@ const AboutContent = (props) => {
           </Text>
         </div>
 
-        <Text className="copyright" fontSize="14px" fontWeight="600" noSelect>
+        <Text className="copyright" fontSize="14px" fontWeight="600">
           © {companyName}
         </Text>
 
         <div className="row">
-          <Text className="address-title" fontSize="13px" noSelect>
+          <Text className="address-title" fontSize="13px">
             {t("AboutCompanyAddressTitle")}:{" "}
           </Text>
           <Text className="address-title select-el" fontSize="13px">
@@ -193,7 +193,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="tel-title" fontSize="13px" noSelect>
+          <Text className="tel-title" fontSize="13px">
             {t("Common:Phone")}:{" "}
           </Text>
           <Text className="tel-title select-el" fontSize="13px">
@@ -202,7 +202,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="row-el" fontSize="13px" noSelect>
+          <Text className="row-el" fontSize="13px">
             {t("AboutCompanyEmailTitle")}:
           </Text>
 
@@ -221,7 +221,7 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
-          <Text className="row-el" fontSize="13px" noSelect>
+          <Text className="row-el" fontSize="13px">
             {t("Site")}:
           </Text>
 
