@@ -381,7 +381,7 @@ export default function ViewerPlayer(props) {
     isFullScreen: false,
     speedSelection: false,
     progress: 0,
-    duration: 0,
+    duration: false,
     speedState: 1,
     isOpenContext: false,
     volume: stateVolume,

@@ -2,7 +2,7 @@ name: 4testing multiarch-build
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
 
 jobs:
   build:
@@ -11,29 +11,24 @@ jobs:
       matrix:
         platform: [linux/amd64]
     steps:
-      - 
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Set up QEMU
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      - 
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
+        uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Build 4testing
+      - name: Build 4testing
         run: |
           cd ./build/install/docker
           REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
-          DOCKER_TAG="rc-v1.2.0" \
+          DOCKER_TAG="develop" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH="develop" \

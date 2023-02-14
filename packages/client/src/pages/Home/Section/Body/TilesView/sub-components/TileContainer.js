@@ -48,6 +48,7 @@ const StyledGridWrapper = styled.div`
 const StyledTileContainer = styled.div`
   position: relative;
   height: 100%;
+  user-select: none;
 
   .tile-item-wrapper {
     position: relative;
@@ -68,6 +69,7 @@ const StyledTileContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: fit-content;
 
     div {
       cursor: pointer !important;
