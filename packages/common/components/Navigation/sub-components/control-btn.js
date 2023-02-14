@@ -90,7 +90,7 @@ StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
 const ControlButtons = ({
   personal,
-  isDropBox,
+  isDropBoxComponent,
   isRootFolder,
   canCreate,
   getContextOptionsFolder,
@@ -112,7 +112,7 @@ const ControlButtons = ({
   };
 
   return (
-    <StyledContainer isDropBox={isDropBox}>
+    <StyledContainer isDropBoxComponent={isDropBoxComponent}>
       {(!isRootFolder && canCreate) ||
       (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
