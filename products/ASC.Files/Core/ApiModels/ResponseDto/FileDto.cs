@@ -170,9 +170,11 @@ public class FileDtoHelper : FileEntryDtoHelper
 
             result.ThumbnailStatus = file.ThumbnailStatus;
 
+            var cacheKey = Math.Abs(result.Updated.GetHashCode());
+
             if (file.ThumbnailStatus == Thumbnail.Created)
             {
-                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.Id, file.Version));
+                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.Id, file.Version)) + $"&hash={cacheKey}"; 
             }
         }
         catch (Exception)
