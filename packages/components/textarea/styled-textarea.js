@@ -59,7 +59,12 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   resize: none;
   overflow: hidden;
   padding: 5px 8px 2px;
-  padding-left: ${(props) => (props.isJSONField ? "42px" : "8px")};
+  padding-left: ${(props) =>
+    props.isJSONField
+      ? props.fontSize < 13
+        ? '42px'
+        : `${(42 * props.fontSize) / 13}px`
+      : "8px"};
   font-size: ${(props) => props.fontSize + "px"};
   font-family: Open Sans, sans-serif, Arial;
   line-height: 1.5;
