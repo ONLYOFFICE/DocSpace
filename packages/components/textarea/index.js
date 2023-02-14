@@ -14,8 +14,6 @@ import { isJSON, beautifyJSON } from "./utils";
 
 import copy from "copy-to-clipboard";
 
-import { copyIcon } from "./svg";
-
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
 const Textarea = ({
@@ -84,7 +82,6 @@ const Textarea = ({
     >
       {isJSONField && (
         <StyledCopyIcon
-          src={copyIcon}
           onClick={() => {
             copy(modifiedValue);
             toastr.success(copyInfoText);
