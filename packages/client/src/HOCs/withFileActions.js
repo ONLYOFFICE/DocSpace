@@ -87,7 +87,9 @@ export default function withFileActions(WrappedFileItem) {
       const { isThirdPartyFolder } = item;
 
       const notSelectable = e.target.closest(".not-selectable");
-      const isFileName = e.target.classList.contains("item-file-name");
+      const isFileName =
+        e.target.classList.contains("item-file-name") ||
+        e.target.classList.contains("row-content-link");
 
       if (
         isPrivacy ||
@@ -222,8 +224,10 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
+
+        itemIndex,
       } = this.props;
-      const { fileExst, access, id } = item;
+      const { access, id } = item;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -231,11 +235,9 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable
-        ? "_draggable"
-        : item.providerKey
-        ? `_${item.providerKey}`
-        : "";
+      value += draggable ? "_draggable" : "_false";
+
+      value += `_index_${itemIndex}`;
 
       const isShareable = allowShareIn && item.canShare;
 

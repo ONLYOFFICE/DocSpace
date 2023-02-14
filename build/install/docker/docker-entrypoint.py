@@ -43,11 +43,15 @@ LOG_FILE = sys.argv[2] if sys.argv[2] else "none"
 
 REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
 REDIS_PORT = os.environ["REDIS_PORT"] if environ.get("REDIS_PORT") else "6379"
+REDIS_USER_NAME = {"User": os.environ["REDIS_USER_NAME"]} if environ.get("REDIS_USER_NAME") else None
+REDIS_PASSWORD = {"Password": os.environ["REDIS_PASSWORD"]} if environ.get("REDIS_PASSWORD") else None
 
 RABBIT_HOST = os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else "onlyoffice-rabbitmq"
 RABBIT_USER_NAME = os.environ["RABBIT_USER_NAME"] if environ.get("RABBIT_USER_NAME") else "guest"
 RABBIT_PASSWORD = os.environ["RABBIT_PASSWORD"] if environ.get("RABBIT_PASSWORD") else "guest"
 RABBIT_PORT =  os.environ["RABBIT_PORT"] if environ.get("RABBIT_PORT") else "5672"
+RABBIT_VIRTUAL_HOST = os.environ["RABBIT_VIRTUAL_HOST"] if environ.get("RABBIT_VIRTUAL_HOST") else "/"
+RABBIT_URI = {"Uri": os.environ["RABBIT_URI"]} if environ.get("RABBIT_URI") else None
 
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
@@ -168,12 +172,16 @@ updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_HOST)
 updateJsonData(jsonData,"$.RabbitMQ.UserName", RABBIT_USER_NAME)
 updateJsonData(jsonData, "$.RabbitMQ.Password", RABBIT_PASSWORD)
 updateJsonData(jsonData, "$.RabbitMQ.Port", RABBIT_PORT)
+updateJsonData(jsonData, "$.RabbitMQ.VirtualHost", RABBIT_VIRTUAL_HOST)
+jsonData["RabbitMQ"].update(RABBIT_URI) if RABBIT_URI is not None else None
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
 jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_HOST)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Port", REDIS_PORT)
+jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else None
+jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)

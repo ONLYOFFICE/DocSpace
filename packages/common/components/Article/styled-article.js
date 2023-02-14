@@ -21,6 +21,8 @@ const StyledArticle = styled.article`
 
   box-sizing: border-box;
 
+  user-select: none;
+
   //padding: 0 20px;
 
   border-right: ${(props) => props.theme.catalog.verticalLine};

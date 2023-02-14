@@ -118,6 +118,7 @@ const FilesRowContainer = ({
             item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
           }
           item={item}
+          itemIndex={index}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
           setFileHighlight={setFileHighlight}

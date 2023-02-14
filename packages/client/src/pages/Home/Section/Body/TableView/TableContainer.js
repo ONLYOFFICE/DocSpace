@@ -195,28 +195,27 @@ const Table = ({
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         itemHeight={49}
       >
-        {filesList.map((item, index) => {
-          return (
-            <TableRow
-              id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-              key={
-                item?.version
-                  ? `${item.id}_${item.version}`
-                  : `${item.id}_${index}`
-              }
-              item={item}
-              index={index}
-              setFirsElemChecked={setFirsElemChecked}
-              setHeaderBorder={setHeaderBorder}
-              theme={theme}
-              tagCount={tagCount}
-              isRooms={isRooms}
-              hideColumns={hideColumns}
-              setFileHighlight={setFileHighlight}
-              fileHighlight={fileHighlight}
-            />
-          );
-        })}
+        {filesList.map((item, index) => (
+          <TableRow
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+            key={
+              item?.version
+                ? `${item.id}_${item.version}`
+                : `${item.id}_${index}`
+            }
+            item={item}
+            itemIndex={index}
+            index={index}
+            setFirsElemChecked={setFirsElemChecked}
+            setHeaderBorder={setHeaderBorder}
+            theme={theme}
+            tagCount={tagCount}
+            isRooms={isRooms}
+            hideColumns={hideColumns}
+            setFileHighlight={setFileHighlight}
+            fileHighlight={fileHighlight}
+          />
+        ))}
       </TableBody>
     </StyledTableContainer>
   );

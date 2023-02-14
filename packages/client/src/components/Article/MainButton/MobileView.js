@@ -51,6 +51,7 @@ const MobileView = ({
   clearSecondaryProgressData,
   onMainButtonClick,
   isRoomsFolder,
+  mainButtonMobileVisible,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
   const [percentProgress, setPercentProgress] = React.useState(0);
@@ -154,22 +155,26 @@ const MobileView = ({
   ]);
 
   return (
-    <StyledMainButtonMobile
-      actionOptions={actionOptions}
-      isOpenButton={isOpenButton}
-      onUploadClick={openButtonToggler}
-      onClose={openButtonToggler}
-      buttonOptions={buttonOptions}
-      percent={percentProgress}
-      progressOptions={progressOptions}
-      title={titleProp}
-      withoutButton={isRooms}
-      alert={primaryProgressDataAlert}
-      withMenu={!isRooms}
-      onClick={onMainButtonClick}
-      onAlertClick={showUploadPanel}
-      withAlertClick={isRoomsFolder}
-    />
+    <>
+      {mainButtonMobileVisible && (
+        <StyledMainButtonMobile
+          actionOptions={actionOptions}
+          isOpenButton={isOpenButton}
+          onUploadClick={openButtonToggler}
+          onClose={openButtonToggler}
+          buttonOptions={buttonOptions}
+          percent={percentProgress}
+          progressOptions={progressOptions}
+          title={titleProp}
+          withoutButton={isRooms}
+          alert={primaryProgressDataAlert}
+          withMenu={!isRooms}
+          onClick={onMainButtonClick}
+          onAlertClick={showUploadPanel}
+          withAlertClick={isRoomsFolder}
+        />
+      )}
+    </>
   );
 };
 
