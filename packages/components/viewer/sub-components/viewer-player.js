@@ -907,7 +907,7 @@ export default function ViewerPlayer(props) {
     }
     if (isMobileOnly && videoRef.current && displayUI) {
       clearTimeout(globalTimer);
-      setGlobalTimer(setTimeout(() => setPanelVisible(false), 5000));
+      setGlobalTimer(setTimeout(() => setPanelVisible(false), 2500));
     }
   }, [displayUI, isOpenContextMenu, state.isControlTouch, props.isPlay]);
 
