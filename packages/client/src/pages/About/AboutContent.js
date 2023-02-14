@@ -138,6 +138,7 @@ const AboutContent = (props) => {
             fontWeight="600"
             href={linkRepo}
             target="_blank"
+            enableUserSelect
           >
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
@@ -160,6 +161,7 @@ const AboutContent = (props) => {
             fontWeight="600"
             href={linkDocs}
             target="_blank"
+            enableUserSelect
           >
             &nbsp;ONLYOFFICE Docs&nbsp;
           </ColorTheme>
@@ -172,7 +174,7 @@ const AboutContent = (props) => {
           <Text className="row-el" fontSize="13px" noSelect>
             {t("SoftwareLicense")}:{" "}
           </Text>
-          <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
+          <Text className="row-el" fontSize="13px" fontWeight="600">
             &nbsp;{license}
           </Text>
         </div>
@@ -212,6 +214,7 @@ const AboutContent = (props) => {
             fontSize="13px"
             fontWeight="600"
             href={`mailto:${companyInfoSettingsData.email}`}
+            enableUserSelect
           >
             &nbsp;{email}
           </ColorTheme>
@@ -231,6 +234,7 @@ const AboutContent = (props) => {
             fontWeight="600"
             target="_blank"
             href={site}
+            enableUserSelect
           >
             &nbsp;{site.replace(/^https?\:\/\//i, "")}
           </ColorTheme>
