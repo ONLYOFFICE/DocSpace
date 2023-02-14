@@ -5,6 +5,7 @@ const StyledSelectionArea = styled.div`
   left: 0;
   position: fixed;
   margin: 0;
+  display: none;
 
   background: rgba(68, 170, 255, 0.5);
   border: 1px solid #4af;

@@ -1,4 +1,9 @@
-import { NullOrUndefined, PlaylistType } from "../types";
+import {
+  ContextMenuModel,
+  NullOrUndefined,
+  PlaylistType,
+  SeparatorType,
+} from "../types";
 
 export const mediaTypes = Object.freeze({
   audio: 1,
@@ -56,4 +61,8 @@ export const findNearestIndex = (
     }
   }
   return found;
+};
+
+export const isSeparator = (arg: ContextMenuModel): arg is SeparatorType => {
+  return arg?.isSeparator;
 };
