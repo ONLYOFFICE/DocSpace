@@ -74,7 +74,7 @@ class WelcomePageSettings extends React.Component {
       greetingSettings,
     } = this.props;
     const { greetingTitleDefault, greetingTitle } = this.state;
-    
+
     if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
     this.checkInnerWidth();
@@ -88,15 +88,17 @@ class WelcomePageSettings extends React.Component {
       this.checkChanges();
     }
 
-    restoreGreetingTitle().then(() => {
-      this.setState({
-        greetingTitle: greetingSettings,
-        greetingTitleDefault: greetingSettings,
-        showReminder: false,
+    if (greetingTitleDefaultFromSessionStorage !== greetingTitleFromSessionStorage) {
+      restoreGreetingTitle().then(() => {
+        this.setState({
+          greetingTitle: greetingSettings,
+          greetingTitleDefault: greetingSettings,
+          showReminder: false,
+        });
+        saveToSessionStorage("greetingTitle", "none");
+        saveToSessionStorage("greetingTitleDefault", "none");
       });
-      saveToSessionStorage("greetingTitle", "none");
-      saveToSessionStorage("greetingTitleDefault", "none");
-    });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

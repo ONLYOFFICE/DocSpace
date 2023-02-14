@@ -75,11 +75,7 @@ const PortalRenaming = (props) => {
   const [domainValidator, setDomainValidator] = useState(null);
 
   useEffect(() => {
-    if (
-      portalNameFromSessionStorage !== "none" &&
-      portalNameFromSessionStorage !== null &&
-      !settingIsEqualInitialValue(portalNameFromSessionStorage)
-    ) {
+    if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
       setPortalName(portalNameDefault);
       saveToSessionStorage("portalName", "none");
     }
