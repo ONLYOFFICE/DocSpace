@@ -1,1 +1,1 @@
-export { default as copyIcon } from "./copyIcon.react.svg";
+export { default as CopyIcon } from "PUBLIC_DIR/images/copy.react.svg";
