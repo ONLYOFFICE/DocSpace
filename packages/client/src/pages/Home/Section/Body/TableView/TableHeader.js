@@ -18,8 +18,6 @@ class FilesTableHeader extends React.Component {
 
     const defaultColumns = [];
 
-    console.log("GET TABLE COLUMNS");
-
     if (isRooms) {
       const columns = [
         {

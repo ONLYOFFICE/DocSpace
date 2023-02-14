@@ -203,7 +203,9 @@ const Navigation = ({
               onPlusClick={onPlusClick}
             />
           </StyledContainer>
-          {isTrashFolder && <TrashWarning title={titles.trashWarning} />}
+          {isTrashFolder && !isEmptyPage && (
+            <TrashWarning title={titles.trashWarning} />
+          )}
           {infoPanelIsVisible && (
             <ToggleInfoPanelButton
               id="info-panel-toggle--open"

@@ -686,6 +686,10 @@ class SectionHeaderContent extends React.Component {
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
+    const isEmptyTrash = !![
+      ...this.props.activeFiles,
+      ...this.props.activeFolders,
+    ].length;
 
     return [
       <Consumer key="header">
@@ -752,7 +756,7 @@ class SectionHeaderContent extends React.Component {
           </StyledContainer>
         )}
       </Consumer>,
-      isRecycleBinFolder && (
+      isRecycleBinFolder && !isEmptyPage && (
         <TrashWarning
           key="trash-warning"
           title={t("Files:TrashErasureWarning")}
