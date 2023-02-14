@@ -15,7 +15,7 @@ const StyledInfoPanelBody = styled.div`
       : css`
           padding: 80px 3px 0 20px;
           @media ${hugeMobile} {
-            padding: 80px 8px 0 16px;
+            padding: 80px 0 0 16px;
           }
         `}
 
