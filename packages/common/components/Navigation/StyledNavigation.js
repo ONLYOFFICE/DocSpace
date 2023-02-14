@@ -26,6 +26,7 @@ const StyledContainer = styled.div`
   height: 100%;
   ${(props) =>
     props.isDesktopClient &&
+    props.isDropBox &&
     css`
       max-height: 32px;
     `}
