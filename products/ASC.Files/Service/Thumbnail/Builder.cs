@@ -415,7 +415,7 @@ public class Builder<T>
 
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
     {
-        using var targetImg = GetImageThumbnail(sourceImg, width);
+        using var targetImg = GetImageThumbnail(sourceImg, width, height);
         using var targetStream = new MemoryStream();
         switch (_global.ThumbnailExtension)
         {
@@ -448,8 +448,23 @@ public class Builder<T>
         await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
     {
-        return sourceBitmap.Clone(x => x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0));
+
+        return sourceBitmap.Clone(x =>
+        {
+            var resizedImage = x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0);
+
+            var resizedImageWidth = resizedImage.GetCurrentSize().Width;
+            var resizedImageHeight = resizedImage.GetCurrentSize().Height;
+
+            var cropWidth = resizedImageWidth < thumbnaillWidth ? resizedImageWidth : thumbnaillWidth;
+            var cropHeight = resizedImageHeight < thumbnaillHeight ? resizedImageHeight : thumbnaillHeight;
+
+            if ((cropHeight != resizedImageHeight) || (cropWidth != resizedImageWidth))
+            {
+                x.Crop(cropWidth, cropHeight);
+            }
+        });
     }
 }
