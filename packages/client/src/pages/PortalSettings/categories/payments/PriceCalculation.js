@@ -55,6 +55,7 @@ let timeout = null,
   CancelToken,
   source;
 
+const backUrl = window.location.origin;
 const PriceCalculation = ({
   t,
   user,
@@ -71,13 +72,19 @@ const PriceCalculation = ({
   currencySymbol,
   isAlreadyPaid,
   isFreeAfterPaidPeriod,
-  setStartPaymentLink,
   managersCount,
 }) => {
-  useEffect(() => {
+  useEffect(async () => {
     initializeInfo();
 
-    !isAlreadyPaid && setStartPaymentLink(t);
+    if (isAlreadyPaid) return;
+
+    try {
+      const link = await getPaymentLink(managersCount, source?.token, backUrl);
+      setPaymentLink(link);
+    } catch (e) {
+      toastr.error(t("ErrorNotification"));
+    }
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -103,7 +110,7 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await getPaymentLink(value, source.token)
+      await getPaymentLink(value, source.token, backUrl)
         .then((link) => {
           setPaymentLink(link);
           setIsLoading(false);
@@ -207,7 +214,6 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     maxAvailableManagersCount,
     initializeInfo,
-    setStartPaymentLink,
     managersCount,
   } = payments;
   const { theme } = auth.settingsStore;
@@ -224,7 +230,7 @@ export default inject(({ auth, payments }) => {
 
   return {
     managersCount,
-    setStartPaymentLink,
+
     isFreeTariff,
     setManagersCount,
     tariffsInfo,
