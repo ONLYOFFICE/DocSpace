@@ -5,7 +5,6 @@ import Text from "@docspace/components/text";
 import TextInput from "@docspace/components/text-input";
 import PasswordInput from "@docspace/components/password-input";
 import Button from "@docspace/components/button";
-import Section from "@docspace/common/components/Section";
 import FieldContainer from "@docspace/components/field-container";
 import { inject, observer } from "mobx-react";
 import { EmployeeActivationStatus } from "@docspace/common/constants";
@@ -16,7 +15,12 @@ import {
 } from "@docspace/common/api/people";
 import { createPasswordHash } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
-import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
+import {
+  StyledPage,
+  StyledContent,
+  StyledBody,
+  StyledHeader,
+} from "./StyledConfirm";
 import withLoader from "../withLoader";
 import { getPasswordErrorMessage } from "SRC_DIR/helpers/utils";
 
@@ -135,120 +139,112 @@ const ActivateUserForm = (props) => {
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
-          <Text fontSize="23px" fontWeight="700" className="title">
-            {greetingTitle}
-          </Text>
+      <StyledContent>
+        <StyledBody>
+          <StyledHeader>
+            <Text fontSize="23px" fontWeight="700" className="title">
+              {greetingTitle}
+            </Text>
 
-          <Text className="subtitle">{t("InviteTitle")}</Text>
-        </StyledHeader>
+            <Text className="subtitle">{t("InviteTitle")}</Text>
+          </StyledHeader>
 
-        <FieldContainer
-          className="form-field"
-          isVertical={true}
-          labelVisible={false}
-          hasError={!nameValid}
-          errorMessage={t("Common:RequiredField")}
-        >
-          <TextInput
-            id="name"
-            name="name"
-            value={name}
-            placeholder={t("Common:FirstName")}
-            size="large"
-            scale={true}
-            tabIndex={1}
-            isAutoFocussed={true}
-            autoComplete="given-name"
-            onChange={onChangeName}
-            onKeyDown={onKeyPress}
-          />
-        </FieldContainer>
+          <FieldContainer
+            className="form-field"
+            isVertical={true}
+            labelVisible={false}
+            hasError={!nameValid}
+            errorMessage={t("Common:RequiredField")}
+          >
+            <TextInput
+              id="name"
+              name="name"
+              value={name}
+              placeholder={t("Common:FirstName")}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              isAutoFocussed={true}
+              autoComplete="given-name"
+              onChange={onChangeName}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
 
-        <FieldContainer
-          className="form-field"
-          isVertical={true}
-          labelVisible={false}
-          hasError={!surNameValid}
-          errorMessage={t("Common:RequiredField")}
-        >
-          <TextInput
-            id="surname"
-            name="surname"
-            value={surName}
-            placeholder={t("Common:LastName")}
-            size="large"
-            scale={true}
-            tabIndex={2}
-            autoComplete="family-name"
-            onChange={onChangeSurName}
-            onKeyDown={onKeyPress}
-          />
-        </FieldContainer>
+          <FieldContainer
+            className="form-field"
+            isVertical={true}
+            labelVisible={false}
+            hasError={!surNameValid}
+            errorMessage={t("Common:RequiredField")}
+          >
+            <TextInput
+              id="surname"
+              name="surname"
+              value={surName}
+              placeholder={t("Common:LastName")}
+              size="large"
+              scale={true}
+              tabIndex={2}
+              autoComplete="family-name"
+              onChange={onChangeSurName}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
 
-        <FieldContainer
-          className="form-field"
-          isVertical={true}
-          labelVisible={false}
-          hasError={isPasswordErrorShow && !passwordValid}
-          errorMessage={`${t(
-            "Common:PasswordLimitMessage"
-          )}: ${getPasswordErrorMessage(t, settings)}`}
-        >
-          <PasswordInput
-            className="confirm-input"
-            simpleView={false}
-            passwordSettings={settings}
-            id="password"
-            inputName="password"
-            placeholder={t("Common:Password")}
-            type="password"
-            inputValue={password}
+          <FieldContainer
+            className="form-field"
+            isVertical={true}
+            labelVisible={false}
             hasError={isPasswordErrorShow && !passwordValid}
-            size="large"
-            scale={true}
-            tabIndex={1}
-            autoComplete="current-password"
-            onChange={onChangePassword}
-            onValidateInput={onValidatePassword}
-            onBlur={onBlurPassword}
-            onKeyDown={onKeyPress}
-            tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-            tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
-              settings ? settings.minLength : 8
-            }`}
-            tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
-            tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
-            tooltipPasswordSpecial={`${t(
-              "Common:PasswordLimitSpecialSymbols"
-            )}`}
-            generatePasswordTitle={t("Wizard:GeneratePassword")}
-            // If need copy credentials use t("EmailAndPasswordCopiedToClipboard")
+            errorMessage={`${t(
+              "Common:PasswordLimitMessage"
+            )}: ${getPasswordErrorMessage(t, settings)}`}
+          >
+            <PasswordInput
+              className="confirm-input"
+              simpleView={false}
+              passwordSettings={settings}
+              id="password"
+              inputName="password"
+              placeholder={t("Common:Password")}
+              type="password"
+              inputValue={password}
+              hasError={isPasswordErrorShow && !passwordValid}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              autoComplete="current-password"
+              onChange={onChangePassword}
+              onValidateInput={onValidatePassword}
+              onBlur={onBlurPassword}
+              onKeyDown={onKeyPress}
+              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
+                settings ? settings.minLength : 8
+              }`}
+              tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+              tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
+              tooltipPasswordSpecial={`${t(
+                "Common:PasswordLimitSpecialSymbols"
+              )}`}
+              generatePasswordTitle={t("Wizard:GeneratePassword")}
+              // If need copy credentials use t("EmailAndPasswordCopiedToClipboard")
+            />
+          </FieldContainer>
+
+          <Button
+            className="confirm-button"
+            primary
+            size="normal"
+            label={t("LoginRegistryButton")}
+            tabIndex={5}
+            onClick={onSubmit}
+            isDisabled={isLoading}
           />
-        </FieldContainer>
-
-        <Button
-          className="confirm-button"
-          primary
-          size="normal"
-          label={t("LoginRegistryButton")}
-          tabIndex={5}
-          onClick={onSubmit}
-          isDisabled={isLoading}
-        />
-      </StyledBody>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const ActivateUserFormWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <ActivateUserForm {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -272,7 +268,7 @@ export default inject(({ auth }) => {
 })(
   withRouter(
     withTranslation(["Confirm", "Common", "Wizard"])(
-      withLoader(observer(ActivateUserFormWrapper))
+      withLoader(observer(ActivateUserForm))
     )
   )
 );

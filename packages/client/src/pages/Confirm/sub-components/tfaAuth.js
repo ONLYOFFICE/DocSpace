@@ -6,46 +6,32 @@ import Button from "@docspace/components/button";
 import TextInput from "@docspace/components/text-input";
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
-import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
 import toastr from "@docspace/components/toast/toastr";
 import withLoader from "../withLoader";
-import {
-  hugeMobile,
-  smallTablet,
-  tablet,
-} from "@docspace/components/utils/device";
+import { hugeMobile } from "@docspace/components/utils/device";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
+import { StyledPage, StyledContent } from "./StyledConfirm";
 
 const StyledForm = styled(Box)`
-  margin: 63px auto;
-  width: 320px;
+  margin: 56px auto;
   display: flex;
   flex-direction: column;
   flex: 1fr;
 
-  @media ${tablet} {
-    margin: 120px auto;
-    width: 480px;
-  }
-
-  @media ${smallTablet} {
-    width: 400px;
-  }
-
   @media ${hugeMobile} {
-    margin: 32px 8px auto 8px;
-    padding-left: 8px;
+    margin: 0 auto;
     width: 100%;
   }
 
   .docspace-logo {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 64px;
+    padding-bottom: 40px;
   }
 
   .app-code-wrapper {
@@ -94,66 +80,70 @@ const TfaAuthForm = withLoader((props) => {
   };
 
   return (
-    <StyledForm className="app-code-container">
-      <DocspaceLogo className="docspace-logo" />
-      <FormWrapper>
-        <Box className="app-code-description" marginProp="0 0 32px 0">
-          <Text isBold fontSize="14px" className="app-code-text">
-            {t("EnterAppCodeTitle")}
-          </Text>
-          <Text>{t("EnterAppCodeDescription")}</Text>
-        </Box>
-        <Box
-          displayProp="flex"
-          flexDirection="column"
-          className="app-code-wrapper"
-        >
-          <Box className="app-code-input">
-            <FieldContainer
-              labelVisible={false}
-              hasError={error ? true : false}
-              errorMessage={error}
+    <StyledPage>
+      <StyledContent>
+        <StyledForm className="app-code-container">
+          <DocspaceLogo className="docspace-logo" />
+          <FormWrapper>
+            <Box className="app-code-description" marginProp="0 0 32px 0">
+              <Text isBold fontSize="14px" className="app-code-text">
+                {t("EnterAppCodeTitle")}
+              </Text>
+              <Text>{t("EnterAppCodeDescription")}</Text>
+            </Box>
+            <Box
+              displayProp="flex"
+              flexDirection="column"
+              className="app-code-wrapper"
             >
-              <TextInput
-                id="code"
-                name="code"
-                type="text"
-                size="huge"
-                scale
-                isAutoFocussed
-                tabIndex={1}
-                placeholder={t("EnterCodePlaceholder")}
-                isDisabled={isLoading}
-                maxLength={6}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  setError("");
-                }}
-                value={code}
-                hasError={error ? true : false}
-                onKeyDown={onKeyPress}
-              />
-            </FieldContainer>
-          </Box>
-          <Box className="app-code-continue-btn">
-            <Button
-              scale
-              primary
-              size="medium"
-              tabIndex={3}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("Common:ContinueButton")
-              }
-              isDisabled={!code.length || isLoading}
-              isLoading={isLoading}
-              onClick={onSubmit}
-            />
-          </Box>
-        </Box>
-      </FormWrapper>
-    </StyledForm>
+              <Box className="app-code-input">
+                <FieldContainer
+                  labelVisible={false}
+                  hasError={error ? true : false}
+                  errorMessage={error}
+                >
+                  <TextInput
+                    id="code"
+                    name="code"
+                    type="text"
+                    size="huge"
+                    scale
+                    isAutoFocussed
+                    tabIndex={1}
+                    placeholder={t("EnterCodePlaceholder")}
+                    isDisabled={isLoading}
+                    maxLength={6}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                      setError("");
+                    }}
+                    value={code}
+                    hasError={error ? true : false}
+                    onKeyDown={onKeyPress}
+                  />
+                </FieldContainer>
+              </Box>
+              <Box className="app-code-continue-btn">
+                <Button
+                  scale
+                  primary
+                  size="medium"
+                  tabIndex={3}
+                  label={
+                    isLoading
+                      ? t("Common:LoadingProcessing")
+                      : t("Common:ContinueButton")
+                  }
+                  isDisabled={!code.length || isLoading}
+                  isLoading={isLoading}
+                  onClick={onSubmit}
+                />
+              </Box>
+            </Box>
+          </FormWrapper>
+        </StyledForm>
+      </StyledContent>
+    </StyledPage>
   );
 });
 
@@ -165,13 +155,7 @@ const TfaAuthFormWrapper = (props) => {
     setIsLoading(false);
   }, []);
 
-  return (
-    <Section>
-      <Section.SectionBody>
-        <TfaAuthForm {...props} />
-      </Section.SectionBody>
-    </Section>
-  );
+  return <TfaAuthForm {...props} />;
 };
 
 export default inject(({ auth, confirm }) => ({
