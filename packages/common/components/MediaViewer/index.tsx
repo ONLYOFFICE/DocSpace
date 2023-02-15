@@ -267,7 +267,7 @@ function MediaViewer({
     return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
   }, []);
 
-  let isRemoved: null | number = null;
+  let lastRemovedFileId: null | number = null;
 
   const onDelete = () => {
     const { playlist, onDelete } = props;
@@ -275,7 +275,7 @@ function MediaViewer({
     let currentFileId = playlist.find((file) => file.id === playlistPos)
       ?.fileId;
 
-    if (currentFileId === isRemoved) return;
+    if (currentFileId === lastRemovedFileId) return;
 
     const canDelete = targetFile?.security?.Delete;
 
@@ -283,7 +283,7 @@ function MediaViewer({
 
     if (!isNullOrUndefined(currentFileId)) {
       onDelete(currentFileId);
-      isRemoved = currentFileId;
+      lastRemovedFileId = currentFileId;
     }
   };
 
