@@ -81,7 +81,12 @@ const ChangePasswordForm = (props) => {
         errorMessage = error;
       }
       console.error(errorMessage);
-      toastr.error(t("Common:SomethingWentWrong"));
+
+      if (errorMessage === "Invalid params") {
+        toastr.error(t("Common:SomethingWentWrong"));
+      } else {
+        toastr.error(t(`${errorMessage}`));
+      }
       setIsLoading(false);
     }
   };
