@@ -31,6 +31,7 @@ public enum DateToAutoCleanUp
     OneWeek = 1,
     TwoWeeks,
     OneMonth,
+    ThirtyDays,
     TwoMonths,
     ThreeMonths
 }
@@ -57,13 +58,26 @@ public class FileDateTime
         var dateTime = modifiedOn;
         switch (date)
         {
-            case DateToAutoCleanUp.OneWeek: dateTime = dateTime.AddDays(7); break;
-            case DateToAutoCleanUp.TwoWeeks: dateTime = dateTime.AddDays(14); break;
-            case DateToAutoCleanUp.OneMonth: dateTime = dateTime.AddMonths(1); break;
-            case DateToAutoCleanUp.TwoMonths: dateTime = dateTime.AddMonths(2); break;
-            case DateToAutoCleanUp.ThreeMonths: dateTime = dateTime.AddMonths(3); break;
-            default: break;
+            case DateToAutoCleanUp.OneWeek: 
+                dateTime = dateTime.AddDays(7); 
+                break;
+            case DateToAutoCleanUp.TwoWeeks: 
+                dateTime = dateTime.AddDays(14); 
+                break;
+            case DateToAutoCleanUp.OneMonth: 
+                dateTime = dateTime.AddMonths(1); 
+                break;
+            case DateToAutoCleanUp.ThirtyDays: 
+                dateTime = dateTime.AddDays(30); 
+                break;
+            case DateToAutoCleanUp.TwoMonths: 
+                dateTime = dateTime.AddMonths(2); 
+                break;
+            case DateToAutoCleanUp.ThreeMonths: 
+                dateTime = dateTime.AddMonths(3); 
+                break;
         }
+        
         return utc ? _tenantUtil.DateTimeToUtc(dateTime) : dateTime;
     }
 }
