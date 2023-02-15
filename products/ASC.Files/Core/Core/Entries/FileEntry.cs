@@ -86,6 +86,8 @@ public abstract class FileEntry : ICloneable
     public abstract bool IsNew { get; set; }
     public FileEntryType FileEntryType { get; set; }
     public IEnumerable<Tag> Tags { get; set; }
+    public string OriginTitle { get; set; }
+    public string OriginRoomTitle { get; set; }
 
     private string _modifiedByString;
     private string _createByString;
@@ -114,8 +116,6 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     public T ParentId { get; set; }
     public T OriginId { get; set; }
     public T OriginRoomId { get; set; }
-    public string OriginTitle { get; set; }
-    public string OriginRoomTitle { get; set; }
 
     public IDictionary<FilesSecurityActions, bool> Security { get; set; }
 
