@@ -44,6 +44,7 @@ public class FilesChunkedUploadSessionHolder : CommonChunkedUploadSessionHolder
     private async Task<T> InternalFinalizeAsync<T>(CommonChunkedUploadSession commonChunkedUploadSession)
     {
         var chunkedUploadSession = commonChunkedUploadSession as ChunkedUploadSession<T>;
+        chunkedUploadSession.BytesTotal = chunkedUploadSession.BytesUploaded;
         var fileDao = GetFileDao<T>();
         var file = await fileDao.FinalizeUploadSessionAsync(chunkedUploadSession);
         return file.Id;
