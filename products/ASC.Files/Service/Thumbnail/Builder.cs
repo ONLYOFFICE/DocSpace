@@ -152,7 +152,7 @@ public class Builder<T>
         catch (Exception exception)
         {
             _logger.ErrorBuildThumbnailsTenantId(fileData.TenantId, exception);
-        }      
+        }
     }
 
     private async Task GenerateThumbnail(IFileDao<T> fileDao, FileData<T> fileData)
@@ -188,6 +188,8 @@ public class Builder<T>
                 return;
             }
 
+            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
+
             if (IsVideo(ext))
             {
                 await MakeThumbnailFromVideo(fileDao, file);
@@ -197,13 +199,15 @@ public class Builder<T>
 
                 if (IsImage(ext))
                 {
-                    await CropImage(fileDao, file);
+                    await MakeThumbnailFromImage(fileDao, file);
                 }
                 else
                 {
-                    await MakeThumbnail(fileDao, file);
+                    await MakeThumbnailFromDocs(fileDao, file);
                 }
             }
+
+            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
 
             var newFile = await fileDao.GetFileStableAsync(file.Id);
 
@@ -244,10 +248,8 @@ public class Builder<T>
         File.Delete(tempFilePath);
     }
 
-    private async Task MakeThumbnail(IFileDao<T> fileDao, File<T> file)
+    private async Task MakeThumbnailFromDocs(IFileDao<T> fileDao, File<T> file)
     {
-        await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
-       
         foreach (var w in _config.Sizes)
         {
             _logger.DebugMakeThumbnail1(file.Id.ToString());
@@ -261,7 +263,7 @@ public class Builder<T>
                 try
                 {
                     (resultPercent, thumbnailUrl) = await GetThumbnailUrl(file, _global.DocThumbnailExtension.ToString(), w.Width, w.Height);
-                    
+
                     if (resultPercent == 100)
                     {
                         break;
@@ -287,7 +289,7 @@ public class Builder<T>
                         {
                             _logger.WarningMakeThumbnail(file.Id.ToString(), thumbnailUrl, resultPercent, attempt, exception);
                         }
-                    } 
+                    }
                     else
                     {
                         _logger.WarningMakeThumbnail(file.Id.ToString(), thumbnailUrl, resultPercent, attempt, exception);
@@ -310,9 +312,6 @@ public class Builder<T>
 
             await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height);
         }
-
-        await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
-
     }
 
     private async Task<(int, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
@@ -390,7 +389,7 @@ public class Builder<T>
         return _fFmpegService.ExistFormat(extention);
     }
 
-    private async Task CropImage(IFileDao<T> fileDao, File<T> file)
+    private async Task MakeThumbnailFromImage(IFileDao<T> fileDao, File<T> file)
     {
         _logger.DebugCropImage(file.Id.ToString());
 
@@ -404,27 +403,11 @@ public class Builder<T>
 
     private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
     {
-        using (var sourceImg = await Image.LoadAsync(stream))
+        using var sourceImg = await Image.LoadAsync(stream);
+
+        foreach (var w in _config.Sizes)
         {
-            //var tasks = new List<Task>();
-
-            //foreach (var w in config.Sizes)
-            //{
-            //    tasks.Add(CropAsync(sourceImg, fileDao, file, w.Width, w.Height));
-            //}
-
-            //await Task.WhenAll(tasks.ToArray());
-
-            //await Parallel.ForEachAsync(config.Sizes, (w, b) => CropAsync(sourceImg, fileDao, file, w.Width, w.Height));
-
-            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
-
-            foreach (var w in _config.Sizes)
-            {
-                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
-            }
-
-            await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
+            await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
         }
 
         GC.Collect();
@@ -432,7 +415,7 @@ public class Builder<T>
 
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
     {
-        using var targetImg = GetImageThumbnail(sourceImg, width);
+        using var targetImg = GetImageThumbnail(sourceImg, width, height);
         using var targetStream = new MemoryStream();
         switch (_global.ThumbnailExtension)
         {
@@ -462,11 +445,26 @@ public class Builder<T>
                 break;
         }
 
-        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);     
+        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
     {
-        return sourceBitmap.Clone(x => x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0));
+
+        return sourceBitmap.Clone(x =>
+        {
+            var resizedImage = x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0);
+
+            var resizedImageWidth = resizedImage.GetCurrentSize().Width;
+            var resizedImageHeight = resizedImage.GetCurrentSize().Height;
+
+            var cropWidth = resizedImageWidth < thumbnaillWidth ? resizedImageWidth : thumbnaillWidth;
+            var cropHeight = resizedImageHeight < thumbnaillHeight ? resizedImageHeight : thumbnaillHeight;
+
+            if ((cropHeight != resizedImageHeight) || (cropWidth != resizedImageWidth))
+            {
+                x.Crop(cropWidth, cropHeight);
+            }
+        });
     }
 }

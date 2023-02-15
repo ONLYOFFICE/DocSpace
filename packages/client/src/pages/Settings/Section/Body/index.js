@@ -70,7 +70,11 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
   ) : (
     <StyledContainer>
       {!showAdminSettings ? (
-        <PersonalSettings t={t} showTitle={true} />
+        <PersonalSettings
+          t={t}
+          showTitle={true}
+          showAdminSettings={showAdminSettings}
+        />
       ) : (
         <Submenu
           data={data}

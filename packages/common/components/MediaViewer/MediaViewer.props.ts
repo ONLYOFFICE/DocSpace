@@ -23,7 +23,7 @@ export interface MediaViewerProps {
 
   playlistPos: number;
 
-  getIcon: (size: number, ext: string, ...arg: any) => any;
+  getIcon: (size: number, ext: string, ...arg: any) => string;
 
   onClose: VoidFunction;
   onError?: VoidFunction;

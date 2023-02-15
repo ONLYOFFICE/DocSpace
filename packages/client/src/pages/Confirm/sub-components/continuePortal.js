@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import Section from "@docspace/common/components/Section";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
@@ -11,7 +10,7 @@ import { continuePortal } from "@docspace/common/api/portal";
 import {
   StyledPage,
   StyledBody,
-  StyledHeader,
+  StyledContent,
   ButtonsWrapper,
 } from "./StyledConfirm";
 
@@ -40,58 +39,48 @@ const ContinuePortal = (props) => {
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          {isReactivate ? (
-            <Trans t={t} i18nKey="SuccessReactivate" ns="Confirm">
-              Your account has been successfully reactivated. In 10 seconds you
-              will be redirected to the
-              <Link isHovered href="/">
-                portal
-              </Link>
-            </Trans>
-          ) : (
-            <>
-              <Text className="subtitle">{t("PortalContinueTitle")}</Text>
-              <ButtonsWrapper>
-                <Button
-                  primary
-                  scale
-                  size="medium"
-                  label={t("Reactivate")}
-                  tabIndex={1}
-                  onClick={onRestoreClick}
-                />
-                <Button
-                  scale
-                  size="medium"
-                  label={t("Common:CancelButton")}
-                  tabIndex={1}
-                  onClick={onCancelClick}
-                />
-              </ButtonsWrapper>
-            </>
-          )}
-        </FormWrapper>
-      </StyledBody>
+          <FormWrapper>
+            {isReactivate ? (
+              <Trans t={t} i18nKey="SuccessReactivate" ns="Confirm">
+                Your account has been successfully reactivated. In 10 seconds
+                you will be redirected to the
+                <Link isHovered href="/">
+                  portal
+                </Link>
+              </Trans>
+            ) : (
+              <>
+                <Text className="subtitle">{t("PortalContinueTitle")}</Text>
+                <ButtonsWrapper>
+                  <Button
+                    primary
+                    scale
+                    size="medium"
+                    label={t("Reactivate")}
+                    tabIndex={1}
+                    onClick={onRestoreClick}
+                  />
+                  <Button
+                    scale
+                    size="medium"
+                    label={t("Common:CancelButton")}
+                    tabIndex={1}
+                    onClick={onCancelClick}
+                  />
+                </ButtonsWrapper>
+              </>
+            )}
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const ContinuePortalWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <ContinuePortal {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -100,8 +89,6 @@ export default inject(({ auth }) => ({
   theme: auth.settingsStore.theme,
 }))(
   withRouter(
-    withTranslation(["Confirm", "Common"])(
-      withLoader(observer(ContinuePortalWrapper))
-    )
+    withTranslation(["Confirm", "Common"])(withLoader(observer(ContinuePortal)))
   )
 );

@@ -156,7 +156,7 @@ const DropBox = React.forwardRef(
         >
           <StyledContainer
             canCreate={canCreate}
-            isDropBox={true}
+            isDropBoxComponent={true}
             isInfoPanelVisible={isInfoPanelVisible}
             isDesktopClient={isDesktopClient}
           >
@@ -169,7 +169,7 @@ const DropBox = React.forwardRef(
               isDesktop={isDesktop}
               personal={personal}
               isRootFolder={isRootFolder}
-              isDropBox={true}
+              isDropBoxComponent={true}
               canCreate={canCreate}
               getContextOptionsFolder={getContextOptionsFolder}
               getContextOptionsPlus={getContextOptionsPlus}

@@ -7,7 +7,7 @@ import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import { deleteSelf } from "@docspace/common/api/people";
 import toastr from "@docspace/components/toast/toastr";
-import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
+import { StyledPage, StyledBody, StyledContent } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
@@ -35,8 +35,8 @@ const ProfileRemoveForm = (props) => {
   if (isProfileDeleted) {
     return (
       <StyledPage>
-        <StyledBody>
-          <StyledHeader>
+        <StyledContent>
+          <StyledBody>
             <DocspaceLogo className="docspace-logo" />
             <Text fontSize="23px" fontWeight="700" className="title">
               {t("DeleteProfileSuccessMessage")}
@@ -44,56 +44,46 @@ const ProfileRemoveForm = (props) => {
             <Text fontSize="16px" fontWeight="600" className="confirm-subtitle">
               {t("DeleteProfileSuccessMessageInfo")}
             </Text>
-          </StyledHeader>
-        </StyledBody>
+          </StyledBody>
+        </StyledContent>
       </StyledPage>
     );
   }
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          <div className="subtitle">
-            <Text
-              fontSize="16px"
-              fontWeight="600"
-              className="delete-profile-confirm"
-            >
-              {t("DeleteProfileConfirmation")}
-            </Text>
-            <Text>{t("DeleteProfileConfirmationInfo")}</Text>
-          </div>
+          <FormWrapper>
+            <div className="subtitle">
+              <Text
+                fontSize="16px"
+                fontWeight="600"
+                className="delete-profile-confirm"
+              >
+                {t("DeleteProfileConfirmation")}
+              </Text>
+              <Text>{t("DeleteProfileConfirmationInfo")}</Text>
+            </div>
 
-          <Button
-            primary
-            scale
-            size="medium"
-            label={t("DeleteProfileBtn")}
-            tabIndex={1}
-            isDisabled={isLoading}
-            onClick={onDeleteProfile}
-          />
-        </FormWrapper>
-      </StyledBody>
+            <Button
+              primary
+              scale
+              size="medium"
+              label={t("DeleteProfileBtn")}
+              tabIndex={1}
+              isDisabled={isLoading}
+              onClick={onDeleteProfile}
+            />
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const ProfileRemoveFormWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <ProfileRemoveForm {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -103,6 +93,6 @@ export default inject(({ auth }) => ({
   logout: auth.logout,
 }))(
   withRouter(
-    withTranslation("Confirm")(withLoader(observer(ProfileRemoveFormWrapper)))
+    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
   )
 );
