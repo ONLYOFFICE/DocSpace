@@ -1,18 +1,29 @@
-import { Tooltip } from "@docspace/components";
+import { Loader, Tooltip } from "@docspace/components";
 import Text from "@docspace/components/text";
-import React from "react";
+import React, { useState } from "react";
 import { StyledText } from "./CellStyles";
+import { getFolderPath } from "@docspace/common/api/files";
+import { CategoryType } from "@docspace/client/src/helpers/constants";
 
-const RoomCell = ({ t, sideColor, item }) => {
-  const { originRoomTitle, originTitle } = item;
+const RoomCell = ({ sideColor, item }) => {
+  const { originRoomTitle, originId, originTitle } = item;
 
-  const roomTitle = originRoomTitle || originTitle;
-  const path = originRoomTitle ? originTitle : null;
+  const [path, setPath] = useState([]);
+  const [isTooltipLoading, setIsTooltipLoading] = useState(false);
+
+  const getPath = async () => {
+    if (path.length) return;
+
+    setIsTooltipLoading(true);
+    const folderPath = await getFolderPath(originId);
+    if (folderPath[0].id === CategoryType.Shared) folderPath.shift();
+    setPath(folderPath);
+    setIsTooltipLoading(false);
+  };
 
   return [
     <StyledText
       key="cell"
-      // title={roomTitle}
       fontSize="12px"
       fontWeight={600}
       color={sideColor}
@@ -22,24 +33,35 @@ const RoomCell = ({ t, sideColor, item }) => {
       data-tip={""}
       data-place={"bottom"}
     >
-      {roomTitle}
+      {originRoomTitle || originTitle}
     </StyledText>,
 
     <Tooltip
       id={"" + item.id}
-      key="tooltip"
-      getContent={() => (
-        <div>
-          <Text isBold isInline fontSize="12px">
-            {roomTitle}
-          </Text>
-          {path && (
-            <Text isInline fontSize="12px">
-              {`/${path}`}
-            </Text>
-          )}
-        </div>
-      )}
+      key={"tooltip"}
+      effect={"float"}
+      afterShow={getPath}
+      getContent={[
+        () => (
+          <span>
+            {isTooltipLoading ? (
+              <Loader color="#333333" size="12px" type="track" />
+            ) : (
+              path.map((pathPart, i) => (
+                <Text
+                  key={pathPart.id}
+                  isBold={i === 0}
+                  isInline
+                  fontSize="12px"
+                >
+                  {i === 0 ? pathPart.title : `/${pathPart.title}`}
+                </Text>
+              ))
+            )}
+          </span>
+        ),
+        0,
+      ]}
     />,
   ];
 };
