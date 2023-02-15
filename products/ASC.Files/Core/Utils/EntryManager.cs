@@ -496,7 +496,7 @@ public class EntryManager
             
             if (parent.FolderType == FolderType.TRASH)
             { 
-                entries = await GetWithOriginAsync(entries, (int)Convert.ChangeType(roomId, typeof(int)));
+                entries = await GetWithOriginAsync(entries, roomId is int id ? id : default);
             }
         }
 
@@ -948,8 +948,8 @@ public class EntryManager
             ,
             SortedByType.Room => (x, y) =>
             {
-                var x1 = ((FileEntry<T>)x).OriginRoomTitle;
-                var x2 = ((FileEntry<T>)y).OriginRoomTitle;
+                var x1 = x.OriginRoomTitle;
+                var x2 = y.OriginRoomTitle;
 
                 if (x1 == null && x2 == null)
                 {
