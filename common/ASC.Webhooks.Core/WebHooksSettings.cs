@@ -39,6 +39,7 @@ public class WebHooksSettings : ISettings<WebHooksSettings>
 
     public WebHooksSettings GetDefault() => new WebHooksSettings()
     {
+        EnableSSLVerification = true,
         Keys = new List<string> { }
     };
 }
