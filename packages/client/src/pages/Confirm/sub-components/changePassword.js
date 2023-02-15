@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
@@ -25,12 +25,17 @@ const ChangePasswordForm = (props) => {
     logout,
     changePassword,
     linkData,
+    getSettings,
   } = props;
 
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
   const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!hashSettings) getSettings(true);
+  }, []);
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
@@ -75,8 +80,8 @@ const ChangePasswordForm = (props) => {
       } else {
         errorMessage = error;
       }
-
-      toastr.error(t(`${errorMessage}`));
+      console.error(errorMessage);
+      toastr.error(t("Common:SomethingWentWrong"));
       setIsLoading(false);
     }
   };
@@ -165,6 +170,7 @@ export default inject(({ auth, setup }) => {
     defaultPage,
     passwordSettings,
     theme,
+    getSettings,
   } = auth.settingsStore;
   const { changePassword } = setup;
 
@@ -177,6 +183,7 @@ export default inject(({ auth, setup }) => {
     logout: auth.logout,
     changePassword,
     isAuthenticated: auth.isAuthenticated,
+    getSettings,
   };
 })(
   withRouter(
