@@ -113,7 +113,7 @@ class FilesTableHeader extends React.Component {
           title: t("ByErasure"),
           enable: this.props.erasureColumnIsEnabled,
           resizable: true,
-          sortBy: "DateAndTimeAutoDelete",
+          sortBy: "DateAndTime",
           onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
