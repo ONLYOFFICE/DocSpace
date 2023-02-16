@@ -47,7 +47,7 @@ const RoomCell = ({ sideColor, item }) => {
       effect={"float"}
       afterShow={getPath}
       getContent={() => (
-        <>
+        <span>
           {isTooltipLoading ? (
             <Loader color="#333333" size="12px" type="track" />
           ) : (
@@ -57,7 +57,7 @@ const RoomCell = ({ sideColor, item }) => {
               </Text>
             ))
           )}
-        </>
+        </span>
       )}
     />,
   ];
