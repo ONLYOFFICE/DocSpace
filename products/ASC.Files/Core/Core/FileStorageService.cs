@@ -276,6 +276,7 @@ public class FileStorageService<T> //: IFileStorageService
         bool withSubfolders,
         OrderBy orderBy,
         SearchArea searchArea = SearchArea.Active,
+        T roomId = default,
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
         bool excludeSubject = false,
@@ -329,7 +330,7 @@ public class FileStorageService<T> //: IFileStorageService
         IEnumerable<FileEntry> entries;
         try
         {
-            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
+            (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, roomId, searchArea,
                 withoutTags, tagNames, excludeSubject, provider, subjectFilter);
         }
         catch (Exception e)

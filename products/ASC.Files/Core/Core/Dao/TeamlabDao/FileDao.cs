@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.OneDrive.Sdk;
-
 using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
@@ -359,7 +357,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 }
                 break;
         }
-
+        
         await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
@@ -892,16 +890,30 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
+                var trashId = await trashIdTask;
+                var oldParentId = toUpdate.FirstOrDefault()?.ParentId;
+                
                 foreach (var f in toUpdate)
                 {
                     f.ParentId = toFolderId;
-
-                    var trashId = await trashIdTask;
+                    
                     if (trashId.Equals(toFolderId))
                     {
                         f.ModifiedBy = _authContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
                     }
+                }
+
+                var tagDao = _daoFactory.GetTagDao<int>();
+
+                if (toFolderId == trashId && oldParentId.HasValue)
+                {
+                    var origin = Tag.Origin(fileId, FileEntryType.File, oldParentId.Value, _authContext.CurrentAccount.ID);
+                    await tagDao.SaveTags(origin);
+                }
+                else if (oldParentId == trashId)
+                {
+                    await tagDao.RemoveTagLinksAsync(fileId, FileEntryType.File, TagType.Origin);
                 }
 
                 await filesDbContext.SaveChangesAsync();
