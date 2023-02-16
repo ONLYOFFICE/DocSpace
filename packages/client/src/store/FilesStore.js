@@ -39,6 +39,7 @@ const PaymentRequiredHttpCode = 402;
 const UnauthorizedHttpCode = 401;
 
 const THUMBNAILS_CACHE = 500;
+let timerId;
 
 class FilesStore {
   authStore;
@@ -122,7 +123,7 @@ class FilesStore {
   isPreview = false;
   tempFilter = null;
 
-  fileHighlight = null;
+  highlightFileId = null;
   thumbnails = new Set();
 
   constructor(
@@ -464,8 +465,19 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setFileHighlight = (fileHighlight) => {
-    this.fileHighlight = fileHighlight;
+  setHighlightFileId = (highlightFileId) => {
+    this.highlightFileId = highlightFileId;
+
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+
+    if (!highlightFileId) return;
+
+    timerId = setTimeout(() => {
+      this.highlightFileId = null;
+    }, 1000);
   };
 
   checkSelection = (file) => {

@@ -19,12 +19,11 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
-  searchTitleOpenLocation,
   itemOpenLocation,
   isLoadedSearchFiles,
   getFolderInfo,
   getFileInfo,
-  setFileHighlight,
+  setHighlightFileId,
   setItemOpenLocation,
 }) => {
   const [history, setHistory] = useState(null);
@@ -44,7 +43,7 @@ const History = ({
     requestInfo(+itemOpenLocation.id).then((res) => {
       if (itemOpenLocation.isFolder) res.isFolder = true;
 
-      setFileHighlight(res.id);
+      setHighlightFileId(res.id);
       setSelection(res);
       setItemOpenLocation(null);
     });
@@ -53,7 +52,7 @@ const History = ({
     itemOpenLocation,
     getFolderInfo,
     getFileInfo,
-    setFileHighlight,
+    setHighlightFileId,
     setItemOpenLocation,
   ]);
 
@@ -170,11 +169,10 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     getHistory,
     getFolderInfo,
     getFileInfo,
-    setFileHighlight,
+    setHighlightFileId,
   } = filesStore;
   const {
     checkAndOpenLocationAction,
-    searchTitleOpenLocation,
     itemOpenLocation,
     isLoadedSearchFiles,
     setItemOpenLocation,
@@ -194,12 +192,11 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
-    searchTitleOpenLocation,
     itemOpenLocation,
     isLoadedSearchFiles,
     getFolderInfo,
     getFileInfo,
-    setFileHighlight,
+    setHighlightFileId,
     setItemOpenLocation,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

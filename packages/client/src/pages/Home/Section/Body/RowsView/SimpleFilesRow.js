@@ -251,12 +251,10 @@ const SimpleFilesRow = (props) => {
     isRooms,
 
     folderCategory,
-    setFileHighlight,
-    fileHighlight,
+    isHighlight,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
-  const [isHighlight, setIsHighlight] = React.useState(false);
 
   const withAccess = item.security?.Lock;
   const isSmallContainer = sectionWidth <= 500;
@@ -270,12 +268,6 @@ const SimpleFilesRow = (props) => {
       defaultRoomIcon={item.defaultRoomIcon}
     />
   );
-
-  useEffect(() => {
-    if (fileHighlight !== item.id) return;
-    setIsHighlight(true);
-    setFileHighlight(null);
-  }, [fileHighlight, item.id]);
 
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {

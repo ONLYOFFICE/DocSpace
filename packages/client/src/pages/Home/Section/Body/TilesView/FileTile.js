@@ -54,17 +54,8 @@ const FileTile = (props) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setFileHighlight,
-    fileHighlight,
+    isHighlight,
   } = props;
-
-  const [isHighlight, setIsHighlight] = React.useState(false);
-
-  useEffect(() => {
-    if (fileHighlight !== item.id) return;
-    setIsHighlight(true);
-    setFileHighlight(null);
-  }, [fileHighlight, item.id]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -152,30 +143,32 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
-  const { getIcon } = settingsStore;
-  const {
-    setSelection,
-    withCtrlSelect,
-    withShiftSelect,
-    setFileHighlight,
-    fileHighlight,
-  } = filesStore;
+export default inject(
+  ({ settingsStore, filesStore, treeFoldersStore }, { item }) => {
+    const { getIcon } = settingsStore;
+    const {
+      setSelection,
+      withCtrlSelect,
+      withShiftSelect,
+      highlightFileId,
+    } = filesStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const isHighlight = highlightFileId === item?.id;
 
-  const isRooms = isRoomsFolder || isArchiveFolder;
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  return {
-    getIcon,
-    setSelection,
-    isRooms,
-    withCtrlSelect,
-    withShiftSelect,
-    setFileHighlight,
-    fileHighlight,
-  };
-})(
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    return {
+      getIcon,
+      setSelection,
+      isRooms,
+      withCtrlSelect,
+      withShiftSelect,
+      isHighlight,
+    };
+  }
+)(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(
       withFileActions(withBadges(withQuickButtons(observer(FileTile))))

@@ -517,7 +517,7 @@ class UploadDataStore {
           this.setConversionPercent(percent, !!error);
 
           if (file.fileInfo.version > 2) {
-            this.filesStore.setFileHighlight(file.fileInfo.id);
+            this.filesStore.setHighlightFileId(file.fileInfo.id);
           }
         }
       }
@@ -811,7 +811,7 @@ class UploadDataStore {
         });
 
         if (fileInfo.version > 2) {
-          this.filesStore.setFileHighlight(fileInfo.id);
+          this.filesStore.setHighlightFileId(fileInfo.id);
         }
 
         //setUploadData(uploadData);

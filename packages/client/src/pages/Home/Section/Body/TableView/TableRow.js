@@ -37,11 +37,9 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
-    setFileHighlight,
-    fileHighlight,
+    isHighlight,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
-  const [isHighlight, setIsHighlight] = React.useState(false);
 
   const element = (
     <ItemIcon
@@ -95,12 +93,6 @@ const FilesTableRow = (props) => {
       }
     }
   }, [checkedProps, isActive, showHotkeyBorder]);
-
-  React.useEffect(() => {
-    if (fileHighlight !== item.id) return;
-    setIsHighlight(true);
-    setFileHighlight(null);
-  }, [fileHighlight, item.id]);
 
   const idWithFileExst = item.fileExst
     ? `${item.id}_${item.fileExst}`
