@@ -225,6 +225,7 @@ class Section extends React.Component {
                         isHeaderVisible={isHeaderVisible}
                         viewAs={viewAs}
                         showText={showText}
+                        isEmptyPage={this.props.isEmptyPage}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
@@ -261,6 +262,7 @@ class Section extends React.Component {
                               viewAs={viewAs}
                               showText={showText}
                               settingsStudio={settingsStudio}
+                              isEmptyPage={this.props.isEmptyPage}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
@@ -387,6 +389,7 @@ Section.propTypes = {
   isHeaderVisible: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
+  isEmptyPage: PropTypes.bool,
 };
 
 Section.defaultProps = {

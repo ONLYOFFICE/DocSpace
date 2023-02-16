@@ -642,6 +642,33 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         });
     }
 
+    public async Task<int> RemoveTagLinksAsync(T entryId, FileEntryType entryType, TagType tagType)
+    {
+        var count = 0;
+        
+        await using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+        var mappedId = (await MappingIDAsync(entryId)).ToString();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            
+            count = await Query(filesDbContext.TagLink)
+                .Where(l => l.EntryId == mappedId && l.EntryType == entryType)
+                .Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (l, t) => new { l, t.Type })
+                .Where(r => r.Type == tagType)
+                .Select(r => r.l)
+                .ExecuteDeleteAsync();
+
+            await filesDbContext.SaveChangesAsync();
+            await tx.CommitAsync();
+
+        });
+
+        return count;
+    }
+
     private Task RemoveTagInDbAsync(Tag tag)
     {
         if (tag == null)

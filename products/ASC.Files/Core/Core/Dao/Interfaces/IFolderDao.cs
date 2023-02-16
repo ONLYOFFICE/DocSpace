@@ -359,6 +359,7 @@ public interface IFolderDao<T>
 
     IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime);
     IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime);
+    IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<T> entriesIds);
 
     #endregion
 }

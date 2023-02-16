@@ -14,7 +14,7 @@ class FilesTableHeader extends React.Component {
   }
 
   getTableColumns = (fromUpdate = false) => {
-    const { t, isRooms, getColumns } = this.props;
+    const { t, isRooms, isTrashFolder, getColumns } = this.props;
 
     const defaultColumns = [];
 
@@ -68,7 +68,81 @@ class FilesTableHeader extends React.Component {
           onClick: this.onRoomsFilter,
         },
       ];
-
+      defaultColumns.push(...columns);
+    } else if (isTrashFolder) {
+      const columns = [
+        {
+          key: "Name",
+          title: t("Common:Name"),
+          resizable: true,
+          enable: this.props.nameColumnIsEnabled,
+          default: true,
+          sortBy: "AZ",
+          minWidth: 210,
+          onClick: this.onFilter,
+        },
+        {
+          key: "Room",
+          title: t("Common:Room"),
+          enable: this.props.roomColumnIsEnabled,
+          resizable: true,
+          sortBy: "Room",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "AuthorTrash",
+          title: t("ByAuthor"),
+          enable: this.props.authorTrashColumnIsEnabled,
+          resizable: true,
+          sortBy: "Author",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "CreatedTrash",
+          title: t("ByCreation"),
+          enable: this.props.createdTrashColumnIsEnabled,
+          resizable: true,
+          sortBy: "DateAndTimeCreation",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "Erasure",
+          title: t("ByErasure"),
+          enable: this.props.erasureColumnIsEnabled,
+          resizable: true,
+          sortBy: "DateAndTime",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "SizeTrash",
+          title: t("Common:Size"),
+          enable: this.props.sizeTrashColumnIsEnabled,
+          resizable: true,
+          sortBy: "Size",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "TypeTrash",
+          title: t("Common:Type"),
+          enable: this.props.typeTrashColumnIsEnabled,
+          resizable: true,
+          sortBy: "Type",
+          onClick: this.onFilter,
+          onChange: this.onColumnChange,
+        },
+        {
+          key: "QuickButtons",
+          title: "",
+          enable: this.props.quickButtonsColumnIsEnabled,
+          defaultSize: 75,
+          resizable: false,
+        },
+      ];
       defaultColumns.push(...columns);
     } else {
       const columns = [
@@ -135,7 +209,6 @@ class FilesTableHeader extends React.Component {
           resizable: false,
         },
       ];
-
       defaultColumns.push(...columns);
     }
 
@@ -194,7 +267,10 @@ class FilesTableHeader extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.isRooms !== prevProps.isRooms) {
+    if (
+      this.props.isRooms !== prevProps.isRooms ||
+      this.props.isTrashFolder !== prevProps.isTrashFolder
+    ) {
       return this.getTableColumns(true);
     }
 
@@ -352,7 +428,12 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const { isRecentFolder, isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const {
+      isRecentFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
@@ -369,10 +450,16 @@ export default inject(
 
       nameColumnIsEnabled,
       authorColumnIsEnabled,
+      authorTrashColumnIsEnabled,
       createdColumnIsEnabled,
+      createdTrashColumnIsEnabled,
       modifiedColumnIsEnabled,
+      roomColumnIsEnabled,
+      erasureColumnIsEnabled,
       sizeColumnIsEnabled,
+      sizeTrashColumnIsEnabled,
       typeColumnIsEnabled,
+      typeTrashColumnIsEnabled,
       quickButtonsColumnIsEnabled,
 
       roomColumnNameIsEnabled,
@@ -414,10 +501,16 @@ export default inject(
 
       nameColumnIsEnabled,
       authorColumnIsEnabled,
+      authorTrashColumnIsEnabled,
       createdColumnIsEnabled,
+      createdTrashColumnIsEnabled,
       modifiedColumnIsEnabled,
+      roomColumnIsEnabled,
+      erasureColumnIsEnabled,
       sizeColumnIsEnabled,
+      sizeTrashColumnIsEnabled,
       typeColumnIsEnabled,
+      typeTrashColumnIsEnabled,
       quickButtonsColumnIsEnabled,
 
       roomColumnNameIsEnabled,
@@ -429,6 +522,7 @@ export default inject(
       getColumns,
       setColumnEnable,
       isRooms,
+      isTrashFolder,
     };
   }
 )(
