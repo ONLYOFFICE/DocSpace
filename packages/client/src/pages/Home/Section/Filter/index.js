@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
 
@@ -146,6 +147,10 @@ const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
 
 const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
+const TABLE_TRASH_COLUMNS = `trashTableColumns_ver-${TableVersions.Trash}`;
+
+const COLUMNS_TRASH_SIZE_INFO_PANEL = `trashColumnsSizeInfoPanel_ver-${TableVersions.Trash}`;
+
 const SectionFilterContent = ({
   t,
   filter,
@@ -164,6 +169,7 @@ const SectionFilterContent = ({
   fetchTags,
   infoPanelVisible,
   isRooms,
+  isTrash,
   userId,
   isPersonalRoom,
   setCurrentRoomsFilter,
@@ -175,6 +181,7 @@ const SectionFilterContent = ({
   isEmptyPage,
   clearSearch,
   setClearSearch,
+  setMainButtonMobileVisible,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -1002,13 +1009,13 @@ const SectionFilterContent = ({
 
     return filterOptions;
   }, [
-    isFavoritesFolder,
-    isRecentFolder,
-    isRooms,
     t,
     personal,
-    isPersonalRoom,
     providers,
+    isPersonalRoom,
+    isRooms,
+    isFavoritesFolder,
+    isRecentFolder,
   ]);
 
   const getViewSettingsData = React.useCallback(() => {
@@ -1046,22 +1053,10 @@ const SectionFilterContent = ({
       label: t("ByLastModified"),
       default: true,
     };
-    const type = {
-      id: "sort-by_type",
-      key: "Type",
-      label: t("Common:Type"),
-      default: true,
-    };
-    const size = {
-      id: "sort-by_size",
-      key: "Size",
-      label: t("Common:Size"),
-      default: true,
-    };
-    const creationDate = {
-      id: "sort-by_created",
-      key: "DateAndTimeCreation",
-      label: t("ByCreation"),
+    const room = {
+      id: "sort-by_room",
+      key: "Room",
+      label: t("Common:Room"),
       default: true,
     };
     const authorOption = {
@@ -1070,16 +1065,40 @@ const SectionFilterContent = ({
       label: t("ByAuthor"),
       default: true,
     };
+    const creationDate = {
+      id: "sort-by_created",
+      key: "DateAndTimeCreation",
+      label: t("ByCreation"),
+      default: true,
+    };
     const owner = {
       id: "sort-by_owner",
       key: "Author",
       label: t("Common:Owner"),
       default: true,
     };
+    const erasure = {
+      id: "sort-by_erasure",
+      key: "Erasure",
+      label: t("ByErasure"),
+      default: true,
+    };
     const tags = {
       id: "sort-by_tags",
       key: "Tags",
       label: t("Common:Tags"),
+      default: true,
+    };
+    const size = {
+      id: "sort-by_size",
+      key: "Size",
+      label: t("Common:Size"),
+      default: true,
+    };
+    const type = {
+      id: "sort-by_type",
+      key: "Type",
+      label: t("Common:Type"),
       default: true,
     };
     const roomType = {
@@ -1139,6 +1158,69 @@ const SectionFilterContent = ({
             infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(modifiedDate);
+        }
+      } else if (isTrash) {
+        const availableSort = localStorage
+          ?.getItem(`${TABLE_TRASH_COLUMNS}=${userId}`)
+          ?.split(",");
+
+        const infoPanelColumnsSize = localStorage
+          ?.getItem(`${COLUMNS_TRASH_SIZE_INFO_PANEL}=${userId}`)
+          ?.split(" ");
+
+        if (availableSort?.includes("Author")) {
+          const idx = availableSort.findIndex((x) => x === "Author");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(authorOption);
+        }
+        if (availableSort?.includes("Created")) {
+          const idx = availableSort.findIndex((x) => x === "Created");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(creationDate);
+        }
+        if (availableSort?.includes("Room")) {
+          const idx = availableSort.findIndex((x) => x === "Room");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(room);
+        }
+        if (availableSort?.includes("Erasure")) {
+          const idx = availableSort.findIndex((x) => x === "Erasure");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(erasure);
+        }
+        if (availableSort?.includes("Size")) {
+          const idx = availableSort.findIndex((x) => x === "Size");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(size);
+        }
+        if (availableSort?.includes("Type")) {
+          const idx = availableSort.findIndex((x) => x === "Type");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(type);
         }
       } else {
         const availableSort = localStorage
@@ -1201,6 +1283,12 @@ const SectionFilterContent = ({
         commonOptions.push(tags);
         commonOptions.push(owner);
         commonOptions.push(modifiedDate);
+      } else if (isTrash) {
+        commonOptions.push(authorOption);
+        commonOptions.push(creationDate);
+        commonOptions.push(erasure);
+        commonOptions.push(size);
+        commonOptions.push(type);
       } else {
         commonOptions.push(authorOption);
         commonOptions.push(creationDate);
@@ -1303,6 +1391,12 @@ const SectionFilterContent = ({
     ]
   );
 
+  const onSortButtonClick = (isOpen) => {
+    if (isMobileOnly) {
+      setMainButtonMobileVisible(isOpen);
+    }
+  };
+
   const clearAll = () => {
     if (isRooms) {
       setIsLoading(true);
@@ -1346,6 +1440,7 @@ const SectionFilterContent = ({
       filterTitle={t("Filter")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
+      onSortButtonClick={onSortButtonClick}
     />
   );
 };
@@ -1369,6 +1464,7 @@ export default inject(
       viewAs,
       createThumbnails,
       setCurrentRoomsFilter,
+      setMainButtonMobileVisible,
       thirdPartyStore,
       clearSearch,
       setClearSearch,
@@ -1388,6 +1484,7 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       isPersonalRoom,
+      isTrashFolder: isTrash,
     } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
@@ -1413,6 +1510,7 @@ export default inject(
       isFavoritesFolder,
       isRecentFolder,
       isRooms,
+      isTrash,
 
       setIsLoading,
       fetchFiles,
@@ -1437,6 +1535,8 @@ export default inject(
 
       clearSearch,
       setClearSearch,
+
+      setMainButtonMobileVisible,
     };
   }
 )(

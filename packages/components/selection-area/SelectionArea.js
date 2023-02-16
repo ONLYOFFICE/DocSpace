@@ -234,6 +234,9 @@ class SelectionArea extends React.Component {
       passive: false,
     });
     document.addEventListener("mouseup", this.onTapStop);
+
+    window.addEventListener("blur", this.onTapStop);
+
     this.scrollElement.addEventListener("scroll", this.onScroll);
   };
 
@@ -242,6 +245,7 @@ class SelectionArea extends React.Component {
     document.removeEventListener("mousemove", this.onTapMove);
 
     document.removeEventListener("mouseup", this.onTapStop);
+    window.removeEventListener("blur", this.onTapStop);
     this.scrollElement.removeEventListener("scroll", this.onScroll);
   };
 
@@ -256,7 +260,20 @@ class SelectionArea extends React.Component {
       folderHeaderHeight,
     } = this.props;
 
-    if (e.target.closest(".not-selectable")) return;
+    if (
+      e.target.closest(".not-selectable") ||
+      e.target.closest(".tile-selected") ||
+      e.target.closest(".table-row-selected") ||
+      e.target.closest(".row-selected") ||
+      !e.target.closest("#sectionScroll")
+    )
+      return;
+
+    if (e.target.tagName === "A") {
+      const node = e.target.closest("." + selectableClass);
+      onMove && onMove({ added: [node], removed: [], clear: true });
+      return;
+    }
 
     const selectables = document.getElementsByClassName(selectableClass);
     if (!selectables.length) return;

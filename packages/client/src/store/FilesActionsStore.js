@@ -1266,24 +1266,15 @@ class FilesActionStore {
       .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
   };
 
-  moveDragItems = (destFolderId, folderTitle, providerKey, translations) => {
+  moveDragItems = (destFolderId, folderTitle, translations) => {
     const folderIds = [];
     const fileIds = [];
     const deleteAfter = false;
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
-    const {
-      isShareFolder,
-      isCommonFolder,
-      isFavoritesFolder,
-      isRecentFolder,
-    } = this.treeFoldersStore;
-    const isCopy =
-      isShareFolder ||
-      isFavoritesFolder ||
-      isRecentFolder ||
-      (!this.authStore.isAdmin && isCommonFolder);
+
+    const isCopy = selection.findIndex((f) => f.security.Move) === -1;
 
     const operationData = {
       destFolderId,

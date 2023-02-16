@@ -244,6 +244,11 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
+    public IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<string> entriesId)
+    {
+        throw new NotImplementedException();
+    }
+
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
@@ -717,6 +722,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     public Task RemoveTags(Tag tag)
     {
         return Task.CompletedTask;
+    }
+
+    public Task<int> RemoveTagLinksAsync(string entryId, FileEntryType entryType, TagType tagType)
+    {
+        return Task.FromResult(default(int));
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)

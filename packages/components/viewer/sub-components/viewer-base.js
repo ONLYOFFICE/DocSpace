@@ -455,7 +455,7 @@ const ViewerBase = (props) => {
       document[funcName]("keydown", handleKeydown, true);
     }
     if (viewerCore.current) {
-      viewerCore.current[funcName]("wheel", handleMouseScroll, false);
+      viewerCore.current[funcName]("wheel", handleMouseScroll, {passive: true});
     }
   }
 
