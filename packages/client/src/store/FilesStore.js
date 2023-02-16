@@ -97,6 +97,8 @@ class FilesStore {
   createdItem = null;
   scrollToItem = null;
 
+  roomCreated = false;
+
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
@@ -197,9 +199,10 @@ class FilesStore {
             if (
               this.selectedFolderStore.id !== folder.parentId ||
               (folder.roomType &&
-                folder.createdBy.id === this.authStore.userStore.user.id)
+                folder.createdBy.id === this.authStore.userStore.user.id &&
+                this.roomCreated)
             )
-              return;
+              return (this.roomCreated = false);
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 
@@ -1967,9 +1970,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(roomParams) {
+  createRoom = (roomParams) => {
+    this.roomCreated = true;
     return api.rooms.createRoom(roomParams);
-  }
+  };
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
