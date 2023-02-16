@@ -81,6 +81,7 @@ const FilesRowContainer = ({
   fetchMoreFiles,
   hasMoreFiles,
   isRooms,
+  isTrashFolder,
   withPaging,
   highlightFileId,
 }) => {
@@ -110,6 +111,7 @@ const FilesRowContainer = ({
         itemIndex={index}
         sectionWidth={sectionWidth}
         isRooms={isRooms}
+        isTrashFolder={isTrashFolder}
         isHighlight={highlightFileId === item.id}
       />
     ));
@@ -143,7 +145,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     highlightFileId,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
   const { withPaging } = auth.settingsStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
@@ -157,6 +159,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     isRooms,
+    isTrashFolder,
     withPaging,
     highlightFileId,
   };

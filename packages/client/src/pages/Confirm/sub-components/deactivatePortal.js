@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import Section from "@docspace/common/components/Section";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
@@ -11,7 +10,7 @@ import { suspendPortal } from "@docspace/common/api/portal";
 import {
   StyledPage,
   StyledBody,
-  StyledHeader,
+  StyledContent,
   ButtonsWrapper,
 } from "./StyledConfirm";
 
@@ -50,58 +49,48 @@ const DeactivatePortal = (props) => {
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          {isDeactivate ? (
-            <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
-              Your account has been successfully deactivated. In 10 seconds you
-              will be redirected to the
-              <Link isHovered href={url}>
-                site
-              </Link>
-            </Trans>
-          ) : (
-            <>
-              <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
-              <ButtonsWrapper>
-                <Button
-                  scale
-                  primary
-                  size="medium"
-                  label={t("Settings:Deactivate")}
-                  tabIndex={1}
-                  onClick={onDeactivateClick}
-                />
-                <Button
-                  scale
-                  size="medium"
-                  label={t("Common:CancelButton")}
-                  tabIndex={1}
-                  onClick={onCancelClick}
-                />
-              </ButtonsWrapper>
-            </>
-          )}
-        </FormWrapper>
-      </StyledBody>
+          <FormWrapper>
+            {isDeactivate ? (
+              <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
+                Your account has been successfully deactivated. In 10 seconds
+                you will be redirected to the
+                <Link isHovered href={url}>
+                  site
+                </Link>
+              </Trans>
+            ) : (
+              <>
+                <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
+                <ButtonsWrapper>
+                  <Button
+                    scale
+                    primary
+                    size="medium"
+                    label={t("Settings:Deactivate")}
+                    tabIndex={1}
+                    onClick={onDeactivateClick}
+                  />
+                  <Button
+                    scale
+                    size="medium"
+                    label={t("Common:CancelButton")}
+                    tabIndex={1}
+                    onClick={onCancelClick}
+                  />
+                </ButtonsWrapper>
+              </>
+            )}
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const DeactivatePortalWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <DeactivatePortal {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -112,7 +101,7 @@ export default inject(({ auth }) => ({
 }))(
   withRouter(
     withTranslation(["Confirm", "Settings", "Common"])(
-      withLoader(observer(DeactivatePortalWrapper))
+      withLoader(observer(DeactivatePortal))
     )
   )
 );

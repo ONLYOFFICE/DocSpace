@@ -11,6 +11,7 @@ import {
   isMobileOnly,
   isChrome,
   isTablet,
+  isAndroid,
 } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
@@ -128,6 +129,10 @@ const Layout = (props) => {
         if (window.innerHeight < window.innerWidth && isPortrait) {
           height = window.screen.availWidth - correctorMobileChrome + "px";
         }
+      }
+
+      if (isMobileOnly && isAndroid && isChrome) {
+        height = `calc(100vh - ${correctorMobileChrome}px)`;
       }
 
       // if (isTablet && isIOS && isSafari) {

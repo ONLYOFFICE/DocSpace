@@ -32,7 +32,6 @@ import { resendInvitesAgain } from "@docspace/common/api/people";
 const StyledContainer = styled.div`
   width: 100%;
   min-height: 33px;
-  height: 69px;
 
   .group-button-menu-container {
     margin: 0 0 0 -20px;
@@ -81,6 +80,7 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       grid-template-columns: 1fr auto;
+      height: 60px;
     }
 
     ${isMobile &&

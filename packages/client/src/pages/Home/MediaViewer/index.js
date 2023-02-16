@@ -27,6 +27,7 @@ const FilesMediaViewer = (props) => {
     setToPreviewFile,
     setScrollToItem,
     setCurrentId,
+    setAlreadyFetchingRooms,
     setBufferSelection,
     isFavoritesFolder,
     archiveRoomsId,
@@ -72,6 +73,7 @@ const FilesMediaViewer = (props) => {
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
+        setAlreadyFetchingRooms(false);
       });
     }
   }, [previewFile]);
@@ -230,6 +232,7 @@ export default inject(
       isPreview,
       resetUrl,
       setSelection,
+      setAlreadyFetchingRooms,
     } = filesStore;
     const {
       visible,
@@ -286,6 +289,7 @@ export default inject(
       setScrollToItem,
       setCurrentId,
       setBufferSelection,
+      setAlreadyFetchingRooms,
       isFavoritesFolder,
       onClickFavorite,
       onClickDownloadAs,
