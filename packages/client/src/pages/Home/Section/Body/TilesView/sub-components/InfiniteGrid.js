@@ -112,7 +112,7 @@ const InfiniteGrid = (props) => {
     return () => {
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+  });
 
   React.Children.map(children.props.children, (child) => {
     if (child) {
