@@ -267,17 +267,24 @@ function MediaViewer({
     return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
   }, []);
 
+  let lastRemovedFileId: null | number = null;
+
   const onDelete = () => {
     const { playlist, onDelete } = props;
 
     let currentFileId = playlist.find((file) => file.id === playlistPos)
       ?.fileId;
 
+    if (currentFileId === lastRemovedFileId) return;
+
     const canDelete = targetFile?.security?.Delete;
 
     if (!canDelete) return;
 
-    if (!isNullOrUndefined(currentFileId)) onDelete(currentFileId);
+    if (!isNullOrUndefined(currentFileId)) {
+      onDelete(currentFileId);
+      lastRemovedFileId = currentFileId;
+    }
   };
 
   const onDownload = () => {
