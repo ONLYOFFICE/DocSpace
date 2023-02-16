@@ -44,7 +44,6 @@ const History = ({
       if (itemOpenLocation.isFolder) res.isFolder = true;
 
       setHighlightFileId(res.id);
-      setSelection(res);
       setItemOpenLocation(null);
     });
   }, [
