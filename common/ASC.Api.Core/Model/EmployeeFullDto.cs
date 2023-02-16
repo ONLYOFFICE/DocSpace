@@ -244,17 +244,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("listAdminModules"))
