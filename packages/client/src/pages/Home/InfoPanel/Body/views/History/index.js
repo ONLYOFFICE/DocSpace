@@ -19,12 +19,6 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
-  itemOpenLocation,
-  isLoadedSearchFiles,
-  getFolderInfo,
-  getFileInfo,
-  setHighlightFileId,
-  setItemOpenLocation,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -34,26 +28,6 @@ const History = ({
   useEffect(() => {
     return () => (isMount.current = false);
   }, []);
-
-  useEffect(() => {
-    if (!(isLoadedSearchFiles && itemOpenLocation)) return;
-
-    const requestInfo = itemOpenLocation.isFolder ? getFolderInfo : getFileInfo;
-
-    requestInfo(+itemOpenLocation.id).then((res) => {
-      if (itemOpenLocation.isFolder) res.isFolder = true;
-
-      setHighlightFileId(res.id);
-      setItemOpenLocation(null);
-    });
-  }, [
-    isLoadedSearchFiles,
-    itemOpenLocation,
-    getFolderInfo,
-    getFileInfo,
-    setHighlightFileId,
-    setItemOpenLocation,
-  ]);
 
   const fetchHistory = async (itemId) => {
     let module = "files";
@@ -164,18 +138,8 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
 
-  const {
-    getHistory,
-    getFolderInfo,
-    getFileInfo,
-    setHighlightFileId,
-  } = filesStore;
-  const {
-    checkAndOpenLocationAction,
-    itemOpenLocation,
-    isLoadedSearchFiles,
-    setItemOpenLocation,
-  } = filesActionsStore;
+  const { getHistory } = filesStore;
+  const { checkAndOpenLocationAction } = filesActionsStore;
 
   const { user } = userStore;
   const isVisitor = user.isVisitor;
@@ -191,11 +155,5 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
-    itemOpenLocation,
-    isLoadedSearchFiles,
-    getFolderInfo,
-    getFileInfo,
-    setHighlightFileId,
-    setItemOpenLocation,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

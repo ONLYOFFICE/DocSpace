@@ -52,7 +52,7 @@ class FilesActionStore {
 
   isBulkDownload = false;
   searchTitleOpenLocation = null;
-  itemOpenLocation = null;
+  itemIdOpenLocation = null;
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
@@ -1164,16 +1164,12 @@ class FilesActionStore {
     this.searchTitleOpenLocation = searchTitleOpenLocation;
   };
 
-  setItemOpenLocation = (itemOpenLocation) => {
-    this.itemOpenLocation = itemOpenLocation;
+  setItemIdOpenLocation = (itemIdOpenLocation) => {
+    this.itemIdOpenLocation = itemIdOpenLocation;
   };
 
   setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
     this.isLoadedLocationFiles = isLoadedLocationFiles;
-  };
-
-  setIsLoadedSearchFiles = (isLoadedSearchFiles) => {
-    this.isLoadedSearchFiles = isLoadedSearchFiles;
   };
 
   openLocationAction = async (locationId) => {
@@ -1188,20 +1184,12 @@ class FilesActionStore {
   checkAndOpenLocationAction = async (item) => {
     const filterData = FilesFilter.getDefault();
 
-    this.setIsLoadedSearchFiles(false);
-
-    if (this.itemOpenLocation?.title !== item.title) {
-      this.setSearchTitleOpenLocation(null);
-    }
-
-    this.setItemOpenLocation(null);
-
     api.files
       .getFolder(item.ExtraLocation, filterData)
       .then(() => {
         this.openLocationAction(item.ExtraLocation);
         this.setSearchTitleOpenLocation(item.title);
-        this.setItemOpenLocation(item);
+        this.setItemIdOpenLocation(+item.id);
       })
       .catch((err) => toastr.error(err));
   };

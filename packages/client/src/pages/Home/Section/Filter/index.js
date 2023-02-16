@@ -171,16 +171,19 @@ const SectionFilterContent = ({
   providers,
   searchTitleOpenLocation,
   isLoadedLocationFiles,
-  setIsLoadedSearchFiles,
+  itemIdOpenLocation,
   isLoadedEmptyPage,
   isEmptyPage,
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
   setSearchTitleOpenLocation,
+  setHighlightFileId,
+  setItemIdOpenLocation,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
+  const [isLoadedSearchFiles, setIsLoadedSearchFiles] = React.useState(false);
 
   React.useEffect(() => {
     if (isEmptyPage) {
@@ -193,15 +196,23 @@ const SectionFilterContent = ({
   }, [isLoadedEmptyPage, isEmptyPage]);
 
   React.useEffect(() => {
-    if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
+    if (searchTitleOpenLocation && isLoadedLocationFiles) {
+      onSearch(searchTitleOpenLocation);
+      setSearchTitleOpenLocation(null);
+    }
 
-    onSearch(searchTitleOpenLocation);
-    setSearchTitleOpenLocation(null);
+    if (isLoadedSearchFiles && itemIdOpenLocation) {
+      setHighlightFileId(itemIdOpenLocation);
+      setItemIdOpenLocation(null);
+    }
   }, [
     searchTitleOpenLocation,
     isLoadedLocationFiles,
     onSearch,
     setSearchTitleOpenLocation,
+    isLoadedSearchFiles,
+    itemIdOpenLocation,
+    setItemIdOpenLocation,
   ]);
 
   const onFilter = React.useCallback(
@@ -1389,6 +1400,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
+      setHighlightFileId,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1413,7 +1425,8 @@ export default inject(
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
-      setIsLoadedSearchFiles,
+      itemIdOpenLocation,
+      setItemIdOpenLocation,
     } = filesActionsStore;
 
     return {
@@ -1445,7 +1458,8 @@ export default inject(
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
-      setIsLoadedSearchFiles,
+      itemIdOpenLocation,
+      setItemIdOpenLocation,
 
       isLoadedEmptyPage,
       isEmptyPage,
@@ -1454,6 +1468,7 @@ export default inject(
       setClearSearch,
 
       setMainButtonMobileVisible,
+      setHighlightFileId,
     };
   }
 )(
