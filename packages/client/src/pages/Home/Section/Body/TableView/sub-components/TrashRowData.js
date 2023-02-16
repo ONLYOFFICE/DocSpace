@@ -16,12 +16,12 @@ import RoomCell from "./RoomCell";
 
 const TrashRowDataComponent = (props) => {
   const {
-    authorColumnIsEnabled,
-    createdColumnIsEnabled,
+    authorTrashColumnIsEnabled,
+    createdTrashColumnIsEnabled,
     roomColumnIsEnabled,
     erasureColumnIsEnabled,
-    sizeColumnIsEnabled,
-    typeColumnIsEnabled,
+    sizeTrashColumnIsEnabled,
+    typeTrashColumnIsEnabled,
     quickButtonsColumnIsEnabled,
 
     dragStyles,
@@ -60,10 +60,28 @@ const TrashRowDataComponent = (props) => {
         </StyledBadgesContainer>
       </TableCell>
 
-      {authorColumnIsEnabled ? (
+      {roomColumnIsEnabled ? (
         <TableCell
           style={
-            !authorColumnIsEnabled ? { background: "none" } : dragStyles.style
+            !roomColumnIsEnabled ? { background: "none" } : dragStyles.style
+          }
+          {...selectionProp}
+        >
+          <RoomCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
+        </TableCell>
+      ) : (
+        <div />
+      )}
+
+      {authorTrashColumnIsEnabled ? (
+        <TableCell
+          style={
+            !authorTrashColumnIsEnabled
+              ? { background: "none" }
+              : dragStyles.style
           }
           {...selectionProp}
         >
@@ -76,10 +94,10 @@ const TrashRowDataComponent = (props) => {
         <div />
       )}
 
-      {createdColumnIsEnabled ? (
+      {createdTrashColumnIsEnabled ? (
         <TableCell
           style={
-            !createdColumnIsEnabled
+            !createdTrashColumnIsEnabled
               ? { background: "none !important" }
               : dragStyles.style
           }
@@ -87,22 +105,6 @@ const TrashRowDataComponent = (props) => {
         >
           <DateCell
             create
-            sideColor={theme.filesSection.tableView.row.sideColor}
-            {...props}
-          />
-        </TableCell>
-      ) : (
-        <div />
-      )}
-
-      {roomColumnIsEnabled ? (
-        <TableCell
-          style={
-            !roomColumnIsEnabled ? { background: "none" } : dragStyles.style
-          }
-          {...selectionProp}
-        >
-          <RoomCell
             sideColor={theme.filesSection.tableView.row.sideColor}
             {...props}
           />
@@ -127,10 +129,12 @@ const TrashRowDataComponent = (props) => {
         <div />
       )}
 
-      {sizeColumnIsEnabled ? (
+      {sizeTrashColumnIsEnabled ? (
         <TableCell
           style={
-            !sizeColumnIsEnabled ? { background: "none" } : dragStyles.style
+            !sizeTrashColumnIsEnabled
+              ? { background: "none" }
+              : dragStyles.style
           }
           {...selectionProp}
         >
@@ -143,10 +147,10 @@ const TrashRowDataComponent = (props) => {
         <div />
       )}
 
-      {typeColumnIsEnabled ? (
+      {typeTrashColumnIsEnabled ? (
         <TableCell
           style={
-            !typeColumnIsEnabled
+            !typeTrashColumnIsEnabled
               ? { background: "none !important" }
               : dragStyles.style
           }
@@ -186,22 +190,22 @@ const TrashRowDataComponent = (props) => {
 
 export default inject(({ tableStore }) => {
   const {
-    authorColumnIsEnabled,
-    createdColumnIsEnabled,
+    authorTrashColumnIsEnabled,
+    createdTrashColumnIsEnabled,
     roomColumnIsEnabled,
     erasureColumnIsEnabled,
-    sizeColumnIsEnabled,
-    typeColumnIsEnabled,
+    sizeTrashColumnIsEnabled,
+    typeTrashColumnIsEnabled,
     quickButtonsColumnIsEnabled,
   } = tableStore;
 
   return {
-    authorColumnIsEnabled,
-    createdColumnIsEnabled,
+    authorTrashColumnIsEnabled,
+    createdTrashColumnIsEnabled,
     roomColumnIsEnabled,
     erasureColumnIsEnabled,
-    sizeColumnIsEnabled,
-    typeColumnIsEnabled,
+    sizeTrashColumnIsEnabled,
+    typeTrashColumnIsEnabled,
     quickButtonsColumnIsEnabled,
   };
 })(observer(TrashRowDataComponent));

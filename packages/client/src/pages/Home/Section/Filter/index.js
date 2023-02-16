@@ -1053,22 +1053,10 @@ const SectionFilterContent = ({
       label: t("ByLastModified"),
       default: true,
     };
-    const type = {
-      id: "sort-by_type",
-      key: "Type",
-      label: t("Common:Type"),
-      default: true,
-    };
-    const size = {
-      id: "sort-by_size",
-      key: "Size",
-      label: t("Common:Size"),
-      default: true,
-    };
-    const creationDate = {
-      id: "sort-by_created",
-      key: "DateAndTimeCreation",
-      label: t("ByCreation"),
+    const room = {
+      id: "sort-by_room",
+      key: "Room",
+      label: t("Common:Room"),
       default: true,
     };
     const authorOption = {
@@ -1077,16 +1065,16 @@ const SectionFilterContent = ({
       label: t("ByAuthor"),
       default: true,
     };
+    const creationDate = {
+      id: "sort-by_created",
+      key: "DateAndTimeCreation",
+      label: t("ByCreation"),
+      default: true,
+    };
     const owner = {
       id: "sort-by_owner",
       key: "Author",
       label: t("Common:Owner"),
-      default: true,
-    };
-    const room = {
-      id: "sort-by_room",
-      key: "Room",
-      label: t("Common:Room"),
       default: true,
     };
     const erasure = {
@@ -1099,6 +1087,18 @@ const SectionFilterContent = ({
       id: "sort-by_tags",
       key: "Tags",
       label: t("Common:Tags"),
+      default: true,
+    };
+    const size = {
+      id: "sort-by_size",
+      key: "Size",
+      label: t("Common:Size"),
+      default: true,
+    };
+    const type = {
+      id: "sort-by_type",
+      key: "Type",
+      label: t("Common:Type"),
       default: true,
     };
     const roomType = {

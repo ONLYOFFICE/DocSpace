@@ -33,6 +33,11 @@ class TableStore {
   typeColumnIsEnabled = true;
   quickButtonsColumnIsEnabled = true;
 
+  authorTrashColumnIsEnabled = true;
+  createdTrashColumnIsEnabled = false;
+  sizeTrashColumnIsEnabled = false;
+  typeTrashColumnIsEnabled = false;
+
   constructor(authStore, treeFoldersStore) {
     makeAutoObservable(this);
 
@@ -88,6 +93,12 @@ class TableStore {
     this.quickButtonsColumnIsEnabled = enable;
   };
 
+  setAuthorTrashColumn = (enable) => (this.authorTrashColumnIsEnabled = enable);
+  setCreatedTrashColumn = (enable) =>
+    (this.createdTrashColumnIsEnabled = enable);
+  setSizeTrashColumn = (enable) => (this.sizeTrashColumnIsEnabled = enable);
+  setTypeTrashColumn = (enable) => (this.typeTrashColumnIsEnabled = enable);
+
   setColumnsEnable = () => {
     const storageColumns = localStorage.getItem(this.tableStorageName);
     const splitColumns = storageColumns && storageColumns.split(",");
@@ -109,12 +120,12 @@ class TableStore {
       }
 
       if (isTrashFolder) {
-        this.setAuthorColumn(splitColumns.includes("Author"));
-        //this.setCreatedColumn(splitColumns.includes("Created"));
         this.setRoomColumn(splitColumns.includes("Room"));
+        this.setAuthorTrashColumn(splitColumns.includes("AuthorTrash"));
+        this.setCreatedTrashColumn(splitColumns.includes("CreatedTrash"));
         this.setErasureColumn(splitColumns.includes("Erasure"));
-        this.setSizeColumn(splitColumns.includes("Size"));
-        this.setTypeColumn(splitColumns.includes("Type"));
+        this.setSizeTrashColumn(splitColumns.includes("SizeTrash"));
+        this.setTypeTrashColumn(splitColumns.includes("TypeTrash"));
         this.setQuickButtonsColumn(splitColumns.includes("QuickButtons"));
         return;
       }
@@ -129,45 +140,72 @@ class TableStore {
   };
 
   setColumnEnable = (key) => {
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isTrashFolder,
+    } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     switch (key) {
-      case "Author":
-        this.setAuthorColumn(!this.authorColumnIsEnabled);
-        return;
-      case "Created":
-        this.setCreatedColumn(!this.createdColumnIsEnabled);
-        return;
-      case "Modified":
-        this.setModifiedColumn(!this.modifiedColumnIsEnabled);
-        return;
       case "Room":
         this.setRoomColumn(!this.roomColumnIsEnabled);
         return;
+
+      case "Author":
+        this.setAuthorColumn(!this.authorColumnIsEnabled);
+        return;
+      case "AuthorTrash":
+        this.setAuthorTrashColumn(!this.authorTrashColumnIsEnabled);
+        return;
+
+      case "Created":
+        this.setCreatedColumn(!this.createdColumnIsEnabled);
+        return;
+      case "CreatedTrash":
+        this.setCreatedTrashColumn(!this.createdTrashColumnIsEnabled);
+        return;
+
+      case "Modified":
+        this.setModifiedColumn(!this.modifiedColumnIsEnabled);
+        return;
+
       case "Erasure":
         this.setErasureColumn(!this.erasureColumnIsEnabled);
         return;
+
       case "Size":
         this.setSizeColumn(!this.sizeColumnIsEnabled);
         return;
+      case "SizeTrash":
+        this.setSizeTrashColumn(!this.sizeTrashColumnIsEnabled);
+        return;
+
       case "Type":
         isRooms
           ? this.setRoomColumnType(!this.roomColumnTypeIsEnabled)
           : this.setTypeColumn(!this.typeColumnIsEnabled);
         return;
+      case "TypeTrash":
+        this.setTypeTrashColumn(!this.typeTrashColumnIsEnabled);
+        return;
+
       case "QuickButtons":
         this.setQuickButtonsColumn(!this.quickButtonsColumnIsEnabled);
         return;
+
       case "Owner":
         this.setRoomColumnOwner(!this.roomColumnOwnerIsEnabled);
         return;
+
       case "Tags":
         this.setRoomColumnTags(!this.roomColumnTagsIsEnabled);
         return;
+
       case "Activity":
         this.setRoomColumnActivity(!this.roomColumnActivityIsEnabled);
         return;
+
       default:
         return;
     }
