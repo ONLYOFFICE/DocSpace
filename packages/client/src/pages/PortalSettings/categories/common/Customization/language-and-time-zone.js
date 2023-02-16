@@ -147,6 +147,20 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
+    settingNames.forEach((settingName) => {
+      const valueFromSessionStorage = getFromSessionStorage(settingName);
+
+      if (
+        valueFromSessionStorage &&
+        !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
+      ) {
+        const defaultValue = this.state[settingName + "Default"];
+
+        this.setState({ [settingName]: defaultValue });
+        saveToSessionStorage(settingName, "");
+      }
+    });
+
     if (!languageDefault) {
       this.setState({
         languageDefault: language,
