@@ -16,7 +16,10 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import {
+  getDaysRemaining,
+  openDocEditor as openEditor,
+} from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -2381,6 +2384,8 @@ class FilesStore {
     const newItem = items.map((item) => {
       const {
         access,
+        autoDelete,
+        originTitle,
         comment,
         contentLength,
         created,
@@ -2395,6 +2400,10 @@ class FilesStore {
         id,
         logo,
         locked,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         parentId,
         pureContentLength,
         rootFolderType,
@@ -2494,6 +2503,8 @@ class FilesStore {
 
       return {
         access,
+        daysRemaining: autoDelete && getDaysRemaining(autoDelete),
+        originTitle,
         //checked,
         comment,
         contentLength,
@@ -2535,6 +2546,10 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         previewUrl,
         folderUrl,
         href,
