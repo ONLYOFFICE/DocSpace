@@ -189,11 +189,17 @@ class FilesStore {
             });
           } else if (opt?.type === "folder" && opt?.id) {
             const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+
             if (foundIndex > -1) return;
 
             const folder = JSON.parse(opt?.data);
 
-            if (this.selectedFolderStore.id !== folder.parentId) return;
+            if (
+              this.selectedFolderStore.id !== folder.parentId ||
+              (folder.roomType &&
+                folder.createdBy.id === this.authStore.userStore.user.id)
+            )
+              return;
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 
