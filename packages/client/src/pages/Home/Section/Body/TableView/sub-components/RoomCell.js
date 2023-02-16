@@ -15,9 +15,14 @@ const RoomCell = ({ sideColor, item }) => {
     if (path.length) return;
 
     setIsTooltipLoading(true);
-    const folderPath = await getFolderPath(originId);
-    if (folderPath[0].id === CategoryType.Shared) folderPath.shift();
-    setPath(folderPath);
+    try {
+      const folderPath = await getFolderPath(originId);
+      if (folderPath[0].id === CategoryType.Shared) folderPath.shift();
+      setPath(folderPath);
+    } catch (e) {
+      console.error(e);
+      setPath([{ id: 0, title: originRoomTitle || originTitle }]);
+    }
     setIsTooltipLoading(false);
   };
 
@@ -41,27 +46,19 @@ const RoomCell = ({ sideColor, item }) => {
       key={"tooltip"}
       effect={"float"}
       afterShow={getPath}
-      getContent={[
-        () => (
-          <span>
-            {isTooltipLoading ? (
-              <Loader color="#333333" size="12px" type="track" />
-            ) : (
-              path.map((pathPart, i) => (
-                <Text
-                  key={pathPart.id}
-                  isBold={i === 0}
-                  isInline
-                  fontSize="12px"
-                >
-                  {i === 0 ? pathPart.title : `/${pathPart.title}`}
-                </Text>
-              ))
-            )}
-          </span>
-        ),
-        0,
-      ]}
+      getContent={() => (
+        <>
+          {isTooltipLoading ? (
+            <Loader color="#333333" size="12px" type="track" />
+          ) : (
+            path.map((pathPart, i) => (
+              <Text key={pathPart.id} isBold={i === 0} isInline fontSize="12px">
+                {i === 0 ? pathPart.title : `/${pathPart.title}`}
+              </Text>
+            ))
+          )}
+        </>
+      )}
     />,
   ];
 };

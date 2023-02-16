@@ -30,6 +30,8 @@ const PersonalSettings = ({
   showTitle,
   createWithoutDialog,
   setCreateWithoutDialog,
+
+  showAdminSettings,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -75,7 +77,10 @@ const PersonalSettings = ({
   };
 
   return (
-    <StyledSettings showTitle={showTitle}>
+    <StyledSettings
+      showTitle={showTitle}
+      hideAdminSettings={!showAdminSettings}
+    >
       <Box className="settings-section">
         {showTitle && (
           <Heading className="heading" level={2} size="xsmall">

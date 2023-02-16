@@ -1,7 +1,7 @@
 import { isMobileOnly } from "react-device-detect";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
-import ImageViewer from "./sub-components/image-viewer";
+import ViewerWrapper from "./sub-components/ViewerWrapper";
 
 import { MediaViewerProps } from "./MediaViewer.props";
 import { FileStatus } from "@docspace/common/constants";
@@ -267,17 +267,24 @@ function MediaViewer({
     return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
   }, []);
 
+  let lastRemovedFileId: null | number = null;
+
   const onDelete = () => {
     const { playlist, onDelete } = props;
 
     let currentFileId = playlist.find((file) => file.id === playlistPos)
       ?.fileId;
 
+    if (currentFileId === lastRemovedFileId) return;
+
     const canDelete = targetFile?.security?.Delete;
 
     if (!canDelete) return;
 
-    if (!isNullOrUndefined(currentFileId)) onDelete(currentFileId);
+    if (!isNullOrUndefined(currentFileId)) {
+      onDelete(currentFileId);
+      lastRemovedFileId = currentFileId;
+    }
   };
 
   const onDownload = () => {
@@ -425,7 +432,7 @@ function MediaViewer({
   return (
     <>
       {canOpen && (
-        <ImageViewer
+        <ViewerWrapper
           userAccess={props.userAccess}
           visible={props.visible}
           title={title}
