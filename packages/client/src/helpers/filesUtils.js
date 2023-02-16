@@ -268,7 +268,10 @@ export const connectedCloudsTypeIcon = (key) => {
 };
 
 export const getDaysRemaining = (autoDelete) => {
-  let daysRemaining = moment(autoDelete).diff(moment(), "days");
+  let daysRemaining = moment(autoDelete)
+    .startOf("day")
+    .diff(moment().startOf("day"), "days");
+
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
 };
