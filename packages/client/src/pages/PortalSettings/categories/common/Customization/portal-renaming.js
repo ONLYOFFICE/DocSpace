@@ -78,6 +78,7 @@ const PortalRenaming = (props) => {
     if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
       setPortalName(portalNameDefault);
       saveToSessionStorage("portalName", "none");
+      setErrorValue(null);
     }
     getAllSettings().then((res) => {
       setDomainValidator(res.domainValidator);
