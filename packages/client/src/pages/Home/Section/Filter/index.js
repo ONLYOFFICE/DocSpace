@@ -176,7 +176,7 @@ const SectionFilterContent = ({
   providers,
   searchTitleOpenLocation,
   isLoadedLocationFiles,
-  itemIdOpenLocation,
+  itemOpenLocation,
   isLoadedEmptyPage,
   isEmptyPage,
   clearSearch,
@@ -184,7 +184,7 @@ const SectionFilterContent = ({
   setMainButtonMobileVisible,
   setSearchTitleOpenLocation,
   setHighlightFileId,
-  setItemIdOpenLocation,
+  setItemOpenLocation,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -206,9 +206,13 @@ const SectionFilterContent = ({
       setSearchTitleOpenLocation(null);
     }
 
-    if (isLoadedSearchFiles && itemIdOpenLocation) {
-      setHighlightFileId(itemIdOpenLocation);
-      setItemIdOpenLocation(null);
+    if (isLoadedSearchFiles && !!Object.keys(itemOpenLocation).length) {
+      setHighlightFileId({
+        highlightFileId: itemOpenLocation.id,
+        isFileHasExst: itemOpenLocation.isFileHasExst,
+      });
+
+      setItemOpenLocation({});
     }
   }, [
     searchTitleOpenLocation,
@@ -216,8 +220,9 @@ const SectionFilterContent = ({
     onSearch,
     setSearchTitleOpenLocation,
     isLoadedSearchFiles,
-    itemIdOpenLocation,
-    setItemIdOpenLocation,
+    itemOpenLocation.id,
+    itemOpenLocation.isFileHasExst,
+    setItemOpenLocation,
   ]);
 
   const onFilter = React.useCallback(
@@ -1512,8 +1517,8 @@ export default inject(
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
-      itemIdOpenLocation,
-      setItemIdOpenLocation,
+      itemOpenLocation,
+      setItemOpenLocation,
     } = filesActionsStore;
 
     return {
@@ -1546,8 +1551,8 @@ export default inject(
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
       isLoadedLocationFiles,
-      itemIdOpenLocation,
-      setItemIdOpenLocation,
+      itemOpenLocation,
+      setItemOpenLocation,
 
       isLoadedEmptyPage,
       isEmptyPage,

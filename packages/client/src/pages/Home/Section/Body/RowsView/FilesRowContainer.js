@@ -83,7 +83,7 @@ const FilesRowContainer = ({
   isRooms,
   isTrashFolder,
   withPaging,
-  highlightFileId,
+  highlightFile,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -112,10 +112,20 @@ const FilesRowContainer = ({
         sectionWidth={sectionWidth}
         isRooms={isRooms}
         isTrashFolder={isTrashFolder}
-        isHighlight={highlightFileId === item.id}
+        isHighlight={
+          highlightFile.id === item.id &&
+          highlightFile.isExst === !item.fileExst
+        }
       />
     ));
-  }, [filesList, sectionWidth, isRooms, highlightFileId]);
+  }, [
+    filesList,
+    sectionWidth,
+    isRooms,
+    highlightFile.id,
+    highlightFile.isExst,
+    isTrashFolder,
+  ]);
 
   return (
     <StyledRowContainer
@@ -142,7 +152,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     roomsFilterTotal,
-    highlightFileId,
+    highlightFile,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
@@ -161,6 +171,6 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     isRooms,
     isTrashFolder,
     withPaging,
-    highlightFileId,
+    highlightFile,
   };
 })(observer(FilesRowContainer));

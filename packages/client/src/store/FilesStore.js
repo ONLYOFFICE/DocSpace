@@ -126,7 +126,7 @@ class FilesStore {
   isPreview = false;
   tempFilter = null;
 
-  highlightFileId = null;
+  highlightFile = {};
   thumbnails = new Set();
 
   constructor(
@@ -468,18 +468,23 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setHighlightFileId = (highlightFileId) => {
-    this.highlightFileId = highlightFileId;
+  setHighlightFileId = (highlightFile) => {
+    const { highlightFileId, isFileHasExst } = highlightFile;
+
+    this.highlightFile = {
+      id: highlightFileId,
+      isExst: isFileHasExst,
+    };
 
     if (timerId) {
       clearTimeout(timerId);
       timerId = null;
     }
 
-    if (!highlightFileId) return;
+    if (!Object.keys(highlightFile).length) return;
 
     timerId = setTimeout(() => {
-      this.highlightFileId = null;
+      this.highlightFile = {};
     }, 1000);
   };
 

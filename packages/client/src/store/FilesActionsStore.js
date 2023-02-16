@@ -52,7 +52,7 @@ class FilesActionStore {
 
   isBulkDownload = false;
   searchTitleOpenLocation = null;
-  itemIdOpenLocation = null;
+  itemOpenLocation = {};
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
@@ -1164,8 +1164,8 @@ class FilesActionStore {
     this.searchTitleOpenLocation = searchTitleOpenLocation;
   };
 
-  setItemIdOpenLocation = (itemIdOpenLocation) => {
-    this.itemIdOpenLocation = itemIdOpenLocation;
+  setItemOpenLocation = (itemOpenLocation) => {
+    this.itemOpenLocation = itemOpenLocation;
   };
 
   setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
@@ -1189,7 +1189,10 @@ class FilesActionStore {
       .then(() => {
         this.openLocationAction(item.ExtraLocation);
         this.setSearchTitleOpenLocation(item.title);
-        this.setItemIdOpenLocation(+item.id);
+        this.setItemOpenLocation({
+          id: +item.id,
+          isFileHasExst: !item.fileExst,
+        });
       })
       .catch((err) => toastr.error(err));
   };

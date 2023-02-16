@@ -517,7 +517,10 @@ class UploadDataStore {
           this.setConversionPercent(percent, !!error);
 
           if (file.fileInfo.version > 2) {
-            this.filesStore.setHighlightFileId(file.fileInfo.id);
+            this.filesStore.setHighlightFileId({
+              highlightFileId: file.fileInfo.id,
+              isFileHasExst: !file.fileInfo.fileExst,
+            });
           }
         }
       }
@@ -811,7 +814,10 @@ class UploadDataStore {
         });
 
         if (fileInfo.version > 2) {
-          this.filesStore.setHighlightFileId(fileInfo.id);
+          this.filesStore.setHighlightFileId({
+            highlightFileId: fileInfo.id,
+            isFileHasExst: !fileInfo.fileExst,
+          });
         }
 
         //setUploadData(uploadData);

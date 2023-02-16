@@ -120,7 +120,7 @@ const Table = ({
   withPaging,
   columnStorageName,
   columnInfoPanelStorageName,
-  highlightFileId,
+  highlightFile,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
   const [hideColumns, setHideColumns] = React.useState(false);
@@ -192,7 +192,10 @@ const Table = ({
         isRooms={isRooms}
         isTrashFolder={isTrashFolder}
         hideColumns={hideColumns}
-        isHighlight={highlightFileId === item.id}
+        isHighlight={
+          highlightFile.id === item.id &&
+          highlightFile.isExst === !item.fileExst
+        }
       />
     ));
   }, [
@@ -203,7 +206,9 @@ const Table = ({
     tagCount,
     isRooms,
     hideColumns,
-    highlightFileId,
+    highlightFile.id,
+    highlightFile.isExst,
+    isTrashFolder,
   ]);
 
   return (
@@ -250,7 +255,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     hasMoreFiles,
     filterTotal,
     roomsFilterTotal,
-    highlightFileId,
+    highlightFile,
   } = filesStore;
 
   const { withPaging, theme } = auth.settingsStore;
@@ -272,6 +277,6 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     withPaging,
     columnStorageName,
     columnInfoPanelStorageName,
-    highlightFileId,
+    highlightFile,
   };
 })(observer(Table));

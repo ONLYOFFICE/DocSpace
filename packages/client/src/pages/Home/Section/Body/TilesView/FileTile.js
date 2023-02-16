@@ -150,10 +150,11 @@ export default inject(
       setSelection,
       withCtrlSelect,
       withShiftSelect,
-      highlightFileId,
+      highlightFile,
     } = filesStore;
 
-    const isHighlight = highlightFileId === item?.id;
+    const isHighlight =
+      highlightFile.id === item?.id && highlightFile.isExst === !item?.fileExst;
 
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
