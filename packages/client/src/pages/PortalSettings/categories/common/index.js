@@ -43,7 +43,7 @@ const SubmenuCommon = (props) => {
 
   const data = [
     {
-      id: "customization",
+      id: "general",
       name: t("Common:SettingsGeneral"),
       content: <Customization />,
     },
@@ -64,7 +64,7 @@ const SubmenuCommon = (props) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/common/${e.id}`
+        `/portal-settings/customization/${e.id}`
       )
     );
   };

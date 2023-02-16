@@ -80,7 +80,7 @@ const DNSSettings = (props) => {
         combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           config.homepage,
-          "/portal-settings/common/customization"
+          "/portal-settings/customization/general"
         )
       );
     } else {
