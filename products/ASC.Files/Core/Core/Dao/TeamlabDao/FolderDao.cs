@@ -47,6 +47,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
     private readonly IMapper _mapper;
+    private readonly GlobalFolder _globalFolder;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly GlobalStore _globalStore;
 
@@ -69,7 +70,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         ProviderFolderDao providerFolderDao,
         CrossDao crossDao,
         IMapper mapper,
-        GlobalStore globalStore)
+        GlobalStore globalStore,
+        GlobalFolder globalFolder)
         : base(
               dbContextManager,
               userManager,
@@ -91,6 +93,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _crossDao = crossDao;
         _mapper = mapper;
         _globalStore = globalStore;
+        _globalFolder = globalFolder;
     }
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
@@ -282,7 +285,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
             }
         }
-
+        
         await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
@@ -591,6 +594,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .ToListAsync();
 
             filesDbContext.Tag.RemoveRange(tagsToRemove);
+            
+            var originToDelete = await Query(filesDbContext.Tag)
+                .Where(t => t.Name == id.ToString() || subfoldersStrings.Contains(t.Name))
+                .ToListAsync();
+            
+            filesDbContext.Tag.RemoveRange(originToDelete);
+
+            await Query(filesDbContext.TagLink)
+                .Where(l => originToDelete.Select(t => t.Id).Contains(l.TagId))
+                .ExecuteDeleteAsync();
 
             var securityToDelete = await Query(filesDbContext.Security)
                     .Where(r => subfoldersStrings.Contains(r.EntryId))
@@ -633,6 +646,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
+        var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
         await strategy.ExecuteAsync(async () =>
         {
@@ -640,6 +654,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var folder = await GetFolderAsync(folderId);
+                var oldParentId = folder.ParentId;
 
                 if (folder.FolderType != FolderType.DEFAULT && !DocSpaceHelper.IsRoom(folder.FolderType))
                 {
@@ -697,6 +712,19 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         };
                         await filesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
                     }
+                }
+
+                var trashId = await trashIdTask;
+                var tagDao = _daoFactory.GetTagDao<int>();
+                    
+                if (toFolderId == trashId)
+                {
+                    var origin = Tag.Origin(folderId, FileEntryType.Folder, oldParentId, _authContext.CurrentAccount.ID);
+                    await tagDao.SaveTags(origin);
+                }
+                else if (oldParentId == trashId)
+                {
+                    await tagDao.RemoveTagLinksAsync(folderId, FileEntryType.Folder, TagType.Origin);
                 }
 
                 await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -1311,6 +1339,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
+    public IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        return _getOriginsDataQuery(filesDbContext, entriesIds, TenantID);
+    }
+
     #endregion
 
     protected internal IQueryable<DbFolder> GetFolderQuery(FilesDbContext filesDbContext, Expression<Func<DbFolder, bool>> where = null)
@@ -1645,6 +1680,27 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return _globalStore.GetStore().CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
 
+    private static readonly Func<FilesDbContext, IEnumerable<int>, int, IAsyncEnumerable<OriginData>> _getOriginsDataQuery =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext filesDbContext, IEnumerable<int> entriesIds, int tenantId) =>
+            filesDbContext.TagLink.AsNoTracking()
+                .Where(l => l.TenantId == tenantId)
+                .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
+                .Join(filesDbContext.Tag.AsNoTracking()
+                    .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
+                .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
+                .Select(r => new OriginData
+                {
+                    OriginRoom = filesDbContext.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId &&
+                                                                            f.Id == filesDbContext.Tree.AsNoTracking()
+                                                                                .Where(t => t.FolderId == Convert.ToInt32(r.Key))
+                                                                                .OrderByDescending(t => t.Level)
+                                                                                .Select(t => t.ParentId)
+                                                                                .Skip(1)
+                                                                                .FirstOrDefault()),
+                    OriginFolder = filesDbContext.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
+                    Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
+                }));
+
     private string GetProjectTitle(object folderID)
     {
         return "";
@@ -1716,4 +1772,11 @@ public class ParentRoomPair
 {
     public int FolderId { get; set; }
     public int ParentRoomId { get; set; }
+}
+
+public class OriginData
+{
+    public DbFolder OriginRoom { get; set; }
+    public DbFolder OriginFolder { get; set; }
+    public HashSet<KeyValuePair<string, FileEntryType>> Entries { get; set; }
 }

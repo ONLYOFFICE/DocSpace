@@ -528,6 +528,7 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
+          isEmptyPage={isEmptyPage}
         >
           {!isErrorRoomNotAvailable && (
             <Section.SectionHeader>
