@@ -24,12 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Google.Api.Gax.ResourceNames;
+
 using ThumbnailSize = Dropbox.Api.Files.ThumbnailSize;
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
 [Transient]
-internal class DropboxStorage : IDisposable
+internal class DropboxStorage : IThirdPartyStorage<FileMetadata, FolderMetadata, Metadata>, IDisposable
 {
     public bool IsOpened { get; private set; }
     public long MaxChunkedUploadFileSize = 20L * 1024L * 1024L * 1024L;
@@ -68,11 +70,17 @@ internal class DropboxStorage : IDisposable
         return (parentPath ?? "") + "/" + (name ?? "");
     }
 
-    public async Task<long> GetUsedSpaceAsync()
+    public async Task<bool> CheckAccessAsync()
     {
-        var spaceUsage = await _dropboxClient.Users.GetSpaceUsageAsync();
-
-        return (long)spaceUsage.Used;
+        try
+        {
+            await _dropboxClient.Users.GetSpaceUsageAsync();
+            return true;
+        }
+        catch (AggregateException)
+        {
+            return false;
+        }
     }
 
 
@@ -86,7 +94,7 @@ internal class DropboxStorage : IDisposable
         return InternalGetFolderAsync(folderPath);
     }
 
-    public async Task<FolderMetadata> InternalGetFolderAsync(string folderPath)
+    private async Task<FolderMetadata> InternalGetFolderAsync(string folderPath)
     {
         try
         {
@@ -105,17 +113,17 @@ internal class DropboxStorage : IDisposable
         }
     }
 
-    public ValueTask<FileMetadata> GetFileAsync(string filePath)
+    public Task<FileMetadata> GetFileAsync(string filePath)
     {
         if (string.IsNullOrEmpty(filePath) || filePath == "/")
         {
-            return ValueTask.FromResult<FileMetadata>(null);
+            return Task.FromResult<FileMetadata>(null);
         }
 
         return InternalGetFileAsync(filePath);
     }
 
-    private async ValueTask<FileMetadata> InternalGetFileAsync(string filePath)
+    private async Task<FileMetadata> InternalGetFileAsync(string filePath)
     {
         try
         {
@@ -141,7 +149,7 @@ internal class DropboxStorage : IDisposable
         return new List<Metadata>(data.Entries);
     }
 
-    public async Task<Stream> GetThumbnailsAsync(string filePath, int width, int height)
+    public async Task<Stream> GetThumbnailAsync(string filePath, int width, int height)
     {
         try
         {
@@ -170,14 +178,15 @@ internal class DropboxStorage : IDisposable
         }
     }
 
-    public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
+    public Task<Stream> DownloadStreamAsync(FileMetadata file, int offset = 0)
     {
+        var filePath = MakeId(file);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filePath);
 
         return InternalDownloadStreamAsync(filePath, offset);
     }
 
-    public async Task<Stream> InternalDownloadStreamAsync(string filePath, int offset = 0)
+    private async Task<Stream> InternalDownloadStreamAsync(string filePath, int offset = 0)
     {
         using var response = await _dropboxClient.Files.DownloadAsync(filePath);
         var tempBuffer = _tempStream.Create();
@@ -222,10 +231,28 @@ internal class DropboxStorage : IDisposable
         return (FolderMetadata)result.Metadata;
     }
 
+    public async Task<FolderMetadata> RenameFolderAsync(string dropboxFolderPath, string folderName)
+    {
+        var folder = await GetFolderAsync(dropboxFolderPath);
+        var pathTo = GetParentFolderId(folder);
+        var result = await _dropboxClient.Files.MoveV2Async(dropboxFolderPath, MakeDropboxPath(pathTo, folderName), autorename: true);
+
+        return (FolderMetadata)result.Metadata;
+    }
+
     public async Task<FileMetadata> MoveFileAsync(string dropboxFilePath, string dropboxFolderPathTo, string fileName)
     {
         var pathTo = MakeDropboxPath(dropboxFolderPathTo, fileName);
         var result = await _dropboxClient.Files.MoveV2Async(dropboxFilePath, pathTo, autorename: true);
+
+        return (FileMetadata)result.Metadata;
+    }
+
+    public async Task<FileMetadata> RenameFileAsync(string dropboxFilePath, string fileName)
+    {
+        var file = await GetFileAsync(dropboxFilePath);
+        var pathTo = GetParentFolderId(file);
+        var result = await _dropboxClient.Files.MoveV2Async(dropboxFilePath, MakeDropboxPath(pathTo, fileName), autorename: true);
 
         return (FileMetadata)result.Metadata;
     }
@@ -276,6 +303,40 @@ internal class DropboxStorage : IDisposable
         return await _dropboxClient.Files.UploadSessionFinishAsync(
             new UploadSessionCursor(dropboxSession, (ulong)offset),
             new CommitInfo(dropboxFilePath, WriteMode.Overwrite.Instance));
+    }
+
+    public string MakeId(Metadata dropboxItem)
+    {
+        string path = null;
+        if (dropboxItem != null)
+        {
+            path = dropboxItem.PathDisplay;
+        }
+
+        return path;
+    }
+
+    public string GetParentFolderId(Metadata dropboxItem)
+    {
+        if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
+        {
+            return null;
+        }
+
+        var pathLength = dropboxItem.PathDisplay.Length - dropboxItem.Name.Length;
+
+        return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
+    }
+
+    public bool IsRoot(FolderMetadata dropboxFolder)
+    {
+        return dropboxFolder != null && dropboxFolder.Id == "/";
+    }
+
+
+    public Task<long> GetMaxUploadSizeAsync()
+    {
+        return Task.FromResult(MaxChunkedUploadFileSize);
     }
 
     public void Dispose()

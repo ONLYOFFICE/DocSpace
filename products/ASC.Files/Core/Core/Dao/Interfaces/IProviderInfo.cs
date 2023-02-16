@@ -28,7 +28,7 @@ namespace ASC.Files.Core;
 
 public interface IProviderInfo : IDisposable
 {
-    int ID { get; set; }
+    int ProviderId { get; set; }
     string ProviderKey { get; }
     Guid Owner { get; }
     FolderType RootFolderType { get; }

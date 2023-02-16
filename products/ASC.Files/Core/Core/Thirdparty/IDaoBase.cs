@@ -24,21 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-public static class Selectors
+namespace ASC.Files.Core.Core.Thirdparty;
+internal interface IDaoBase<TFile, TFolder, TItem>
 {
-    public static readonly Selector SharpBox = new Selector() { Name = "SharpBox", Id = "sbox" };
-    public static readonly Selector SharePoint = new Selector() { Name = "sharepoint", Id = "spoint" };
-    public static readonly Selector GoogleDrive = new Selector() { Name = "GoogleDrive", Id = "drive" };
-    public static readonly Selector Box = new Selector() { Name = "Box", Id = "box" };
-    public static readonly Selector Dropbox = new Selector() { Name = "Dropbox", Id = "dropbox" };
-    public static readonly Selector OneDrive = new Selector() { Name = "OneDrive", Id = "onedrive" };
-
-    public static readonly List<Selector> All = new List<Selector>() { SharpBox, SharePoint, GoogleDrive, Box, Dropbox, OneDrive };
-    public static readonly List<Selector> StoredCache = new List<Selector>() { GoogleDrive, Box, Dropbox, OneDrive };
-}
-
-public class Selector
-{
-    public string Name { get; init; }
-    public string Id { get; init; }
+    string MakeId(object entryId);
+    string GetParentFolderId(TItem item);
+    string MakeId(TItem item);
+    string MakeId(string path = null);
+    string MakeFolderTitle(TFolder folder);
+    string MakeFileTitle(TFile file);
+    Folder<string> ToFolder(TFolder folder);
+    File<string> ToFile(TFile file);
+    Task<Folder<string>> GetRootFolderAsync();
+    Task<TFolder> GetFolderAsync(string folderId);
+    Task<TFile> GetFileAsync(string fileId);
+    Task<IEnumerable<string>> GetChildrenAsync(string folderId);
+    Task<List<TItem>> GetItemsAsync(string parentId, bool? folder = null);
+    Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist);
 }

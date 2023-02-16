@@ -463,7 +463,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             throw new Exception(errorFile.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
+        var toBoxFolder = await GetFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
@@ -505,7 +505,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             throw new Exception(errorFile.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
+        var toBoxFolder = await GetFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);

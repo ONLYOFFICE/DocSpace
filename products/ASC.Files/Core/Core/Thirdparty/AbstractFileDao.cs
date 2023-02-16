@@ -24,21 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-public static class Selectors
-{
-    public static readonly Selector SharpBox = new Selector() { Name = "SharpBox", Id = "sbox" };
-    public static readonly Selector SharePoint = new Selector() { Name = "sharepoint", Id = "spoint" };
-    public static readonly Selector GoogleDrive = new Selector() { Name = "GoogleDrive", Id = "drive" };
-    public static readonly Selector Box = new Selector() { Name = "Box", Id = "box" };
-    public static readonly Selector Dropbox = new Selector() { Name = "Dropbox", Id = "dropbox" };
-    public static readonly Selector OneDrive = new Selector() { Name = "OneDrive", Id = "onedrive" };
+using File = System.IO.File;
 
-    public static readonly List<Selector> All = new List<Selector>() { SharpBox, SharePoint, GoogleDrive, Box, Dropbox, OneDrive };
-    public static readonly List<Selector> StoredCache = new List<Selector>() { GoogleDrive, Box, Dropbox, OneDrive };
-}
-
-public class Selector
+namespace ASC.Files.Core.Core.Thirdparty;
+internal class AbstractFileDao<TFile, TFolder, TItem> : IFileDao<string>
 {
-    public string Name { get; init; }
-    public string Id { get; init; }
+    private readonly IDaoBase<TFile, TFolder, TItem> _dao;
+    private readonly IProviderInfo _providerInfo;
+    public async Task InvalidateCacheAsync(string fileId)
+    {
+        var boxFileId = _dao.MakeId(fileId);
+        await _providerInfo.CacheResetAsync(boxFileId, true);
+
+        var boxFile = await GetBoxFileAsync(fileId);
+        var parentPath = GetParentFolderId(boxFile);
+
+        if (parentPath != null)
+        {
+            await ProviderInfo.CacheResetAsync(parentPath);
+        }
+    }
 }

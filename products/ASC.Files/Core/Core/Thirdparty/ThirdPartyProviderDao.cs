@@ -523,7 +523,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
         fileEntry.CreateBy = ProviderInfo.Owner;
         fileEntry.ModifiedBy = ProviderInfo.Owner;
-        fileEntry.ProviderId = ProviderInfo.ID;
+        fileEntry.ProviderId = ProviderInfo.ProviderId;
         fileEntry.ProviderKey = ProviderInfo.ProviderKey;
         fileEntry.RootCreateBy = ProviderInfo.Owner;
         fileEntry.RootFolderType = ProviderInfo.RootFolderType;
@@ -566,7 +566,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             FilterType.MediaOnly;
     }
 
-    protected abstract string MakeId(string path = null);
+    public abstract string MakeId(string path = null);
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
@@ -633,7 +633,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         }
     }
 
-    protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
+    public abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
 
     public void Dispose()
     {

@@ -62,7 +62,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
     {
-        return ToFolder(await GetBoxFolderAsync(folderId));
+        return ToFolder(await base.GetFolderAsync(folderId));
     }
 
     public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
@@ -178,7 +178,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
         while (folderId != null)
         {
-            var boxFolder = await GetBoxFolderAsync(folderId);
+            var boxFolder = await base.GetFolderAsync(folderId);
 
             if (boxFolder is ErrorFolder)
             {
@@ -246,7 +246,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task DeleteFolderAsync(string folderId)
     {
-        var boxFolder = await GetBoxFolderAsync(folderId);
+        var boxFolder = await base.GetFolderAsync(folderId);
         var id = MakeId(boxFolder);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
@@ -310,13 +310,13 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var boxFolder = await GetBoxFolderAsync(folderId);
+        var boxFolder = await base.GetFolderAsync(folderId);
         if (boxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
+        var toBoxFolder = await base.GetFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder1)
         {
             throw new Exception(errorFolder1.Error);
@@ -378,13 +378,13 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
-        var boxFolder = await GetBoxFolderAsync(folderId);
+        var boxFolder = await base.GetFolderAsync(folderId);
         if (boxFolder is ErrorFolder errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var toBoxFolder = await GetBoxFolderAsync(toFolderId);
+        var toBoxFolder = await base.GetFolderAsync(toFolderId);
         if (toBoxFolder is ErrorFolder errorFolder1)
         {
             throw new Exception(errorFolder1.Error);
@@ -439,7 +439,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var boxFolder = await GetBoxFolderAsync(folder.Id);
+        var boxFolder = await base.GetFolderAsync(folder.Id);
         var parentFolderId = GetParentFolderId(boxFolder);
 
         if (IsRoot(boxFolder))
