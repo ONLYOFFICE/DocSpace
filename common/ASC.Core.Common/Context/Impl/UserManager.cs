@@ -893,21 +893,21 @@ public class UserManager
         UserGroupRef r;
         if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID || groupId == Constants.GroupCollaborator.ID)
         {
-            var exists = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            var isUser = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
             if (groupId == Constants.GroupUser.ID)
             {
-                return exists;
+                return isUser;
             }
 
-            exists = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupCollaborator.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            var isCollaborator = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupCollaborator.ID, UserGroupRefType.Contains), out r) && !r.Removed;
             if (groupId == Constants.GroupCollaborator.ID)
             {
-                return exists;
+                return isCollaborator;
             }
             
             if (groupId == Constants.GroupManager.ID)
             {
-                return !exists;
+                return !isUser && !isCollaborator;
             }
         }
 
