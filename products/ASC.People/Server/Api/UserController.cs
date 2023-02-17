@@ -186,8 +186,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
-            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type, 
+            false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -208,14 +208,21 @@ public class UserController : PeopleControllerBase
         _apiContext.AuthByClaim();
 
         var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
-        if (options != null && !options.IsCorrect)
+        if (options is { IsCorrect: false })
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType) ,Constants.Action_AddRemoveUser);
+        if (options != null)
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType), Constants.Action_AddRemoveUser);
+        }
+        else
+        {
+            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        }
 
-        inDto.Type = options != null ? options.EmployeeType : inDto.Type;
+        inDto.Type = options?.EmployeeType ?? inDto.Type;
 
         var user = new UserInfo();
 
@@ -225,7 +232,7 @@ public class UserController : PeopleControllerBase
         {
             user = _userManager.GetUserByEmail(inDto.Email);
 
-            if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
+            if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
                 throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
             }
@@ -265,8 +272,11 @@ public class UserController : PeopleControllerBase
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
         UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
+        
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink && options.IsCorrect, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
+        
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type, 
+            inDto.FromInviteLink && options is { IsCorrect: true }, true, true, byEmail);
 
         await UpdateDepartments(inDto.Department, user);
 
@@ -275,7 +285,7 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (options != null && options.LinkType == LinkType.InvintationToRoom)
+        if (options is { LinkType: LinkType.InvintationToRoom })
         {
             var success = int.TryParse(options.RoomId, out var id);
 
@@ -1117,6 +1127,13 @@ public class UserController : PeopleControllerBase
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                 }
+            }
+            else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
+            {
+                await _countRoomAdminChecker.CheckAppend();
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
             }
         }
         
