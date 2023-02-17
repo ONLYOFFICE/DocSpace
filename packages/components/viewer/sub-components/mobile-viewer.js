@@ -280,7 +280,6 @@ function MobileViewer({
       },
       onClick: () => {
         const time = new Date().getTime();
-        alert("tap");
 
         if (time - lastTapTimeRef.current < 300) {
           //on Double Tap
@@ -320,9 +319,6 @@ function MobileViewer({
             });
           }, 300);
         }
-      },
-      onTouchStart: () => {
-        console.log("tap");
       },
     },
 
