@@ -481,7 +481,7 @@ class FilesStore {
       timerId = null;
     }
 
-    if (!Object.keys(highlightFile).length) return;
+    if (Object.keys(highlightFile).length === 0) return;
 
     timerId = setTimeout(() => {
       this.highlightFile = {};

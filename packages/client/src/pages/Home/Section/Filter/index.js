@@ -206,7 +206,7 @@ const SectionFilterContent = ({
       setSearchTitleOpenLocation(null);
     }
 
-    if (isLoadedSearchFiles && !!Object.keys(itemOpenLocation).length) {
+    if (isLoadedSearchFiles && Object.keys(itemOpenLocation).length !== 0) {
       setHighlightFileId({
         highlightFileId: itemOpenLocation.id,
         isFileHasExst: itemOpenLocation.isFileHasExst,
