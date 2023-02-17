@@ -83,6 +83,10 @@ public class WebhookSender
         }
         catch (SslException e)
         {
+            status = (int)e.Errors;
+            responsePayload = e.Message;
+            delivery = DateTime.UtcNow;
+
             _log.ErrorSSLVerification(e);
         }
         catch (HttpRequestException e)

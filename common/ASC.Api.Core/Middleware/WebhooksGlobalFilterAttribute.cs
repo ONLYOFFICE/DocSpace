@@ -118,7 +118,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
             return true;
         }
 
-        if (_settingsManager.Load<WebHooksSettings>().Keys.Contains(Webhook.GetKey(method, routePattern)))
+        if (_settingsManager.Load<WebHooksSettings>().Keys.Contains(Webhook.GetEndpoint(method, routePattern)))
         {
             return true;
         }

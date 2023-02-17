@@ -196,10 +196,25 @@ public class WebhooksController : BaseSettingsController
 
         foreach (var w in WebhookManager.GetAll())
         {
-            if (!settings.Keys.Any(key => key.Equals(w.Key)))
+            if (!settings.Keys.Any(key => key.Equals(w.Endpoint)))
             {
                 yield return w;
             }
         }
+    }
+
+    [HttpDelete("webhook")]
+    public Webhook DisableWebHook(Webhook webhook)
+    {
+        var settings = _settingsManager.Load<WebHooksSettings>();
+
+        if (!settings.Keys.Contains(webhook.Endpoint) && WebhookManager.Contains(webhook))
+        {
+            settings.Keys.Remove(webhook.Endpoint);
+        }
+
+        _settingsManager.Save(settings);
+
+        return webhook;
     }
 }

@@ -24,48 +24,45 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Core;
+using ASC.Webhooks.Core;
 
-public static class WebhookManager
+namespace ASC.People.Api;
+
+public class SettingsController : ApiControllerBase
 {
-    public static readonly IReadOnlyList<string> MethodList = new List<string>
-    {
-        "POST",
-        "UPDATE",
-        "DELETE"
-    };
+    private readonly SettingsManager _settingsManager;
 
-    private static readonly List<Webhook> _webhooks = new List<Webhook>();
-
-    public static void Register(IEnumerable<Webhook> routes)
+    public SettingsController(SettingsManager settingsManager)
     {
-        _webhooks.AddRange(routes);
+        _settingsManager = settingsManager;
     }
 
-    public static bool Contains(string method, string route)
+    [HttpGet("settings/webhook/all")]
+    public IEnumerable<Webhook> Settings()
     {
-        return _webhooks.Any(r => r.Endpoint == Webhook.GetEndpoint(method, route));
+        var settings = _settingsManager.Load<WebHooksSettings>();
+
+        foreach (var w in WebhookManager.GetAll())
+        {
+            if (!settings.Keys.Any(key => key.Equals(w.Endpoint)))
+            {
+                yield return w;
+            }
+        }
     }
 
-    public static bool Contains(Webhook webhook)
+    [HttpDelete("settings/webhook")]
+    public Webhook DisableWebHook(Webhook webhook)
     {
-        return _webhooks.Any(r => r.Endpoint == webhook.Endpoint);
+        var settings = _settingsManager.Load<WebHooksSettings>();
+
+        if (!settings.Keys.Contains(webhook.Endpoint) && WebhookManager.Contains(webhook))
+        {
+            settings.Keys.Remove(webhook.Endpoint);
+        }
+
+        _settingsManager.Save(settings);
+
+        return webhook;
     }
-
-    public static IReadOnlyList<Webhook> GetAll()
-    {
-        return _webhooks;
-    }
-}
-
-public class Webhook
-{
-    public string Endpoint { get => GetEndpoint(Method, Route); }
-    public string Name { get => WebHookResource.ResourceManager.GetString(Endpoint) ?? ""; }
-    public string Description { get => WebHookResource.ResourceManager.GetString($"{Endpoint}_Description") ?? ""; }
-    public string Route { get; set; }
-    public string Method { get; set; }
-    public bool Disabled { get; set; }
-
-    public static string GetEndpoint(string method, string route) => $"{method}|{route}";
 }

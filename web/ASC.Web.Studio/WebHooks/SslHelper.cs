@@ -52,9 +52,18 @@ public class SslHelper
             return true;
         }
 
-        throw new SslException();
+        throw new SslException(sslPolicyErrors);
     }
 }
 
-public class SslException : Exception { }
+public class SslException : Exception
+{
+    public SslPolicyErrors Errors { get; set; }
+    public override string Message { get => Errors.ToString(); }
+
+    public SslException(SslPolicyErrors errors)
+    {
+        Errors = errors;
+    }
+}
 
