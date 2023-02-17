@@ -271,7 +271,7 @@ class SelectionArea extends React.Component {
 
     if (e.target.tagName === "A") {
       const node = e.target.closest("." + selectableClass);
-      onMove && onMove({ added: [node], removed: [], clear: true });
+      node && onMove && onMove({ added: [node], removed: [], clear: true });
       return;
     }
 
