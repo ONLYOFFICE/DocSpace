@@ -268,7 +268,7 @@ public class SsoHandlerService
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
-                var limitExceeded = false;
+                var type = EmployeeType.RoomAdmin;
 
                 try
                 {
@@ -276,11 +276,11 @@ public class SsoHandlerService
                 }
                 catch (Exception)
                 {
-                    limitExceeded = true;
+                    type = EmployeeType.User;
                 }
 
                 newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                  false, isUser: limitExceeded);
+                  false, type);
             }
             else
             {
