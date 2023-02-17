@@ -126,12 +126,13 @@ public sealed class UserManagerWrapper
 
         user.UserName = MakeUniqueName(user);
 
-        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User);
+        var newUser = await _userManager.SaveUserInfo(user, type);
 
         var groupId = type switch
         {
             EmployeeType.User => Constants.GroupUser.ID,
             EmployeeType.DocSpaceAdmin => Constants.GroupAdmin.ID,
+            EmployeeType.Collaborator => Constants.GroupCollaborator.ID,
             _ => Guid.Empty,
         };
 
@@ -143,8 +144,8 @@ public sealed class UserManagerWrapper
         return newUser;
     }
 
-    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
-        bool updateExising = false, bool isAdmin = false)
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, EmployeeType type = EmployeeType.RoomAdmin, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+        bool updateExising = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -172,7 +173,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -186,7 +187,7 @@ public sealed class UserManagerWrapper
             //NOTE: Notify user only if it's active
             if (afterInvite)
             {
-                if (isUser)
+                if (type is EmployeeType.User)
                 {
                     _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
@@ -203,7 +204,7 @@ public sealed class UserManagerWrapper
             else
             {
                 //Send user invite
-                if (isUser)
+                if (type is EmployeeType.User)
                 {
                     _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
@@ -215,13 +216,17 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (isUser)
+        if (type is EmployeeType.User)
         {
             await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
         }
-        else if (isAdmin)
+        else if (type is EmployeeType.DocSpaceAdmin)
         {
             await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
+        }
+        else if (type is EmployeeType.Collaborator)
+        {
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
         }
 
         return newUserInfo;
