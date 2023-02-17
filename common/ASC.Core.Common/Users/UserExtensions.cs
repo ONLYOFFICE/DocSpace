@@ -65,6 +65,17 @@ public static class UserExtensions
         return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupUser.ID);
     }
 
+    public static bool IsCollaborator(this UserManager userManager, UserInfo userInfo)
+    {
+        return userInfo != null && userManager.IsUserInGroup(userInfo.Id, Constants.GroupCollaborator.ID);
+    }
+    
+    public static bool IsCollaborator(this UserManager userManager, Guid id)
+    {
+        var userInfo = userManager.GetUsers(id);
+        return userManager.IsCollaborator(userInfo);
+    }
+
     public static bool IsOutsider(this UserManager userManager, Guid id)
     {
         return userManager.IsUser(id) && id == Constants.OutsideUser.Id;
@@ -98,7 +109,10 @@ public static class UserExtensions
 
     public static EmployeeType GetUserType(this UserManager userManager, Guid id)
     {
-        return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : userManager.IsUser(id) ? EmployeeType.User : EmployeeType.RoomAdmin;
+        return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : 
+            userManager.IsUser(id) ? EmployeeType.User : 
+            userManager.IsCollaborator(id) ? EmployeeType.Collaborator :
+            EmployeeType.RoomAdmin;
     }
 
     private const string _extMobPhone = "extmobphone";

@@ -886,16 +886,23 @@ public class UserManager
         }
 
         UserGroupRef r;
-        if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID)
+        if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID || groupId == Constants.GroupCollaborator.ID)
         {
-            var user = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            var exists = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
             if (groupId == Constants.GroupUser.ID)
             {
-                return user;
+                return exists;
             }
+
+            exists = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupCollaborator.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            if (groupId == Constants.GroupCollaborator.ID)
+            {
+                return exists;
+            }
+            
             if (groupId == Constants.GroupManager.ID)
             {
-                return !user;
+                return !exists;
             }
         }
 

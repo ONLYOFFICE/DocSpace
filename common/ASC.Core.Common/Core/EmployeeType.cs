@@ -38,4 +38,5 @@ public enum EmployeeType
     RoomAdmin = 1,
     User = 2,
     DocSpaceAdmin = 3,
+    Collaborator = 4,
 }
