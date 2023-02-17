@@ -27,6 +27,7 @@ const ChangeUserTypeEvent = ({
 
   const onKeyUpHandler = (e) => {
     if (e.keyCode === 27) onCloseAction();
+    if (e.keyCode === 13) onChangeUserType();
   };
   useEffect(() => {
     document.addEventListener("keyup", onKeyUpHandler, false);
