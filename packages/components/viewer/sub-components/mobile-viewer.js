@@ -56,14 +56,14 @@ function MobileViewer({
     api.start({ ...point });
   }, [left, top]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     api.set({
       width,
       height,
-      x:left,
-      y:top,
-    })
-  },[height, width])
+      x: left,
+      y: top,
+    });
+  }, [height, width]);
 
   React.useEffect(() => {
     unmountRef.current = false;
@@ -280,6 +280,7 @@ function MobileViewer({
       },
       onClick: () => {
         const time = new Date().getTime();
+        alert("tap");
 
         if (time - lastTapTimeRef.current < 300) {
           //on Double Tap
@@ -320,7 +321,11 @@ function MobileViewer({
           }, 300);
         }
       },
+      onTouchStart: () => {
+        console.log("tap");
+      },
     },
+
     {
       drag: {
         from: () => [style.x.get(), style.y.get()],
