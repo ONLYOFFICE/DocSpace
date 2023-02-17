@@ -25,6 +25,17 @@ const ChangeUserTypeEvent = ({
   } = peopleDialogData;
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common", "Payments"]);
 
+  const onKeyUpHandler = (e) => {
+    if (e.keyCode === 27) onCloseAction();
+  };
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyUpHandler, false);
+
+    return () => {
+      document.removeEventListener("keyup", onKeyUpHandler, false);
+    };
+  }, []);
+
   useEffect(() => {
     if (!peopleDialogData.toType) return;
 
