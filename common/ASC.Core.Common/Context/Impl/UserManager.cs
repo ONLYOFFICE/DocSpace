@@ -157,10 +157,16 @@ public class UserManager
         switch (type)
         {
             case EmployeeType.RoomAdmin:
-                users = users.Where(u => !this.IsUser(u));
+                users = users.Where(u => !this.IsUser(u) && !this.IsCollaborator(u) && !this.IsDocSpaceAdmin(u));
+                break;
+            case EmployeeType.DocSpaceAdmin:
+                users = users.Where(this.IsDocSpaceAdmin);
+                break;
+            case EmployeeType.Collaborator:
+                users = users.Where(this.IsCollaborator);
                 break;
             case EmployeeType.User:
-                users = users.Where(u => this.IsUser(u));
+                users = users.Where(this.IsUser);
                 break;
         }
 
@@ -354,15 +360,14 @@ public class UserManager
         return newUser;
     }
 
-    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, EmployeeType type = EmployeeType.RoomAdmin, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, isVisitor ? EmployeeType.User : EmployeeType.RoomAdmin), 
-            Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, type), Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -379,7 +384,7 @@ public class UserManager
             throw new InvalidOperationException("User already exist.");
         }
 
-        if (isVisitor)
+        if (type is EmployeeType.User)
         {
             await _activeUsersFeatureChecker.CheckAppend();
         }
