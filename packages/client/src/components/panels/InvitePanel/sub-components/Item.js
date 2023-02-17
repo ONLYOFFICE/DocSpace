@@ -16,6 +16,7 @@ import {
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
+  StyledText,
 } from "../StyledInvitePanel";
 
 const Item = ({
@@ -110,9 +111,9 @@ const Item = ({
 
   const displayBody = (
     <>
-      <Text {...textProps} noSelect>
+      <StyledText {...textProps} noSelect>
         {inputValue}
-      </Text>
+      </StyledText>
       {hasError ? (
         <>
           <StyledHelpButton
