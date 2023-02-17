@@ -24,29 +24,44 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AuthConstants = ASC.Common.Security.Authorizing.Constants;
+
 namespace ASC.Core.Common.Security;
 
 public class UserGroupObject : SecurityObject
 {
-    private ISubject User { get; set; }
-    private Guid GroupId { get; set; }
+    private readonly Guid _groupId;
 
     public UserGroupObject(ISubject user, Guid groupId)
     {
         SecurityId = user.ID;
-        User = user;
-        GroupId = groupId;
+        _groupId = groupId;
         ObjectType = typeof(UserGroupObject);
-        FullId = $"{ObjectType.FullName}|{User.ID}|{GroupId}";
+        FullId = $"{ObjectType.FullName}|{user.ID}|{_groupId}";
     }
 
     protected override IEnumerable<IRole> GetTargetRoles(IRoleProvider roleProvider)
     {
-        return roleProvider.GetRoles(User);
+        if (_groupId == Users.Constants.GroupAdmin.ID)
+        { 
+            return new[] { AuthConstants.DocSpaceAdmin };
+        }
+
+        if (_groupId == Users.Constants.GroupUser.ID)
+        {
+            return new[] { AuthConstants.User };
+        }
+
+        if (_groupId == Users.Constants.GroupCollaborator.ID)
+        {
+            return new[] { AuthConstants.Collaborator };
+        }
+
+        return Array.Empty<IRole>();
     }
 
     protected override IRuleData GetRuleData()
     {
-        return new Role(GroupId, "ruleData");
+        return new Role(_groupId, "ruleData");
     }
 }
