@@ -1,7 +1,7 @@
 import React, { useMemo, memo, useCallback } from "react";
 import equal from "fast-deep-equal/react";
 
-import { Viewer } from "@docspace/components/viewer";
+import Viewer from "../Viewer";
 import { isSeparator } from "../../helpers";
 import { getCustomToolbar } from "../../helpers/getCustomToolbar";
 import { ContextMenuModel } from "../../types";
