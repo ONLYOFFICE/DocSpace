@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
-import { isMo, isMobilebile } from "react-device-detect";
 import { ReactSVG } from "react-svg";
 
 const StyledMediaError = styled.div`
