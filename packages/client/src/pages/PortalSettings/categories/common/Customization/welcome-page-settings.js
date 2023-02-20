@@ -70,8 +70,6 @@ class WelcomePageSettings extends React.Component {
       tReady,
       initSettings,
       setIsLoaded,
-      restoreGreetingTitle,
-      greetingSettings,
     } = this.props;
     const { greetingTitleDefault, greetingTitle } = this.state;
 
@@ -86,18 +84,6 @@ class WelcomePageSettings extends React.Component {
 
     if (greetingTitleDefault || greetingTitle) {
       this.checkChanges();
-    }
-
-    if (greetingTitleDefaultFromSessionStorage !== greetingTitleFromSessionStorage) {
-      restoreGreetingTitle().then(() => {
-        this.setState({
-          greetingTitle: greetingSettings,
-          greetingTitleDefault: greetingSettings,
-          showReminder: false,
-        });
-        saveToSessionStorage("greetingTitle", "none");
-        saveToSessionStorage("greetingTitleDefault", "none");
-      });
     }
   }
 

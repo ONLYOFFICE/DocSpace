@@ -19,6 +19,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+
 const PortalRenaming = (props) => {
   const {
     t,
@@ -75,11 +76,6 @@ const PortalRenaming = (props) => {
   const [domainValidator, setDomainValidator] = useState(null);
 
   useEffect(() => {
-    if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
-      setPortalName(portalNameDefault);
-      saveToSessionStorage("portalName", "none");
-      setErrorValue(null);
-    }
     getAllSettings().then((res) => {
       setDomainValidator(res.domainValidator);
     });

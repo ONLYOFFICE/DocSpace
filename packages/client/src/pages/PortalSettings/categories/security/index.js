@@ -12,6 +12,7 @@ import LoginHistory from "./login-history/index.js";
 import MobileSecurityLoader from "./sub-components/loaders/mobile-security-loader";
 import AccessLoader from "./sub-components/loaders/access-loader";
 import AuditTrail from "./audit-trail/index.js";
+import { resetSessionStorage } from "./../../utils";
 
 import { isMobile } from "react-device-detect";
 
@@ -42,6 +43,10 @@ const SecurityWrapper = (props) => {
     await loadBaseInfo();
     setIsLoading(true);
   };
+
+  useEffect(() => {
+    resetSessionStorage();
+  }, []);
 
   useEffect(() => {
     const path = location.pathname;

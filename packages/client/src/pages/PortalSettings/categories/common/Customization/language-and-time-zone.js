@@ -81,6 +81,7 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
+      timezone,
       rawTimezones,
       portalTimeZoneId,
       isLoaded,
@@ -147,27 +148,17 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
-    settingNames.forEach((settingName) => {
-      const valueFromSessionStorage = getFromSessionStorage(settingName);
-
-      if (
-        valueFromSessionStorage &&
-        !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
-      ) {
-        const defaultValue = this.state[settingName + "Default"];
-
-        this.setState({ [settingName]: defaultValue });
-        saveToSessionStorage(settingName, "");
-      }
-    });
-
     if (!languageDefault) {
       this.setState({
         languageDefault: language,
       });
     }
 
-    if (timezoneDefault && languageDefault) {
+    if (timezoneDefault || timezone) {
+      this.checkChanges();
+    }
+
+    if (languageDefault || language) {
       this.checkChanges();
     }
   }
@@ -341,14 +332,14 @@ class LanguageAndTimeZone extends React.Component {
   onCancelClick = () => {
     settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
-
       if (
-        valueFromSessionStorage &&
+        valueFromSessionStorage !== "none" &&
+        valueFromSessionStorage !== null &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
       ) {
         const defaultValue = this.state[settingName + "Default"];
 
-        this.setState({ [settingName]: defaultValue });
+        this.setState({ [settingName]: defaultValue || null });
         saveToSessionStorage(settingName, "");
       }
     });
