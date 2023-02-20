@@ -18,7 +18,6 @@ export const resetSessionStorage = () => {
   }
   if (greetingTitleFromSessionStorage !== greetingTitleDefaultFromSessionStorage) {
     saveToSessionStorage("greetingTitle", "none");
-    saveToSessionStorage("greetingTitleDefault", "none");
   }
   if (languageFromSessionStorage !== languageDefaultFromSessionStorage) {
     saveToSessionStorage("language", "");
