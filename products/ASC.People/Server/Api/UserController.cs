@@ -61,7 +61,7 @@ public class UserController : PeopleControllerBase
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
@@ -102,7 +102,7 @@ public class UserController : PeopleControllerBase
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
         UsersQuotaSyncOperation usersQuotaSyncOperation,
-        CountRoomAdminChecker countRoomAdminChecker,
+        CountPaidUserChecker countPaidUserChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
         IQuotaService quotaService)
@@ -136,7 +136,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
         _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
         _quotaService = quotaService;
@@ -1007,7 +1007,7 @@ public class UserController : PeopleControllerBase
 
         if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
-            await _countRoomAdminChecker.CheckAppend();
+            await _countPaidUserChecker.CheckAppend();
             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
@@ -1047,7 +1047,7 @@ public class UserController : PeopleControllerBase
                     {
                         if (!_userManager.IsUser(user))
                         {
-                            await _countRoomAdminChecker.CheckAppend();
+                            await _countPaidUserChecker.CheckAppend();
                         }
                         else
                         {
@@ -1108,7 +1108,7 @@ public class UserController : PeopleControllerBase
                 }
                 else if (currentType is EmployeeType.User)
                 {
-                    await _countRoomAdminChecker.CheckAppend();
+                    await _countPaidUserChecker.CheckAppend();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
@@ -1123,14 +1123,14 @@ public class UserController : PeopleControllerBase
                 }
                 else if (currentType is EmployeeType.User)
                 {
-                    await _countRoomAdminChecker.CheckAppend();
+                    await _countPaidUserChecker.CheckAppend();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                 }
             }
             else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
             {
-                await _countRoomAdminChecker.CheckAppend();
+                await _countPaidUserChecker.CheckAppend();
                 _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                 await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
