@@ -100,6 +100,8 @@ class FilesStore {
   createdItem = null;
   scrollToItem = null;
 
+  roomCreated = false;
+
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
@@ -179,6 +181,8 @@ class FilesStore {
 
             const newFiles = [fileInfo, ...this.files];
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
+
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
@@ -192,11 +196,18 @@ class FilesStore {
             });
           } else if (opt?.type === "folder" && opt?.id) {
             const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+
             if (foundIndex > -1) return;
 
             const folder = JSON.parse(opt?.data);
 
-            if (this.selectedFolderStore.id !== folder.parentId) return;
+            if (
+              this.selectedFolderStore.id !== folder.parentId ||
+              (folder.roomType &&
+                folder.createdBy.id === this.authStore.userStore.user.id &&
+                this.roomCreated)
+            )
+              return (this.roomCreated = false);
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 
@@ -1974,9 +1985,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(roomParams) {
+  createRoom = (roomParams) => {
+    this.roomCreated = true;
     return api.rooms.createRoom(roomParams);
-  }
+  };
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);

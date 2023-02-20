@@ -140,7 +140,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: InfoOutlineReactSvgUrl,
             label: t("Common:Info"),
-            onClick: this.onDetailsClick,
+            onClick: () => this.onDetailsClick(item),
           };
 
         case "invite-again":
@@ -389,8 +389,10 @@ class AccountsContextOptionsStore {
     setDeleteProfileDialogVisible(true);
   };
 
-  onDetailsClick = () => {
+  onDetailsClick = (item) => {
     const { setIsVisible } = this.peopleStore.infoPanelStore;
+    const { setBufferSelection } = this.peopleStore.selectionStore;
+    setBufferSelection(item);
     setIsVisible(true);
   };
 

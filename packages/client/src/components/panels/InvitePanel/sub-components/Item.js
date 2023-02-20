@@ -1,8 +1,6 @@
 ﻿import InfoEditReactSvgUrl from "PUBLIC_DIR/images/info.edit.react.svg?url";
 import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import React, { useState, useEffect } from "react";
-
-import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
 
 import { parseAddresses } from "@docspace/components/utils/email";
@@ -16,6 +14,7 @@ import {
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
+  StyledText,
 } from "../StyledInvitePanel";
 
 const Item = ({
@@ -110,9 +109,9 @@ const Item = ({
 
   const displayBody = (
     <>
-      <Text {...textProps} noSelect>
+      <StyledText {...textProps} truncate noSelect>
         {inputValue}
-      </Text>
+      </StyledText>
       {hasError ? (
         <>
           <StyledHelpButton
