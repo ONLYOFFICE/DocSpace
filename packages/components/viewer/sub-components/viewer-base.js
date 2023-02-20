@@ -687,6 +687,7 @@ const ViewerBase = (props) => {
         opacity={state.opacity}
         getImageCenterXY={getImageCenterXY}
         setPanelVisible={props.setPanelVisible}
+        handleDefaultAction={handleDefaultAction}
         handleZoom={handleZoom}
         handleResetZoom={handleResetZoom}
         height={state.height}
