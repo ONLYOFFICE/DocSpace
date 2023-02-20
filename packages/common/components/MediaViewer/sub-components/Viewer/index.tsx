@@ -50,22 +50,22 @@ function Viewer(props: ViewerProps) {
   }, [isPlay, isOpenContextMenu, props.isImage]);
 
   useEffect(() => {
-    if (!isMobileOnly) {
-      const resetTimer = () => {
-        setPanelVisible(true);
-        clearTimeout(timerIDRef.current);
-        timerIDRef.current = setTimeout(() => setPanelVisible(false), 2500);
-        setImageTimer(timerIDRef.current);
-      };
+    if (isMobileOnly) return;
 
-      document.addEventListener("mousemove", resetTimer, { passive: true });
+    const resetTimer = () => {
+      setPanelVisible(true);
+      clearTimeout(timerIDRef.current);
+      timerIDRef.current = setTimeout(() => setPanelVisible(false), 2500);
+      setImageTimer(timerIDRef.current);
+    };
 
-      return () => {
-        document.removeEventListener("mousemove", resetTimer);
-        clearTimeout(timerIDRef.current);
-        setPanelVisible(true);
-      };
-    }
+    document.addEventListener("mousemove", resetTimer, { passive: true });
+
+    return () => {
+      document.removeEventListener("mousemove", resetTimer);
+      clearTimeout(timerIDRef.current);
+      setPanelVisible(true);
+    };
   }, [setImageTimer, setPanelVisible]);
 
   useEffect(() => {
