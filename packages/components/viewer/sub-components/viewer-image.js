@@ -2,7 +2,8 @@ import * as React from "react";
 import classnames from "classnames";
 import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "../../react-swipeable";
-import { isMobileOnly } from "react-device-detect";
+import { isIOS, isMobile } from "react-device-detect";
+import { ActionType } from "./icon";
 
 import MobileViewer from "./mobile-viewer";
 function ViewerImage(props) {
@@ -366,6 +367,10 @@ function ViewerImage(props) {
     }
   };
 
+  const handleClick = (e) => {
+    if (e?.detail === 2) props.handleDefaultAction(ActionType.zoomIn);
+  };
+
   function handleResize(e) {
     props.onResize();
   }
@@ -375,7 +380,11 @@ function ViewerImage(props) {
   }
 
   function onClose(e) {
-    if (e.target === imgRef.current || e.nativeEvent.pointerType === "touch")
+    if (
+      e.target === imgRef.current ||
+      e.nativeEvent.pointerType === "touch" ||
+      e.type === "touchend"
+    )
       return;
     props.onMaskClick();
   }
@@ -422,7 +431,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
   let imgNode = null;
 
   if (props.imgSrc !== "") {
-    imgNode = isMobileOnly ? (
+    imgNode = isMobile ? (
       <MobileViewer
         className={imgClass}
         src={props.imgSrc}
@@ -444,6 +453,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
         style={imgStyle}
         ref={imgRef}
         onMouseDown={handleMouseDown}
+        onClick={handleClick}
       />
     );
   }
@@ -462,12 +472,14 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
     );
   }
 
-  if (isMobileOnly) {
+  if (isMobile) {
+    const events = isIOS ? { onTouchEnd: onClose } : { onClick: onClose };
+
     return (
       <div
         className={`${props.prefixCls}-canvas`}
-        onClick={onClose}
         style={styleIndex}
+        {...events}
       >
         {imgNode}
       </div>
