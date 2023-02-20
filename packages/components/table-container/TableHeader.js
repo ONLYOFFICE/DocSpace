@@ -280,9 +280,18 @@ class TableHeader extends React.Component {
       ? storageSize.split(" ")
       : container.style.gridTemplateColumns.split(" ");
 
-    // columns.length + 1 - its settings column
-    if (tableContainer.length !== columns.length + 1) {
-      return this.resetColumns(true);
+    const tableContainerLen = tableContainer.length;
+    const columnsLen = columns.length + 1; // columns.length + 1 - its settings column
+    const needReset = tableContainerLen !== columnsLen;
+
+    // console.log("onResize", {
+    //   tableContainerLen,
+    //   columnsLen,
+    //   needReset,
+    // });
+
+    if (needReset) {
+      return this.resetColumns(tableContainerLen >= columnsLen);
     }
 
     const containerWidth = +container.clientWidth;
