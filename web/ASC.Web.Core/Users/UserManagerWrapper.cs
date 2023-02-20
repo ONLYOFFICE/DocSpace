@@ -46,7 +46,7 @@ public sealed class UserManagerWrapper
     private readonly IPSecurity.IPSecurity _iPSecurity;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
-    private readonly CountRoomAdminChecker _countManagerChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -58,7 +58,7 @@ public sealed class UserManagerWrapper
         IPSecurity.IPSecurity iPSecurity,
         SettingsManager settingsManager,
         UserFormatter userFormatter,
-        CountRoomAdminChecker countManagerChecker)
+        CountPaidUserChecker countPaidUserChecker)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -69,7 +69,7 @@ public sealed class UserManagerWrapper
         _iPSecurity = iPSecurity;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
-        _countManagerChecker = countManagerChecker;
+        _countPaidUserChecker = countPaidUserChecker;
     }
 
     private bool TestUniqueUserName(string uniqueName)
