@@ -52,6 +52,7 @@ class PureHome extends React.Component {
       gallerySelected,
       setIsUpdatingRowItem,
       setIsPreview,
+      selectedFolderStore,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
@@ -117,7 +118,8 @@ class PureHome extends React.Component {
 
     if (!filterObj) return;
 
-    if (isRooms && alreadyFetchingRooms) return setAlreadyFetchingRooms(false);
+    if (isRooms && alreadyFetchingRooms && selectedFolderStore.title)
+      return setAlreadyFetchingRooms(false);
 
     let dataObj = { filter: filterObj };
 
