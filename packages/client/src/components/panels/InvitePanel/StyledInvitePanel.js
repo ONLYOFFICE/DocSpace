@@ -227,9 +227,6 @@ const StyledToggleButton = styled(ToggleButton)`
 
 const StyledText = styled(Text)`
   flex-basis: 72%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 export {
