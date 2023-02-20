@@ -1,4 +1,5 @@
-﻿import EmptyScreenAccountsInfoPanelPngUrl from "PUBLIC_DIR/images/empty_screen-accounts-info-panel.png";
+﻿import EmptyScreenPersonSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import EmptyScreenPersonSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_persons_dark.svg?url";
 import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
 import EmptyScreenAltSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_alt_dark.svg?url";
 
@@ -11,9 +12,11 @@ const SeveralItems = ({ isAccounts, theme }) => {
     ? EmptyScreenAltSvgUrl
     : EmptyScreenAltSvgDarkUrl;
 
-  const imgSrc = isAccounts
-    ? EmptyScreenAccountsInfoPanelPngUrl
-    : emptyScreenAlt;
+  const emptyScreenPerson = theme.isBase
+    ? EmptyScreenPersonSvgUrl
+    : EmptyScreenPersonSvgDarkUrl;
+
+  const imgSrc = isAccounts ? emptyScreenPerson : emptyScreenAlt;
 
   return (
     <StyledSeveralItemsContainer className="no-thumbnail-img-wrapper">
