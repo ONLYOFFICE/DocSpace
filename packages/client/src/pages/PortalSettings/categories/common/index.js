@@ -10,6 +10,7 @@ import Branding from "./branding";
 import Appearance from "./appearance";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import LoaderSubmenu from "./sub-components/loaderSubmenu";
+import { resetSessionStorage } from "../../utils";
 
 const SubmenuCommon = (props) => {
   const {
@@ -21,6 +22,12 @@ const SubmenuCommon = (props) => {
     isLoadedSubmenu,
   } = props;
   const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      resetSessionStorage();
+    };
+  }, []);
 
   useEffect(() => {
     const path = location.pathname;
