@@ -46,7 +46,7 @@ public class FileSharingAceHelper<T>
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly UserManagerWrapper _userManagerWrapper;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly ILogger _logger;
 
     public FileSharingAceHelper(
@@ -67,7 +67,7 @@ public class FileSharingAceHelper<T>
         ILoggerProvider loggerProvider,
         UsersInRoomChecker usersInRoomChecker,
         UserManagerWrapper userManagerWrapper,
-        CountRoomAdminChecker countRoomAdminChecker)
+        CountPaidUserChecker countPaidUserChecker)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -86,7 +86,7 @@ public class FileSharingAceHelper<T>
         _usersInRoomChecker = usersInRoomChecker;
         _logger = loggerProvider.CreateLogger("ASC.Files");
         _userManagerWrapper = userManagerWrapper;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
     }
 
     public async Task<(bool, string)> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
@@ -145,7 +145,7 @@ public class FileSharingAceHelper<T>
                 {
                     if (DocSpaceHelper.PaidRights.Contains(w.Access) && (isUser || emailInvite))
                     {
-                        await _countRoomAdminChecker.CheckAppend();
+                        await _countPaidUserChecker.CheckAppend();
                         employeeType = EmployeeType.RoomAdmin;
 
                         if (isUser)
