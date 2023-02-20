@@ -21,6 +21,9 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+
+const UPLOAD_LIMIT_AT_ONCE = 5;
+
 class UploadDataStore {
   authStore;
   treeFoldersStore;
@@ -51,6 +54,9 @@ class UploadDataStore {
   isUploadingAndConversion = false;
 
   isConvertSingleFile = false;
+
+  currentUploadNumber = 0;
+  uploadedFilesSize = 0;
 
   constructor(
     authStore,
@@ -125,6 +131,7 @@ class UploadDataStore {
     this.uploaded = true;
     this.converted = true;
     this.errors = 0;
+    this.uploadedFilesSize = 0;
 
     this.isUploadingAndConversion = false;
     this.isUploading = false;
@@ -286,16 +293,15 @@ class UploadDataStore {
     this.setIsConvertSingleFile(false);
   };
 
-  getNewPercent = (uploadedSize, indexOfFile) => {
+  getNewPercent = (uploadedSize) => {
+    const newSize = this.uploadedFilesSize + uploadedSize;
+    this.uploadedFilesSize = newSize;
+
     const newTotalSize = sumBy(this.files, (f) =>
       f.file && !this.uploaded ? f.file.size : 0
     );
-    const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
-    const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
-      f.file && !this.uploaded ? f.file.size : 0
-    );
-    const newPercent =
-      ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
+
+    const newPercent = (newSize / newTotalSize) * 100;
 
     /*console.log(
     `newPercent=${newPercent} (newTotalSize=${newTotalSize} totalUploadedSize=${totalUploadedSize} indexOfFile=${indexOfFile})`
@@ -577,6 +583,7 @@ class UploadDataStore {
     if (this.uploaded && this.converted) {
       this.files = [];
       this.filesToConversion = [];
+      this.uploadedFilesSize = 0;
     }
 
     let newFiles = this.files;
@@ -644,7 +651,7 @@ class UploadDataStore {
       converted: !!this.tempConversionFiles.length,
     };
 
-    if (this.uploaded && countUploadingFiles) {
+    if (/* this.uploaded && */ countUploadingFiles) {
       this.setUploadData(newUploadData);
       this.startUploadFiles(t);
     }
@@ -779,15 +786,19 @@ class UploadDataStore {
         return Promise.reject(res.data.message);
       }
 
-      const fileId = res.data.data.id;
+      const { uploaded, id: fileId } = res.data.data;
 
-      const { uploaded } = res.data.data;
+      let uploadedSize;
+      if (!uploaded) {
+        uploadedSize =
+          fileSize <= this.settingsStore.chunkUploadSize
+            ? fileSize
+            : this.settingsStore.chunkUploadSize;
+      } else {
+        uploadedSize = fileSize - index * this.settingsStore.chunkUploadSize;
+      }
 
-      const uploadedSize = uploaded
-        ? fileSize
-        : index * this.settingsStore.chunkUploadSize;
-
-      const newPercent = this.getNewPercent(uploadedSize, indexOfFile);
+      const newPercent = this.getNewPercent(uploadedSize);
 
       const percentCurrentFile = (index / length) * 100;
 
@@ -808,13 +819,19 @@ class UploadDataStore {
           this.files[indexOfFile].fileId = fileId;
           this.files[indexOfFile].fileInfo = fileInfo;
           this.percent = newPercent;
+
+          this.currentUploadNumber -= 1;
+
+          const nextFileIndex = this.files.findIndex((f) => !f.inAction);
+
+          if (nextFileIndex !== -1) {
+            this.startSessionFunc(nextFileIndex, t);
+          }
         });
 
         if (fileInfo.version > 2) {
           this.filesStore.setUploadedFileIdWithVersion(fileInfo.id);
         }
-
-        //setUploadData(uploadData);
       }
     }
 
@@ -861,35 +878,28 @@ class UploadDataStore {
 
     this.primaryProgressDataStore.setPrimaryProgressBarData(progressData);
 
-    let index = 0;
-    let len = files.length;
-    while (index < len) {
-      await this.startSessionFunc(index, t);
-      index++;
+    const notUploadedFiles = this.files.filter((f) => !f.inAction);
 
-      files = this.files;
-      len = files.length;
-    }
+    const countFiles =
+      notUploadedFiles.length >= UPLOAD_LIMIT_AT_ONCE
+        ? UPLOAD_LIMIT_AT_ONCE
+        : notUploadedFiles.length;
 
-    if (!this.filesToConversion.length) {
-      this.finishUploadFiles();
-    } else {
-      runInAction(() => (this.uploaded = true));
-      const uploadedFiles = this.files.filter((x) => x.action === "uploaded");
-      const totalErrorsCount = sumBy(uploadedFiles, (f) => (f.error ? 1 : 0));
-      if (totalErrorsCount > 0)
-        console.log("Upload errors: ", totalErrorsCount);
-
-      setTimeout(() => {
-        if (!this.uploadPanelVisible && !totalErrorsCount && this.converted) {
-          this.clearUploadedFiles();
+    for (let i = 0; i < countFiles; i++) {
+      if (this.currentUploadNumber <= UPLOAD_LIMIT_AT_ONCE) {
+        const fileIndex = this.files.findIndex(
+          (f) => f.uniqueId === notUploadedFiles[i].uniqueId
+        );
+        if (fileIndex !== -1) {
+          this.currentUploadNumber += 1;
+          this.startSessionFunc(fileIndex, t);
         }
-      }, TIMEOUT);
+      }
     }
   };
 
   startSessionFunc = (indexOfFile, t) => {
-    //console.log("START UPLOAD SESSION FUNC", uploadData);
+    // console.log("START UPLOAD SESSION FUNC");
 
     if (!this.uploaded && this.files.length === 0) {
       this.uploaded = true;
@@ -898,6 +908,7 @@ class UploadDataStore {
     }
 
     const item = this.files[indexOfFile];
+    this.files[indexOfFile].inAction = true;
 
     if (!item) {
       console.error("Empty files");
@@ -949,15 +960,15 @@ class UploadDataStore {
         return { location, requestsDataArray, fileSize, path };
       })
       .then(({ location, requestsDataArray, fileSize, path }) => {
-        this.primaryProgressDataStore.setPrimaryProgressBarData({
-          icon: "upload",
-          visible: true,
-          percent: this.percent,
-          loadingFile: {
-            uniqueId: this.files[indexOfFile].uniqueId,
-            percent: chunks < 2 ? 50 : 0,
-          },
-        });
+        // this.primaryProgressDataStore.setPrimaryProgressBarData({
+        //   icon: "upload",
+        //   visible: true,
+        //   percent: this.percent,
+        //   loadingFile: {
+        //     uniqueId: this.files[indexOfFile].uniqueId,
+        //     percent: chunks < 2 ? 50 : 0,
+        //   },
+        // });
 
         return this.uploadFileChunks(
           location,
@@ -992,9 +1003,7 @@ class UploadDataStore {
 
         this.files[indexOfFile].error = errorMessage;
 
-        //dispatch(setUploadData(uploadData));
-
-        const newPercent = this.getNewPercent(fileSize, indexOfFile);
+        const newPercent = this.getNewPercent(fileSize);
 
         this.primaryProgressDataStore.setPrimaryProgressBarData({
           icon: "upload",
@@ -1004,6 +1013,37 @@ class UploadDataStore {
         });
 
         return Promise.resolve();
+      })
+      .finally(() => {
+        const allFilesIsUploaded =
+          this.files.findIndex((f) => f.action !== "uploaded" && !f.error) ===
+          -1;
+
+        if (allFilesIsUploaded) {
+          if (!this.filesToConversion.length) {
+            this.finishUploadFiles();
+          } else {
+            runInAction(() => (this.uploaded = true));
+            const uploadedFiles = this.files.filter(
+              (x) => x.action === "uploaded"
+            );
+            const totalErrorsCount = sumBy(uploadedFiles, (f) =>
+              f.error ? 1 : 0
+            );
+            if (totalErrorsCount > 0)
+              console.log("Upload errors: ", totalErrorsCount);
+
+            setTimeout(() => {
+              if (
+                !this.uploadPanelVisible &&
+                !totalErrorsCount &&
+                this.converted
+              ) {
+                this.clearUploadedFiles();
+              }
+            }, TIMEOUT);
+          }
+        }
       });
   };
 
@@ -1026,6 +1066,7 @@ class UploadDataStore {
 
     this.uploaded = true;
     this.converted = true;
+    this.uploadedFilesSize = 0;
 
     const uploadData = {
       filesSize: 0,
