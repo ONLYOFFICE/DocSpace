@@ -5,9 +5,13 @@ import EmptyScreenAltSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_alt_dark.sv
 
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+import Text from "@docspace/components/text";
 import { StyledSeveralItemsContainer } from "../../styles/severalItems";
 
-const SeveralItems = ({ isAccounts, theme }) => {
+const SeveralItems = ({ isAccounts, theme, selectedItems }) => {
+  const { t } = useTranslation("InfoPanel");
+
   const emptyScreenAlt = theme.isBase
     ? EmptyScreenAltSvgUrl
     : EmptyScreenAltSvgDarkUrl;
@@ -18,15 +22,28 @@ const SeveralItems = ({ isAccounts, theme }) => {
 
   const imgSrc = isAccounts ? emptyScreenPerson : emptyScreenAlt;
 
+  const itemsText = isAccounts
+    ? t("InfoPanel:SelectedUsers")
+    : t("InfoPanel:ItemsSelected");
+
   return (
-    <StyledSeveralItemsContainer className="no-thumbnail-img-wrapper">
+    <StyledSeveralItemsContainer
+      isAccounts={isAccounts}
+      className="no-thumbnail-img-wrapper"
+    >
       <img size="96px" src={imgSrc} />
+      <Text fontSize="16px" fontWeight={700}>
+        {`${itemsText}: ${selectedItems.length}`}
+      </Text>
     </StyledSeveralItemsContainer>
   );
 };
 
 export default inject(({ auth }) => {
+  const selectedItems = auth.infoPanelStore.getSelectedItems();
+
   return {
     theme: auth.settingsStore.theme,
+    selectedItems,
   };
 })(observer(SeveralItems));
