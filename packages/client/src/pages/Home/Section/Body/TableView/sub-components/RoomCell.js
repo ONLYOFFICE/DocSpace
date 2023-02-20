@@ -1,7 +1,7 @@
 import { Loader, Tooltip } from "@docspace/components";
 import Text from "@docspace/components/text";
 import React, { useState } from "react";
-import { StyledText } from "./CellStyles";
+import { StyledText, StyledEmptyRoomTitle } from "./CellStyles";
 import { getFolderPath } from "@docspace/common/api/files";
 import { CategoryType } from "@docspace/client/src/helpers/constants";
 
@@ -40,6 +40,10 @@ const RoomCell = ({ sideColor, item }) => {
     >
       {originRoomTitle || originTitle}
     </StyledText>,
+
+    <React.Fragment key="empty-cell">
+      {!originRoomTitle && !originTitle && <StyledEmptyRoomTitle />}
+    </React.Fragment>,
 
     <Tooltip
       id={"" + item.id}

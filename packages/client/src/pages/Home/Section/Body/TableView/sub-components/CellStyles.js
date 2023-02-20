@@ -6,6 +6,12 @@ const StyledText = styled(Text)`
   margin-right: 12px;
 `;
 
+const StyledEmptyRoomTitle = styled.div`
+  width: 13px;
+  height: 2px;
+  background-color: #a3a9ae;
+`;
+
 const StyledAuthorCell = styled.div`
   display: flex;
   width: 100%;
@@ -19,4 +25,4 @@ const StyledAuthorCell = styled.div`
   }
 `;
 
-export { StyledText, StyledAuthorCell };
+export { StyledText, StyledAuthorCell, StyledEmptyRoomTitle };
