@@ -44,16 +44,10 @@ export default function withFileActions(WrappedFileItem) {
 
       dragging && setDragging(false);
 
-      const emptyFolders = files.filter((f) => f.isEmptyDirectory);
-
-      if (emptyFolders.length > 0) {
-        uploadEmptyFolders(emptyFolders, uploadToFolder).then(() => {
-          const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
-          if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
-        });
-      } else {
-        startUpload(files, uploadToFolder, t);
-      }
+      uploadEmptyFolders(files, uploadToFolder).then(() => {
+        const onlyFiles = files.filter((f) => !f.isEmptyDirectory);
+        if (onlyFiles.length > 0) startUpload(onlyFiles, uploadToFolder, t);
+      });
     };
 
     onDrop = (items) => {
