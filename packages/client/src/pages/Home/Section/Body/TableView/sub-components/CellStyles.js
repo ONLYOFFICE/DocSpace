@@ -9,6 +9,7 @@ const StyledText = styled(Text)`
 const StyledEmptyRoomTitle = styled.div`
   width: 13px;
   height: 2px;
+  margin-left: -12px;
   background-color: #a3a9ae;
 `;
 
