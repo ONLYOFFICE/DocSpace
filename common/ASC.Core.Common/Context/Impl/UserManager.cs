@@ -61,7 +61,7 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _countRoomAdminChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountPaidUserFeature> _countPaidUserChecker;
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
     private readonly UserFormatter _userFormatter;
@@ -86,7 +86,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> countRoomAdrminChecker,
+        TenantQuotaFeatureCheckerCount<CountPaidUserFeature> countPaidUserChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         UserFormatter userFormatter
         )
@@ -102,7 +102,7 @@ public class UserManager
         _cardDavAddressbook = cardDavAddressbook;
         _log = log;
         _cache = cache;
-        _countRoomAdminChecker = countRoomAdrminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
         _userFormatter = userFormatter;
@@ -120,7 +120,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountPaidUserFeature> tenantQuotaFeatureChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor,
         UserFormatter userFormatter)
@@ -390,7 +390,7 @@ public class UserManager
         }
         else
         {
-            await _countRoomAdminChecker.CheckAppend();
+            await _countPaidUserChecker.CheckAppend();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
