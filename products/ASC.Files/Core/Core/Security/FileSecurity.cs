@@ -533,6 +533,7 @@ public class FileSecurity : IFileSecurity
         var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
+        var isCollaborator = _userManager.IsCollaborator(user);
 
         await foreach (var entry in entries)
         {
@@ -545,7 +546,7 @@ public class FileSecurity : IFileSecurity
                 .Where(r => _securityEntries[entry.FileEntryType].Contains(r))
                 .Select(async e =>
                 {
-                    var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+                    var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin, isCollaborator);
                     return new KeyValuePair<FilesSecurityActions, bool>(e, t);
                 });
 
@@ -573,8 +574,9 @@ public class FileSecurity : IFileSecurity
         var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
+        var isCollaborator = _userManager.IsCollaborator(user);
 
-        return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+        return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin, isCollaborator);
     }
 
     public IAsyncEnumerable<FileEntry<T>> FilterDownloadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
@@ -611,7 +613,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
+    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin, bool isCollaborator)
     {
         if (!isAuthenticated && userId != FileConstant.ShareLinkId)
         {
@@ -672,7 +674,7 @@ public class FileSecurity : IFileSecurity
                         return action == FilesSecurityActions.MoveTo;
                     }
 
-                    if (folder.FolderType == FolderType.VirtualRooms)
+                    if (folder.FolderType == FolderType.VirtualRooms && !isCollaborator)
                     {
                         return action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.MoveTo;
