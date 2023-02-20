@@ -80,7 +80,7 @@ public class FileMarker
     private readonly AuthContext _authContext;
     private readonly IServiceProvider _serviceProvider;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-
+    private static SemaphoreSlim _semaphore = new SemaphoreSlim(1); 
     public FileMarker(
         TenantManager tenantManager,
         UserManager userManager,
@@ -349,32 +349,43 @@ public class FileMarker
         }
 
         var tagDao = _daoFactory.GetTagDao<T>();
-        var newTags = new List<Tag>();
-        var updateTags = new List<Tag>();
 
-        foreach (var userID in userEntriesData.Keys)
+        try
         {
-            if (await tagDao.GetNewTagsAsync(userID, obj.FileEntry).AnyAsync())
+            await _semaphore.WaitAsync();
+            var newTags = new List<Tag>();
+            var updateTags = new List<Tag>();
+
+            foreach (var userID in userEntriesData.Keys)
             {
-                continue;
+                if (await tagDao.GetNewTagsAsync(userID, obj.FileEntry).AnyAsync())
+                {
+                    continue;
+                }
+
+                var entries = userEntriesData[userID].Distinct().ToList();
+
+                await GetNewTagsAsync(userID, entries.OfType<FileEntry<int>>().ToList());
+                await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
             }
 
-            var entries = userEntriesData[userID].Distinct().ToList();
+            if (updateTags.Count > 0)
+            {
+                await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
+            }
 
-            await GetNewTagsAsync(userID, entries.OfType<FileEntry<int>>().ToList());
-            await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
+            if (newTags.Count > 0)
+            {
+                await tagDao.SaveTags(newTags, obj.CurrentAccountId);
+            }
         }
-
-
-
-        if (updateTags.Count > 0)
+        catch
         {
-            await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
+            throw;
         }
-
-        if (newTags.Count > 0)
+        finally
         {
-            await tagDao.SaveTags(newTags, obj.CurrentAccountId);
+            _semaphore.Release();
         }
 
         await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(newTags), socketManager));
