@@ -2,7 +2,7 @@ import * as React from "react";
 import ViewerImage from "./viewer-image";
 import classnames from "classnames";
 import ViewerToolbar, { defaultToolbars } from "./viewer-toolbar";
-import { isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import Icon, { ActionType } from "./icon";
 
 const ACTION_TYPES = {
@@ -219,13 +219,12 @@ const ViewerBase = (props) => {
 
     if (imageRef.current) {
       //abort previous image request
-      imageRef.current.src = ""
+      imageRef.current.src = "";
     }
-
 
     let loadComplete = false;
     let img = new Image();
-    imageRef.current = img
+    imageRef.current = img;
     img.src = activeImage.src;
 
     img.onload = () => {
@@ -455,7 +454,9 @@ const ViewerBase = (props) => {
       document[funcName]("keydown", handleKeydown, true);
     }
     if (viewerCore.current) {
-      viewerCore.current[funcName]("wheel", handleMouseScroll, {passive: true});
+      viewerCore.current[funcName]("wheel", handleMouseScroll, {
+        passive: true,
+      });
     }
   }
 
@@ -654,17 +655,18 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
-      {isMobileOnly && !displayVisible && mobileDetails}
+      {isMobile && !displayVisible && mobileDetails}
       <div
         className={`${prefixCls}-mask`}
         style={{
           zIndex: zIndex,
-          backgroundColor: `${isMobileOnly
+          backgroundColor: `${
+            isMobile
               ? !displayVisible
                 ? "rgba(55,55,55,0.6)"
                 : "#000"
               : "rgba(55,55,55,0.6)"
-            }`,
+          }`,
         }}
       />
       <ViewerImage
@@ -709,7 +711,7 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter ||
-        (!isMobileOnly && props.displayUI && (
+        (!isMobile && props.displayUI && (
           <div className={`${prefixCls}-container`}>
             <div
               className={`${prefixCls}-footer`}
@@ -717,7 +719,7 @@ const ViewerBase = (props) => {
             >
               {noToolbar || (
                 <ViewerToolbar
-                  isMobileOnly={isMobileOnly}
+                  isMobileOnly={isMobile}
                   imageTimer={props.imageTimer}
                   prefixCls={prefixCls}
                   onAction={handleAction}
