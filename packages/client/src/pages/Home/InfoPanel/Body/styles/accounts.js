@@ -1,9 +1,10 @@
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
+import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
 const StyledAccountsItemTitle = styled.div`
-  min-height: 104px;
-  height: 104px;
+  min-height: 80px;
+  height: 80px;
   max-height: 104px;
 
   display: flex;
@@ -11,8 +12,29 @@ const StyledAccountsItemTitle = styled.div`
   justify-content: start;
   gap: 16px;
 
+  position: fixed;
+  margin-top: -80px;
+  margin-left: -20px;
+  width: calc(100% - 40px);
+  padding: 24px 0 24px 20px;
+  background: ${(props) => props.theme.infoPanel.backgroundColor};
+  z-index: 100;
+
+  @media ${tablet} {
+    width: 440px;
+    padding: 24px 20px 24px 20px;
+  }
+
+  @media (max-width: 549px) {
+    width: calc(100vw - 69px - 40px);
+  }
+
+  @media ${hugeMobile} {
+    width: calc(100vw - 32px);
+    padding: 24px 0 24px 16px;
+  }
+
   .avatar {
-    padding-top: 24px;
     min-width: 80px;
   }
 
