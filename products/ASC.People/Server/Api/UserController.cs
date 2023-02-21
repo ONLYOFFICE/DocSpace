@@ -226,7 +226,7 @@ public class UserController : PeopleControllerBase
 
         var user = new UserInfo();
 
-        var byEmail = options?.LinkType == LinkType.InvintationByEmail;
+        var byEmail = options?.LinkType == LinkType.InvitationByEmail;
 
         if (byEmail)
         {
@@ -285,7 +285,7 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (options is { LinkType: LinkType.InvintationToRoom })
+        if (options is { LinkType: LinkType.InvitationToRoom })
         {
             var success = int.TryParse(options.RoomId, out var id);
 
@@ -1083,62 +1083,23 @@ public class UserController : PeopleControllerBase
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
 
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();
 
+        var updatedUsers = new List<UserInfo>(users.Count);
+
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
+            if (await _userManagerWrapper.UpdateUserTypeAsync(user, type))
             {
-                continue;
-            }
-
-            var currentType = _userManager.GetUserType(user.Id);
-
-            if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
-            {
-                if (currentType is EmployeeType.RoomAdmin)
-                {
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-                else if (currentType is EmployeeType.User)
-                {
-                    await _countPaidUserChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-            }
-            else if (type is EmployeeType.RoomAdmin)
-            {
-                if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
-                {
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-                else if (currentType is EmployeeType.User)
-                {
-                    await _countPaidUserChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-            }
-            else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
-            {
-                await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
-                _webItemSecurityCache.ClearCache(Tenant.Id);
+                updatedUsers.Add(user);
             }
         }
         
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), 
-            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)), 
+            updatedUsers.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
         
         foreach (var user in users)
         {
