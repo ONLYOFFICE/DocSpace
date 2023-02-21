@@ -1,7 +1,7 @@
 import { Loader, Tooltip } from "@docspace/components";
 import Text from "@docspace/components/text";
 import React, { useState } from "react";
-import { StyledText, StyledEmptyRoomTitle } from "./CellStyles";
+import { StyledText } from "./CellStyles";
 import { getFolderPath } from "@docspace/common/api/files";
 import { CategoryType } from "@docspace/client/src/helpers/constants";
 
@@ -26,10 +26,12 @@ const RoomCell = ({ sideColor, item }) => {
     setIsTooltipLoading(false);
   };
 
+  const canVisibleTitle = originRoomTitle || originTitle;
+
   return [
     <StyledText
       key="cell"
-      fontSize="12px"
+      fontSize={canVisibleTitle ? "12px" : "13px"}
       fontWeight={600}
       color={sideColor}
       className="row_update-text"
@@ -38,12 +40,8 @@ const RoomCell = ({ sideColor, item }) => {
       data-tip={""}
       data-place={"bottom"}
     >
-      {originRoomTitle || originTitle}
+      {originRoomTitle || originTitle || "—"}
     </StyledText>,
-
-    <React.Fragment key="empty-cell">
-      {!originRoomTitle && !originTitle && <StyledEmptyRoomTitle />}
-    </React.Fragment>,
 
     <Tooltip
       id={"" + item.id}
