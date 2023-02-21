@@ -107,6 +107,7 @@ public class FileSharingAceHelper<T>
         }
 
         var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
+        var room = entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) ? folder : null;
         var entryType = entry.FileEntryType;
         var recipients = new Dictionary<Guid, FileShare>();
         var usersWithoutRight = new List<Guid>();
@@ -117,18 +118,24 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            var room = entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) ? folder : null;
             var emailInvite = !string.IsNullOrEmpty(w.Email);
-            var employeeType = EmployeeType.User;
-            var isUser = _userManager.IsUser(w.Id);
+            var currentUserType = _userManager.GetUserType(w.Id);
+            var userType = EmployeeType.User;
+            var rightIsAvailable = FileSecurity.AvailableUserRights.TryGetValue(currentUserType, out var userAccesses)
+                                  && userAccesses.Contains(w.Access);
 
             if (room != null)
             {
+                if (currentUserType == EmployeeType.DocSpaceAdmin && !rightIsAvailable)
+                {
+                    continue;
+                }
+                
                 if (shares.Any(r => r.Subject == w.Id))
                 {
-                    if (DocSpaceHelper.PaidRights.Contains(w.Access) && isUser)
+                    if (!rightIsAvailable)
                     {
-                        throw new InvalidOperationException(FilesCommonResource.ErrorMessage_PaidRole);
+                        throw new InvalidOperationException(FilesCommonResource.ErrorMessage_RoleNotAvailable);
                     }
                 }
                 else
@@ -136,28 +143,31 @@ public class FileSharingAceHelper<T>
                     _usersInRoomChecker.CheckAdd(shares.Count + (i++));
                 }
 
-                if (!DocSpaceHelper.ValidateShare(room.FolderType, w.Access))
+                if (FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && 
+                    !roomAccesses.Contains(w.Access))
                 {
                     continue;
                 }
 
                 try
                 {
-                    if (DocSpaceHelper.PaidRights.Contains(w.Access) && (isUser || emailInvite))
+                    if (!rightIsAvailable && currentUserType == EmployeeType.User)
                     {
                         await _countPaidUserChecker.CheckAppend();
-                        employeeType = EmployeeType.RoomAdmin;
+                    }
+                    
+                    userType = FileSecurity.GetTypeByShare(w.Access);
 
-                        if (isUser)
-                        {
-                            _userManager.RemoveUserFromGroup(w.Id, Constants.GroupUser.ID);
-                        }
+                    if (!emailInvite)
+                    {
+                        var user = _userManager.GetUsers(w.Id);
+                        await _userManagerWrapper.UpdateUserTypeAsync(user, userType);
                     }
                 }
                 catch (TenantQuotaException e)
                 {
                     warning ??= e.Message;
-                    w.Access = DocSpaceHelper.GetHighFreeRole(room.FolderType);
+                    w.Access = FileSecurity.GetHighFreeRole(room.FolderType);
                 }
                 catch (Exception e)
                 {
@@ -169,7 +179,7 @@ public class FileSharingAceHelper<T>
                 {
                     try
                     {
-                        var user = await _userManagerWrapper.AddInvitedUserAsync(w.Email, employeeType);
+                        var user = await _userManagerWrapper.AddInvitedUserAsync(w.Email, userType);
                         w.Id = user.Id;
                     }
                     catch (Exception e)
@@ -250,6 +260,7 @@ public class FileSharingAceHelper<T>
                                || share == FileShare.Comment
                                || share == FileShare.RoomAdmin
                                || share == FileShare.Editing
+                               || share == FileShare.Collaborator
                                || (share == FileShare.None && entry.RootFolderType == FolderType.COMMON);
 
             var removeNew = share == FileShare.Restrict || (share == FileShare.None
