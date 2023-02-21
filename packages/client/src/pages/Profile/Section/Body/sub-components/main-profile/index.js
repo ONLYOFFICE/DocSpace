@@ -70,7 +70,9 @@ const MainProfile = (props) => {
               <Text as="div" color="#A3A9AE" className="label">
                 {t("Common:Name")}
               </Text>
-              <Text fontWeight={600}>{profile.displayName}</Text>
+              <Text fontWeight={600} truncate>
+                {profile.displayName}
+              </Text>
             </div>
             <IconButton
               className="edit-button"
