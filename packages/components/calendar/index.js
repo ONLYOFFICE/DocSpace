@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+import propTypes from "prop-types";
 import moment from "moment";
 
 import { Days, Months, Years } from "./sub-components";
@@ -13,7 +13,7 @@ const Calendar = ({
   maxDate,
   id,
   className,
-  style
+  style,
 }) => {
   moment.locale(locale);
   const setSelectedDate = onChange;
@@ -23,7 +23,12 @@ const Calendar = ({
   maxDate = moment(maxDate);
 
   return (
-    <ColorTheme themeId={ThemeType.Calendar} id={id} className={className} style={style}>
+    <ColorTheme
+      themeId={ThemeType.Calendar}
+      id={id}
+      className={className}
+      style={style}
+    >
       {selectedScene === 0 ? (
         <Days
           observedDate={observedDate}
@@ -57,23 +62,23 @@ const Calendar = ({
   );
 };
 
-Calendar.PropTypes = {
+Calendar.propTypes = {
   /** Class name */
-  className: PropTypes.string,
+  className: propTypes.string,
   /** Used as HTML `id` property  */
-  id: PropTypes.string,
+  id: propTypes.string,
   /** Specifies the locale of calendar */
-  locale: PropTypes.string,
+  locale: propTypes.string,
   /** Value of selected date */
-  selectedDate: PropTypes.object,
+  selectedDate: propTypes.object,
   /** Allow you to handle changing events of component */
-  onChange: PropTypes.func,
+  onChange: propTypes.func,
   /** Specifies the minimum selectable date */
-  minDate: PropTypes.object,
+  minDate: propTypes.object,
   /** Specifies the maximum selectable date */
-  maxDate: PropTypes.object,
+  maxDate: propTypes.object,
   /** Accepts css style */
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  style: propTypes.oneOfType([propTypes.object, propTypes.array]),
 };
 
 Calendar.defaultProps = {
