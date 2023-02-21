@@ -181,7 +181,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav, !updateExising);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -224,17 +224,22 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (type is EmployeeType.User)
+        if (updateExising)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
+            return newUserInfo;
         }
-        else if (type is EmployeeType.DocSpaceAdmin)
+
+        switch (type)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
-        }
-        else if (type is EmployeeType.Collaborator)
-        {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
+            case EmployeeType.User:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
+                break;
+            case EmployeeType.DocSpaceAdmin:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
+                break;
+            case EmployeeType.Collaborator:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
+                break;
         }
 
         return newUserInfo;
