@@ -9,6 +9,8 @@
         Edge: 107,
         Opera: 93,
         Safari: 13,
+        AscDesktopEditor: 6,
+        SamsungBrowser: 3,
       };
 
       this.detectBrowser();
@@ -29,7 +31,9 @@
         }
 
         if (match[1] === "Chrome") {
-          temp = agent.match(/\b(OPR|Edge)\/(\d+)/);
+          temp = agent.match(
+            /\b(OPR|Edge|AscDesktopEditor|SamsungBrowser)\/(\d+)/
+          );
           if (temp != null) {
             return { name: temp[1].replace("OPR", "Opera"), version: temp[2] };
           }
@@ -48,17 +52,12 @@
     }
 
     isSupported() {
-      console.log(this.browser);
       if (this.unsupportedBrowsers.hasOwnProperty(this.browser.name)) {
         if (
           +this.browser.version > this.unsupportedBrowsers[this.browser.name]
         ) {
           return true;
         }
-      }
-
-      if (window.hasOwnProperty("AscDesktopEditor")) {
-        return true; //TODO: remove if desktop editors update cef
       }
 
       return false;
