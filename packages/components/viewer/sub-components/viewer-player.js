@@ -356,9 +356,6 @@ export default function ViewerPlayer(props) {
     setPanelVisible,
     onTouch,
     isOpenContextMenu,
-    setGlobalTimer,
-    globalTimer,
-    videoControls,
     setIsOpenContextMenu,
     contextModel,
     onDownloadClick,
@@ -418,10 +415,12 @@ export default function ViewerPlayer(props) {
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
   const actionRef = React.useRef(null);
+  const videoControls = React.useRef(null);
   const mobileProgressRef = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const [currentVolume, setCurrentVolume] = React.useState(stateVolume);
+  const [globalTimer, setGlobalTimer] = React.useState(null);
   const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
   const handlers = useSwipeable({
     onSwiping: (e) => {

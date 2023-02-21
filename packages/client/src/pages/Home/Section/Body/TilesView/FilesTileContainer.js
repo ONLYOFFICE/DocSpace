@@ -36,11 +36,13 @@ const elementResizeDetector = elementResizeDetectorMaker({
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   const tileRef = useRef(null);
   const timerRef = useRef(null);
+  const isMountedRef = useRef(true);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       if (!tileRef?.current) return;
       clearTimeout(timerRef.current);
       elementResizeDetector.uninstall(tileRef.current);
@@ -49,7 +51,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
   const onResize = useCallback(
     (node) => {
-      if (!node) return;
+      if (!node || !isMountedRef.current) return;
 
       const { width } = node.getBoundingClientRect();
 

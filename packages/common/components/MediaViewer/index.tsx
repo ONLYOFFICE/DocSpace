@@ -1,4 +1,4 @@
-import { isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import ViewerWrapper from "./sub-components/ViewerWrapper";
@@ -229,9 +229,9 @@ function MediaViewer({
       },
     ];
 
-    return isMobileOnly
+    return isMobile
       ? model
-      : isImage && !isMobileOnly
+      : isImage && !isMobile
       ? desktopModel.filter((el) => el.key !== "download")
       : desktopModel;
   };
