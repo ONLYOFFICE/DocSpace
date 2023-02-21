@@ -360,7 +360,7 @@ public class UserManager
         return newUser;
     }
 
-    public async Task<UserInfo> SaveUserInfo(UserInfo u, EmployeeType type = EmployeeType.RoomAdmin, bool syncCardDav = false)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, EmployeeType type = EmployeeType.RoomAdmin, bool syncCardDav = false, bool paidUserQuotaCheck = true)
     {
         if (IsSystemUser(u.Id))
         {
@@ -388,7 +388,7 @@ public class UserManager
         {
             await _activeUsersFeatureChecker.CheckAppend();
         }
-        else
+        else if (paidUserQuotaCheck)
         {
             await _countPaidUserChecker.CheckAppend();
         }
