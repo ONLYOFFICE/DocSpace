@@ -110,9 +110,10 @@ public static class WebhooksPayloadExtension
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.ConfigId)
+            entity.Property(e => e.WebhookId)
                 .HasColumnType("int")
-                .HasColumnName("webhook_id");
+                .HasColumnName("webhook_id")
+                .IsRequired();
 
             entity.Property(e => e.CreationTime)
                 .HasColumnType("datetime")
@@ -173,9 +174,10 @@ public static class WebhooksPayloadExtension
                 .HasColumnName("response_headers")
                 .HasColumnType("json");
 
-            entity.Property(e => e.ConfigId)
+            entity.Property(e => e.WebhookId)
                 .HasColumnType("int")
-                .HasColumnName("webhook_id");
+                .HasColumnName("webhook_id")
+                .IsRequired();
 
             entity.Property(e => e.CreationTime)
                 .HasColumnType("datetime")
