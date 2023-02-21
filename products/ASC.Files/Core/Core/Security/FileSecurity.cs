@@ -59,8 +59,8 @@ public class FileSecurity : IFileSecurity
         { 
             FolderType.CustomRoom, new HashSet<FileShare>
             { 
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None 
-            } 
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
         }, 
         {
             FolderType.FillingFormsRoom, new HashSet<FileShare>
@@ -93,13 +93,13 @@ public class FileSecurity : IFileSecurity
         {
             EmployeeType.DocSpaceAdmin, new HashSet<FileShare>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None,
+                FileShare.RoomAdmin, FileShare.None
             }
         },
         {
             EmployeeType.RoomAdmin, new HashSet<FileShare>
             {
-                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None,
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
             }
         },
         {
