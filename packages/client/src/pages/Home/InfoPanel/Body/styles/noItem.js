@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNoItemContainer = styled.div`
-  margin: 80px auto;
+  //margin: 80px auto;
   display: flex;
   align-items: center;
   justify-content: center;
