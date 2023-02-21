@@ -1,4 +1,5 @@
 ﻿import EmptyScreenPersonSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import EmptyScreenPersonSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_persons_dark.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
@@ -10,7 +11,7 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import Grid from "@docspace/components/grid";
 
-const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
+const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading, theme }) => {
   const { t } = useTranslation(["People", "Common"]);
 
   const title = t("NotFoundUsers");
@@ -21,10 +22,13 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
     resetFilter().finally(() => setIsLoading(false));
   };
 
+  const imageSrc = theme.isBase
+    ? EmptyScreenPersonSvgUrl
+    : EmptyScreenPersonSvgDarkUrl;
   return (
     <>
       <EmptyScreenContainer
-        imageSrc={EmptyScreenPersonSvgUrl}
+        imageSrc={imageSrc}
         imageAlt="Empty Screen Filter image"
         headerText={title}
         descriptionText={description}
@@ -64,7 +68,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const { loadingStore, resetFilter, selectedGroupStore } = peopleStore;
   const { isEmptyGroup } = selectedGroupStore;
   const { setIsLoading } = loadingStore;
@@ -72,5 +76,6 @@ export default inject(({ peopleStore }) => {
     resetFilter,
     isEmptyGroup,
     setIsLoading,
+    theme: auth.settingsStore.theme,
   };
 })(observer(EmptyScreen));

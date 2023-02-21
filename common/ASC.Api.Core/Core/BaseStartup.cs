@@ -113,6 +113,7 @@ public abstract class BaseStartup
 
         DIHelper.AddControllers();
         DIHelper.TryAdd<CultureMiddleware>();
+        DIHelper.TryAdd<LoggerMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
         DIHelper.TryAdd<ProductSecurityFilter>();
@@ -289,6 +290,8 @@ public abstract class BaseStartup
         app.UseAuthorization();
 
         app.UseCultureMiddleware();
+
+        app.UseLoggerMiddleware();
 
         app.UseEndpoints(endpoints =>
         {
