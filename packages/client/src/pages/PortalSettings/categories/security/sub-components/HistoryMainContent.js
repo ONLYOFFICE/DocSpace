@@ -34,7 +34,6 @@ const MainContainer = styled.div`
   .save-cancel {
     padding: 0;
     position: static;
-    display: block;
   }
 
   .login-subheader {
@@ -214,6 +213,7 @@ const HistoryMainContent = (props) => {
           saveButtonLabel={saveButtonLabel}
           cancelButtonLabel={cancelButtonLabel}
           showReminder={showReminder}
+          reminderTest={t("YouHaveUnsavedChanges")}
           displaySettings={true}
           hasScroll={false}
           isDisabled={isSettingNotPaid}
