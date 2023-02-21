@@ -40,7 +40,12 @@ public static class UserExtensions
 
     public static bool IsMe(this UserInfo ui, AuthContext authContext)
     {
-        return ui != null && ui.Id == authContext.CurrentAccount.ID;
+        return IsMe(ui, authContext.CurrentAccount.ID);
+    }
+
+    public static bool IsMe(this UserInfo user, Guid id)
+    {
+        return user != null && user.Id == id;
     }
 
     public static bool IsDocSpaceAdmin(this UserManager userManager, Guid id)
@@ -109,6 +114,11 @@ public static class UserExtensions
 
     public static EmployeeType GetUserType(this UserManager userManager, Guid id)
     {
+        if (userManager.GetUsers(id).Equals(Constants.LostUser))
+        {
+            return EmployeeType.User;
+        }
+        
         return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : 
             userManager.IsUser(id) ? EmployeeType.User : 
             userManager.IsCollaborator(id) ? EmployeeType.Collaborator :
