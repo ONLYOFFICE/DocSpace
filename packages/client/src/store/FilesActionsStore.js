@@ -158,8 +158,6 @@ class FilesActionStore {
           .split("/")
           .filter((name) => name !== "")
           .reduce((r, name, i, a) => {
-            if (folder.name === name && !folder.isEmptyDirectory) return;
-
             if (!r[name]) {
               r[name] = { result: [] };
               r.result.push({ name, children: r[name].result });
