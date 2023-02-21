@@ -89,6 +89,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Pin,
+                    FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
                 }
@@ -646,7 +647,8 @@ public class FileSecurity : IFileSecurity
             if (action != FilesSecurityActions.Read)
             {
                 if ((action == FilesSecurityActions.Pin ||
-                     action == FilesSecurityActions.EditAccess) &&
+                     action == FilesSecurityActions.EditAccess ||
+                     action == FilesSecurityActions.Mute) &&
                     !isRoom)
                 {
                     return false;
@@ -829,6 +831,7 @@ public class FileSecurity : IFileSecurity
         {
             case FilesSecurityActions.Read:
             case FilesSecurityActions.Pin:
+            case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
                 if (e.Access == FileShare.Comment ||
@@ -1577,6 +1580,7 @@ public class FileSecurity : IFileSecurity
         MoveTo,
         Move,
         Pin,
+        Mute,
         EditAccess,
         Duplicate,
     }
