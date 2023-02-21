@@ -1168,24 +1168,6 @@ const SectionFilterContent = ({
           ?.getItem(`${COLUMNS_TRASH_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
-        if (availableSort?.includes("Author")) {
-          const idx = availableSort.findIndex((x) => x === "Author");
-          const hide =
-            infoPanelVisible &&
-            infoPanelColumnsSize &&
-            infoPanelColumnsSize[idx] === "0px";
-
-          !hide && commonOptions.push(authorOption);
-        }
-        if (availableSort?.includes("Created")) {
-          const idx = availableSort.findIndex((x) => x === "Created");
-          const hide =
-            infoPanelVisible &&
-            infoPanelColumnsSize &&
-            infoPanelColumnsSize[idx] === "0px";
-
-          !hide && commonOptions.push(creationDate);
-        }
         if (availableSort?.includes("Room")) {
           const idx = availableSort.findIndex((x) => x === "Room");
           const hide =
@@ -1194,6 +1176,24 @@ const SectionFilterContent = ({
             infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(room);
+        }
+        if (availableSort?.includes("AuthorTrash")) {
+          const idx = availableSort.findIndex((x) => x === "AuthorTrash");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(authorOption);
+        }
+        if (availableSort?.includes("CreatedTrash")) {
+          const idx = availableSort.findIndex((x) => x === "CreatedTrash");
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Erasure")) {
           const idx = availableSort.findIndex((x) => x === "Erasure");
@@ -1204,8 +1204,8 @@ const SectionFilterContent = ({
 
           !hide && commonOptions.push(erasure);
         }
-        if (availableSort?.includes("Size")) {
-          const idx = availableSort.findIndex((x) => x === "Size");
+        if (availableSort?.includes("SizeTrash")) {
+          const idx = availableSort.findIndex((x) => x === "SizeTrash");
           const hide =
             infoPanelVisible &&
             infoPanelColumnsSize &&
@@ -1213,8 +1213,8 @@ const SectionFilterContent = ({
 
           !hide && commonOptions.push(size);
         }
-        if (availableSort?.includes("Type")) {
-          const idx = availableSort.findIndex((x) => x === "Type");
+        if (availableSort?.includes("TypeTrash")) {
+          const idx = availableSort.findIndex((x) => x === "TypeTrash");
           const hide =
             infoPanelVisible &&
             infoPanelColumnsSize &&
