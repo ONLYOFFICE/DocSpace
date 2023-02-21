@@ -209,7 +209,7 @@ public class ProductEntryPoint : Product
         {
             var record = roomsShareInfo.Where(r => r.EntryId.ToString() == activity.RoomId).FirstOrDefault();
 
-            activity.IsAdmin = activity.UserId == record?.Owner || record?.Share == FileShare.RoomAdmin;
+            activity.IsAdmin = userId == record?.Owner || record?.Share == FileShare.RoomAdmin;
             activity.IsMemder = activity.UserId == record?.Subject && record?.Share > FileShare.None;
         }
 
