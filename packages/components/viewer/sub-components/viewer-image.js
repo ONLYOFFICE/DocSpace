@@ -3,6 +3,7 @@ import classnames from "classnames";
 import ViewerLoading from "./viewer-loading";
 import { useSwipeable } from "../../react-swipeable";
 import { isIOS, isMobile } from "react-device-detect";
+import { ActionType } from "./icon";
 
 import MobileViewer from "./mobile-viewer";
 function ViewerImage(props) {
@@ -366,6 +367,10 @@ function ViewerImage(props) {
     }
   };
 
+  const handleClick = (e) => {
+    if (e?.detail === 2) props.handleDefaultAction(ActionType.zoomIn);
+  };
+
   function handleResize(e) {
     props.onResize();
   }
@@ -448,6 +453,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
         style={imgStyle}
         ref={imgRef}
         onMouseDown={handleMouseDown}
+        onClick={handleClick}
       />
     );
   }
