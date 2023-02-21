@@ -21,6 +21,10 @@ const StyledNoItemContainer = styled.div`
     width: 96px;
     height: 100px;
   }
+
+  .no-accounts {
+    padding-top: 80px;
+  }
 `;
 
 export { StyledNoItemContainer };

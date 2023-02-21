@@ -13,7 +13,7 @@ const NoAccountsItem = ({ t, theme }) => {
 
   return (
     <StyledNoItemContainer>
-      <div className="no-thumbnail-img-wrapper">
+      <div className="no-thumbnail-img-wrapper no-accounts">
         <img src={imgSrc} />
       </div>
       <Text className="no-item-text" textAlign="center">
