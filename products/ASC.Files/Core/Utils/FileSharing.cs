@@ -114,6 +114,7 @@ public class FileSharingAceHelper<T>
         var changed = false;
         string warning = null;
         var shares = (await _fileSecurity.GetSharesAsync(entry)).ToList();
+        var usersInRoomCount = shares.Count(r => !r.IsLink);
         var i = 1;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
@@ -121,17 +122,26 @@ public class FileSharingAceHelper<T>
             var emailInvite = !string.IsNullOrEmpty(w.Email);
             var currentUserType = _userManager.GetUserType(w.Id);
             var userType = EmployeeType.User;
+            var existedShare = shares.FirstOrDefault(r => r.Subject == w.Id);
             var rightIsAvailable = FileSecurity.AvailableUserRights.TryGetValue(currentUserType, out var userAccesses)
                                   && userAccesses.Contains(w.Access);
-
-            if (room != null)
+            
+            
+            if (room != null &&
+                FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && 
+                !roomAccesses.Contains(w.Access))
+            {
+                continue;
+            }
+            
+            if (room != null && existedShare is not { IsLink: true })
             {
                 if (currentUserType == EmployeeType.DocSpaceAdmin && !rightIsAvailable)
                 {
                     continue;
                 }
-                
-                if (shares.Any(r => r.Subject == w.Id))
+
+                if (existedShare is { IsLink: false })
                 {
                     if (!rightIsAvailable)
                     {
@@ -140,13 +150,7 @@ public class FileSharingAceHelper<T>
                 }
                 else
                 {
-                    _usersInRoomChecker.CheckAdd(shares.Count + (i++));
-                }
-
-                if (FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && 
-                    !roomAccesses.Contains(w.Access))
-                {
-                    continue;
+                    _usersInRoomChecker.CheckAdd(usersInRoomCount + (i++));
                 }
 
                 try
