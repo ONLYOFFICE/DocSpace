@@ -24,18 +24,46 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Text.Json.Serialization;
 
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Mapping;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Web.Webhooks;
-global using ASC.Webhooks.Core.EF.Context;
-global using ASC.Webhooks.Core.EF.Model;
-global using ASC.Webhooks.Core.Resources;
+namespace ASC.Webhooks;
+[Scope]
+public class SslHelper
+{
+    private readonly SettingsManager _settingsManager;
 
-global using Microsoft.EntityFrameworkCore;
+    public SslHelper(
+        SettingsManager settingsManager
+        )
+    {
+        _settingsManager = settingsManager;
+    }
+
+    public bool ValidateCertificate(SslPolicyErrors sslPolicyErrors)
+    {
+        if (sslPolicyErrors == SslPolicyErrors.None)
+        {
+            return true;
+        }
+
+        var settings = _settingsManager.Load<WebHooksSettings>();
+
+        if (!settings.EnableSSLVerification)
+        {
+            return true;
+        }
+
+        throw new SslException(sslPolicyErrors);
+    }
+}
+
+public class SslException : Exception
+{
+    public SslPolicyErrors Errors { get; set; }
+    public override string Message { get => Errors.ToString(); }
+
+    public SslException(SslPolicyErrors errors)
+    {
+        Errors = errors;
+    }
+}
+

@@ -24,18 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Text.Json.Serialization;
+namespace ASC.Webhooks.Service.Log;
+internal static partial class WebhookSenderLogger
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Procedure: Finish.")]
+    public static partial void DebugProcedureFinish(this ILogger<WorkerService> logger);
 
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Mapping;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.Web.Webhooks;
-global using ASC.Webhooks.Core.EF.Context;
-global using ASC.Webhooks.Core.EF.Model;
-global using ASC.Webhooks.Core.Resources;
-
-global using Microsoft.EntityFrameworkCore;
+    [LoggerMessage(Level = LogLevel.Error)]
+    public static partial void ErrorSSLVerification(this ILogger logger, Exception exception);
+}
