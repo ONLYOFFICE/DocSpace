@@ -16,8 +16,39 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Method")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("method")
+                        .HasDefaultValueSql("''")
+                        .IsRequired();
+
+                    b.Property<string>("Route")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("route")
+                        .HasDefaultValueSql("''")
+                        .IsRequired();
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("webhooks", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+                });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
@@ -82,7 +113,7 @@ namespace ASC.Migrations.MySql.Migrations
 
                     b.Property<string>("Method")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("method");
 
                     b.Property<string>("RequestHeaders")
@@ -106,10 +137,9 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<string>("Route")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("route");
+                    b.Property<int>("ConfigId")
+                        .HasColumnType("int")
+                        .HasColumnName("config_id");
 
                     b.Property<int>("Status")
                         .HasColumnType("int")

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AutoMapper;
+
 namespace ASC.Webhooks.Core;
 
 [Scope]
@@ -32,6 +34,7 @@ public class DbWorker
     private readonly IDbContextFactory<WebhooksDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
+    private readonly IMapper _mapper;
 
     private int Tenant
     {
@@ -41,11 +44,16 @@ public class DbWorker
         }
     }
 
-    public DbWorker(IDbContextFactory<WebhooksDbContext> dbContextFactory, TenantManager tenantManager, AuthContext authContext)
+    public DbWorker(
+        IDbContextFactory<WebhooksDbContext> dbContextFactory,
+        TenantManager tenantManager,
+        AuthContext authContext,
+        IMapper mapper)
     {
         _dbContextFactory = dbContextFactory;
         _tenantManager = tenantManager;
         _authContext = authContext;
+        _mapper = mapper;
     }
 
     public async Task<WebhooksConfig> AddWebhookConfig(string uri, string secretKey)
@@ -56,12 +64,12 @@ public class DbWorker
            .Where(it => it.TenantId == Tenant && it.Uri == uri)
            .FirstOrDefaultAsync();
 
-        if(objForCreate != null)
+        if (objForCreate != null)
         {
             return objForCreate;
         }
 
-        var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey};
+        var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey };
         toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
         await webhooksDbContext.SaveChangesAsync();
 
@@ -134,7 +142,7 @@ public class DbWorker
             .Where(it => it.TenantId == tenant && it.Id == id)
             .FirstOrDefaultAsync();
 
-        if(removeObj != null)
+        if (removeObj != null)
         {
             webhooksDbContext.WebhooksConfigs.Remove(removeObj);
             await webhooksDbContext.SaveChangesAsync();
@@ -143,7 +151,7 @@ public class DbWorker
         return removeObj;
     }
 
-    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookUri, string route)
+    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookUri, int hookId)
     {
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -162,9 +170,9 @@ public class DbWorker
             q = q.Where(r => r.Config.Uri == hookUri);
         }
 
-        if (!string.IsNullOrEmpty(route))
+        if (hookId != 0)
         {
-            q = q.Where(r => r.Route == route);
+            q = q.Where(r => r.WebhookId == hookId);
         }
 
         if (startIndex != 0)
@@ -218,5 +226,54 @@ public class DbWorker
         await webhooksDbContext.SaveChangesAsync();
 
         return webhook;
+    }
+
+    public async Task Register(List<Webhook> webhooks)
+    {
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        var dbWebhooks = await webhooksDbContext.Webhooks.ToListAsync();
+
+        foreach (var webhook in webhooks)
+        {
+            if (!dbWebhooks.Any(r => r.Route == webhook.Route && r.Method == webhook.Method))
+            {
+                try
+                {
+                    await webhooksDbContext.Webhooks.AddAsync(_mapper.Map<DbWebhook>(webhook));
+                    await webhooksDbContext.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+    }
+
+    public async Task<List<Webhook>> GetWebhooksAsync()
+    {
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
+        var webHooks = await webhooksDbContext.Webhooks.AsNoTracking().ToListAsync();
+        return _mapper.Map<List<DbWebhook>, List<Webhook>>(webHooks);
+    }
+
+    public async Task<Webhook> GetWebhookAsync(int id)
+    {
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
+        var webHook = await webhooksDbContext.Webhooks.Where(r => r.Id == id).AsNoTracking().FirstOrDefaultAsync();
+        return _mapper.Map<DbWebhook, Webhook>(webHook);
+    }
+
+    public async Task<Webhook> GetWebhookAsync(string method, string routePattern)
+    {
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        var webHook = await webhooksDbContext.Webhooks
+            .Where(r => r.Method == method && r.Route == routePattern)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        return _mapper.Map<DbWebhook, Webhook>(webHook);
     }
 }

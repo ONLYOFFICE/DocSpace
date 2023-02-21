@@ -291,9 +291,9 @@ public abstract class BaseStartup
 
         app.UseCultureMiddleware();
 
-        app.UseEndpoints(endpoints =>
+        app.UseEndpoints(async endpoints =>
         {
-            endpoints.MapCustom(WebhooksEnabled);
+            await endpoints.MapCustom(WebhooksEnabled, app.ApplicationServices);
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {

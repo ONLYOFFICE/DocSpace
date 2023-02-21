@@ -28,6 +28,7 @@ global using System.Text.Json.Serialization;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Mapping;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Model;

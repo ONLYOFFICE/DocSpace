@@ -32,5 +32,5 @@ public class WebhooksLogRequest
 
     public string HookUri { get; set; }
 
-    public string Route { get; set; }
+    public int WebhookId { get; set; }
 }

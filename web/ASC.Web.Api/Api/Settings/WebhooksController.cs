@@ -35,7 +35,6 @@ public class WebhooksController : BaseSettingsController
     private readonly IMapper _mapper;
     private readonly WebhookPublisher _webhookPublisher;
     private readonly SettingsManager _settingsManager;
-    private readonly TenantManager _tenantManager;
 
     public WebhooksController(
         ApiContext context,
@@ -47,8 +46,7 @@ public class WebhooksController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
         WebhookPublisher webhookPublisher,
-        SettingsManager settingsManager,
-        TenantManager tenantManager)
+        SettingsManager settingsManager)
         : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _context = context;
@@ -57,7 +55,6 @@ public class WebhooksController : BaseSettingsController
         _mapper = mapper;
         _webhookPublisher = webhookPublisher;
         _settingsManager = settingsManager;
-        _tenantManager = tenantManager;
     }
 
     [HttpGet("webhook")]
@@ -114,7 +111,7 @@ public class WebhooksController : BaseSettingsController
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.Route))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.WebhookId))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }
@@ -142,7 +139,7 @@ public class WebhooksController : BaseSettingsController
             throw new HttpException(HttpStatusCode.Forbidden);
         }
 
-        var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+        var result = await _webhookPublisher.PublishAsync(item.Id, item.RequestPayload, item.ConfigId);
 
         return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
     }
@@ -161,7 +158,7 @@ public class WebhooksController : BaseSettingsController
                 continue;
             }
 
-            var result = await _webhookPublisher.PublishAsync(item.Method, item.Route, item.RequestPayload, item.ConfigId);
+            var result = await _webhookPublisher.PublishAsync(item.Id, item.RequestPayload, item.ConfigId);
 
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
         }
@@ -189,32 +186,35 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
 
-    [HttpGet("webhook/all")]
-    public IEnumerable<Webhook> Settings()
-    {
-        var settings = _settingsManager.LoadSettings<WebHooksSettings>(_tenantManager.GetCurrentTenant().Id);
-
-        foreach (var w in WebhookManager.GetAll())
-        {
-            if (!settings.Keys.Any(key => key.Equals(w.Endpoint)))
-            {
-                yield return w;
-            }
-        }
-    }
-
-    [HttpDelete("webhook")]
-    public Webhook DisableWebHook(Webhook webhook)
+    [HttpGet("webhooks")]
+    public async IAsyncEnumerable<Webhook> Settings()
     {
         var settings = _settingsManager.Load<WebHooksSettings>();
 
-        if (!settings.Keys.Contains(webhook.Endpoint) && WebhookManager.Contains(webhook))
+        foreach (var w in await _webhookDbWorker.GetWebhooksAsync())
         {
-            settings.Keys.Remove(webhook.Endpoint);
+            w.Disable = settings.Ids.Contains(w.Id);
+            yield return w;
+        }
+    }
+
+    [HttpPut("webhook/{id}")]
+    public async Task<Webhook> DisableWebHook(int id)
+    {
+        var settings = _settingsManager.Load<WebHooksSettings>();
+
+        Webhook result = null;
+
+        if (!settings.Ids.Contains(id) && (result = await _webhookDbWorker.GetWebhookAsync(id)) != null)
+        {
+            settings.Ids.Add(id);
         }
 
-        _settingsManager.Save(settings);
+        if (result != null)
+        {
+            _settingsManager.Save(settings);
+        }
 
-        return webhook;
+        return result;
     }
 }

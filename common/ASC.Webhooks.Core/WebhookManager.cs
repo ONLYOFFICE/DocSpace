@@ -26,46 +26,14 @@
 
 namespace ASC.Webhooks.Core;
 
-public static class WebhookManager
+public class Webhook : IMapFrom<DbWebhook>
 {
-    public static readonly IReadOnlyList<string> MethodList = new List<string>
-    {
-        "POST",
-        "UPDATE",
-        "DELETE"
-    };
-
-    private static readonly List<Webhook> _webhooks = new List<Webhook>();
-
-    public static void Register(IEnumerable<Webhook> routes)
-    {
-        _webhooks.AddRange(routes);
-    }
-
-    public static bool Contains(string method, string route)
-    {
-        return _webhooks.Any(r => r.Endpoint == Webhook.GetEndpoint(method, route));
-    }
-
-    public static bool Contains(Webhook webhook)
-    {
-        return _webhooks.Any(r => r.Endpoint == webhook.Endpoint);
-    }
-
-    public static IReadOnlyList<Webhook> GetAll()
-    {
-        return _webhooks;
-    }
-}
-
-public class Webhook
-{
-    public string Endpoint { get => GetEndpoint(Method, Route); }
-    public string Name { get => WebHookResource.ResourceManager.GetString(Endpoint) ?? ""; }
-    public string Description { get => WebHookResource.ResourceManager.GetString($"{Endpoint}_Description") ?? ""; }
+    public int Id { get; set; }
     public string Route { get; set; }
     public string Method { get; set; }
-    public bool Disabled { get; set; }
+    public bool Disable { get; set; }
+    public string Name { get => WebHookResource.ResourceManager.GetString(Endpoint) ?? ""; }
+    public string Description { get => WebHookResource.ResourceManager.GetString($"{Endpoint}_Description") ?? ""; }
 
-    public static string GetEndpoint(string method, string route) => $"{method}|{route}";
+    private string Endpoint { get => $"{Method}|{Route}"; }
 }

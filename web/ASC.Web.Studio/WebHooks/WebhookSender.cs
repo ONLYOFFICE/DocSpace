@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Net;
+
 namespace ASC.Webhooks;
 
 [Singletone]
@@ -77,7 +79,6 @@ public class WebhookSender
             status = (int)response.StatusCode;
             responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
             responsePayload = await response.Content.ReadAsStringAsync();
-            delivery = DateTime.UtcNow;
 
             _log.DebugResponse(response);
         }
@@ -85,7 +86,6 @@ public class WebhookSender
         {
             status = (int)e.Errors;
             responsePayload = e.Message;
-            delivery = DateTime.UtcNow;
 
             _log.ErrorSSLVerification(e);
         }
@@ -102,19 +102,18 @@ public class WebhookSender
             //}
 
             responsePayload = e.Message;
-            delivery = DateTime.UtcNow;
 
             _log.ErrorWithException(e);
         }
         catch (Exception e)
         {
+            status = (int)HttpStatusCode.InternalServerError;
             _log.ErrorWithException(e);
         }
 
-        if (delivery != DateTime.MinValue)
-        {
-            await dbWorker.UpdateWebhookJournal(entry.Id, status, delivery, requestHeaders, responsePayload, responseHeaders);
-        }
+        delivery = DateTime.UtcNow;
+
+        await dbWorker.UpdateWebhookJournal(entry.Id, status, delivery, requestHeaders, responsePayload, responseHeaders);
     }
 
     private string GetSecretHash(string secretKey, string body)

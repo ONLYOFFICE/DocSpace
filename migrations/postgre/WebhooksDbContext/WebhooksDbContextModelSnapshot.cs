@@ -18,8 +18,36 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Method")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("method")
+                        .HasDefaultValueSql("''");
+
+                    b.Property<string>("Route")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("route")
+                        .HasDefaultValueSql("''");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("webhooks", (string)null);
+                });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
@@ -74,6 +102,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("config_id");
 
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime")
                         .HasColumnName("creation_time");
@@ -81,11 +113,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<DateTime?>("Delivery")
                         .HasColumnType("datetime")
                         .HasColumnName("delivery");
-
-                    b.Property<string>("Method")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("method");
 
                     b.Property<string>("RequestHeaders")
                         .HasColumnType("json")
@@ -103,11 +130,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<string>("ResponsePayload")
                         .HasColumnType("text")
                         .HasColumnName("response_payload");
-
-                    b.Property<string>("Route")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("route");
 
                     b.Property<int>("Status")
                         .HasColumnType("int")

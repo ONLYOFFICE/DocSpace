@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Webhooks.Core;
-
 using Module = ASC.Api.Core.Module;
 
 namespace ASC.Files.Api;
@@ -237,34 +235,5 @@ public class SettingsController : ApiControllerBase
     public List<FileShare> ChangeDafaultAccessRights(List<FileShare> value)
     {
         return _fileStorageServiceString.ChangeDafaultAccessRights(value);
-    }
-
-    [HttpGet("settings/webhook/all")]
-    public IEnumerable<Webhook> Settings()
-    {
-        var settings = _settingsManager.LoadSettings<WebHooksSettings>(_tenantManager.GetCurrentTenant().Id);
-
-        foreach (var w in WebhookManager.GetAll())
-        {
-            if (!settings.Keys.Any(key => key.Equals(w.Endpoint)))
-            {
-                yield return w;
-            }
-        }
-    }
-
-    [HttpDelete("settings/webhook")]
-    public Webhook DisableWebHook(Webhook webhook)
-    {
-        var settings = _settingsManager.LoadSettings<WebHooksSettings>(_tenantManager.GetCurrentTenant().Id);
-
-        if (!settings.Keys.Contains(webhook.Endpoint) && WebhookManager.Contains(webhook))
-        {
-            settings.Keys.Remove(webhook.Endpoint);
-        }
-
-        _settingsManager.Save(settings);
-
-        return webhook;
     }
 }

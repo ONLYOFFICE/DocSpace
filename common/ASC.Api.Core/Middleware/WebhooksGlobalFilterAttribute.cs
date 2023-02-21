@@ -34,34 +34,32 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     private readonly IWebhookPublisher _webhookPublisher;
     private readonly ILogger<WebhooksGlobalFilterAttribute> _logger;
     private readonly SettingsManager _settingsManager;
+    private readonly DbWorker _dbWorker;
 
     public WebhooksGlobalFilterAttribute(
         IWebhookPublisher webhookPublisher,
         ILogger<WebhooksGlobalFilterAttribute> logger,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        DbWorker dbWorker)
     {
         _stream = new MemoryStream();
         _webhookPublisher = webhookPublisher;
         _logger = logger;
         _settingsManager = settingsManager;
+        _dbWorker = dbWorker;
     }
 
-    public override void OnResultExecuting(ResultExecutingContext context)
+    public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (!Skip(context.HttpContext))
+        if (!await Skip(context.HttpContext))
         {
             _bodyStream = context.HttpContext.Response.Body;
             context.HttpContext.Response.Body = _stream;
         }
 
-        base.OnResultExecuting(context);
-    }
-
-    public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
-    {
         await base.OnResultExecutionAsync(context, next);
 
-        if (context.Cancel || Skip(context.HttpContext))
+        if (context.Cancel || await Skip(context.HttpContext))
         {
             return;
         }
@@ -78,7 +76,9 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
                 var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
 
-                await _webhookPublisher.PublishAsync(method, routePattern, resultContent);
+                var webhook = await _dbWorker.GetWebhookAsync(method, routePattern);
+
+                await _webhookPublisher.PublishAsync(webhook.Id, resultContent);
             }
             catch (Exception e)
             {
@@ -104,7 +104,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
         return (method, routePattern);
     }
 
-    private bool Skip(HttpContext context)
+    private async Task<bool> Skip(HttpContext context)
     {
         var (method, routePattern) = GetData(context);
 
@@ -113,12 +113,8 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
             return true;
         }
 
-        if (!WebhookManager.Contains(method, routePattern))
-        {
-            return true;
-        }
-
-        if (_settingsManager.Load<WebHooksSettings>().Keys.Contains(Webhook.GetEndpoint(method, routePattern)))
+        var webhook = await _dbWorker.GetWebhookAsync(method, routePattern);
+        if (webhook == null || _settingsManager.Load<WebHooksSettings>().Ids.Contains(webhook.Id))
         {
             return true;
         }
