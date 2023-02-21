@@ -1,3 +1,4 @@
+import { getAppearanceTheme } from "@docspace/common/api/settings";
 import express, { Response } from "express";
 import template from "./lib/template";
 import path from "path";
@@ -44,8 +45,9 @@ app.use(logger("dev", { stream: stream }));
 
 app.get("*", async (req: ILoginRequest, res: Response, next) => {
   const { i18n, cookies, headers, query, t, url } = req;
-  let initialState: IInitialState;
+  let initialState: IInitialState = {};
   let assets: assetsType;
+  let standalone = false;
 
   initSSR(headers);
 
@@ -57,7 +59,8 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       next();
     }
 
-    let currentLanguage: string = initialState.portalSettings.culture;
+    let currentLanguage: string = initialState?.portalSettings?.culture || "en";
+    standalone = initialState?.portalSettings?.standalone ? true : false;
 
     if (cookies && cookies[LANGUAGE]) {
       currentLanguage = cookies[LANGUAGE];
@@ -103,7 +106,42 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
     if (e instanceof Error) {
       message = e.message;
     }
+
+    const status = e?.response?.status === 404 ? 404 : 520;
+
+    if (status !== 404 && !initialState.currentColorScheme) {
+      const availableThemes: IThemes = await getAppearanceTheme();
+
+      const currentColorScheme = availableThemes.themes.find((theme) => {
+        return availableThemes.selected === theme.id;
+      });
+
+      initialState.currentColorScheme = currentColorScheme;
+    }
+
+    initialState.error = {
+      status,
+      standalone,
+      message,
+    };
+
+    const { component, styleTags } = renderApp(i18n, initialState, url);
+
+    assets = await getAssets();
+
+    const htmlString = template(
+      initialState,
+      component,
+      styleTags,
+      {},
+      "en",
+      assets,
+      t
+    );
+
     winston.error(message);
+
+    res.send(htmlString);
   }
 });
 

@@ -8,6 +8,7 @@ import ItemIcon from "../../../../../components/ItemIcon";
 import { withTranslation } from "react-i18next";
 import { classNames } from "@docspace/components/utils/classNames";
 import RoomsRowDataComponent from "./sub-components/RoomsRowData";
+import TrashRowDataComponent from "./sub-components/TrashRowData";
 import RowDataComponent from "./sub-components/RowData";
 import { StyledTableRow, StyledDragAndDrop } from "./StyledTable";
 
@@ -37,6 +38,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     id,
     isRooms,
+    isTrashFolder,
     setUploadedFileIdWithVersion,
   } = props;
   const [isHighlight, setIsHighlight] = React.useState(false);
@@ -169,6 +171,12 @@ const FilesTableRow = (props) => {
       >
         {isRooms ? (
           <RoomsRowDataComponent
+            element={element}
+            dragStyles={dragStyles}
+            {...props}
+          />
+        ) : isTrashFolder ? (
+          <TrashRowDataComponent
             element={element}
             dragStyles={dragStyles}
             {...props}

@@ -95,7 +95,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
             />
           </ProviderRow>
         )}
-        {providers.map((item, index) => {
+        {providers?.map((item, index) => {
           if (!providersData[item.provider]) return;
 
           const { icon, label } = providersData[item.provider];

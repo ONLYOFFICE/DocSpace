@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import Section from "@docspace/common/components/Section";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
@@ -10,7 +9,7 @@ import { deletePortal } from "@docspace/common/api/portal";
 import {
   StyledPage,
   StyledBody,
-  StyledHeader,
+  StyledContent,
   ButtonsWrapper,
 } from "./StyledConfirm";
 
@@ -36,46 +35,36 @@ const RemovePortal = (props) => {
 
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
-          <ButtonsWrapper>
-            <Button
-              primary
-              scale
-              size="medium"
-              label={t("Common:Delete")}
-              tabIndex={1}
-              onClick={onDeleteClick}
-            />
-            <Button
-              scale
-              size="medium"
-              label={t("Common:CancelButton")}
-              tabIndex={1}
-              onClick={onCancelClick}
-            />
-          </ButtonsWrapper>
-        </FormWrapper>
-      </StyledBody>
+          <FormWrapper>
+            <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
+            <ButtonsWrapper>
+              <Button
+                primary
+                scale
+                size="medium"
+                label={t("Common:Delete")}
+                tabIndex={1}
+                onClick={onDeleteClick}
+              />
+              <Button
+                scale
+                size="medium"
+                label={t("Common:CancelButton")}
+                tabIndex={1}
+                onClick={onCancelClick}
+              />
+            </ButtonsWrapper>
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const RemovePortalWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <RemovePortal {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -84,8 +73,6 @@ export default inject(({ auth }) => ({
   theme: auth.settingsStore.theme,
 }))(
   withRouter(
-    withTranslation(["Confirm", "Common"])(
-      withLoader(observer(RemovePortalWrapper))
-    )
+    withTranslation(["Confirm", "Common"])(withLoader(observer(RemovePortal)))
   )
 );

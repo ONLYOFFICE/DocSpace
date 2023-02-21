@@ -37,7 +37,8 @@ public enum SortedByType
     New,
     DateAndTimeCreation,
     RoomType,
-    Tags
+    Tags,
+    Room
 }
 
 [DebuggerDisplay("{SortedBy} {IsAsc}")]

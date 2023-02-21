@@ -116,6 +116,7 @@ const Table = ({
   hasMoreFiles,
   filterTotal,
   isRooms,
+  isTrashFolder,
   withPaging,
   columnStorageName,
   columnInfoPanelStorageName,
@@ -199,12 +200,14 @@ const Table = ({
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
+            itemIndex={index}
             index={index}
             setFirsElemChecked={setFirsElemChecked}
             setHeaderBorder={setHeaderBorder}
             theme={theme}
             tagCount={tagCount}
             isRooms={isRooms}
+            isTrashFolder={isTrashFolder}
             hideColumns={hideColumns}
             setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
           />
@@ -217,7 +220,7 @@ const Table = ({
 export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
   const isRooms = isRoomsFolder || isArchiveFolder;
 
   const { columnStorageName, columnInfoPanelStorageName } = tableStore;
@@ -250,6 +253,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     hasMoreFiles,
     filterTotal: isRooms ? roomsFilterTotal : filterTotal,
     isRooms,
+    isTrashFolder,
     withPaging,
     columnStorageName,
     columnInfoPanelStorageName,

@@ -16,7 +16,10 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import {
+  getDaysRemaining,
+  openDocEditor as openEditor,
+} from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -97,10 +100,13 @@ class FilesStore {
   createdItem = null;
   scrollToItem = null;
 
+  roomCreated = false;
+
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
   trashIsEmpty = false;
+  mainButtonMobileVisible = true;
   filesIsLoading = false;
 
   isEmptyPage = false;
@@ -175,6 +181,8 @@ class FilesStore {
 
             const newFiles = [fileInfo, ...this.files];
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
+
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
@@ -188,11 +196,18 @@ class FilesStore {
             });
           } else if (opt?.type === "folder" && opt?.id) {
             const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+
             if (foundIndex > -1) return;
 
             const folder = JSON.parse(opt?.data);
 
-            if (this.selectedFolderStore.id !== folder.parentId) return;
+            if (
+              this.selectedFolderStore.id !== folder.parentId ||
+              (folder.roomType &&
+                folder.createdBy.id === this.authStore.userStore.user.id &&
+                this.roomCreated)
+            )
+              return (this.roomCreated = false);
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 
@@ -695,9 +710,9 @@ class FilesStore {
         },
       });
 
-      this.files?.forEach((file) =>
-        console.log("[WS] subscribe to file's changes", file.id, file.title)
-      );
+      // this.files?.forEach((file) =>
+      //   console.log("[WS] subscribe to file's changes", file.id, file.title)
+      // );
     }
 
     this.createThumbnails();
@@ -863,6 +878,83 @@ class FilesStore {
 
   setSelection = (selection) => {
     this.selection = selection;
+  };
+
+  setSelections = (added, removed, clear = false) => {
+    if (clear) {
+      this.selection = [];
+    }
+
+    let newSelections = JSON.parse(JSON.stringify(this.selection));
+
+    for (let item of added) {
+      if (!item) return;
+
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
+
+      if (!value) return;
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -3).join("_");
+
+      if (fileType === "file") {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
+
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          isFound &&
+            newSelections.push(
+              this.filesList.find((f) => f.id == id && !f.isFolder)
+            );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
+
+        const selectableFolder = this.filesList.find(
+          (f) => f.id == id && f.isFolder
+        );
+        selectableFolder.isFolder = true;
+
+        isFound && newSelections.push(selectableFolder);
+      }
+    }
+
+    for (let item of removed) {
+      if (!item) return;
+
+      const value =
+        this.viewAs === "tile"
+          ? item.getAttribute("value")
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
+
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -3).join("_");
+
+      if (fileType === "file") {
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          newSelections = newSelections.filter(
+            (f) => !(f.id == id && !f.isFolder)
+          );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        newSelections = newSelections.filter(
+          (f) => !(f.id == id && f.isFolder)
+        );
+      }
+    }
+
+    this.setSelection(newSelections);
   };
 
   setBufferSelection = (bufferSelection) => {
@@ -1893,9 +1985,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(roomParams) {
+  createRoom = (roomParams) => {
+    this.roomCreated = true;
     return api.rooms.createRoom(roomParams);
-  }
+  };
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
@@ -2313,6 +2406,8 @@ class FilesStore {
     const newItem = items.map((item) => {
       const {
         access,
+        autoDelete,
+        originTitle,
         comment,
         contentLength,
         created,
@@ -2327,6 +2422,10 @@ class FilesStore {
         id,
         logo,
         locked,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         parentId,
         pureContentLength,
         rootFolderType,
@@ -2370,7 +2469,7 @@ class FilesStore {
       const previewUrl = canOpenPlayer
         ? this.getItemUrl(id, false, needConvert, canOpenPlayer)
         : null;
-      const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
+      const contextOptions = this.getFilesContextOptions(item);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
       const iconSize = this.viewAs === "table" ? 24 : 32;
@@ -2426,6 +2525,8 @@ class FilesStore {
 
       return {
         access,
+        daysRemaining: autoDelete && getDaysRemaining(autoDelete),
+        originTitle,
         //checked,
         comment,
         contentLength,
@@ -2467,6 +2568,10 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         previewUrl,
         folderUrl,
         href,
@@ -2826,51 +2931,6 @@ class FilesStore {
     return this.getOptions(selection, true);
   };
 
-  setSelections = (items) => {
-    if (!items.length && !this.selection.length) return;
-
-    //if (items.length !== this.selection.length) {
-    const newSelection = [];
-
-    for (let item of items) {
-      const value = item.getAttribute("value");
-      const splitValue = value && value.split("_");
-
-      const fileType = splitValue[0];
-      // const id =
-      //   splitValue[splitValue.length - 1] === "draggable"
-      //     ? splitValue.slice(1, -1).join("_")
-      //     : splitValue.slice(1, -1).join("_");
-
-      const id = splitValue.slice(1, -1).join("_");
-
-      if (fileType === "file") {
-        this.activeFiles.findIndex((f) => f == id) === -1 &&
-          //newSelection.push(this.files.find((f) => f.id == id));
-          newSelection.push(
-            this.filesList.find((f) => f.id == id && !f.isFolder)
-          );
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
-        //const selectableFolder = this.folders.find((f) => f.id == id);
-        const selectableFolder = this.filesList.find(
-          (f) => f.id == id && f.isFolder
-        );
-        selectableFolder.isFolder = true;
-        newSelection.push(selectableFolder);
-      }
-    }
-
-    //this.selected === "close" && this.setSelected("none");
-
-    //need fo table view
-    const clearSelection = Object.values(
-      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
-    );
-
-    this.setSelection(clearSelection);
-    //}
-  };
-
   getShareUsers(folderIds, fileIds) {
     return api.files.getShareFiles(fileIds, folderIds);
   }
@@ -3064,6 +3124,10 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  setMainButtonMobileVisible = (visible) => {
+    this.mainButtonMobileVisible = visible;
   };
 
   get roomsFilterTotal() {

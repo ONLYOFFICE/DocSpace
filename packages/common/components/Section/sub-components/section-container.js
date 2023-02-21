@@ -42,6 +42,7 @@ const StyledSectionContainer = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  user-select: none;
 
   width: 100%;
   max-width: 100%;
@@ -75,15 +76,22 @@ const StyledSectionContainer = styled.section`
   .layout-progress-bar {
     position: fixed;
     right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
-    bottom: 21px;
+      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+    bottom: 24px;
+  }
+
+  .layout-progress-bar_close-icon {
+    position: fixed;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
+    bottom: 36px;
   }
 
   .layout-progress-second-bar {
     position: fixed;
     right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "416px" : "15px"};
-    bottom: 83px;
+      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+    bottom: 96px;
   }
 
   ${(props) =>

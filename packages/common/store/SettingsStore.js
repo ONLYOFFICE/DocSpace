@@ -12,6 +12,7 @@ import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
+import { wrongPortalNameUrl } from "@docspace/common/constants";
 
 const themes = {
   Dark: Dark,
@@ -137,6 +138,7 @@ class SettingsStore {
   companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
+  standalone = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -186,12 +188,12 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getSettings = async () => {
+  getSettings = async (withPassword) => {
     let newSettings = null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings();
+    else newSettings = await api.settings.getSettings(withPassword);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(
@@ -241,7 +243,7 @@ class SettingsStore {
       if (err?.response?.status === 404) {
         // portal not found
         return window.location.replace(
-          `https://www.onlyoffice.com/wrongportalname.aspx?url=${window.location.hostname}`
+          `${wrongPortalNameUrl}?url=${window.location.hostname}`
         );
       }
     });

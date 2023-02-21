@@ -81,6 +81,7 @@ const FilesRowContainer = ({
   fetchMoreFiles,
   hasMoreFiles,
   isRooms,
+  isTrashFolder,
   withPaging,
   setUploadedFileIdWithVersion,
 }) => {
@@ -115,8 +116,10 @@ const FilesRowContainer = ({
           id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
           key={`${item.id}_${index}`}
           item={item}
+          itemIndex={index}
           sectionWidth={sectionWidth}
           isRooms={isRooms}
+          isTrashFolder={isTrashFolder}
           setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
         />
       ))}
@@ -136,7 +139,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     setUploadedFileIdWithVersion,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
   const { withPaging } = auth.settingsStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
@@ -150,6 +153,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     isRooms,
+    isTrashFolder,
     withPaging,
     setUploadedFileIdWithVersion,
   };

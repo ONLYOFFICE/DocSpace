@@ -1,3 +1,5 @@
+import EnUSReactSvgUrl from "PUBLIC_DIR/images/flags/en-US.react.svg?url";
+
 /**
  * Enum for type of confirm link.
  * @readonly
@@ -56,11 +58,23 @@ export const CategoryType = Object.freeze({
  * @readonly
  */
 export const TableVersions = Object.freeze({
-  Files: "2",
   Rooms: "1",
+  Files: "2",
   Accounts: "3",
+  Trash: "4",
 });
 
 export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 export const BINDING_REDIRECT =
   "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
+
+export const DEFAULT_SELECT_TIMEZONE = {
+  key: "UTC",
+  label: "(UTC) Coordinated Universal Time",
+};
+
+export const DEFAULT_SELECT_LANGUAGE = {
+  key: "en-US",
+  label: "English (United States)",
+  icon: EnUSReactSvgUrl,
+};

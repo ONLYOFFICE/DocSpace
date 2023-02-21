@@ -24,6 +24,7 @@ import {
   SectionPagingContent,
 } from "./Section";
 import MediaViewer from "./MediaViewer";
+import SelectionArea from "./SelectionArea";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 //import config from "PACKAGE_FILE";
@@ -484,10 +485,6 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-      personal,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isFrame,
       showTitle,
       showFilter,
@@ -505,6 +502,8 @@ class PureHome extends React.Component {
       <>
         <MediaViewer />
         <DragTooltip />
+        <SelectionArea />
+
         <Section
           withPaging={withPaging}
           dragging={dragging}
@@ -512,7 +511,6 @@ class PureHome extends React.Component {
           withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
-          setSelections={this.props.setSelections}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}
@@ -530,6 +528,7 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
+          isEmptyPage={isEmptyPage}
         >
           {!isErrorRoomNotAvailable && (
             <Section.SectionHeader>
@@ -612,7 +611,6 @@ export default inject(
       alreadyFetchingRooms,
       setAlreadyFetchingRooms,
       selection,
-      setSelections,
       dragging,
       setDragging,
       setIsLoading,
@@ -684,12 +682,8 @@ export default inject(
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
 
     const {
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setFrameConfig,
       frameConfig,
       isFrame,
@@ -714,9 +708,6 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isVisitor: auth.userStore.user.isVisitor,
-      checkedMaintenance,
-      setMaintenanceExist,
-      snackbarExist,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -752,12 +743,10 @@ export default inject(
       alreadyFetchingRooms,
       setAlreadyFetchingRooms,
       setUploadPanelVisible,
-      setSelections,
       startUpload,
       uploadEmptyFolders,
       isHeaderVisible,
       setHeaderVisible,
-      personal,
       setToPreviewFile,
       setIsPreview,
       playlist,

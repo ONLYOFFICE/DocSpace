@@ -114,6 +114,7 @@ public abstract class BaseStartup
 
         DIHelper.AddControllers();
         DIHelper.TryAdd<CultureMiddleware>();
+        DIHelper.TryAdd<LoggerMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
         DIHelper.TryAdd<ProductSecurityFilter>();
@@ -291,7 +292,9 @@ public abstract class BaseStartup
 
         app.UseCultureMiddleware();
 
-        app.UseEndpoints(async endpoints =>
+        app.UseLoggerMiddleware();
+
+         app.UseEndpoints(async endpoints =>
         {
             await endpoints.MapCustom(WebhooksEnabled, app.ApplicationServices);
 
