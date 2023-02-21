@@ -111,11 +111,6 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return _coreBaseSettings.Personal ? ToAbsolute("~/my") : ToAbsolute("~/accounts/view/@self");
     }
 
-    public string GetUnsubscribeLink()
-    {
-        return ToAbsolute("~/api/2.0/settings/notification/unsubscribe");
-    }
-
     public string GetUnsubscribe()
     {
         return _coreBaseSettings.Personal ? ToAbsolute("~/my?unsubscribe=tips") : ToAbsolute("~/products/people/view/@self");

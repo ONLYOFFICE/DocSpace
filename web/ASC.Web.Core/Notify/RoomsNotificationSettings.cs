@@ -64,16 +64,23 @@ public class RoomsNotificationSettingsHelper
         return disabledRooms;
     }
 
+    public IEnumerable<string> GetDisabledRoomsForCurrentUser()
+    {
+        var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
+        var disabledRooms = settings.DisabledRooms;
+        return disabledRooms.Select(r => r.ToString());
+    }
+
     public RoomsNotificationSettings GetSettingsForCurrentUser()
     {
         var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
         return settings;
     }
 
-    public bool CheckMuteForRoom(int roomsId)
+    public bool CheckMuteForRoom(string roomsId)
     {
         var settings = _settingsManager.LoadForCurrentUser<RoomsNotificationSettings>();
-        var disabledRooms = settings.DisabledRooms;
+        var disabledRooms = settings.DisabledRooms.Select(r => r.ToString());
 
         if (disabledRooms.Contains(roomsId))
         {

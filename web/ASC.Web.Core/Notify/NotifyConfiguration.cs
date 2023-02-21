@@ -358,7 +358,6 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
         request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
-        request.Arguments.Add(new TagValue(CommonTags.UnsubscribeLink, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetUnsubscribeLink())));
 
         AddLetterLogo(request);
     }

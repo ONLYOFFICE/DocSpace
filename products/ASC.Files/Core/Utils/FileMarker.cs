@@ -80,6 +80,7 @@ public class FileMarker
     private readonly AuthContext _authContext;
     private readonly IServiceProvider _serviceProvider;
     private readonly FilesSettingsHelper _filesSettingsHelper;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
 
     public FileMarker(
         TenantManager tenantManager,
@@ -90,6 +91,7 @@ public class FileMarker
         AuthContext authContext,
         IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
         ICache cache)
     {
         _tenantManager = tenantManager;
@@ -100,6 +102,7 @@ public class FileMarker
         _authContext = authContext;
         _serviceProvider = serviceProvider;
         _filesSettingsHelper = filesSettingsHelper;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
         _cache = cache;
     }
 
@@ -825,6 +828,24 @@ public class FileMarker
 
         totalTags = totalTags.Where(e => e != parentFolderTag).ToList();
 
+        foreach (var e in entries)
+        {
+            if (e is FileEntry<int> entry)
+            {
+                SetTagNewForEntry(entry);
+            }
+            else if (e is FileEntry<string> thirdPartyEntry)
+            {
+                SetTagNewForEntry(thirdPartyEntry);
+            }
+        }
+
+        if (parent.FolderType == FolderType.VirtualRooms)
+        {
+            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
+            totalTags = totalTags.Where(e => !disabledRooms.Contains(e.EntryId.ToString())).ToList();
+        }
+
         var countSubNew = 0;
         totalTags.ForEach(tag =>
         {
@@ -848,7 +869,25 @@ public class FileMarker
 
         if (parentFolderTag.Count != countSubNew)
         {
-            if (countSubNew > 0)
+            if(parent.FolderType == FolderType.VirtualRooms)
+            {
+                parentFolderTag.Count = countSubNew;
+                if (parentFolderTag.Id == -1)
+                {
+                    await tagDao.SaveTags(parentFolderTag);
+                }
+                else
+                {
+                    await tagDao.UpdateNewTags(parentFolderTag);
+                }
+
+                var cacheFolderId = parent.Id;
+                if (cacheFolderId != null)
+                {
+                    RemoveFromCahce(cacheFolderId);
+                }
+            }
+            else if (countSubNew > 0)
             {
                 var diff = parentFolderTag.Count - countSubNew;
 
@@ -919,19 +958,7 @@ public class FileMarker
             }
         }
 
-        foreach (var e in entries)
-        {
-            if (e is FileEntry<int> entry)
-            {
-                SatTagNewForEntry(entry);
-            }
-            else if (e is FileEntry<string> thirdPartyEntry)
-            {
-                SatTagNewForEntry(thirdPartyEntry);
-            }
-        }
-
-        void SatTagNewForEntry<TEntry>(FileEntry<TEntry> entry)
+        void SetTagNewForEntry<TEntry>(FileEntry<TEntry> entry)
         {
             var curTag = totalTags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.Id));
 
