@@ -110,7 +110,7 @@ public class RoomLinkService
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var share = await securityDao.GetSharesAsync(new[] { key })
-            .Where(s => s.SubjectType == SubjectType.InvintationLink)
+            .Where(s => s.SubjectType == SubjectType.InvitationLink)
             .FirstOrDefaultAsync();
 
         return share;
