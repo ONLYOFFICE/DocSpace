@@ -129,4 +129,6 @@ public static class CommonTags
     public const string EmbeddedAttachments = "EmbeddedAttachments";
 
     public const string ImagePath = "ImagePath";
+
+    public const string UnsubscribeLink = "UnsubscribeLink";
 }

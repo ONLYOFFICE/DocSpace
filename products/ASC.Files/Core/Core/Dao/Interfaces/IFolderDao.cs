@@ -360,5 +360,13 @@ public interface IFolderDao<T>
     IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime);
     IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime);
 
+    /// <summary>
+    /// Tries to return id of the parent virtual room
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="fileEntry"></param>
+    /// <returns></returns>
+    Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
+
     #endregion
 }

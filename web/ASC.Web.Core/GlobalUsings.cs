@@ -45,6 +45,7 @@ global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml;
 
+global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -74,7 +75,6 @@ global using ASC.Core.Users;
 global using ASC.Data.Storage;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
-global using ASC.Feed;
 global using ASC.Feed.Data;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem;

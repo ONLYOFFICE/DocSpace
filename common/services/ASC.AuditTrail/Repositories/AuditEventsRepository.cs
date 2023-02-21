@@ -86,7 +86,37 @@ public class AuditEventsRepository
         DateTime? from = null,
         DateTime? to = null,
         int startIndex = 0,
-        int limit = 0)
+        int limit = 0, 
+        Guid? withoutUserId = null)
+    {
+        return GetByFilterWithActions(
+            userId,
+            productType, 
+            moduleType,
+            actionType,
+            new List<MessageAction?> { action },
+            entry,
+            target, 
+            from, 
+            to,
+            startIndex, 
+            limit,
+            withoutUserId);
+    }
+
+    public IEnumerable<AuditEventDto> GetByFilterWithActions(
+        Guid? userId = null,
+        ProductType? productType = null,
+        ModuleType? moduleType = null,
+        ActionType? actionType = null,
+        List<MessageAction?> actions = null,
+        EntryType? entry = null,
+        string target = null,
+        DateTime? from = null,
+        DateTime? to = null,
+        int startIndex = 0,
+        int limit = 0,
+        Guid? withoutUserId = null)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
         using var auditTrailContext = _dbContextFactory.CreateDbContext();
@@ -106,18 +136,22 @@ public class AuditEventsRepository
         if (userId.HasValue && userId.Value != Guid.Empty)
         {
             query = query.Where(r => r.Event.UserId == userId.Value);
+        } 
+        else if (withoutUserId.HasValue && withoutUserId.Value != Guid.Empty)
+        {
+            query = query.Where(r => r.Event.UserId != withoutUserId.Value);
         }
 
         var isNeedFindEntry = entry.HasValue && entry.Value != EntryType.None && target != null;
 
 
-        if (action.HasValue && action.Value != MessageAction.None)
+        if (actions.Any() && actions[0] != null && actions[0] != MessageAction.None)
         {
-            query = query.Where(r => r.Event.Action == (int)action);
+            query = query.Where(r => actions.Contains(r.Event.Action != null ? (MessageAction)r.Event.Action : MessageAction.None));
         }
         else
         {
-            IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actions = new List<KeyValuePair<MessageAction, MessageMaps>>();
+            IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actionsList = new List<KeyValuePair<MessageAction, MessageMaps>>();
 
             var isFindActionType = actionType.HasValue && actionType.Value != ActionType.None;
 
@@ -132,36 +166,36 @@ public class AuditEventsRepository
                         var moduleMapper = productMapper.Mappers.FirstOrDefault(m => m.Module == moduleType.Value);
                         if (moduleMapper != null)
                         {
-                            actions = moduleMapper.Actions;
+                            actionsList = moduleMapper.Actions;
                         }
                     }
                     else
                     {
-                        actions = productMapper.Mappers.SelectMany(r => r.Actions);
+                        actionsList = productMapper.Mappers.SelectMany(r => r.Actions);
                     }
                 }
             }
             else
             {
-                actions = _auditActionMapper.Mappers
+                actionsList = _auditActionMapper.Mappers
                         .SelectMany(r => r.Mappers)
                         .SelectMany(r => r.Actions);
             }
 
             if (isFindActionType || isNeedFindEntry)
             {
-                actions = actions
+                actionsList = actionsList
                         .Where(a => (!isFindActionType || a.Value.ActionType == actionType.Value) && (!isNeedFindEntry || (entry.Value == a.Value.EntryType1) || entry.Value == a.Value.EntryType2))
                         .ToList();
             }
 
             if (isNeedFindEntry)
             {
-                FindByEntry(query, entry.Value, target, actions);
+                FindByEntry(query, entry.Value, target, actionsList);
             }
             else
             {
-                var keys = actions.Select(x => (int)x.Key).ToList();
+                var keys = actionsList.Select(x => (int)x.Key).ToList();
                 query = query.Where(r => keys.Contains(r.Event.Action ?? 0));
             }
         }
@@ -196,6 +230,7 @@ public class AuditEventsRepository
         {
             query = query.Take(limit);
         }
+
         return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
     }
 
@@ -227,6 +262,16 @@ public class AuditEventsRepository
         }
 
         return query.Count();
+    }
+
+    public IEnumerable<int> GetTenants(DateTime? from = null, DateTime? to = null)
+    {
+        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return feedDbContext.AuditEvents
+            .Where(r => r.Date >= from && r.Date <= to)
+            .GroupBy(r => r.TenantId)
+            .Select(r => r.Key)
+            .ToList();
     }
 }
 

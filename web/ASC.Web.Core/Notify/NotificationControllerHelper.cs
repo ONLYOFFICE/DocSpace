@@ -87,9 +87,9 @@ public class NotificationControllerHelper
         }
     }
 
-    public RoomsNotificationSettings GetDisabledRooms()
+    public RoomsNotificationSettings GetSettings()
     {
-        return _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
+        return _roomsNotificationSettingsHelper.GetSettingsForCurrentUser();
     }
 
     public RoomsNotificationSettings SetRoomsNotificationStatus(int roomsId, bool mute)

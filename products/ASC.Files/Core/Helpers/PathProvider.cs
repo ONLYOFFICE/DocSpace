@@ -60,6 +60,11 @@ public class PathProvider
         return _webImageSupplier.GetAbsoluteWebPath(imgFileName, ProductEntryPoint.ID);
     }
 
+    public string GetRoomsUrl(string roomId)
+    {
+        return _commonLinkUtility.GetFullAbsolutePath($"/rooms/shared/{roomId}/filter?withSubfolders=true&folder={roomId}&count=100&page=1&sortby=DateAndTime&sortorder=descending");
+    }
+
     public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)
     {
         if (folder == null)

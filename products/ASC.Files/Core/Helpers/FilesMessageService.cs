@@ -33,23 +33,27 @@ public class FilesMessageService
     private readonly MessageTarget _messageTarget;
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IDaoFactory _daoFactory;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
-        MessageService messageService)
+        MessageService messageService,
+        IDaoFactory daoFactory)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
+        _daoFactory = daoFactory;
     }
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IHttpContextAccessor httpContextAccessor)
-        : this(options, messageTarget, messageService)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory)
+        : this(options, messageTarget, messageService, daoFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -65,6 +69,8 @@ public class FilesMessageService
         {
             return;
         }
+
+        description = AddNotificationParams(entry, action, description).Result;
 
         SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
     }
@@ -133,4 +139,38 @@ public class FilesMessageService
 
         _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
     }
+
+    private async Task<string[]> AddNotificationParams<T>(FileEntry<T> entry, MessageAction action, params string[] description)
+    {
+        if (StudioWhatsNewNotify.DailyActions.Contains(action) || StudioWhatsNewNotify.RoomsActivityActions.Contains(action))
+        {
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            var roomInfo = await folderDao.GetParentRoomInfoFromFileEntryAsync(entry);
+
+            var oldTitle = "";
+            if (action == MessageAction.RoomRenamed)
+            {
+                oldTitle = description.LastOrDefault();
+                description = description.SkipLast(1).ToArray();
+            }
+
+            var serializedParams = JsonSerializer.Serialize(new RoomInfo
+            {
+                Id = roomInfo.RoomId,
+                Title = roomInfo.RoomTitle,
+                OldTitle = oldTitle
+            });
+
+            description = description.Append(serializedParams).ToArray();
+        }
+
+        return description;
+    }
+}
+
+public class RoomInfo
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string OldTitle { get; set; }
 }

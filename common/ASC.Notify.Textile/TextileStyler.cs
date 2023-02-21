@@ -272,21 +272,20 @@ public class TextileStyler : IPatternStyler
             return string.Empty;
         }
 
-        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, unsubscribeLink);
+        var rootPath = message.GetArgument("__VirtualRootPath").Value;
+
+        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
     {
-        var unsubscribeLinkArgument = message.GetArgument("ProfileUrl");
+        var unsubscribeLinkArgument = message.GetArgument("UnsubscribeLink");
 
         if (unsubscribeLinkArgument != null)
         {
             var unsubscribeLink = (string)unsubscribeLinkArgument.Value;
 
-            if (!string.IsNullOrEmpty(unsubscribeLink))
-            {
-                return unsubscribeLink + "?unsubscribe=tips";
-            }
+            return unsubscribeLink;
         }
 
         return GetSiteUnsubscribeLink(message, settings);

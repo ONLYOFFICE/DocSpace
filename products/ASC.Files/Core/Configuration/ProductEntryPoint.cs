@@ -36,6 +36,11 @@ public class ProductEntryPoint : Product
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly NotifyConfiguration _notifyConfiguration;
+    private readonly AuditEventsRepository _auditEventsRepository;
+    private readonly IDaoFactory _daoFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly PathProvider _pathProvider;
 
     //public SubscriptionManager SubscriptionManager { get; }
 
@@ -46,7 +51,12 @@ public class ProductEntryPoint : Product
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
         UserManager userManager,
-        NotifyConfiguration notifyConfiguration
+        NotifyConfiguration notifyConfiguration,
+        AuditEventsRepository auditEventsRepository,
+        IDaoFactory daoFactory,
+        TenantManager tenantManager,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
+        PathProvider pathProvider
         //            SubscriptionManager subscriptionManager
         )
     {
@@ -55,6 +65,11 @@ public class ProductEntryPoint : Product
         _authContext = authContext;
         _userManager = userManager;
         _notifyConfiguration = notifyConfiguration;
+        _auditEventsRepository = auditEventsRepository;
+        _daoFactory = daoFactory;
+        _tenantManager = tenantManager;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
+        _pathProvider = pathProvider;
         //SubscriptionManager = subscriptionManager;
     }
 
@@ -111,6 +126,94 @@ public class ProductEntryPoint : Product
         {
             return string.Empty;
         }
+    }
+
+    public override async Task<IEnumerable<ActivityInfo>> GetAuditEventsAsync(DateTime scheduleDate, Guid userId, Tenant tenant, WhatsNewType whatsNewType)
+    {
+        IEnumerable<AuditEventDto> events;
+        _tenantManager.SetCurrentTenant(tenant);
+
+        if (whatsNewType == WhatsNewType.RoomsActivity)
+        {
+            events = _auditEventsRepository.GetByFilterWithActions(
+                withoutUserId: userId,
+                actions: StudioWhatsNewNotify.RoomsActivityActions,
+                from: scheduleDate.Date.AddHours(-1),
+                   to: scheduleDate.Date.AddSeconds(-1),
+                   limit: 100);
+        }
+        else
+        {
+            events = _auditEventsRepository.GetByFilterWithActions(
+                withoutUserId: userId,
+                actions: StudioWhatsNewNotify.DailyActions,
+                from: scheduleDate.Date.AddDays(-1),
+                to: scheduleDate.Date.AddSeconds(-1),
+            limit: 100);
+        }
+
+        var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(userId);
+
+        var roomIds = new List<string>();
+        var result = new List<ActivityInfo>();
+
+        foreach (var e in events)
+        {
+            RoomInfo roomInfo = null;
+
+            var obj = e.Description[e.Description.Count - 1];
+            roomInfo = JsonSerializer.Deserialize<RoomInfo>(obj);
+
+            var roomId = roomInfo.Id;
+            var withRoom = true;
+
+            if (roomId > 0 && disabledRooms.Contains(roomId))
+            {
+                continue;
+            }
+            else if (roomId > 0)
+            {
+                if (!roomIds.Contains(roomId.ToString()))
+                {
+                    roomIds.Add(roomId.ToString());
+                }
+            }
+            else if (roomId < 0)
+            {
+                withRoom = false;
+            }
+
+            result.Add(new ActivityInfo
+            {
+                UserId = e.UserId,
+                Action = (MessageAction)e.Action,
+                Data = e.Date,
+                Page = e.Page,
+                FileTitle = e.Description[0],
+                RoomUri = withRoom ? _pathProvider.GetRoomsUrl(roomId.ToString()) : default,
+                RoomId = withRoom ? roomInfo?.Id.ToString() : default,
+                RoomTitle = withRoom ? roomInfo?.Title : default,
+                RoomOldTitle = withRoom ? roomInfo?.OldTitle : default
+            });
+        }
+
+        var roomsShareInfo = new List<FileShareRecord>();
+
+        if (roomIds.Count() > 0)
+        {
+            var folderDao = _daoFactory.GetSecurityDao<int>();
+            roomsShareInfo = await folderDao.GetShareForEntryIdsAsync(userId, roomIds).ToListAsync();
+        }
+
+        foreach (var activity in result)
+        {
+            var record = roomsShareInfo.Where(r => r.EntryId.ToString() == activity.RoomId).FirstOrDefault();
+
+            activity.IsAdmin = activity.UserId == record?.Owner || record?.Share == FileShare.RoomAdmin;
+            activity.IsMemder = activity.UserId == record?.Subject && record?.Share > FileShare.None;
+        }
+
+        return result;
     }
 
     public override Guid ProductID => ID;

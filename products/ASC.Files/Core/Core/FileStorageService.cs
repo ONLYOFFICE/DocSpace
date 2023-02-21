@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.Classes;
-
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -37,7 +35,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly CompressToArchive _compressToArchive;
     private readonly OFormRequestManager _oFormRequestManager;
     private readonly ThirdPartySelector _thirdPartySelector;
-    private readonly ThumbnailSettings _thumbnailSettings; private readonly MessageService _messageService;
+    private readonly ThumbnailSettings _thumbnailSettings;
+	private readonly MessageService _messageService;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly Global _global;
     private readonly GlobalStore _globalStore;
@@ -657,7 +656,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (DocSpaceHelper.IsRoom(folder.FolderType))
             {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomRenamed, folder.Title);
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomRenamed, folder.Title, title);
             }
             else
             {

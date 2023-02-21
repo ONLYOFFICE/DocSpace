@@ -62,7 +62,7 @@ public class NotificationController : BaseSettingsController
     [HttpGet("notification/rooms")]
     public RoomsNotificayionSettingsDto GetRoomsNotificationSettings()
     {
-        var  settings = _notificationControllerHelper.GetDisabledRooms();
+        var  settings = _notificationControllerHelper.GetSettings();
         return _mapper.Map<RoomsNotificayionSettingsDto>(settings);
     }
 

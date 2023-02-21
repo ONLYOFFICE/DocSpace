@@ -177,6 +177,19 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
     }
 
+    public async IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        var q = GetQuery(filesDbContext,
+            r => (r.Subject == subject || r.Owner == subject)
+            && roomIds.Contains(r.EntryId));
+
+        await foreach (var e in q.AsAsyncEnumerable())
+        {
+            yield return await ToFileShareRecordAsync(e);
+        }
+    }
+
     public async IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();

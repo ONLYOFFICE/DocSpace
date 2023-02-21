@@ -49,6 +49,11 @@ public abstract class Product : IProduct
 
     public virtual void Shutdown() { }
 
+    public virtual Task<IEnumerable<ActivityInfo>> GetAuditEventsAsync(DateTime scheduleDate, Guid userId, Tenant tenant, WhatsNewType whatsNewType)
+    {
+        return Task.FromResult(Enumerable.Empty<ActivityInfo>());
+    }
+
     public virtual string ExtendedDescription { get { return Description; } }
 
     WebItemContext IWebItem.Context { get { return ((IProduct)this).Context; } }
