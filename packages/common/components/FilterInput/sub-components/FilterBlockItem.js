@@ -105,6 +105,7 @@ const FilterBlockItem = ({
           className="filter-text"
           noSelect={true}
           isSelected={item.isSelected}
+          truncate
         >
           {item?.selectedLabel?.toLowerCase()}
         </StyledFilterBlockItemTagText>

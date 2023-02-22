@@ -181,6 +181,8 @@ class FilesStore {
 
             const newFiles = [fileInfo, ...this.files];
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
+
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
