@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Text from "@docspace/components/text";
-
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
@@ -127,14 +127,59 @@ const HistoryMainContent = (props) => {
     isLoadingDownloadReport,
   } = props;
 
-  const [lifeTime, setLifeTime] = useState(String(lifetime) || "180");
-  const [showReminder, setShowReminder] = useState(false);
+  const [loginLifeTime, setLoginLifeTime] = useState(String(lifetime) || "180");
+  const [auditLifeTime, setAuditLifeTime] = useState(String(lifetime) || "180");
+  const [loginLifeTimeReminder, setLoginLifeTimeReminder] = useState(false);
+  const [auditLifeTimeReminder, setAuditLifeTimeReminder] = useState(false);
 
-  const lifeTimeHandler = (e) => {
-    const reg = new RegExp(/^(\d){1,3}$/g);
-    const condition = e.target.value === "";
-    if ((e.target.value.match(reg) && e.target.value <= 180) || condition) {
-      setLifeTime(e.target.value);
+  const isLoginHistoryPage = window.location.pathname.includes("login-history");
+
+  useEffect(() => {
+    getSettings();
+  }, []);
+
+  useEffect(() => {
+    const newSettings = {
+      loginHistoryLifeTime: loginLifeTime,
+      auditTrailLifeTime: auditLifeTime,
+    };
+    saveToSessionStorage("storagePeriod", newSettings);
+
+    if (loginLifeTime === String(lifetime)) {
+      setLoginLifeTimeReminder(false);
+    } else {
+      setLoginLifeTimeReminder(true);
+    }
+  }, [loginLifeTime]);
+
+  useEffect(() => {
+    const newSettings = {
+      loginHistoryLifeTime: loginLifeTime,
+      auditTrailLifeTime: auditLifeTime,
+    };
+    saveToSessionStorage("storagePeriod", newSettings);
+
+    if (auditLifeTime === String(lifetime)) {
+      setAuditLifeTimeReminder(false);
+    } else {
+      setAuditLifeTimeReminder(true);
+    }
+  }, [auditLifeTime]);
+
+  const getSettings = () => {
+    const storagePeriodSettings = getFromSessionStorage("storagePeriod");
+    const defaultData = {
+      loginHistoryLifeTime: String(lifetime),
+      auditTrailLifeTime: String(lifetime),
+    };
+
+    saveToSessionStorage("defaultStoragePeriod", defaultData);
+    if (storagePeriodSettings) {
+      setLoginLifeTime(storagePeriodSettings.loginHistoryLifeTime);
+      setAuditLifeTime(storagePeriodSettings.auditTrailLifeTime);
+    } else {
+      setLoginLifeTime(String(lifetime));
+      setAuditLifeTime(String(lifetime));
     }
   };
 
@@ -142,13 +187,17 @@ const HistoryMainContent = (props) => {
     if (loginHistory) {
       const data = {
         settings: {
-          loginHistoryLifeTime: lifeTime,
+          loginHistoryLifeTime: loginLifeTime,
           auditTrailLifeTime: securityLifetime.auditTrailLifeTime,
         },
       };
       try {
         await setLifetimeAuditSettings(data);
-        setShowReminder(false);
+        saveToSessionStorage("defaultStoragePeriod", {
+          loginHistoryLifeTime: loginLifeTime,
+          auditTrailLifeTime: securityLifetime.auditTrailLifeTime,
+        });
+        setLoginLifeTimeReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       } catch (error) {
         console.error(error);
@@ -158,13 +207,17 @@ const HistoryMainContent = (props) => {
       const data = {
         settings: {
           loginHistoryLifeTime: securityLifetime.loginHistoryLifeTime,
-          auditTrailLifeTime: lifeTime,
+          auditTrailLifeTime: auditLifeTime,
         },
       };
 
       try {
         await setLifetimeAuditSettings(data);
-        setShowReminder(false);
+        saveToSessionStorage("defaultStoragePeriod", {
+          loginHistoryLifeTime: securityLifetime.loginHistoryLifeTime,
+          auditTrailLifeTime: auditLifeTime,
+        });
+        setAuditLifeTimeReminder(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       } catch (error) {
         console.error(error);
@@ -173,13 +226,31 @@ const HistoryMainContent = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (lifeTime === String(lifetime)) {
-      setShowReminder(false);
-    } else {
-      setShowReminder(true);
+  const onChangeLoginLifeTime = (e) => {
+    const reg = new RegExp(/^(\d){1,3}$/g);
+    const condition = e.target.value === "";
+    if ((e.target.value.match(reg) && e.target.value <= 180) || condition) {
+      setLoginLifeTime(e.target.value);
     }
-  }, [lifeTime]);
+  };
+
+  const onChangeAuditLifeTime = (e) => {
+    const reg = new RegExp(/^(\d){1,3}$/g);
+    const condition = e.target.value === "";
+    if ((e.target.value.match(reg) && e.target.value <= 180) || condition) {
+      setAuditLifeTime(e.target.value);
+    }
+  };
+
+  const onCancelLoginLifeTime = () => {
+    const defaultSettings = getFromSessionStorage("defaultStoragePeriod");
+    setLoginLifeTime(String(defaultSettings.loginHistoryLifeTime));
+  };
+
+  const onCancelAuditLifeTime = () => {
+    const defaultSettings = getFromSessionStorage("defaultStoragePeriod");
+    setAuditLifeTime(String(defaultSettings.auditTrailLifeTime));
+  };
 
   return (
     <MainContainer isSettingNotPaid={isSettingNotPaid}>
@@ -198,26 +269,53 @@ const HistoryMainContent = (props) => {
         >
           {storagePeriod}
         </label>
-        <StyledTextInput
-          onChange={lifeTimeHandler}
-          value={lifeTime}
-          size="base"
-          id="storage-period"
-          type="text"
-          isDisabled={isSettingNotPaid}
-        />
-        <SaveCancelButtons
-          className="save-cancel"
-          onSaveClick={setLifeTimeSettings}
-          onCancelClick={() => setLifeTime(String(lifetime))}
-          saveButtonLabel={saveButtonLabel}
-          cancelButtonLabel={cancelButtonLabel}
-          showReminder={showReminder}
-          reminderTest={t("YouHaveUnsavedChanges")}
-          displaySettings={true}
-          hasScroll={false}
-          isDisabled={isSettingNotPaid}
-        />
+        {isLoginHistoryPage ? (
+          <>
+            <StyledTextInput
+              onChange={onChangeLoginLifeTime}
+              value={loginLifeTime}
+              size="base"
+              id="login-history-period"
+              type="text"
+              isDisabled={isSettingNotPaid}
+            />
+            <SaveCancelButtons
+              className="save-cancel"
+              onSaveClick={setLifeTimeSettings}
+              onCancelClick={onCancelLoginLifeTime}
+              saveButtonLabel={saveButtonLabel}
+              cancelButtonLabel={cancelButtonLabel}
+              showReminder={loginLifeTimeReminder}
+              reminderTest={t("YouHaveUnsavedChanges")}
+              displaySettings={true}
+              hasScroll={false}
+              isDisabled={isSettingNotPaid}
+            />
+          </>
+        ) : (
+          <>
+            <StyledTextInput
+              onChange={onChangeAuditLifeTime}
+              value={auditLifeTime}
+              size="base"
+              id="audit-history-period"
+              type="text"
+              isDisabled={isSettingNotPaid}
+            />
+            <SaveCancelButtons
+              className="save-cancel"
+              onSaveClick={setLifeTimeSettings}
+              onCancelClick={onCancelAuditLifeTime}
+              saveButtonLabel={saveButtonLabel}
+              cancelButtonLabel={cancelButtonLabel}
+              showReminder={auditLifeTimeReminder}
+              reminderTest={t("YouHaveUnsavedChanges")}
+              displaySettings={true}
+              hasScroll={false}
+              isDisabled={isSettingNotPaid}
+            />
+          </>
+        )}
         <Text className="latest-text settings_unavailable">{downloadText}</Text>
       </div>
       {content}

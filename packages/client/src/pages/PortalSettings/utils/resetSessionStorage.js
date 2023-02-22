@@ -22,6 +22,8 @@ export const resetSessionStorage = () => {
   const defaultAdminMessageSettings = getFromSessionStorage("defaultAdminMessageSettings");
   const currentSessionLifetimeSettings = getFromSessionStorage("currentSessionLifetimeSettings");
   const defaultSessionLifetimeSettings = getFromSessionStorage("defaultSessionLifetimeSettings");
+  const storagePeriodSettings = getFromSessionStorage("storagePeriod");
+  const defaultStoragePeriodSettings = getFromSessionStorage("defaultStoragePeriod");
 
   if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
     saveToSessionStorage("portalName", "none");
@@ -53,5 +55,8 @@ export const resetSessionStorage = () => {
   }
   if (currentSessionLifetimeSettings !== defaultSessionLifetimeSettings) {
     saveToSessionStorage("currentSessionLifetimeSettings", defaultSessionLifetimeSettings)
+  }
+  if (storagePeriodSettings !== defaultStoragePeriodSettings) {
+    saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings)
   }
 };
