@@ -21,6 +21,7 @@ import {
   StyledInviteInputContainer,
   StyledDropDown,
   SearchItemText,
+  StyledDescription,
 } from "../StyledInvitePanel";
 
 const InviteInput = ({
@@ -223,7 +224,7 @@ const InviteInput = ({
   return (
     <>
       <StyledSubHeader>
-        {t("IndividualInvitation")}
+        {t("AddManually")}
         {!hideSelector && (
           <StyledLink
             fontWeight="600"
@@ -235,6 +236,11 @@ const InviteInput = ({
           </StyledLink>
         )}
       </StyledSubHeader>
+      <StyledDescription>
+        {roomId === -1
+          ? t("AddManuallyDescriptionAccounts")
+          : t("AddManuallyDescriptionRoom")}
+      </StyledDescription>
 
       <StyledInviteInputContainer ref={inputsRef}>
         <StyledInviteInput ref={searchRef}>
