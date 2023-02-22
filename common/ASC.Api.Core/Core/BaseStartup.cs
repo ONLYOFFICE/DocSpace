@@ -45,6 +45,7 @@ public abstract class BaseStartup
     protected DIHelper DIHelper { get; }
     protected bool LoadProducts { get; set; } = true;
     protected bool LoadConsumers { get; } = true;
+    protected bool WebhooksEnabled { get; set; }
 
     public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
@@ -113,6 +114,7 @@ public abstract class BaseStartup
 
         DIHelper.AddControllers();
         DIHelper.TryAdd<CultureMiddleware>();
+        DIHelper.TryAdd<LoggerMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
         DIHelper.TryAdd<ProductSecurityFilter>();
@@ -290,9 +292,11 @@ public abstract class BaseStartup
 
         app.UseCultureMiddleware();
 
-        app.UseEndpoints(endpoints =>
+        app.UseLoggerMiddleware();
+
+         app.UseEndpoints(async endpoints =>
         {
-            endpoints.MapCustom();
+            await endpoints.MapCustom(WebhooksEnabled, app.ApplicationServices);
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {

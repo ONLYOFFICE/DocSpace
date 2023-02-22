@@ -225,6 +225,10 @@ const StyledToggleButton = styled(ToggleButton)`
   margin-top: -4px;
 `;
 
+const StyledText = styled(Text)`
+  flex-basis: 72%;
+`;
+
 export {
   StyledBlock,
   StyledHeading,
@@ -247,4 +251,5 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
+  StyledText,
 };

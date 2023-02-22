@@ -2330,7 +2330,7 @@ const Dark = {
     },
 
     emptyScreen: {
-      descriptionColor: cyanBlueDarkShade,
+      descriptionColor: "#ADADAD",
     },
   },
 

@@ -19,12 +19,19 @@ import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
+import EmptyScreenPersonalDarkUrl from "PUBLIC_DIR/images/empty_screen_personal_dark.svg?url";
 import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import EmptyScreenCorporateDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
 import EmptyScreenFavoritesUrl from "PUBLIC_DIR/images/empty_screen_favorites.svg?url";
+import EmptyScreenFavoritesDarkUrl from "PUBLIC_DIR/images/empty_screen_favorites_dark.svg?url";
 import EmptyScreenRecentUrl from "PUBLIC_DIR/images/empty_screen_recent.svg?url";
-import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.png";
+import EmptyScreenRecentDarkUrl from "PUBLIC_DIR/images/empty_screen_recent_dark.svg?url";
+import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.svg?url";
+import EmptyScreenPrivacyDarkUrl from "PUBLIC_DIR/images/empty_screen_privacy_dark.svg?url";
 import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url";
+import EmptyScreenTrashSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_trash_dark.svg?url";
 import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
+import EmptyScreenArchiveDarkUrl from "PUBLIC_DIR/images/empty_screen_archive_dark.svg?url";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -146,27 +153,35 @@ const RootFolderContainer = (props) => {
         return {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
-          imageSrc: EmptyScreenPersonalUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenPersonalUrl
+            : EmptyScreenPersonalDarkUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
         return {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageSrc: EmptyScreenFavoritesUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenFavoritesUrl
+            : EmptyScreenFavoritesDarkUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
-          imageSrc: EmptyScreenRecentUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenRecentUrl
+            : EmptyScreenRecentDarkUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
           descriptionText: privateRoomDescription,
-          imageSrc: EmptyScreenPrivacyUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenPrivacyUrl
+            : EmptyScreenPrivacyDarkUrl,
           buttons: isDesktop && isEncryptionSupport && commonButtons,
         };
       case FolderType.TRASH:
@@ -174,21 +189,27 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
-          imageSrc: EmptyScreenTrashSvgUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenTrashSvgUrl
+            : EmptyScreenTrashSvgDarkUrl,
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: EmptyScreenCorporateSvgUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenCorporateSvgUrl
+            : EmptyScreenCorporateDarkSvgUrl,
           buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
           headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: EmptyScreenArchiveUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenArchiveUrl
+            : EmptyScreenArchiveDarkUrl,
           buttons: archiveButtons,
         };
       default:
