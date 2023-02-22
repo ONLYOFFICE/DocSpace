@@ -389,8 +389,6 @@ class UsersStore {
 
     const options = this.getUserContextOptions(
       isMySelf,
-      isOwner,
-      isAdministrator,
       statusType,
       role,
       status
