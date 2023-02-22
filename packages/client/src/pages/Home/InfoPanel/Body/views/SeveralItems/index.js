@@ -31,7 +31,7 @@ const SeveralItems = ({ isAccounts, theme, selectedItems }) => {
       isAccounts={isAccounts}
       className="no-thumbnail-img-wrapper"
     >
-      <img size="96px" src={imgSrc} />
+      <img src={imgSrc} />
       <Text fontSize="16px" fontWeight={700}>
         {`${itemsText}: ${selectedItems.length}`}
       </Text>

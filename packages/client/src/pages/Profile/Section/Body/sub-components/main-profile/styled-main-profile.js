@@ -54,6 +54,8 @@ export const StyledInfo = styled.div`
     flex-direction: column;
     gap: 16px;
 
+    max-width: 100%;
+
     @media ${hugeMobile} {
       gap: 8px;
     }
@@ -64,6 +66,8 @@ export const StyledInfo = styled.div`
     align-items: center;
     gap: 8px;
 
+    max-width: 100%;
+
     @media ${desktop} {
       height: 20px;
     }
@@ -71,6 +75,8 @@ export const StyledInfo = styled.div`
     .field {
       display: flex;
       gap: 16px;
+
+      max-width: calc(100% - 28px);
 
       & > p {
         padding-left: 8px;
