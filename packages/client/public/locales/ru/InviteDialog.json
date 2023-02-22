@@ -1,10 +1,14 @@
 {
   "EmailErrorMessage": "Адрес электронной почты недействителен. Вы можете отредактировать адрес, нажав на него.",
-  "IndividualInvitation": "Индивидуальное приглашение",
   "InviteAccountSearchPlaceholder": "Пригласить людей по электронной почте",
   "InviteRoomSearchPlaceholder": "Приглашайте людей по имени или электронной почте",
-  "InviteUsersToRoom": "Пригласить пользователей в комнату",
   "Invited": "Приглашен",
   "LinkCopySuccess": "Ссылка скопирована",
-  "SendInvitation": "Выслать приглашение"
+  "SendInvitation": "Выслать приглашение",
+  "InviteViaLink": "Пригласить по ссылке",
+  "InviteViaLinkDescription": "Создать универсальную ссылку для самостоятельной авторизации в {{moduleName}}",
+  "ModuleName": "комнате",
+  "AddManually": "Добавить вручную",
+  "AddManuallyDescriptionRoom": "Добавьте существующих пользователей DocSpace в комнату используя имена или лично пригласите новых пользователей по электронной почте",
+  "AddManuallyDescriptionAccounts": "Приглашайте новых пользователей в DocSpace лично по электронной почте"
 }

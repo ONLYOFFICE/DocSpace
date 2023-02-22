@@ -20,6 +20,7 @@ import {
   StyledInviteInput,
   StyledInviteInputContainer,
   StyledToggleButton,
+  StyledDescription,
 } from "../StyledInvitePanel";
 
 const ExternalLinks = ({
@@ -156,7 +157,7 @@ const ExternalLinks = ({
   return (
     <StyledBlock noPadding ref={inputsRef}>
       <StyledSubHeader inline>
-        {t("SharingPanel:ExternalLink")}
+        {t("InviteViaLink")}
         {false && ( //TODO: Change to linksVisible after added link information from backend
           <div style={{ position: "relative" }}>
             <IconButton
@@ -186,6 +187,11 @@ const ExternalLinks = ({
         )}
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
+      <StyledDescription>
+        {t("InviteViaLinkDescription", {
+          moduleName: roomId === -1 ? "DocSpace" : t("ModuleName"),
+        })}
+      </StyledDescription>
       {linksVisible && (
         <StyledInviteInputContainer key={activeLink.id}>
           <StyledInviteInput>
