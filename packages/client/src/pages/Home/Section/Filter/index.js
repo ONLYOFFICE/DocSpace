@@ -945,7 +945,7 @@ const SectionFilterContent = ({
         filterOptions.push(...thirdPartyOptions);
       }
     } else {
-      if (!isRecentFolder && !isFavoritesFolder) {
+      if (!isRecentFolder && !isFavoritesFolder && !isTrash) {
         const foldersOptions = [
           {
             key: FilterGroups.filterFolders,

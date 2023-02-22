@@ -61,7 +61,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My archive.
+        ///   Looks up a localized string similar to Archive.
         /// </summary>
         public static string Archive {
             get {
@@ -169,7 +169,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to My rooms.
+        ///   Looks up a localized string similar to Rooms.
         /// </summary>
         public static string VirtualRooms {
             get {
