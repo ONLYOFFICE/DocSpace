@@ -24,12 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModels.RequestsDto;
+namespace ASC.Api.Core.Core;
 
-public class WebhooksConfigRequestsDto
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class WebhookDisableAttribute : Attribute
 {
-    public int Id { get; set; }
-    public string Uri { get; set; }
-    public string SecretKey { get; set; }
-    public bool? Enabled { get; set; }
 }
