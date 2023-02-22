@@ -9,6 +9,7 @@ import ActionsPresentationReactSvgUrl from "PUBLIC_DIR/images/actions.presentati
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
@@ -120,7 +121,6 @@ const ArticleMainButtonContent = (props) => {
 
     mainButtonMobileVisible,
 
-    isCollaborator,
     security,
   } = props;
 
@@ -309,7 +309,7 @@ const ArticleMainButtonContent = (props) => {
           {
             id: "invite_room-collaborator",
             className: "main-button_drop-down",
-            icon: PersonManagerReactSvgUrl,
+            icon: PersonReactSvgUrl,
             label: t("Common:Collaborator"),
             onClick: onInvite,
             action: EmployeeType.Collaborator,
@@ -455,17 +455,19 @@ const ArticleMainButtonContent = (props) => {
     <>
       {isMobileArticle ? (
         <>
-          {!isArticleLoading && !isProfile && (canCreateFiles || canInvite) && (
-            <MobileView
-              t={t}
-              titleProp={t("Upload")}
-              actionOptions={actions}
-              buttonOptions={uploadActions}
-              isRooms={isRoomsFolder}
-              mainButtonMobileVisible={mainButtonMobileVisible}
-              onMainButtonClick={onCreateRoom}
-            />
-          )}
+          {!isArticleLoading &&
+            !isProfile &&
+            (!security?.Create || canInvite) && (
+              <MobileView
+                t={t}
+                titleProp={t("Upload")}
+                actionOptions={actions}
+                buttonOptions={uploadActions}
+                isRooms={isRoomsFolder}
+                mainButtonMobileVisible={mainButtonMobileVisible}
+                onMainButtonClick={onCreateRoom}
+              />
+            )}
         </>
       ) : isRoomsFolder ? (
         <StyledButton
@@ -555,7 +557,7 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
-    const { isAdmin, isOwner, isVisitor, isCollaborator } = auth.userStore.user;
+    const { isAdmin, isOwner } = auth.userStore.user;
 
     const { canCreateFiles } = accessRightsStore;
 
@@ -591,8 +593,6 @@ export default inject(
 
       isAdmin,
       isOwner,
-      isVisitor,
-      isCollaborator,
 
       mainButtonMobileVisible,
       security,
