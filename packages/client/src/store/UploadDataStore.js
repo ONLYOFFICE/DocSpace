@@ -48,6 +48,7 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
+  tempFiles = [];
   errors = 0;
 
   isUploading = false;
@@ -57,6 +58,8 @@ class UploadDataStore {
 
   currentUploadNumber = 0;
   uploadedFilesSize = 0;
+
+  isParallel = true;
 
   constructor(
     authStore,
@@ -293,7 +296,21 @@ class UploadDataStore {
     this.setIsConvertSingleFile(false);
   };
 
-  getNewPercent = (uploadedSize) => {
+  getNewPercent = (uploadedSize, indexOfFile) => {
+    const newTotalSize = sumBy(this.files, (f) =>
+      f.file && !this.uploaded ? f.file.size : 0
+    );
+    const totalUploadedFiles = this.files.filter((_, i) => i < indexOfFile);
+    const totalUploadedSize = sumBy(totalUploadedFiles, (f) =>
+      f.file && !this.uploaded ? f.file.size : 0
+    );
+    const newPercent =
+      ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
+
+    return newPercent;
+  };
+
+  getFilesPercent = (uploadedSize) => {
     const newSize = this.uploadedFilesSize + uploadedSize;
     this.uploadedFilesSize = newSize;
 
@@ -590,7 +607,24 @@ class UploadDataStore {
     let filesSize = 0;
     let convertSize = 0;
 
-    for (let index of Object.keys(uploadFiles)) {
+    const uploadFilesArray = Object.keys(uploadFiles);
+    const hasFolder =
+      uploadFilesArray.findIndex((_, ind) => {
+        const file = uploadFiles[ind];
+        const filePath = file.path ? file.path : file.webkitRelativePath;
+
+        return file.name !== filePath;
+      }) > -1;
+
+    if (hasFolder) {
+      if (this.uploaded) this.isParallel = false;
+      else {
+        this.tempFiles.push({ uploadFiles, folderId, t });
+        return;
+      }
+    }
+
+    for (let index of uploadFilesArray) {
       const file = uploadFiles[index];
 
       const parts = file.name.split(".");
@@ -651,7 +685,9 @@ class UploadDataStore {
       converted: !!this.tempConversionFiles.length,
     };
 
-    if (/* this.uploaded && */ countUploadingFiles) {
+    const isParallel = this.isParallel ? true : this.uploaded;
+
+    if (isParallel && countUploadingFiles) {
       this.setUploadData(newUploadData);
       this.startUploadFiles(t);
     }
@@ -788,17 +824,25 @@ class UploadDataStore {
 
       const { uploaded, id: fileId } = res.data.data;
 
-      let uploadedSize;
-      if (!uploaded) {
-        uploadedSize =
-          fileSize <= this.settingsStore.chunkUploadSize
-            ? fileSize
-            : this.settingsStore.chunkUploadSize;
-      } else {
-        uploadedSize = fileSize - index * this.settingsStore.chunkUploadSize;
-      }
+      let uploadedSize, newPercent;
 
-      const newPercent = this.getNewPercent(uploadedSize);
+      if (!this.isParallel) {
+        uploadedSize = uploaded
+          ? fileSize
+          : index * this.settingsStore.chunkUploadSize;
+
+        newPercent = this.getNewPercent(uploadedSize, indexOfFile);
+      } else {
+        if (!uploaded) {
+          uploadedSize =
+            fileSize <= this.settingsStore.chunkUploadSize
+              ? fileSize
+              : this.settingsStore.chunkUploadSize;
+        } else {
+          uploadedSize = fileSize - index * this.settingsStore.chunkUploadSize;
+        }
+        newPercent = this.getFilesPercent(uploadedSize);
+      }
 
       const percentCurrentFile = (index / length) * 100;
 
@@ -820,12 +864,14 @@ class UploadDataStore {
           this.files[indexOfFile].fileInfo = fileInfo;
           this.percent = newPercent;
 
-          this.currentUploadNumber -= 1;
+          if (this.isParallel) {
+            this.currentUploadNumber -= 1;
 
-          const nextFileIndex = this.files.findIndex((f) => !f.inAction);
+            const nextFileIndex = this.files.findIndex((f) => !f.inAction);
 
-          if (nextFileIndex !== -1) {
-            this.startSessionFunc(nextFileIndex, t);
+            if (nextFileIndex !== -1) {
+              this.startSessionFunc(nextFileIndex, t);
+            }
           }
         });
 
@@ -878,22 +924,55 @@ class UploadDataStore {
 
     this.primaryProgressDataStore.setPrimaryProgressBarData(progressData);
 
-    const notUploadedFiles = this.files.filter((f) => !f.inAction);
+    if (this.isParallel) {
+      // console.log("IS PARALLEL");
+      const notUploadedFiles = this.files.filter((f) => !f.inAction);
 
-    const countFiles =
-      notUploadedFiles.length >= UPLOAD_LIMIT_AT_ONCE
-        ? UPLOAD_LIMIT_AT_ONCE
-        : notUploadedFiles.length;
+      const countFiles =
+        notUploadedFiles.length >= UPLOAD_LIMIT_AT_ONCE
+          ? UPLOAD_LIMIT_AT_ONCE
+          : notUploadedFiles.length;
 
-    for (let i = 0; i < countFiles; i++) {
-      if (this.currentUploadNumber <= UPLOAD_LIMIT_AT_ONCE) {
-        const fileIndex = this.files.findIndex(
-          (f) => f.uniqueId === notUploadedFiles[i].uniqueId
-        );
-        if (fileIndex !== -1) {
-          this.currentUploadNumber += 1;
-          this.startSessionFunc(fileIndex, t);
+      for (let i = 0; i < countFiles; i++) {
+        if (this.currentUploadNumber <= UPLOAD_LIMIT_AT_ONCE) {
+          const fileIndex = this.files.findIndex(
+            (f) => f.uniqueId === notUploadedFiles[i].uniqueId
+          );
+          if (fileIndex !== -1) {
+            this.currentUploadNumber += 1;
+            this.startSessionFunc(fileIndex, t);
+          }
         }
+      }
+    } else {
+      // console.log("IS NOT PARALLEL");
+      let index = 0;
+      let len = files.length;
+      while (index < len) {
+        await this.startSessionFunc(index, t);
+        index++;
+
+        files = this.files;
+        len = files.length;
+      }
+
+      if (!this.filesToConversion.length) {
+        this.finishUploadFiles();
+      } else {
+        runInAction(() => {
+          this.uploaded = true;
+          this.isParallel = true;
+        });
+        const uploadedFiles = this.files.filter((x) => x.action === "uploaded");
+        const totalErrorsCount = sumBy(uploadedFiles, (f) => (f.error ? 1 : 0));
+        if (totalErrorsCount > 0)
+          console.log("Upload errors: ", totalErrorsCount);
+
+        setTimeout(() => {
+          if (!this.uploadPanelVisible && !totalErrorsCount && this.converted) {
+            this.clearUploadedFiles();
+          }
+        }, TIMEOUT);
       }
     }
   };
@@ -903,6 +982,7 @@ class UploadDataStore {
 
     if (!this.uploaded && this.files.length === 0) {
       this.uploaded = true;
+      this.isParallel = true;
       //setUploadData(uploadData);
       return;
     }
@@ -960,15 +1040,17 @@ class UploadDataStore {
         return { location, requestsDataArray, fileSize, path };
       })
       .then(({ location, requestsDataArray, fileSize, path }) => {
-        // this.primaryProgressDataStore.setPrimaryProgressBarData({
-        //   icon: "upload",
-        //   visible: true,
-        //   percent: this.percent,
-        //   loadingFile: {
-        //     uniqueId: this.files[indexOfFile].uniqueId,
-        //     percent: chunks < 2 ? 50 : 0,
-        //   },
-        // });
+        if (!this.isParallel) {
+          this.primaryProgressDataStore.setPrimaryProgressBarData({
+            icon: "upload",
+            visible: true,
+            percent: this.percent,
+            loadingFile: {
+              uniqueId: this.files[indexOfFile].uniqueId,
+              percent: chunks < 2 ? 50 : 0,
+            },
+          });
+        }
 
         return this.uploadFileChunks(
           location,
@@ -1003,7 +1085,9 @@ class UploadDataStore {
 
         this.files[indexOfFile].error = errorMessage;
 
-        const newPercent = this.getNewPercent(fileSize);
+        const newPercent = this.isParallel
+          ? this.getFilesPercent(fileSize)
+          : this.getNewPercent(fileSize, indexOfFile);
 
         this.primaryProgressDataStore.setPrimaryProgressBarData({
           icon: "upload",
@@ -1015,6 +1099,8 @@ class UploadDataStore {
         return Promise.resolve();
       })
       .finally(() => {
+        if (!this.isParallel) return;
+
         const allFilesIsUploaded =
           this.files.findIndex((f) => f.action !== "uploaded" && !f.error) ===
           -1;
@@ -1023,7 +1109,10 @@ class UploadDataStore {
           if (!this.filesToConversion.length) {
             this.finishUploadFiles();
           } else {
-            runInAction(() => (this.uploaded = true));
+            runInAction(() => {
+              this.uploaded = true;
+              this.isParallel = true;
+            });
             const uploadedFiles = this.files.filter(
               (x) => x.action === "uploaded"
             );
@@ -1051,6 +1140,21 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
+    if (this.tempFiles.length) {
+      this.uploaded = true;
+      this.isParallel = true;
+      this.converted = true;
+      this.uploadedFilesSize = 0;
+
+      for (let item of this.tempFiles) {
+        const { uploadFiles, folderId, t } = item;
+        this.startUpload(uploadFiles, folderId, t);
+      }
+      this.tempFiles = [];
+
+      return;
+    }
+
     const totalErrorsCount = sumBy(this.files, (f) => {
       f.error && toastr.error(f.error);
       return f.error ? 1 : 0;
@@ -1065,6 +1169,7 @@ class UploadDataStore {
     }
 
     this.uploaded = true;
+    this.isParallel = true;
     this.converted = true;
     this.uploadedFilesSize = 0;
 
