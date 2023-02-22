@@ -611,7 +611,12 @@ class UploadDataStore {
     const hasFolder =
       uploadFilesArray.findIndex((_, ind) => {
         const file = uploadFiles[ind];
-        const filePath = file.path ? file.path : file.webkitRelativePath;
+
+        const filePath = file.path
+          ? file.path
+          : file.webkitRelativePath
+          ? file.webkitRelativePath
+          : file.name;
 
         return file.name !== filePath;
       }) > -1;
