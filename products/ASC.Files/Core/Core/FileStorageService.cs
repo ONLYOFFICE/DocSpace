@@ -3207,8 +3207,8 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
-
-            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(Guid.Empty, _tenantManager.GetCurrentTenant().Id)
+           
+            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant().Id)
             {
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
                 FileIds = fileIntIds

@@ -114,7 +114,7 @@ public class EmployeeDtoHelper
 
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = await _userPhotoManager.GetSmallPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.AvatarSmall = await _userPhotoManager.GetSmallPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (result.Id != Guid.Empty)

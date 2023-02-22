@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.Json.Serialization;
+using System.Net;
 
 namespace ASC.Webhooks;
 
@@ -35,6 +35,7 @@ public class WebhookSender
     private readonly ILogger _log;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private const string SignatureHeader = "x-docspace-signature-256";
 
     public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, IHttpClientFactory clientFactory)
     {
@@ -70,7 +71,7 @@ public class WebhookSender
             };
 
             request.Headers.Add("Accept", "*/*");
-            request.Headers.Add("Secret", "SHA256=" + GetSecretHash(entry.Config.SecretKey, entry.RequestPayload));
+            request.Headers.Add(SignatureHeader, $"sha256={GetSecretHash(entry.Config.SecretKey, entry.RequestPayload)}");
             requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
 
             var response = await httpClient.SendAsync(request, cancellationToken);
@@ -78,9 +79,15 @@ public class WebhookSender
             status = (int)response.StatusCode;
             responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value), _jsonSerializerOptions);
             responsePayload = await response.Content.ReadAsStringAsync();
-            delivery = DateTime.UtcNow;
 
             _log.DebugResponse(response);
+        }
+        catch (SslException e)
+        {
+            status = (int)e.Errors;
+            responsePayload = e.Message;
+
+            _log.ErrorSSLVerification(e);
         }
         catch (HttpRequestException e)
         {
@@ -88,30 +95,33 @@ public class WebhookSender
             {
                 status = (int)e.StatusCode.Value;
             }
+
+            //if (e.InnerException is SocketException se)
+            //{
+            //    status = (int)se.SocketErrorCode;
+            //}
+
             responsePayload = e.Message;
-            delivery = DateTime.UtcNow;
 
             _log.ErrorWithException(e);
         }
         catch (Exception e)
         {
+            status = (int)HttpStatusCode.InternalServerError;
             _log.ErrorWithException(e);
         }
 
-        if (delivery != DateTime.MinValue)
-        {
-            await dbWorker.UpdateWebhookJournal(entry.Id, status, delivery, requestHeaders, responsePayload, responseHeaders);
-        }
+        delivery = DateTime.UtcNow;
+
+        await dbWorker.UpdateWebhookJournal(entry.Id, status, delivery, requestHeaders, responsePayload, responseHeaders);
     }
 
     private string GetSecretHash(string secretKey, string body)
     {
         var secretBytes = Encoding.UTF8.GetBytes(secretKey);
-
-        using (var hasher = new HMACSHA256(secretBytes))
-        {
-            var data = Encoding.UTF8.GetBytes(body);
-            return BitConverter.ToString(hasher.ComputeHash(data));
-        }
+        using var hasher = new HMACSHA256(secretBytes);
+        var data = Encoding.UTF8.GetBytes(body);
+        var hash = hasher.ComputeHash(data);
+        return Convert.ToHexString(hash);
     }
 }
