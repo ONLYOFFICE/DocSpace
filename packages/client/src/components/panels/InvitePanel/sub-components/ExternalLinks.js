@@ -188,9 +188,9 @@ const ExternalLinks = ({
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
       <StyledDescription>
-        {t("InviteViaLinkDescription", {
-          moduleName: roomId === -1 ? "DocSpace" : t("ModuleName"),
-        })}
+        {roomId === -1
+          ? t("InviteViaLinkDescriptionAccounts")
+          : t("InviteViaLinkDescriptionRoom")}
       </StyledDescription>
       {linksVisible && (
         <StyledInviteInputContainer key={activeLink.id}>

@@ -6,8 +6,8 @@
   "LinkCopySuccess": "Ссылка скопирована",
   "SendInvitation": "Выслать приглашение",
   "InviteViaLink": "Пригласить по ссылке",
-  "InviteViaLinkDescription": "Создать универсальную ссылку для самостоятельной авторизации в {{moduleName}}",
-  "ModuleName": "комнате",
+  "InviteViaLinkDescriptionRoom": "Создать универсальную ссылку для самостоятельной авторизации в комнате",
+  "InviteViaLinkDescriptionAccounts": "Создать универсальную ссылку для самостоятельной авторизации в DocSpace",
   "AddManually": "Добавить вручную",
   "AddManuallyDescriptionRoom": "Добавьте существующих пользователей DocSpace в комнату используя имена или лично пригласите новых пользователей по электронной почте",
   "AddManuallyDescriptionAccounts": "Приглашайте новых пользователей в DocSpace лично по электронной почте"
