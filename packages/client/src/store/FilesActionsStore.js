@@ -1190,7 +1190,7 @@ class FilesActionStore {
         this.openLocationAction(item.ExtraLocation);
         this.setSearchTitleOpenLocation(item.title);
         this.setItemOpenLocation({
-          id: +item.id,
+          id: item.id,
           isFileHasExst: !item.fileExst,
         });
       })

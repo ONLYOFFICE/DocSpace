@@ -154,7 +154,7 @@ export default inject(
     } = filesStore;
 
     const isHighlight =
-      highlightFile.id === item?.id && highlightFile.isExst === !item?.fileExst;
+      highlightFile.id == item?.id && highlightFile.isExst === !item?.fileExst;
 
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 

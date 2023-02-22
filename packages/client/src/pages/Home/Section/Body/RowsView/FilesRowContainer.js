@@ -113,8 +113,7 @@ const FilesRowContainer = ({
         isRooms={isRooms}
         isTrashFolder={isTrashFolder}
         isHighlight={
-          highlightFile.id === item.id &&
-          highlightFile.isExst === !item.fileExst
+          highlightFile.id == item.id && highlightFile.isExst === !item.fileExst
         }
       />
     ));
