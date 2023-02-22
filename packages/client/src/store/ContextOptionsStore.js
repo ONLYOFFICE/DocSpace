@@ -516,7 +516,7 @@ class ContextOptionsStore {
       }
     }
 
-    return options;
+    return options.filter((o) => !!o);
   };
 
   onShowInfoPanel = (item) => {
@@ -651,8 +651,8 @@ class ContextOptionsStore {
 
     const hasInfoPanel = contextOptions.includes("show-info");
 
-    const emailSendIsDisabled = true;
-    const showSeparator0 = hasInfoPanel || !isMedia || !emailSendIsDisabled;
+    //const emailSendIsDisabled = true;
+    const showSeparator0 = hasInfoPanel || !isMedia; // || !emailSendIsDisabled;
 
     const separator0 = showSeparator0
       ? {
@@ -916,13 +916,13 @@ class ContextOptionsStore {
         onClick: () => this.onCopyLink(item, t),
         disabled: false,
       },
-      {
-        id: "option_send-by-email",
-        key: "send-by-email",
-        label: t("SendByEmail"),
-        icon: MailReactSvgUrl,
-        disabled: emailSendIsDisabled,
-      },
+      // {
+      //   id: "option_send-by-email",
+      //   key: "send-by-email",
+      //   label: t("SendByEmail"),
+      //   icon: MailReactSvgUrl,
+      //   disabled: emailSendIsDisabled,
+      // },
       ...versionActions,
       {
         id: "option_show-info",
@@ -1091,6 +1091,15 @@ class ContextOptionsStore {
         });
       }
     }
+
+    if (options[0]?.isSeparator) {
+      options.shift();
+    }
+
+    if (options[options.length - 1]?.isSeparator) {
+      options.pop();
+    }
+
     return options;
   };
 

@@ -128,7 +128,7 @@ const StyledInviteInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  ${fillAvailableWidth}
+  width: 100%;
   margin-bottom: 20px;
 
   .header_aside-panel {
@@ -225,6 +225,10 @@ const StyledToggleButton = styled(ToggleButton)`
   margin-top: -4px;
 `;
 
+const StyledText = styled(Text)`
+  flex-basis: 72%;
+`;
+
 export {
   StyledBlock,
   StyledHeading,
@@ -247,4 +251,5 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
+  StyledText,
 };

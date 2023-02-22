@@ -80,6 +80,7 @@ public class FileMarker
     private readonly AuthContext _authContext;
     private readonly IServiceProvider _serviceProvider;
     private readonly FilesSettingsHelper _filesSettingsHelper;
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
 
     public FileMarker(
@@ -355,6 +356,10 @@ public class FileMarker
         var newTags = new List<Tag>();
         var updateTags = new List<Tag>();
 
+        try
+        {
+            await _semaphore.WaitAsync();
+
         foreach (var userID in userEntriesData.Keys)
         {
             if (await tagDao.GetNewTagsAsync(userID, obj.FileEntry).AnyAsync())
@@ -368,8 +373,6 @@ public class FileMarker
             await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
         }
 
-
-
         if (updateTags.Count > 0)
         {
             await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
@@ -378,6 +381,15 @@ public class FileMarker
         if (newTags.Count > 0)
         {
             await tagDao.SaveTags(newTags, obj.CurrentAccountId);
+        }
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
         }
 
         await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(newTags), socketManager));

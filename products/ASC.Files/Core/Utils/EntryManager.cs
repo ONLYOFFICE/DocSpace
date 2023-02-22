@@ -371,7 +371,7 @@ public class EntryManager
     }
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
-        string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
+        string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, T roomId = default, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
         bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
     {
         var total = 0;
@@ -438,7 +438,7 @@ public class EntryManager
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
 
-            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders);
+            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText,  withSubfolders);
             var files = fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
             //share
             var shared = _fileSecurity.GetPrivacyForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
@@ -492,6 +492,11 @@ public class EntryManager
                 {
                     entries.AddRange(items);
                 }
+            }
+            
+            if (parent.FolderType == FolderType.TRASH)
+            { 
+                entries = await GetWithOriginAsync(entries, roomId is int id ? id : default);
             }
         }
 
@@ -941,6 +946,28 @@ public class EntryManager
                 return c * (isNewSortResult == 0 ? DateTime.Compare(x.ModifiedOn, y.ModifiedOn) : isNewSortResult);
             }
             ,
+            SortedByType.Room => (x, y) =>
+            {
+                var x1 = x.OriginRoomTitle;
+                var x2 = y.OriginRoomTitle;
+
+                if (x1 == null && x2 == null)
+                {
+                    return 0;
+                }
+                
+                if (x1 == null)
+                {
+                    return c * 1;
+                }
+                
+                if (x2 == null)
+                {
+                    return c * -1;
+                }
+
+                return c * x1.EnumerableComparer(x2);
+            },
             _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
         };
 
@@ -1836,6 +1863,41 @@ public class EntryManager
         await tagDao.SaveTags(tag);
     }
 
+    private async Task<List<FileEntry>> GetWithOriginAsync(List<FileEntry> entries, int filterRoomId)
+    {
+        var result = new List<FileEntry>(entries.Count);
+        var needFiltering = filterRoomId != default;
+        var folderDao = _daoFactory.GetFolderDao<int>();
+
+        var originsData = await folderDao.GetOriginsDataAsync(entries.Cast<FileEntry<int>>().Select(e => e.Id)).ToListAsync();
+
+        foreach (var entry in entries)
+        {
+            var fileEntry = (FileEntry<int>)entry;
+            var data = originsData.FirstOrDefault(data => data.Entries.Contains(new KeyValuePair<string, FileEntryType>(fileEntry.Id.ToString(), fileEntry.FileEntryType)));
+
+            if (data?.OriginRoom != null && DocSpaceHelper.IsRoom(data.OriginRoom.FolderType))
+            {
+                fileEntry.OriginRoomId = data.OriginRoom.Id;
+                fileEntry.OriginRoomTitle = data.OriginRoom.Title;
+            }
+            
+            if (needFiltering && fileEntry.OriginRoomId != filterRoomId)
+            {
+                continue;
+            }
+
+            if (data?.OriginFolder != null)
+            {
+                fileEntry.OriginId = data.OriginFolder.Id;
+                fileEntry.OriginTitle = data.OriginFolder.FolderType == FolderType.USER ? FilesUCResource.MyFiles : data.OriginFolder.Title;
+            }
+
+            result.Add(entry);
+        }
+
+        return result;
+    }
 
     //Long operation
     public async Task DeleteSubitemsAsync<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao, ILinkDao linkDao)
@@ -1893,12 +1955,12 @@ public class EntryManager
 
     public static async Task ReassignItemsAsync<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
     {
-        var files = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true).ToListAsync();
+        var files = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, default, true).ToListAsync();
         var fileIds = files.Where(file => file.CreateBy == fromUserId).Select(file => file.Id);
 
         await fileDao.ReassignFilesAsync(fileIds.ToArray(), toUserId);
 
-        var folderIds = await folderDao.GetFoldersAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true)
+        var folderIds = await folderDao.GetFoldersAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, default, true)
                                  .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.Id)
                                  .ToListAsync();
 

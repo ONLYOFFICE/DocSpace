@@ -9,7 +9,7 @@ import {
 
 const StyledContainer = styled.div`
   ${(props) =>
-    !props.isDropBox &&
+    !props.isDropBoxComponent &&
     props.isDesktop &&
     css`
       width: fit-content;
@@ -26,6 +26,7 @@ const StyledContainer = styled.div`
   height: 100%;
   ${(props) =>
     props.isDesktopClient &&
+    props.isDropBoxComponent &&
     css`
       max-height: 32px;
     `}

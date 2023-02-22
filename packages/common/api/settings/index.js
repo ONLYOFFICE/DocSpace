@@ -1,10 +1,10 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings() {
+export function getSettings(withPassword = false) {
   return request({
     method: "get",
-    url: "/settings.json",
+    url: `/settings.json?withPassword=${withPassword}`,
   });
 }
 

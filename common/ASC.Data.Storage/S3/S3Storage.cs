@@ -56,6 +56,7 @@ public class S3Storage : BaseStorage
 
     private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
     private string _encryptionKey;
+    private readonly IConfiguration _configuration;
 
     public S3Storage(
         TempStream tempStream,
@@ -65,9 +66,11 @@ public class S3Storage : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider factory,
         ILogger<S3Storage> options,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        IConfiguration configuration)
         : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
     {
+        _configuration = configuration;
     }
 
     public Uri GetUriInternal(string path)
@@ -1225,7 +1228,7 @@ public class S3Storage : BaseStorage
 
             var uploadId = initResponse.UploadId;
 
-            var partSize = 5 * (long)Math.Pow(2, 20); // Part size is 5 MB.
+            var partSize = GetChunkSize();
 
             long bytePosition = 0;
             for (var i = 1; bytePosition < objectSize; i++)
@@ -1463,7 +1466,19 @@ public class S3Storage : BaseStorage
 
         return el.ETag;
     }
-  
+
+    private long GetChunkSize()
+    {
+        var configSetting = _configuration["files:uploader:chunk-size"];
+        if (!string.IsNullOrEmpty(configSetting))
+        {
+            configSetting = configSetting.Trim();
+            return long.Parse(configSetting);
+        }
+        long defaultValue = 10 * 1024 * 1024;
+        return defaultValue;
+    }
+
     private enum EncryptionMethod
     {
         None,

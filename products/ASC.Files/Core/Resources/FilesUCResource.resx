@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Archive" xml:space="preserve">
-    <value>My archive</value>
+    <value>Archive</value>
   </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Common</value>
@@ -154,6 +154,6 @@
     <value>Trash</value>
   </data>
   <data name="VirtualRooms" xml:space="preserve">
-    <value>My rooms</value>
+    <value>Rooms</value>
   </data>
 </root>

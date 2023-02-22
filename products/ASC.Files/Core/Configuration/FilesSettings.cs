@@ -105,7 +105,7 @@ public class FilesSettings : ISettings<FilesSettings>
             HideFavoritesSetting = false,
             HideTemplatesSetting = false,
             DownloadTarGzSetting = false,
-            AutomaticallyCleanUpSetting = null,
+            AutomaticallyCleanUpSetting = new AutoCleanUpData { IsAutoCleanUp = true, Gap = DateToAutoCleanUp.ThirtyDays },
             DefaultSharingAccessRightsSetting = null
         };
     }

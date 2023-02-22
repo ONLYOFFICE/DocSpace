@@ -36,6 +36,7 @@ import { Consumer } from "@docspace/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import Navigation from "@docspace/common/components/Navigation";
+import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
 import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
@@ -685,11 +686,15 @@ class SectionHeaderContent extends React.Component {
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
+    const isEmptyTrash = !![
+      ...this.props.activeFiles,
+      ...this.props.activeFolders,
+    ].length;
 
-    return (
-      <Consumer>
+    return [
+      <Consumer key="header">
         {(context) => (
-          <StyledContainer>
+          <StyledContainer isRecycleBinFolder={isRecycleBinFolder}>
             {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
@@ -727,6 +732,7 @@ class SectionHeaderContent extends React.Component {
                     getContextOptionsFolder={this.getContextOptionsFolder}
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
+                    isTrashFolder={isRecycleBinFolder}
                     isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
                     isEmptyFilesList={
                       isArchiveFolder ? isEmptyArchive : isEmptyFilesList
@@ -737,6 +743,7 @@ class SectionHeaderContent extends React.Component {
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
                       trash: t("EmptyRecycleBin"),
+                      trashWarning: t("TrashErasureWarning"),
                     }}
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
@@ -748,8 +755,15 @@ class SectionHeaderContent extends React.Component {
             )}
           </StyledContainer>
         )}
-      </Consumer>
-    );
+      </Consumer>,
+      isRecycleBinFolder && !isEmptyPage && (
+        <TrashWarning
+          key="trash-warning"
+          title={t("Files:TrashErasureWarning")}
+          isTabletView
+        />
+      ),
+    ];
   }
 }
 

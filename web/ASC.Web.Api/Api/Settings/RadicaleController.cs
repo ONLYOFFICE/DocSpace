@@ -169,7 +169,7 @@ public class RadicaleController : BaseSettingsController
 
     }
 
-    public string CardDavAllSerialization(Uri uri)
+    private string CardDavAllSerialization(Uri uri)
     {
         var builder = new StringBuilder();
         var users = _userManager.GetUsers();
@@ -182,7 +182,7 @@ public class RadicaleController : BaseSettingsController
         return builder.ToString();
     }
 
-    public static CardDavItem ItemFromUserInfo(UserInfo u)
+    private static CardDavItem ItemFromUserInfo(UserInfo u)
     {
         return new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
     }

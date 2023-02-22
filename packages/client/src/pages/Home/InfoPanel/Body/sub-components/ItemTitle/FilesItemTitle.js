@@ -9,26 +9,10 @@ import ItemContextOptions from "./ItemContextOptions";
 
 import { StyledTitle } from "../../styles/common";
 
-const FilesItemTitle = ({
-  t,
-  selection,
-  isSeveralItems,
-  getIcon,
-  selectionLength,
-}) => {
+const FilesItemTitle = ({ t, selection, isSeveralItems }) => {
   const itemTitleRef = useRef();
 
-  if (isSeveralItems)
-    return (
-      <StyledTitle>
-        <div className="item-icon">
-          <ReactSVG className="icon" src={getIcon(32, ".file")} />
-        </div>
-        <Text className="text">
-          {`${t("InfoPanel:ItemsSelected")}: ${selectionLength}`}
-        </Text>
-      </StyledTitle>
-    );
+  if (isSeveralItems) return <></>;
 
   const icon = selection.icon;
 
