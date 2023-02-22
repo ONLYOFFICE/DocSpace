@@ -3085,6 +3085,9 @@ const Base = {
       descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
+    notifications: {
+      textDescriptionColor: "#A3A9AE",
+    },
   },
 
   activeSessions: {

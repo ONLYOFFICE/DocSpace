@@ -9,6 +9,8 @@ const UsefulTipsContainer = ({
   t,
   changeSubscription,
   usefulTipsSubscription,
+  textProps,
+  textDescriptionsProps,
 }) => {
   const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
@@ -22,15 +24,10 @@ const UsefulTipsContainer = ({
   return (
     <div className="notification-container">
       <div>
-        <Text
-          fontSize="15px"
-          fontWeight="600"
-          className="subscription-title"
-          noSelect
-        >
+        <Text {...textProps} className="subscription-title">
           {t("UsefulTips")}
         </Text>
-        <Text fontSize="12px">{t("UsefulTipsDescription")}</Text>
+        <Text {...textDescriptionsProps}>{t("UsefulTipsDescription")}</Text>
       </div>
       <ToggleButton
         className="toggle-btn"

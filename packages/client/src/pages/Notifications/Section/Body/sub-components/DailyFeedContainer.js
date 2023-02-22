@@ -10,6 +10,8 @@ const DailyFeedContainer = ({
   t,
   dailyFeedSubscriptions,
   changeSubscription,
+  textProps,
+  textDescriptionsProps,
 }) => {
   const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
@@ -23,15 +25,10 @@ const DailyFeedContainer = ({
   return (
     <div className="notification-container">
       <div>
-        <Text
-          fontSize="15px"
-          fontWeight="600"
-          className="subscription-title"
-          noSelect
-        >
+        <Text {...textProps} className="subscription-title">
           {t("DailyFeed")}
         </Text>
-        <Text fontSize="12px">{t("DailyFeedDescription")}</Text>
+        <Text {...textDescriptionsProps}>{t("DailyFeedDescription")}</Text>
       </div>
       <ToggleButton
         className="toggle-btn"

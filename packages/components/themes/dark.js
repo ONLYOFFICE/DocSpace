@@ -3084,6 +3084,9 @@ const Dark = {
       descriptionColor: "#ADADAD",
       border: "1px solid #474747",
     },
+    notifications: {
+      textDescriptionColor: "#858585",
+    },
   },
 
   activeSessions: {

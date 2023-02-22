@@ -12,6 +12,8 @@ const RoomsActionsContainer = ({
   changeSubscription,
   fetchTreeFolders,
   treeFolders,
+  textProps,
+  textDescriptionsProps,
 }) => {
   const onChangeEmailSubscription = async (e) => {
     const checked = e.currentTarget.checked;
@@ -34,15 +36,12 @@ const RoomsActionsContainer = ({
   return (
     <div className="notification-container">
       <div>
-        <Text
-          fontSize="15px"
-          fontWeight="600"
-          className="subscription-title"
-          noSelect
-        >
+        <Text {...textProps} className="subscription-title">
           {t("RoomsActions")}
         </Text>
-        <Text fontSize="12px">{t("ActionsWithFilesDescription")}</Text>
+        <Text {...textDescriptionsProps}>
+          {t("ActionsWithFilesDescription")}
+        </Text>
       </div>
       <ToggleButton
         className="toggle-btn"

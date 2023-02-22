@@ -65,6 +65,16 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
 
   if (!isLoading && !isContentLoaded) return <></>;
 
+  const textProps = {
+    fontSize: "14px",
+    fontWeight: "600",
+    noSelect: true,
+  };
+  const textDescriptionsProps = {
+    fontSize: "12px",
+    className: "notification-container_description",
+  };
+
   const badgesContent = (
     <>
       <StyledTextContent>
@@ -80,7 +90,11 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
         {isLoadingContent ? (
           <Loaders.Notifications />
         ) : (
-          <RoomsActionsContainer t={t} />
+          <RoomsActionsContainer
+            t={t}
+            textProps={textProps}
+            textDescriptionsProps={textDescriptionsProps}
+          />
         )}
       </div>
     </>
@@ -101,9 +115,21 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
         <Loaders.Notifications count={3} />
       ) : (
         <>
-          <RoomsActivityContainer t={t} />
-          <DailyFeedContainer t={t} />
-          <UsefulTipsContainer t={t} />{" "}
+          <RoomsActivityContainer
+            t={t}
+            textProps={textProps}
+            textDescriptionsProps={textDescriptionsProps}
+          />
+          <DailyFeedContainer
+            t={t}
+            textProps={textProps}
+            textDescriptionsProps={textDescriptionsProps}
+          />
+          <UsefulTipsContainer
+            t={t}
+            textProps={textProps}
+            textDescriptionsProps={textDescriptionsProps}
+          />
         </>
       )}
     </>
