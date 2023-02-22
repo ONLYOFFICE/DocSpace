@@ -121,6 +121,7 @@ const ArticleMainButtonContent = (props) => {
     mainButtonMobileVisible,
 
     isCollaborator,
+    security,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -446,10 +447,7 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled =
-    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
-    isArchiveFolder ||
-    (isCollaborator && isRoomsFolder);
+  const isDisabled = isAccountsPage ? !canInvite : !security?.Create;
 
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
@@ -553,6 +551,8 @@ export default inject(
 
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
+    const security = selectedFolderStore.security;
+
     const currentFolderId = selectedFolderStore.id;
 
     const { isAdmin, isOwner, isVisitor, isCollaborator } = auth.userStore.user;
@@ -595,6 +595,7 @@ export default inject(
       isCollaborator,
 
       mainButtonMobileVisible,
+      security,
     };
   }
 )(
