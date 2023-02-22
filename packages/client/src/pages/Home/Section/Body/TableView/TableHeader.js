@@ -14,7 +14,14 @@ class FilesTableHeader extends React.Component {
   }
 
   getTableColumns = (fromUpdate = false) => {
-    const { t, isRooms, isTrashFolder, getColumns } = this.props;
+    const {
+      t,
+      isRooms,
+      isTrashFolder,
+      getColumns,
+      columnStorageName,
+      columnInfoPanelStorageName,
+    } = this.props;
 
     const defaultColumns = [];
 
@@ -224,11 +231,15 @@ class FilesTableHeader extends React.Component {
       this.setState({
         columns,
         resetColumnsSize,
+        columnStorageName,
+        columnInfoPanelStorageName,
       });
     } else {
       this.state = {
         columns,
         resetColumnsSize,
+        columnStorageName,
+        columnInfoPanelStorageName,
       };
     }
   };
@@ -267,9 +278,18 @@ class FilesTableHeader extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
+    const {
+      isRooms,
+      isTrashFolder,
+      columnStorageName,
+      columnInfoPanelStorageName,
+    } = this.props;
+
     if (
-      this.props.isRooms !== prevProps.isRooms ||
-      this.props.isTrashFolder !== prevProps.isTrashFolder
+      isRooms !== prevProps.isRooms ||
+      isTrashFolder !== prevProps.isTrashFolder ||
+      columnStorageName !== prevProps.columnStorageName ||
+      columnInfoPanelStorageName !== prevProps.columnInfoPanelStorageName
     ) {
       return this.getTableColumns(true);
     }
@@ -361,35 +381,21 @@ class FilesTableHeader extends React.Component {
       firstElemChecked,
       sortingVisible,
       infoPanelVisible,
-      columnStorageName,
-      filesColumnStorageName,
-      roomsColumnStorageName,
-      columnInfoPanelStorageName,
-      filesColumnInfoPanelStorageName,
-      roomsColumnInfoPanelStorageName,
+
       withPaging,
       tagRef,
       setHideColumns,
     } = this.props;
 
-    const { columns, resetColumnsSize } = this.state;
+    const {
+      columns,
+      resetColumnsSize,
+      columnStorageName,
+      columnInfoPanelStorageName,
+    } = this.state;
 
     const sortBy = isRooms ? roomsFilter.sortBy : filter.sortBy;
     const sortOrder = isRooms ? roomsFilter.sortOrder : filter.sortOrder;
-
-    // TODO: make some better
-    let currentColumnStorageName = columnStorageName;
-    let currentColumnInfoPanelStorageName = columnInfoPanelStorageName;
-
-    if (columns.length === 5 && columnStorageName === filesColumnStorageName) {
-      currentColumnStorageName = roomsColumnStorageName;
-      currentColumnInfoPanelStorageName = roomsColumnInfoPanelStorageName;
-    }
-
-    if (columns.length === 7 && columnStorageName === roomsColumnStorageName) {
-      currentColumnStorageName = filesColumnStorageName;
-      currentColumnInfoPanelStorageName = filesColumnInfoPanelStorageName;
-    }
 
     return (
       <TableHeader
@@ -399,8 +405,8 @@ class FilesTableHeader extends React.Component {
         sortBy={sortBy}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={currentColumnStorageName}
-        columnInfoPanelStorageName={currentColumnInfoPanelStorageName}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
         sortingVisible={sortingVisible}
@@ -443,10 +449,6 @@ export default inject(
       tableStorageName,
       columnStorageName,
       columnInfoPanelStorageName,
-      filesColumnStorageName,
-      roomsColumnStorageName,
-      filesColumnInfoPanelStorageName,
-      roomsColumnInfoPanelStorageName,
 
       nameColumnIsEnabled,
       authorColumnIsEnabled,
@@ -494,10 +496,6 @@ export default inject(
       tableStorageName,
       columnStorageName,
       columnInfoPanelStorageName,
-      filesColumnStorageName,
-      roomsColumnStorageName,
-      filesColumnInfoPanelStorageName,
-      roomsColumnInfoPanelStorageName,
 
       nameColumnIsEnabled,
       authorColumnIsEnabled,

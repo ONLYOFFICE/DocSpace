@@ -23,6 +23,33 @@ namespace ASC.Migrations.PostgreSql.Migrations
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("id");
+
+                b.Property<string>("Route")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)")
+                    .HasColumnName("route");
+
+                b.Property<string>("Method")
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnType("character varying(10)")
+                    .HasColumnName("method");
+
+                b.HasKey("Id")
+                    .HasName("PRIMARY");
+
+                b.ToTable("webhooks", (string)null);
+
+                b.HasAnnotation("MySql:CharSet", "utf8");
+            });
+
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
                     b.Property<int>("Id")
@@ -90,11 +117,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("delivery");
 
-                    b.Property<string>("Method")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("method");
-
                     b.Property<string>("RequestHeaders")
                         .HasColumnType("json")
                         .HasColumnName("request_headers");
@@ -112,10 +134,9 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("text")
                         .HasColumnName("response_payload");
 
-                    b.Property<string>("Route")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("route");
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.Property<int>("Status")
                         .HasColumnType("int")
