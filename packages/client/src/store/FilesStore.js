@@ -482,10 +482,12 @@ class FilesStore {
   setHighlightFileId = (highlightFile) => {
     const { highlightFileId, isFileHasExst } = highlightFile;
 
-    this.highlightFile = {
-      id: highlightFileId,
-      isExst: isFileHasExst,
-    };
+    runInAction(() => {
+      this.highlightFile = {
+        id: highlightFileId,
+        isExst: isFileHasExst,
+      };
+    });
 
     if (timerId) {
       clearTimeout(timerId);
@@ -495,7 +497,9 @@ class FilesStore {
     if (Object.keys(highlightFile).length === 0) return;
 
     timerId = setTimeout(() => {
-      this.highlightFile = {};
+      runInAction(() => {
+        this.highlightFile = {};
+      });
     }, 1000);
   };
 
