@@ -80,7 +80,7 @@ public class FileMarker
     private readonly AuthContext _authContext;
     private readonly IServiceProvider _serviceProvider;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private static SemaphoreSlim _semaphore = new SemaphoreSlim(1); 
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     public FileMarker(
         TenantManager tenantManager,
         UserManager userManager,
@@ -349,12 +349,12 @@ public class FileMarker
         }
 
         var tagDao = _daoFactory.GetTagDao<T>();
+        var newTags = new List<Tag>();
+        var updateTags = new List<Tag>();
 
         try
         {
             await _semaphore.WaitAsync();
-            var newTags = new List<Tag>();
-            var updateTags = new List<Tag>();
 
             foreach (var userID in userEntriesData.Keys)
             {
