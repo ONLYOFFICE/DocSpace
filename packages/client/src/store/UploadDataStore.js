@@ -491,6 +491,7 @@ class UploadDataStore {
               file.error = error;
               file.convertProgress = progress;
               file.inConversion = false;
+              file.fileInfo = fileInfo;
 
               if (error.indexOf("password") !== -1) {
                 file.needPassword = true;
