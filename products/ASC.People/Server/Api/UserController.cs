@@ -1325,6 +1325,10 @@ public class UserController : PeopleControllerBase
                 case EmployeeType.RoomAdmin:
                     excludeGroups.Add(Constants.GroupUser.ID); 
                     excludeGroups.Add(Constants.GroupAdmin.ID);
+                    excludeGroups.Add(Constants.GroupCollaborator.ID);
+                    break;
+                case EmployeeType.Collaborator:
+                    includeGroups.Add(new List<Guid> { Constants.GroupCollaborator.ID });
                     break;
                 case EmployeeType.User:
                     includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
