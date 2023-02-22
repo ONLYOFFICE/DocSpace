@@ -18,8 +18,13 @@ const StyledNoItemContainer = styled.div`
   }
 
   .no-thumbnail-img-wrapper {
-    width: 96px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
+
+    img {
+      width: 75px;
+      height: 75px;
+    }
   }
 
   .no-accounts {
