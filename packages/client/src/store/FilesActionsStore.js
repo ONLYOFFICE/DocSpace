@@ -28,7 +28,7 @@ import {
   FileStatus,
   FolderType,
 } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
