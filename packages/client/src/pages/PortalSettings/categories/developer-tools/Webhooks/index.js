@@ -1,32 +1,25 @@
-import Button from '@docspace/components/button';
-import React, { useState } from 'react';
-import ColorSchemeDialog from './sub-components/colorSchemeDialog';
-import { Info } from './sub-components/Info';
-import { WebhooksList } from './sub-components/WebhooksList';
+import Button from "@docspace/components/button";
+import React, { useState } from "react";
+import { CreateWebhookDialog } from "./sub-components/CreateWebhookDialog";
+import { Info } from "./sub-components/Info";
+import { WebhooksList } from "./sub-components/WebhooksList";
 
 const Webhooks = () => {
-  const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(true);
-  const onClickColor = () => {};
-  const onCloseColorSchemeDialog = () => {
-    setShowColorSchemeDialog(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(true);
+  const onCreateClose = () => {
+    setIsCreateOpen(false);
   };
   return (
     <div>
       <Info />
-      <Button
-        label="Create webhook"
-        primary
-        size="small"
-        onClick={() => setShowColorSchemeDialog(true)}
-      />
+      <Button label="Create webhook" primary size="small" onClick={() => setIsCreateOpen(true)} />
       <WebhooksList />
-      <ColorSchemeDialog
-        onClickColor={onClickColor}
+      <CreateWebhookDialog
         currentColorAccent={null}
         currentColorButtons={null}
-        visible={showColorSchemeDialog}
-        onClose={onCloseColorSchemeDialog}
-        viewMobile={false}
+        visible={isCreateOpen}
+        onClose={onCreateClose}
+        header="Create webhook"
       />
     </div>
   );
