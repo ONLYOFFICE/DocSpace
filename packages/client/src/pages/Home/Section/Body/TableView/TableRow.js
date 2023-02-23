@@ -40,6 +40,7 @@ const FilesTableRow = (props) => {
     isRooms,
     isTrashFolder,
     isHighlight,
+    hideColumns,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -141,6 +142,7 @@ const FilesTableRow = (props) => {
         }
         isRoom={item.isRoom}
         isHighlight={isHighlight}
+        hideColumns={hideColumns}
       >
         {isRooms ? (
           <RoomsRowDataComponent
