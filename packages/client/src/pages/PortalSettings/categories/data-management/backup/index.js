@@ -1,5 +1,5 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
-import React from "react";
+import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
@@ -9,6 +9,7 @@ import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
+import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
   helpUrlCreatingBackup,
@@ -18,6 +19,11 @@ const Backup = ({
   isNotPaidPeriod,
   currentColorScheme,
 }) => {
+  useEffect(() => {
+    return () => {
+      removeLocalStorage("LocalCopyStorageType");
+    };
+  }, []);
   const renderTooltip = (helpInfo) => {
     return (
       <>
