@@ -2040,6 +2040,8 @@ const Dark = {
     header: {
       backgroundColor: black,
       background: `linear-gradient(180deg, #333333 2.81%, rgba(51, 51, 51, 0.9) 63.03%, rgba(51, 51, 51, 0) 100%);`,
+      trashErasureLabelBackground: "#292929",
+      trashErasureLabelText: "#ADADAD",
     },
   },
 
@@ -2328,7 +2330,7 @@ const Dark = {
     },
 
     emptyScreen: {
-      descriptionColor: cyanBlueDarkShade,
+      descriptionColor: "#ADADAD",
     },
   },
 

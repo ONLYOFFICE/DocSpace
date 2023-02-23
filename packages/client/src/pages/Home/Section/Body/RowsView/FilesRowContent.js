@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
+import moment from "moment";
 
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
@@ -94,15 +95,18 @@ const FilesRowContent = ({
   quickButtons,
   theme,
   isRooms,
+  isTrashFolder,
 }) => {
   const {
     contentLength,
     fileExst,
     filesCount,
     foldersCount,
+    autoDelete,
     providerKey,
     title,
     isRoom,
+    daysRemaining,
   } = item;
 
   return (
@@ -138,7 +142,11 @@ const FilesRowContent = ({
           // color={sideColor}
           className="row_update-text"
         >
-          {updatedDate && updatedDate}
+          {isTrashFolder
+            ? t("Files:DaysRemaining", {
+                daysRemaining,
+              })
+            : updatedDate && updatedDate}
         </Text>
 
         <Text
@@ -166,8 +174,9 @@ const FilesRowContent = ({
   );
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, treeFoldersStore }) => {
+  const { isRecycleBinFolder } = treeFoldersStore;
+  return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
 })(
   observer(
     withRouter(

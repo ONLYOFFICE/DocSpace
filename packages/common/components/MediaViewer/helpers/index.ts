@@ -64,5 +64,5 @@ export const findNearestIndex = (
 };
 
 export const isSeparator = (arg: ContextMenuModel): arg is SeparatorType => {
-  return arg?.isSeparator;
+  return arg?.isSeparator !== undefined && arg.isSeparator;
 };
