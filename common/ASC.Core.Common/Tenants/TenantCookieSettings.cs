@@ -72,7 +72,7 @@ public class TenantCookieSettingsHelper
     public TenantCookieSettings GetForTenant(int tenantId)
     {
         return IsVisibleSettings
-                   ? _settingsManager.LoadForTenant<TenantCookieSettings>(tenantId)
+                   ? _settingsManager.Load<TenantCookieSettings>(tenantId)
                    : TenantCookieSettings.GetInstance();
     }
 
@@ -83,20 +83,20 @@ public class TenantCookieSettingsHelper
             return;
         }
 
-        _settingsManager.SaveForTenant(settings ?? TenantCookieSettings.GetInstance(), tenantId);
+        _settingsManager.Save(settings ?? TenantCookieSettings.GetInstance(), tenantId);
     }
 
     public TenantCookieSettings GetForUser(Guid userId)
     {
         return IsVisibleSettings
-                   ? _settingsManager.LoadForUser<TenantCookieSettings>(userId)
+                   ? _settingsManager.Load<TenantCookieSettings>(userId)
                    : TenantCookieSettings.GetInstance();
     }
 
     public TenantCookieSettings GetForUser(int tenantId, Guid userId)
     {
         return IsVisibleSettings
-                   ? _settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId)
+                   ? _settingsManager.Load<TenantCookieSettings>(tenantId, userId)
                    : TenantCookieSettings.GetInstance();
     }
 
@@ -107,7 +107,7 @@ public class TenantCookieSettingsHelper
             return;
         }
 
-        _settingsManager.SaveForUser(settings ?? TenantCookieSettings.GetInstance(), userId);
+        _settingsManager.Save(settings ?? TenantCookieSettings.GetInstance(), userId);
     }
 
     public DateTime GetExpiresTime(int tenantId)

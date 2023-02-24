@@ -147,7 +147,7 @@ public class WhitelabelController : BaseSettingsController
             }
         }
 
-        _settingsManager.SaveForTenant(settings, Tenant.Id);
+        _settingsManager.Save(settings, Tenant.Id);
 
         return true;
     }
@@ -361,11 +361,10 @@ public class WhitelabelController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
-        var settings = _settingsManager.Load<MailWhiteLabelSettings>();
-
-        settings.FooterEnabled = inDto.FooterEnabled;
-
-        _settingsManager.Save(settings);
+        _settingsManager.Manage<MailWhiteLabelSettings>(settings =>
+        {
+            settings.FooterEnabled = inDto.FooterEnabled;
+        });
 
         return true;
     }
