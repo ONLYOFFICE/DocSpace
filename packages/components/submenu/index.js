@@ -22,9 +22,13 @@ const Submenu = (props) => {
   } = props;
   if (!data) return null;
 
-  const [currentItem, setCurrentItem] = useState(
-    data[startSelect] || startSelect || null
-  );
+  const defaultCurrentItem = data[startSelect] || startSelect || null;
+
+  const [currentItem, setCurrentItem] = useState(defaultCurrentItem);
+
+  useEffect(() => {
+    setCurrentItem(defaultCurrentItem);
+  }, [startSelect.id]);
 
   const submenuItemsRef = useRef();
 
