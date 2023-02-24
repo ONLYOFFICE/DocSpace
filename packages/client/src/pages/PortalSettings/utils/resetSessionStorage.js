@@ -25,6 +25,8 @@ export const resetSessionStorage = () => {
   const storagePeriodSettings = getFromSessionStorage("storagePeriod");
   const defaultStoragePeriodSettings = getFromSessionStorage("defaultStoragePeriod");
 
+  const companyNameFromeSessionStorage = getFromSessionStorage("companyName");
+
   if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
     saveToSessionStorage("portalName", "none");
     saveToSessionStorage("errorValue", null);
@@ -58,5 +60,8 @@ export const resetSessionStorage = () => {
   }
   if (storagePeriodSettings !== defaultStoragePeriodSettings) {
     saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings)
+  }
+  if (companyNameFromeSessionStorage !== "ONLYOFFICE") {
+    saveToSessionStorage("companyName", "ONLYOFFICE")
   }
 };
