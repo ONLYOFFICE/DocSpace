@@ -199,9 +199,7 @@ const InvitePanel = ({
         zIndex={310}
       >
         <StyledBlock>
-          <StyledHeading>
-            {roomId === -1 ? t("Common:InviteUsers") : t("InviteUsersToRoom")}
-          </StyledHeading>
+          <StyledHeading>{t("Common:InviteUsers")}</StyledHeading>
         </StyledBlock>
 
         <ExternalLinks
