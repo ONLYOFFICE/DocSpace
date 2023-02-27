@@ -1152,7 +1152,7 @@ class FilesStore {
           //save filter for after closing preview change url
           this.setTempFilter(filterData);
         } else {
-        this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFilesFilter(filterData); //TODO: FILTER
         }
 
         const isPrivacyFolder =
@@ -1741,7 +1741,7 @@ class FilesStore {
       const canEditRoom = item.security?.EditRoom;
 
       const canViewRoomInfo = item.security?.Read;
-      const canMuteRoom = true; //item.security?.Mute;
+      const canMuteRoom = item.security?.Mute;
 
       let roomOptions = [
         "select",
@@ -2535,12 +2535,12 @@ class FilesStore {
 
       const defaultRoomIcon = isRoom
         ? getIcon(
-          iconSize,
-          fileExst,
-          providerKey,
-          contentLength,
-          roomType,
-          isArchive
+            iconSize,
+            fileExst,
+            providerKey,
+            contentLength,
+            roomType,
+            isArchive
           )
         : undefined;
 
