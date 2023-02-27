@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import TextInput from "@docspace/components/text-input";
@@ -19,19 +19,23 @@ const Label = styled.label`
   }
 `;
 
-export const LabledInput = ({ label, placeholder }) => {
+export const LabledInput = ({ label, placeholder, value, onChange, name }) => {
+  const [inputValue, setInputValue] = useState(value);
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    onChange(e);
+  };
+
   return (
     <Label>
       <span>{label}</span>
       <TextInput
-        id=""
-        mask={null}
-        name=""
-        onBlur={() => {}}
-        onChange={function noRefCheck() {}}
-        onFocus={function noRefCheck() {}}
+        name={name}
         placeholder={placeholder}
         tabIndex={1}
+        value={inputValue}
+        onChange={handleChange}
       />
     </Label>
   );
