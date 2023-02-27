@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNoItemContainer = styled.div`
-  margin: 80px auto;
+  //margin: 80px auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,8 +18,17 @@ const StyledNoItemContainer = styled.div`
   }
 
   .no-thumbnail-img-wrapper {
-    width: 96px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
+
+    img {
+      width: 75px;
+      height: 75px;
+    }
+  }
+
+  .no-accounts {
+    padding-top: 80px;
   }
 `;
 

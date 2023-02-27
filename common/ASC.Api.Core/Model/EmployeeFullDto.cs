@@ -205,7 +205,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         if (quotaSettings.EnableUserQuota)
         {
             result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
-            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
+            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 

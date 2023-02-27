@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,20 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Settings;
+namespace ASC.Api.Core.Core;
 
-[Scope]
-public class SettingsManager : DbSettingsManager
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class WebhookDisableAttribute : Attribute
 {
-    public SettingsManager(
-        IServiceProvider serviceProvider,
-        DbSettingsManagerCache dbSettingsManagerCache,
-        ILogger<DbSettingsManager> option,
-        AuthContext authContext,
-        TenantManager tenantManager,
-        IDbContextFactory<WebstudioDbContext> dbContextManager)
-        : base(serviceProvider, dbSettingsManagerCache, option, authContext, tenantManager, dbContextManager)
-    {
-
-    }
 }

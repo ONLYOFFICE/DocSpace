@@ -26,10 +26,12 @@ const RoomCell = ({ sideColor, item }) => {
     setIsTooltipLoading(false);
   };
 
+  const canVisibleTitle = originRoomTitle || originTitle;
+
   return [
     <StyledText
       key="cell"
-      fontSize="12px"
+      fontSize={canVisibleTitle ? "12px" : "13px"}
       fontWeight={600}
       color={sideColor}
       className="row_update-text"
@@ -38,7 +40,7 @@ const RoomCell = ({ sideColor, item }) => {
       data-tip={""}
       data-place={"bottom"}
     >
-      {originRoomTitle || originTitle}
+      {originRoomTitle || originTitle || "—"}
     </StyledText>,
 
     <Tooltip
