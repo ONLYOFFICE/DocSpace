@@ -15,7 +15,7 @@ import LoaderBrandingDescription from "./sub-components/loaderBrandingDescriptio
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
 import { UnavailableStyles } from "../../utils/commonSettingsStyles";
-import { resetSessionStorage } from "./../../utils";
+import { resetSessionStorage } from "../../utils";
 
 const StyledComponent = styled.div`
   max-width: 700px;

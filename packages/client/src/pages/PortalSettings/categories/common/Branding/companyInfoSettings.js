@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Link from "@docspace/components/link";
 import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
 import AboutDialog from "../../../../About/AboutDialog";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 const StyledComponent = styled.div`
   .link {
@@ -49,14 +50,6 @@ const CompanyInfoSettings = (props) => {
     personal,
   } = props;
 
-  const defaultCompanySettingsData = {
-    address: companyInfoSettingsData.address,
-    companyName: companyInfoSettingsData.companyName,
-    email: companyInfoSettingsData.email,
-    phone: companyInfoSettingsData.phone,
-    site: companyInfoSettingsData.site,
-  };
-
   const defaultCompanySettingsError = {
     hasErrorAddress: false,
     hasErrorCompanyName: false,
@@ -65,7 +58,7 @@ const CompanyInfoSettings = (props) => {
     hasErrorSite: false,
   };
 
-  const [companySettings, setCompanySettings] = useState(defaultCompanySettingsData);
+  const [companySettings, setCompanySettings] = useState({});
   const [companySettingsError, setCompanySettingsError] = useState(defaultCompanySettingsError);
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,23 +81,53 @@ const CompanyInfoSettings = (props) => {
     setIsLoadedCompanyInfoSettingsData(true);
   }, [companyInfoSettingsData, tReady]);
 
-  useEffect(() => {
-    setCompanySettings({
+  const getSettings = () => {
+    const companySettings = getFromSessionStorage("companySettings");
+
+    const defaultData = {
       address: companyInfoSettingsData.address,
       companyName: companyInfoSettingsData.companyName,
       email: companyInfoSettingsData.email,
       phone: companyInfoSettingsData.phone,
       site: companyInfoSettingsData.site,
-    });
-  }, [companyInfoSettingsData]);
+    };
+
+    saveToSessionStorage("defaultCompanySettings", defaultData);
+
+    if (companySettings) {
+      setCompanySettings({
+        address: companySettings.address,
+        companyName: companySettings.companyName,
+        email: companySettings.email,
+        phone: companySettings.phone,
+        site: companySettings.site,
+      });
+    } else {
+      setCompanySettings(defaultData);
+    }
+  };
 
   useEffect(() => {
-    const noСhange = isEqual(companySettings, defaultCompanySettingsData);
+    getSettings();
+  }, [isLoading]);
 
-    if (!noСhange) {
-      setShowReminder(true);
-    } else {
+  useEffect(() => {
+    const defaultCompanySettings = getFromSessionStorage("defaultCompanySettings");
+
+    const newSettings = {
+      address: companySettings.address,
+      companyName: companySettings.companyName,
+      email: companySettings.email,
+      phone: companySettings.phone,
+      site: companySettings.site,
+    };
+
+    saveToSessionStorage("companySettings", newSettings);
+
+    if (isEqual(defaultCompanySettings, newSettings)) {
       setShowReminder(false);
+    } else {
+      setShowReminder(true);
     }
   }, [companySettings, companyInfoSettingsData]);
 
@@ -153,30 +176,35 @@ const CompanyInfoSettings = (props) => {
     const site = e.target.value;
     validateSite(site);
     setCompanySettings({ ...companySettings, site });
+    saveToSessionStorage("companySettings", { ...companySettings, site });
   };
 
   const onChangeEmail = (e) => {
     const email = e.target.value;
     validateEmail(email);
     setCompanySettings({ ...companySettings, email });
+    saveToSessionStorage("companySettings", { ...companySettings, email });
   };
 
   const onChangeСompanyName = (e) => {
     const companyName = e.target.value;
     validateEmpty(companyName, "companyName");
     setCompanySettings({ ...companySettings, companyName });
+    saveToSessionStorage("companySettings", {...companySettings, companyName });
   };
 
   const onChangePhone = (e) => {
     const phone = e.target.value;
     validateEmpty(phone, "phone");
     setCompanySettings({ ...companySettings, phone });
+    saveToSessionStorage("companySettings", { ...companySettings, phone });
   };
 
   const onChangeAddress = (e) => {
     const address = e.target.value;
     validateEmpty(address, "address");
     setCompanySettings({ ...companySettings, address });
+    saveToSessionStorage("companySettings", { ...companySettings, address });
   };
 
   const onSave = useCallback(async () => {
@@ -191,6 +219,18 @@ const CompanyInfoSettings = (props) => {
       });
 
     await getCompanyInfoSettings();
+
+    const data = {
+      address,
+      companyName,
+      email,
+      phone,
+      site,
+    };
+
+    saveToSessionStorage("companySettings", data);
+    saveToSessionStorage("defaultCompanySettings", data);
+
     setCompanySettingsError({
       hasErrorAddress: false,
       hasErrorCompanyName: false,
@@ -211,14 +251,17 @@ const CompanyInfoSettings = (props) => {
     setIsLoading(true);
 
     await restoreCompanyInfoSettings()
-      .then(() => {
+      .then((res) => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+        setCompanySettings(res);
+        saveToSessionStorage("companySettings", res);
       })
       .catch((error) => {
         toastr.error(error);
       });
 
     await getCompanyInfoSettings();
+
     setCompanySettingsError({
       hasErrorAddress: false,
       hasErrorCompanyName: false,
@@ -249,7 +292,7 @@ const CompanyInfoSettings = (props) => {
         onClose={onCloseModal}
         buildVersionInfo={buildVersionInfo}
         personal={personal}
-        previewData={defaultCompanySettingsData}
+        previewData={companySettings}
       />
 
       <StyledComponent isSettingPaid={isSettingPaid}>
