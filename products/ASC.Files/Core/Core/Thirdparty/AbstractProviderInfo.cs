@@ -26,9 +26,9 @@
 
 namespace ASC.Files.Core.Core.Thirdparty;
 
-public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : IProviderInfo
-    where TFile : class
-    where TFolder : class
+public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : IProviderInfo<TFile, TFolder, TItem>
+    where TFile : class, TItem
+    where TFolder : class, TItem
     where TItem : class
     where TProvider : Consumer, IOAuthProvider, new()
 {
@@ -52,11 +52,11 @@ public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : I
     public string RootFolderId => $"{Selector}-" + ProviderId;
     public FolderType RootFolderType { get; set; }
     public OAuth20Token Token { get; set; }
-    internal bool StorageOpened => Wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
+    public bool StorageOpened => Wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
 
     private readonly ProviderInfoHelper _providerInfoHelper;
 
-    internal Task<IThirdPartyStorage<TFile, TFolder, TItem>> StorageAsync
+    public Task<IThirdPartyStorage<TFile, TFolder, TItem>> StorageAsync
     {
         get
         {
@@ -99,37 +99,30 @@ public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : I
         CustomerTitle = newtitle;
     }
 
-    internal Task CacheResetAsync(string id = null, bool? isFile = null)
+    public Task CacheResetAsync(string id = null, bool? isFile = null)
     {
         return _providerInfoHelper.CacheResetAsync(ProviderId, id, isFile);
     }
 
-    internal async Task<TFile> GetFileAsync(string fileId)
+    public async Task<TFile> GetFileAsync(string fileId)
     {
         var storage = await StorageAsync;
 
         return await _providerInfoHelper.GetFileAsync(storage, ProviderId, fileId, Selector);
     }
 
-    internal async Task<TFolder> GetFolderAsync(string folderId)
+    public async Task<TFolder> GetFolderAsync(string folderId)
     {
         var storage = await StorageAsync;
 
         return await _providerInfoHelper.GetFolderAsync(storage, ProviderId, folderId, Selector);
     }
 
-    internal async Task<List<TItem>> GetItemsAsync(string folderId)
+    public async Task<List<TItem>> GetItemsAsync(string folderId)
     {
         var storage = await StorageAsync;
 
         return await _providerInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector);
-    }
-
-    internal async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
-    {
-        var storage = await StorageAsync;
-
-        return await storage.GetThumbnailAsync(fileId, width, height);
     }
 }
 

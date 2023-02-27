@@ -24,24 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using File = System.IO.File;
-
 namespace ASC.Files.Core.Core.Thirdparty;
-internal class AbstractFileDao<TFile, TFolder, TItem> : IFileDao<string>
+internal interface IErrorItem
 {
-    private readonly IDaoBase<TFile, TFolder, TItem> _dao;
-    private readonly IProviderInfo _providerInfo;
-    public async Task InvalidateCacheAsync(string fileId)
-    {
-        var boxFileId = _dao.MakeId(fileId);
-        await _providerInfo.CacheResetAsync(boxFileId, true);
-
-        var boxFile = await GetBoxFileAsync(fileId);
-        var parentPath = GetParentFolderId(boxFile);
-
-        if (parentPath != null)
-        {
-            await ProviderInfo.CacheResetAsync(parentPath);
-        }
-    }
+    public string Error { get; }
+    public string ErrorId { get; }
 }

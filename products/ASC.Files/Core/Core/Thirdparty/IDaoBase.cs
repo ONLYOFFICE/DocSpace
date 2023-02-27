@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.Core.Thirdparty;
 internal interface IDaoBase<TFile, TFolder, TItem>
+    where TFile : TItem
+    where TFolder : TItem
 {
-    string MakeId(object entryId);
+    string GetName(TItem item);
+    string GetId(TItem item);
+    bool IsRoot(TFolder folder);
+    string MakeThirdId(object entryId);
     string GetParentFolderId(TItem item);
     string MakeId(TItem item);
     string MakeId(string path = null);
@@ -41,4 +46,6 @@ internal interface IDaoBase<TFile, TFolder, TItem>
     Task<IEnumerable<string>> GetChildrenAsync(string folderId);
     Task<List<TItem>> GetItemsAsync(string parentId, bool? folder = null);
     Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist);
+    IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile;
+    bool CheckInvalidFilter(FilterType filterType);
 }

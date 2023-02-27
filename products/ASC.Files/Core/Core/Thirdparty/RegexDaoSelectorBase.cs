@@ -88,7 +88,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
         return id != null && Selector.IsMatch(id);
     }
 
-    public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>
+    public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>
     {
         return GetDao<T1>(id);
     }
@@ -98,7 +98,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
         return GetDao<T1>(id);
     }
 
-    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>
+    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>
     {
         return GetDao<T1>(id);
     }
@@ -147,14 +147,14 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
     public async Task RenameProviderAsync(T provider, string newTitle)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType);
+        await dbDao.UpdateProviderInfoAsync(provider.ProviderId, newTitle, null, provider.RootFolderType);
         provider.UpdateTitle(newTitle); //This will update cached version too
     }
 
     public async Task UpdateProviderFolderId(T provider, string id)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, provider.CustomerTitle, id, provider.FolderType, provider.Private);
+        await dbDao.UpdateProviderInfoAsync(provider.ProviderId, provider.CustomerTitle, id, provider.FolderType, provider.Private);
         provider.FolderId = id;
     }
 

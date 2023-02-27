@@ -45,6 +45,28 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
     {
     }
 
+    public string GetID(Metadata dropboxItem)
+    {
+        string path = null;
+        if (dropboxItem != null)
+        {
+            path = dropboxItem.PathDisplay;
+        }
+
+        return path;
+    }
+
+    public string GetName(Metadata dropboxItem)
+    {
+        string name = null;
+        if (dropboxItem != null)
+        {
+            name = dropboxItem.Name;
+        }
+
+        return name;
+    }
+
     protected static string GetParentFolderPath(Metadata dropboxItem)
     {
         if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
@@ -57,28 +79,17 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
     }
 
-    protected static string MakeDropboxPath(object entryId)
+    protected static string MakeThirdId(object entryId)
     {
         return Convert.ToString(entryId, CultureInfo.InvariantCulture);
     }
 
-    protected string MakeDropboxPath(Metadata dropboxItem)
-    {
-        string path = null;
-        if (dropboxItem != null)
-        {
-            path = dropboxItem.PathDisplay;
-        }
-
-        return path;
-    }
-
     protected string MakeId(Metadata dropboxItem)
     {
-        return MakeId(MakeDropboxPath(dropboxItem));
+        return MakeId(GetID(dropboxItem));
     }
 
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
 
@@ -262,7 +273,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return items;
     }
 
-    protected sealed class ErrorFolder : FolderMetadata
+    protected sealed class ErrorFolder : FolderMetadata, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }
@@ -277,7 +288,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         }
     }
 
-    protected sealed class ErrorFile : FileMetadata
+    protected sealed class ErrorFile : FileMetadata, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }

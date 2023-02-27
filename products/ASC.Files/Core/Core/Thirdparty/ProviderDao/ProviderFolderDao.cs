@@ -126,7 +126,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return result.Distinct();
     }
 
-    public override async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, 
+    public async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, 
         string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
         var virtualRoomsFolderId = IdConverter.Convert<string>(await _globalFolderHelper.GetFolderVirtualRooms());
@@ -145,7 +145,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
     }
 
-    public override async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags,
+    public async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags,
         Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
         IEnumerable<string> subjectEntriesIds)
     {
@@ -538,7 +538,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         folder.CreateOn = providerInfo.CreateOn;
         folder.FileEntryType = FileEntryType.Folder;
         folder.FolderType = providerInfo.FolderType;
-        folder.ProviderId = providerInfo.ID;
+        folder.ProviderId = providerInfo.ProviderId;
         folder.RootFolderType = providerInfo.RootFolderType;
         folder.HasLogo = providerInfo.HasLogo;
         folder.ModifiedBy = providerInfo.Owner;

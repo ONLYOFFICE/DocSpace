@@ -275,7 +275,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         return items;
     }
 
-    protected sealed class ErrorItem : Item
+    protected sealed class ErrorItem : Item, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }

@@ -24,10 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty;
+
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope(Additional = typeof(BoxDaoSelectorExtension))]
-internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector
+internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector<BoxProviderInfo>
 {
     protected internal override string Name => Selectors.Box.Name;
     protected internal override string Id => Selectors.Box.Id;
@@ -39,12 +41,12 @@ internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelec
 
     public IFileDao<string> GetFileDao(string id)
     {
-        return base.GetFileDao<BoxFileDao>(id);
+        return base.GetFileDao<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>(id);
     }
 
     public IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<BoxFolderDao>(id);
+        return base.GetFolderDao<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>(id);
     }
 
     public IThirdPartyTagDao GetTagDao(string id)
@@ -57,8 +59,8 @@ public static class BoxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<BoxFileDao>();
-        services.TryAdd<BoxFolderDao>();
+        services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>();
+        services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>();
         services.TryAdd<BoxTagDao>();
     }
 }

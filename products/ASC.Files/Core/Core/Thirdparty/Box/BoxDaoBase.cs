@@ -26,11 +26,11 @@
 
 namespace ASC.Files.Thirdparty.Box;
 
-internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDaoBase<BoxFile, BoxFolder, BoxItem>
+internal class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDaoBase<BoxFile, BoxFolder, BoxItem>
 {
     protected override string Id => Selectors.Box.Id;
 
-    protected BoxDaoBase(
+    public BoxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
@@ -44,7 +44,16 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
     {
     }
 
-    public string MakeId(object entryId)
+    public string GetName(BoxItem item)
+    {
+        return item.Name;
+    }
+    public string GetId(BoxItem item)
+    {
+        return item.Id;
+    }
+
+    public string MakeThirdId(object entryId)
     {
         var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
 
@@ -115,8 +124,8 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
 
         var folder = GetFolder();
 
-        folder.Id = MakeId(boxFolder.Id);
-        folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
+        folder.Id = MakeThirdId(boxFolder.Id);
+        folder.ParentId = isRoot ? null : MakeThirdId(GetParentFolderId(boxFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt?.UtcDateTime ?? default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt?.UtcDateTime ?? default);
 
@@ -140,7 +149,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
         return folder;
     }
 
-    public static bool IsRoot(BoxFolder boxFolder)
+    public bool IsRoot(BoxFolder boxFolder)
     {
         return boxFolder.Id == "0";
     }
@@ -188,10 +197,10 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
 
         var file = GetFile();
 
-        file.Id = MakeId(boxFile.Id);
+        file.Id = MakeThirdId(boxFile.Id);
         file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
         file.CreateOn = boxFile.CreatedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value.UtcDateTime) : default;
-        file.ParentId = MakeId(GetParentFolderId(boxFile));
+        file.ParentId = MakeThirdId(GetParentFolderId(boxFile));
         file.ModifiedOn = boxFile.ModifiedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value.UtcDateTime) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
@@ -208,7 +217,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
 
     public async Task<BoxFolder> GetFolderAsync(string folderId)
     {
-        var boxFolderId = MakeId(folderId);
+        var boxFolderId = MakeThirdId(folderId);
         try
         {
             var folder = await ProviderInfo.GetFolderAsync(boxFolderId);
@@ -223,7 +232,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
 
     public Task<BoxFile> GetFileAsync(string fileId)
     {
-        var boxFileId = MakeId(fileId);
+        var boxFileId = MakeThirdId(fileId);
         try
         {
             var file = ProviderInfo.GetFileAsync(boxFileId);
@@ -240,12 +249,12 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
     {
         var items = await GetItemsAsync(folderId);
 
-        return items.Select(entry => MakeId(entry.Id));
+        return items.Select(entry => MakeThirdId(entry.Id));
     }
 
     public async Task<List<BoxItem>> GetItemsAsync(string parentId, bool? folder = null)
     {
-        var boxFolderId = MakeId(parentId);
+        var boxFolderId = MakeThirdId(parentId);
         var items = await ProviderInfo.GetItemsAsync(boxFolderId);
 
         if (folder.HasValue)
@@ -261,7 +270,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
         return items;
     }
 
-    protected sealed class ErrorFolder : BoxFolder
+    protected sealed class ErrorFolder : BoxFolder, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }
@@ -276,7 +285,7 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDa
         }
     }
 
-    protected sealed class ErrorFile : BoxFile
+    protected sealed class ErrorFile : BoxFile, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }

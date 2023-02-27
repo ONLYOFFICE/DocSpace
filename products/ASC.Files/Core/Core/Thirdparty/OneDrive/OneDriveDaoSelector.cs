@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
-internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector
+internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector<OneDriveProviderInfo>
 {
     protected internal override string Name => Selectors.OneDrive.Name;
     protected internal override string Id => Selectors.OneDrive.Id;

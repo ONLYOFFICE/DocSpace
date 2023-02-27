@@ -283,7 +283,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
     }
 
 
-    protected sealed class ErrorDriveEntry : DriveFile
+    protected sealed class ErrorDriveEntry : DriveFile, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }
