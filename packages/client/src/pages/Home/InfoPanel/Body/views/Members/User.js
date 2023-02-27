@@ -33,10 +33,7 @@ const User = ({
     canChangeUserRole
   );
 
-  const userRole = membersHelper.getOptionByUserAccess(user.access);
-  const userRoleOptions = fullRoomRoleOptions?.filter(
-    (role) => role.key !== userRole.key
-  );
+  const userRole = membersHelper.getOptionByUserAccess(user.access, user);
 
   const updateRole = (option) => {
     return updateRoomMemberRole(selectionParentRoom.id, {
@@ -82,6 +79,8 @@ const User = ({
   };
 
   const onOptionClick = (option) => {
+    if (option.access === userRole.access) return;
+
     const userType =
       option.key === "owner"
         ? "admin"
@@ -119,13 +118,13 @@ const User = ({
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
-      {userRole && userRoleOptions && (
+      {userRole && fullRoomRoleOptions && (
         <div className="role-wrapper">
           {canChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
-              options={userRoleOptions}
+              options={fullRoomRoleOptions}
               onSelect={onOptionClick}
               scaled={false}
               withBackdrop={isMobileOnly}
@@ -135,6 +134,7 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              displaySelectedOption
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>
