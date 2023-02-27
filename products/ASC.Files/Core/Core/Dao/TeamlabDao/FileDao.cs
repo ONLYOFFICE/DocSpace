@@ -417,7 +417,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (quotaSettings.EnableUserQuota)
         {
             var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
-            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(user);
+            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(user);
             var quotaLimit = userQuotaSettings.UserQuota;
 
             if (quotaLimit != -1)

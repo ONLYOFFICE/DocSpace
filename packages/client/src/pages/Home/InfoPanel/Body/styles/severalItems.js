@@ -7,6 +7,11 @@ const StyledSeveralItemsContainer = styled.div`
   justify-content: center;
   gap: 32px;
   padding-top: ${(props) => (props.isAccounts ? "80px" : "0")};
+
+  img {
+    width: 75px;
+    height: 75px;
+  }
 `;
 
 export { StyledSeveralItemsContainer };
