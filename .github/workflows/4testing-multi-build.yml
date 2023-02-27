@@ -27,7 +27,7 @@ jobs:
         run: |
           export BUILD_NUMBER="$(date "+%Y%m%d%H")"
           cd ./build/install/docker
-          REPO=${{ secrets.DOCKERHUB_USERNAME }} \
+          REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
           DOCKER_TAG=$GITHUB_REF_NAME \
           DOCKERFILE="Dockerfile.app" \
@@ -35,7 +35,7 @@ jobs:
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
           --push
-          REPO=${{ secrets.DOCKERHUB_USERNAME }} \
+          REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
           DOCKER_TAG=$GITHUB_REF_NAME-$BUILD_NUMBER \
           DOCKERFILE="Dockerfile.app" \

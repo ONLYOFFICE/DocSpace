@@ -1150,7 +1150,7 @@ public class UserController : PeopleControllerBase
 
             var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
 
-            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+            _settingsManager.Save(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
             yield return await _employeeFullDtoHelper.GetFull(user);
         }

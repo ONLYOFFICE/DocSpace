@@ -177,11 +177,10 @@ class FilesStore {
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
             console.log("[WS] create new file", fileInfo.id, fileInfo.title);
 
             const newFiles = [fileInfo, ...this.files];
-
-            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
 
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
