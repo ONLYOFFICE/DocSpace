@@ -123,9 +123,9 @@ public class Startup
 
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints =>
+        app.UseEndpoints(async endpoints =>
         {
-            endpoints.MapCustom();
+            await endpoints.MapCustomAsync();
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {
