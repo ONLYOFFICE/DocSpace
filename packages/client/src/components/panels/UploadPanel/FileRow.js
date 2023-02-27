@@ -373,6 +373,7 @@ export default inject(
       convertFile,
       files: uploadedFiles,
       clearUploadedFilesHistory,
+      isParallel,
     } = uploadDataStore;
     const {
       playlist,
@@ -402,7 +403,11 @@ export default inject(
     return {
       isPersonal: personal,
       theme,
-      currentFileUploadProgress,
+      currentFileUploadProgress: isParallel
+        ? item?.percent
+          ? item.percent
+          : null
+        : currentFileUploadProgress,
       uploaded,
       isMedia,
       fileIcon,
