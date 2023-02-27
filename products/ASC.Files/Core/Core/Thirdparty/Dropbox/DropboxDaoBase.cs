@@ -26,11 +26,12 @@
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
+[Scope]
+internal class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
 {
     protected override string Id => Selectors.Dropbox.Id;
 
-    protected DropboxDaoBase(
+    public DropboxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
@@ -45,7 +46,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
     {
     }
 
-    public string GetID(Metadata dropboxItem)
+    public string GetId(Metadata dropboxItem)
     {
         string path = null;
         if (dropboxItem != null)
@@ -67,7 +68,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return name;
     }
 
-    protected static string GetParentFolderPath(Metadata dropboxItem)
+    public string GetParentFolderId(Metadata dropboxItem)
     {
         if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
         {
@@ -79,14 +80,14 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
     }
 
-    protected static string MakeThirdId(object entryId)
+    public string MakeThirdId(object entryId)
     {
         return Convert.ToString(entryId, CultureInfo.InvariantCulture);
     }
 
-    protected string MakeId(Metadata dropboxItem)
+    public string MakeId(Metadata dropboxItem)
     {
-        return MakeId(GetID(dropboxItem));
+        return MakeId(GetId(dropboxItem));
     }
 
     public override string MakeId(string path = null)
@@ -96,7 +97,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return $"{PathPrefix}{p}";
     }
 
-    protected string MakeFolderTitle(FolderMetadata dropboxFolder)
+    public string MakeFolderTitle(FolderMetadata dropboxFolder)
     {
         if (dropboxFolder == null || IsRoot(dropboxFolder))
         {
@@ -106,7 +107,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return Global.ReplaceInvalidCharsAndTruncate(dropboxFolder.Name);
     }
 
-    protected string MakeFileTitle(FileMetadata dropboxFile)
+    public string MakeFileTitle(FileMetadata dropboxFile)
     {
         if (dropboxFile == null || string.IsNullOrEmpty(dropboxFile.Name))
         {
@@ -116,7 +117,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return Global.ReplaceInvalidCharsAndTruncate(dropboxFile.Name);
     }
 
-    protected Folder<string> ToFolder(FolderMetadata dropboxFolder)
+    public Folder<string> ToFolder(FolderMetadata dropboxFolder)
     {
         if (dropboxFolder == null)
         {
@@ -134,7 +135,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         var folder = GetFolder();
 
         folder.Id = MakeId(dropboxFolder);
-        folder.ParentId = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
+        folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(dropboxFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
         folder.Title = MakeFolderTitle(dropboxFolder);
@@ -155,7 +156,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return folder;
     }
 
-    protected static bool IsRoot(FolderMetadata dropboxFolder)
+    public bool IsRoot(FolderMetadata dropboxFolder)
     {
         return dropboxFolder != null && dropboxFolder.Id == "/";
     }
@@ -206,7 +207,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         file.Id = MakeId(dropboxFile);
         file.ContentLength = (long)dropboxFile.Size;
         file.CreateOn = _tenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
-        file.ParentId = MakeId(GetParentFolderPath(dropboxFile));
+        file.ParentId = MakeId(GetParentFolderId(dropboxFile));
         file.ModifiedOn = _tenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
         file.NativeAccessor = dropboxFile;
         file.Title = MakeFileTitle(dropboxFile);
@@ -216,49 +217,49 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         return file;
     }
 
-    public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+    public async Task<Folder<string>> GetRootFolderAsync()
     {
-        return ToFolder(await GetDropboxFolderAsync(string.Empty));
+        return ToFolder(await GetFolderAsync(string.Empty));
     }
 
-    protected async Task<FolderMetadata> GetDropboxFolderAsync(string folderId)
+    public async Task<FolderMetadata> GetFolderAsync(string folderId)
     {
-        var dropboxFolderPath = MakeDropboxPath(folderId);
+        var dropboxFolderId = MakeThirdId(folderId);
         try
         {
-            var folder = await ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath);
+            var folder = await ProviderInfo.GetFolderAsync(dropboxFolderId);
             return folder;
         }
         catch (Exception ex)
         {
-            return new ErrorFolder(ex, dropboxFolderPath);
+            return new ErrorFolder(ex, dropboxFolderId);
         }
     }
 
-    protected Task<FileMetadata> GetDropboxFileAsync(object fileId)
+    public Task<FileMetadata> GetFileAsync(string fileId)
     {
-        var dropboxFilePath = MakeDropboxPath(fileId);
+        var dropboxFileId = MakeThirdId(fileId);
         try
         {
-            return ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
+            return ProviderInfo.GetFileAsync(dropboxFileId);
         }
         catch (Exception ex)
         {
-            return Task.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
+            return Task.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFileId));
         }
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var items = await GetDropboxItemsAsync(folderId);
+        var items = await GetItemsAsync(folderId);
 
         return items.Select(MakeId);
     }
 
-    protected async Task<List<Metadata>> GetDropboxItemsAsync(object parentId, bool? folder = null)
+    public async Task<List<Metadata>> GetItemsAsync(string parentId, bool? folder = null)
     {
-        var dropboxFolderPath = MakeDropboxPath(parentId);
-        var items = await ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath);
+        var dropboxFolderId = MakeThirdId(parentId);
+        var items = await ProviderInfo.GetItemsAsync(dropboxFolderId);
 
         if (folder.HasValue)
         {
@@ -303,36 +304,7 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
         }
     }
 
-    protected string GetAvailableTitle(string requestTitle, string parentFolderPath, Func<string, string, bool> isExist)
-    {
-        if (!isExist(requestTitle, parentFolderPath))
-        {
-            return requestTitle;
-        }
-
-        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-        var match = re.Match(requestTitle);
-
-        if (!match.Success)
-        {
-            var insertIndex = requestTitle.Length;
-            if (requestTitle.LastIndexOf('.') != -1)
-            {
-                insertIndex = requestTitle.LastIndexOf('.');
-            }
-
-            requestTitle = requestTitle.Insert(insertIndex, " (1)");
-        }
-
-        while (isExist(requestTitle, parentFolderPath))
-        {
-            requestTitle = re.Replace(requestTitle, MatchEvaluator);
-        }
-
-        return requestTitle;
-    }
-
-    protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
+    public async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
     {
         if (!await isExist(requestTitle, parentFolderPath))
         {

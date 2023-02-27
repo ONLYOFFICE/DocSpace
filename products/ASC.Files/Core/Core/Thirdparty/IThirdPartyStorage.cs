@@ -42,6 +42,11 @@ public interface IThirdPartyItemStorage<TItem> : IThirdPartyStorage
     public Task DeleteItemAsync(TItem item);
 }
 
+public interface IGoogleDriveItemStorage<TItem> : IThirdPartyItemStorage<TItem>
+{
+    public Task<List<TItem>> GetItemsAsync(string folderId, bool? folder);
+}
+
 public interface IThirdPartyFileStorage<TFile> : IThirdPartyStorage
 {
     public Task<TFile> GetFileAsync(string fileId);
@@ -51,6 +56,7 @@ public interface IThirdPartyFileStorage<TFile> : IThirdPartyStorage
     public Task<TFile> CopyFileAsync(string fileId, string newFileName, string toFolderId);
     public Task<TFile> RenameFileAsync(string fileId, string newName);
     public Task<TFile> SaveStreamAsync(string fileId, Stream fileStream);
+
 }
 
 public interface IThirdPartyFolderStorage<TFolder> : IThirdPartyStorage

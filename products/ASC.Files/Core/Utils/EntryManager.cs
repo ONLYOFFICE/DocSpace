@@ -978,7 +978,7 @@ public class EntryManager
         folder.FolderType = FolderType.DEFAULT;
         folder.ModifiedBy = providerInfo.Owner;
         folder.ModifiedOn = providerInfo.CreateOn;
-        folder.ProviderId = providerInfo.ID;
+        folder.ProviderId = providerInfo.ProviderId;
         folder.ProviderKey = providerInfo.ProviderKey;
         folder.RootCreateBy = providerInfo.Owner;
         folder.RootId = providerInfo.RootFolderId;

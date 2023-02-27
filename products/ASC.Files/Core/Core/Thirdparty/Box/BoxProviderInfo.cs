@@ -32,7 +32,7 @@ internal class BoxProviderInfo : AbstractProviderInfo<BoxFile, BoxFolder, BoxIte
 {
     internal override string Selector { get; } = Selectors.Box.Id;
 
-    public BoxProviderInfo(DisposableWrapper wrapper) : base(wrapper)
+    public BoxProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {
     }
 }

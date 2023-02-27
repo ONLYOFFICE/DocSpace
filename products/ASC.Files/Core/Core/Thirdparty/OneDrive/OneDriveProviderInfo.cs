@@ -32,7 +32,8 @@ internal class OneDriveProviderInfo : AbstractProviderInfo<Item, Item, Item, One
 {
     internal override string Selector { get; } = Selectors.OneDrive.Id;
 
-    public OneDriveProviderInfo(DisposableWrapper wrapper) : base(wrapper)
+    public OneDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {
+
     }
 }

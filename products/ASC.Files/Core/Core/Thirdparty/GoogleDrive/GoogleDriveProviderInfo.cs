@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty;
+
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
@@ -34,7 +36,14 @@ internal class GoogleDriveProviderInfo : AbstractProviderInfo<DriveFile, DriveFi
 {
     internal override string Selector { get; } = Selectors.GoogleDrive.Id;
 
-    public GoogleDriveProviderInfo(DisposableWrapper wrapper) : base(wrapper)
+    public GoogleDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {
+    }
+
+    public async Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folder)
+    {
+        var storage = await StorageAsync;
+
+        return await _providerInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector, folder);
     }
 }

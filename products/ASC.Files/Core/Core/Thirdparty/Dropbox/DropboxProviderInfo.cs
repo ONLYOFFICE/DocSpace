@@ -32,7 +32,7 @@ internal class DropboxProviderInfo : AbstractProviderInfo<FileMetadata, FolderMe
 {
     internal override string Selector { get; } = Selectors.Dropbox.Id;
 
-    public DropboxProviderInfo(DisposableWrapper wrapper) : base(wrapper)
+    public DropboxProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {
     }
 }

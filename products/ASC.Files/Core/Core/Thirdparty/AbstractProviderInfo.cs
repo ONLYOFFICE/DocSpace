@@ -26,18 +26,20 @@
 
 namespace ASC.Files.Core.Core.Thirdparty;
 
-public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : IProviderInfo<TFile, TFolder, TItem>
+internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : IProviderInfo<TFile, TFolder, TItem>
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem : class
     where TProvider : Consumer, IOAuthProvider, new()
 {
     internal abstract string Selector { get; }
-    public DisposableWrapper Wrapper { get; }
+    private readonly DisposableWrapper _wrapper;
+    internal readonly ProviderInfoHelper _providerInfoHelper;
 
-    public AbstractProviderInfo(DisposableWrapper wrapper)
+    public AbstractProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper)
     {
-        Wrapper = wrapper;
+        _wrapper = wrapper;
+        _providerInfoHelper = providerInfoHelper;
     }
 
     public DateTime CreateOn { get; set; }
@@ -52,17 +54,15 @@ public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : I
     public string RootFolderId => $"{Selector}-" + ProviderId;
     public FolderType RootFolderType { get; set; }
     public OAuth20Token Token { get; set; }
-    public bool StorageOpened => Wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
-
-    private readonly ProviderInfoHelper _providerInfoHelper;
+    public bool StorageOpened => _wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
 
     public Task<IThirdPartyStorage<TFile, TFolder, TItem>> StorageAsync
     {
         get
         {
-            if (!Wrapper.TryGetStorage<IThirdPartyStorage<TFile, TFolder, TItem>>(ProviderId, out var storage) || !storage.IsOpened)
+            if (!_wrapper.TryGetStorage<IThirdPartyStorage<TFile, TFolder, TItem>>(ProviderId, out var storage) || !storage.IsOpened)
             {
-                return Wrapper.CreateStorageAsync<IThirdPartyStorage<TFile, TFolder, TItem>, TProvider>(Token, ProviderId);
+                return _wrapper.CreateStorageAsync<IThirdPartyStorage<TFile, TFolder, TItem>, TProvider>(Token, ProviderId);
             }
 
             return Task.FromResult(storage);
@@ -86,9 +86,9 @@ public abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : I
 
     public Task InvalidateStorageAsync()
     {
-        if (Wrapper != null)
+        if (_wrapper != null)
         {
-            Wrapper.Dispose();
+            _wrapper.Dispose();
         }
 
         return CacheResetAsync();
@@ -219,13 +219,21 @@ public class ProviderInfoHelper
         return folder;
     }
 
-    internal async Task<List<TItem>> GetItemsAsync<TItem>(IThirdPartyItemStorage<TItem> storage, int id, string folderId, string selector) where TItem : class
+    internal async Task<List<TItem>> GetItemsAsync<TItem>(IThirdPartyItemStorage<TItem> storage, int id, string folderId, string selector, bool? folder=null) where TItem : class
     {
         var items = _cacheChildItems.Get<List<TItem>>($"{selector}-" + id + "-" + folderId);
 
         if (items == null)
         {
-            items = await storage.GetItemsAsync(folderId);
+            if (folder != null && folder.HasValue && storage is IGoogleDriveItemStorage<TItem>)
+            {
+                var googleStorage = storage as IGoogleDriveItemStorage<TItem>;
+                items = await googleStorage.GetItemsAsync(folderId, folder);
+            }
+            else
+            {
+                items = await storage.GetItemsAsync(folderId);
+            }
             _cacheChildItems.Insert($"{selector}-" + id + "-" + folderId, items, DateTime.UtcNow.Add(_cacheExpiration));
         }
 

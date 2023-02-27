@@ -74,6 +74,8 @@ internal class SharpBoxProviderInfo : IProviderInfo
 
     internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
 
+    public int ProviderId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public Task<bool> CheckAccessAsync()
     {
         try
@@ -113,6 +115,11 @@ internal class SharpBoxProviderInfo : IProviderInfo
     public void UpdateTitle(string newtitle)
     {
         CustomerTitle = newtitle;
+    }
+
+    public Task CacheResetAsync(string id = null, bool? isFile = null)
+    {
+        throw new NotImplementedException();
     }
 }
 

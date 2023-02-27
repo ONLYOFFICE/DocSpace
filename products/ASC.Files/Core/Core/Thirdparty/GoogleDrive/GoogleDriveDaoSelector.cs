@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.GoogleDrive;
+
+using DriveFile = Google.Apis.Drive.v3.Data.File;
+
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Scope(Additional = typeof(GoogleDriveDaoSelectorExtension))]
@@ -44,7 +48,7 @@ internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProvider
 
     public IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<GoogleDriveFolderDao>(id);
+        return base.GetFolderDao<ThirdPartyFolderDao<DriveFile, DriveFile, DriveFile>>(id);
     }
 
     public IThirdPartyTagDao GetTagDao(string id)
@@ -58,7 +62,7 @@ public static class GoogleDriveDaoSelectorExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<GoogleDriveFileDao>();
-        services.TryAdd<GoogleDriveFolderDao>();
+        services.TryAdd<ThirdPartyFolderDao<DriveFile, DriveFile, DriveFile>>();
         services.TryAdd<GoogleDriveTagDao>();
     }
 }

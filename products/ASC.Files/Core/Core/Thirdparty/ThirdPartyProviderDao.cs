@@ -26,7 +26,357 @@
 
 namespace ASC.Files.Thirdparty;
 
-internal abstract class ThirdPartyProviderDao<T> : IDisposable where T : class, IProviderInfo
+internal abstract class ThirdPartyProviderDao
+{
+    #region FileDao
+
+    public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
+    {
+        return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+    {
+        return AsyncEnumerable.Empty<File<string>>();
+    }
+
+    public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
+    {
+        return null;
+    }
+
+    public Task<bool> IsExistOnStorageAsync(File<string> file)
+    {
+        return Task.FromResult(true);
+    }
+
+    public Task SaveEditHistoryAsync(File<string> file, string changes, Stream differenceStream)
+    {
+        //Do nothing
+        return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
+    {
+        return null;
+    }
+
+    public Task<Stream> GetDifferenceStreamAsync(File<string> file)
+    {
+        return null;
+    }
+
+    public Task<bool> ContainChangesAsync(string fileId, int fileVersion)
+    {
+        return Task.FromResult(false);
+    }
+
+    public string GetUniqThumbnailPath(File<string> file, int width, int height)
+    {
+        //Do nothing
+        return null;
+    }
+
+    public Task SetThumbnailStatusAsync(File<string> file, Thumbnail status)
+    {
+        return Task.CompletedTask;
+    }
+
+    public virtual Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    {
+        return GetThumbnailAsync(file.Id, width, height);
+    }
+
+    public virtual Task<Stream> GetThumbnailAsync(string file, int width, int height)
+    {
+        return Task.FromResult<Stream>(null);
+    }
+
+    public Task<EntryProperties> GetProperties(string fileId)
+    {
+        return Task.FromResult<EntryProperties>(null);
+    }
+
+    public Task SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        return null;
+    }
+
+    public virtual Task<Stream> GetFileStreamAsync(File<string> file)
+    {
+        return null;
+    }
+
+    public string GetUniqFilePath(File<string> file, string fileTitle)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime, bool includeSecurity)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+    #region FolderDao
+
+    public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
+    {
+        return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<Folder<string>> SearchFoldersAsync(string text, bool bunch)
+    {
+        return null;
+    }
+
+
+    public Task<string> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<string> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+    {
+        return AsyncEnumerable.Empty<string>();
+    }
+
+    public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+
+    public Task<string> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDShareAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+
+    public Task<string> GetFolderIDRecentAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDFavoritesAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDTemplatesAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
+
+    public string GetFolderIDPhotos(bool createIfNotExists)
+    {
+        return null;
+    }
+
+
+    public Task<string> GetFolderIDProjectsAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetBunchObjectIDAsync(string folderID)
+    {
+        return null;
+    }
+
+    public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<string> folderIDs)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
+        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+    {
+        return AsyncEnumerable.Empty<Folder<string>>();
+    }
+
+    public virtual IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
+        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+    {
+        return AsyncEnumerable.Empty<Folder<string>>();
+    }
+
+    public virtual IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags,
+        Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
+        IEnumerable<string> subjectEntriesIds)
+    {
+        return AsyncEnumerable.Empty<Folder<string>>();
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterRoomsAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter provider, FilterType filterType, Guid subjectId,
+        bool excludeSubject, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, string searchText, bool withoutTags, IEnumerable<string> tags,
+        FilesDbContext filesDbContext)
+    {
+        rooms = FilterByProvidersAsync(rooms, provider);
+        rooms = FilterByRoomType(rooms, filterType);
+        rooms = FilterBySubject(rooms, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
+        rooms = FilterByTitle(rooms, searchText);
+        rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
+
+        return rooms;
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> rooms, bool withoutTags, IEnumerable<string> tags, FilesDbContext filesDbContext)
+    {
+        if (withoutTags)
+        {
+            return rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                    .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .Select(r => r.folder);
+        }
+
+        if (tags == null || !tags.Any())
+        {
+            return rooms;
+        }
+
+        var filtered = rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+            .Where(r => tags.Contains(r.Name))
+            .Select(r => r.folder);
+
+        return filtered;
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterByProvidersAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter providerFilter)
+    {
+        if (providerFilter == ProviderFilter.None)
+        {
+            return rooms;
+        }
+
+        var filter = providerFilter switch
+        {
+            ProviderFilter.WebDav => new[] { ProviderTypes.WebDav.ToStringFast() },
+            ProviderFilter.GoogleDrive => new[] { ProviderTypes.GoogleDrive.ToStringFast() },
+            ProviderFilter.OneDrive => new[] { ProviderTypes.OneDrive.ToStringFast() },
+            ProviderFilter.DropBox => new[] { ProviderTypes.DropBox.ToStringFast(), ProviderTypes.DropboxV2.ToStringFast() },
+            ProviderFilter.kDrive => new[] { ProviderTypes.kDrive.ToStringFast() },
+            ProviderFilter.Yandex => new[] { ProviderTypes.Yandex.ToStringFast() },
+            ProviderFilter.SharePoint => new[] { ProviderTypes.SharePoint.ToStringFast() },
+            ProviderFilter.Box => new[] { ProviderTypes.Box.ToStringFast() },
+            _ => throw new NotImplementedException()
+        };
+
+        return rooms.Where(f => filter.Contains(f.ProviderKey));
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
+    {
+        if (filterType is FilterType.None or FilterType.FoldersOnly)
+        {
+            return rooms;
+        }
+
+        var typeFilter = filterType switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.DEFAULT,
+        };
+
+        return rooms.Where(f => f.FolderType == typeFilter);
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject, SubjectFilter subjectFilter,
+        IEnumerable<string> subjectEntriesIds)
+    {
+        if (subjectId == Guid.Empty)
+        {
+            return rooms;
+        }
+
+        if (subjectFilter == SubjectFilter.Owner)
+        {
+            return excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId) : rooms.Where(f => f != null && f.CreateBy == subjectId);
+        }
+        if (subjectFilter == SubjectFilter.Member)
+        {
+            return excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId && !subjectEntriesIds.Contains(f.Id))
+                : rooms.Where(f => f != null && (f.CreateBy == subjectId || subjectEntriesIds.Contains(f.Id)));
+        }
+
+        return rooms;
+    }
+
+    protected static IAsyncEnumerable<Folder<string>> FilterByTitle(IAsyncEnumerable<Folder<string>> rooms, string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return rooms;
+        }
+
+        return rooms.Where(x => x.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) != -1);
+    }
+
+    #endregion
+}
+internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
 {
     public int TenantID { get; private set; }
     protected readonly IServiceProvider _serviceProvider;

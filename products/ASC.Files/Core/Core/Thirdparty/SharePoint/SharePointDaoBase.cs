@@ -202,12 +202,12 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         return MappingIDAsync(id, false);
     }
 
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         return path;
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
         var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
         var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));

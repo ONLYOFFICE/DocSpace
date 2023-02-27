@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.Dropbox;
+
 namespace ASC.Files.Thirdparty.Dropbox;
 
 [Scope(Additional = typeof(DropboxDaoSelectorExtension))]
@@ -44,7 +46,7 @@ internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, I
 
     public IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<DropboxFolderDao>(id);
+        return base.GetFolderDao<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>(id);
     }
 
     public IThirdPartyTagDao GetTagDao(string id)
@@ -58,7 +60,7 @@ public static class DropboxDaoSelectorExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<DropboxFileDao>();
-        services.TryAdd<DropboxFolderDao>();
+        services.TryAdd<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>();
         services.TryAdd<DropboxTagDao>();
     }
 }

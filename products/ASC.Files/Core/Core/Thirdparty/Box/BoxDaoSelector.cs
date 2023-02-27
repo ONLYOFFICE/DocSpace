@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Core.Thirdparty;
+using ASC.Files.Core.Core.Thirdparty.Box;
 
 namespace ASC.Files.Thirdparty.Box;
 
@@ -41,7 +41,7 @@ internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelec
 
     public IFileDao<string> GetFileDao(string id)
     {
-        return base.GetFileDao<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>(id);
+        return base.GetFileDao<BoxFileDao>(id);
     }
 
     public IFolderDao<string> GetFolderDao(string id)
@@ -59,7 +59,7 @@ public static class BoxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>();
+        services.TryAdd<BoxFileDao>();
         services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>();
         services.TryAdd<BoxTagDao>();
     }

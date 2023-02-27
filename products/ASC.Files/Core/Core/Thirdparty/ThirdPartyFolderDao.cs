@@ -25,6 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Core.Thirdparty;
+
+[Scope]
 internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFolderDao<string>
     where TFile : class, TItem
     where TFolder : class, TItem
@@ -38,10 +40,38 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     private readonly IFolderDao<int> _folderDao;
     private readonly TempStream _tempStream;
     private readonly SetupInfo _setupInfo;
-
     private readonly IDaoBase<TFile, TFolder, TItem> _dao;
     private readonly IProviderInfo<TFile, TFolder, TItem> _providerInfo;
-    private readonly ProviderFilter _thirdFilter;
+
+    private ProviderFilter _thirdFilter;
+
+    public ThirdPartyFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory,
+        UserManager userManager,
+        CrossDao crossDao,
+        IDaoSelector<IProviderInfo<TFile, TFolder, TItem>> daoSelector,
+        IFileDao<int> fileDao,
+        IFolderDao<int> folderDao,
+        TempStream tempStream,
+        SetupInfo setupInfo,
+        IDaoBase<TFile, TFolder, TItem> dao,
+        IProviderInfo<TFile, TFolder, TItem> providerInfo)
+    {
+        _dbContextFactory = dbContextFactory;
+        _userManager = userManager;
+        _crossDao = crossDao;
+        _daoSelector = daoSelector;
+        _fileDao = fileDao;
+        _folderDao = folderDao;
+        _tempStream = tempStream;
+        _setupInfo = setupInfo;
+        _dao = dao;
+        _providerInfo = providerInfo;
+    }
+
+    public void Init(ProviderFilter filter)
+    {
+        _thirdFilter = filter;
+    }
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
     {
@@ -639,10 +669,10 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
 
     public Task<Folder<string>> GetRootFolderAsync(string folderId)
     {
-        throw new NotImplementedException();
+        return _dao.GetRootFolderAsync();
     }
 
-    public virtual Task<int> GetItemsCountAsync(string folderId)
+    public Task<int> GetItemsCountAsync(string folderId)
     {
         throw new NotImplementedException();
     }

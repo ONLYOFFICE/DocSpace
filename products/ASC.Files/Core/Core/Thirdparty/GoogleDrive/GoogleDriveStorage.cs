@@ -24,15 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.IO;
-
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Transient]
-internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, DriveFile>, IDisposable
+internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, DriveFile>, IGoogleDriveItemStorage<DriveFile>, IDisposable
 {
     private OAuth20Token _token;
 
@@ -169,6 +167,11 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
     public Task<List<DriveFile>> GetItemsAsync(string folderId)
     {
         return GetItemsInternalAsync(folderId);
+    }
+
+    public Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folders)
+    {
+        return GetItemsInternalAsync(folderId, folders);
     }
 
     private async Task<List<DriveFile>> GetItemsInternalAsync(string folderId, bool? folders = null)

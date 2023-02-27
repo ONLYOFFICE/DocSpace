@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.OneDrive;
+
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
@@ -44,7 +46,7 @@ internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>,
 
     public IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<OneDriveFolderDao>(id);
+        return base.GetFolderDao<ThirdPartyFolderDao<Item, Item, Item>>(id);
     }
 
     public IThirdPartyTagDao GetTagDao(string id)
@@ -58,7 +60,7 @@ public static class OneDriveDaoSelectorExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<OneDriveFileDao>();
-        services.TryAdd<OneDriveFolderDao>();
+        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>>();
         services.TryAdd<OneDriveTagDao>();
     }
 }

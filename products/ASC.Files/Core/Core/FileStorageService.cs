@@ -562,7 +562,7 @@ public class FileStorageService //: IFileStorageService
             await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
         }
 
-        await providerDao.UpdateProviderInfoAsync(providerInfo.ID, title, result.Item1.Id.ToString(), result.Item2, @private);
+        await providerDao.UpdateProviderInfoAsync(providerInfo.ProviderId, title, result.Item1.Id.ToString(), result.Item2, @private);
 
         return result.Item1;
     }
@@ -1668,7 +1668,7 @@ public class FileStorageService //: IFileStorageService
             {
                 CustomerTitle = r.CustomerTitle,
                 Corporate = r.RootFolderType == FolderType.COMMON,
-                ProviderId = r.ID.ToString(),
+                ProviderId = r.ProviderId.ToString(),
                 ProviderKey = r.ProviderKey
             };
         }
@@ -2259,8 +2259,8 @@ public class FileStorageService //: IFileStorageService
             //move common thirdparty storage userFrom
             await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id).Where(provider => provider.RootFolderType == FolderType.COMMON))
             {
-                _logger.InformationReassignProvider(commonProviderInfo.ID, userFrom.Id, userTo.Id);
-                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
+                _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFrom.Id, userTo.Id);
+                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
 

@@ -362,6 +362,8 @@ public class SharePointProviderInfo : IProviderInfo
         }
     }
 
+    public int ProviderId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     private readonly ILogger<SharePointProviderInfo> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -664,6 +666,11 @@ public class SharePointProviderInfo : IProviderInfo
         {
             folder.FolderType = FolderType;
         }
+    }
+
+    public Task CacheResetAsync(string id = null, bool? isFile = null)
+    {
+        throw new NotImplementedException();
     }
 }
 

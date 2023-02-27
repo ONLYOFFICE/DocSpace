@@ -90,15 +90,16 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
 
     public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>
     {
-        return GetDao<T1>(id);
+        //return GetDao<T1>(id);
+        return null;
+    }
+    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>
+    {
+        //  return GetDao<T1>(id);
+        return null;
     }
 
     public virtual IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao
-    {
-        return GetDao<T1>(id);
-    }
-
-    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>
     {
         return GetDao<T1>(id);
     }

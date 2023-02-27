@@ -25,50 +25,49 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Core.Thirdparty;
-internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
+internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem: class
 {
-    private readonly IDaoBase<TFile, TFolder, TItem> _dao;
-    private readonly IProviderInfo<TFile, TFolder, TItem> _providerInfo;
+    internal IDaoBase<TFile, TFolder, TItem> Dao { get; }
+    internal IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; }
 
     private readonly UserManager _userManager;
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly IDaoSelector _daoSelector;
     private readonly CrossDao _crossDao;
     private readonly IFileDao<int> _fileDao;
-    private readonly SetupInfo _setupInfo;
-    private readonly TempPath _tempPath;
 
     public ThirdPartyFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
         IDaoSelector daoSelector,
         CrossDao crossDao,
-        IFileDao<int> fileDao, 
-        SetupInfo setupInfo,
-        TempPath tempPath)
+        IFileDao<int> fileDao,
+        IDaoBase<TFile, TFolder, TItem> dao,
+        IProviderInfo<TFile, TFolder, TItem> providerInfo)
     {
         _userManager = userManager;
         _dbContextFactory = dbContextFactory;
         _daoSelector = daoSelector;
         _crossDao = crossDao;
         _fileDao = fileDao;
-        _setupInfo = setupInfo;
-        _tempPath = tempPath;
+        Dao = dao;
+        ProviderInfo = providerInfo;
     }
+
 
     public async Task InvalidateCacheAsync(string fileId)
     {
-        var thirdFileId = _dao.MakeId(fileId);
-        await _providerInfo.CacheResetAsync(thirdFileId, true);
+        var thirdFileId = Dao.MakeThirdId(fileId);
+        await ProviderInfo.CacheResetAsync(thirdFileId, true);
 
-        var thirdFile = await _dao.GetFileAsync(fileId);
-        var parentId = _dao.GetParentFolderId(thirdFile);
+        var thirdFile = await Dao.GetFileAsync(fileId);
+        var parentId = Dao.GetParentFolderId(thirdFile);
 
         if (parentId != null)
         {
-            await _providerInfo.CacheResetAsync(parentId);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
     }
 
@@ -79,19 +78,19 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
     {
-        return _dao.ToFile(await _dao.GetFileAsync(fileId));
+        return Dao.ToFile(await Dao.GetFileAsync(fileId));
     }
 
     public async Task<File<string>> GetFileAsync(string parentId, string title)
     {
-        var items = await _dao.GetItemsAsync(parentId, false);
+        var items = await Dao.GetItemsAsync(parentId, false);
 
-        return _dao.ToFile(items.FirstOrDefault(item => _dao.GetName(item).Equals(title, StringComparison.InvariantCultureIgnoreCase)) as TFile);
+        return Dao.ToFile(items.FirstOrDefault(item => Dao.GetName(item).Equals(title, StringComparison.InvariantCultureIgnoreCase)) as TFile);
     }
 
     public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
     {
-        return _dao.ToFile(await _dao.GetFileAsync(fileId));
+        return Dao.ToFile(await Dao.GetFileAsync(fileId));
     }
 
     public async IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
@@ -109,7 +108,7 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
         foreach (var fileId in fileIds)
         {
-            yield return _dao.ToFile(await _dao.GetFileAsync(fileId));
+            yield return Dao.ToFile(await Dao.GetFileAsync(fileId));
         }
     }
 
@@ -181,11 +180,11 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async IAsyncEnumerable<string> GetFilesAsync(string parentId)
     {
-        var items = await _dao.GetItemsAsync(parentId, false);
+        var items = await Dao.GetItemsAsync(parentId, false);
 
         foreach (var item in items)
         {
-            yield return _dao.MakeId(_dao.GetId(item));
+            yield return Dao.MakeId(Dao.GetId(item));
         }
     }
 
@@ -197,8 +196,8 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
         }
 
         //Get only files
-        var filesWait = await _dao.GetItemsAsync(parentId, false);
-        var files = filesWait.Select(item => _dao.ToFile(item as TFile));
+        var filesWait = await Dao.GetItemsAsync(parentId, false);
+        var files = filesWait.Select(item => Dao.ToFile(item as TFile));
 
         //Filter
         if (subjectID != Guid.Empty)
@@ -282,10 +281,10 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var fileId = _dao.MakeId(file.Id);
-        await _providerInfo.CacheResetAsync(fileId, true);
+        var fileId = Dao.MakeThirdId(file.Id);
+        await ProviderInfo.CacheResetAsync(fileId, true);
 
-        var thirdFile = await _dao.GetFileAsync(file.Id);
+        var thirdFile = await Dao.GetFileAsync(file.Id);
         if (thirdFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -296,7 +295,7 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
             throw new Exception(errorFile.Error);
         }
 
-        var storage = await _providerInfo.StorageAsync;
+        var storage = await ProviderInfo.StorageAsync;
         var fileStream = await storage.DownloadStreamAsync(thirdFile, (int)offset);
 
         return fileStream;
@@ -318,42 +317,42 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
     {
         TFile newFile = null;
-        var storage = await _providerInfo.StorageAsync;
+        var storage = await ProviderInfo.StorageAsync;
 
         if (file.Id != null)
         {
-            var fileId = _dao.MakeId(file.Id);
+            var fileId = Dao.MakeThirdId(file.Id);
             newFile = await storage.SaveStreamAsync(fileId, fileStream);
 
-            if (!_dao.GetName(newFile).Equals(file.Title))
+            if (!Dao.GetName(newFile).Equals(file.Title))
             {
-                var folderId = _dao.GetParentFolderId(await _dao.GetFileAsync(fileId));
-                file.Title = await _dao.GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
+                var folderId = Dao.GetParentFolderId(await Dao.GetFileAsync(fileId));
+                file.Title = await Dao.GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
                 newFile = await storage.RenameFileAsync(fileId, file.Title);
             }
         }
         else if (file.ParentId != null)
         {
-            var folderId = _dao.MakeId(file.ParentId);
-            file.Title = await _dao.GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
+            var folderId = Dao.MakeThirdId(file.ParentId);
+            file.Title = await Dao.GetAvailableTitleAsync(file.Title, folderId, IsExistAsync);
             newFile = await storage.CreateFileAsync(fileStream, file.Title, folderId);
         }
 
-        await _providerInfo.CacheResetAsync(_dao.GetId(newFile));
-        var parentId = _dao.GetParentFolderId(newFile);
+        await ProviderInfo.CacheResetAsync(Dao.GetId(newFile));
+        var parentId = Dao.GetParentFolderId(newFile);
         if (parentId != null)
         {
-            await _providerInfo.CacheResetAsync(parentId);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
-        return _dao.ToFile(newFile);
+        return Dao.ToFile(newFile);
     }
 
     public async Task<bool> IsExistAsync(string title, object folderId)
     {
-        var item = await _dao.GetItemsAsync(folderId.ToString(), false);
+        var item = await Dao.GetItemsAsync(folderId.ToString(), false);
 
-        return item.Any(item => _dao.GetName(item).Equals(title, StringComparison.InvariantCultureIgnoreCase));
+        return item.Any(item => Dao.GetName(item).Equals(title, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
@@ -363,13 +362,13 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task DeleteFileAsync(string fileId)
     {
-        var file = await _dao.GetFileAsync(fileId);
+        var file = await Dao.GetFileAsync(fileId);
         if (file == null)
         {
             return;
         }
 
-        var id = _dao.MakeId(_dao.GetId(file));
+        var id = Dao.MakeId(Dao.GetId(file));
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
@@ -379,11 +378,11 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = _dao.Query(filesDbContext.ThirdpartyIdMapping)
+                var hashIDs = Dao.Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(id))
                 .Select(r => r.HashId);
 
-                var link = await _dao.Query(filesDbContext.TagLink)
+                var link = await Dao.Query(filesDbContext.TagLink)
                 .Where(r => hashIDs.Any(h => h == r.EntryId))
                 .ToListAsync();
 
@@ -397,13 +396,13 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
                 filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-                var securityToDelete = _dao.Query(filesDbContext.Security)
+                var securityToDelete = Dao.Query(filesDbContext.Security)
                 .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
                 await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = _dao.Query(filesDbContext.ThirdpartyIdMapping)
+                var mappingToDelete = Dao.Query(filesDbContext.ThirdpartyIdMapping)
                 .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
@@ -415,15 +414,15 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
         if (file is not IErrorItem)
         {
-            var storage = await _providerInfo.StorageAsync;
+            var storage = await ProviderInfo.StorageAsync;
             await storage.DeleteItemAsync(file);
         }
 
-        await _providerInfo.CacheResetAsync(_dao.GetId(file), true);
-        var parentFolderId = _dao.GetParentFolderId(file);
+        await ProviderInfo.CacheResetAsync(Dao.GetId(file), true);
+        var parentFolderId = Dao.GetParentFolderId(file);
         if (parentFolderId != null)
         {
-            await _providerInfo.CacheResetAsync(parentFolderId);
+            await ProviderInfo.CacheResetAsync(parentFolderId);
         }
     }
 
@@ -454,29 +453,29 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
     {
-        var file = await _dao.GetFileAsync(fileId);
+        var file = await Dao.GetFileAsync(fileId);
         if (file is IErrorItem errorFile)
         {
             throw new Exception(errorFile.Error);
         }
 
-        var toFolder = await _dao.GetFolderAsync(toFolderId);
+        var toFolder = await Dao.GetFolderAsync(toFolderId);
         if (toFolder is IErrorItem errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var fromFolderId = _dao.GetParentFolderId(file);
+        var fromFolderId = Dao.GetParentFolderId(file);
 
-        var newTitle = await _dao.GetAvailableTitleAsync(_dao.GetName(file), _dao.GetId(toFolder), IsExistAsync);
-        var storage = await _providerInfo.StorageAsync;
-        file = await storage.MoveFileAsync(_dao.GetId(file), newTitle, _dao.GetId(toFolder));
+        var newTitle = await Dao.GetAvailableTitleAsync(Dao.GetName(file), Dao.GetId(toFolder), IsExistAsync);
+        var storage = await ProviderInfo.StorageAsync;
+        file = await storage.MoveFileAsync(Dao.GetId(file), newTitle, Dao.GetId(toFolder));
 
-        await _providerInfo.CacheResetAsync(_dao.GetId(file), true);
-        await _providerInfo.CacheResetAsync(_dao.GetId(toFolder));
-        await _providerInfo.CacheResetAsync(_dao.GetId(toFolder));
+        await ProviderInfo.CacheResetAsync(Dao.GetId(file), true);
+        await ProviderInfo.CacheResetAsync(Dao.GetId(toFolder));
+        await ProviderInfo.CacheResetAsync(Dao.GetId(toFolder));
 
-        return _dao.MakeId(_dao.GetId(file));
+        return Dao.MakeId(Dao.GetId(file));
     }
 
     public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
@@ -496,26 +495,26 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
-        var file = await _dao.GetFileAsync(fileId);
+        var file = await Dao.GetFileAsync(fileId);
         if (file is IErrorItem errorFile)
         {
             throw new Exception(errorFile.Error);
         }
 
-        var toFolder = await _dao.GetFolderAsync(toFolderId);
+        var toFolder = await Dao.GetFolderAsync(toFolderId);
         if (toFolder is IErrorItem errorFolder)
         {
             throw new Exception(errorFolder.Error);
         }
 
-        var newTitle = await _dao.GetAvailableTitleAsync(_dao.GetName(file), _dao.GetId(toFolder), IsExistAsync);
-        var storage = await _providerInfo.StorageAsync;
-        var newFile = await storage.CopyFileAsync(_dao.GetId(file), newTitle, _dao.GetId(toFolder));
+        var newTitle = await Dao.GetAvailableTitleAsync(Dao.GetName(file), Dao.GetId(toFolder), IsExistAsync);
+        var storage = await ProviderInfo.StorageAsync;
+        var newFile = await storage.CopyFileAsync(Dao.GetId(file), newTitle, Dao.GetId(toFolder));
 
-        await _providerInfo.CacheResetAsync(_dao.GetId(newFile));
-        await _providerInfo.CacheResetAsync(_dao.GetId(toFolder));
+        await ProviderInfo.CacheResetAsync(Dao.GetId(newFile));
+        await ProviderInfo.CacheResetAsync(Dao.GetId(toFolder));
 
-        return _dao.ToFile(newFile);
+        return Dao.ToFile(newFile);
     }
 
     public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
@@ -530,20 +529,20 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var thirdFile = await _dao.GetFileAsync(file.Id);
-        newTitle = await _dao.GetAvailableTitleAsync(newTitle, _dao.GetParentFolderId(thirdFile), IsExistAsync);
+        var thirdFile = await Dao.GetFileAsync(file.Id);
+        newTitle = await Dao.GetAvailableTitleAsync(newTitle, Dao.GetParentFolderId(thirdFile), IsExistAsync);
 
-        var storage = await _providerInfo.StorageAsync;
-        thirdFile = await storage.RenameFileAsync(_dao.GetId(thirdFile), newTitle);
+        var storage = await ProviderInfo.StorageAsync;
+        thirdFile = await storage.RenameFileAsync(Dao.GetId(thirdFile), newTitle);
 
-        await _providerInfo.CacheResetAsync(_dao.GetId(thirdFile));
-        var parentId = _dao.GetParentFolderId(thirdFile);
+        await ProviderInfo.CacheResetAsync(Dao.GetId(thirdFile));
+        var parentId = Dao.GetParentFolderId(thirdFile);
         if (parentId != null)
         {
-            await _providerInfo.CacheResetAsync(parentId);
+            await ProviderInfo.CacheResetAsync(parentId);
         }
 
-        return _dao.MakeId(_dao.GetId(thirdFile));
+        return Dao.MakeId(Dao.GetId(thirdFile));
     }
 
     public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
@@ -568,13 +567,13 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
     public async Task<Stream> GetThumbnailAsync(string fileId, int width, int height)
     {
-        var thirdFileId = _dao.MakeId(_daoSelector.ConvertId(fileId));
+        var thirdFileId = Dao.MakeThirdId(_daoSelector.ConvertId(fileId));
 
-        var storage = await _providerInfo.StorageAsync;
+        var storage = await ProviderInfo.StorageAsync;
         return await storage.GetThumbnailAsync(thirdFileId, width, height);
     }
     
-    private File<string> RestoreIds(File<string> file)
+    internal File<string> RestoreIds(File<string> file)
     {
         if (file == null)
         {
@@ -583,43 +582,24 @@ internal class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
 
         if (file.Id != null)
         {
-            file.Id = _dao.MakeId(file.Id);
+            file.Id = Dao.MakeId(file.Id);
         }
 
         if (file.ParentId != null)
         {
-            file.ParentId = _dao.MakeId(file.ParentId);
+            file.ParentId = Dao.MakeId(file.ParentId);
         }
 
         return file;
     }
 
-    public virtual Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength);
 
-    public virtual Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength);
 
-    public virtual Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession);
 
-    public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
-    {
-        if (uploadSession.Items.ContainsKey("TempPath"))
-        {
-            System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
-        }
-
-        return Task.CompletedTask;
-    }
-
-
+    public abstract Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession);
 
     public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
     {

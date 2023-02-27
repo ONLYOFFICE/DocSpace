@@ -258,7 +258,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         return $"/{id}";
     }
 
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         return path;
     }
@@ -566,7 +566,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         return requestTitle;
     }
 
-    protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
         var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
         var files = GetFolderFiles(folderId).Select(x => MakeId(x));
