@@ -7,6 +7,8 @@ import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82
 import toastr from "@docspace/components/toast/toastr";
 import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
+import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import { getUserRole } from "@docspace/common/utils";
 
 const User = ({
   t,
@@ -34,6 +36,8 @@ const User = ({
   );
 
   const userRole = membersHelper.getOptionByUserAccess(user.access, user);
+
+  const userRoleOptions = filterUserRoleOptions(fullRoomRoleOptions, user);
 
   const updateRole = (option) => {
     return updateRoomMemberRole(selectionParentRoom.id, {
@@ -101,10 +105,12 @@ const User = ({
 
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
+  const role = getUserRole(user);
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
-        role="user"
+        role={role}
         className="avatar"
         size="min"
         source={isExpect ? AtReactSvgUrl : userAvatar || ""}
@@ -118,13 +124,13 @@ const User = ({
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
-      {userRole && fullRoomRoleOptions && (
+      {userRole && userRoleOptions && (
         <div className="role-wrapper">
           {canChangeUserRole ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
-              options={fullRoomRoleOptions}
+              options={userRoleOptions}
               onSelect={onOptionClick}
               scaled={false}
               withBackdrop={isMobileOnly}
