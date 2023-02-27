@@ -47,7 +47,7 @@ const ReadMore = styled.a`
   color: #333333;
 `;
 
-export const SecretKeyInput = () => {
+export const SecretKeyInput = ({ isResetVisible, name, value, onChange }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
@@ -61,20 +61,19 @@ export const SecretKeyInput = () => {
         Setting a webhook secret allows you to verify requests sent to the payload URL. <br />
         <ReadMore href="">Read more</ReadMore>
       </InfoHint>
-
-      <PasswordInput
-        id=""
-        mask={null}
-        name=""
-        onBlur={() => {}}
-        onChange={function noRefCheck() {}}
-        onFocus={function noRefCheck() {}}
-        placeholder="Enter secret key"
-        isDisableTooltip={true}
-        inputType="password"
-        isFullWidth={true}
-        scale={true}
-      />
+      {isResetVisible ? (
+        ""
+      ) : (
+        <PasswordInput
+          onChange={onChange}
+          value={value}
+          name={name}
+          placeholder="Enter secret key"
+          isDisableTooltip={true}
+          inputType="password"
+          isFullWidth={true}
+        />
+      )}
     </div>
   );
 };
