@@ -83,6 +83,12 @@ const RoleWrapper = styled.div`
     (props.size === "medium" &&
       props.theme.avatar.roleWrapperContainer.width.medium) ||
     "16px"};
+  min-width: ${(props) =>
+    (props.size === "max" &&
+      props.theme.avatar.roleWrapperContainer.width.max) ||
+    (props.size === "medium" &&
+      props.theme.avatar.roleWrapperContainer.width.medium) ||
+    "16px"};
 `;
 RoleWrapper.defaultProps = { theme: Base };
 
@@ -135,6 +141,7 @@ const heightStyle = (props) => props.theme.avatar.height[props.size];
 const StyledAvatar = styled.div`
   position: relative;
   width: ${(props) => widthStyle(props)};
+  min-width: ${(props) => widthStyle(props)};
   height: ${(props) => heightStyle(props)};
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
