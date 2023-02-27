@@ -59,7 +59,7 @@ public class RoomsNotificationSettingsHelper
 
     public List<int> GetDisabledRoomsForUser(Guid userId)
     {
-        var settings = _settingsManager.LoadForUser<RoomsNotificationSettings>(userId);
+        var settings = _settingsManager.Load<RoomsNotificationSettings>(userId);
         var disabledRooms = settings.DisabledRooms;
         return disabledRooms;
     }
