@@ -80,7 +80,7 @@ public class PhotoController : PeopleControllerBase
 
             var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
-            _settingsManager.SaveForUser(settings, user.Id);
+            _settingsManager.Save(settings, user.Id);
             await _userPhotoManager.RemovePhoto(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
             await _userPhotoManager.RemoveTempPhoto(fileName);

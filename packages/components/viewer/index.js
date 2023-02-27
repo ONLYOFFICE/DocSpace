@@ -11,7 +11,7 @@ import ControlBtn from "./sub-components/control-btn";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
-import { isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import ViewerMediaCloseSvgUrl from "PUBLIC_DIR/images/viewer.media.close.svg?url";
 import MediaNextIcon from "PUBLIC_DIR/images/viewer.next.react.svg";
@@ -70,7 +70,7 @@ export const Viewer = (props) => {
     if ((!isPlay || isOpenContextMenu) && (!isImage || isOpenContextMenu))
       return clearTimeout(timer);
     document.addEventListener("touchstart", onTouch);
-    if (!isMobileOnly) {
+    if (!isMobile) {
       document.addEventListener("mousemove", resetTimer);
 
       return () => {
@@ -80,12 +80,12 @@ export const Viewer = (props) => {
       };
     }
     return () => document.removeEventListener("touchstart", onTouch);
-  }, [isPlay, isOpenContextMenu]);
+  }, [isPlay, isOpenContextMenu, isImage]);
 
   function resetTimer() {
     setPanelVisible(true);
     clearTimeout(timer);
-    timer = setTimeout(() => setPanelVisible(false), 5000);
+    timer = setTimeout(() => setPanelVisible(false), 2500);
     setImageTimer(timer);
   }
 
@@ -157,7 +157,7 @@ export const Viewer = (props) => {
     </StyledMobileDetails>
   );
 
-  const displayUI = (isMobileOnly && isAudio) || panelVisible;
+  const displayUI = (isMobile && isAudio) || panelVisible;
 
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
@@ -207,7 +207,7 @@ export const Viewer = (props) => {
 
   return (
     <StyledViewerContainer visible={visible}>
-      {!isFullscreen && !isMobileOnly && displayUI && (
+      {!isFullscreen && !isMobile && displayUI && (
         <div>
           <div className="details" ref={detailsContainerRef}>
             <Text isBold fontSize="14px" className="title">
@@ -228,7 +228,7 @@ export const Viewer = (props) => {
         </div>
       )}
 
-      {playlist.length > 1 && !isFullscreen && displayUI && (
+      {playlist.length > 1 && !isFullscreen && displayUI && !isMobile && (
         <>
           {playlistPos !== 0 && (
             <StyledSwitchToolbar left onClick={prevClick}>

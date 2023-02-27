@@ -40,9 +40,9 @@ internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, Driv
         IDbContextFactory<FilesDbContext> dbContextFactory,
         IDaoSelector daoSelector,
         CrossDao crossDao,
-        IFileDao<int> fileDao, 
+        IFileDao<int> fileDao,
         IDaoBase<DriveFile, DriveFile, DriveFile> dao,
-        IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo, 
+        IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo,
         TempPath tempPath,
         SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, providerInfo)
     {
@@ -179,4 +179,3 @@ internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, Driv
         return Task.CompletedTask;
     }
 }
-

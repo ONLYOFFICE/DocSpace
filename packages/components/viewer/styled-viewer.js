@@ -240,6 +240,10 @@ const StyledMobileDetails = styled.div`
   .title {
     font-weight: 600;
     margin-top: 6px;
+    width: calc(100% - 100px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 

@@ -16,7 +16,10 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import {
+  getDaysRemaining,
+  openDocEditor as openEditor,
+} from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -97,6 +100,8 @@ class FilesStore {
   createdItem = null;
   scrollToItem = null;
 
+  roomCreated = false;
+
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
@@ -172,6 +177,7 @@ class FilesStore {
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
             console.log("[WS] create new file", fileInfo.id, fileInfo.title);
 
             const newFiles = [fileInfo, ...this.files];
@@ -189,11 +195,18 @@ class FilesStore {
             });
           } else if (opt?.type === "folder" && opt?.id) {
             const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
+
             if (foundIndex > -1) return;
 
             const folder = JSON.parse(opt?.data);
 
-            if (this.selectedFolderStore.id !== folder.parentId) return;
+            if (
+              this.selectedFolderStore.id !== folder.parentId ||
+              (folder.roomType &&
+                folder.createdBy.id === this.authStore.userStore.user.id &&
+                this.roomCreated)
+            )
+              return (this.roomCreated = false);
 
             const folderInfo = await api.files.getFolderInfo(folder.id);
 
@@ -874,10 +887,16 @@ class FilesStore {
     let newSelections = JSON.parse(JSON.stringify(this.selection));
 
     for (let item of added) {
+      if (!item) return;
+
       const value =
         this.viewAs === "tile"
           ? item.getAttribute("value")
-          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
+
+      if (!value) return;
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
@@ -907,10 +926,14 @@ class FilesStore {
     }
 
     for (let item of removed) {
+      if (!item) return;
+
       const value =
         this.viewAs === "tile"
           ? item.getAttribute("value")
-          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
 
       const splitValue = value && value.split("_");
 
@@ -1961,9 +1984,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(roomParams) {
+  createRoom = (roomParams) => {
+    this.roomCreated = true;
     return api.rooms.createRoom(roomParams);
-  }
+  };
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
@@ -2381,6 +2405,8 @@ class FilesStore {
     const newItem = items.map((item) => {
       const {
         access,
+        autoDelete,
+        originTitle,
         comment,
         contentLength,
         created,
@@ -2395,6 +2421,10 @@ class FilesStore {
         id,
         logo,
         locked,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         parentId,
         pureContentLength,
         rootFolderType,
@@ -2494,6 +2524,8 @@ class FilesStore {
 
       return {
         access,
+        daysRemaining: autoDelete && getDaysRemaining(autoDelete),
+        originTitle,
         //checked,
         comment,
         contentLength,
@@ -2535,6 +2567,10 @@ class FilesStore {
         canEdit,
         thumbnailUrl,
         thumbnailStatus,
+        originId,
+        originFolderId,
+        originRoomId,
+        originRoomTitle,
         previewUrl,
         folderUrl,
         href,

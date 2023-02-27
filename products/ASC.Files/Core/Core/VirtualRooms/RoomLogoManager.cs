@@ -177,10 +177,10 @@ public class RoomLogoManager
 
         return new Logo
         {
-            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?_={cacheKey}",
-            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?_={cacheKey}",
-            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?_={cacheKey}",
-            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?_={cacheKey}"
+            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?hash={cacheKey}",
+            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?hash={cacheKey}",
+            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?hash={cacheKey}",
+            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?hash={cacheKey}"
         };
     }
 

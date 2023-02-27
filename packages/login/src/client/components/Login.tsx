@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
+import { ButtonsWrapper, LoginFormWrapper, LoginContent } from "./StyledLogin";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
@@ -210,77 +210,80 @@ const Login: React.FC<ILoginProps> = ({
       isDesktop={isDesktopEditor}
       bgPattern={bgPattern}
     >
-      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        <img src={logoUrl} className="logo-wrapper" />
-        <Text
-          fontSize="23px"
-          fontWeight={700}
-          textAlign="center"
-          className="greeting-title"
-        >
-          {greetingSettings}
-        </Text>
-        <FormWrapper id="login-form" theme={theme}>
-          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-          {oauthDataExists() && (
-            <>
-              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-              {providers && providers.length > 2 && (
-                <Link
-                  isHovered
-                  type="action"
-                  fontSize="13px"
-                  fontWeight="600"
-                  color="#3B72A7"
-                  className="more-label"
-                  onClick={moreAuthOpen}
-                >
-                  {t("Common:ShowMore")}
-                </Link>
-              )}
-            </>
-          )}
-          {(oauthDataExists() || ssoExists()) && (
-            <div className="line">
-              <Text className="or-label">{t("Or")}</Text>
-            </div>
-          )}
-          <LoginForm
-            isDesktop={!!isDesktopEditor}
-            isLoading={isLoading}
-            hashSettings={portalSettings?.passwordHash}
-            setIsLoading={setIsLoading}
-            onRecoverDialogVisible={onRecoverDialogVisible}
-            match={match}
-            enableAdmMess={enableAdmMess}
+      <div className="bg-cover"></div>
+      <LoginContent>
+        <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
+          <img src={logoUrl} className="logo-wrapper" />
+          <Text
+            fontSize="23px"
+            fontWeight={700}
+            textAlign="center"
+            className="greeting-title"
+          >
+            {greetingSettings}
+          </Text>
+          <FormWrapper id="login-form" theme={theme}>
+            {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+            {oauthDataExists() && (
+              <>
+                <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+                {providers && providers.length > 2 && (
+                  <Link
+                    isHovered
+                    type="action"
+                    fontSize="13px"
+                    fontWeight="600"
+                    color="#3B72A7"
+                    className="more-label"
+                    onClick={moreAuthOpen}
+                  >
+                    {t("Common:ShowMore")}
+                  </Link>
+                )}
+              </>
+            )}
+            {(oauthDataExists() || ssoExists()) && (
+              <div className="line">
+                <Text className="or-label">{t("Or")}</Text>
+              </div>
+            )}
+            <LoginForm
+              isDesktop={!!isDesktopEditor}
+              isLoading={isLoading}
+              hashSettings={portalSettings?.passwordHash}
+              setIsLoading={setIsLoading}
+              onRecoverDialogVisible={onRecoverDialogVisible}
+              match={match}
+              enableAdmMess={enableAdmMess}
+            />
+          </FormWrapper>
+          <Toast />
+          <MoreLoginModal
+            visible={moreAuthVisible}
+            onClose={moreAuthClose}
+            providers={providers}
+            onSocialLoginClick={onSocialButtonClick}
+            ssoLabel={ssoLabel}
+            ssoUrl={ssoUrl}
+            t={t}
           />
-        </FormWrapper>
-        <Toast />
-        <MoreLoginModal
-          visible={moreAuthVisible}
-          onClose={moreAuthClose}
-          providers={providers}
-          onSocialLoginClick={onSocialButtonClick}
-          ssoLabel={ssoLabel}
-          ssoUrl={ssoUrl}
-          t={t}
-        />
 
-        <RecoverAccessModalDialog
-          visible={recoverDialogVisible}
-          onClose={onRecoverDialogVisible}
-          textBody={t("RecoverTextBody")}
-          emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
-          id="recover-access-modal"
-        />
-      </ColorTheme>
-      {!checkIsSSR() && enabledJoin && (
-        <Register
-          id="login_register"
-          enabledJoin={enabledJoin}
-          currentColorScheme={currentColorScheme}
-        />
-      )}
+          <RecoverAccessModalDialog
+            visible={recoverDialogVisible}
+            onClose={onRecoverDialogVisible}
+            textBody={t("RecoverTextBody")}
+            emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
+            id="recover-access-modal"
+          />
+        </ColorTheme>
+        {!checkIsSSR() && enabledJoin && (
+          <Register
+            id="login_register"
+            enabledJoin={enabledJoin}
+            currentColorScheme={currentColorScheme}
+          />
+        )}
+      </LoginContent>{" "}
     </LoginFormWrapper>
   );
 };

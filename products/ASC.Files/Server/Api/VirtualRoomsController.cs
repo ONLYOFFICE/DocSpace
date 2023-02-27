@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -696,7 +696,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var filterValue = _apiContext.FilterValue;
 
         var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
-            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false,
+            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, default, withoutTags ?? false, tagNames, excludeSubject ?? false,
             provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
@@ -717,7 +717,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Tag name
     /// </returns>
     [HttpPost("tags")]
-    public async Task<string> CreateTagAsync(CreateTagRequestDto inDto)
+    public async Task<object> CreateTagAsync(CreateTagRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 

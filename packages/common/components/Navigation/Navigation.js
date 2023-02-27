@@ -19,6 +19,7 @@ import {
   isDesktop as isDesktopUtils,
 } from "@docspace/components/utils/device";
 import ToggleInfoPanelButton from "./sub-components/toggle-infopanel-btn";
+import TrashWarning from "./sub-components/trash-warning";
 
 const Navigation = ({
   tReady,
@@ -33,6 +34,7 @@ const Navigation = ({
   getContextOptionsPlus,
   getContextOptionsFolder,
   onBackToParentFolder,
+  isTrashFolder,
   isRecycleBinFolder,
   isEmptyFilesList,
   clearTrash,
@@ -168,6 +170,7 @@ const Navigation = ({
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             isTabletView={isTabletView}
+            isTrashFolder={isTrashFolder}
             isRecycleBinFolder={isRecycleBinFolder}
             isDesktop={isDesktop}
             isDesktopClient={isDesktopClient}
@@ -200,6 +203,9 @@ const Navigation = ({
               onPlusClick={onPlusClick}
             />
           </StyledContainer>
+          {isTrashFolder && !isEmptyPage && (
+            <TrashWarning title={titles.trashWarning} />
+          )}
           {infoPanelIsVisible && (
             <ToggleInfoPanelButton
               id="info-panel-toggle--open"

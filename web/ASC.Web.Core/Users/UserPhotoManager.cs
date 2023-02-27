@@ -504,7 +504,7 @@ public class UserPhotoManager
     public void ResetThumbnailSettings(Guid userId)
     {
         var thumbSettings = _settingsManager.GetDefault<UserPhotoThumbnailSettings>();
-        _settingsManager.SaveForUser(thumbSettings, userId);
+        _settingsManager.Save(thumbSettings, userId);
     }
 
     public async Task<(string, string)> SaveOrUpdatePhoto(Guid userID, byte[] data)
@@ -583,7 +583,7 @@ public class UserPhotoManager
 
     private void SetUserPhotoThumbnailSettings(Guid userId, int width, int height)
     {
-        var settings = _settingsManager.LoadForUser<UserPhotoThumbnailSettings>(userId);
+        var settings = _settingsManager.Load<UserPhotoThumbnailSettings>(userId);
 
         if (!settings.IsDefault)
         {
@@ -599,7 +599,7 @@ public class UserPhotoManager
             width >= height ? new Point(pos, 0) : new Point(0, pos),
             new Size(min, min));
 
-        _settingsManager.SaveForUser(settings, userId);
+        _settingsManager.Save(settings, userId);
     }
 
     private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out IImageFormat imgFormat, out int width, out int height)
@@ -696,7 +696,7 @@ public class UserPhotoManager
             throw new ImageWeightLimitException();
         }
 
-        var resizeTask = new ResizeWorkerItem(_tenantManager.GetCurrentTenant().Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
+        var resizeTask = new ResizeWorkerItem(_tenantManager.GetCurrentTenant().Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.Load<UserPhotoThumbnailSettings>(userID));
         var key = $"{userID}{size}";
         resizeTask["key"] = key;
 

@@ -33,17 +33,23 @@ public class SettingsController : ApiControllerBase
     private readonly FileStorageService _fileStorageService;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
 
     public SettingsController(
         FileStorageService fileStorageService,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        SettingsManager settingsManager,
+        TenantManager tenantManager) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
+        _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
     }
 
     /// <summary>
