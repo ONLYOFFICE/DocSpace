@@ -183,6 +183,7 @@ const SectionFilterContent = ({
   setClearSearch,
   setMainButtonMobileVisible,
   setSearchTitleOpenLocation,
+  setSearchFileIdOpenLocation,
   setHighlightFileId,
   setItemOpenLocation,
 }) => {
@@ -203,9 +204,15 @@ const SectionFilterContent = ({
   React.useEffect(() => {
     if (searchTitleOpenLocation && isLoadedLocationFiles) {
       onSearch(searchTitleOpenLocation);
-      setSearchTitleOpenLocation(null);
     }
+  }, [
+    searchTitleOpenLocation,
+    isLoadedLocationFiles,
+    onSearch,
+    setSearchTitleOpenLocation,
+  ]);
 
+  React.useEffect(() => {
     if (isLoadedSearchFiles && Object.keys(itemOpenLocation).length !== 0) {
       setHighlightFileId({
         highlightFileId: itemOpenLocation.id,
@@ -215,10 +222,6 @@ const SectionFilterContent = ({
       setItemOpenLocation({});
     }
   }, [
-    searchTitleOpenLocation,
-    isLoadedLocationFiles,
-    onSearch,
-    setSearchTitleOpenLocation,
     isLoadedSearchFiles,
     itemOpenLocation.id,
     itemOpenLocation.isFileHasExst,
@@ -325,6 +328,11 @@ const SectionFilterContent = ({
 
   const onSearch = React.useCallback(
     (data = "") => {
+      if (!data && searchTitleOpenLocation) {
+        setSearchTitleOpenLocation(null);
+        setSearchFileIdOpenLocation(null);
+      }
+
       if (isRooms) {
         const newFilter = roomsFilter.clone();
 
@@ -356,7 +364,10 @@ const SectionFilterContent = ({
       selectedFolderId,
       filter,
       roomsFilter,
+      searchTitleOpenLocation,
       setIsLoadedSearchFiles,
+      setSearchTitleOpenLocation,
+      setSearchFileIdOpenLocation,
     ]
   );
 
@@ -420,12 +431,7 @@ const SectionFilterContent = ({
       : filter.search
       ? filter.search
       : "";
-  }, [
-    isRooms,
-    roomsFilter.filterValue,
-    filter.search,
-    searchTitleOpenLocation,
-  ]);
+  }, [isRooms, roomsFilter.filterValue, filter.search]);
 
   const getSelectedSortData = React.useCallback(() => {
     const currentFilter = isRooms ? roomsFilter : filter;
@@ -1516,6 +1522,7 @@ export default inject(
     const {
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
+      setSearchFileIdOpenLocation,
       isLoadedLocationFiles,
       itemOpenLocation,
       setItemOpenLocation,
@@ -1550,6 +1557,7 @@ export default inject(
 
       searchTitleOpenLocation,
       setSearchTitleOpenLocation,
+      setSearchFileIdOpenLocation,
       isLoadedLocationFiles,
       itemOpenLocation,
       setItemOpenLocation,

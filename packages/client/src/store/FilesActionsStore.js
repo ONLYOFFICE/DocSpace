@@ -52,6 +52,7 @@ class FilesActionStore {
 
   isBulkDownload = false;
   searchTitleOpenLocation = null;
+  searchFileIdOpenLocation = null;
   itemOpenLocation = {};
   isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
@@ -1164,6 +1165,10 @@ class FilesActionStore {
     this.searchTitleOpenLocation = searchTitleOpenLocation;
   };
 
+  setSearchFileIdOpenLocation = (searchFileIdOpenLocation) => {
+    this.searchFileIdOpenLocation = searchFileIdOpenLocation;
+  };
+
   setItemOpenLocation = (itemOpenLocation) => {
     this.itemOpenLocation = itemOpenLocation;
   };
@@ -1182,13 +1187,16 @@ class FilesActionStore {
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const filterData = FilesFilter.getDefault();
+    const sameName = item.title === this.searchTitleOpenLocation;
+    const sameFile = item.Id === this.searchFileIdOpenLocation;
 
     api.files
-      .getFolder(item.ExtraLocation, filterData)
+      .getFolder(item.ExtraLocation)
       .then(() => {
-        this.openLocationAction(item.ExtraLocation);
-        this.setSearchTitleOpenLocation(item.title);
+        !sameFile && this.openLocationAction(item.ExtraLocation);
+        !sameName && this.setSearchTitleOpenLocation(item.title);
+        !sameFile && this.setSearchFileIdOpenLocation(item.Id);
+
         this.setItemOpenLocation({
           id: item.id,
           isFileHasExst: !item.fileExst,
