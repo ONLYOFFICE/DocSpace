@@ -300,33 +300,29 @@ public class EFUserService : IUserService
             using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = userDbContext.Database.BeginTransaction();
 
-            userDbContext.Acl.RemoveRange(userDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
-            userDbContext.Subscriptions.RemoveRange(userDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
-            userDbContext.SubscriptionMethods.RemoveRange(userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+            userDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)).ExecuteDelete();
+            userDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)).ExecuteDelete();
+            userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)).ExecuteDelete();
 
             var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.UserGroupId));
             var groups = userDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
 
             if (immediate)
             {
-                userDbContext.UserGroups.RemoveRange(userGroups);
-                userDbContext.Groups.RemoveRange(groups);
+                userGroups.ExecuteDelete();
+                groups.ExecuteDelete();
             }
             else
             {
-                foreach (var ug in userGroups)
-                {
-                    ug.Removed = true;
-                    ug.LastModified = DateTime.UtcNow;
-                }
-                foreach (var g in groups)
-                {
-                    g.Removed = true;
-                    g.LastModified = DateTime.UtcNow;
-                }
+                userGroups.ExecuteUpdate(ug => ug
+                .SetProperty(p => p.Removed, true)
+                .SetProperty(p => p.LastModified, DateTime.UtcNow));
+
+                groups.ExecuteUpdate(g => g
+                .SetProperty(p => p.Removed, true)
+                .SetProperty(p => p.LastModified, DateTime.UtcNow));
             }
 
-            userDbContext.SaveChanges();
             tr.Commit();
         });
     }
@@ -346,10 +342,10 @@ public class EFUserService : IUserService
             using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = userDbContext.Database.BeginTransaction();
 
-            userDbContext.Acl.RemoveRange(userDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
-            userDbContext.Subscriptions.RemoveRange(userDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-            userDbContext.SubscriptionMethods.RemoveRange(userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
-            userDbContext.Photos.RemoveRange(userDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
+            userDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id).ExecuteDelete();
+            userDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()).ExecuteDelete();
+            userDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()).ExecuteDelete();
+            userDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id).ExecuteDelete();
 
             var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == id);
             var users = userDbContext.Users.Where(r => r.Tenant == tenant && r.Id == id);
@@ -357,28 +353,23 @@ public class EFUserService : IUserService
 
             if (immediate)
             {
-                userDbContext.UserGroups.RemoveRange(userGroups);
-                userDbContext.Users.RemoveRange(users);
-                userDbContext.UserSecurity.RemoveRange(userSecurity);
+                userGroups.ExecuteDelete();
+                users.ExecuteDelete();
+                userSecurity.ExecuteDelete();
             }
             else
             {
-                foreach (var ug in userGroups)
-                {
-                    ug.Removed = true;
-                    ug.LastModified = DateTime.UtcNow;
-                }
+                userGroups.ExecuteUpdate(ug => ug
+                .SetProperty(p => p.Removed, true)
+                .SetProperty(p => p.LastModified, DateTime.UtcNow));
 
-                foreach (var u in users)
-                {
-                    u.Removed = true;
-                    u.Status = EmployeeStatus.Terminated;
-                    u.TerminatedDate = DateTime.UtcNow;
-                    u.LastModified = DateTime.UtcNow;
-                }
+                users.ExecuteUpdate(ug => ug
+                .SetProperty(p => p.Removed, true)
+                .SetProperty(p => p.LastModified, DateTime.UtcNow)
+                .SetProperty(p => p.TerminatedDate, DateTime.UtcNow)
+                .SetProperty(p => p.Status, EmployeeStatus.Terminated)
+                );
             }
-
-            userDbContext.SaveChanges();
 
             tr.Commit();
         });
@@ -402,16 +393,15 @@ public class EFUserService : IUserService
             var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == userId && r.UserGroupId == groupId && r.RefType == refType);
             if (immediate)
             {
-                userDbContext.UserGroups.RemoveRange(userGroups);
+                userGroups.ExecuteDelete();
             }
             else
             {
-                foreach (var u in userGroups)
-                {
-                    u.LastModified = DateTime.UtcNow;
-                    u.Removed = true;
-                }
+                userGroups.ExecuteUpdate(ug => ug
+                .SetProperty(p => p.Removed, true)
+                .SetProperty(p => p.LastModified, DateTime.UtcNow));
             }
+
             var user = userDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
             user.LastModified = DateTime.UtcNow;
             userDbContext.SaveChanges();
