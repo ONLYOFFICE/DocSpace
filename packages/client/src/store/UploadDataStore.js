@@ -850,7 +850,7 @@ class UploadDataStore {
         newPercent = this.getFilesPercent(uploadedSize);
       }
 
-      const percentCurrentFile = (index / length) * 100;
+      const percentCurrentFile = ((index + 1) / length) * 100;
 
       const fileIndex = this.uploadedFilesHistory.findIndex(
         (f) => f.uniqueId === this.files[indexOfFile].uniqueId
