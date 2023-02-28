@@ -154,6 +154,7 @@ const Items = ({
   startUpload,
   uploadEmptyFolders,
   isVisitor,
+  isCollaborator,
   isAdmin,
   myId,
   commonId,
@@ -169,6 +170,7 @@ const Items = ({
 
   onHide,
   firstLoad,
+  deleteAction,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -278,7 +280,8 @@ const Items = ({
           (item.pathParts &&
             (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
           item.rootFolderType === FolderType.USER ||
-          item.rootFolderType === FolderType.COMMON
+          item.rootFolderType === FolderType.COMMON ||
+          item.rootFolderType === FolderType.TRASH
         ) {
           return true;
         }
@@ -305,6 +308,18 @@ const Items = ({
     },
     [moveDragItems, t]
   );
+
+  const onRemove = React.useCallback(() => {
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      FileRemoved: t("Files:FileRemoved"),
+      FolderRemoved: t("Files:FolderRemoved"),
+    };
+
+    deleteAction(translations);
+  }, [deleteAction]);
 
   const onEmptyTrashAction = () => {
     isMobile && onHide();
@@ -335,7 +350,7 @@ const Items = ({
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
-            onMoveTo={onMoveTo}
+            onMoveTo={isTrash ? onRemove : onMoveTo}
             onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
             showBadge={showBadge}
@@ -347,7 +362,8 @@ const Items = ({
       });
 
       if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
-      if (!isVisitor) items.splice(3, 0, <AccountsItem key="accounts-item" />);
+      if (!isVisitor && !isCollaborator)
+        items.splice(3, 0, <AccountsItem key="accounts-item" />);
 
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
@@ -417,12 +433,17 @@ export default inject(
     } = treeFoldersStore;
 
     const { id, pathParts, rootFolderType } = selectedFolderStore;
-    const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
+    const {
+      moveDragItems,
+      uploadEmptyFolders,
+      deleteAction,
+    } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
       isAdmin: auth.isAdmin,
       isVisitor: auth.userStore.user.isVisitor,
+      isCollaborator: auth.userStore.user.isCollaborator,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
@@ -437,6 +458,7 @@ export default inject(
       setDragging,
       setStartDrag,
       moveDragItems,
+      deleteAction,
       startUpload,
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,

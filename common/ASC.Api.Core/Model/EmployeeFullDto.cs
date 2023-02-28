@@ -51,6 +51,7 @@ public class EmployeeFullDto : EmployeeDto
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
     public bool IsVisitor { get; set; }
+    public bool IsCollaborator { get; set; }
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
@@ -193,9 +194,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsVisitor = _userManager.IsUser(userInfo),
             IsAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
+            IsCollaborator = _userManager.IsCollaborator(userInfo),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
-
         };
 
         await Init(result, userInfo);

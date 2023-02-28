@@ -37,7 +37,7 @@ var options = new WebApplicationOptions
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddWebhookConfiguration()
+                     .AddWebStudioConfiguration()
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 

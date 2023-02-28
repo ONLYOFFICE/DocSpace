@@ -20,6 +20,7 @@ const PeopleSection = React.memo(() => {
       <PrivateRoute exact path={["/accounts/view/@self"]} component={Profile} />
       <PrivateRoute
         exact
+        withManager
         path={["/accounts"]}
         component={HomeRedirectToFilter}
       />

@@ -17,6 +17,9 @@ import {
 import IconButton from "../icon-button";
 import commonIconsStyles from "../utils/common-icons-style";
 
+import Text from "../text";
+import Tooltip from "../tooltip";
+
 const StyledGuestIcon = styled(GuestReactSvg)`
   ${commonIconsStyles}
 `;
@@ -63,6 +66,8 @@ const Avatar = (props) => {
     editAction,
     isDefaultSource = false,
     hideRoleIcon,
+    tooltipContent,
+    withTooltip,
   } = props;
   let isDefault = false,
     isIcon = false;
@@ -104,7 +109,27 @@ const Avatar = (props) => {
         </EditContainer>
       ) : (
         <>
-          {!hideRoleIcon && <RoleWrapper size={size}>{roleIcon}</RoleWrapper>}
+          {!hideRoleIcon && (
+            <>
+              <RoleWrapper
+                size={size}
+                data-for="roleTooltip"
+                data-tip={tooltipContent}
+              >
+                {roleIcon}
+              </RoleWrapper>
+              {withTooltip && (
+                <Tooltip
+                  id="roleTooltip"
+                  getContent={(dataTip) => (
+                    <Text fontSize="12px">{dataTip}</Text>
+                  )}
+                  effect="float"
+                  place="right"
+                />
+              )}
+            </>
+          )}
         </>
       )}
     </StyledAvatar>
@@ -115,7 +140,15 @@ Avatar.propTypes = {
   /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "base", "small", "min"]),
   /** Adds a user role table */
-  role: PropTypes.oneOf(["owner", "admin", "guest", "user", "manager", ""]),
+  role: PropTypes.oneOf([
+    "owner",
+    "admin",
+    "guest",
+    "user",
+    "manager",
+    "collaborator",
+    "",
+  ]),
   /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
   /** Provide this and leave `source` empty to display as initials */
@@ -133,6 +166,10 @@ Avatar.propTypes = {
   id: PropTypes.string,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Show tooltip on hover role icon */
+  withTooltip: PropTypes.bool,
+  /** Tooltip content */
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 Avatar.defaultProps = {
@@ -142,6 +179,8 @@ Avatar.defaultProps = {
   userName: "",
   editing: false,
   hideRoleIcon: false,
+  withTooltip: false,
+  tooltipContent: "",
 };
 
 export default memo(Avatar);

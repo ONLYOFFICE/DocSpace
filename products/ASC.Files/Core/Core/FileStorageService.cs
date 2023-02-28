@@ -2627,7 +2627,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 Access = share,
                 Id = linkId,
-                SubjectType = SubjectType.InvintationLink,
+                SubjectType = SubjectType.InvitationLink,
                 FileShareOptions = new FileShareOptions
                 {
                     Title = title,
