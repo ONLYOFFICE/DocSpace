@@ -148,7 +148,15 @@ class SectionHeaderContent extends React.Component {
 
   createFolder = () => this.onCreate();
 
-  uploadToFolder = () => console.log("Upload To Folder click");
+  // TODO: add privacy room check for files
+  onUploadAction = (type) => {
+    const element =
+      type === "file"
+        ? document.getElementById("customFileInput")
+        : document.getElementById("customFolderInput");
+
+    element?.click();
+  };
 
   getContextOptionsPlus = () => {
     const {
@@ -228,14 +236,19 @@ class SectionHeaderContent extends React.Component {
             onClick: this.createFolder,
             icon: CatalogFolderReactSvgUrl,
           },
-          /*{ key: "separator", isSeparator: true },
-      {
-        key: "upload-to-folder",
-        label: t("UploadToFolder"),
-        onClick: this.uploadToFolder,
-        disabled: true,
-        icon: ActionsUploadReactSvgUrl,
-      },*/
+          { key: "separator", isSeparator: true },
+          {
+            key: "upload-files",
+            label: t("Article:UploadFiles"),
+            onClick: () => this.onUploadAction("file"),
+            icon: ActionsUploadReactSvgUrl,
+          },
+          {
+            key: "upload-folder",
+            label: t("Article:UploadFolder"),
+            onClick: () => this.onUploadAction("folder"),
+            icon: ActionsUploadReactSvgUrl,
+          },
         ];
 
     if (enablePlugins) {
@@ -966,6 +979,7 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
+    "Article",
   ])(
     withLoader(withRouter(observer(SectionHeaderContent)))(
       <Loaders.SectionHeader />
