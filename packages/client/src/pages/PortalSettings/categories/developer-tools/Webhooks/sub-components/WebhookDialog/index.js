@@ -47,7 +47,7 @@ const InfoHint = styled(Hint)`
 export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSubmit, webhook }) => {
   const onModalClose = () => {
     onClose();
-    setIsResetVisible(true);
+    isSettingsModal && setIsResetVisible(true);
   };
 
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
