@@ -65,8 +65,10 @@ const RootFolderContainer = (props) => {
     isEmptyPage,
     setIsEmptyPage,
     isVisitor,
+    isCollaborator,
     sectionWidth,
     setIsLoadedEmptyPage,
+    security,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -77,12 +79,14 @@ const RootFolderContainer = (props) => {
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
 
-  const roomsDescription = isVisitor
-    ? t("RoomEmptyContainerDescriptionUser")
-    : t("RoomEmptyContainerDescription");
-  const archiveRoomsDescription = isVisitor
-    ? t("ArchiveEmptyScreenUser")
-    : t("ArchiveEmptyScreen");
+  const roomsDescription =
+    isVisitor || isCollaborator
+      ? t("RoomEmptyContainerDescriptionUser")
+      : t("RoomEmptyContainerDescription");
+  const archiveRoomsDescription =
+    isVisitor || isCollaborator
+      ? t("ArchiveEmptyScreenUser")
+      : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src={PrivacySvgUrl} />;
@@ -201,7 +205,7 @@ const RootFolderContainer = (props) => {
           imageSrc: theme.isBase
             ? EmptyScreenCorporateSvgUrl
             : EmptyScreenCorporateDarkSvgUrl,
-          buttons: isVisitor ? null : roomsButtons,
+          buttons: !security?.Create ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
@@ -386,7 +390,7 @@ export default inject(
       setIsEmptyPage,
       setIsLoadedEmptyPage,
     } = filesStore;
-    const { title, rootFolderType } = selectedFolderStore;
+    const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
@@ -394,6 +398,7 @@ export default inject(
       isPrivacyFolder,
       isDesktop: isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
+      isCollaborator: auth.userStore.user.isCollaborator,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,
@@ -411,6 +416,7 @@ export default inject(
       isEmptyPage,
       setIsEmptyPage,
       setIsLoadedEmptyPage,
+      security,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

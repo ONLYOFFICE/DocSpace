@@ -19,6 +19,7 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
+  isCollaborator,
   searchTitleOpenLocation,
   itemOpenLocation,
   isLoadedSearchFiles,
@@ -145,6 +146,7 @@ const History = ({
               checkAndOpenLocationAction={checkAndOpenLocationAction}
               openUser={openUser}
               isVisitor={isVisitor}
+              isCollaborator={isCollaborator}
               isLastEntity={i === feeds.length - 1}
             />
           )),
@@ -180,6 +182,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
 
   const { user } = userStore;
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -192,6 +195,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
+    isCollaborator,
     searchTitleOpenLocation,
     itemOpenLocation,
     isLoadedSearchFiles,

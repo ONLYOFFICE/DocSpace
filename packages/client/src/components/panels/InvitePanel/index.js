@@ -35,6 +35,7 @@ const InvitePanel = ({
   userLink,
   guestLink,
   adminLink,
+  collaboratorLink,
   defaultAccess,
   inviteUsers,
   setInfoPanelIsMobileHidden,
@@ -85,7 +86,8 @@ const InvitePanel = ({
 
   useEffect(() => {
     if (roomId === -1) {
-      if (!userLink || !guestLink || !adminLink) getPortalInviteLinks();
+      if (!userLink || !guestLink || !adminLink || !collaboratorLink)
+        getPortalInviteLinks();
 
       setShareLinks([
         {
@@ -106,6 +108,12 @@ const InvitePanel = ({
           shareLink: adminLink,
           access: 3,
         },
+        {
+          id: "collaborator",
+          title: "Collaborator",
+          shareLink: collaboratorLink,
+          access: 4,
+        },
       ]);
 
       return;
@@ -113,7 +121,7 @@ const InvitePanel = ({
 
     selectRoom();
     getInfo();
-  }, [roomId, userLink, guestLink, adminLink]);
+  }, [roomId, userLink, guestLink, adminLink, collaboratorLink]);
 
   useEffect(() => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -275,6 +283,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
   } = peopleStore.inviteLinksStore;
 
   const {
@@ -308,6 +317,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
     inviteUsers,
     setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,

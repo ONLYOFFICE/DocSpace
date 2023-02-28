@@ -227,7 +227,8 @@ public class EFUserService : IUserService
             if (sortBy == "type")
             {
                 var q1 = from user in q
-                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID))
+                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID 
+                                 || g.UserGroupId == Users.Constants.GroupCollaborator.ID))
                          on user.Id equals userGroup.Userid into joinedGroup
                          from @group in joinedGroup.DefaultIfEmpty()
                          select new { user, @group };
@@ -235,12 +236,18 @@ public class EFUserService : IUserService
                 if (sortOrderAsc)
                 {
                     q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
-                       .ThenBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user);
+                        .ThenBy(r => r.group == null ? 2 :
+                            r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 :
+                            r.group.UserGroupId == Users.Constants.GroupCollaborator.ID ? 3 : 4)
+                        .Select(r => r.user);
                 }
                 else
                 {
                     q = q1.OrderBy(r => r.user.ActivationStatus == EmployeeActivationStatus.Pending)
-                        .ThenByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+                        .ThenByDescending(u => u.group == null ? 2 :
+                            u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 :
+                            u.group.UserGroupId == Users.Constants.GroupCollaborator.ID ? 3 : 4)
+                        .Select(r => r.user);
                 }
             }
             else

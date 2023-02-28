@@ -7,6 +7,8 @@ import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82
 import toastr from "@docspace/components/toast/toastr";
 import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
+import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import { getUserRole } from "@docspace/common/utils";
 
 const User = ({
   t,
@@ -33,10 +35,9 @@ const User = ({
     canChangeUserRole
   );
 
-  const userRole = membersHelper.getOptionByUserAccess(user.access);
-  const userRoleOptions = fullRoomRoleOptions?.filter(
-    (role) => role.key !== userRole.key
-  );
+  const userRole = membersHelper.getOptionByUserAccess(user.access, user);
+
+  const userRoleOptions = filterUserRoleOptions(fullRoomRoleOptions, user);
 
   const updateRole = (option) => {
     return updateRoomMemberRole(selectionParentRoom.id, {
@@ -82,6 +83,8 @@ const User = ({
   };
 
   const onOptionClick = (option) => {
+    if (option.access === userRole.access) return;
+
     const userType =
       option.key === "owner"
         ? "admin"
@@ -102,14 +105,24 @@ const User = ({
 
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
+  const role = getUserRole(user);
+
+  const withTooltip = user.isOwner || user.isAdmin;
+
+  const tooltipContent = `${
+    user.isAdmin ? t("Common:DocSpaceAdmin") : t("Common:Owner")
+  }. ${t("Common:HasFullAccess")}`;
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
-        role="user"
+        role={role}
         className="avatar"
         size="min"
         source={isExpect ? AtReactSvgUrl : userAvatar || ""}
         userName={isExpect ? "" : user.displayName}
+        withTooltip={withTooltip}
+        tooltipContent={tooltipContent}
       />
 
       <div className="name">
@@ -135,6 +148,7 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              displaySelectedOption
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

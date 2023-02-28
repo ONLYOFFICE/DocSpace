@@ -34,7 +34,7 @@ class AccessRightsStore {
   };
 
   canChangeUserType = (user) => {
-    const { id, isOwner } = this.authStore.userStore.user;
+    const { id, isOwner, isAdmin } = this.authStore.userStore.user;
 
     const { id: userId, statusType, role } = user;
 
@@ -52,6 +52,7 @@ class AccessRightsStore {
           return false;
         }
 
+      case "collaborator":
       case "user":
         return true;
 
@@ -69,6 +70,7 @@ class AccessRightsStore {
       isAdmin: userIsAdmin,
       isOwner: userIsOwner,
       isVisitor: userIsVisitor,
+      isCollaborator: userIsCollaborator,
     } = user;
 
     const needMakeEmployee =
@@ -76,7 +78,12 @@ class AccessRightsStore {
 
     if (isOwner) return needMakeEmployee;
 
-    return needMakeEmployee && !userIsAdmin && !userIsOwner && userIsVisitor;
+    return (
+      needMakeEmployee &&
+      !userIsAdmin &&
+      !userIsOwner &&
+      (userIsVisitor || userIsCollaborator)
+    );
   };
 
   canActivateUser = (user) => {

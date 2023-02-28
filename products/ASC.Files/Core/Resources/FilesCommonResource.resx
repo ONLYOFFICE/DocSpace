@@ -363,8 +363,8 @@
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
     <value>The invitation link is invalid or it's validity has expired</value>
   </data>
-  <data name="ErrorMessage_PaidRole" xml:space="preserve">
-    <value>The role is only available to a paid user</value>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>The role is not available for this user type</value>
   </data>
   <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
     <value>This provider is already connected to the room</value>
