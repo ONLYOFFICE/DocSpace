@@ -169,6 +169,7 @@ const Items = ({
 
   onHide,
   firstLoad,
+  deleteAction,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -278,7 +279,8 @@ const Items = ({
           (item.pathParts &&
             (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
           item.rootFolderType === FolderType.USER ||
-          item.rootFolderType === FolderType.COMMON
+          item.rootFolderType === FolderType.COMMON ||
+          item.rootFolderType === FolderType.TRASH
         ) {
           return true;
         }
@@ -305,6 +307,18 @@ const Items = ({
     },
     [moveDragItems, t]
   );
+
+  const onRemove = React.useCallback(() => {
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      FileRemoved: t("Files:FileRemoved"),
+      FolderRemoved: t("Files:FolderRemoved"),
+    };
+
+    deleteAction(translations);
+  }, [deleteAction]);
 
   const onEmptyTrashAction = () => {
     isMobile && onHide();
@@ -335,7 +349,7 @@ const Items = ({
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
-            onMoveTo={onMoveTo}
+            onMoveTo={isTrash ? onRemove : onMoveTo}
             onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
             showBadge={showBadge}
@@ -417,7 +431,11 @@ export default inject(
     } = treeFoldersStore;
 
     const { id, pathParts, rootFolderType } = selectedFolderStore;
-    const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
+    const {
+      moveDragItems,
+      uploadEmptyFolders,
+      deleteAction,
+    } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
@@ -437,6 +455,7 @@ export default inject(
       setDragging,
       setStartDrag,
       moveDragItems,
+      deleteAction,
       startUpload,
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
