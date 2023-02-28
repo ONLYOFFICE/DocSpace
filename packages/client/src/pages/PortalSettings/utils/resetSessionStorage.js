@@ -28,6 +28,8 @@ export const resetSessionStorage = () => {
   const companyNameFromeSessionStorage = getFromSessionStorage("companyName");
   const companySettingsFromSessionStorage = getFromSessionStorage("companySettings");
   const defaultCompanySettingsFromSessionStorage = getFromSessionStorage("defaultCompanySettings");
+  const additionalSettings = getFromSessionStorage("additionalSettings");
+  const defaultAdditionalSettings = getFromSessionStorage("defaultAdditionalSettings");
 
   if (portalNameFromSessionStorage !== portalNameDefaultFromSessionStorage) {
     saveToSessionStorage("portalName", "none");
@@ -68,5 +70,8 @@ export const resetSessionStorage = () => {
   }
   if (companySettingsFromSessionStorage !== defaultCompanySettingsFromSessionStorage) {
     saveToSessionStorage("companySettings", defaultCompanySettingsFromSessionStorage)
+  }
+  if (additionalSettings !== defaultAdditionalSettings) {
+    saveToSessionStorage("additionalSettings", defaultAdditionalSettings)
   }
 };
