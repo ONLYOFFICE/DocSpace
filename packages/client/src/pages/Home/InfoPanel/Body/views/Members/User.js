@@ -107,6 +107,12 @@ const User = ({
 
   const role = getUserRole(user);
 
+  const withTooltip = user.isOwner || user.isAdmin;
+
+  const tooltipContent = `${
+    user.isAdmin ? t("Common:DocSpaceAdmin") : t("Common:Owner")
+  }. ${t("Common:HasFullAccess")}`;
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -115,6 +121,8 @@ const User = ({
         size="min"
         source={isExpect ? AtReactSvgUrl : userAvatar || ""}
         userName={isExpect ? "" : user.displayName}
+        withTooltip={withTooltip}
+        tooltipContent={tooltipContent}
       />
 
       <div className="name">
