@@ -625,8 +625,9 @@ class UploadDataStore {
       }) > -1;
 
     if (hasFolder) {
-      if (this.uploaded) this.isParallel = false;
-      else {
+      if (this.uploaded) {
+        this.isParallel = false;
+      } else if (this.isParallel) {
         this.tempFiles.push({ uploadFiles, folderId, t });
         return;
       }
