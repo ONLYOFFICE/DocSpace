@@ -162,7 +162,7 @@ public class FileSharingAceHelper<T>
                     
                     userType = FileSecurity.GetTypeByShare(w.Access);
 
-                    if (!emailInvite)
+                    if (!emailInvite && currentUserType != EmployeeType.DocSpaceAdmin)
                     {
                         var user = _userManager.GetUsers(w.Id);
                         await _userManagerWrapper.UpdateUserTypeAsync(user, userType);
