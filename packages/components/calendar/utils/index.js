@@ -5,3 +5,4 @@ export { getCalendarMonths } from "./getCalendarMonths";
 export { getMonthElements } from "./getMonthElements";
 export { getCalendarYears } from "./getCalendarYears";
 export { getYearElements } from "./getYearElements";
+export { getValidDates } from "./getValidDates";
