@@ -21,6 +21,7 @@ const HistoryBlock = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
+  isCollaborator,
   isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
@@ -87,6 +88,7 @@ const HistoryBlock = ({
           users.map((user, i) => (
             <HistoryBlockUser
               isVisitor={isVisitor}
+              isCollaborator={isCollaborator}
               key={user.id}
               user={user}
               withComma={i < users.length - 1}
