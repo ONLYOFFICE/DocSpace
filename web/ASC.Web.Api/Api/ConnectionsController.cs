@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api;
 
+/// <summary>
+/// Security API.
+/// </summary>
+/// <name>security</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -76,6 +80,16 @@ public class ConnectionsController : ControllerBase
         _geolocationHelper = geolocationHelper;
     }
 
+    /// <summary>
+    /// Returns all the active connections to the portal.
+    /// </summary>
+    /// <short>
+    /// Get active connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns>Active portal connections</returns>
+    /// <path>api/2.0/security/activeconnections</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("activeconnections")]
     public async Task<object> GetAllActiveConnections()
     {
@@ -124,6 +138,16 @@ public class ConnectionsController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Logs out from all the active connections for the current user and changes their password.
+    /// </summary>
+    /// <short>
+    /// Log out and change password
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns>URL to the confirmation message for changing a password</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallchangepassword</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallchangepassword")]
     public async Task<object> LogOutAllActiveConnectionsChangePassword()
     {
@@ -153,6 +177,17 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from all the active connections for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out for the user by ID
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param name="userId">User ID</param>
+    /// <path>api/2.0/security/activeconnections/logoutall/{userId}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns>Task awaiter</returns>
     [HttpPut("activeconnections/logoutall/{userId}")]
     public async Task LogOutAllActiveConnectionsForUser(Guid userId)
     {
@@ -165,6 +200,16 @@ public class ConnectionsController : ControllerBase
         await LogOutAllActiveConnections(userId);
     }
 
+    /// <summary>
+    /// Logs out from all the active connections except the current connection.
+    /// </summary>
+    /// <short>
+    /// Log out from all connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns>Current user name</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallexceptthis</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallexceptthis")]
     public async Task<object> LogOutAllExceptThisConnection()
     {
@@ -186,6 +231,17 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from the connection with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out from the connection
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param name="loginEventId">Login event ID</param>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/security/activeconnections/logout/{loginEventId}</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logout/{loginEventId}")]
     public async Task<bool> LogOutActiveConnection(int loginEventId)
     {
