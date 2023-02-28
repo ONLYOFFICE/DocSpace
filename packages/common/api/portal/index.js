@@ -35,7 +35,7 @@ export function getInvitationLink(type) {
         method: "get",
         url: `/portal/users/invite/${type}.json`,
       }).then((link) => {
-        if (type !== 3) {
+        if (type !== 3 && type !== 4) {
           localStorage.setItem(
             type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK,
             link
