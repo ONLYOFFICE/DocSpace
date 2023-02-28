@@ -8,6 +8,7 @@ export default {
   argTypes: {
     maxDate: { control: "date" },
     minDate: { control: "date" },
+    initialDate: { control: "date" },
     locale: {
       type: "select",
       options: [
@@ -54,18 +55,7 @@ const Template = ({ locale, minDate, maxDate, ...args }) => {
   return (
     <Calendar
       selectedDate={selectedDate}
-      onChange={(value) => {
-        if (value instanceof Function) {
-          setSelectedDate((prevSelectedDate) => {
-            const result = value(prevSelectedDate);
-            //onChange with result
-            return result;
-          });
-        } else {
-          setSelectedDate(value);
-          //onChange with value
-        }
-      }}
+      setSelectedDate={setSelectedDate}
       minDate={minDate}
       maxDate={maxDate}
       locale={locale}
@@ -81,4 +71,5 @@ Default.args = {
   minDate: new Date("1970/01/01"),
   id: "",
   className: "",
+  initialDate: new Date(),
 };
