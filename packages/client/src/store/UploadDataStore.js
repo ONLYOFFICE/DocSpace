@@ -1130,8 +1130,9 @@ class UploadDataStore {
         if (!this.isParallel) return;
 
         const allFilesIsUploaded =
-          this.files.findIndex((f) => f.action !== "uploaded" && !f.error) ===
-          -1;
+          this.files.findIndex(
+            (f) => f.action !== "uploaded" && f.action !== "convert" && !f.error
+          ) === -1;
 
         if (allFilesIsUploaded) {
           if (!this.filesToConversion.length) {
