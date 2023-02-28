@@ -69,7 +69,13 @@ public class DbWorker
             return objForCreate;
         }
 
-        var toAdd = new WebhooksConfig { TenantId = Tenant, Uri = uri, SecretKey = secretKey };
+        var toAdd = new WebhooksConfig
+        {
+            TenantId = Tenant,
+            Uri = uri,
+            SecretKey = secretKey
+        };
+
         toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
         await webhooksDbContext.SaveChangesAsync();
 
