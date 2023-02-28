@@ -1,26 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import propTypes from "prop-types";
 import moment from "moment";
 
 import { Days, Months, Years } from "./sub-components";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
+import { getValidDates } from "./utils";
+
 const Calendar = ({
   locale,
   selectedDate,
-  onChange,
+  setSelectedDate,
   minDate,
   maxDate,
   id,
   className,
   style,
+  initialDate,
 }) => {
   moment.locale(locale);
-  const setSelectedDate = onChange;
+
   const [observedDate, setObservedDate] = useState(moment());
   const [selectedScene, setSelectedScene] = useState(0);
-  minDate = moment(minDate);
-  maxDate = moment(maxDate);
+  [minDate, maxDate] = getValidDates(minDate, maxDate);
+  initialDate = moment(initialDate);
+
+  useEffect(() => {
+    if (!initialDate || initialDate > maxDate || initialDate < minDate) {
+      console.log(
+        "initial date is not good: ",
+        moment()
+          .seconds((minDate.seconds() + maxDate.seconds()) / 2)
+          .format("YYYY-MM-DD")
+      );
+    } else {
+      setSelectedDate(initialDate);
+      setObservedDate(initialDate);
+      console.log("initial date is ok", selectedDate.format("YYYY-MM-DD"));
+    }
+  }, []);
 
   return (
     <ColorTheme
@@ -69,16 +87,18 @@ Calendar.propTypes = {
   id: propTypes.string,
   /** Specifies the locale of calendar */
   locale: propTypes.string,
-  /** Value of selected date */
+  /** Value of selected date (moment object)*/
   selectedDate: propTypes.object,
   /** Allow you to handle changing events of component */
-  onChange: propTypes.func,
+  setSelectedDate: propTypes.func,
   /** Specifies the minimum selectable date */
   minDate: propTypes.object,
   /** Specifies the maximum selectable date */
   maxDate: propTypes.object,
   /** Accepts css style */
   style: propTypes.oneOfType([propTypes.object, propTypes.array]),
+  /** First shown date */
+  initialDate: propTypes.object,
 };
 
 Calendar.defaultProps = {
@@ -87,6 +107,7 @@ Calendar.defaultProps = {
   maxDate: new Date("2040/01/01"),
   id: "",
   className: "",
+  initialDate: new Date(),
 };
 
 export default Calendar;
