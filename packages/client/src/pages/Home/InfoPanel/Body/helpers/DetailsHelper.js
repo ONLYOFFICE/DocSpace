@@ -7,6 +7,7 @@ import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Tag from "@docspace/components/tag";
+import { decode } from "he";
 
 import {
   connectedCloudsTypeTitleTranslation as getProviderTranslation,
@@ -227,8 +228,8 @@ class DetailsHelper {
     const onOpenUser = () => this.openUser(this.item.createdBy, this.history);
 
     return this.personal || this.isVisitor
-      ? text(decodeString(this.item.createdBy?.displayName))
-      : link(decodeString(this.item.createdBy?.displayName), onOpenUser);
+      ? text(decode(this.item.createdBy?.displayName))
+      : link(decode(this.item.createdBy?.displayName), onOpenUser);
   };
 
   getItemLocation = () => {
@@ -279,8 +280,8 @@ class DetailsHelper {
     const onOpenUser = () => this.openUser(this.item.updatedBy, this.history);
 
     return this.personal || this.isVisitor
-      ? text(decodeString(this.item.updatedBy?.displayName))
-      : link(decodeString(this.item.updatedBy?.displayName), onOpenUser);
+      ? text(decode(this.item.updatedBy?.displayName))
+      : link(decode(this.item.updatedBy?.displayName), onOpenUser);
   };
 
   getItemCreationDate = () => {
