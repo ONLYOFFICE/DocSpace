@@ -367,6 +367,8 @@ class UploadDataStore {
       isShareFolder,
     } = this.treeFoldersStore;
 
+    if (!this.converted) return;
+
     const { storeOriginalFiles } = this.settingsStore;
 
     const isSortedFolder = isRecentFolder || isFavoritesFolder || isShareFolder;
