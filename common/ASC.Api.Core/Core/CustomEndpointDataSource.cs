@@ -83,7 +83,7 @@ public static class EndpointExtension
         "DELETE"
     };
 
-    public static async Task<IEndpointRouteBuilder> MapCustom(this IEndpointRouteBuilder endpoints, bool webhooksEnabled = false, IServiceProvider serviceProvider = null)
+    public static async Task<IEndpointRouteBuilder> MapCustomAsync(this IEndpointRouteBuilder endpoints, bool webhooksEnabled = false, IServiceProvider serviceProvider = null)
     {
         endpoints.MapControllers();
 
