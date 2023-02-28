@@ -154,6 +154,7 @@ const Items = ({
   startUpload,
   uploadEmptyFolders,
   isVisitor,
+  isCollaborator,
   isAdmin,
   myId,
   commonId,
@@ -361,7 +362,8 @@ const Items = ({
       });
 
       if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
-      if (!isVisitor) items.splice(3, 0, <AccountsItem key="accounts-item" />);
+      if (!isVisitor && !isCollaborator)
+        items.splice(3, 0, <AccountsItem key="accounts-item" />);
 
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
@@ -441,6 +443,7 @@ export default inject(
     return {
       isAdmin: auth.isAdmin,
       isVisitor: auth.userStore.user.isVisitor,
+      isCollaborator: auth.userStore.user.isCollaborator,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,

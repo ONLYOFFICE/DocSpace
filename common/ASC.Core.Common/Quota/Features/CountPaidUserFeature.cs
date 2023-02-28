@@ -24,44 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using AuthConstants = ASC.Common.Security.Authorizing.Constants;
+namespace ASC.Core.Common.Quota.Features;
 
-namespace ASC.Core.Common.Security;
-
-public class UserGroupObject : SecurityObject
+public class CountPaidUserFeature : TenantQuotaFeatureCount
 {
-    private readonly Guid _groupId;
-
-    public UserGroupObject(ISubject user, Guid groupId)
+    public override bool Paid { get => true; }
+    public override string Name { get => "manager"; }
+    public CountPaidUserFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {
-        SecurityId = user.ID;
-        _groupId = groupId;
-        ObjectType = typeof(UserGroupObject);
-        FullId = $"{ObjectType.FullName}|{user.ID}|{_groupId}";
-    }
-
-    protected override IEnumerable<IRole> GetTargetRoles(IRoleProvider roleProvider)
-    {
-        if (_groupId == Users.Constants.GroupAdmin.ID)
-        { 
-            return new[] { AuthConstants.DocSpaceAdmin };
-        }
-
-        if (_groupId == Users.Constants.GroupUser.ID)
-        {
-            return new[] { AuthConstants.User };
-        }
-
-        if (_groupId == Users.Constants.GroupCollaborator.ID)
-        {
-            return new[] { AuthConstants.Collaborator };
-        }
-
-        return Array.Empty<IRole>();
-    }
-
-    protected override IRuleData GetRuleData()
-    {
-        return new Role(_groupId, "ruleData");
     }
 }
