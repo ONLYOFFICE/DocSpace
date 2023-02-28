@@ -16,6 +16,7 @@ import {
   StyledDeleteIcon,
   StyledText,
 } from "../StyledInvitePanel";
+import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 
 const Item = ({
   t,
@@ -38,7 +39,11 @@ const Item = ({
 
   const accesses = getAccessOptions(t, roomType, true, false, isOwner);
 
-  const defaultAccess = accesses.find((option) => option.access === +access);
+  const filteredAccesses = filterUserRoleOptions(accesses, item, true);
+
+  const defaultAccess = filteredAccesses.find(
+    (option) => option.access === +access
+  );
 
   const errorsInList = () => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -128,7 +133,7 @@ const Item = ({
         <StyledComboBox
           onSelect={selectItemAccess}
           noBorder
-          options={accesses}
+          options={filteredAccesses}
           size="content"
           scaled={false}
           manualWidth="fit-content"

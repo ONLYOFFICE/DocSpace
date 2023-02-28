@@ -276,23 +276,19 @@ internal class ProviderAccountDao : IProviderDao
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, AuthData authData)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var tenantId = TenantID;
 
-        var forUpdate = await filesDbContext.ThirdpartyAccount
+        var forUpdateCount = await filesDbContext.ThirdpartyAccount
             .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == TenantID)
-            .ToListAsync();
+            .Where(r => r.TenantId == tenantId)
+            .ExecuteUpdateAsync(f => f
+            .SetProperty(p => p.UserName, authData.Login ?? "")
+            .SetProperty(p => p.Password, EncryptPassword(authData.Password))
+            .SetProperty(p => p.Token, EncryptPassword(authData.Token ?? ""))
+            .SetProperty(p => p.Url, authData.Url ?? "")
+            );
 
-        foreach (var f in forUpdate)
-        {
-            f.UserName = authData.Login ?? "";
-            f.Password = EncryptPassword(authData.Password);
-            f.Token = EncryptPassword(authData.Token ?? "");
-            f.Url = authData.Url ?? "";
-        }
-
-        await filesDbContext.SaveChangesAsync();
-
-        return forUpdate.Count == 1 ? linkId : default;
+        return forUpdateCount == 1 ? linkId : default;
     }
 
     public virtual async Task<int> UpdateProviderInfoAsync(int linkId, string customerTitle, AuthData newAuthData, FolderType folderType, Guid? userId = null)

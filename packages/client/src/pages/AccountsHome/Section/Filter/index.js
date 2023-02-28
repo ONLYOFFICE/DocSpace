@@ -69,7 +69,6 @@ const SectionFilterContent = ({
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
-  //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
 
@@ -123,7 +122,6 @@ const SectionFilterContent = ({
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
-  // TODO: change translation keys
   const getData = async () => {
     const statusItems = [
       {
@@ -171,6 +169,12 @@ const SectionFilterContent = ({
         key: EmployeeType.User,
         group: "filter-type",
         label: t("Common:RoomAdmin"),
+      },
+      {
+        id: "filter_type-room-admin",
+        key: EmployeeType.Collaborator,
+        group: "filter-type",
+        label: t("Common:Collaborator"),
       },
       {
         id: "filter_type-user",
@@ -311,6 +315,9 @@ const SectionFilterContent = ({
           break;
         case EmployeeType.User:
           label = t("Common:RoomAdmin");
+          break;
+        case EmployeeType.Collaborator:
+          label = t("Common:Collaborator");
           break;
         case EmployeeType.Guest:
           label = t("Common:User");

@@ -28,7 +28,7 @@ namespace ASC.Webhooks.Extension;
 
 public static class ConfigurationManagerExtension
 {
-    public static ConfigurationManager AddWebhookConfiguration(
+    public static ConfigurationManager AddWebStudioConfiguration(
     this ConfigurationManager config)
     {
         config.AddJsonFile($"appsettings.services.json", optional: false, reloadOnChange: true);

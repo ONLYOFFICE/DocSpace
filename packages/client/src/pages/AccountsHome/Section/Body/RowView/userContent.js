@@ -40,7 +40,14 @@ const UserContent = ({
   t,
   theme,
 }) => {
-  const { displayName, email, statusType, role, isVisitor } = item;
+  const {
+    displayName,
+    email,
+    statusType,
+    role,
+    isVisitor,
+    isCollaborator,
+  } = item;
 
   const nameColor =
     statusType === "pending" || statusType === "disabled"
@@ -53,6 +60,8 @@ const UserContent = ({
       ? t("Common:Owner")
       : role === "admin"
       ? t("Common:DocSpaceAdmin")
+      : isCollaborator
+      ? t("Common:Collaborator")
       : isVisitor
       ? t("Common:User")
       : t("Common:RoomAdmin");

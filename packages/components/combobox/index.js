@@ -227,6 +227,10 @@ class ComboBox extends React.Component {
                     (!displaySelectedOption &&
                       option.label === selectedOption.label);
 
+                  const isActive =
+                    displaySelectedOption &&
+                    option.label === selectedOption.label;
+
                   return (
                     <DropDownItem
                       {...option}
@@ -236,6 +240,7 @@ class ComboBox extends React.Component {
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}
+                      isActive={isActive}
                     />
                   );
                 })}

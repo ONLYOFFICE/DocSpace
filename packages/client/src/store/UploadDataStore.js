@@ -855,6 +855,12 @@ class UploadDataStore {
 
       const percentCurrentFile = (index / length) * 100;
 
+      const fileIndex = this.uploadedFilesHistory.findIndex(
+        (f) => f.uniqueId === this.files[indexOfFile].uniqueId
+      );
+      if (fileIndex > -1)
+        this.uploadedFilesHistory[fileIndex].percent = percentCurrentFile;
+
       this.primaryProgressDataStore.setPrimaryProgressBarData({
         icon: "upload",
         percent: newPercent,
@@ -1052,6 +1058,12 @@ class UploadDataStore {
         return { location, requestsDataArray, fileSize, path };
       })
       .then(({ location, requestsDataArray, fileSize, path }) => {
+        const fileIndex = this.uploadedFilesHistory.findIndex(
+          (f) => f.uniqueId === this.files[indexOfFile].uniqueId
+        );
+        if (fileIndex > -1)
+          this.uploadedFilesHistory[fileIndex].percent = chunks < 2 ? 50 : 0;
+
         if (!this.isParallel) {
           this.primaryProgressDataStore.setPrimaryProgressBarData({
             icon: "upload",
@@ -1107,6 +1119,16 @@ class UploadDataStore {
           visible: true,
           alert: true,
         });
+
+        if (this.isParallel) {
+          this.currentUploadNumber -= 1;
+
+          const nextFileIndex = this.files.findIndex((f) => !f.inAction);
+
+          if (nextFileIndex !== -1) {
+            this.startSessionFunc(nextFileIndex, t);
+          }
+        }
 
         return Promise.resolve();
       })
