@@ -1530,7 +1530,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (rootFolderId == entryId)
         {
-            return (entryId, fileEntry.Title);
+            return (-1, "");
         }
 
         var parentId = Convert.ToInt32(fileEntry.ParentId);
@@ -1539,10 +1539,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (rootFolderId == parentId)
         {
-            var query = GetFolderQuery(filesDbContext, r => r.Id == parentId).AsNoTracking();
-            var parentFolder = await query.FirstOrDefaultAsync();
-
-            return (parentFolder.Id, parentFolder.Title);
+            return (entryId, fileEntry.Title);
         }
 
         int folderId;
