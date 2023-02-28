@@ -513,7 +513,7 @@ class UploadDataStore {
             }
           });
 
-          storeOriginalFiles && this.refreshFiles(file);
+          storeOriginalFiles && fileInfo && this.refreshFiles(file);
 
           if (fileInfo && fileInfo !== "password") {
             file.fileInfo = fileInfo;
@@ -540,7 +540,7 @@ class UploadDataStore {
           const percent = this.getConversationPercent(index + 1);
           this.setConversionPercent(percent, !!error);
 
-          if (file.fileInfo.version > 2) {
+          if (!file.error && file.fileInfo.version > 2) {
             this.filesStore.setUploadedFileIdWithVersion(file.fileInfo.id);
           }
         }
