@@ -199,7 +199,7 @@ export const filterUserRoleOptions = (
       (o) =>
         +o.access === ShareAccessRights.RoomManager ||
         +o.access === ShareAccessRights.None ||
-        (withRemove && (key === "s2" || key === "remove"))
+        (withRemove && (o.key === "s2" || o.key === "remove"))
     );
 
     return newOptions;
