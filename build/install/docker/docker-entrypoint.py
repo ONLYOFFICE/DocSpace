@@ -38,9 +38,9 @@ ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
 ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
 
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
-RUN_FILE = sys.argv[1] if sys.argv[1] else "none"
-LOG_FILE = sys.argv[2] if sys.argv[2] else "none"
-CORE_EVENT_BUS = sys.argv[3] if sys.argv[3] else ""
+RUN_FILE = sys.argv[1] if (len(sys.argv) > 1) else "none"
+LOG_FILE = sys.argv[2] if (len(sys.argv) > 2) else "none"
+CORE_EVENT_BUS = sys.argv[3] if (len(sys.argv) > 3) else ""
 
 REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
 REDIS_PORT = os.environ["REDIS_PORT"] if environ.get("REDIS_PORT") else "6379"
