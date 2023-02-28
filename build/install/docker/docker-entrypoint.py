@@ -85,7 +85,7 @@ class RunServices:
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\
                                 " core:products:folder=/var/www/products/" +\
-                                    " core:products:subfolder=server" +\
+                                    " core:products:subfolder=server" + " " +\
                                         CORE_EVENT_BUS)
         else:
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
@@ -95,7 +95,7 @@ class RunServices:
                             " --log:name=" + LOG_FILE +\
                                 " --ENVIRONMENT=" + ENV_EXTENSION +\
                                     " core:products:folder=/var/www/products/" +\
-                                        " core:products:subfolder=server" +\
+                                        " core:products:subfolder=server" + " " +\
                                             CORE_EVENT_BUS)
 
 def openJsonFile(filePath):
