@@ -31,6 +31,17 @@ export const getAccessOptions = (
       access:
         roomType === -1 ? EmployeeType.User : ShareAccessRights.RoomManager,
     },
+    collaborator: {
+      key: "collaborator",
+      label: t("Common:Collaborator"),
+      description: t("Translations:RoleCollaboratorDescription"),
+      quota: t("Common:Paid"),
+      color: "#EDC409",
+      access:
+        roomType === -1
+          ? EmployeeType.Collaborator
+          : ShareAccessRights.Collaborator,
+    },
     user: {
       key: "user",
       label: t("Common:User"),
@@ -73,6 +84,7 @@ export const getAccessOptions = (
     case RoomsType.FillingFormsRoom:
       options = [
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.formFiller,
         accesses.viewer,
@@ -81,6 +93,7 @@ export const getAccessOptions = (
     case RoomsType.EditingRoom:
       options = [
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.editor,
         accesses.viewer,
@@ -89,6 +102,7 @@ export const getAccessOptions = (
     case RoomsType.ReviewRoom:
       options = [
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.reviewer,
         accesses.commentator,
@@ -98,6 +112,7 @@ export const getAccessOptions = (
     case RoomsType.ReadOnlyRoom:
       options = [
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.viewer,
       ];
@@ -105,6 +120,7 @@ export const getAccessOptions = (
     case RoomsType.CustomRoom:
       options = [
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.editor,
         accesses.formFiller,
@@ -119,6 +135,7 @@ export const getAccessOptions = (
       options = [
         ...options,
         accesses.roomAdmin,
+        accesses.collaborator,
         { key: "s1", isSeparator: withSeparator },
         accesses.user,
       ];
