@@ -78,10 +78,11 @@ const FilterBlockItem = ({
       item.selectedKey === "me" ||
       item.selectedKey === "other" ? (
       <StyledFilterBlockItemSelector
+        style={!item?.withAddAuthor ? { height: "0", width: "0" } : {}}
         key={item.key}
         onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
       >
-        <SelectorAddButton id="filter_add-author" />
+        {item?.withAddAuthor && <SelectorAddButton id="filter_add-author" />}
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {item.label}
         </StyledFilterBlockItemSelectorText>
@@ -177,14 +178,23 @@ const FilterBlockItem = ({
   };
 
   const getTagItem = (item) => {
+    const isAuthor = item.key === "user";
+
     return (
       <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
         id={item.id}
-        onClick={() =>
-          changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
+        onClick={
+          item.key === "other"
+            ? (event) => showSelectorAction(event, isAuthor, item.group, [])
+            : () =>
+                changeFilterValueAction(
+                  item.key,
+                  item.isSelected,
+                  item.isMultiSelect
+                )
         }
         themeId={ThemeType.FilterBlockItemTag}
       >

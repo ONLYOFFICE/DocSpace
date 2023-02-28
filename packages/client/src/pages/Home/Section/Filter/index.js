@@ -805,12 +805,25 @@ const SectionFilterContent = ({
         label: t("Common:Member"),
         isHeader: true,
         withoutSeparator: true,
+        withMultiItems: true,
+      },
+      {
+        id: "filter_author-me",
+        key: FilterKeys.me,
+        group: FilterGroups.roomFilterSubject,
+        label: t("Common:MeLabel"),
+      },
+      {
+        id: "filter_author-other",
+        key: FilterKeys.other,
+        group: FilterGroups.roomFilterSubject,
+        label: t("Common:OtherLabel"),
       },
       {
         id: "filter_author-user",
         key: FilterKeys.user,
         group: FilterGroups.roomFilterSubject,
-        label: t("Translations:ChooseFromList"),
+        withAddAuthor: false,
         isSelector: true,
       },
     ];
@@ -997,7 +1010,7 @@ const SectionFilterContent = ({
           id: "filter_author-user",
           key: FilterKeys.user,
           group: FilterGroups.filterAuthor,
-          label: t("Translations:ChooseFromList"),
+          withAddAuthor: false,
           isSelector: true,
         },
       ];
@@ -1006,7 +1019,6 @@ const SectionFilterContent = ({
 
       filterOptions.push(...typeOptions);
     }
-
     return filterOptions;
   }, [
     t,
