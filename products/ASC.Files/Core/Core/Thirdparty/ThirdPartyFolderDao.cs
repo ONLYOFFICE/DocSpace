@@ -91,7 +91,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     }
 
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
-        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds,IEnumerable<int> parentsIds = null)
+        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
     {
         if (_dao.CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != _thirdFilter))//todoanton
         {
@@ -485,7 +485,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         var thirdFolderId = _dao.MakeThirdId(folderId);
         //note: without cache
         var storage = await _providerInfo.StorageAsync;
-       
+
         var items = await storage.GetItemsAsync(thirdFolderId);
 
         return items.Count == 0;

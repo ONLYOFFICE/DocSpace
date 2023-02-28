@@ -41,11 +41,13 @@ public class SharePointProviderInfo : IProviderInfo
     public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
-    public string RootFolderId => $"{Selectors.SharePoint.Id}-" + ID;
+    public string RootFolderId => $"{Selector}-{ID}";
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
+
+    public string Selector { get; } = Selectors.SharePoint.Id;
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,

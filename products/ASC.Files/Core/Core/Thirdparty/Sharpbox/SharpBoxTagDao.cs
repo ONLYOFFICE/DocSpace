@@ -27,20 +27,9 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Scope]
-internal class SharpBoxTagDao : SharpBoxDaoBase, IThirdPartyTagDao
+internal class SharpBoxTagDao : ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
-    public SharpBoxTagDao(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        ILogger<SharpBoxTagDao> monitor,
-        FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+    public SharpBoxTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>> daoSelector, IDaoBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

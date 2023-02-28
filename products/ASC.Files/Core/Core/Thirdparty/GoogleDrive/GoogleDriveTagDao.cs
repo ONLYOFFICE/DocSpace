@@ -24,23 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using DriveFile = Google.Apis.Drive.v3.Data.File;
+
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class GoogleDriveTagDao : GoogleDriveDaoBase, IThirdPartyTagDao
+internal class GoogleDriveTagDao : ThirdPartyTagDao<DriveFile, DriveFile, DriveFile>
 {
-    public GoogleDriveTagDao(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        ILogger<GoogleDriveTagDao> monitor,
-        FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+    public GoogleDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<DriveFile, DriveFile, DriveFile>> daoSelector, IDaoBase<DriveFile, DriveFile, DriveFile> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

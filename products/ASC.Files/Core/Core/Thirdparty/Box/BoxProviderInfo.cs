@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.Box;
 [DebuggerDisplay("{CustomerTitle}")]
 internal class BoxProviderInfo : AbstractProviderInfo<BoxFile, BoxFolder, BoxItem, BoxLoginProvider>
 {
-    internal override string Selector { get; } = Selectors.Box.Id;
+    public override string Selector { get; } = Selectors.Box.Id;
 
     public BoxProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {

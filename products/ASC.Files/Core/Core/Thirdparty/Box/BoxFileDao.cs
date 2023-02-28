@@ -27,7 +27,7 @@
 namespace ASC.Files.Core.Core.Thirdparty.Box;
 
 [Scope]
-internal class BoxFileDao : ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>, IFileDao<string>
+internal class BoxFileDao : ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>
 {
     private readonly TempPath _tempPath;
     private readonly SetupInfo _setupInfo;

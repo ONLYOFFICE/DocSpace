@@ -27,19 +27,12 @@
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope]
-internal class BoxTagDao : BoxDaoBase, IThirdPartyTagDao
+internal class BoxTagDao : ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>
 {
     public BoxTagDao(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        ILogger<BoxTagDao> monitor,
-        FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        IDaoSelector<IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector,
+        IDaoBase<BoxFile, BoxFolder, BoxItem> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

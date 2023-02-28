@@ -30,8 +30,6 @@ namespace ASC.Files.Thirdparty.SharePoint;
 
 internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 {
-    protected override string Id => Selectors.SharePoint.Id;
-
     public SharePointDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
@@ -195,11 +193,6 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 
             await tx.CommitAsync();
         });
-    }
-
-    protected Task<string> MappingIDAsync(string id)
-    {
-        return MappingIDAsync(id, false);
     }
 
     public override string MakeId(string path = null)

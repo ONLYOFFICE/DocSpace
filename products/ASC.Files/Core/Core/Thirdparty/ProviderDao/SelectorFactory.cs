@@ -67,7 +67,7 @@ internal class SelectorFactory
     {
         var groups = ids.GroupBy(Match);
         var dict = new Dictionary<IDaoSelector, List<string>>();
-        foreach ( var group in groups)
+        foreach (var group in groups)
         {
             dict.Add(GetSelectorInternal(group.Key), group.ToList());
         }

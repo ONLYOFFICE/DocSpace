@@ -46,11 +46,6 @@ internal class SharpBoxDaoSelector : RegexDaoSelectorBase<SharpBoxProviderInfo>,
     {
         return base.GetFolderDao<SharpBoxFolderDao>(id);
     }
-
-    public IThirdPartyTagDao GetTagDao(string id)
-    {
-        return base.GetTagDao<SharpBoxTagDao>(id);
-    }
 }
 
 public static class SharpBoxDaoSelectorExtension

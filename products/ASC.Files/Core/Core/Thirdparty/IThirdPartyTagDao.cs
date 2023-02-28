@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Thirdparty;
 
-[Scope(typeof(ProviderDao.ProviderTagDao))]
+[Scope(typeof(ProviderTagDao))]
 internal interface IThirdPartyTagDao
 {
     IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch);
+}
+
+internal interface IThirdPartyTagDao<T> : IThirdPartyTagDao where T : class, IProviderInfo
+{
+    void Init(BaseProviderInfo<T> providerInfo);
 }

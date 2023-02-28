@@ -43,6 +43,7 @@ public interface IProviderInfo : IDisposable
     Task InvalidateStorageAsync();
     Task CacheResetAsync(string id = null, bool? isFile = null);
     void UpdateTitle(string newtitle);
+    string Selector { get; }
 }
 
 public interface IProviderInfo<TFile, TFolder, TItem> : IProviderInfo

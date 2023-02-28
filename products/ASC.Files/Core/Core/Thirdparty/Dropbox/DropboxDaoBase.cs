@@ -29,8 +29,6 @@ namespace ASC.Files.Thirdparty.Dropbox;
 [Scope]
 internal class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
 {
-    protected override string Id => Selectors.Dropbox.Id;
-
     public DropboxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,

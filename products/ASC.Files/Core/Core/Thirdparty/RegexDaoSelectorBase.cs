@@ -90,34 +90,28 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
 
     public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>
     {
-        //return GetDao<T1>(id);
-        return null;
+        return _serviceProvider.GetService<T1>();
     }
+
     public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>
     {
-        //  return GetDao<T1>(id);
-        return null;
+        return _serviceProvider.GetService<T1>();
     }
 
-    public virtual IThirdPartyTagDao GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IThirdPartyTagDao
-    {
-        return GetDao<T1>(id);
-    }
-
-    private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
+    public IThirdPartyTagDao GetTagDao(string id)
     {
         var providerKey = $"{id}";
         var info = Providers.Get(providerKey);
-        var res = _serviceProvider.GetService<T1>();
+        var res = _serviceProvider.GetService<IThirdPartyTagDao<T>>();
 
         if (info != null)
         {
-            res.Init(info, this);
+            res.Init(info);
             return res;
         }
 
         info = GetInfo(id);
-        res.Init(info, this);
+        res.Init(info);
 
         Providers.Add(providerKey, info);
 

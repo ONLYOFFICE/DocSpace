@@ -48,19 +48,14 @@ internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, I
     {
         return base.GetFolderDao<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>(id);
     }
-
-    public IThirdPartyTagDao GetTagDao(string id)
-    {
-        return base.GetTagDao<DropboxTagDao>(id);
-    }
 }
 
 public static class DropboxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<DropboxFileDao>();
+        services.TryAdd<ThirdPartyFileDao<FileMetadata, FolderMetadata, Metadata>>();
         services.TryAdd<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>();
-        services.TryAdd<DropboxTagDao>();
+        services.TryAdd<IThirdPartyTagDao<DropboxProviderInfo>, DropboxTagDao>();
     }
 }

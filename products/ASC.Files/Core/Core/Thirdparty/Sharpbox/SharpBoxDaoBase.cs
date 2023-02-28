@@ -28,8 +28,6 @@ namespace ASC.Files.Thirdparty.Sharpbox;
 
 internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
 {
-    protected override string Id => Selectors.SharpBox.Id;
-
     protected SharpBoxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
@@ -131,11 +129,6 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         public int Count => 0;
 
         public nChildState HasChildrens => nChildState.HasNoChilds;
-    }
-
-    protected Task<string> MappingIDAsync(string id)
-    {
-        return MappingIDAsync(id, false);
     }
 
     protected async Task UpdatePathInDBAsync(string oldValue, string newValue)

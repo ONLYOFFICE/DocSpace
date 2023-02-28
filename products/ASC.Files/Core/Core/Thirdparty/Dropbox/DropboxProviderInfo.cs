@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.Dropbox;
 [DebuggerDisplay("{CustomerTitle}")]
 internal class DropboxProviderInfo : AbstractProviderInfo<FileMetadata, FolderMetadata, Metadata, DropboxLoginProvider>
 {
-    internal override string Selector { get; } = Selectors.Dropbox.Id;
+    public override string Selector { get; } = Selectors.Dropbox.Id;
 
     public DropboxProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {

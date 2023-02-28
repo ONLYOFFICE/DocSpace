@@ -27,20 +27,9 @@
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope]
-internal class OneDriveTagDao : OneDriveDaoBase, IThirdPartyTagDao
+internal class OneDriveTagDao : ThirdPartyTagDao<Item, Item, Item>
 {
-    public OneDriveTagDao(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        ILogger<OneDriveTagDao> monitor,
-        FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+    public OneDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<Item, Item, Item>> daoSelector, IDaoBase<Item, Item, Item> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

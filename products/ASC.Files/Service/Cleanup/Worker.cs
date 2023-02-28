@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF.Context;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.AutoCleanUp;
 
 [Singletone]
@@ -36,7 +32,7 @@ public class Worker
     private readonly ILogger<Worker> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public Worker(IConfiguration configuration, ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
+    public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
@@ -84,7 +80,7 @@ public class Worker
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();
                 var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
                 var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
-                var fileStorageService = scope.ServiceProvider.GetRequiredService<Web.Files.Services.WCFService.FileStorageService>();
+                var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService>();
                 var fileDateTime = scope.ServiceProvider.GetRequiredService<FileDateTime>();
 
                 var userAccount = authManager.GetAccountByID(tenantUser.TenantId, tenantUser.UserId);

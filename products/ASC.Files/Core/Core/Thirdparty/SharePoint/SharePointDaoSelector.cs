@@ -47,11 +47,6 @@ internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderIn
         return base.GetFolderDao<SharePointFolderDao>(id);
     }
 
-    public IThirdPartyTagDao GetTagDao(string id)
-    {
-        return base.GetTagDao<SharePointTagDao>(id);
-    }
-
     public override string ConvertId(string id)
     {
         if (id != null)

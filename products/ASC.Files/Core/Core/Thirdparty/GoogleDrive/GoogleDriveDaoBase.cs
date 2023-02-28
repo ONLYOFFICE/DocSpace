@@ -31,8 +31,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 [Scope]
 internal class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>, IDaoBase<DriveFile, DriveFile, DriveFile>
 {
-    protected override string Id => Selectors.GoogleDrive.Id;
-
     protected GoogleDriveDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,

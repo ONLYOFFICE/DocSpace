@@ -396,7 +396,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     protected T ProviderInfo { get; set; }
     protected string PathPrefix { get; private set; }
 
-    protected abstract string Id { get; }
+    protected string Id { get => ProviderInfo.Selector; }
 
     protected ThirdPartyProviderDao(
         IServiceProvider serviceProvider,
@@ -422,19 +422,12 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         _authContext = authContext;
     }
 
-    public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
-    {
-        ProviderInfo = providerInfo.ProviderInfo;
-        PathPrefix = providerInfo.PathPrefix;
-        DaoSelector = selectorBase;
-    }
-
     public IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
     {
         return set.Where(r => r.TenantId == TenantID);
     }
 
-    protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
+    public Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
     {
         if (id == null)
         {
@@ -570,71 +563,6 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     }
 
     public abstract string MakeId(string path = null);
-
-    public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
-    {
-        var folderId = DaoSelector.ConvertId(parentFolder.Id);
-
-        var filesDbContext = _dbContextFactory.CreateDbContext();
-        var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.Id.StartsWith(PathPrefix))
-                   .Select(r => r.HashId)
-                   .ToListAsync();
-
-        if (!entryIDs.Any())
-        {
-            yield break;
-        }
-
-        var q = from r in filesDbContext.Tag
-                from l in filesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
-                select new { tag = r, tagLink = l };
-
-        if (subject != Guid.Empty)
-        {
-            q = q.Where(r => r.tag.Owner == subject);
-        }
-
-        var qList = await q
-            .Distinct()
-            .AsAsyncEnumerable()
-            .ToListAsync();
-
-        var tags = new List<Tag>();
-
-        foreach (var r in qList)
-        {
-            tags.Add(new Tag
-            {
-                Name = r.tag.Name,
-                Type = r.tag.Type,
-                Owner = r.tag.Owner,
-                EntryId = await MappingIDAsync(r.tagLink.EntryId),
-                EntryType = r.tagLink.EntryType,
-                Count = r.tagLink.Count,
-                Id = r.tag.Id
-            });
-        }
-
-
-        if (deepSearch)
-        {
-            foreach (var e in tags)
-            {
-                yield return e;
-            }
-            yield break;
-        }
-
-        var folderFileIds = new[] { parentFolder.Id }
-            .Concat(await GetChildrenAsync(folderId));
-
-        foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
-        {
-            yield return e;
-        }
-    }
 
     public abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
 

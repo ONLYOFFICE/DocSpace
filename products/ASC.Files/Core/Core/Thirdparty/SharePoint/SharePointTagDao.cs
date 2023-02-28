@@ -27,20 +27,9 @@
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
-internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
+internal class SharePointTagDao : ThirdPartyTagDao<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject>
 {
-    public SharePointTagDao(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        ILogger<SharePointTagDao> monitor,
-        FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+    public SharePointTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject>> daoSelector, IDaoBase<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

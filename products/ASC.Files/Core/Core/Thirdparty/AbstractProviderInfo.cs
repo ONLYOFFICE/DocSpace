@@ -32,14 +32,14 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
     where TItem : class
     where TProvider : Consumer, IOAuthProvider, new()
 {
-    internal abstract string Selector { get; }
+    public abstract string Selector { get; }
     private readonly DisposableWrapper _wrapper;
-    internal readonly ProviderInfoHelper _providerInfoHelper;
+    internal readonly ProviderInfoHelper ProviderInfoHelper;
 
     public AbstractProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper)
     {
         _wrapper = wrapper;
-        _providerInfoHelper = providerInfoHelper;
+        ProviderInfoHelper = providerInfoHelper;
     }
 
     public DateTime CreateOn { get; set; }
@@ -101,28 +101,28 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
 
     public Task CacheResetAsync(string id = null, bool? isFile = null)
     {
-        return _providerInfoHelper.CacheResetAsync(ProviderId, id, isFile);
+        return ProviderInfoHelper.CacheResetAsync(ProviderId, id, isFile);
     }
 
     public async Task<TFile> GetFileAsync(string fileId)
     {
         var storage = await StorageAsync;
 
-        return await _providerInfoHelper.GetFileAsync(storage, ProviderId, fileId, Selector);
+        return await ProviderInfoHelper.GetFileAsync(storage, ProviderId, fileId, Selector);
     }
 
     public async Task<TFolder> GetFolderAsync(string folderId)
     {
         var storage = await StorageAsync;
 
-        return await _providerInfoHelper.GetFolderAsync(storage, ProviderId, folderId, Selector);
+        return await ProviderInfoHelper.GetFolderAsync(storage, ProviderId, folderId, Selector);
     }
 
     public async Task<List<TItem>> GetItemsAsync(string folderId)
     {
         var storage = await StorageAsync;
 
-        return await _providerInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector);
+        return await ProviderInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector);
     }
 }
 
@@ -219,7 +219,7 @@ public class ProviderInfoHelper
         return folder;
     }
 
-    internal async Task<List<TItem>> GetItemsAsync<TItem>(IThirdPartyItemStorage<TItem> storage, int id, string folderId, string selector, bool? folder=null) where TItem : class
+    internal async Task<List<TItem>> GetItemsAsync<TItem>(IThirdPartyItemStorage<TItem> storage, int id, string folderId, string selector, bool? folder = null) where TItem : class
     {
         var items = _cacheChildItems.Get<List<TItem>>($"{selector}-" + id + "-" + folderId);
 
@@ -266,7 +266,7 @@ public class DisposableWrapper : IDisposable
         }
     }
 
-    internal Task<T> CreateStorageAsync<T, T1>(OAuth20Token token, int id) 
+    internal Task<T> CreateStorageAsync<T, T1>(OAuth20Token token, int id)
         where T : IThirdPartyStorage
         where T1 : Consumer, IOAuthProvider, new()
     {
@@ -312,8 +312,8 @@ public class DisposableWrapper : IDisposable
         }
     }
 
-    private async Task<T> InternalCreateStorageAsync<T, T1>(OAuth20Token token, int id) 
-        where T : IThirdPartyStorage 
+    private async Task<T> InternalCreateStorageAsync<T, T1>(OAuth20Token token, int id)
+        where T : IThirdPartyStorage
         where T1 : Consumer, IOAuthProvider, new()
     {
         var storage = _serviceProvider.GetService<T>();

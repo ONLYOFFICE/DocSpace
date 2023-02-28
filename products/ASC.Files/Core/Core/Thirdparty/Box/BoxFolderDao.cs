@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,38 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Core.Thirdparty.OneDrive;
+namespace ASC.Files.Core.Core.Thirdparty.Box;
 
-namespace ASC.Files.Thirdparty.OneDrive;
-
-[Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
-internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector<OneDriveProviderInfo>
+[Scope]
+internal class BoxFolderDao : ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>
 {
-    protected internal override string Name => Selectors.OneDrive.Name;
-    protected internal override string Id => Selectors.OneDrive.Id;
-
-    public OneDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
+    public BoxFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory, UserManager userManager, CrossDao crossDao, IDaoSelector<IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector, IFileDao<int> fileDao, IFolderDao<int> folderDao, TempStream tempStream, SetupInfo setupInfo, IDaoBase<BoxFile, BoxFolder, BoxItem> dao, IProviderInfo<BoxFile, BoxFolder, BoxItem> providerInfo) : base(dbContextFactory, userManager, crossDao, daoSelector, fileDao, folderDao, tempStream, setupInfo, dao, providerInfo)
     {
-    }
-
-    public IFileDao<string> GetFileDao(string id)
-    {
-        return base.GetFileDao<OneDriveFileDao>(id);
-    }
-
-    public IFolderDao<string> GetFolderDao(string id)
-    {
-        return base.GetFolderDao<ThirdPartyFolderDao<Item, Item, Item>>(id);
-    }
-}
-
-public static class OneDriveDaoSelectorExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<OneDriveFileDao>();
-        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>>();
-        services.TryAdd<OneDriveTagDao>();
     }
 }

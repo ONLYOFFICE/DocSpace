@@ -41,17 +41,12 @@ internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelec
 
     public IFileDao<string> GetFileDao(string id)
     {
-        return base.GetFileDao<BoxFileDao>(id);
+        return base.GetFileDao<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>(id);
     }
 
     public IFolderDao<string> GetFolderDao(string id)
     {
         return base.GetFolderDao<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>(id);
-    }
-
-    public IThirdPartyTagDao GetTagDao(string id)
-    {
-        return base.GetTagDao<BoxTagDao>(id);
     }
 }
 
@@ -59,8 +54,8 @@ public static class BoxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<BoxFileDao>();
-        services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>();
-        services.TryAdd<BoxTagDao>();
+        services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>, BoxFileDao>();
+        services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>, BoxFolderDao>();
+        services.TryAdd<IThirdPartyTagDao<BoxProviderInfo>, BoxTagDao>();
     }
 }
