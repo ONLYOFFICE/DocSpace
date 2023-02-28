@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Portal capabilities API.
+/// </summary>
+/// <name>capabilities</name>
 [DefaultRoute]
 [ApiController]
 [AllowAnonymous]
@@ -53,12 +57,14 @@ public class CapabilitiesController : ControllerBase
     }
 
     ///<summary>
-    ///Returns the information about portal capabilities
+    ///Returns the information about portal capabilities.
     ///</summary>
     ///<short>
     ///Get portal capabilities
     ///</short>
-    ///<returns>CapabilitiesData</returns>
+    ///<returns>Portal capabilities: LDAP enabled or not, OAuth enabled or not, provider list, SP login label, SSO URL</returns>
+    ///<path>api/2.0/capabilities</path>
+    ///<httpMethod>GET</httpMethod>
     [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
     [AllowNotPayment]
     public CapabilitiesDto GetPortalCapabilities()
