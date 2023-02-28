@@ -2764,22 +2764,19 @@ public class FileStorageService<T> //: IFileStorageService
     {
         FileEntry<T> file;
         var fileDao = GetFileDao();
+
         file = await fileDao.GetFileAsync(fileId);
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-        var usersIdWithAccess = new List<Guid>();
-        if (await _fileSharing.CanSetAccessAsync(file))
-        {
-            var access = await _fileSharing.GetSharedInfoAsync(file);
-            usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Access != FileShare.Restrict)
+        var folderDao = GetFolderDao();
+
+        var (roomId, _) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
+
+        var access = await _fileSharing.GetSharedInfoAsync(Enumerable.Empty<int>(), new[] { roomId });
+        var usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Access != FileShare.Restrict)
                                       .Select(aceWrapper => aceWrapper.Id)
                                       .ToList();
-        }
-        else
-        {
-            usersIdWithAccess.Add(file.CreateBy);
-        }
 
         var users = _userManager.GetUsersByGroup(Constants.GroupEveryone.ID)
                                .Where(user => !user.Id.Equals(_authContext.CurrentAccount.ID)
