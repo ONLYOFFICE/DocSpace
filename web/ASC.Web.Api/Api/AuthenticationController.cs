@@ -29,6 +29,10 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Authorization API.
+/// </summary>
+/// <name>authentication</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -145,6 +149,13 @@ public class AuthenticationController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Checks if the current user is authenticated or not.
+    /// </summary>
+    /// <short>Check authentication</short>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/authentication</path>
+    /// <returns>Boolean value: true if the current user is authenticated</returns>
     [AllowNotPayment]
     [HttpGet]
     public bool GetIsAuthentificated()
@@ -152,6 +163,16 @@ public class AuthenticationController : ControllerBase
         return _securityContext.IsAuthenticated;
     }
 
+    /// <summary>
+    /// Authenticates the current user by SMS or two-factor authentication code.
+    /// </summary>
+    /// <short>
+    /// Authenticate a user by code
+    /// </short>
+    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/{code}</path>
+    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, SMS alert</returns>
     [AllowNotPayment]
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
@@ -215,6 +236,16 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Authenticates the current user by SMS, authenticator app, or without two-factor authentication.
+    /// </summary>
+    /// <short>
+    /// Authenticate a user
+    /// </short>
+    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication</path>
+    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, SMS alert, two-factor authentication key, confirmation email URL</returns>
     [AllowNotPayment]
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
@@ -295,6 +326,15 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out of the current user account.
+    /// </summary>
+    /// <short>
+    /// Log out
+    /// </short>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/logout</path>
+    /// <returns>Task awaiter</returns>
     [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
@@ -314,6 +354,16 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
+    /// <summary>
+    /// Returns a confirmation email to validate some action (employee invitation, portal removal, phone activation, etc.).
+    /// </summary>
+    /// <short>
+    /// Get confirmation email
+    /// </short>
+    /// <param name="inDto">Confirmation email parameters: email, employee type, key, confirmation email type, user ID</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/confirm</path>
+    /// <returns>Validation result: Ok, Invalid, or Expired</returns>
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
@@ -321,6 +371,16 @@ public class AuthenticationController : ControllerBase
         return _emailValidationKeyModelHelper.Validate(inDto);
     }
 
+    /// <summary>
+    /// Sets a mobile phone for the current user.
+    /// </summary>
+    /// <short>
+    /// Set a mobile phone
+    /// </short>
+    /// <param name="inDto">Mobile phone request parameters: mobile phone.</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/setphone</path>
+    /// <returns>Authentication data: authentication by SMS or not, SMS alert, SMS expiration time</returns>
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [HttpPost("setphone")]
@@ -339,6 +399,16 @@ public class AuthenticationController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Sends SMS with an authentication code.
+    /// </summary>
+    /// <short>
+    /// Send SMS code
+    /// </short>
+    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/authentication/sendsms</path>
+    /// <returns>Authentication data: authentication by SMS or not, SMS alert, SMS expiration time</returns>
     [AllowNotPayment]
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
