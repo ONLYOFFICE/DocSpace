@@ -1190,19 +1190,14 @@ class FilesActionStore {
     const sameName = item.title === this.searchTitleOpenLocation;
     const sameFile = item.Id === this.searchFileIdOpenLocation;
 
-    api.files
-      .getFolder(item.ExtraLocation)
-      .then(() => {
-        !sameFile && this.openLocationAction(item.ExtraLocation);
-        !sameName && this.setSearchTitleOpenLocation(item.title);
-        !sameFile && this.setSearchFileIdOpenLocation(item.Id);
+    !sameFile && this.openLocationAction(item.ExtraLocation);
+    !sameName && this.setSearchTitleOpenLocation(item.title);
+    !sameFile && this.setSearchFileIdOpenLocation(item.Id);
 
-        this.setItemOpenLocation({
-          id: item.id,
-          isFileHasExst: !item.fileExst,
-        });
-      })
-      .catch((err) => toastr.error(err));
+    this.setItemOpenLocation({
+      id: item.id,
+      isFileHasExst: !item.fileExst,
+    });
   };
 
   setThirdpartyInfo = (providerKey) => {
