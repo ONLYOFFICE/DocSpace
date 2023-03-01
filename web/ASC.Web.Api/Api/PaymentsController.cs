@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+///<summary>
+/// Portal information access.
+///</summary>
+///<name>portal</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -74,6 +78,16 @@ public class PaymentController : ControllerBase
         _studioNotifyService = studioNotifyService;
     }
 
+    /// <summary>
+    /// Returns the URL to the payment page.
+    /// </summary>
+    /// <short>
+    /// Get the payment page URL
+    /// </short>
+    /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
+    /// <returns>The URL to the payment page</returns>
+    /// <path>api/2.0/portal/payment/url</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("payment/url")]
     public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
@@ -92,6 +106,16 @@ public class PaymentController : ControllerBase
             inDto.BackUrl);
     }
 
+    /// <summary>
+    /// Updates the quantity of payment.
+    /// </summary>
+    /// <short>
+    /// Update the payment quantity
+    /// </short>
+    /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/portal/payment/update</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("payment/update")]
     public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
@@ -107,6 +131,16 @@ public class PaymentController : ControllerBase
         return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
     }
 
+    /// <summary>
+    /// Returns the URL to the payment account.
+    /// </summary>
+    /// <short>
+    /// Get the payment account
+    /// </short>
+    /// <param name="backUrl">Back URL</param>
+    /// <returns>The URL to the payment account</returns>
+    /// <path>api/2.0/portal/payment/account</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/account")]
     public Uri GetPaymentAccount(string backUrl)
     {
@@ -122,6 +156,15 @@ public class PaymentController : ControllerBase
         return _tariffService.GetAccountLink(Tenant.Id, backUrl);
     }
 
+    /// <summary>
+    /// Returns the available portal prices.
+    /// </summary>
+    /// <short>
+    /// Get prices
+    /// </short>
+    /// <returns>List of available portal prices</returns>
+    /// <path>api/2.0/portal/payment/prices</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
@@ -132,6 +175,15 @@ public class PaymentController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the available portal currencies.
+    /// </summary>
+    /// <short>
+    /// Get currencies
+    /// </short>
+    /// <returns>List of available portal currencies</returns>
+    /// <path>api/2.0/portal/payment/currencies</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/currencies")]
     public IEnumerable<CurrenciesDto> GetCurrencies()
     {
@@ -146,18 +198,46 @@ public class PaymentController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the available portal quotas.
+    /// </summary>
+    /// <short>
+    /// Get quotas
+    /// </short>
+    /// <returns>List of available portal quotas</returns>
+    /// <path>api/2.0/portal/payment/quotas</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quotas")]
     public IEnumerable<QuotaDto> GetQuotas()
     {
         return _quotaHelper.GetQuotas();
     }
 
+    /// <summary>
+    /// Returns the current portal quota.
+    /// </summary>
+    /// <short>
+    /// Get portal quota
+    /// </short>
+    /// <returns>Current portal quota</returns>
+    /// <path>api/2.0/portal/payment/quota</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]
     public QuotaDto GetQuota()
     {
         return _quotaHelper.GetCurrentQuota();
     }
 
+    /// <summary>
+    /// Sends a request for portal payment.
+    /// </summary>
+    /// <short>
+    /// Send a payment request
+    /// </short>
+    /// <param name="inDto">Portal payment request parameters: username, email, message</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/payment/request</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("payment/request")]
     public void SendSalesRequest(SalesRequestsDto inDto)
     {
