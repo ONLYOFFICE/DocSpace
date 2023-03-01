@@ -12,8 +12,8 @@ export const Title = styled.h2`
   display: inline-block;
 
   :hover {
-    border-bottom: ${(props) => (props.disabled ? "none" : "1px dashed")};
-    border-color: ${(props) => props.theme.calendar.titleColor};
+    border-color: ${(props) =>
+      props.disabled ? "transparent" : props.theme.calendar.titleColor};
     cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
   }
 `;
