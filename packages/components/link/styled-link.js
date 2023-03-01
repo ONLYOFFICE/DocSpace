@@ -26,8 +26,6 @@ const StyledText = styled(PureText)`
     props.enableUserSelect
       ? css`
           user-select: text;
-          -moz-user-select: text;
-          -webkit-user-select: text;
         `
       : NoUserSelect}
 
