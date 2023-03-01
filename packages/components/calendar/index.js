@@ -27,17 +27,15 @@ const Calendar = ({
 
   useEffect(() => {
     if (!initialDate || initialDate > maxDate || initialDate < minDate) {
-      console.log(
-        "initial date is not good: ",
-        moment()
-          .seconds((minDate.seconds() + maxDate.seconds()) / 2)
-          .format("YYYY-MM-DD")
+      initialDate = minDate
+        .clone()
+        .add(maxDate.diff(minDate, "days") / 2, "day");
+      console.error(
+        "Initial date is out of min/max dates boundaries. Initial date will be set as mid value between min and max dates"
       );
-    } else {
-      setSelectedDate(initialDate);
-      setObservedDate(initialDate);
-      console.log("initial date is ok", selectedDate.format("YYYY-MM-DD"));
     }
+    setSelectedDate(initialDate);
+    setObservedDate(initialDate);
   }, []);
 
   return (
