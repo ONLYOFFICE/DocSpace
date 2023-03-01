@@ -142,6 +142,7 @@ const PeopleTableRow = (props) => {
 
     role,
     isVisitor,
+    isCollaborator,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -168,6 +169,12 @@ const PeopleTableRow = (props) => {
       label: t("Common:RoomAdmin"),
       action: "manager",
     };
+    const collaboratorOption = {
+      key: "collaborator",
+      title: t("Common:Collaborator"),
+      label: t("Common:Collaborator"),
+      action: "collaborator",
+    };
     const userOption = {
       key: "user",
       title: t("Common:User"),
@@ -179,10 +186,12 @@ const PeopleTableRow = (props) => {
 
     options.push(managerOption);
 
+    if (isCollaborator || isVisitor) options.push(collaboratorOption);
+
     isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isOwner, isVisitor]);
+  }, [t, isOwner, isVisitor, isCollaborator]);
 
   const onAbort = () => {
     setIsLoading(false);
@@ -227,6 +236,8 @@ const PeopleTableRow = (props) => {
         return t("Common:DocSpaceAdmin");
       case "manager":
         return t("Common:RoomAdmin");
+      case "collaborator":
+        return t("Common:Collaborator");
       case "user":
         return t("Common:User");
     }

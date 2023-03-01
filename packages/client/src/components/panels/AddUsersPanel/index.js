@@ -62,12 +62,19 @@ const AddUsersPanel = ({
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
 
       if (!currentItem) {
+        const currentAccess =
+          item.isOwner || item.isAdmin
+            ? ShareAccessRights.RoomManager
+            : access.access;
+
         const newItem = {
-          access: access.access,
+          access: currentAccess,
           email: item.email,
           id: item.id,
           displayName: item.label,
           avatar: item.avatar,
+          isOwner: item.isOwner,
+          isAdmin: item.isAdmin,
         };
         items.push(newItem);
       }

@@ -71,24 +71,18 @@ public class TelegramDao
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        var toRemove = dbContext.Users
+        dbContext.Users
             .Where(r => r.PortalUserId == userId)
             .Where(r => r.TenantId == tenantId)
-            .ToList();
-
-        dbContext.Users.RemoveRange(toRemove);
-        dbContext.SaveChanges();
+            .ExecuteDelete();
     }
 
     public void Delete(long telegramId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        var toRemove = dbContext.Users
+        dbContext.Users
             .Where(r => r.TelegramUserId == telegramId)
-            .ToList();
-
-        dbContext.Users.RemoveRange(toRemove);
-        dbContext.SaveChanges();
+            .ExecuteDelete();
     }
 }

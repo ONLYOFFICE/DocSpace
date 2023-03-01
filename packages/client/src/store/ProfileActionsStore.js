@@ -116,9 +116,11 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      window.location.replace(
-        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-      );
+      setTimeout(() => {
+        window.location.replace(
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+        );
+      }, 300);
     });
   };
 

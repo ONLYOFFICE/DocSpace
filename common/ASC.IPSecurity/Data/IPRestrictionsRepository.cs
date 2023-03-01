@@ -57,16 +57,14 @@ public class IPRestrictionsRepository
             using var tenantDbContext = _dbContextManager.CreateDbContext();
             using var tx = tenantDbContext.Database.BeginTransaction();
 
-            var restrictions = tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
-            tenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
-            tenantDbContext.SaveChanges();
+            tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDelete();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
                 Tenant = tenant,
                 Ip = r.Ip,
                 ForAdmin = r.ForAdmin
-                
+
             });
 
             tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
