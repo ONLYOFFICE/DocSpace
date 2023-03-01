@@ -6,6 +6,7 @@ export const Weekday = styled.span`
   font-family: "Open Sans";
   font-weight: 400;
   font-size: 16px;
+  line-height: 16px;
 
   color: ${(props) => props.theme.calendar.weekdayColor};
   width: 40px;
