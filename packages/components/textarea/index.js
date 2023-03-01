@@ -98,11 +98,6 @@ const Textarea = ({
           }}
         />
       )}
-      {isJSONField && (
-        <Numeration fontSize={fontSize}>
-          {numerationValue.join("\n")}
-        </Numeration>
-      )}
       <ColorTheme
         themeId={ThemeType.Textarea}
         className={className}
@@ -114,6 +109,12 @@ const Textarea = ({
         heighttextarea={textareaHeight}
       >
         <Toast />
+
+        {isJSONField && (
+          <Numeration fontSize={fontSize}>
+            {numerationValue.join("\n")}
+          </Numeration>
+        )}
 
         <StyledTextarea
           id={id}
