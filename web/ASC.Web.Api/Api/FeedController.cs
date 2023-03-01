@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Feed API.
+/// </summary>
+/// <name>feed</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -59,34 +63,39 @@ public class FeedController : ControllerBase
 
     private string Key => $"newfeedscount/{_securityContext.CurrentAccount.ID}";
 
-    ///<summary>
-    ///Opens feeds for reading.
-    ///</summary>
-    ///<short>
-    ///Read feeds
-    ///</short>
+    /// <summary>
+    /// Opens feeds for reading.
+    /// </summary>
+    /// <short>
+    /// Read feeds
+    /// </short>
+    /// <path>api/2.0/feed/read</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("read")]
     public void Read()
     {
         _feedReadedDataProvider.SetTimeReaded();
     }
 
-    ///<summary>
-    ///Returns a list of feeds that are filtered by the parameters specified in the request.
-    ///</summary>
-    ///<short>
-    ///Get feeds
-    ///</short>
+    /// <summary>
+    /// Returns a list of feeds that are filtered by the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get feeds
+    /// </short>
     /// <param name="id">Entity ID</param>
-    /// <param name="product">Module that will be searched for by entity ID</param>
-    /// <param name="module"></param>
+    /// <param name="product">Product which feeds you want to read</param>
+    /// <param name="module">Feeds of the module that will be searched for by entity ID</param>
     /// <param name="from">Time from which the feeds should be displayed</param>
     /// <param name="to">Time until which the feeds should be displayed</param>
     /// <param name="author">Author whose feeds you want to read</param>
     /// <param name="onlyNew">Displays only fresh feeds</param>
-    /// <param name="withRelated">Include the associated feed related to the entity with the given id</param>
+    /// <param name="withRelated">Includes the associated feeds related to the entity with the specified ID</param>
     /// <param name="timeReaded">Time when the feeds were read</param>
-    ///<returns>List of filtered feeds</returns>
+    /// <returns>List of filtered feeds</returns>
+    /// <path>api/2.0/feed/filter</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("filter")]
     public object GetFeed(
         string id,
@@ -161,13 +170,15 @@ public class FeedController : ControllerBase
         return new { feeds, readedDate };
     }
 
-    ///<summary>
-    ///Returns a number of fresh feeds.
-    ///</summary>
-    ///<short>
-    ///Count fresh feeds
-    ///</short>
-    ///<returns>Number of fresh feeds</returns>
+    /// <summary>
+    /// Returns a number of fresh feeds.
+    /// </summary>
+    /// <short>
+    /// Count fresh feeds
+    /// </short>
+    /// <returns>Number of fresh feeds</returns>
+    /// <path>api/2.0/feed/newfeedscount</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("newfeedscount")]
     public object GetFreshNewsCount()
     {
