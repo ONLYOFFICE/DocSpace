@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+///<summary>
+/// Portal information access.
+///</summary>
+///<name>portal</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -128,18 +132,50 @@ public class PortalController : ControllerBase
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Returns the current portal.
+    /// </summary>
+    /// <short>
+    /// Get the current portal
+    /// </short>
+    /// <category>Settings</category>
+    /// <returns>Current portal information</returns>
+    /// <path>api/2.0/portal</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("")]
     public TenantDto Get()
     {
         return _mapper.Map<TenantDto>(Tenant);
     }
 
+    /// <summary>
+    /// Returns a user with the ID specified in the request from the current portal.
+    /// </summary>
+    /// <short>
+    /// Get a user by ID
+    /// </short>
+    /// <category>Users</category>
+    /// <param name="userID">User ID</param>
+    /// <returns>User</returns>
+    /// <path>api/2.0/portal/users/{userID}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("users/{userID}")]
     public UserInfo GetUser(Guid userID)
     {
         return _userManager.GetUsers(userID);
     }
 
+    /// <summary>
+    /// Returns an invitation link for joining the portal.
+    /// </summary>
+    /// <short>
+    /// Get an invitation link
+    /// </short>
+    /// <param name="employeeType">Employee type (RoomAdmin, User, DocSpaceAdmin, or All)</param>
+    /// <category>Users</category>
+    /// <returns>Invitation link</returns>
+    /// <path>api/2.0/portal/users/invite/{employeeType}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
@@ -152,6 +188,15 @@ public class PortalController : ControllerBase
                 + $"&emplType={employeeType:d}";
     }
 
+    /// <summary>
+    /// Returns a link specified in the request in the shortened format.
+    /// </summary>
+    /// <short>Get a shortened link</short>
+    /// <category>Settings</category>
+    /// <param name="inDto">Link</param>
+    /// <returns>Shortened link</returns>
+    /// <path>api/2.0/portal/getshortenlink</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("getshortenlink")]
     public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto inDto)
     {
@@ -166,6 +211,16 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns an extra tenant license for the portal.
+    /// </summary>
+    /// <short>
+    /// Get an extra tenant license
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns>Extra tenant license information</returns>
+    /// <path>api/2.0/portal/tenantextra</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("tenantextra")]
     public async Task<object> GetTenantExtraAsync()
     {
@@ -188,6 +243,16 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the used space of the current portal.
+    /// </summary>
+    /// <short>
+    /// Get the used portal space
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns>Used portal space</returns>
+    /// <path>api/2.0/portal/usedspace</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("usedspace")]
     public double GetUsedSpace()
     {
@@ -198,12 +263,32 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns a number of portal users.
+    /// </summary>
+    /// <short>
+    /// Get a number of portal users
+    /// </short>
+    /// <category>Users</category>
+    /// <returns>Number of portal users</returns>
+    /// <path>api/2.0/portal/userscount</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("userscount")]
     public long GetUsersCount()
     {
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
+    /// <summary>
+    /// Returns the current portal tariff.
+    /// </summary>
+    /// <short>
+    /// Get a portal tariff
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns>Current portal tariff</returns>
+    /// <path>api/2.0/portal/tariff</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("tariff")]
     public Tariff GetTariff()
@@ -211,6 +296,16 @@ public class PortalController : ControllerBase
         return _tariffService.GetTariff(Tenant.Id);
     }
 
+    /// <summary>
+    /// Returns the current portal quota.
+    /// </summary>
+    /// <short>
+    /// Get a portal quota
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns>Current portal quota</returns>
+    /// <path>api/2.0/portal/quota</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("quota")]
     public TenantQuota GetQuota()
@@ -218,6 +313,16 @@ public class PortalController : ControllerBase
         return _tenantManager.GetTenantQuota(Tenant.Id);
     }
 
+    /// <summary>
+    /// Returns the recommended quota for the current portal.
+    /// </summary>
+    /// <short>
+    /// Get the recommended quota
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns>Recommended portal quota</returns>
+    /// <path>api/2.0/portal/quota/right</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("quota/right")]
     public TenantQuota GetRightQuota()
     {
@@ -231,12 +336,34 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the full absolute path to the current portal.
+    /// </summary>
+    /// <short>
+    /// Get a path to the portal
+    /// </short>
+    /// <category>Settings</category>
+    /// <param name="virtualPath">Portal virtual path</param>
+    /// <returns>Portal path</returns>
+    /// <path>api/2.0/portal/path</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("path")]
     public object GetFullAbsolutePath(string virtualPath)
     {
         return _commonLinkUtility.GetFullAbsolutePath(virtualPath);
     }
 
+    /// <summary>
+    /// Returns a thumbnail for the bookmark URL specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get a bookmark thumbnail
+    /// </short>
+    /// <category>Settings</category>
+    /// <param name="url">Bookmark URL</param>
+    /// <returns>Thumbnail</returns>
+    /// <path>api/2.0/portal/thumb</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("thumb")]
     public FileResult GetThumb(string url)
     {
@@ -271,6 +398,16 @@ public class PortalController : ControllerBase
         return File(bytes, type);
     }
 
+    /// <summary>
+    /// Marks a gift message as read.
+    /// </summary>
+    /// <short>
+    /// Mark a gift message as read
+    /// </short>
+    /// <category>Users</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/present/mark</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("present/mark")]
     public void MarkPresentAsReaded()
     {
@@ -286,6 +423,17 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Registers the mobile app installation.
+    /// </summary>
+    /// <short>
+    /// Register the mobile app installation
+    /// </short>
+    /// <category>Settings</category>
+    /// <param name="inDto">Mobile app type ("IosProjects", "AndroidProjects", "IosDocuments", "AndroidDocuments", or "DesktopEditor")</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/mobile/registration</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("mobile/registration")]
     public void RegisterMobileAppInstall(MobileAppRequestsDto inDto)
     {
@@ -304,8 +452,11 @@ public class PortalController : ControllerBase
     /// Updates a portal name with a new one specified in the request.
     /// </summary>
     /// <short>Update a portal name</short>
-    /// <param name="alias">New portal name</param>
-    /// <returns>Message about renaming a portal</returns>
+    /// <category>Settings</category>
+    /// <param name="model">New portal name</param>
+    /// <returns>Confirmation email about authentication to the portal with a new name</returns>
+    /// <path>api/2.0/portal/portalrename</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("portalrename")]
     public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
@@ -377,6 +528,14 @@ public class PortalController : ControllerBase
         return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Auth);
     }
 
+    /// <summary>
+    /// Deletes the current portal immediately.
+    /// </summary>
+    /// <short>Delete the current portal immediately</short>
+    /// <category>Settings</category>
+    /// <returns>Task awaiter</returns>
+    /// <path>api/2.0/portal/deleteportalimmediately</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("deleteportalimmediately")]
     public async Task DeletePortalImmediately()
     {
@@ -409,6 +568,14 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Sends the instructions to suspend the current portal.
+    /// </summary>
+    /// <short>Send suspension instructions</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/suspend</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("suspend")]
     public void SendSuspendInstructions()
@@ -429,6 +596,14 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    /// <summary>
+    /// Sends the instructions to delete the current portal.
+    /// </summary>
+    /// <short>Send removal instructions</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/delete</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("delete")]
     public void SendDeleteInstructions()
@@ -451,6 +626,14 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    /// <summary>
+    /// Restores the current portal.
+    /// </summary>
+    /// <short>Restore the current portal</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/continue</path>
+    /// <httpMethod>PUT</httpMethod>
     [AllowSuspended]
     [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
@@ -460,6 +643,14 @@ public class PortalController : ControllerBase
         _tenantManager.SaveTenant(Tenant);
     }
 
+    /// <summary>
+    /// Deactivates the current portal.
+    /// </summary>
+    /// <short>Deactivate the current portal</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/suspend</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("suspend")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
     public void SuspendPortal()
@@ -469,6 +660,14 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
+    /// <summary>
+    /// Deletes the current portal.
+    /// </summary>
+    /// <short>Delete the current portal</short>
+    /// <category>Settings</category>
+    /// <returns>URL to the feedback form about removing a portal</returns>
+    /// <path>api/2.0/portal/delete</path>
+    /// <httpMethod>DELETE</httpMethod>
     [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
@@ -520,6 +719,15 @@ public class PortalController : ControllerBase
         return redirectLink;
     }
 
+    /// <summary>
+    /// Sends congratulations to the user after registering the portal.
+    /// </summary>
+    /// <short>Send congratulations</short>
+    /// <category>Users</category>
+    /// <param name="inDto">Congratulations request parameters: user ID, email key</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/sendcongratulations</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowAnonymous]
     [HttpPost("sendcongratulations")]
     public void SendCongratulations([FromQuery] SendCongratulationsDto inDto)
