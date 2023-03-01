@@ -21,10 +21,10 @@ const Calendar = ({
 }) => {
   moment.locale(locale);
 
-  const handleDateChange = (date) => {
+  function handleDateChange(date) {
     setSelectedDate(date);
     onChange(date);
-  };
+  }
 
   const [observedDate, setObservedDate] = useState(moment());
   const [selectedScene, setSelectedScene] = useState(0);
