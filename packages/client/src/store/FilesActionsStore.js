@@ -1165,7 +1165,7 @@ class FilesActionStore {
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const { filter, setHighlightFileId, fetchFiles } = this.filesStore;
+    const { filter, setHighlightFile, fetchFiles } = this.filesStore;
     const newFilter = filter.clone();
 
     newFilter.page = 0;
@@ -1173,7 +1173,7 @@ class FilesActionStore {
 
     fetchFiles(item.ExtraLocation, newFilter)
       .then(() => {
-        setHighlightFileId({
+        setHighlightFile({
           highlightFileId: item.id,
           isFileHasExst: !item.fileExst,
         });

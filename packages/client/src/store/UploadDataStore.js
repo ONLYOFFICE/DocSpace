@@ -541,7 +541,7 @@ class UploadDataStore {
           this.setConversionPercent(percent, !!error);
 
           if (file.fileInfo.version > 2) {
-            this.filesStore.setHighlightFileId({
+            this.filesStore.setHighlightFile({
               highlightFileId: file.fileInfo.id,
               isFileHasExst: !file.fileInfo.fileExst,
             });
@@ -891,7 +891,7 @@ class UploadDataStore {
         });
 
         if (fileInfo.version > 2) {
-          this.filesStore.setHighlightFileId({
+          this.filesStore.setHighlightFile({
             highlightFileId: fileInfo.id,
             isFileHasExst: !fileInfo.fileExst,
           });

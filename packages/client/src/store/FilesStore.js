@@ -478,7 +478,7 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setHighlightFileId = (highlightFile) => {
+  setHighlightFile = (highlightFile) => {
     const { highlightFileId, isFileHasExst } = highlightFile;
 
     runInAction(() => {
