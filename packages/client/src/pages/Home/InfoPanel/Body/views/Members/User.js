@@ -118,7 +118,7 @@ const User = ({
   const withTooltip = user.isOwner || user.isAdmin;
 
   const tooltipContent = `${
-    user.isAdmin ? t("Common:DocSpaceAdmin") : t("Common:Owner")
+    user.isOwner ? t("Common:DocSpaceOwner") : t("Common:DocSpaceAdmin")
   }. ${t("Common:HasFullAccess")}`;
 
   return (
