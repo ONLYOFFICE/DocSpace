@@ -233,6 +233,10 @@ const SectionFilterContent = ({
         if (subjectId) {
           newFilter.subjectId = subjectId;
 
+          if (subjectId === FilterKeys.me) {
+            newFilter.subjectId = `${userId}`;
+          }
+
           newFilter.subjectFilter = subjectFilter?.toString()
             ? subjectFilter.toString()
             : FilterSubject.Member;
@@ -442,11 +446,12 @@ const SectionFilterContent = ({
 
       if (roomsFilter.subjectId) {
         const user = await getUser(roomsFilter.subjectId);
+        const isMe = userId === roomsFilter.subjectId;
 
-        let label = user.displayName;
+        let label = isMe ? t("Common:MeLabel") : user.displayName;
 
         const subject = {
-          key: roomsFilter.subjectId,
+          key: isMe ? FilterKeys.me : roomsFilter.subjectId,
           group: FilterGroups.roomFilterSubject,
           label: label,
         };
