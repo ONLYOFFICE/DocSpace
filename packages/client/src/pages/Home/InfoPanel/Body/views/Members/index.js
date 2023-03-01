@@ -28,6 +28,8 @@ const Members = ({
 
   selectionParentRoom,
   setSelectionParentRoom,
+  isScrollLocked,
+  setIsScrollLocked,
 
   getRoomMembers,
   updateRoomMemberRole,
@@ -175,6 +177,8 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
+            isScrollLocked={isScrollLocked}
+            setIsScrollLocked={setIsScrollLocked}
           />
         ))}
       </StyledUserList>
@@ -196,11 +200,23 @@ const Members = ({
       )}
 
       <StyledUserList>
-        {Object.values(members.expected).map((user) => (
+        {Object.values([
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+          ...members.expected,
+        ]).map((user, i) => (
           <User
             security={security}
             isExpect
-            key={user.id}
+            key={i}
             t={t}
             user={user}
             membersHelper={membersHelper}
@@ -211,6 +227,8 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
+            isScrollLocked={isScrollLocked}
+            setIsScrollLocked={setIsScrollLocked}
           />
         ))}
       </StyledUserList>
@@ -237,6 +255,8 @@ export default inject(
 
       updateRoomMembers,
       setUpdateRoomMembers,
+      isScrollLocked,
+      setIsScrollLocked,
     } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -254,6 +274,8 @@ export default inject(
       setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
+      isScrollLocked,
+      setIsScrollLocked,
 
       getRoomMembers,
       updateRoomMemberRole,

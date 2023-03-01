@@ -18,6 +18,8 @@ const User = ({
   selectionParentRoom,
   setSelectionParentRoom,
   changeUserType,
+  isScrollLocked,
+  setIsScrollLocked,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -100,6 +102,10 @@ const User = ({
     }
   };
 
+  const onToggle = () => {
+    setIsScrollLocked(!isScrollLocked);
+  };
+
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
   return (
@@ -135,6 +141,8 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              directionY="both"
+              toggleAction={onToggle}
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>
