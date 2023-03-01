@@ -190,7 +190,7 @@ const InvitePanel = ({
       setIsLoading(false);
     } finally {
       if (roomId === -1) {
-        await getUsersList();
+        await getUsersList(filter , false);
       }
     }
   };
