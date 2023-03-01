@@ -22,9 +22,9 @@ const Dialog = ({
   onCancel,
   onClose,
   isCreateDialog,
-  createWithoutDialog,
-  setCreateWithoutDialog,
   extension,
+  keepNewFileName,
+  setKeepNewFileName,
 }) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
@@ -32,8 +32,8 @@ const Dialog = ({
   const [isChanged, setIsChanged] = useState(false);
 
   useEffect(() => {
-    createWithoutDialog && isCreateDialog && setIsChecked(createWithoutDialog);
-  }, [isCreateDialog, createWithoutDialog]);
+    keepNewFileName && isCreateDialog && setIsChecked(keepNewFileName);
+  }, [isCreateDialog, keepNewFileName]);
 
   useEffect(() => {
     let input = document?.getElementById("create-text-input");
@@ -80,7 +80,7 @@ const Dialog = ({
   const onSaveAction = useCallback(
     (e) => {
       setIsDisabled(true);
-      isCreateDialog && setCreateWithoutDialog(isChecked);
+      isCreateDialog && setKeepNewFileName(isChecked);
       onSave && onSave(e, value);
     },
     [onSave, isCreateDialog, value, isChecked]
@@ -88,7 +88,7 @@ const Dialog = ({
 
   const onCancelAction = useCallback((e) => {
     if (isChecked) {
-      setCreateWithoutDialog(false);
+      setKeepNewFileName(false);
     }
     onCancel && onCancel(e);
   }, []);
@@ -96,7 +96,7 @@ const Dialog = ({
   const onCloseAction = useCallback(
     (e) => {
       if (!isDisabled && isChecked) {
-        setCreateWithoutDialog(false);
+        setKeepNewFileName(false);
       }
       onClose && onClose(e);
     },
@@ -171,9 +171,9 @@ const Dialog = ({
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, settingsStore }) => {
   const { folderFormValidation } = auth.settingsStore;
-  const { createWithoutDialog, setCreateWithoutDialog } = filesStore;
+  const { keepNewFileName, setKeepNewFileName } = settingsStore;
 
-  return { folderFormValidation, createWithoutDialog, setCreateWithoutDialog };
+  return { folderFormValidation, keepNewFileName, setKeepNewFileName };
 })(observer(Dialog));
