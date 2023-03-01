@@ -51,10 +51,6 @@ class FilesActionStore {
   accessRightsStore;
 
   isBulkDownload = false;
-  searchTitleOpenLocation = null;
-  searchFileIdOpenLocation = null;
-  itemOpenLocation = {};
-  isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
 
@@ -1161,43 +1157,28 @@ class FilesActionStore {
     }
   };
 
-  setSearchTitleOpenLocation = (searchTitleOpenLocation) => {
-    this.searchTitleOpenLocation = searchTitleOpenLocation;
-  };
-
-  setSearchFileIdOpenLocation = (searchFileIdOpenLocation) => {
-    this.searchFileIdOpenLocation = searchFileIdOpenLocation;
-  };
-
-  setItemOpenLocation = (itemOpenLocation) => {
-    this.itemOpenLocation = itemOpenLocation;
-  };
-
-  setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
-    this.isLoadedLocationFiles = isLoadedLocationFiles;
-  };
-
   openLocationAction = async (locationId) => {
-    this.setIsLoadedLocationFiles(false);
     this.filesStore.setBufferSelection(null);
 
     const files = await this.filesStore.fetchFiles(locationId, null);
-    this.setIsLoadedLocationFiles(true);
     return files;
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const sameName = item.title === this.searchTitleOpenLocation;
-    const sameFile = item.Id === this.searchFileIdOpenLocation;
+    const { filter, setHighlightFileId, fetchFiles } = this.filesStore;
+    const newFilter = filter.clone();
 
-    !sameFile && this.openLocationAction(item.ExtraLocation);
-    !sameName && this.setSearchTitleOpenLocation(item.title);
-    !sameFile && this.setSearchFileIdOpenLocation(item.Id);
+    newFilter.page = 0;
+    newFilter.search = item.title;
 
-    this.setItemOpenLocation({
-      id: item.id,
-      isFileHasExst: !item.fileExst,
-    });
+    fetchFiles(item.ExtraLocation, newFilter)
+      .then(() => {
+        setHighlightFileId({
+          highlightFileId: item.id,
+          isFileHasExst: !item.fileExst,
+        });
+      })
+      .catch((err) => toastr.error(err));
   };
 
   setThirdpartyInfo = (providerKey) => {

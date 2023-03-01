@@ -174,22 +174,14 @@ const SectionFilterContent = ({
   isPersonalRoom,
   setCurrentRoomsFilter,
   providers,
-  searchTitleOpenLocation,
-  isLoadedLocationFiles,
-  itemOpenLocation,
   isLoadedEmptyPage,
   isEmptyPage,
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
-  setSearchTitleOpenLocation,
-  setSearchFileIdOpenLocation,
-  setHighlightFileId,
-  setItemOpenLocation,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
-  const [isLoadedSearchFiles, setIsLoadedSearchFiles] = React.useState(false);
 
   React.useEffect(() => {
     if (isEmptyPage) {
@@ -200,33 +192,6 @@ const SectionFilterContent = ({
       setIsLoadedFilter(true);
     }
   }, [isLoadedEmptyPage, isEmptyPage]);
-
-  React.useEffect(() => {
-    if (searchTitleOpenLocation && isLoadedLocationFiles) {
-      onSearch(searchTitleOpenLocation);
-    }
-  }, [
-    searchTitleOpenLocation,
-    isLoadedLocationFiles,
-    onSearch,
-    setSearchTitleOpenLocation,
-  ]);
-
-  React.useEffect(() => {
-    if (isLoadedSearchFiles && Object.keys(itemOpenLocation).length !== 0) {
-      setHighlightFileId({
-        highlightFileId: itemOpenLocation.id,
-        isFileHasExst: itemOpenLocation.isFileHasExst,
-      });
-
-      setItemOpenLocation({});
-    }
-  }, [
-    isLoadedSearchFiles,
-    itemOpenLocation.id,
-    itemOpenLocation.isFileHasExst,
-    setItemOpenLocation,
-  ]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -328,11 +293,6 @@ const SectionFilterContent = ({
 
   const onSearch = React.useCallback(
     (data = "") => {
-      if (!data && searchTitleOpenLocation) {
-        setSearchTitleOpenLocation(null);
-        setSearchFileIdOpenLocation(null);
-      }
-
       if (isRooms) {
         const newFilter = roomsFilter.clone();
 
@@ -343,7 +303,6 @@ const SectionFilterContent = ({
           setIsLoading(false)
         );
       } else {
-        setIsLoadedSearchFiles(false);
         const newFilter = filter.clone();
         newFilter.page = 0;
         newFilter.search = data;
@@ -352,7 +311,6 @@ const SectionFilterContent = ({
 
         fetchFiles(selectedFolderId, newFilter).finally(() => {
           setIsLoading(false);
-          setIsLoadedSearchFiles(true);
         });
       }
     },
@@ -364,10 +322,6 @@ const SectionFilterContent = ({
       selectedFolderId,
       filter,
       roomsFilter,
-      searchTitleOpenLocation,
-      setIsLoadedSearchFiles,
-      setSearchTitleOpenLocation,
-      setSearchFileIdOpenLocation,
     ]
   );
 
@@ -1497,7 +1451,6 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
-      setHighlightFileId,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1518,15 +1471,6 @@ export default inject(
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-
-    const {
-      searchTitleOpenLocation,
-      setSearchTitleOpenLocation,
-      setSearchFileIdOpenLocation,
-      isLoadedLocationFiles,
-      itemOpenLocation,
-      setItemOpenLocation,
-    } = filesActionsStore;
 
     return {
       user,
@@ -1555,13 +1499,6 @@ export default inject(
       setCurrentRoomsFilter,
       providers,
 
-      searchTitleOpenLocation,
-      setSearchTitleOpenLocation,
-      setSearchFileIdOpenLocation,
-      isLoadedLocationFiles,
-      itemOpenLocation,
-      setItemOpenLocation,
-
       isLoadedEmptyPage,
       isEmptyPage,
 
@@ -1569,7 +1506,6 @@ export default inject(
       setClearSearch,
 
       setMainButtonMobileVisible,
-      setHighlightFileId,
     };
   }
 )(
