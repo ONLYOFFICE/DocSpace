@@ -186,6 +186,15 @@ const FilterBlockItem = ({
   const getTagItem = (item) => {
     const isAuthor = item.key === "user";
 
+    const [meItem, otherItem, userItem] = groupItem;
+
+    if (
+      item.key === otherItem.key &&
+      userItem?.isSelected &&
+      !meItem?.isSelected
+    )
+      return;
+
     return (
       <ColorTheme
         key={item.key}
