@@ -22,7 +22,14 @@ const PureText = ({ type, color, ...props }) => <Text {...props} />;
 const StyledText = styled(PureText)`
   text-decoration: ${(props) => props.theme.link.textDecoration};
 
-  ${(props) => !props.enableUserSelect && NoUserSelect}
+  ${(props) =>
+    props.enableUserSelect
+      ? css`
+          user-select: text;
+          -moz-user-select: text;
+          -webkit-user-select: text;
+        `
+      : NoUserSelect}
 
   cursor: ${(props) => props.theme.link.cursor};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
