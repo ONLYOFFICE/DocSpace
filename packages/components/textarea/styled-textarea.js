@@ -62,11 +62,11 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   padding-left: ${(props) =>
     props.isJSONField
       ? props.fontSize < 13
-        ? '42px'
+        ? "42px"
         : `${(42 * props.fontSize) / 13}px`
       : "8px"};
   font-size: ${(props) => props.fontSize + "px"};
-  font-family: Open Sans, sans-serif, Arial;
+  font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
 
   :focus-within {
@@ -79,31 +79,31 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
 
   ::-webkit-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: Open Sans, sans-serif, Arial;
+    font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
 
   :-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: Open Sans, sans-serif, Arial;
+    font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
 
   ::-moz-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: Open Sans, sans-serif, Arial;
+    font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
 
   :-ms-input-placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: Open Sans, sans-serif, Arial;
+    font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
 
   ::placeholder {
     color: ${(props) => props.theme.textInput.placeholderColor};
-    font-family: Open Sans, sans-serif, Arial;
+    font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
 `;
@@ -141,7 +141,7 @@ const Numeration = styled.pre`
   display: block;
   position: absolute;
   font-size: ${(props) => props.fontSize + "px"};
-  font-family: Open Sans, sans-serif, Arial;
+  font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
   z-index: 2;
   margin: 0;
