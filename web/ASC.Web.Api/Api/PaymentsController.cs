@@ -84,6 +84,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get the payment page URL
     /// </short>
+    /// <category>Payment</category>
     /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
     /// <returns>The URL to the payment page</returns>
     /// <path>api/2.0/portal/payment/url</path>
@@ -112,6 +113,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Update the payment quantity
     /// </short>
+    /// <category>Payment</category>
     /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
     /// <returns>Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/portal/payment/update</path>
@@ -137,6 +139,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get the payment account
     /// </short>
+    /// <category>Payment</category>
     /// <param name="backUrl">Back URL</param>
     /// <returns>The URL to the payment account</returns>
     /// <path>api/2.0/portal/payment/account</path>
@@ -162,6 +165,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get prices
     /// </short>
+    /// <category>Payment</category>
     /// <returns>List of available portal prices</returns>
     /// <path>api/2.0/portal/payment/prices</path>
     /// <httpMethod>GET</httpMethod>
@@ -181,6 +185,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get currencies
     /// </short>
+    /// <category>Payment</category>
     /// <returns>List of available portal currencies</returns>
     /// <path>api/2.0/portal/payment/currencies</path>
     /// <httpMethod>GET</httpMethod>
@@ -204,6 +209,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get quotas
     /// </short>
+    /// <category>Payment</category>
     /// <returns>List of available portal quotas</returns>
     /// <path>api/2.0/portal/payment/quotas</path>
     /// <httpMethod>GET</httpMethod>
@@ -219,6 +225,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get portal quota
     /// </short>
+    /// <category>Payment</category>
     /// <returns>Current portal quota</returns>
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
@@ -234,6 +241,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Send a payment request
     /// </short>
+    /// <category>Payment</category>
     /// <param name="inDto">Portal payment request parameters: username, email, message</param>
     /// <returns></returns>
     /// <path>api/2.0/portal/payment/request</path>
