@@ -200,19 +200,7 @@ const Members = ({
       )}
 
       <StyledUserList>
-        {Object.values([
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-          ...members.expected,
-        ]).map((user, i) => (
+        {Object.values(members.expected).map((user, i) => (
           <User
             security={security}
             isExpect
