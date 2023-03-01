@@ -99,6 +99,8 @@ const ChangeUserTypeEvent = ({
         return t("Common:DocSpaceAdmin");
       case "manager":
         return t("Common:RoomAdmin");
+      case "collaborator":
+        return t("Common:Collaborator");
       case "user":
       default:
         return t("Common:User");
