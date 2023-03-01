@@ -40,6 +40,7 @@ const Calendar = ({
         "Initial date is out of min/max dates boundaries. Initial date will be set as mid value between min and max dates"
       );
     }
+    initialDate.startOf("day");
     handleDateChange(initialDate);
     setObservedDate(initialDate);
   }, []);
