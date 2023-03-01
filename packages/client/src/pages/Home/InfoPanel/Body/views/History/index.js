@@ -20,12 +20,6 @@ const History = ({
   openUser,
   isVisitor,
   isCollaborator,
-  searchTitleOpenLocation,
-  itemOpenLocation,
-  isLoadedSearchFiles,
-  getFolderInfo,
-  getFileInfo,
-  setSelectionFiles,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -165,11 +159,5 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     openUser,
     isVisitor,
     isCollaborator,
-    searchTitleOpenLocation,
-    itemOpenLocation,
-    isLoadedSearchFiles,
-    getFolderInfo,
-    getFileInfo,
-    setSelectionFiles,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));
