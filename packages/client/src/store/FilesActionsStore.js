@@ -51,9 +51,6 @@ class FilesActionStore {
   accessRightsStore;
 
   isBulkDownload = false;
-  searchTitleOpenLocation = null;
-  itemOpenLocation = null;
-  isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
 
@@ -1160,48 +1157,26 @@ class FilesActionStore {
     }
   };
 
-  setSearchTitleOpenLocation = (searchTitleOpenLocation) => {
-    this.searchTitleOpenLocation = searchTitleOpenLocation;
-  };
-
-  setItemOpenLocation = (itemOpenLocation) => {
-    this.itemOpenLocation = itemOpenLocation;
-  };
-
-  setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
-    this.isLoadedLocationFiles = isLoadedLocationFiles;
-  };
-
-  setIsLoadedSearchFiles = (isLoadedSearchFiles) => {
-    this.isLoadedSearchFiles = isLoadedSearchFiles;
-  };
-
   openLocationAction = async (locationId) => {
-    this.setIsLoadedLocationFiles(false);
     this.filesStore.setBufferSelection(null);
 
     const files = await this.filesStore.fetchFiles(locationId, null);
-    this.setIsLoadedLocationFiles(true);
     return files;
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const filterData = FilesFilter.getDefault();
+    const { filter, setHighlightFile, fetchFiles } = this.filesStore;
+    const newFilter = filter.clone();
 
-    this.setIsLoadedSearchFiles(false);
+    newFilter.page = 0;
+    newFilter.search = item.title;
 
-    if (this.itemOpenLocation?.title !== item.title) {
-      this.setSearchTitleOpenLocation(null);
-    }
-
-    this.setItemOpenLocation(null);
-
-    api.files
-      .getFolder(item.ExtraLocation, filterData)
+    fetchFiles(item.ExtraLocation, newFilter)
       .then(() => {
-        this.openLocationAction(item.ExtraLocation);
-        this.setSearchTitleOpenLocation(item.title);
-        this.setItemOpenLocation(item);
+        setHighlightFile({
+          highlightFileId: item.id,
+          isFileHasExst: !item.fileExst,
+        });
       })
       .catch((err) => toastr.error(err));
   };

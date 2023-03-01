@@ -42,6 +42,7 @@ const PaymentRequiredHttpCode = 402;
 const UnauthorizedHttpCode = 401;
 
 const THUMBNAILS_CACHE = 500;
+let timerId;
 
 class FilesStore {
   authStore;
@@ -126,7 +127,8 @@ class FilesStore {
   isLoadedEmptyPage = false;
   isPreview = false;
   tempFilter = null;
-  uploadedFileIdWithVersion = null;
+
+  highlightFile = {};
   thumbnails = new Set();
 
   constructor(
@@ -476,8 +478,28 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
-    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
+  setHighlightFile = (highlightFile) => {
+    const { highlightFileId, isFileHasExst } = highlightFile;
+
+    runInAction(() => {
+      this.highlightFile = {
+        id: highlightFileId,
+        isExst: isFileHasExst,
+      };
+    });
+
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+
+    if (Object.keys(highlightFile).length === 0) return;
+
+    timerId = setTimeout(() => {
+      runInAction(() => {
+        this.highlightFile = {};
+      });
+    }, 1000);
   };
 
   checkSelection = (file) => {
@@ -2450,8 +2472,6 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const upgradeVersion = id === this.uploadedFileIdWithVersion;
-
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2530,7 +2550,6 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
-        upgradeVersion,
         created,
         createdBy,
         encrypted,
