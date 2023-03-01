@@ -15,6 +15,7 @@ const ChangeUserTypeEvent = ({
   peopleFilter,
   updateUserType,
   getUsersList,
+  onClose,
 }) => {
   const {
     toType,
@@ -24,6 +25,18 @@ const ChangeUserTypeEvent = ({
     abortCallback,
   } = peopleDialogData;
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common", "Payments"]);
+
+  const onKeyUpHandler = (e) => {
+    if (e.keyCode === 27) onCloseAction();
+    if (e.keyCode === 13) onChangeUserType();
+  };
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyUpHandler, false);
+
+    return () => {
+      document.removeEventListener("keyup", onKeyUpHandler, false);
+    };
+  }, []);
 
   useEffect(() => {
     if (!peopleDialogData.toType) return;
@@ -46,7 +59,7 @@ const ChangeUserTypeEvent = ({
   };
 
   const onChangeUserType = () => {
-    onClose();
+    onClosePanel();
     updateUserType(toType, userIDs, peopleFilter, fromType)
       .then(() => {
         toastr.success(t("SuccessChangeUserType"));
@@ -71,14 +84,15 @@ const ChangeUserTypeEvent = ({
       });
   };
 
-  const onClose = () => {
+  const onClosePanel = () => {
     setVisible(false);
+    onClose();
   };
 
   const onCloseAction = async () => {
     await getUsersList(peopleFilter);
     abortCallback && abortCallback();
-    onClose();
+    onClosePanel();
   };
 
   const getType = (type) => {
@@ -87,6 +101,8 @@ const ChangeUserTypeEvent = ({
         return t("Common:DocSpaceAdmin");
       case "manager":
         return t("Common:RoomAdmin");
+      case "collaborator":
+        return t("Common:Collaborator");
       case "user":
       default:
         return t("Common:User");

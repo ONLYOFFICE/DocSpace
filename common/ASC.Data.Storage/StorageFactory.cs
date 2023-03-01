@@ -155,7 +155,7 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenant.Value);
+        var settings = _settingsManager.Load<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
         return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller, region);
     }

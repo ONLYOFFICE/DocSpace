@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
 import { inject, observer } from "mobx-react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TileContainer from "./sub-components/TileContainer";
@@ -36,11 +42,13 @@ const elementResizeDetector = elementResizeDetectorMaker({
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   const tileRef = useRef(null);
   const timerRef = useRef(null);
+  const isMountedRef = useRef(true);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       if (!tileRef?.current) return;
       clearTimeout(timerRef.current);
       elementResizeDetector.uninstall(tileRef.current);
@@ -49,7 +57,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
   const onResize = useCallback(
     (node) => {
-      if (!node) return;
+      if (!node || !isMountedRef.current) return;
 
       const { width } = node.getBoundingClientRect();
 
@@ -87,6 +95,38 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     }
   }, []);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => {
+      return index % 11 == 0 ? (
+        <FileTile
+          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+          key={
+            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+          }
+          item={item}
+          itemIndex={index}
+          sectionWidth={sectionWidth}
+          selectableRef={onSetTileRef}
+          thumbSize={thumbSize}
+          columnCount={columnCount}
+          withRef={true}
+        />
+      ) : (
+        <FileTile
+          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+          key={
+            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+          }
+          item={item}
+          itemIndex={index}
+          sectionWidth={sectionWidth}
+          thumbSize={thumbSize}
+          columnCount={columnCount}
+        />
+      );
+    });
+  }, [filesList, sectionWidth, onSetTileRef, thumbSize, columnCount]);
+
   return (
     <TileContainer
       className="tile-container"
@@ -95,31 +135,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       headingFolders={t("Translations:Folders")}
       headingFiles={t("Translations:Files")}
     >
-      {filesList.map((item, index) => {
-        return index % 11 == 0 ? (
-          <FileTile
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            itemIndex={index}
-            sectionWidth={sectionWidth}
-            selectableRef={onSetTileRef}
-            thumbSize={thumbSize}
-            columnCount={columnCount}
-            withRef={true}
-          />
-        ) : (
-          <FileTile
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            itemIndex={index}
-            sectionWidth={sectionWidth}
-            thumbSize={thumbSize}
-            columnCount={columnCount}
-          />
-        );
-      })}
+      {filesListNode}
     </TileContainer>
   );
 };

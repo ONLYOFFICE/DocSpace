@@ -63,13 +63,13 @@ public class BaseStorageSettingsListener
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
                 var (storageSettingsHelper, settingsManager) = scopeClass;
-                var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
+                var settings = settingsManager.Load<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
                     storageSettingsHelper.Clear(settings);
                 }
 
-                var cdnSettings = settingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                var cdnSettings = settingsManager.Load<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
                     storageSettingsHelper.Clear(cdnSettings);

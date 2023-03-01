@@ -42,6 +42,7 @@ const PaymentRequiredHttpCode = 402;
 const UnauthorizedHttpCode = 401;
 
 const THUMBNAILS_CACHE = 500;
+let timerId;
 
 class FilesStore {
   authStore;
@@ -100,6 +101,8 @@ class FilesStore {
   createdItem = null;
   scrollToItem = null;
 
+  roomCreated = false;
+
   isLoadingFilesFind = false;
   pageItemsLength = null;
   isHidePagination = false;
@@ -124,7 +127,8 @@ class FilesStore {
   isLoadedEmptyPage = false;
   isPreview = false;
   tempFilter = null;
-  uploadedFileIdWithVersion = null;
+
+  highlightFile = {};
   thumbnails = new Set();
 
   constructor(
@@ -154,23 +158,19 @@ class FilesStore {
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
 
-      let file, folder;
-
-      if (!this.isLoading && !this.operationAction) {
+      if (!(this.isLoading || this.operationAction))
         switch (opt?.cmd) {
           case "create":
             if (opt?.type === "file" && opt?.id) {
               const foundIndex = this.files.findIndex((x) => x.id === opt?.id);
 
-              file = JSON.parse(opt?.data);
+              const file = JSON.parse(opt?.data);
 
               if (this.selectedFolderStore.id !== file.folderId) {
                 const movedToIndex = this.getFolderIndex(file.folderId);
                 if (movedToIndex) this.folders[movedToIndex].filesCount++;
                 return;
               }
-
-              if (this.selectedFolderStore.id !== file.folderId) return;
 
               //To update a file version
               if (foundIndex > -1 && !withPaging) {
@@ -182,6 +182,7 @@ class FilesStore {
 
               const fileInfo = await api.files.getFileInfo(file.id);
 
+              if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
               console.log("[WS] create new file", fileInfo.id, fileInfo.title);
 
               const newFiles = [fileInfo, ...this.files];
@@ -201,15 +202,23 @@ class FilesStore {
               const foundIndex = this.folders.findIndex(
                 (x) => x.id === opt?.id
               );
+
               if (foundIndex > -1) return;
 
-              folder = JSON.parse(opt?.data);
+              const folder = JSON.parse(opt?.data);
 
               if (this.selectedFolderStore.id !== folder.parentId) {
                 const movedToIndex = this.getFolderIndex(folder.parentId);
                 if (movedToIndex) this.folders[movedToIndex].foldersCount++;
-                return;
               }
+
+              if (
+                this.selectedFolderStore.id !== folder.parentId ||
+                (folder.roomType &&
+                  folder.createdBy.id === this.authStore.userStore.user.id &&
+                  this.roomCreated)
+              )
+                return (this.roomCreated = false);
 
               const folderInfo = await api.files.getFolderInfo(folder.id);
 
@@ -236,7 +245,7 @@ class FilesStore {
             break;
           case "update":
             if (opt?.type === "file" && opt?.data) {
-              file = JSON.parse(opt?.data);
+              const file = JSON.parse(opt?.data);
 
               if (!file || !file.id) return;
 
@@ -246,7 +255,7 @@ class FilesStore {
 
               this.checkSelection(file);
             } else if (opt?.type === "folder" && opt?.data) {
-              folder = JSON.parse(opt?.data);
+              const folder = JSON.parse(opt?.data);
 
               if (!folder || !folder.id) return;
 
@@ -356,7 +365,6 @@ class FilesStore {
             }
             break;
         }
-      }
 
       if (opt?.cmd === "create") {
         if (opt?.type === "file" && opt?.id)
@@ -496,8 +504,28 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
-    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
+  setHighlightFile = (highlightFile) => {
+    const { highlightFileId, isFileHasExst } = highlightFile;
+
+    runInAction(() => {
+      this.highlightFile = {
+        id: highlightFileId,
+        isExst: isFileHasExst,
+      };
+    });
+
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+
+    if (Object.keys(highlightFile).length === 0) return;
+
+    timerId = setTimeout(() => {
+      runInAction(() => {
+        this.highlightFile = {};
+      });
+    }, 1000);
   };
 
   checkSelection = (file) => {
@@ -907,10 +935,16 @@ class FilesStore {
     let newSelections = JSON.parse(JSON.stringify(this.selection));
 
     for (let item of added) {
+      if (!item) return;
+
       const value =
         this.viewAs === "tile"
           ? item.getAttribute("value")
-          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
+
+      if (!value) return;
       const splitValue = value && value.split("_");
 
       const fileType = splitValue[0];
@@ -940,10 +974,14 @@ class FilesStore {
     }
 
     for (let item of removed) {
+      if (!item) return;
+
       const value =
         this.viewAs === "tile"
           ? item.getAttribute("value")
-          : item.getElementsByClassName("files-item")[0].getAttribute("value");
+          : item.getElementsByClassName("files-item")
+          ? item.getElementsByClassName("files-item")[0]?.getAttribute("value")
+          : null;
 
       const splitValue = value && value.split("_");
 
@@ -1994,9 +2032,10 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(roomParams) {
+  createRoom = (roomParams) => {
+    this.roomCreated = true;
     return api.rooms.createRoom(roomParams);
-  }
+  };
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
@@ -2459,8 +2498,6 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const upgradeVersion = id === this.uploadedFileIdWithVersion;
-
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2539,7 +2576,6 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
-        upgradeVersion,
         created,
         createdBy,
         encrypted,

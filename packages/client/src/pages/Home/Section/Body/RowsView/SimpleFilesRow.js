@@ -78,7 +78,7 @@ const StyledSimpleFilesRow = styled(Row)`
   ${(props) =>
     props.isHighlight &&
     css`
-      ${checkedStyle}
+      ${marginStyles}
 
       margin-top: -2px;
       padding-top: 1px;
@@ -251,14 +251,11 @@ const SimpleFilesRow = (props) => {
     isRooms,
 
     folderCategory,
-    setUploadedFileIdWithVersion,
+    isHighlight,
   } = props;
 
   const [isDragOver, setIsDragOver] = React.useState(false);
-  const [isHighlight, setIsHighlight] = React.useState(false);
 
-  let timeoutRef = React.useRef(null);
-  let isMounted;
   const withAccess = item.security?.Lock;
   const isSmallContainer = sectionWidth <= 500;
 
@@ -271,28 +268,6 @@ const SimpleFilesRow = (props) => {
       defaultRoomIcon={item.defaultRoomIcon}
     />
   );
-
-  useEffect(() => {
-    setIsHighlight(false);
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!item.upgradeVersion) return;
-
-    isMounted = true;
-    setIsHighlight(true);
-    setUploadedFileIdWithVersion(null);
-
-    timeoutRef.current = setTimeout(() => {
-      isMounted && setIsHighlight(false);
-    }, 2000);
-  }, [item]);
 
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {

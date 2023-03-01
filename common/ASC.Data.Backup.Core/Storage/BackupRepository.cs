@@ -115,10 +115,7 @@ public class BackupRepository : IBackupRepository
     public void DeleteBackupSchedule(int tenantId)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        var shedule = backupContext.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
-
-        backupContext.Schedules.RemoveRange(shedule);
-        backupContext.SaveChanges();
+        backupContext.Schedules.Where(s => s.TenantId == tenantId).ExecuteDelete();
     }
 
     public List<BackupSchedule> GetBackupSchedules()

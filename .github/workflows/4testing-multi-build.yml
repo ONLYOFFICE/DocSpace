@@ -25,13 +25,21 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build 4testing
         run: |
+          export BUILD_NUMBER="$(date "+%Y%m%d%H")"
           cd ./build/install/docker
           REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
-          DOCKER_TAG="develop" \
+          DOCKER_TAG=$GITHUB_REF_NAME \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
-          --set *.args.GIT_BRANCH="develop" \
+          --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
+          --push
+          REPO="onlyoffice" \
+          DOCKER_IMAGE_PREFIX="4testing-docspace" \
+          DOCKER_TAG=$GITHUB_REF_NAME-$BUILD_NUMBER \
+          DOCKERFILE="Dockerfile.app" \
+          docker buildx bake -f build.yml \
+          --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --push
         shell: bash

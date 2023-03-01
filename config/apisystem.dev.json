@@ -39,7 +39,7 @@
   "ConnectionStrings": {
     "default": {
       "name": "default",
-      "connectionString": "Server=onlyoffice-mysql-server;Port=3306;Database=onlyoffice;User ID=onlyoffice_user;Password=onlyoffice_pass;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",
+      "connectionString": "Server=onlyoffice-mysql-server;Port=3306;Database=docspace;User ID=onlyoffice_user;Password=onlyoffice_pass;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",
       "providerName": "MySql.Data.MySqlClient"
     }
   },

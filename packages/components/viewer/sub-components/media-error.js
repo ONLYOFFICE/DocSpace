@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
-import { isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { ReactSVG } from "react-svg";
 
 const StyledMediaError = styled.div`
@@ -54,7 +54,7 @@ export const MediaError = ({
   let errorLeft = (window.innerWidth - width) / 2 + "px";
   let errorTop = (window.innerHeight - height) / 2 + "px";
 
-  const items = !isMobileOnly
+  const items = !isMobile
     ? model.filter((el) => el.key !== "rename")
     : model.filter((el) => el.key === "delete" || el.key === "download");
 

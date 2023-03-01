@@ -28,62 +28,30 @@ namespace ASC.Api.Core.Core;
 
 public static class CustomHealthCheck
 {
+    public static bool Running { get; set;}
+
+    static CustomHealthCheck()
+    {
+        Running = true;
+    }
+    
     public static IServiceCollection AddCustomHealthCheck(this IServiceCollection services, IConfiguration configuration)
     {
         var hcBuilder = services.AddHealthChecks();
 
-        hcBuilder.AddCheck("self", () => HealthCheckResult.Healthy());
+        hcBuilder.AddCheck("self", () => Running ? HealthCheckResult.Healthy()
+                                    : HealthCheckResult.Unhealthy())
+                 .AddDatabase(configuration)
+                 .AddDistibutedCache(configuration)
+                 .AddMessageQueue(configuration)
+                 .AddSearch(configuration);
 
-        var configurationExtension = new ConfigurationExtension(configuration);
+        return services;
+    }
 
-        var connectionString = configurationExtension.GetConnectionStrings("default");
-
-        if (string.Equals(connectionString.ProviderName, "MySql.Data.MySqlClient"))
-        {
-            hcBuilder.AddMySql(connectionString.ConnectionString,
-                               name: "mysqldb",
-                               tags: new string[] { "mysqldb" },
-                               timeout: new TimeSpan(0, 0, 15));
-        }
-
-        if (string.Equals(connectionString.ProviderName, "Npgsql"))
-        {
-            hcBuilder.AddNpgSql(connectionString.ConnectionString,
-                               name: "postgredb",
-                               tags: new string[] { "postgredb" },
-                               timeout: new TimeSpan(0, 0, 15));
-        }
-
-        var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
-        if (kafkaSettings != null && !string.IsNullOrEmpty(kafkaSettings.BootstrapServers))
-        {
-            var clientConfig = new ClientConfig { BootstrapServers = kafkaSettings.BootstrapServers };
-
-            hcBuilder.AddKafka(new ProducerConfig(clientConfig),
-                           name: "kafka",
-                           tags: new string[] { "kafka" },
-                           timeout: new TimeSpan(0,0,15)
-                           );
-
-        }
-
-        var elasticSettings = configuration.GetSection("elastic");
-        
-        if (elasticSettings != null && elasticSettings.GetChildren().Any())
-        {
-            var host = elasticSettings.GetSection("Host").Value ?? "localhost";
-            var scheme = elasticSettings.GetSection("Scheme").Value ?? "http";
-            var port = elasticSettings.GetSection("Port").Value ?? "9200";
-            var elasticSearchUri = $"{scheme}://{host}:{port}";
-
-            if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
-            {
-                hcBuilder.AddElasticsearch(elasticSearchUri,
-                                          name: "elasticsearch",
-                                          tags: new string[] { "elasticsearch" });
-            }
-        }
-
+    public static IHealthChecksBuilder AddDistibutedCache(
+        this IHealthChecksBuilder hcBuilder, IConfiguration configuration)
+    {
         var redisConfiguration = configuration.GetSection("Redis").Get<RedisConfiguration>();
 
         if (redisConfiguration != null)
@@ -97,20 +65,97 @@ public static class CustomHealthCheck
 
             hcBuilder.AddRedis(redisConfiguration.ConfigurationOptions.ToString(),
                                name: "redis",
-                               tags: new string[] { "redis" },
+                               tags: new string[] { "redis", "services" },
                                timeout: new TimeSpan(0, 0, 15));
         }
 
+        return hcBuilder;
+    }
+
+
+
+    public static IHealthChecksBuilder AddSearch(
+   this IHealthChecksBuilder hcBuilder, IConfiguration configuration)
+    {
+        var elasticSettings = configuration.GetSection("elastic");
+
+        if (elasticSettings != null && elasticSettings.GetChildren().Any())
+        {
+            var host = elasticSettings.GetSection("Host").Value ?? "localhost";
+            var scheme = elasticSettings.GetSection("Scheme").Value ?? "http";
+            var port = elasticSettings.GetSection("Port").Value ?? "9200";
+            var elasticSearchUri = $"{scheme}://{host}:{port}";
+
+            if (Uri.IsWellFormedUriString(elasticSearchUri, UriKind.Absolute))
+            {
+                hcBuilder.AddElasticsearch(elasticSearchUri,
+                                          name: "elasticsearch",
+                                          tags: new string[] { "elasticsearch", "services" },
+                                          timeout: new TimeSpan(0, 0, 15));
+            }
+        }
+
+        return hcBuilder;
+    }
+
+    public static IHealthChecksBuilder AddDatabase(
+       this IHealthChecksBuilder hcBuilder, IConfiguration configuration)
+    {
+        var configurationExtension = new ConfigurationExtension(configuration);
+
+        var connectionString = configurationExtension.GetConnectionStrings("default");
+
+        if (string.Equals(connectionString.ProviderName, "MySql.Data.MySqlClient"))
+        {
+            hcBuilder.AddMySql(connectionString.ConnectionString,
+                               name: "mysqldb",
+                               tags: new string[] { "mysqldb", "services" },
+                               timeout: new TimeSpan(0, 0, 15));
+        }
+        else if (string.Equals(connectionString.ProviderName, "Npgsql"))
+        {
+            hcBuilder.AddNpgSql(connectionString.ConnectionString,
+                               name: "postgredb",
+                               tags: new string[] { "postgredb", "services" },
+                               timeout: new TimeSpan(0, 0, 15));
+        }
+
+        return hcBuilder;
+    }
+
+
+    public static IHealthChecksBuilder AddMessageQueue(
+               this IHealthChecksBuilder hcBuilder, IConfiguration configuration)
+    {
         var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
         if (rabbitMQConfiguration != null)
         {
             hcBuilder.AddRabbitMQ(x => rabbitMQConfiguration.GetConnectionFactory(),
                               name: "rabbitMQ",
-                              tags: new string[] { "rabbitMQ" },
+                              tags: new string[] { "rabbitMQ", "services" },
                               timeout: new TimeSpan(0, 0, 15));
         }
+        else
+        {
+            var configurationExtension = new ConfigurationExtension(configuration);
+            var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
 
-        return services;
+            if (kafkaSettings != null && !string.IsNullOrEmpty(kafkaSettings.BootstrapServers))
+            {
+                var clientConfig = new ClientConfig { BootstrapServers = kafkaSettings.BootstrapServers };
+
+                hcBuilder.AddKafka(new ProducerConfig(clientConfig),
+                               name: "kafka",
+                               tags: new string[] { "kafka", "services" },
+                               timeout: new TimeSpan(0, 0, 15)
+                               );
+
+            }
+        }
+
+        return hcBuilder;
     }
+
+
 }

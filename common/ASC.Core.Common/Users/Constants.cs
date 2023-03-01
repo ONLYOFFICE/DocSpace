@@ -87,12 +87,19 @@ public sealed class Constants
         Name = AuthConst.DocSpaceAdmin.Name,
     };
 
+    public static readonly GroupInfo GroupCollaborator = new(SysGroupCategoryId)
+    {
+        ID = AuthConst.Collaborator.ID, 
+        Name = AuthConst.Collaborator.Name,
+    };
+
     public static readonly GroupInfo[] BuildinGroups = new[]
     {
             GroupEveryone,
             GroupUser,
             GroupManager,
             GroupAdmin,
+            GroupCollaborator,
         };
 
     public static readonly UserInfo LostUser = new UserInfo

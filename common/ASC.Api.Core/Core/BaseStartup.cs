@@ -45,6 +45,7 @@ public abstract class BaseStartup
     protected DIHelper DIHelper { get; }
     protected bool LoadProducts { get; set; } = true;
     protected bool LoadConsumers { get; } = true;
+    protected bool WebhooksEnabled { get; set; }
 
     public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
@@ -63,25 +64,26 @@ public abstract class BaseStartup
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddCustomHealthCheck(_configuration);
+        services.AddCustomHealthCheck(_configuration);        
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
 
         services.AddScoped<EFLoggerFactory>();
-        services.AddBaseDbContextPool<AccountLinkContext>();
-        services.AddBaseDbContextPool<CoreDbContext>();
-        services.AddBaseDbContextPool<TenantDbContext>();
-        services.AddBaseDbContextPool<UserDbContext>();
-        services.AddBaseDbContextPool<TelegramDbContext>();
-        services.AddBaseDbContextPool<FirebaseDbContext>();
-        services.AddBaseDbContextPool<CustomDbContext>();
-        services.AddBaseDbContextPool<WebstudioDbContext>();
-        services.AddBaseDbContextPool<InstanceRegistrationContext>();
-        services.AddBaseDbContextPool<IntegrationEventLogContext>();
-        services.AddBaseDbContextPool<FeedDbContext>();
-        services.AddBaseDbContextPool<MessagesContext>();
-        services.AddBaseDbContextPool<WebhooksDbContext>();
+
+        services.AddBaseDbContextPool<AccountLinkContext>()
+                .AddBaseDbContextPool<CoreDbContext>()
+                .AddBaseDbContextPool<TenantDbContext>()
+                .AddBaseDbContextPool<UserDbContext>()
+                .AddBaseDbContextPool<TelegramDbContext>()
+                .AddBaseDbContextPool<FirebaseDbContext>()
+                .AddBaseDbContextPool<CustomDbContext>()
+                .AddBaseDbContextPool<WebstudioDbContext>()
+                .AddBaseDbContextPool<InstanceRegistrationContext>()
+                .AddBaseDbContextPool<IntegrationEventLogContext>()
+                .AddBaseDbContextPool<FeedDbContext>()
+                .AddBaseDbContextPool<MessagesContext>()
+                .AddBaseDbContextPool<WebhooksDbContext>();
 
         if (AddAndUseSession)
         {
@@ -113,6 +115,7 @@ public abstract class BaseStartup
 
         DIHelper.AddControllers();
         DIHelper.TryAdd<CultureMiddleware>();
+        DIHelper.TryAdd<LoggerMiddleware>();
         DIHelper.TryAdd<IpSecurityFilter>();
         DIHelper.TryAdd<PaymentFilter>();
         DIHelper.TryAdd<ProductSecurityFilter>();
@@ -290,18 +293,35 @@ public abstract class BaseStartup
 
         app.UseCultureMiddleware();
 
-        app.UseEndpoints(endpoints =>
+        app.UseLoggerMiddleware();
+
+        app.UseEndpoints(async endpoints =>
         {
-            endpoints.MapCustom();
+            await endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices);
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
+
+            endpoints.MapHealthChecks("/ready", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("services")
+            });
+
             endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("self")
+            });
+        });
+
+        app.Map("/switch", appBuilder =>
+        {
+            appBuilder.Run(async context =>
+            {
+                CustomHealthCheck.Running = !CustomHealthCheck.Running;
+                await context.Response.WriteAsync($"{Environment.MachineName} running {CustomHealthCheck.Running}");
             });
         });
     }

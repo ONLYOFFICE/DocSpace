@@ -148,10 +148,24 @@ class SectionHeaderContent extends React.Component {
 
   createFolder = () => this.onCreate();
 
-  uploadToFolder = () => console.log("Upload To Folder click");
+  // TODO: add privacy room check for files
+  onUploadAction = (type) => {
+    const element =
+      type === "file"
+        ? document.getElementById("customFileInput")
+        : document.getElementById("customFolderInput");
+
+    element?.click();
+  };
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins } = this.props;
+    const {
+      t,
+      isPrivacyFolder,
+      isRoomsFolder,
+      enablePlugins,
+      security,
+    } = this.props;
 
     const options = isRoomsFolder
       ? [
@@ -222,14 +236,19 @@ class SectionHeaderContent extends React.Component {
             onClick: this.createFolder,
             icon: CatalogFolderReactSvgUrl,
           },
-          /*{ key: "separator", isSeparator: true },
-      {
-        key: "upload-to-folder",
-        label: t("UploadToFolder"),
-        onClick: this.uploadToFolder,
-        disabled: true,
-        icon: ActionsUploadReactSvgUrl,
-      },*/
+          { key: "separator", isSeparator: true },
+          {
+            key: "upload-files",
+            label: t("Article:UploadFiles"),
+            onClick: () => this.onUploadAction("file"),
+            icon: ActionsUploadReactSvgUrl,
+          },
+          {
+            key: "upload-folder",
+            label: t("Article:UploadFolder"),
+            onClick: () => this.onUploadAction("folder"),
+            icon: ActionsUploadReactSvgUrl,
+          },
         ];
 
     if (enablePlugins) {
@@ -392,6 +411,8 @@ class SectionHeaderContent extends React.Component {
 
       canRestoreAll,
       canDeleteAll,
+
+      security,
     } = this.props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -480,7 +501,7 @@ class SectionHeaderContent extends React.Component {
         label: t("EditRoom"),
         icon: SettingsReactSvgUrl,
         onClick: () => onClickEditRoom(selectedFolder),
-        disabled: !isRoom,
+        disabled: !isRoom || !security?.EditRoom,
       },
       {
         id: "header_option_invite-users-to-room",
@@ -488,7 +509,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
         onClick: () => onClickInviteUsers(selectedFolder.id),
-        disabled: !isRoom,
+        disabled: !isRoom || !security?.EditAccess,
       },
       {
         id: "header_option_room-info",
@@ -510,7 +531,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Archived"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e),
-        disabled: !isRoom,
+        disabled: !isRoom || !security?.Move,
         "data-action": "archive",
         action: "archive",
       },
@@ -527,7 +548,7 @@ class SectionHeaderContent extends React.Component {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: isDisabled,
+        disabled: isDisabled || !security?.MoveTo,
         icon: MoveReactSvgUrl,
       },
       {
@@ -535,7 +556,7 @@ class SectionHeaderContent extends React.Component {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: isDisabled,
+        disabled: isDisabled || !security?.CopyTo,
         icon: CopyReactSvgUrl,
       },
       {
@@ -543,21 +564,21 @@ class SectionHeaderContent extends React.Component {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
-        disabled: isDisabled,
+        disabled: isDisabled || !security?.Rename,
         icon: RenameReactSvgUrl,
       },
       {
         id: "header_option_separator-3",
         key: "separator-3",
         isSeparator: true,
-        disabled: isDisabled,
+        disabled: isDisabled || !security?.Delete,
       },
       {
         id: "header_option_delete",
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: isDisabled,
+        disabled: isDisabled || !security?.Delete,
         icon: CatalogTrashReactSvgUrl,
       },
     ];
@@ -661,7 +682,7 @@ class SectionHeaderContent extends React.Component {
       isInfoPanelVisible,
       isRootFolder,
       title,
-      canCreate,
+
       isDesktop,
       isTabletView,
       personal,
@@ -676,11 +697,12 @@ class SectionHeaderContent extends React.Component {
       showText,
       isRoomsFolder,
       isEmptyPage,
-      canCreateFiles,
+
       isEmptyArchive,
-      isVisitor,
+
       isRoom,
       isGroupMenuBlocked,
+      security,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -716,11 +738,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={
-                      canCreate &&
-                      !isVisitor &&
-                      (canCreateFiles || isRoomsFolder)
-                    }
+                    canCreate={security?.Create}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -777,12 +795,12 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-    accessRightsStore,
+
     contextOptionsStore,
   }) => {
     const {
       setSelected,
-      canCreate,
+
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -846,6 +864,7 @@ export default inject(
       pathParts,
       navigationPath,
       rootFolderType,
+      security,
     } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
@@ -863,8 +882,6 @@ export default inject(
       onCopyLink,
     } = contextOptionsStore;
 
-    const { canCreateFiles } = accessRightsStore;
-
     const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
 
     const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
@@ -874,7 +891,7 @@ export default inject(
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-      isVisitor: auth.userStore.user.isVisitor,
+
       isRootFolder: pathParts?.length === 1,
       isPersonalRoom,
       title,
@@ -882,8 +899,7 @@ export default inject(
       currentFolderId: id,
       pathParts: pathParts,
       navigationPath: navigationPath,
-      canCreate,
-      canCreateFiles,
+
       setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,
@@ -898,6 +914,7 @@ export default inject(
       getFolderInfo,
 
       setSelected,
+      security,
 
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -962,6 +979,7 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
+    "Article",
   ])(
     withLoader(withRouter(observer(SectionHeaderContent)))(
       <Loaders.SectionHeader />
