@@ -78,11 +78,17 @@ const FilterBlockItem = ({
       item.selectedKey === "me" ||
       item.selectedKey === "other" ? (
       <StyledFilterBlockItemSelector
-        style={!item?.withAddAuthor ? { height: "0", width: "0" } : {}}
+        style={
+          item?.displaySelectorType === "button"
+            ? {}
+            : { height: "0", width: "0" }
+        }
         key={item.key}
         onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
       >
-        {item?.withAddAuthor && <SelectorAddButton id="filter_add-author" />}
+        {item?.displaySelectorType === "button" && (
+          <SelectorAddButton id="filter_add-author" />
+        )}
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {item.label}
         </StyledFilterBlockItemSelectorText>
@@ -224,7 +230,7 @@ const FilterBlockItem = ({
         withoutSeparator={withoutSeparator}
       >
         {groupItem.map((item) => {
-          if (item.isSelector === true) return getSelectorItem(item);
+          if (item.displaySelectorType) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);
           if (item.withOptions === true) return getWithOptionsItem(item);
           if (item.isCheckbox === true) return getCheckboxItem(item);

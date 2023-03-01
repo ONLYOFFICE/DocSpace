@@ -823,8 +823,7 @@ const SectionFilterContent = ({
         id: "filter_author-user",
         key: FilterKeys.user,
         group: FilterGroups.roomFilterSubject,
-        withAddAuthor: false,
-        isSelector: true,
+        displaySelectorType: "link",
       },
     ];
 
@@ -1010,8 +1009,7 @@ const SectionFilterContent = ({
           id: "filter_author-user",
           key: FilterKeys.user,
           group: FilterGroups.filterAuthor,
-          withAddAuthor: false,
-          isSelector: true,
+          displaySelectorType: "link",
         },
       ];
 
