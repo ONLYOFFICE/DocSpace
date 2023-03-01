@@ -90,6 +90,8 @@ const User = ({
         ? "admin"
         : option.key === "roomAdmin"
         ? "manager"
+        : option.key === "collaborator"
+        ? "collaborator"
         : "user";
 
     const successCallback = () => {
@@ -98,7 +100,13 @@ const User = ({
 
     setIsLoading(true);
 
-    if (!changeUserType(userType, [user], successCallback, abortCallback)) {
+    const needChangeUserType =
+      ((user.isVisitor || user.isCollaborator) && userType === "manager") ||
+      (user.isVisitor && userType === "collaborator");
+
+    if (needChangeUserType) {
+      changeUserType(userType, [user], successCallback, abortCallback);
+    } else {
       updateRole(option);
     }
   };

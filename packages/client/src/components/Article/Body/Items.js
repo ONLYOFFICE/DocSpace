@@ -170,6 +170,8 @@ const Items = ({
 
   onHide,
   firstLoad,
+  deleteAction,
+  startDrag,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -264,7 +266,12 @@ const Items = ({
         return false;
       }
 
-      if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      if (
+        !draggableItems ||
+        draggableItems.find(
+          (x) => x.id === item.id && x.isFolder === item.isFolder
+        )
+      )
         return false;
 
       if (
@@ -279,7 +286,8 @@ const Items = ({
           (item.pathParts &&
             (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
           item.rootFolderType === FolderType.USER ||
-          item.rootFolderType === FolderType.COMMON
+          item.rootFolderType === FolderType.COMMON ||
+          (item.rootFolderType === FolderType.TRASH && startDrag)
         ) {
           return true;
         }
@@ -306,6 +314,18 @@ const Items = ({
     },
     [moveDragItems, t]
   );
+
+  const onRemove = React.useCallback(() => {
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      FileRemoved: t("Files:FileRemoved"),
+      FolderRemoved: t("Files:FolderRemoved"),
+    };
+
+    deleteAction(translations);
+  }, [deleteAction]);
 
   const onEmptyTrashAction = () => {
     isMobile && onHide();
@@ -336,7 +356,7 @@ const Items = ({
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
-            onMoveTo={onMoveTo}
+            onMoveTo={isTrash ? onRemove : onMoveTo}
             onBadgeClick={isTrash ? onEmptyTrashAction : onBadgeClick}
             showDragItems={showDragItems}
             showBadge={showBadge}
@@ -403,9 +423,9 @@ export default inject(
       selection,
       dragging,
       setDragging,
-      setStartDrag,
       trashIsEmpty,
       firstLoad,
+      startDrag,
     } = filesStore;
 
     const { startUpload } = uploadDataStore;
@@ -419,7 +439,11 @@ export default inject(
     } = treeFoldersStore;
 
     const { id, pathParts, rootFolderType } = selectedFolderStore;
-    const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
+    const {
+      moveDragItems,
+      uploadEmptyFolders,
+      deleteAction,
+    } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
@@ -438,14 +462,15 @@ export default inject(
       draggableItems: dragging ? selection : null,
       dragging,
       setDragging,
-      setStartDrag,
       moveDragItems,
+      deleteAction,
       startUpload,
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
       trashIsEmpty,
       rootFolderType,
       firstLoad,
+      startDrag,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));
