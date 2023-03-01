@@ -186,7 +186,7 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type, 
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
@@ -272,10 +272,10 @@ public class UserController : PeopleControllerBase
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
         UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
-        
+
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type, 
+
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && options is { IsCorrect: true }, true, true, byEmail);
 
         await UpdateDepartments(inDto.Department, user);
@@ -308,7 +308,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPost("invite")]
-    public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
+    public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
         foreach (var invite in inDto.Invitations)
         {
@@ -324,12 +324,16 @@ public class UserController : PeopleControllerBase
             _logger.Debug(link);
         }
 
+        var result = new List<EmployeeDto>();
+
         var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
 
         foreach (var user in users)
         {
-            yield return await _employeeDtoHelper.Get(user);
+            result.Add(await _employeeDtoHelper.Get(user));
         }
+
+        return result;
     }
 
     [HttpPut("{userid}/password")]
@@ -1097,16 +1101,16 @@ public class UserController : PeopleControllerBase
                 updatedUsers.Add(user);
             }
         }
-        
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)), 
+
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)),
             updatedUsers.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
-        
+
         foreach (var user in users)
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
-    
+
     [HttpGet("recalculatequota")]
     public void RecalculateQuota()
     {
@@ -1323,7 +1327,7 @@ public class UserController : PeopleControllerBase
                     includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
                     break;
                 case EmployeeType.RoomAdmin:
-                    excludeGroups.Add(Constants.GroupUser.ID); 
+                    excludeGroups.Add(Constants.GroupUser.ID);
                     excludeGroups.Add(Constants.GroupAdmin.ID);
                     excludeGroups.Add(Constants.GroupCollaborator.ID);
                     break;
