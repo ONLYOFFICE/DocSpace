@@ -90,6 +90,8 @@ const User = ({
         ? "admin"
         : option.key === "roomAdmin"
         ? "manager"
+        : option.key === "collaborator"
+        ? "collaborator"
         : "user";
 
     const successCallback = () => {
@@ -98,7 +100,13 @@ const User = ({
 
     setIsLoading(true);
 
-    if (!changeUserType(userType, [user], successCallback, abortCallback)) {
+    const needChangeUserType =
+      ((user.isVisitor || user.isCollaborator) && userType === "manager") ||
+      (user.isVisitor && userType === "collaborator");
+
+    if (needChangeUserType) {
+      changeUserType(userType, [user], successCallback, abortCallback);
+    } else {
       updateRole(option);
     }
   };
@@ -110,7 +118,7 @@ const User = ({
   const withTooltip = user.isOwner || user.isAdmin;
 
   const tooltipContent = `${
-    user.isAdmin ? t("Common:DocSpaceAdmin") : t("Common:Owner")
+    user.isOwner ? t("Common:DocSpaceOwner") : t("Common:DocSpaceAdmin")
   }. ${t("Common:HasFullAccess")}`;
 
   return (

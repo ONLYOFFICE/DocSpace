@@ -174,9 +174,6 @@ const SectionFilterContent = ({
   isPersonalRoom,
   setCurrentRoomsFilter,
   providers,
-  searchTitleOpenLocation,
-  isLoadedLocationFiles,
-  setIsLoadedSearchFiles,
   isLoadedEmptyPage,
   isEmptyPage,
   clearSearch,
@@ -195,12 +192,6 @@ const SectionFilterContent = ({
       setIsLoadedFilter(true);
     }
   }, [isLoadedEmptyPage, isEmptyPage]);
-
-  React.useEffect(() => {
-    if (!(searchTitleOpenLocation && isLoadedLocationFiles)) return;
-
-    onSearch(searchTitleOpenLocation);
-  }, [searchTitleOpenLocation, isLoadedLocationFiles, onSearch]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -316,7 +307,6 @@ const SectionFilterContent = ({
           setIsLoading(false)
         );
       } else {
-        setIsLoadedSearchFiles(false);
         const newFilter = filter.clone();
         newFilter.page = 0;
         newFilter.search = data;
@@ -325,7 +315,6 @@ const SectionFilterContent = ({
 
         fetchFiles(selectedFolderId, newFilter).finally(() => {
           setIsLoading(false);
-          setIsLoadedSearchFiles(true);
         });
       }
     },
@@ -337,7 +326,6 @@ const SectionFilterContent = ({
       selectedFolderId,
       filter,
       roomsFilter,
-      setIsLoadedSearchFiles,
     ]
   );
 
@@ -394,21 +382,14 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return searchTitleOpenLocation
-      ? searchTitleOpenLocation
-      : isRooms
+    return isRooms
       ? roomsFilter.filterValue
         ? roomsFilter.filterValue
         : ""
       : filter.search
       ? filter.search
       : "";
-  }, [
-    isRooms,
-    roomsFilter.filterValue,
-    filter.search,
-    searchTitleOpenLocation,
-  ]);
+  }, [isRooms, roomsFilter.filterValue, filter.search]);
 
   const getSelectedSortData = React.useCallback(() => {
     const currentFilter = isRooms ? roomsFilter : filter;
@@ -1506,13 +1487,6 @@ export default inject(
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-    const {
-      searchTitleOpenLocation,
-      setSearchTitleOpenLocation,
-      isLoadedLocationFiles,
-      setIsLoadedSearchFiles,
-    } = filesActionsStore;
-
     return {
       user,
       userId: user.id,
@@ -1539,11 +1513,6 @@ export default inject(
       infoPanelVisible,
       setCurrentRoomsFilter,
       providers,
-
-      searchTitleOpenLocation,
-      setSearchTitleOpenLocation,
-      isLoadedLocationFiles,
-      setIsLoadedSearchFiles,
 
       isLoadedEmptyPage,
       isEmptyPage,

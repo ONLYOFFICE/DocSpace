@@ -67,7 +67,9 @@ export default inject(({ uploadDataStore }, { item }) => {
   const loadingFile = !file || !file.uniqueId ? null : file;
 
   const currentFileUploadProgress =
-    file && loadingFile.uniqueId === item.uniqueId ? loadingFile.percent : null;
+    file && loadingFile?.uniqueId === item?.uniqueId
+      ? loadingFile.percent
+      : null;
 
   return {
     percent: isParallel

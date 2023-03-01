@@ -171,6 +171,7 @@ const Items = ({
   onHide,
   firstLoad,
   deleteAction,
+  startDrag,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -265,7 +266,12 @@ const Items = ({
         return false;
       }
 
-      if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+      if (
+        !draggableItems ||
+        draggableItems.find(
+          (x) => x.id === item.id && x.isFolder === item.isFolder
+        )
+      )
         return false;
 
       if (
@@ -281,7 +287,7 @@ const Items = ({
             (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
           item.rootFolderType === FolderType.USER ||
           item.rootFolderType === FolderType.COMMON ||
-          item.rootFolderType === FolderType.TRASH
+          (item.rootFolderType === FolderType.TRASH && startDrag)
         ) {
           return true;
         }
@@ -417,9 +423,9 @@ export default inject(
       selection,
       dragging,
       setDragging,
-      setStartDrag,
       trashIsEmpty,
       firstLoad,
+      startDrag,
     } = filesStore;
 
     const { startUpload } = uploadDataStore;
@@ -456,7 +462,6 @@ export default inject(
       draggableItems: dragging ? selection : null,
       dragging,
       setDragging,
-      setStartDrag,
       moveDragItems,
       deleteAction,
       startUpload,
@@ -465,6 +470,7 @@ export default inject(
       trashIsEmpty,
       rootFolderType,
       firstLoad,
+      startDrag,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));
