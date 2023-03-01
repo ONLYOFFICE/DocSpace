@@ -45,13 +45,23 @@ const Textarea = ({
 
   const lineHeight = 1.5;
   const padding = 7;
+  const numberOfLines = modifiedValue.split("\n").length;
   const textareaHeight = isJSONField
-    ? modifiedValue.split("\n").length * fontSize * lineHeight + padding + 4
+    ? numberOfLines * fontSize * lineHeight + padding + 4
     : heightTextArea;
+
+  const defaultPaddingLeft = 42;
+  const numberOfDigits =
+    String(numberOfLines).length - 2 > 0 ? String(numberOfLines).length : 0;
+  const paddingLeft = isJSONField
+    ? fontSize < 13
+      ? `${defaultPaddingLeft + numberOfDigits * 6}px`
+      : `${((defaultPaddingLeft + numberOfDigits * 4) * fontSize) / 13}px`
+    : "8px";
 
   const numerationValue = [];
 
-  for (let i = 1; i <= modifiedValue.split("\n").length; i++) {
+  for (let i = 1; i <= numberOfLines; i++) {
     numerationValue.push(i);
   }
 
@@ -107,6 +117,7 @@ const Textarea = ({
 
         <StyledTextarea
           id={id}
+          paddingLeft={paddingLeft}
           isJSONField={isJSONField}
           placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}

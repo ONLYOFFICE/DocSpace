@@ -51,6 +51,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   autoFocus: props.autoFocus,
 }))`
   ${commonInputStyle};
+  white-space: pre;
 
   width: 100%;
   height: fit-content;
@@ -59,12 +60,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   resize: none;
   overflow: hidden;
   padding: 5px 8px 2px;
-  padding-left: ${(props) =>
-    props.isJSONField
-      ? props.fontSize < 13
-        ? "42px"
-        : `${(42 * props.fontSize) / 13}px`
-      : "8px"};
+  padding-left: ${(props) => props.paddingLeft};
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
