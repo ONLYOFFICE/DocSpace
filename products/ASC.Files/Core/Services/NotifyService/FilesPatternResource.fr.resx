@@ -68,13 +68,6 @@ Ce courriel est pour vous informer que tous les signataires ont signé "$Documen
 
 Pour en savoir plus, connectez-vous à votre compte.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" vous a mentionné dans le commentaire du document
-
-Ce courriel vous est envoyé parce que vous avez été mentionné par "$__AuthorName":"$__AuthorUrl" dans le commentaire du document "$DocumentTitle":"$DocumentURL" :
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Diffusion terminée
 

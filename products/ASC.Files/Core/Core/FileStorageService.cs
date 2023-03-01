@@ -2909,7 +2909,7 @@ public class FileStorageService<T> //: IFileStorageService
             message = message.Substring(0, maxMessageLength) + "...";
         }
 
-        _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
+        _ = _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
 
         return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
     }

@@ -64,13 +64,6 @@
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" heeft u vermeld de commentaar van het document
-
-Dit is een mailboodschap om u te verwittigen dat u vermeld bent door "$__AuthorName":"$__AuthorUrl" in de commentaar van het "$DocumentTitle":"$DocumentURL" document:
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Mailing voltooid
 

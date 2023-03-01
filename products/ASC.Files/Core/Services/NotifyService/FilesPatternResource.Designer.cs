@@ -83,9 +83,9 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1. &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; mentioned you in the document comment
+        ///   Looks up a localized string similar to h1. $__AuthorName mentioned you in the document comment
         ///
-        ///This is a mail message to notify that you have been mentioned by &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; document:
+        ///$__AuthorName mentioned you in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; documen in the room &quot;$RoomTitle&quot;:&quot;$RoomURL&quot;:
         ///
         ///$Message.
         /// </summary>

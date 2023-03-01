@@ -68,13 +68,6 @@ Todas las personas han firmado el documento "$DocumentTitle":"$DocumentURL".</va
 
 Para recibir una información adicional entre en su cuenta de DocuSign.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" le ha mencionado en el comentario del documento
-
-Este es un mensaje de correo electrónico para notificarle que usted ha sido mencionado por "$__AuthorName":"$__AuthorUrl" en el comentario del documento "$DocumentTitle":"$DocumentURL":
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Envío está completo
 

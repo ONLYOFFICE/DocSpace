@@ -69,9 +69,9 @@ This is an email notification to inform you that all signers completed "$Documen
 Sign in to your DocuSign account for more information.</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" mentioned you in the document comment
+    <value>h1. $__AuthorName mentioned you in the document comment
 
-This is a mail message to notify that you have been mentioned by "$__AuthorName":"$__AuthorUrl" in the comment to the "$DocumentTitle":"$DocumentURL" document:
+$__AuthorName mentioned you in the comment to the "$DocumentTitle":"$DocumentURL" documen in the room "$RoomTitle":"$RoomURL":
 
 $Message</value>
   </data>

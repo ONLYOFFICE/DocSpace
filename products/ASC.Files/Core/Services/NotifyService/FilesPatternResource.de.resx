@@ -68,13 +68,6 @@ Durch diese E-Mail-Benachrichtigung werden Sie darüber informiert, dass alle Un
 
 Für weitere Informationen melden Sie sich bei Ihrem DocuSign Konto an.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" hat Sie im Kommentar zum Dokument erwähnt.
-
-Diese Nachricht informiert Sie, dass "$__AuthorName":"$__AuthorUrl" Sie im Kommentar zum Dokument "$DocumentTitle":"$DocumentURL" erwähnt hat:
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. E-Mailversand ist abgeschlossen
 

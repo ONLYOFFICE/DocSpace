@@ -96,7 +96,7 @@ public class WebImageSupplier
 
             folderName = itemFolder ?? folderName;
         }
-        return folderName.TrimStart('~');
+        return "static/" + folderName.TrimStart('~');
     }
 
     private static string GetAppThemeVirtualPath(IWebItem webitem)

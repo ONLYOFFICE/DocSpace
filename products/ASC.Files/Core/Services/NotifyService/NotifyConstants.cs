@@ -51,6 +51,8 @@ public static class NotifyConstants
     public static readonly string TagAccessRights = "AccessRights";
     public static readonly string TagMessage = "Message";
     public static readonly string TagMailsCount = "MailsCount";
+    public static readonly string RoomTitle = "RoomTitle";
+    public static readonly string RoomUrl = "RoomURL";
 
     #endregion
 }
