@@ -64,7 +64,7 @@ let documentserverUrl =
   typeof window !== "undefined" && window?.location?.origin;
 let userAccessRights = {};
 let isArchiveFolderRoot = true;
-let users = [];
+let usersInRoom = [];
 function Editor({
   config,
   //personal,
@@ -508,14 +508,14 @@ function Editor({
       const res = await getSharedUsers(fileInfo.id);
 
       res.map((item) => {
-        return users.push({
+        return usersInRoom.push({
           email: item.email,
           name: item.name,
         });
       });
 
       docEditor.setUsers({
-        users,
+        users: usersInRoom,
       });
     } catch (e) {
       console.error(e);
@@ -530,10 +530,10 @@ function Editor({
     try {
       await sendEditorNotify(fileInfo.id, actionData, emails, comment);
 
-      if (users.length === 0) return;
+      if (usersInRoom.length === 0) return;
 
       const usersNotFound = [...emails].filter((row) =>
-        users.every((value) => {
+        usersInRoom.every((value) => {
           return row !== value.email;
         })
       );
