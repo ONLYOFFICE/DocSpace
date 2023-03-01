@@ -5,7 +5,7 @@ export const Days = ({
   observedDate,
   setObservedDate,
   setSelectedScene,
-  setSelectedDate,
+  handleDateChange,
   selectedDate,
   minDate,
   maxDate,
@@ -21,7 +21,7 @@ export const Days = ({
       />
       <DaysBody
         observedDate={observedDate}
-        setSelectedDate={setSelectedDate}
+        handleDateChange={handleDateChange}
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}

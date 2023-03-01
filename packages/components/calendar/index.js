@@ -17,8 +17,14 @@ const Calendar = ({
   className,
   style,
   initialDate,
+  onChange,
 }) => {
   moment.locale(locale);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    onChange(date);
+  };
 
   const [observedDate, setObservedDate] = useState(moment());
   const [selectedScene, setSelectedScene] = useState(0);
@@ -34,7 +40,7 @@ const Calendar = ({
         "Initial date is out of min/max dates boundaries. Initial date will be set as mid value between min and max dates"
       );
     }
-    setSelectedDate(initialDate);
+    handleDateChange(initialDate);
     setObservedDate(initialDate);
   }, []);
 
@@ -51,7 +57,7 @@ const Calendar = ({
           setObservedDate={setObservedDate}
           setSelectedScene={setSelectedScene}
           selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
+          handleDateChange={handleDateChange}
           minDate={minDate}
           maxDate={maxDate}
         />
@@ -88,6 +94,8 @@ Calendar.propTypes = {
   /** Value of selected date (moment object)*/
   selectedDate: propTypes.object,
   /** Allow you to handle changing events of component */
+  onChange: propTypes.func,
+  /** Changes selected date state */
   setSelectedDate: propTypes.func,
   /** Specifies the minimum selectable date */
   minDate: propTypes.object,
@@ -106,6 +114,9 @@ Calendar.defaultProps = {
   id: "",
   className: "",
   initialDate: new Date(),
+  onChange: (date) => {
+    console.log(date);
+  },
 };
 
 export default Calendar;

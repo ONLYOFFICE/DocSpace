@@ -7,18 +7,18 @@ import {
   SecondaryDateItem,
 } from "../styled-components";
 
-const onDateClick = (setSelectedDate, newDate) => {
-  setSelectedDate(moment(newDate));
+const onDateClick = (handleDateChange, newDate) => {
+  handleDateChange(moment(newDate));
 };
 
 export const getDayElements = (
   observedDate,
   selectedDate,
-  setSelectedDate,
+  handleDateChange,
   minDate,
   maxDate
 ) => {
-  const onClick = (newDate) => onDateClick(setSelectedDate, newDate);
+  const onClick = (newDate) => onDateClick(handleDateChange, newDate);
 
   const dateFormat = "YYYY-MM-D";
 

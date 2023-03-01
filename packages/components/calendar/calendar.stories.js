@@ -69,7 +69,5 @@ Default.args = {
   locale: "en",
   maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
   minDate: new Date("1970/01/01"),
-  id: "",
-  className: "",
   initialDate: new Date(),
 };
