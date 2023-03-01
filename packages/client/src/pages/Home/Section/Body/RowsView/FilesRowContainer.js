@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { inject, observer } from "mobx-react";
 import RowContainer from "@docspace/components/row-container";
 import SimpleFilesRow from "./SimpleFilesRow";
@@ -83,7 +83,7 @@ const FilesRowContainer = ({
   isRooms,
   isTrashFolder,
   withPaging,
-  setUploadedFileIdWithVersion,
+  highlightFile,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -100,6 +100,32 @@ const FilesRowContainer = ({
     }
   }, [sectionWidth]);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => (
+      <SimpleFilesRow
+        id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+        key={
+          item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+        }
+        item={item}
+        itemIndex={index}
+        sectionWidth={sectionWidth}
+        isRooms={isRooms}
+        isTrashFolder={isTrashFolder}
+        isHighlight={
+          highlightFile.id == item.id && highlightFile.isExst === !item.fileExst
+        }
+      />
+    ));
+  }, [
+    filesList,
+    sectionWidth,
+    isRooms,
+    highlightFile.id,
+    highlightFile.isExst,
+    isTrashFolder,
+  ]);
+
   return (
     <StyledRowContainer
       className="files-row-container"
@@ -111,18 +137,7 @@ const FilesRowContainer = ({
       useReactWindow={!withPaging}
       itemHeight={59}
     >
-      {filesList.map((item, index) => (
-        <SimpleFilesRow
-          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-          key={`${item.id}_${index}`}
-          item={item}
-          itemIndex={index}
-          sectionWidth={sectionWidth}
-          isRooms={isRooms}
-          isTrashFolder={isTrashFolder}
-          setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
-        />
-      ))}
+      {filesListNode}
     </StyledRowContainer>
   );
 };
@@ -136,7 +151,7 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     fetchMoreFiles,
     hasMoreFiles,
     roomsFilterTotal,
-    setUploadedFileIdWithVersion,
+    highlightFile,
   } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
@@ -155,6 +170,6 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     isRooms,
     isTrashFolder,
     withPaging,
-    setUploadedFileIdWithVersion,
+    highlightFile,
   };
 })(observer(FilesRowContainer));
