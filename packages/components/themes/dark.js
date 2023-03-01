@@ -1709,7 +1709,8 @@ const Dark = {
 
   calendar: {
     color: "#FFFFFF",
-    disabledColor: "#858585",
+    disabledColor: "#474747",
+    pastColor: "#858585",
     onHoverBackground: "#3D3D3D",
     titleColor: "#ADADAD",
     outlineColor: "#474747",

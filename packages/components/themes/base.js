@@ -1717,7 +1717,8 @@ const Base = {
 
   calendar: {
     color: "#333333",
-    disabledColor: "#A3A9AE",
+    disabledColor: "#DFE2E3",
+    pastColor: "#A3A9AE",
     onHoverBackground: "#f3f4f4",
     titleColor: "#555F65",
     outlineColor: "#eceef1",
