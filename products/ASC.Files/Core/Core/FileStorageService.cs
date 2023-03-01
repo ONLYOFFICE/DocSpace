@@ -2774,22 +2774,21 @@ public class FileStorageService<T> //: IFileStorageService
         var (roomId, _) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
 
         var access = await _fileSharing.GetSharedInfoAsync(Enumerable.Empty<int>(), new[] { roomId });
-        var usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Access != FileShare.Restrict)
-                                      .Select(aceWrapper => aceWrapper.Id)
-                                      .ToList();
+        var usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup
+                                        && aceWrapper.Access != FileShare.Restrict)
+                                      .Select(aceWrapper => aceWrapper.Id);
 
-        var users = _userManager.GetUsersByGroup(Constants.GroupEveryone.ID)
-                               .Where(user => !user.Id.Equals(_authContext.CurrentAccount.ID)
-                                              && !user.Id.Equals(Constants.LostUser.Id))
-                               .Select(user => new MentionWrapper(user, _displayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.Id) })
-                               .ToList();
+        var users = usersIdWithAccess
+            .Where(id => !id.Equals(_authContext.CurrentAccount.ID))
+            .Select(_userManager.GetUsers);
 
-        users = users
-            .OrderBy(user => !user.HasAccess)
-            .ThenBy(user => user.User, UserInfoComparer.Default)
+        var result = users
+            .Where(u => u.Status != EmployeeStatus.Terminated)
+            .Select(u => new MentionWrapper(u, _displayUserSettingsHelper))
+            .OrderBy(u => u.User, UserInfoComparer.Default)
             .ToList();
 
-        return new List<MentionWrapper>(users);
+        return result;
     }
 
     public async Task<Folder<T>> SetPinnedStatusAsync(T folderId, bool pin)
