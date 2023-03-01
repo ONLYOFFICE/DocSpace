@@ -39,6 +39,8 @@ const HistoryBlock = ({
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
 
+  const isSelectedFile = !selection.isFolder && !selection.isRoom;
+
   return (
     <StyledHistoryBlock
       withBottomDivider={!isLastEntity}
@@ -75,7 +77,7 @@ const HistoryBlock = ({
           selectionParentRoom={selectionParentRoom}
         />
 
-        {isItemAction && (
+        {isItemAction && !isSelectedFile && (
           <HistoryBlockItemList
             t={t}
             items={[json, ...groupedFeeds]}
