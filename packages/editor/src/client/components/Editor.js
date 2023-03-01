@@ -539,7 +539,11 @@ function Editor({
       );
 
       usersNotFound.length > 0 &&
-        docEditor.showMessage(`Users ${usersNotFound} not  found`);
+        docEditor.showMessage(
+          t("UsersWithoutAccess", {
+            users: usersNotFound,
+          })
+        );
     } catch (e) {
       toastr.error(e);
     }
