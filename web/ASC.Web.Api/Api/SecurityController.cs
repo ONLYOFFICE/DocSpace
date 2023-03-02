@@ -29,6 +29,10 @@ using LoginEventDto = ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto;
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Security API.
+/// </summary>
+/// <name>security</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -72,6 +76,16 @@ public class SecurityController : ControllerBase
         _apiContext = apiContext;
     }
 
+    /// <summary>
+    /// Returns all the latest user login activity including successful logins and failed attempts with an indication of reasons.
+    /// </summary>
+    /// <short>
+    /// Get login history
+    /// </short>
+    /// <category>Login history</category>
+    /// <returns>List of login events</returns>
+    /// <path>api/2.0/security/audit/login/last</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("audit/login/last")]
     public IEnumerable<LoginEventDto> GetLastLoginEvents()
     {
@@ -82,6 +96,16 @@ public class SecurityController : ControllerBase
         return _loginEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new LoginEventDto(x));
     }
 
+    /// <summary>
+    /// Returns a list of the latest changes (creation, modification, deletion, etc.) made by users to the entities (tasks, opportunities, files, etc.) on the portal.
+    /// </summary>
+    /// <short>
+    /// Get audit trail data
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <returns>List of audit trail data</returns>
+    /// <path>api/2.0/security/audit/events/last</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("audit/events/last")]
     public IEnumerable<AuditEventDto> GetLastAuditEvents()
     {
@@ -92,6 +116,20 @@ public class SecurityController : ControllerBase
         return _auditEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new AuditEventDto(x, _auditActionMapper));
     }
 
+    /// <summary>
+    /// Returns a list of the login events by the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get filtered login events
+    /// </short>
+    /// <category>Login history</category>
+    /// <param name="userId">User ID</param>
+    /// <param name="action">Action</param>
+    /// <param name="from">Start date</param>
+    /// <param name="to">End date</param>
+    /// <returns>List of filtered login events</returns>
+    /// <path>api/2.0/security/audit/login/filter</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("/audit/login/filter")]
     public IEnumerable<LoginEventDto> GetLoginEventsByFilter(Guid userId,
     MessageAction action,
@@ -118,6 +156,25 @@ public class SecurityController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a list of the audit events by the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get filtered audit trail data
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <param name="userId">User ID</param>
+    /// <param name="productType">Product</param>
+    /// <param name="moduleType">Module</param>
+    /// <param name="actionType">Action type</param>
+    /// <param name="action">Action</param>
+    /// <param name="entryType">Entry</param>
+    /// <param name="target">Target</param>
+    /// <param name="from">Start date</param>
+    /// <param name="to">End date</param>
+    /// <returns>List of filtered audit trail data</returns>
+    /// <path>api/2.0/security/audit/events/filter</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("/audit/events/filter")]
     public IEnumerable<AuditEventDto> GetAuditEventsByFilter(Guid userId,
             ProductType productType,
@@ -149,6 +206,16 @@ public class SecurityController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns all the available audit trail types.
+    /// </summary>
+    /// <short>
+    /// Get audit trail types
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <returns>Audit trail types</returns>
+    /// <path>api/2.0/security/audit/types</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowAnonymous]
     [HttpGet("audit/types")]
     public object GetTypes()
@@ -163,6 +230,18 @@ public class SecurityController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Returns the mappers for the audit trail types.
+    /// </summary>
+    /// <short>
+    /// Get audit trail mappers
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <param name="productType">Product</param>
+    /// <param name="moduleType">Module</param>
+    /// <returns>Audit trail mappers</returns>
+    /// <path>api/2.0/security/audit/mappers</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowAnonymous]
     [HttpGet("/audit/mappers")]
     public object GetMappers(ProductType? productType, ModuleType? moduleType)
@@ -187,6 +266,16 @@ public class SecurityController : ControllerBase
             });
     }
 
+    /// <summary>
+    /// Generates the login history report.
+    /// </summary>
+    /// <short>
+    /// Generate the login history report
+    /// </short>
+    /// <category>Login history</category>
+    /// <returns>URL to the xlsx report file</returns>
+    /// <path>api/2.0/security/audit/login/report</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/login/report")]
     public async Task<object> CreateLoginHistoryReport()
     {
@@ -209,6 +298,16 @@ public class SecurityController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Generates the audit trail report.
+    /// </summary>
+    /// <short>
+    /// Generate the audit trail report
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <returns>URL to the xlsx report file</returns>
+    /// <path>api/2.0/security/audit/events/report</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/events/report")]
     public async Task<object> CreateAuditTrailReport()
     {
@@ -234,6 +333,16 @@ public class SecurityController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Returns the audit trail settings.
+    /// </summary>
+    /// <short>
+    /// Get the audit trail settings
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <returns>Audit settings</returns>
+    /// <path>api/2.0/security/audit/settings/lifetime</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("audit/settings/lifetime")]
     public TenantAuditSettings GetAuditSettings()
     {
@@ -244,6 +353,17 @@ public class SecurityController : ControllerBase
         return _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
     }
 
+    /// <summary>
+    /// Sets the audit trail settings for the current portal.
+    /// </summary>
+    /// <short>
+    /// Set the audit trail settings
+    /// </short>
+    /// <category>Audit trail data</category>
+    /// <param name="wrapper">Audit trail settings</param>
+    /// <returns>Audit trail settings</returns>
+    /// <path>api/2.0/security/audit/settings/lifetime</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/settings/lifetime")]
     public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
