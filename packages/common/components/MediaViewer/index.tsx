@@ -18,7 +18,7 @@ import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
-import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 
 function MediaViewer({
   playlistPos,
