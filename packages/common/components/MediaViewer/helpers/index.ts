@@ -21,6 +21,20 @@ export enum KeyboardEventKeys {
   Digit1 = "Digit1",
 }
 
+export enum ActionType {
+  ZoomIn = 1,
+  ZoomOut = 2,
+  Prev = 3,
+  Next = 4,
+  RotateLeft = 5,
+  RotateRight = 6,
+  Reset = 7,
+  Close = 8,
+  ScaleX = 9,
+  ScaleY = 10,
+  Download = 11,
+}
+
 export const mapSupplied = {
   ".aac": { supply: "m4a", type: mediaTypes.audio },
   ".flac": { supply: "mp3", type: mediaTypes.audio },
