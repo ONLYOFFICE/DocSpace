@@ -127,12 +127,7 @@ const MainProfile = (props) => {
                   className="send-again-icon"
                   src={SendClockReactSvgUrl}
                 />
-                <Text
-                  className="send-again-text"
-                  fontWeight={600}
-                  noSelect
-                  onClick={sendActivationLinkAction}
-                >
+                <Text className="send-again-text" fontWeight={600} noSelect>
                   {t("SendAgain")}
                 </Text>
               </div>
