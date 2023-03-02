@@ -53,12 +53,13 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   ${commonInputStyle};
   white-space: ${(props) => (props.isJSONField ? "pre" : "normal")};
 
-  width: 100%;
+  display: table;
+  width: -webkit-fill-available;
   height: fit-content;
   border: none;
   outline: none;
   resize: none;
-  overflow: hidden;
+  overflow: ${(props) => (props.isJSONField ? "visible !important" : "hidden")};
   padding: 5px 8px 2px;
   padding-left: ${(props) => props.paddingLeft};
   font-size: ${(props) => props.fontSize + "px"};
@@ -110,7 +111,8 @@ StyledTextarea.defaultProps = {
 
 const StyledCopyIcon = styled(CopyIcon)`
   position: absolute;
-  right: 8px;
+  right: ${(props) =>
+    props.isJSONField && props.heightScale ? "16px" : "8px"};
   top: 8px;
   width: 16px;
   height: 16px;
