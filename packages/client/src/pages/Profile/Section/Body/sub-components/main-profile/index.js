@@ -40,6 +40,7 @@ const MainProfile = (props) => {
     setChangeAvatarVisible,
     withActivationBar,
     sendActivationLink,
+    currentColorScheme,
   } = props;
 
   const role = getUserRole(profile);
@@ -63,11 +64,14 @@ const MainProfile = (props) => {
         editing={true}
         editAction={() => setChangeAvatarVisible(true)}
       />
-      <StyledInfo>
+      <StyledInfo
+        withActivationBar={withActivationBar}
+        currentColorScheme={currentColorScheme}
+      >
         <div className="rows-container">
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Name")}
               </Text>
               <Text fontWeight={600} truncate>
@@ -83,7 +87,7 @@ const MainProfile = (props) => {
           </div>
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Email")}
               </Text>
               <Text
@@ -92,26 +96,20 @@ const MainProfile = (props) => {
                 fontWeight={600}
               >
                 {profile.email}
-                {withActivationBar && (
-                  <HelpButton
-                    className="send-again-icon"
-                    color={"#316daa"}
-                    tooltipContent={t("EmailNotVerified")}
-                    iconName={SendClockReactSvgUrl}
-                  />
-                )}
               </Text>
-
               {withActivationBar && (
-                <Text
-                  className="send-again-text"
-                  fontWeight={600}
-                  noSelect
-                  truncate
+                <div
+                  className="send-again-container send-again-mobile"
                   onClick={sendActivationLinkAction}
                 >
-                  {t("SendAgain")}
-                </Text>
+                  <ReactSVG
+                    className="send-again-icon"
+                    src={SendClockReactSvgUrl}
+                  />
+                  <Text className="send-again-text" fontWeight={600} noSelect>
+                    {t("SendAgain")}
+                  </Text>
+                </div>
               )}
             </div>
             <IconButton
@@ -121,18 +119,18 @@ const MainProfile = (props) => {
               onClick={() => setChangeEmailVisible(true)}
             />
             {withActivationBar && (
-              <div className="send-again-container">
-                <HelpButton
+              <div
+                className="send-again-container send-again-desktop"
+                onClick={sendActivationLinkAction}
+              >
+                <ReactSVG
                   className="send-again-icon"
-                  color={"#316daa"}
-                  tooltipContent={t("EmailNotVerified")}
-                  iconName={SendClockReactSvgUrl}
+                  src={SendClockReactSvgUrl}
                 />
                 <Text
                   className="send-again-text"
                   fontWeight={600}
                   noSelect
-                  truncate
                   onClick={sendActivationLinkAction}
                 >
                   {t("SendAgain")}
@@ -142,7 +140,7 @@ const MainProfile = (props) => {
           </div>
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Password")}
               </Text>
               <Text fontWeight={600}>********</Text>
@@ -199,6 +197,10 @@ export default inject(({ auth, peopleStore }) => {
 
   const { withActivationBar, sendActivationLink } = auth.userStore;
 
+  const { currentColorScheme } = auth.settingsStore;
+
+  console.log(currentColorScheme);
+
   const {
     targetUser: profile,
     changeEmailVisible,
@@ -223,5 +225,6 @@ export default inject(({ auth, peopleStore }) => {
     setChangeAvatarVisible,
     withActivationBar,
     sendActivationLink,
+    currentColorScheme,
   };
 })(observer(MainProfile));
