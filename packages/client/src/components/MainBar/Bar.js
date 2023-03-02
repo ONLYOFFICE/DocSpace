@@ -114,13 +114,7 @@ const Bar = (props) => {
   }, []);
 
   const sendActivationLinkAction = () => {
-    if (sendActivationLink) {
-      sendActivationLink(t).finally(() => {
-        return onCloseActivationBar();
-      });
-    } else {
-      onCloseActivationBar();
-    }
+    sendActivationLink && sendActivationLink(t);
   };
 
   const onCloseActivationBar = () => {
