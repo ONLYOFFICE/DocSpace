@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
@@ -44,15 +44,6 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
     content: <GeneralSettings t={t} />,
   };
 
-  const defaultStartSelect =
-    setting === "common" ? commonSettings : adminSettings;
-
-  const [startSelect, setStartSelect] = useState(defaultStartSelect);
-
-  useEffect(() => {
-    setStartSelect(defaultStartSelect);
-  }, [setting]);
-
   const data = [adminSettings, commonSettings];
 
   const onSelect = useCallback(
@@ -85,7 +76,11 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
           showAdminSettings={showAdminSettings}
         />
       ) : (
-        <Submenu data={data} startSelect={startSelect} onSelect={onSelect} />
+        <Submenu
+          data={data}
+          startSelect={setting === "common" ? commonSettings : adminSettings}
+          onSelect={onSelect}
+        />
       )}
     </StyledContainer>
   );
