@@ -125,8 +125,12 @@ export const getCategoryType = (location) => {
     categoryType = CategoryType.Favorite;
   } else if (pathname.startsWith("/recent")) {
     categoryType = CategoryType.Recent;
-  } else if (pathname.startsWith("/trash")) {
+  } else if (pathname.startsWith("/files/trash")) {
     categoryType = CategoryType.Trash;
+  } else if (pathname.startsWith("/settings")) {
+    categoryType = CategoryType.Settings;
+  } else if (pathname.startsWith("/accounts/filter")) {
+    categoryType = CategoryType.Accounts;
   }
 
   return categoryType;
