@@ -8,11 +8,14 @@ interface ImageViewerToolbarProps {
     right?: string,
     bottom?: string
   ) => JSX.Element;
-  percent: number;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
   ToolbarEvent: (item: ToolbarItemType) => void;
 }
 
 export type ToolbarItemType = ReturnType<typeof getCustomToolbar>[number];
+
+export type ImperativeHandle = {
+  setPercentValue: (percent: number) => void;
+};
 
 export default ImageViewerToolbarProps;

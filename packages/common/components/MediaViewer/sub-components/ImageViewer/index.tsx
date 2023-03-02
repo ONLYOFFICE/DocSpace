@@ -19,7 +19,10 @@ import {
 } from "./ImageViewer.styled";
 
 import ImageViewerProps from "./ImageViewer.props";
-import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
+import {
+  ImperativeHandle,
+  ToolbarItemType,
+} from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import { ActionType, KeyboardEventKeys } from "../../helpers";
 
 const MaxScale = 5;
@@ -59,7 +62,7 @@ function ImageViewer({
   const setTimeoutIDTapRef = useRef<NodeJS.Timeout>();
   const startAngleRef = useRef<number>(0);
   const scaleRef = useRef<number>(1);
-  const isWheelRef = useRef<boolean>(false);
+  const toolbarRef = useRef<ImperativeHandle>(null);
 
   const [scale, setScale] = useState(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -125,23 +128,11 @@ function ImageViewer({
       naturalWidth,
       naturalHeight
     );
-
-    const rotate = style.rotate.get();
-
-    const dir = rotate > 0 ? 1 : rotate === 0 ? 0 : -1;
-
-    const modRotate = Math.abs(rotate) % 360;
-
-    let divRotate = modRotate / 180;
-
-    divRotate = divRotate === 1 ? 0 : divRotate === 0 ? 1 : divRotate;
-
-    const newRotate = rotate - dir * (1 - divRotate) * 180;
+    toolbarRef.current?.setPercentValue(1);
 
     api.start({
       ...imagePositionAndSize,
       scale: 1,
-      rotate: newRotate,
     });
   };
 
@@ -361,6 +352,17 @@ function ImageViewer({
         // easing: easings.easeInBack,
         duration: 200,
       },
+      onResolve(result) {
+        api.start({
+          ...maybeAdjustImage({
+            x: result.value.x,
+            y: result.value.y,
+          }),
+          config: {
+            duration: 100,
+          },
+        });
+      },
     });
   };
 
@@ -390,6 +392,7 @@ function ImageViewer({
     const ratio = scale / style.scale.get();
 
     const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+    toolbarRef.current?.setPercentValue(scale);
 
     api.start({
       scale,
@@ -434,7 +437,7 @@ function ImageViewer({
     const dy = style.y.get() - DefaultSpeedScale * ty;
 
     const scale = Math.min(style.scale.get() + DefaultSpeedScale, MaxScale);
-
+    toolbarRef.current?.setPercentValue(scale);
     api.start({
       x: dx,
       y: dy,
@@ -474,8 +477,32 @@ function ImageViewer({
     }
   };
 
-  const zoomOnDoubleTap = (event: TouchEvent | MouseEvent) => {
-    if (!imgRef.current) return;
+  const handleDoubleTapOrClick = (
+    event:
+      | TouchEvent
+      | MouseEvent
+      | React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    if (style.scale.get() !== 1) {
+      RestartScaleAndSize();
+    } else {
+      zoomOnDoubleTap(event);
+    }
+  };
+
+  const zoomOnDoubleTap = (
+    event:
+      | TouchEvent
+      | MouseEvent
+      | React.MouseEvent<HTMLImageElement, MouseEvent>,
+    scale = 1
+  ) => {
+    if (
+      !imgRef.current ||
+      style.scale.get() >= MaxScale ||
+      style.scale.isAnimating
+    )
+      return;
 
     const isTouch = "touches" in event;
 
@@ -486,18 +513,23 @@ function ImageViewer({
     const tx = (pageX - (x + width / 2)) / style.scale.get();
     const ty = (pageY - (y + height / 2)) / style.scale.get();
 
-    const dx = style.x.get() - 2 * tx;
-    const dy = style.y.get() - 2 * ty;
+    const dx = style.x.get() - scale * tx;
+    const dy = style.y.get() - scale * ty;
 
-    const ratio = 2;
+    const ratio = scale / style.scale.get();
+
+    const newScale = Math.min(style.scale.get() + scale, MaxScale);
 
     const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+
+    toolbarRef.current?.setPercentValue(newScale);
+
     api.start({
       ...point,
-      scale: 2,
-      config: {
-        ...config.default,
-        duration: 300,
+      scale: newScale,
+      config: config.default,
+      onChange() {
+        api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
       },
       onResolve() {
         api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
@@ -719,11 +751,7 @@ function ImageViewer({
           lastTapTimeRef.current = 0;
           isDoubleTapRef.current = true;
 
-          if (style.scale.get() !== 1) {
-            RestartScaleAndSize();
-          } else {
-            zoomOnDoubleTap(event);
-          }
+          handleDoubleTapOrClick(event);
 
           clearTimeout(setTimeoutIDTapRef.current);
         } else {
@@ -772,7 +800,7 @@ function ImageViewer({
         const ratio = dScale / lScale;
 
         const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
-
+        toolbarRef.current?.setPercentValue(dScale);
         api.start({
           ...point,
           scale: dScale,
@@ -862,14 +890,14 @@ function ImageViewer({
             src={src}
             ref={imgRef}
             style={style}
-            onDoubleClick={() => console.log("dooble")}
+            onDoubleClick={handleDoubleTapOrClick}
             onLoad={imageLoaded}
           />
         </ImageWrapper>
       </ImageViewerContainer>
       {isDesktop && panelVisible && (
         <ImageViewerToolbar
-          percent={100}
+          ref={toolbarRef}
           toolbar={toolbar}
           generateContextMenu={generateContextMenu}
           setIsOpenContextMenu={setIsOpenContextMenu}
