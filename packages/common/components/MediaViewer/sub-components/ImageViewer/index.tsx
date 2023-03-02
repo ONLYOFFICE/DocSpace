@@ -116,7 +116,7 @@ function ImageViewer({
   }
 
   const RestartScaleAndSize = () => {
-    if (!imgRef.current || isLoading) return;
+    if (!imgRef.current || style.rotate.isAnimating) return;
 
     const naturalWidth = imgRef.current.naturalWidth;
     const naturalHeight = imgRef.current.naturalHeight;
@@ -137,13 +137,6 @@ function ImageViewer({
     divRotate = divRotate === 1 ? 0 : divRotate === 0 ? 1 : divRotate;
 
     const newRotate = rotate - dir * (1 - divRotate) * 180;
-
-    console.log({
-      dir,
-      rotate,
-      divRotate,
-      newRotate,
-    });
 
     api.start({
       ...imagePositionAndSize,
@@ -481,6 +474,37 @@ function ImageViewer({
     }
   };
 
+  const zoomOnDoubleTap = (event: TouchEvent | MouseEvent) => {
+    if (!imgRef.current) return;
+
+    const isTouch = "touches" in event;
+
+    const pageX = isTouch ? event.touches[0].pageX : event.pageX;
+    const pageY = isTouch ? event.touches[0].pageY : event.pageY;
+
+    const { width, height, x, y } = imgRef.current.getBoundingClientRect();
+    const tx = (pageX - (x + width / 2)) / style.scale.get();
+    const ty = (pageY - (y + height / 2)) / style.scale.get();
+
+    const dx = style.x.get() - 2 * tx;
+    const dy = style.y.get() - 2 * ty;
+
+    const ratio = 2;
+
+    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+    api.start({
+      ...point,
+      scale: 2,
+      config: {
+        ...config.default,
+        duration: 300,
+      },
+      onResolve() {
+        api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
+      },
+    });
+  };
+
   useGesture(
     {
       onDragStart: ({ pinching }) => {
@@ -684,7 +708,7 @@ function ImageViewer({
         });
       },
 
-      onClick: ({ pinching }) => {
+      onClick: ({ pinching, event }) => {
         if (!imgRef.current || !containerRef.current || isDesktop || pinching)
           return;
 
@@ -694,19 +718,12 @@ function ImageViewer({
           //on Double Tap
           lastTapTimeRef.current = 0;
           isDoubleTapRef.current = true;
-          const imageWidth = imgRef.current.width;
-          const imageHeight = imgRef.current.height;
-          const containerBounds = containerRef.current.getBoundingClientRect();
 
-          const deltaWidth = (containerBounds.width - imageWidth) / 2;
-          const deltaHeight = (containerBounds.height - imageHeight) / 2;
-          api.start({
-            scale: 1,
-            x: deltaWidth,
-            y: deltaHeight,
-            rotate: 0,
-            immediate: true,
-          });
+          if (style.scale.get() !== 1) {
+            RestartScaleAndSize();
+          } else {
+            zoomOnDoubleTap(event);
+          }
 
           clearTimeout(setTimeoutIDTapRef.current);
         } else {
