@@ -215,7 +215,31 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
-  cancelCurrentUpload = (id) => {
+  cancelCurrentUpload = (id, t) => {
+    if (this.isParallel) {
+      runInAction(() => {
+        const uploadedFilesHistory = this.uploadedFilesHistory.filter(
+          (el) => el.uniqueId !== id
+        );
+
+        const canceledFile = this.files.find((f) => f.uniqueId === id);
+        const newPercent = this.getFilesPercent(canceledFile.file.size);
+        canceledFile.cancel = true;
+        canceledFile.percent = 100;
+        canceledFile.action = "uploaded";
+
+        this.currentUploadNumber -= 1;
+        this.uploadedFilesHistory = uploadedFilesHistory;
+        this.percent = newPercent;
+        const nextFileIndex = this.files.findIndex((f) => !f.inAction);
+
+        if (nextFileIndex !== -1) {
+          this.startSessionFunc(nextFileIndex, t);
+        }
+      });
+      return;
+    }
+
     const newFiles = this.files.filter((el) => el.uniqueId !== id);
     const uploadedFilesHistory = this.uploadedFilesHistory.filter(
       (el) => el.uniqueId !== id
@@ -543,7 +567,7 @@ class UploadDataStore {
           this.setConversionPercent(percent, !!error);
 
           if (!file.error && file.fileInfo.version > 2) {
-              this.filesStore.setHighlightFile({
+            this.filesStore.setHighlightFile({
               highlightFileId: file.fileInfo.id,
               isFileHasExst: !file.fileInfo.fileExst,
             });
