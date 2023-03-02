@@ -903,18 +903,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 await RecalculateFilesCountAsync(toFolderId);
             }
 
-
-            var parentFoldersTask =
-                filesDbContext.Tree
-                .Where(r => r.FolderId == toFolderId)
-                .OrderByDescending(r => r.Level)
-                .ToListAsync();
-
             var toUpdateFile = await q.FirstOrDefaultAsync(r => r.CurrentVersion);
 
             if (toUpdateFile != null)
             {
-                toUpdateFile.Folders = await parentFoldersTask;
+                toUpdateFile.Folders = await filesDbContext.Tree
+                    .Where(r => r.FolderId == toFolderId)
+                    .OrderByDescending(r => r.Level)
+                    .ToListAsync();
+
                 _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
         });
