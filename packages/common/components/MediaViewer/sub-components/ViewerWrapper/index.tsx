@@ -10,8 +10,6 @@ import { StyledDropDown } from "../StyledDropDown";
 import { StyledDropDownItem } from "../StyledDropDownItem";
 import ViewerWrapperProps from "./ViewerWrapper.props";
 
-const DefaultSpeedZoom = 0.25;
-
 function ViewerWrapper(props: ViewerWrapperProps) {
   const onClickContextItem = useCallback(
     (item: ContextMenuModel) => {
@@ -24,8 +22,8 @@ function ViewerWrapper(props: ViewerWrapperProps) {
 
   const generateContextMenu = (
     isOpen: boolean,
-    right: string,
-    bottom: string
+    right?: string,
+    bottom?: string
   ) => {
     const model = props.contextModel();
 
@@ -58,7 +56,7 @@ function ViewerWrapper(props: ViewerWrapperProps) {
     );
   };
 
-  const toolbars = useMemo(() => {
+  const toolbar = useMemo(() => {
     const {
       onDeleteClick,
       onDownloadClick,
@@ -97,10 +95,9 @@ function ViewerWrapper(props: ViewerWrapperProps) {
       playlist={props.playlist}
       inactive={props.inactive}
       audioIcon={props.audioIcon}
-      zoomSpeed={DefaultSpeedZoom}
       errorTitle={props.errorTitle}
       headerIcon={props.headerIcon}
-      customToolbar={() => toolbars}
+      toolbar={toolbar}
       playlistPos={props.playlistPos}
       archiveRoom={props.archiveRoom}
       isPreviewFile={props.isPreviewFile}
