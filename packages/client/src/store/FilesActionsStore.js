@@ -1900,10 +1900,12 @@ class FilesActionStore {
   };
 
   onClickBack = () => {
-    const { roomType, parentId } = this.selectedFolderStore;
+    const { roomType, parentId, setSelectedFolder } = this.selectedFolderStore;
+    const { setSelectedNode } = this.treeFoldersStore;
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
+    setSelectedFolder(null);
 
     if (
       categoryType === CategoryType.SharedRoom ||
@@ -1928,6 +1930,14 @@ class FilesActionStore {
       categoryType === CategoryType.Trash
     ) {
       return this.backToParentFolder();
+    }
+
+    if (categoryType === CategoryType.Settings) {
+      setSelectedNode(["common"]);
+    }
+
+    if (categoryType === CategoryType.Accounts) {
+      setSelectedNode(["accounts", "filter"]);
     }
   };
 
