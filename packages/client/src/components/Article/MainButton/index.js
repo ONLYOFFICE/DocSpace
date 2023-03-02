@@ -457,7 +457,7 @@ const ArticleMainButtonContent = (props) => {
         <>
           {!isArticleLoading &&
             !isProfile &&
-            (!security?.Create || canInvite) && (
+            (security?.Create || canInvite) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}

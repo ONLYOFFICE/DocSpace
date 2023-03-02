@@ -224,6 +224,10 @@ const SectionFilterContent = ({
         if (subjectId) {
           newFilter.subjectId = subjectId;
 
+          if (subjectId === FilterKeys.me) {
+            newFilter.subjectId = `${userId}`;
+          }
+
           newFilter.subjectFilter = subjectFilter?.toString()
             ? subjectFilter.toString()
             : FilterSubject.Member;
@@ -423,11 +427,12 @@ const SectionFilterContent = ({
 
       if (roomsFilter.subjectId) {
         const user = await getUser(roomsFilter.subjectId);
+        const isMe = userId === roomsFilter.subjectId;
 
-        let label = user.displayName;
+        let label = isMe ? t("Common:MeLabel") : user.displayName;
 
         const subject = {
-          key: roomsFilter.subjectId,
+          key: isMe ? FilterKeys.me : roomsFilter.subjectId,
           group: FilterGroups.roomFilterSubject,
           label: label,
         };
@@ -786,13 +791,25 @@ const SectionFilterContent = ({
         label: t("Common:Member"),
         isHeader: true,
         withoutSeparator: true,
+        withMultiItems: true,
+      },
+      {
+        id: "filter_author-me",
+        key: FilterKeys.me,
+        group: FilterGroups.roomFilterSubject,
+        label: t("Common:MeLabel"),
+      },
+      {
+        id: "filter_author-other",
+        key: FilterKeys.other,
+        group: FilterGroups.roomFilterSubject,
+        label: t("Common:OtherLabel"),
       },
       {
         id: "filter_author-user",
         key: FilterKeys.user,
         group: FilterGroups.roomFilterSubject,
-        label: t("Translations:ChooseFromList"),
-        isSelector: true,
+        displaySelectorType: "link",
       },
     ];
 
@@ -978,8 +995,7 @@ const SectionFilterContent = ({
           id: "filter_author-user",
           key: FilterKeys.user,
           group: FilterGroups.filterAuthor,
-          label: t("Translations:ChooseFromList"),
-          isSelector: true,
+          displaySelectorType: "link",
         },
       ];
 
@@ -987,7 +1003,6 @@ const SectionFilterContent = ({
 
       filterOptions.push(...typeOptions);
     }
-
     return filterOptions;
   }, [
     t,
