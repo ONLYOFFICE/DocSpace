@@ -78,10 +78,17 @@ const FilterBlockItem = ({
       item.selectedKey === "me" ||
       item.selectedKey === "other" ? (
       <StyledFilterBlockItemSelector
+        style={
+          item?.displaySelectorType === "button"
+            ? {}
+            : { height: "0", width: "0" }
+        }
         key={item.key}
         onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
       >
-        <SelectorAddButton id="filter_add-author" />
+        {item?.displaySelectorType === "button" && (
+          <SelectorAddButton id="filter_add-author" />
+        )}
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {item.label}
         </StyledFilterBlockItemSelectorText>
@@ -177,14 +184,32 @@ const FilterBlockItem = ({
   };
 
   const getTagItem = (item) => {
+    const isAuthor = item.key === "user";
+
+    const [meItem, otherItem, userItem] = groupItem;
+
+    if (
+      item.key === otherItem.key &&
+      userItem?.isSelected &&
+      !meItem?.isSelected
+    )
+      return;
+
     return (
       <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
         id={item.id}
-        onClick={() =>
-          changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
+        onClick={
+          item.key === "other"
+            ? (event) => showSelectorAction(event, isAuthor, item.group, [])
+            : () =>
+                changeFilterValueAction(
+                  item.key,
+                  item.isSelected,
+                  item.isMultiSelect
+                )
         }
         themeId={ThemeType.FilterBlockItemTag}
       >
@@ -214,7 +239,7 @@ const FilterBlockItem = ({
         withoutSeparator={withoutSeparator}
       >
         {groupItem.map((item) => {
-          if (item.isSelector === true) return getSelectorItem(item);
+          if (item.displaySelectorType) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);
           if (item.withOptions === true) return getWithOptionsItem(item);
           if (item.isCheckbox === true) return getCheckboxItem(item);
