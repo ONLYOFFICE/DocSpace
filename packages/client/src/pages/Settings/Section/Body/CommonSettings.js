@@ -28,10 +28,11 @@ const PersonalSettings = ({
 
   t,
   showTitle,
-  createWithoutDialog,
-  setCreateWithoutDialog,
 
   showAdminSettings,
+
+  keepNewFileName,
+  setKeepNewFileName,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -51,6 +52,10 @@ const PersonalSettings = ({
   const onChangeForceSave = React.useCallback(() => {
     setForceSave(!forceSave);
   }, [setForceSave, forceSave]);
+
+  const onChangeKeepNewFileName = React.useCallback(() => {
+    setKeepNewFileName(!keepNewFileName);
+  }, [setKeepNewFileName, keepNewFileName]);
 
   const onChangeFavorites = React.useCallback(
     (e) => {
@@ -72,10 +77,6 @@ const PersonalSettings = ({
     [setIsLoadingRecent, setRecentSetting]
   );
 
-  const onChangeCheckbox = () => {
-    setCreateWithoutDialog(!createWithoutDialog);
-  };
-
   return (
     <StyledSettings
       showTitle={showTitle}
@@ -91,8 +92,8 @@ const PersonalSettings = ({
           <ToggleButton
             className="toggle-btn"
             label={t("Common:DontAskAgain")}
-            onChange={onChangeCheckbox}
-            isChecked={createWithoutDialog}
+            onChange={onChangeKeepNewFileName}
+            isChecked={keepNewFileName}
           />
         )}
         <ToggleButton
@@ -162,55 +163,56 @@ const PersonalSettings = ({
   );
 };
 
-export default inject(
-  ({ auth, settingsStore, treeFoldersStore, filesStore }) => {
-    const {
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forcesave,
+export default inject(({ auth, settingsStore, treeFoldersStore }) => {
+  const {
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forcesave,
 
-      setUpdateIfExist,
-      setStoreOriginal,
+    setUpdateIfExist,
+    setStoreOriginal,
 
-      setConfirmDelete,
+    setConfirmDelete,
 
-      setForceSave,
+    setForceSave,
 
-      favoritesSection,
-      recentSection,
-      setFavoritesSetting,
-      setRecentSetting,
-    } = settingsStore;
+    favoritesSection,
+    recentSection,
+    setFavoritesSetting,
+    setRecentSetting,
 
-    const { myFolderId, commonFolderId } = treeFoldersStore;
-    const { setCreateWithoutDialog, createWithoutDialog } = filesStore;
+    keepNewFileName,
+    setKeepNewFileName,
+  } = settingsStore;
 
-    return {
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forceSave: forcesave,
+  const { myFolderId, commonFolderId } = treeFoldersStore;
 
-      myFolderId,
-      commonFolderId,
-      isVisitor: auth.userStore.user.isVisitor,
-      favoritesSection,
-      recentSection,
+  return {
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave: forcesave,
 
-      setUpdateIfExist,
-      setStoreOriginal,
+    myFolderId,
+    commonFolderId,
+    isVisitor: auth.userStore.user.isVisitor,
+    favoritesSection,
+    recentSection,
 
-      setConfirmDelete,
+    setUpdateIfExist,
+    setStoreOriginal,
 
-      setForceSave,
+    setConfirmDelete,
 
-      setFavoritesSetting,
-      setRecentSetting,
-      myFolderId,
-      commonFolderId,
-      setCreateWithoutDialog,
-      createWithoutDialog,
-    };
-  }
-)(observer(PersonalSettings));
+    setForceSave,
+
+    setFavoritesSetting,
+    setRecentSetting,
+    myFolderId,
+    commonFolderId,
+
+    keepNewFileName,
+    setKeepNewFileName,
+  };
+})(observer(PersonalSettings));

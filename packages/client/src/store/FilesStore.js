@@ -32,7 +32,6 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
-const storageCheckbox = JSON.parse(localStorage.getItem("createWithoutDialog"));
 
 let requestCounter = 0;
 
@@ -56,7 +55,6 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  createWithoutDialog = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -591,11 +589,6 @@ class FilesStore {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
     viewAs === "tile" && this.createThumbnails();
-  };
-
-  setCreateWithoutDialog = (checked) => {
-    this.createWithoutDialog = checked;
-    localStorage.setItem("createWithoutDialog", JSON.stringify(checked));
   };
 
   setPageItemsLength = (pageItemsLength) => {
@@ -2193,6 +2186,25 @@ class FilesStore {
   removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
+    if (newFilter.total <= newFilter.pageCount) {
+      const files = fileIds
+        ? this.files.filter((x) => !fileIds.includes(x.id))
+        : this.files;
+      const folders = folderIds
+        ? this.folders.filter((x) => !folderIds.includes(x.id))
+        : this.folders;
+
+      newFilter.total -= deleteCount;
+
+      runInAction(() => {
+        this.setFilter(newFilter);
+        this.setFiles(files);
+        this.setFolders(folders);
+      });
+
+      return;
+    }
 
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;

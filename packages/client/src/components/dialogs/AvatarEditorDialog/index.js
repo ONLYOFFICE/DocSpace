@@ -79,8 +79,6 @@ const AvatarEditorDialog = (props) => {
       const avatars = await createThumbnailsAvatar(profile.id, {
         x: 0,
         y: 0,
-        width: 192,
-        height: 192,
         tmpFile: res.data,
       });
       updateCreatedAvatar(avatars);
