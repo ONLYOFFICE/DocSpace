@@ -19,12 +19,19 @@ import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
+import EmptyScreenPersonalDarkUrl from "PUBLIC_DIR/images/empty_screen_personal_dark.svg?url";
 import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import EmptyScreenCorporateDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
 import EmptyScreenFavoritesUrl from "PUBLIC_DIR/images/empty_screen_favorites.svg?url";
+import EmptyScreenFavoritesDarkUrl from "PUBLIC_DIR/images/empty_screen_favorites_dark.svg?url";
 import EmptyScreenRecentUrl from "PUBLIC_DIR/images/empty_screen_recent.svg?url";
-import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.png";
+import EmptyScreenRecentDarkUrl from "PUBLIC_DIR/images/empty_screen_recent_dark.svg?url";
+import EmptyScreenPrivacyUrl from "PUBLIC_DIR/images/empty_screen_privacy.svg?url";
+import EmptyScreenPrivacyDarkUrl from "PUBLIC_DIR/images/empty_screen_privacy_dark.svg?url";
 import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url";
+import EmptyScreenTrashSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_trash_dark.svg?url";
 import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
+import EmptyScreenArchiveDarkUrl from "PUBLIC_DIR/images/empty_screen_archive_dark.svg?url";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -58,8 +65,10 @@ const RootFolderContainer = (props) => {
     isEmptyPage,
     setIsEmptyPage,
     isVisitor,
+    isCollaborator,
     sectionWidth,
     setIsLoadedEmptyPage,
+    security,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -70,12 +79,14 @@ const RootFolderContainer = (props) => {
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
 
-  const roomsDescription = isVisitor
-    ? t("RoomEmptyContainerDescriptionUser")
-    : t("RoomEmptyContainerDescription");
-  const archiveRoomsDescription = isVisitor
-    ? t("ArchiveEmptyScreenUser")
-    : t("ArchiveEmptyScreen");
+  const roomsDescription =
+    isVisitor || isCollaborator
+      ? t("RoomEmptyContainerDescriptionUser")
+      : t("RoomEmptyContainerDescription");
+  const archiveRoomsDescription =
+    isVisitor || isCollaborator
+      ? t("ArchiveEmptyScreenUser")
+      : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src={PrivacySvgUrl} />;
@@ -146,27 +157,35 @@ const RootFolderContainer = (props) => {
         return {
           headerText: emptyScreenHeader,
           descriptionText: personalDescription,
-          imageSrc: EmptyScreenPersonalUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenPersonalUrl
+            : EmptyScreenPersonalDarkUrl,
           buttons: commonButtons,
         };
       case FolderType.Favorites:
         return {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageSrc: EmptyScreenFavoritesUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenFavoritesUrl
+            : EmptyScreenFavoritesDarkUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
-          imageSrc: EmptyScreenRecentUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenRecentUrl
+            : EmptyScreenRecentDarkUrl,
           buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
           descriptionText: privateRoomDescription,
-          imageSrc: EmptyScreenPrivacyUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenPrivacyUrl
+            : EmptyScreenPrivacyDarkUrl,
           buttons: isDesktop && isEncryptionSupport && commonButtons,
         };
       case FolderType.TRASH:
@@ -174,21 +193,27 @@ const RootFolderContainer = (props) => {
           headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
-          imageSrc: EmptyScreenTrashSvgUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenTrashSvgUrl
+            : EmptyScreenTrashSvgDarkUrl,
           buttons: trashButtons,
         };
       case FolderType.Rooms:
         return {
           headerText: roomHeader,
           descriptionText: roomsDescription,
-          imageSrc: EmptyScreenCorporateSvgUrl,
-          buttons: isVisitor ? null : roomsButtons,
+          imageSrc: theme.isBase
+            ? EmptyScreenCorporateSvgUrl
+            : EmptyScreenCorporateDarkSvgUrl,
+          buttons: !security?.Create ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
           headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: EmptyScreenArchiveUrl,
+          imageSrc: theme.isBase
+            ? EmptyScreenArchiveUrl
+            : EmptyScreenArchiveDarkUrl,
           buttons: archiveButtons,
         };
       default:
@@ -365,7 +390,7 @@ export default inject(
       setIsEmptyPage,
       setIsLoadedEmptyPage,
     } = filesStore;
-    const { title, rootFolderType } = selectedFolderStore;
+    const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
@@ -373,6 +398,7 @@ export default inject(
       isPrivacyFolder,
       isDesktop: isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
+      isCollaborator: auth.userStore.user.isCollaborator,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,
@@ -390,6 +416,7 @@ export default inject(
       isEmptyPage,
       setIsEmptyPage,
       setIsLoadedEmptyPage,
+      security,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

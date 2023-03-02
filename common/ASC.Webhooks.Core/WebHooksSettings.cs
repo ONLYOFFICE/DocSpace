@@ -24,36 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks;
-public class Startup : BaseWorkerStartup
+
+namespace ASC.Webhooks.Core;
+
+[Serializable]
+public class WebHooksSettings : ISettings<WebHooksSettings>
 {
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : 
-        base(configuration, hostEnvironment)
+    public bool EnableSSLVerification { get; set; }
+    public List<int> Ids { get; set; }
+
+    [JsonIgnore]
+    public Guid ID => new Guid("6EFA0EAB-D033-4720-BDB3-DEB057EBC140");
+
+    public WebHooksSettings GetDefault() => new WebHooksSettings()
     {
-                    
-    }
-
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-
-        services.AddHttpClient();
-
-        DIHelper.TryAdd<DbWorker>();
-
-        services.AddHostedService<WorkerService>();
-        DIHelper.TryAdd<WorkerService>();
-
-        services.AddHttpClient("webhook")
-        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
-        .AddPolicyHandler((s, request) =>
-        {
-            var settings = s.GetRequiredService<Settings>();
-
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-        });
-    }
+        EnableSSLVerification = true,
+        Ids = new List<int> { }
+    };
 }
+
+

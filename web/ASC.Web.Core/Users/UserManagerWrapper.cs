@@ -37,6 +37,8 @@ namespace ASC.Web.Core.Users;
 [Scope]
 public sealed class UserManagerWrapper
 {
+    private Tenant Tenant => _tenantManager.GetCurrentTenant();
+    
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -46,7 +48,9 @@ public sealed class UserManagerWrapper
     private readonly IPSecurity.IPSecurity _iPSecurity;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
-    private readonly CountRoomAdminChecker _countManagerChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
+    private readonly TenantManager _tenantManager;
+    private readonly WebItemSecurityCache _webItemSecurityCache;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -58,7 +62,9 @@ public sealed class UserManagerWrapper
         IPSecurity.IPSecurity iPSecurity,
         SettingsManager settingsManager,
         UserFormatter userFormatter,
-        CountRoomAdminChecker countManagerChecker)
+        CountPaidUserChecker countPaidUserChecker,
+        TenantManager tenantManager,
+        WebItemSecurityCache webItemSecurityCache)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -69,7 +75,9 @@ public sealed class UserManagerWrapper
         _iPSecurity = iPSecurity;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
-        _countManagerChecker = countManagerChecker;
+        _countPaidUserChecker = countPaidUserChecker;
+        _tenantManager = tenantManager;
+        _webItemSecurityCache = webItemSecurityCache;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -126,12 +134,13 @@ public sealed class UserManagerWrapper
 
         user.UserName = MakeUniqueName(user);
 
-        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User);
+        var newUser = await _userManager.SaveUserInfo(user, type);
 
         var groupId = type switch
         {
             EmployeeType.User => Constants.GroupUser.ID,
             EmployeeType.DocSpaceAdmin => Constants.GroupAdmin.ID,
+            EmployeeType.Collaborator => Constants.GroupCollaborator.ID,
             _ => Guid.Empty,
         };
 
@@ -143,8 +152,8 @@ public sealed class UserManagerWrapper
         return newUser;
     }
 
-    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
-        bool updateExising = false, bool isAdmin = false)
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, EmployeeType type = EmployeeType.RoomAdmin, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+        bool updateExising = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -172,7 +181,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav, !updateExising);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -186,7 +195,7 @@ public sealed class UserManagerWrapper
             //NOTE: Notify user only if it's active
             if (afterInvite)
             {
-                if (isUser)
+                if (type is EmployeeType.User)
                 {
                     _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
@@ -203,7 +212,7 @@ public sealed class UserManagerWrapper
             else
             {
                 //Send user invite
-                if (isUser)
+                if (type is EmployeeType.User)
                 {
                     _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
@@ -215,19 +224,98 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (isUser)
+        if (updateExising)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
+            return newUserInfo;
         }
-        else if (isAdmin)
+
+        switch (type)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
+            case EmployeeType.User:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
+                break;
+            case EmployeeType.DocSpaceAdmin:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
+                break;
+            case EmployeeType.Collaborator:
+                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
+                break;
         }
 
         return newUserInfo;
     }
 
     #region Password
+
+    public async Task<bool> UpdateUserTypeAsync(UserInfo user, EmployeeType type)
+    {
+        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var changed = false;
+
+        if (user.IsOwner(Tenant) || user.IsMe(currentUser.Id))
+        {
+            return await Task.FromResult(false);
+        }
+        
+        var currentType = _userManager.GetUserType(user.Id);
+        
+        if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
+        {
+            if (currentType is EmployeeType.RoomAdmin)
+            {
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+            else if (currentType is EmployeeType.Collaborator)
+            {
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+            else if (currentType is EmployeeType.User)
+            {
+                await _countPaidUserChecker.CheckAppend();
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+        }
+        else if (type is EmployeeType.RoomAdmin)
+        {
+            if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
+            {
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+            else if (currentType is EmployeeType.Collaborator)
+            {
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+            else if (currentType is EmployeeType.User)
+            {
+                await _countPaidUserChecker.CheckAppend();
+                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+                changed = true;
+            }
+        }
+        else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
+        {
+            await _countPaidUserChecker.CheckAppend();
+            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
+            _webItemSecurityCache.ClearCache(Tenant.Id);
+            changed = true;
+        }
+
+        return changed;
+    }
 
     public void CheckPasswordPolicy(string password)
     {

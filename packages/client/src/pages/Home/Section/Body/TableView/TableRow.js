@@ -39,13 +39,10 @@ const FilesTableRow = (props) => {
     id,
     isRooms,
     isTrashFolder,
-    setUploadedFileIdWithVersion,
+    isHighlight,
+    hideColumns,
   } = props;
-  const [isHighlight, setIsHighlight] = React.useState(false);
   const { acceptBackground, background } = theme.dragAndDrop;
-
-  let timeoutRef = React.useRef(null);
-  let isMounted;
 
   const element = (
     <ItemIcon
@@ -100,29 +97,6 @@ const FilesTableRow = (props) => {
     }
   }, [checkedProps, isActive, showHotkeyBorder]);
 
-  React.useEffect(() => {
-    setIsHighlight(false);
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (!item.upgradeVersion) return;
-
-    isMounted = true;
-    setIsHighlight(true);
-    setUploadedFileIdWithVersion(null);
-
-    timeoutRef.current = setTimeout(() => {
-      isMounted && setIsHighlight(false);
-    }, 2000);
-  }, [item]);
-
   const idWithFileExst = item.fileExst
     ? `${item.id}_${item.fileExst}`
     : item.id ?? "";
@@ -168,6 +142,7 @@ const FilesTableRow = (props) => {
         }
         isRoom={item.isRoom}
         isHighlight={isHighlight}
+        hideColumns={hideColumns}
       >
         {isRooms ? (
           <RoomsRowDataComponent

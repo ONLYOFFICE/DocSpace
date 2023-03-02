@@ -99,7 +99,7 @@ public class S3ZipWriteOperator : IDataWriteOperator
         stream.Position = 0;
         var buffer = new byte[_sessionHolder.MaxChunkUploadSize];
         int bytesRead;
-        while ((bytesRead = _fileStream.Read(buffer, 0, (int)_sessionHolder.MaxChunkUploadSize)) > 0)
+        while ((bytesRead = stream.Read(buffer, 0, (int)_sessionHolder.MaxChunkUploadSize)) > 0)
         {
             _sha.TransformBlock(buffer, 0, bytesRead, buffer, 0);
         }

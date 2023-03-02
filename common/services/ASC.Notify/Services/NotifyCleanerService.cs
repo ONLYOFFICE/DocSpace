@@ -85,15 +85,11 @@ public class NotifyCleanerService : BackgroundService
             {
                 using var tx = dbContext.Database.BeginTransaction();
 
-                var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
-                var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
-                dbContext.NotifyInfo.RemoveRange(info);
-                dbContext.NotifyQueue.RemoveRange(queue);
-
-                dbContext.SaveChanges();
+                var infoCount = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDelete();
+                var queueCount = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDelete();
                 tx.Commit();
 
-                _logger.InformationClearNotifyMessages(info.Count, queue.Count);
+                _logger.InformationClearNotifyMessages(infoCount, queueCount);
             });
         }
         catch (ThreadAbortException)

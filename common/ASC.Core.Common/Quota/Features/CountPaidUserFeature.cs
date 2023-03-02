@@ -24,15 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Webhooks.Extension;
+namespace ASC.Core.Common.Quota.Features;
 
-public static class ConfigurationManagerExtension
+public class CountPaidUserFeature : TenantQuotaFeatureCount
 {
-    public static ConfigurationManager AddWebhookConfiguration(
-    this ConfigurationManager config)
+    public override bool Paid { get => true; }
+    public override string Name { get => "manager"; }
+    public CountPaidUserFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {
-        config.AddJsonFile($"appsettings.services.json", optional: false, reloadOnChange: true);
-
-        return config;
     }
 }

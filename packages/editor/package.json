@@ -72,6 +72,7 @@
     "compression": "^1.7.4",
     "date-and-time": "^2.4.1",
     "express": "^4.18.1",
+    "express-xss-sanitizer": "^1.1.6",
     "i18next-express-middleware": "^2.0.0",
     "i18next-fs-backend": "^1.1.4",
     "morgan": "^1.10.0",

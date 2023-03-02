@@ -45,6 +45,8 @@ public class TenantManager
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
+    private readonly static object _lock = new object();
+
     static TenantManager()
     {
         _thisCompAddresses.Add("localhost");
@@ -333,7 +335,10 @@ public class TenantManager
 
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
-        QuotaService.SetTenantQuotaRow(row, exchange);
+        lock (_lock)
+        {
+            QuotaService.SetTenantQuotaRow(row, exchange);
+        }
     }
 
     public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)

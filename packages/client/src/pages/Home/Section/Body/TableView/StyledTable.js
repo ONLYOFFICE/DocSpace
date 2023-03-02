@@ -193,6 +193,10 @@ const StyledTableRow = styled(TableRow)`
         }
       }
 
+      .table-container_cell:not(.table-container_element-wrapper, .table-container_file-name-cell) {
+        padding-right: ${(props) => props.hideColumns && `0px`};
+      }
+
       .table-container_file-name-cell {
         margin-left: -24px;
         padding-left: 24px;

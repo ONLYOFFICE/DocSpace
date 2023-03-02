@@ -731,7 +731,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
     {
-        _settingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
+        _settingsManager.Save(tenantWhiteLabelSettings, tenantId);
 
         if (tenantId == Tenant.DefaultTenant)
         {

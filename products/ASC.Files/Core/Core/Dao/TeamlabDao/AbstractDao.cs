@@ -196,7 +196,7 @@ public class AbstractDao
         };
     }
 
-    internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+    internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim();
 
     internal enum SearhTypeEnum
     {

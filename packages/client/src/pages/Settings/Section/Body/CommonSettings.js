@@ -87,12 +87,14 @@ const PersonalSettings = ({
             {t("Common:Common")}
           </Heading>
         )}
-        <ToggleButton
-          className="toggle-btn"
-          label={t("Common:DontAskAgain")}
-          onChange={onChangeCheckbox}
-          isChecked={createWithoutDialog}
-        />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("Common:DontAskAgain")}
+            onChange={onChangeCheckbox}
+            isChecked={createWithoutDialog}
+          />
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("OriginalCopy")}

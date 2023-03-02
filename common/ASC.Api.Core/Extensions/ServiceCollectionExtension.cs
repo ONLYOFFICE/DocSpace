@@ -49,7 +49,7 @@ public static class ServiceCollectionExtension
         {
             services.AddSingleton(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
         }
-        else if (kafkaConfiguration != null)
+        else if (kafkaConfiguration != null && !string.IsNullOrEmpty(kafkaConfiguration.BootstrapServers))
         {
             services.AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
         }
