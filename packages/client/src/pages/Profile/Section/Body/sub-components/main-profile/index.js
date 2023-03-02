@@ -199,8 +199,6 @@ export default inject(({ auth, peopleStore }) => {
 
   const { currentColorScheme } = auth.settingsStore;
 
-  console.log(currentColorScheme);
-
   const {
     targetUser: profile,
     changeEmailVisible,
