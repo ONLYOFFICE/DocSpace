@@ -293,7 +293,16 @@ class SelectionArea extends React.Component {
       y: scroll.scrollTop,
     };
 
-    onMove && onMove({ added: [], removed: [], clear: true });
+    const threshold = 10;
+    const { x1, y1 } = this.areaLocation;
+
+    if (
+      Math.abs(e.clientX - x1) >= threshold ||
+      Math.abs(e.clientY - y1) >= threshold
+    ) {
+      onMove && onMove({ added: [], removed: [], clear: true });
+    }
+
     this.addListeners();
 
     const itemsContainer = document.getElementsByClassName(itemsContainerClass);
