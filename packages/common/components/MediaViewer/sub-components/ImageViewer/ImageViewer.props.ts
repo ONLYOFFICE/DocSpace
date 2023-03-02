@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { getCustomToolbar } from "../../helpers/getCustomToolbar";
 
 interface ImageViewerProps {
-  src: string;
+  src?: string;
 
   isFistImage: boolean;
   isLastImage: boolean;

@@ -154,7 +154,7 @@ function Viewer(props: ViewerProps) {
             <ImageViewer
               panelVisible={panelVisible}
               toolbar={props.toolbar}
-              src={props.images[0].src}
+              src={props.fileUrl}
               mobileDetails={mobileDetails}
               onMask={props.onMaskClick}
               onPrev={props.onPrevClick}

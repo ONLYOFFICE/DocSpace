@@ -87,7 +87,7 @@ function ViewerWrapper(props: ViewerWrapperProps) {
   return (
     <Viewer
       title={props.title}
-      images={props.images}
+      fileUrl={props.fileUrl}
       isAudio={props.isAudio}
       isVideo={props.isVideo}
       visible={props.visible}

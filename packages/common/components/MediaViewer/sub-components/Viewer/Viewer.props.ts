@@ -3,7 +3,7 @@ import { ContextMenuModel, PlaylistType } from "../../types";
 
 interface ViewerProps {
   title: string;
-  images: { src: string; alt: string }[];
+  fileUrl?: string;
   isAudio: boolean;
   isVideo: boolean;
   visible: boolean;

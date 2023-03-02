@@ -35,12 +35,12 @@ function MediaViewer({
   const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
 
   const [title, setTitle] = useState<string>("");
-  const [fileUrl, setFileUrl] = useState<string | null>(() => {
+  const [fileUrl, setFileUrl] = useState<string | undefined>(() => {
     const { playlist, currentFileId } = props;
     const item = playlist.find(
       (file) => file.fileId.toString() === currentFileId.toString()
     );
-    return item?.src ?? null;
+    return item?.src;
   });
 
   const [targetFile, setTargetFile] = useState(() => {
@@ -102,7 +102,7 @@ function MediaViewer({
     }
 
     if (ext === ".tiff" || ext === ".tif") {
-      setFileUrl(null);
+      setFileUrl(undefined);
       fetchAndSetTiffDataURL(src);
     }
 
@@ -390,7 +390,6 @@ function MediaViewer({
   }, [targetFile]);
 
   const ext = getFileExtension(title);
-  const images = useMemo(() => [{ src: fileUrl, alt: "" }], [fileUrl]);
   const audioIcon = useMemo(() => props.getIcon(96, ext), [ext]);
   const headerIcon = useMemo(() => props.getIcon(24, ext), [ext]);
 
@@ -428,7 +427,7 @@ function MediaViewer({
           visible={props.visible}
           title={title}
           onClose={onClose}
-          images={images}
+          fileUrl={fileUrl}
           inactive={props.playlist.length <= 1}
           playlist={props.playlist}
           playlistPos={playlistPos}
