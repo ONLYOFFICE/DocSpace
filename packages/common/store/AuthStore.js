@@ -79,7 +79,6 @@ class AuthStore {
             this.settingsStore.getCompanyInfoSettings()
           );
         }
-        requests.push(this.settingsStore.getWhiteLabelLogoUrls());
       }
     }
 
@@ -101,7 +100,7 @@ class AuthStore {
     let success = false;
     if (this.isAuthenticated) {
       success = this.userStore.isLoaded && this.settingsStore.isLoaded;
-    
+
       success && this.setLanguage();
     } else {
       success = this.settingsStore.isLoaded;
@@ -235,7 +234,7 @@ class AuthStore {
   get isAuthenticated() {
     return (
       this.settingsStore.isLoaded && !!this.settingsStore.socketUrl
-      //|| //this.userStore.isAuthenticated 
+      //|| //this.userStore.isAuthenticated
     );
   }
 

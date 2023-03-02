@@ -72,7 +72,7 @@ const FilterBlock = ({
             if (groupItem.key === currentFilter.key) {
               groupItem.isSelected = true;
             }
-            if (groupItem.isSelector) {
+            if (groupItem.displaySelectorType) {
               groupItem.isSelected = true;
               groupItem.selectedKey = currentFilter.key;
               groupItem.selectedLabel = currentFilter.label;
@@ -87,7 +87,7 @@ const FilterBlock = ({
         } else {
           item.groupItem.forEach((groupItem, idx) => {
             groupItem.isSelected = false;
-            if (groupItem.isSelector) {
+            if (groupItem.displaySelectorType) {
               groupItem.selectedKey = null;
               groupItem.selectedLabel = null;
             }
@@ -216,9 +216,12 @@ const FilterBlock = ({
         items.forEach((item) => {
           if (item.group === selectedValue.group) {
             item.groupItem.forEach((groupItem) => {
-              if (groupItem.key === selectedValue.key || groupItem.isSelector) {
+              if (
+                groupItem.key === selectedValue.key ||
+                groupItem.displaySelectorType
+              ) {
                 groupItem.isSelected = true;
-                if (groupItem.isSelector) {
+                if (groupItem.displaySelectorType) {
                   groupItem.selectedLabel = selectedValue.label;
                   groupItem.selectedKey = selectedValue.key;
                 }

@@ -48,7 +48,7 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
-  createWithoutDialog,
+  keepNewFileName,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -77,7 +77,7 @@ const CreateEvent = ({
 
     if (!extension) return setEventDialogVisible(true);
 
-    if (!createWithoutDialog) {
+    if (!keepNewFileName) {
       setEventDialogVisible(true);
     } else {
       onSave(null, title || defaultName);
@@ -289,6 +289,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     oformsStore,
+    settingsStore,
   }) => {
     const {
       setIsLoading,
@@ -321,7 +322,7 @@ export default inject(
       eventDialogVisible,
     } = dialogsStore;
 
-    const { createWithoutDialog } = filesStore;
+    const { keepNewFileName } = settingsStore;
 
     return {
       setEventDialogVisible,
@@ -352,7 +353,7 @@ export default inject(
       replaceFileStream,
       setEncryptionAccess,
 
-      createWithoutDialog,
+      keepNewFileName,
     };
   }
 )(observer(CreateEvent));

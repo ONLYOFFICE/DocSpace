@@ -753,7 +753,7 @@ export default function ViewerPlayer(props) {
     const lasting = `${currentTime} / ${duration}`;
 
     if (progress === 100 || !state.isPlaying) {
-      videoRef.current.stop();
+      videoRef.current.pause();
     } else {
       videoRef.current.play();
     }
