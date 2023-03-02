@@ -96,6 +96,8 @@ const Textarea = ({
             copy(modifiedValue);
             toastr.success(copyInfoText);
           }}
+          heightScale={heightScale}
+          isJSONField={isJSONField}
         />
       )}
       <ColorTheme
