@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Amqp;
+
+using ICSharpCode.SharpZipLib.Core;
+
 namespace ASC.Files.Helpers;
 
 public class UploadControllerHelper<T> : FilesHelperBase<T>
@@ -116,7 +120,25 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
         using var responseStream = await response.Content.ReadAsStreamAsync();
         using var streamReader = new StreamReader(responseStream);
 
-        return JObject.Parse(await streamReader.ReadToEndAsync()); //result is json string
+        var responseAsString = await streamReader.ReadToEndAsync();
+        var jObject = JObject.Parse(responseAsString); //result is json string
+
+        var result = new
+        {
+            success = jObject["success"].ToString(),
+            data = new
+            {
+                id = jObject["data"]["id"].ToString(),
+                path = jObject["data"]["path"].Values().Select(x => (T)Convert.ChangeType(x, typeof(T))),
+                created = jObject["data"]["created"].Value<DateTime>(),
+                expired = jObject["data"]["expired"].Value<DateTime>(),
+                location = jObject["data"]["location"].ToString(),
+                bytes_uploaded = jObject["data"]["bytes_uploaded"].Value<long>(),
+                bytes_total = jObject["data"]["bytes_total"].Value<long>()
+            }
+        };
+
+        return result;
     }
 
     public async Task<object> UploadFileAsync(T folderId, UploadRequestDto uploadModel)

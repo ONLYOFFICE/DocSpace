@@ -15,6 +15,7 @@ const ChangeUserTypeEvent = ({
   peopleFilter,
   updateUserType,
   getUsersList,
+  onClose,
 }) => {
   const {
     toType,
@@ -58,7 +59,7 @@ const ChangeUserTypeEvent = ({
   };
 
   const onChangeUserType = () => {
-    onClose();
+    onClosePanel();
     updateUserType(toType, userIDs, peopleFilter, fromType)
       .then(() => {
         toastr.success(t("SuccessChangeUserType"));
@@ -83,14 +84,15 @@ const ChangeUserTypeEvent = ({
       });
   };
 
-  const onClose = () => {
+  const onClosePanel = () => {
     setVisible(false);
+    onClose();
   };
 
   const onCloseAction = async () => {
     await getUsersList(peopleFilter);
     abortCallback && abortCallback();
-    onClose();
+    onClosePanel();
   };
 
   const getType = (type) => {
@@ -99,6 +101,8 @@ const ChangeUserTypeEvent = ({
         return t("Common:DocSpaceAdmin");
       case "manager":
         return t("Common:RoomAdmin");
+      case "collaborator":
+        return t("Common:Collaborator");
       case "user":
       default:
         return t("Common:User");

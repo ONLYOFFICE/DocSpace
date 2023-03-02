@@ -180,6 +180,7 @@ export const getUserRole = (user) => {
     return "admin";
   //TODO: Need refactoring
   else if (user.isVisitor) return "user";
+  else if (user.isCollaborator) return "collaborator";
   else return "manager";
 };
 

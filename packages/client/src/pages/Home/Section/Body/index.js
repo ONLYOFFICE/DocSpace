@@ -40,7 +40,6 @@ const SectionBodyContent = (props) => {
     setScrollToItem,
     filesList,
     uploaded,
-    setSearchTitleOpenLocation,
   } = props;
 
   useEffect(() => {
@@ -117,7 +116,6 @@ const SectionBodyContent = (props) => {
       e.target.closest(".search-input-block")
     ) {
       setSelection([]);
-      setSearchTitleOpenLocation(null);
       setBufferSelection(null);
       setHotkeyCaretStart(null);
       setHotkeyCaret(null);
@@ -315,7 +313,6 @@ export default inject(
       setScrollToItem,
       filesList,
       uploaded: uploadDataStore.uploaded,
-      setSearchTitleOpenLocation: filesActionsStore.setSearchTitleOpenLocation,
     };
   }
 )(

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.Classes;
-
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -2627,7 +2625,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 Access = share,
                 Id = linkId,
-                SubjectType = SubjectType.InvintationLink,
+                SubjectType = SubjectType.InvitationLink,
                 FileShareOptions = new FileShareOptions
                 {
                     Title = title,
@@ -3091,6 +3089,14 @@ public class FileStorageService<T> //: IFileStorageService
         return _filesSettingsHelper.StoreOriginalFiles;
     }
 
+    public bool KeepNewFileName(bool set)
+    {
+        _filesSettingsHelper.KeepNewFileName = set;
+        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
+
+        return _filesSettingsHelper.KeepNewFileName;
+    }
+
     public bool HideConfirmConvert(bool isForSave)
     {
         if (isForSave)
@@ -3208,7 +3214,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
 
-            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(Guid.Empty, _tenantManager.GetCurrentTenant().Id)
+            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant().Id)
             {
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
                 FileIds = fileIntIds

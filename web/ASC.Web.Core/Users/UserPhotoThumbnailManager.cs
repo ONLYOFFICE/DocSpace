@@ -40,11 +40,6 @@ public static class UserPhotoThumbnailManager
 
     public static async Task<List<ThumbnailItem>> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
     {
-        if (thumbnailSettings.Size.IsEmpty)
-        {
-            return null;
-        }
-
         var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
 
         var resultBitmaps = new List<ThumbnailItem>();
@@ -56,6 +51,11 @@ public static class UserPhotoThumbnailManager
             return null;
         }
 
+        if (thumbnailSettings.Size.IsEmpty)
+        {
+            thumbnailSettings.Size = new Size(img.Width, img.Height);
+        }
+
         foreach (var thumbnail in await thumbnailsData.ThumbnailList())
         {
             thumbnail.Image = GetImage(img, thumbnail.Size, thumbnailSettings);
@@ -65,7 +65,7 @@ public static class UserPhotoThumbnailManager
 
         await thumbnailsData.Save(resultBitmaps);
 
-        settingsManager.SaveForUser(thumbnailSettings, userId);
+        settingsManager.Save(thumbnailSettings, userId);
 
         return await thumbnailsData.ThumbnailList();
     }

@@ -186,7 +186,7 @@ WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
-CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
+CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks", "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"]
 
 # ASC.ApiSystem ##
 FROM dotnetrun AS api_system
@@ -231,7 +231,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
 
-CMD ["ASC.Files.Service.dll", "ASC.Files.Service"]
+CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"]
 
 ## ASC.Notify ##
 FROM dotnetrun AS notify
@@ -240,7 +240,7 @@ WORKDIR ${BUILD_PATH}/services/ASC.Notify/service
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
 
-CMD ["ASC.Notify.dll", "ASC.Notify"]
+CMD ["ASC.Notify.dll", "ASC.Notify", "core:eventBus:subscriptionClientName=asc_event_bus_notify_queue"]
 
 ## ASC.People ##
 FROM dotnetrun AS people_server

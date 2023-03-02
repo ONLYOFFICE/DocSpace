@@ -59,7 +59,7 @@ public class SsoHandlerService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly Action<string> _signatureResolver;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -81,7 +81,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil,
-        CountRoomAdminChecker countRoomAdminChecker)
+        CountPaidUserChecker countPaidUserChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -97,7 +97,7 @@ public class SsoHandlerService
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _signatureResolver = signature =>
         {
             int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
@@ -268,19 +268,19 @@ public class SsoHandlerService
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
-                var limitExceeded = false;
+                var type = EmployeeType.RoomAdmin;
 
                 try
                 {
-                    await _countRoomAdminChecker.CheckAppend();
+                    await _countPaidUserChecker.CheckAppend();
                 }
                 catch (Exception)
                 {
-                    limitExceeded = true;
+                    type = EmployeeType.User;
                 }
 
                 newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                  false, isUser: limitExceeded);
+                  false, type);
             }
             else
             {

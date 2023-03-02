@@ -24,28 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections.Concurrent;
-global using System.Security.Cryptography;
-global using System.Text;
-global using System.Text.Json;
+namespace ASC.Webhooks.Core;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Extensions;
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Utils;
-global using ASC.Web.Webhooks;
-global using ASC.Webhooks.Core;
-global using ASC.Webhooks.Service;
-global using ASC.Webhooks.Service.Log;
-global using ASC.Webhooks.Service.Services;
+public class Webhook : IMapFrom<DbWebhook>
+{
+    public int Id { get; set; }
+    public string Route { get; set; }
+    public string Method { get; set; }
+    public bool Disable { get; set; }
+    public string Name { get => WebHookResource.ResourceManager.GetString(Endpoint) ?? ""; }
+    public string Description { get => WebHookResource.ResourceManager.GetString($"{Endpoint}_Description") ?? ""; }
 
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Logging;
-
-global using Polly;
-global using Polly.Extensions.Http;
-global using ASC.Webhooks;
-global using ASC.Webhooks.Extension;
+    private string Endpoint { get => $"{Method}|{Route}"; }
+}

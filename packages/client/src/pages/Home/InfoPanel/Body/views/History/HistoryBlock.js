@@ -21,6 +21,7 @@ const HistoryBlock = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
+  isCollaborator,
   isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
@@ -37,6 +38,8 @@ const HistoryBlock = ({
   const userAvatar = initiator.hasAvatar
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
+
+  const isSelectedFile = !selection.isFolder && !selection.isRoom;
 
   return (
     <StyledHistoryBlock
@@ -74,7 +77,7 @@ const HistoryBlock = ({
           selectionParentRoom={selectionParentRoom}
         />
 
-        {isItemAction && (
+        {isItemAction && !isSelectedFile && (
           <HistoryBlockItemList
             t={t}
             items={[json, ...groupedFeeds]}
@@ -87,6 +90,7 @@ const HistoryBlock = ({
           users.map((user, i) => (
             <HistoryBlockUser
               isVisitor={isVisitor}
+              isCollaborator={isCollaborator}
               key={user.id}
               user={user}
               withComma={i < users.length - 1}

@@ -42,6 +42,7 @@ const PaymentRequiredHttpCode = 402;
 const UnauthorizedHttpCode = 401;
 
 const THUMBNAILS_CACHE = 500;
+let timerId;
 
 class FilesStore {
   authStore;
@@ -126,7 +127,8 @@ class FilesStore {
   isLoadedEmptyPage = false;
   isPreview = false;
   tempFilter = null;
-  uploadedFileIdWithVersion = null;
+
+  highlightFile = {};
   thumbnails = new Set();
 
   constructor(
@@ -177,11 +179,10 @@ class FilesStore {
 
             const fileInfo = await api.files.getFileInfo(file.id);
 
+            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
             console.log("[WS] create new file", fileInfo.id, fileInfo.title);
 
             const newFiles = [fileInfo, ...this.files];
-
-            if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
 
             if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
@@ -477,8 +478,28 @@ class FilesStore {
     this.tempFilter = filser;
   };
 
-  setUploadedFileIdWithVersion = (uploadedFileIdWithVersion) => {
-    this.uploadedFileIdWithVersion = uploadedFileIdWithVersion;
+  setHighlightFile = (highlightFile) => {
+    const { highlightFileId, isFileHasExst } = highlightFile;
+
+    runInAction(() => {
+      this.highlightFile = {
+        id: highlightFileId,
+        isExst: isFileHasExst,
+      };
+    });
+
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+
+    if (Object.keys(highlightFile).length === 0) return;
+
+    timerId = setTimeout(() => {
+      runInAction(() => {
+        this.highlightFile = {};
+      });
+    }, 1000);
   };
 
   checkSelection = (file) => {
@@ -2149,6 +2170,25 @@ class FilesStore {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
 
+    if (newFilter.total <= newFilter.pageCount) {
+      const files = fileIds
+        ? this.files.filter((x) => !fileIds.includes(x.id))
+        : this.files;
+      const folders = folderIds
+        ? this.folders.filter((x) => !folderIds.includes(x.id))
+        : this.folders;
+
+      newFilter.total -= deleteCount;
+
+      runInAction(() => {
+        this.setFilter(newFilter);
+        this.setFiles(files);
+        this.setFolders(folders);
+      });
+
+      return;
+    }
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
@@ -2451,8 +2491,6 @@ class FilesStore {
         viewAccessability,
       } = item;
 
-      const upgradeVersion = id === this.uploadedFileIdWithVersion;
-
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey,
         "small"
@@ -2531,7 +2569,6 @@ class FilesStore {
         comment,
         contentLength,
         contextOptions,
-        upgradeVersion,
         created,
         createdBy,
         encrypted,

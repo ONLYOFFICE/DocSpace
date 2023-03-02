@@ -154,6 +154,43 @@ const FilterBlockLoader = ({
         </StyledBlock>
       )}
 
+      {isAccounts && (
+        <StyledBlock>
+          <RectangleLoader
+            width={"50"}
+            height={"16"}
+            borderRadius={"3"}
+            className={"loader-item"}
+          />
+          <div className="row-loader">
+            <RectangleLoader
+              width={"114"}
+              height={"28"}
+              borderRadius={"16"}
+              className={"loader-item tag-item"}
+            />
+            <RectangleLoader
+              width={"110"}
+              height={"28"}
+              borderRadius={"16"}
+              className={"loader-item tag-item"}
+            />
+            <RectangleLoader
+              width={"108"}
+              height={"28"}
+              borderRadius={"16"}
+              className={"loader-item tag-item"}
+            />
+            <RectangleLoader
+              width={"59"}
+              height={"28"}
+              borderRadius={"16"}
+              className={"loader-item tag-item"}
+            />
+          </div>
+        </StyledBlock>
+      )}
+
       <StyledBlock isLast>
         <RectangleLoader
           width={"50"}
@@ -165,19 +202,13 @@ const FilterBlockLoader = ({
           {isAccounts ? (
             <>
               <RectangleLoader
-                width={"114"}
+                width={"57"}
                 height={"28"}
                 borderRadius={"16"}
                 className={"loader-item tag-item"}
               />
               <RectangleLoader
-                width={"84"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-              <RectangleLoader
-                width={"59"}
+                width={"57"}
                 height={"28"}
                 borderRadius={"16"}
                 className={"loader-item tag-item"}
