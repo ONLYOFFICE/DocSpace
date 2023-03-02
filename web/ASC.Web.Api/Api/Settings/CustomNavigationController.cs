@@ -49,24 +49,58 @@ public class CustomNavigationController : BaseSettingsController
         _storageHelper = storageHelper;
     }
 
+    /// <summary>
+    /// Returns a list of the custom navigation items.
+    /// </summary>
+    /// <short>Get the custom navigation items</short>
+    /// <category>Custom navigation</category>
+    /// <returns>List of the custom navigation items</returns>
+    /// <path>api/2.0/settings/customnavigation/getall</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/getall")]
     public List<CustomNavigationItem> GetCustomNavigationItems()
     {
         return _settingsManager.Load<CustomNavigationSettings>().Items;
     }
 
+    /// <summary>
+    /// Returns a custom navigation item sample.
+    /// </summary>
+    /// <short>Get a custom navigation item sample</short>
+    /// <category>Custom navigation</category>
+    /// <returns>Custom navigation item</returns>
+    /// <path>api/2.0/settings/customnavigation/getsample</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/getsample")]
     public CustomNavigationItem GetCustomNavigationItemSample()
     {
         return CustomNavigationItem.GetSample();
     }
 
+    /// <summary>
+    /// Returns a custom navigation item by the ID specified in the request.
+    /// </summary>
+    /// <short>Get a custom navigation item by ID</short>
+    /// <category>Custom navigation</category>
+    /// <param name="id">Custom navigation item ID</param>
+    /// <returns>Custom navigation item</returns>
+    /// <path>api/2.0/settings/customnavigation/get/{id}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/get/{id}")]
     public CustomNavigationItem GetCustomNavigationItem(Guid id)
     {
         return _settingsManager.Load<CustomNavigationSettings>().Items.FirstOrDefault(item => item.Id == id);
     }
 
+    /// <summary>
+    /// Adds a custom navigation item with the parameters specified in the request.
+    /// </summary>
+    /// <short>Add a custom navigation item</short>
+    /// <category>Custom navigation</category>
+    /// <param name="item">Custom navigation parameters: ID, label, URL, big image, small image, show in menu or not, show on home page or not</param>
+    /// <returns>Custom navigation item</returns>
+    /// <path>api/2.0/settings/customnavigation/create</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("customnavigation/create")]
     public async Task<CustomNavigationItem> CreateCustomNavigationItem(CustomNavigationItem item)
     {
@@ -120,6 +154,15 @@ public class CustomNavigationController : BaseSettingsController
         return item;
     }
 
+    /// <summary>
+    /// Deletes a custom navigation item with the ID specified in the request.
+    /// </summary>
+    /// <short>Delete a custom navigation item</short>
+    /// <category>Custom navigation</category>
+    /// <param name="id">Custom navigation item ID</param>
+    /// <path>api/2.0/settings/customnavigation/delete/{id}</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns>Task awaiter</returns>
     [HttpDelete("customnavigation/delete/{id}")]
     public async Task DeleteCustomNavigationItem(Guid id)
     {
