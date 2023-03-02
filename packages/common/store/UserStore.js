@@ -86,23 +86,18 @@ class UserStore {
   sendActivationLink = (t) => {
     const { email, id } = this.user;
 
-    return api.people
-      .resendUserInvites([id])
-      .then(() => {
-        toastr.success(
-          <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            ns="People"
-            t={t}
-          >
-            The email activation instructions have been sent to the
-            <strong>{{ email: email }}</strong> email address
-          </Trans>
-        );
-      })
-      .finally(() => {
-        this.setWithSendAgain(false);
-      });
+    return api.people.resendUserInvites([id]).then(() => {
+      toastr.success(
+        <Trans
+          i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+          ns="People"
+          t={t}
+        >
+          The email activation instructions have been sent to the
+          <strong>{{ email: email }}</strong> email address
+        </Trans>
+      );
+    });
   };
 
   get withActivationBar() {
