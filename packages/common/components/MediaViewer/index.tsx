@@ -1,5 +1,11 @@
-import { isMobileOnly } from "react-device-detect";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { isMobile } from "react-device-detect";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 
 import ViewerWrapper from "./sub-components/ViewerWrapper";
 
@@ -26,13 +32,15 @@ function MediaViewer({
   prevMedia,
   ...props
 }: MediaViewerProps): JSX.Element {
+  const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
+
   const [title, setTitle] = useState<string>("");
-  const [fileUrl, setFileUrl] = useState<string>(() => {
+  const [fileUrl, setFileUrl] = useState<string | null>(() => {
     const { playlist, currentFileId } = props;
     const item = playlist.find(
       (file) => file.fileId.toString() === currentFileId.toString()
     );
-    return item?.src ?? "";
+    return item?.src ?? null;
   });
 
   const [targetFile, setTargetFile] = useState(() => {
@@ -89,10 +97,12 @@ function MediaViewer({
     if (!src) return onEmptyPlaylistError();
 
     if (ext !== ".tif" && ext !== ".tiff" && src !== fileUrl) {
+      TiffXMLHttpRequestRef.current?.abort();
       setFileUrl(src);
     }
 
     if (ext === ".tiff" || ext === ".tif") {
+      setFileUrl(null);
       fetchAndSetTiffDataURL(src);
     }
 
@@ -108,18 +118,14 @@ function MediaViewer({
       (playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
         FileStatus.IsFavorite
     );
-  }, [
-    props.playlist.length,
-    props.files.length,
-    props.currentFileId,
-    playlistPos,
-  ]);
+  }, [props.playlist, props.files.length, props.currentFileId, playlistPos]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeydown);
 
     return () => {
       document.removeEventListener("keydown", onKeydown);
+      TiffXMLHttpRequestRef.current?.abort();
     };
   }, [
     props.playlist.length,
@@ -229,9 +235,9 @@ function MediaViewer({
       },
     ];
 
-    return isMobileOnly
+    return isMobile
       ? model
-      : isImage && !isMobileOnly
+      : isImage && !isMobile
       ? desktopModel.filter((el) => el.key !== "download")
       : desktopModel;
   };
@@ -300,7 +306,14 @@ function MediaViewer({
     const { code, ctrlKey } = event;
 
     if (code in KeyboardEventKeys) {
-      event.preventDefault();
+      const includesKeyboardCode = [
+        KeyboardEventKeys.KeyS,
+        KeyboardEventKeys.Numpad1,
+        KeyboardEventKeys.Digit1,
+        KeyboardEventKeys.Space,
+      ].includes(code as KeyboardEventKeys);
+
+      if (!includesKeyboardCode || ctrlKey) event.preventDefault();
     }
     if (props.deleteDialogVisible) return;
 
@@ -376,7 +389,10 @@ function MediaViewer({
   const fetchAndSetTiffDataURL = useCallback((src: string) => {
     if (!window.Tiff) return;
 
+    TiffXMLHttpRequestRef.current?.abort();
+
     const xhr = new XMLHttpRequest();
+    TiffXMLHttpRequestRef.current = xhr;
     xhr.responseType = "arraybuffer";
 
     xhr.open("GET", src);
