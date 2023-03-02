@@ -9,7 +9,7 @@ import { isMobileOnly } from "react-device-detect";
 
 import { StyledRow } from "./styled-main-profile";
 
-const TimezoneCombo = ({title}) => {
+const TimezoneCombo = ({ title }) => {
   const { t } = useTranslation("Wizard");
 
   const timezones = [{ key: "03", label: "(UTC) +03 Moscow" }];
@@ -17,7 +17,7 @@ const TimezoneCombo = ({title}) => {
 
   return (
     <StyledRow title={title}>
-      <Text as="div" color="#A3A9AE" className="label">
+      <Text as="div" className="label">
         {t("Wizard:Timezone")}
       </Text>
       <ComboBox
