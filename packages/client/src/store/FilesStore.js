@@ -2170,6 +2170,25 @@ class FilesStore {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
 
+    if (newFilter.total <= newFilter.pageCount) {
+      const files = fileIds
+        ? this.files.filter((x) => !fileIds.includes(x.id))
+        : this.files;
+      const folders = folderIds
+        ? this.folders.filter((x) => !folderIds.includes(x.id))
+        : this.folders;
+
+      newFilter.total -= deleteCount;
+
+      runInAction(() => {
+        this.setFilter(newFilter);
+        this.setFiles(files);
+        this.setFolders(folders);
+      });
+
+      return;
+    }
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
