@@ -6,8 +6,9 @@ import MediaRotateLeftIcon from "PUBLIC_DIR/images/media.rotateleft.react.svg";
 import MediaRotateRightIcon from "PUBLIC_DIR/images/media.rotateright.react.svg";
 import MediaDeleteIcon from "PUBLIC_DIR/images/media.delete.react.svg";
 import MediaDownloadIcon from "PUBLIC_DIR/images/download.react.svg";
-import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
+// import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
 import ViewerSeparator from "PUBLIC_DIR/images/viewer.separator.react.svg";
+import { ActionType } from ".";
 
 export const getCustomToolbar = (
   onDeleteClick: VoidFunction,
@@ -17,7 +18,7 @@ export const getCustomToolbar = (
     {
       key: "zoomOut",
       percent: true,
-      actionType: 2,
+      actionType: ActionType.ZoomOut,
       render: (
         <div className="iconContainer zoomOut">
           <MediaZoomOutIcon size="scale" />
@@ -30,7 +31,7 @@ export const getCustomToolbar = (
     },
     {
       key: "zoomIn",
-      actionType: 1,
+      actionType: ActionType.ZoomIn,
       render: (
         <div className="iconContainer zoomIn">
           <MediaZoomInIcon size="scale" />
@@ -39,7 +40,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateLeft",
-      actionType: 5,
+      actionType: ActionType.RotateLeft,
       render: (
         <div className="iconContainer rotateLeft">
           <MediaRotateLeftIcon size="scale" />
@@ -48,7 +49,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateRight",
-      actionType: 6,
+      actionType: ActionType.RotateRight,
       render: (
         <div className="iconContainer rotateRight">
           <MediaRotateRightIcon size="scale" />
@@ -67,7 +68,7 @@ export const getCustomToolbar = (
     },
     {
       key: "download",
-      actionType: 102,
+      actionType: ActionType.Download,
       render: (
         <div className="iconContainer download" style={{ height: "16px" }}>
           <MediaDownloadIcon size="scale" />
@@ -98,15 +99,6 @@ export const getCustomToolbar = (
         </div>
       ),
       onClick: onDeleteClick,
-    },
-    {
-      key: "favorite",
-      actionType: 104,
-      render: (
-        <div className="iconContainer viewer-favorite">
-          <MediaFavoriteIcon size="scale" />
-        </div>
-      ),
     },
   ];
 };
