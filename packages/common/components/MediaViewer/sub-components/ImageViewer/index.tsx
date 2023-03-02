@@ -516,11 +516,10 @@ function ImageViewer({
     const dx = style.x.get() - scale * tx;
     const dy = style.y.get() - scale * ty;
 
-    const ratio = scale / style.scale.get();
-
     const newScale = Math.min(style.scale.get() + scale, MaxScale);
+    const ratio = newScale / style.scale.get();
 
-    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+    const point = maybeAdjustBounds(dx, dy, ratio);
 
     toolbarRef.current?.setPercentValue(newScale);
 
@@ -528,9 +527,6 @@ function ImageViewer({
       ...point,
       scale: newScale,
       config: config.default,
-      onChange() {
-        api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
-      },
       onResolve() {
         api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
       },
