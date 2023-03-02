@@ -472,6 +472,7 @@ export default function ViewerPlayer(props) {
       }
       if (displayUI && props.isPlay && state.isFirstTap) {
         props.setIsPlay(false);
+        videoRef.current.pause();
         return dispatch(
           createAction(ACTION_TYPES.update, {
             isFirstTap: false,
@@ -535,6 +536,12 @@ export default function ViewerPlayer(props) {
         isFirstStart: false,
       })
     );
+
+    if (!state.isPlaying) {
+      videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
   };
 
   const handleVolumeUpdate = (e) => {
@@ -734,6 +741,12 @@ export default function ViewerPlayer(props) {
 
     const lasting = `${currentTime} / ${duration}`;
 
+    if (progress === 100 || !state.isPlaying) {
+      videoRef.current.stop();
+    } else {
+      videoRef.current.play();
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         duration: lasting,
@@ -826,10 +839,6 @@ export default function ViewerPlayer(props) {
 
     return () => window.removeEventListener("resize", handleResize);
   }, [videoRef.current, state.isFullScreen]);
-
-  React.useEffect(() => {
-    state.isPlaying ? videoRef.current.play() : videoRef.current.pause();
-  }, [state.isPlaying, videoRef.current]);
 
   React.useEffect(() => {
     if (videoRef && videoRef.current) {
