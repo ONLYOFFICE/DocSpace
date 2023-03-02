@@ -23,7 +23,7 @@ export enum KeyboardEventKeys {
   Digit1 = "Digit1",
 }
 
-export enum ActionType {
+export enum ToolbarActionType {
   ZoomIn = 1,
   ZoomOut = 2,
   Prev = 3,

@@ -23,7 +23,7 @@ import {
   ImperativeHandle,
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
-import { ActionType, KeyboardEventKeys } from "../../helpers";
+import { ToolbarActionType, KeyboardEventKeys } from "../../helpers";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -848,21 +848,24 @@ function ImageViewer({
     }
   );
 
-  const handleAction = (action: ActionType) => {
+  const handleAction = (action: ToolbarActionType) => {
     resetToolbarVisibleTimer();
 
     switch (action) {
-      case ActionType.ZoomOut:
+      case ToolbarActionType.ZoomOut:
         zoomOut();
         break;
-      case ActionType.ZoomIn:
+      case ToolbarActionType.ZoomIn:
         zoomIn();
         break;
 
-      case ActionType.RotateLeft:
-      case ActionType.RotateRight:
-        const dir = action === ActionType.RotateRight ? 1 : -1;
+      case ToolbarActionType.RotateLeft:
+      case ToolbarActionType.RotateRight:
+        const dir = action === ToolbarActionType.RotateRight ? 1 : -1;
         rotateImage(dir);
+        break;
+      case ToolbarActionType.Reset:
+        RestartScaleAndSize();
         break;
       default:
         break;

@@ -8,7 +8,7 @@ import MediaDeleteIcon from "PUBLIC_DIR/images/media.delete.react.svg";
 import MediaDownloadIcon from "PUBLIC_DIR/images/download.react.svg";
 // import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
 import ViewerSeparator from "PUBLIC_DIR/images/viewer.separator.react.svg";
-import { ActionType } from ".";
+import { ToolbarActionType } from ".";
 
 export const getCustomToolbar = (
   onDeleteClick: VoidFunction,
@@ -18,7 +18,7 @@ export const getCustomToolbar = (
     {
       key: "zoomOut",
       percent: true,
-      actionType: ActionType.ZoomOut,
+      actionType: ToolbarActionType.ZoomOut,
       render: (
         <div className="iconContainer zoomOut">
           <MediaZoomOutIcon size="scale" />
@@ -27,11 +27,11 @@ export const getCustomToolbar = (
     },
     {
       key: "percent",
-      actionType: 999,
+      actionType: ToolbarActionType.Reset,
     },
     {
       key: "zoomIn",
-      actionType: ActionType.ZoomIn,
+      actionType: ToolbarActionType.ZoomIn,
       render: (
         <div className="iconContainer zoomIn">
           <MediaZoomInIcon size="scale" />
@@ -40,7 +40,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateLeft",
-      actionType: ActionType.RotateLeft,
+      actionType: ToolbarActionType.RotateLeft,
       render: (
         <div className="iconContainer rotateLeft">
           <MediaRotateLeftIcon size="scale" />
@@ -49,7 +49,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateRight",
-      actionType: ActionType.RotateRight,
+      actionType: ToolbarActionType.RotateRight,
       render: (
         <div className="iconContainer rotateRight">
           <MediaRotateRightIcon size="scale" />
@@ -68,7 +68,7 @@ export const getCustomToolbar = (
     },
     {
       key: "download",
-      actionType: ActionType.Download,
+      actionType: ToolbarActionType.Download,
       render: (
         <div className="iconContainer download" style={{ height: "16px" }}>
           <MediaDownloadIcon size="scale" />
