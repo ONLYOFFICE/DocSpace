@@ -28,6 +28,10 @@ using static ASC.Files.Core.Security.FileSecurity;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+[JsonDerivedType(typeof(FileDto<int>))]
+[JsonDerivedType(typeof(FileDto<string>))]
+[JsonDerivedType(typeof(FolderDto<int>))]
+[JsonDerivedType(typeof(FolderDto<string>))]
 public abstract class FileEntryDto
 {
     protected internal abstract FileEntryType EntryType { get; }
@@ -68,10 +72,10 @@ public abstract class FileEntryDto<T> : FileEntryDto
 {
     public T Id { get; set; }
     public T RootFolderId { get; set; }
-    
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T OriginId { get; set; }
-    
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T OriginRoomId { get; set; }
     public string OriginTitle { get; set; }

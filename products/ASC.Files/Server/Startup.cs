@@ -28,7 +28,7 @@ namespace ASC.Files;
 
 public class Startup : BaseStartup
 {
-    protected override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
+    protected override JsonConverter[] Converters { get => new JsonConverter[] { new FileShareConverter() }; }
 
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         : base(configuration, hostEnvironment)
