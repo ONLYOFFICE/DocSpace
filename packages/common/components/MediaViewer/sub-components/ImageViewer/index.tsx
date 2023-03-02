@@ -20,7 +20,7 @@ import {
 
 import ImageViewerProps from "./ImageViewer.props";
 import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
-import { ActionType } from "../../helpers";
+import { ActionType, KeyboardEventKeys } from "../../helpers";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -90,8 +90,15 @@ function ImageViewer({
   useLayoutEffect(() => {
     if (unmountRef.current) return;
     setIsLoading(true);
-    console.log({ src });
   }, [src]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   function Resize() {
     if (!imgRef.current || isLoading) return;
@@ -107,6 +114,43 @@ function ImageViewer({
       api.set(imagePositionAndSize);
     }
   }
+
+  const RestartScaleAndSize = () => {
+    if (!imgRef.current || isLoading) return;
+
+    const naturalWidth = imgRef.current.naturalWidth;
+    const naturalHeight = imgRef.current.naturalHeight;
+
+    const imagePositionAndSize = getImagePositionAndSize(
+      naturalWidth,
+      naturalHeight
+    );
+
+    const rotate = style.rotate.get();
+
+    const dir = rotate > 0 ? 1 : rotate === 0 ? 0 : -1;
+
+    const modRotate = Math.abs(rotate) % 360;
+
+    let divRotate = modRotate / 180;
+
+    divRotate = divRotate === 1 ? 0 : divRotate === 0 ? 1 : divRotate;
+
+    const newRotate = rotate - dir * (1 - divRotate) * 180;
+
+    console.log({
+      dir,
+      rotate,
+      divRotate,
+      newRotate,
+    });
+
+    api.start({
+      ...imagePositionAndSize,
+      scale: 1,
+      rotate: newRotate,
+    });
+  };
 
   function getImagePositionAndSize(
     imageNaturalWidth: number,
@@ -306,6 +350,135 @@ function ImageViewer({
     }
 
     return point;
+  };
+
+  const rotateImage = (dir: number) => {
+    if (style.rotate.isAnimating) return;
+
+    const rotate = style.rotate.get() + dir * 90;
+
+    const point = maybeAdjustImage(
+      maybeAdjustBounds(style.x.get(), style.y.get(), 1, rotate)
+    );
+
+    api.start({
+      ...point,
+      rotate,
+      config: {
+        // easing: easings.easeInBack,
+        duration: 200,
+      },
+    });
+  };
+
+  const zoomOut = () => {
+    if (
+      style.scale.isAnimating ||
+      style.scale.get() <= MinScale ||
+      !imgRef.current ||
+      !containerRef.current
+    )
+      return;
+
+    const { width, height, x, y } = imgRef.current.getBoundingClientRect();
+    const {
+      width: containerWidth,
+      height: containerHeight,
+    } = containerRef.current.getBoundingClientRect();
+
+    const scale = Math.max(style.scale.get() - DefaultSpeedScale, MinScale);
+
+    const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
+    const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
+
+    let dx = style.x.get() + DefaultSpeedScale * tx;
+    let dy = style.y.get() + DefaultSpeedScale * ty;
+
+    const ratio = scale / style.scale.get();
+
+    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+
+    api.start({
+      scale,
+      ...point,
+      config: {
+        duration: 300,
+      },
+      onResolve: (result) => {
+        api.start({
+          ...maybeAdjustImage({
+            x: result.value.x,
+            y: result.value.y,
+          }),
+          config: {
+            ...config.default,
+            duration: 100,
+          },
+        });
+      },
+    });
+  };
+
+  const zoomIn = () => {
+    if (
+      style.scale.isAnimating ||
+      style.scale.get() >= MaxScale ||
+      !imgRef.current ||
+      !containerRef.current
+    )
+      return;
+
+    const { width, height, x, y } = imgRef.current.getBoundingClientRect();
+    const {
+      width: containerWidth,
+      height: containerHeight,
+    } = containerRef.current.getBoundingClientRect();
+
+    const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
+    const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
+
+    const dx = style.x.get() - DefaultSpeedScale * tx;
+    const dy = style.y.get() - DefaultSpeedScale * ty;
+
+    const scale = Math.min(style.scale.get() + DefaultSpeedScale, MaxScale);
+
+    api.start({
+      x: dx,
+      y: dy,
+      scale,
+      config: {
+        duration: 300,
+      },
+    });
+  };
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    const { code, ctrlKey } = event;
+
+    switch (code) {
+      case KeyboardEventKeys.ArrowLeft:
+      case KeyboardEventKeys.ArrowRight:
+        if (document.fullscreenElement) return;
+        if (ctrlKey) {
+          const dir = code === KeyboardEventKeys.ArrowRight ? 1 : -1;
+          rotateImage(dir);
+        }
+        break;
+      case KeyboardEventKeys.ArrowUp:
+        zoomIn();
+        break;
+      case KeyboardEventKeys.ArrowDown:
+        zoomOut();
+        break;
+      case KeyboardEventKeys.Digit1:
+      case KeyboardEventKeys.Numpad1:
+        if (ctrlKey) {
+          RestartScaleAndSize();
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   useGesture(
@@ -631,103 +804,20 @@ function ImageViewer({
   );
 
   const handleAction = (action: ActionType) => {
-    if (!imgRef.current || !containerRef.current) return;
-
-    const { width, height, x, y } = imgRef.current.getBoundingClientRect();
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
-
     resetToolbarVisibleTimer();
 
     switch (action) {
       case ActionType.ZoomOut:
-        {
-          if (style.scale.isAnimating || style.scale.get() <= MinScale) return;
-
-          const scale = Math.max(
-            style.scale.get() - DefaultSpeedScale,
-            MinScale
-          );
-
-          const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
-          const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
-
-          let dx = style.x.get() + DefaultSpeedScale * tx;
-          let dy = style.y.get() + DefaultSpeedScale * ty;
-
-          const ratio = scale / style.scale.get();
-
-          const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
-
-          api.start({
-            scale,
-            ...point,
-            config: {
-              ...config.default,
-              duration: 300,
-            },
-            onResolve: (result) => {
-              api.start({
-                ...maybeAdjustImage({
-                  x: result.value.x,
-                  y: result.value.y,
-                }),
-                config: {
-                  ...config.default,
-                  duration: 100,
-                },
-              });
-            },
-          });
-        }
+        zoomOut();
         break;
       case ActionType.ZoomIn:
-        {
-          if (style.scale.isAnimating || style.scale.get() >= MaxScale) return;
-
-          const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
-          const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
-
-          const dx = style.x.get() - DefaultSpeedScale * tx;
-          const dy = style.y.get() - DefaultSpeedScale * ty;
-
-          const scale = Math.min(
-            style.scale.get() + DefaultSpeedScale,
-            MaxScale
-          );
-
-          api.start({
-            x: dx,
-            y: dy,
-            scale,
-            config: config.default,
-          });
-        }
+        zoomIn();
         break;
 
       case ActionType.RotateLeft:
       case ActionType.RotateRight:
-        if (style.rotate.isAnimating) return;
-
         const dir = action === ActionType.RotateRight ? 1 : -1;
-
-        const rotate = style.rotate.get() + dir * 90;
-
-        const point = maybeAdjustImage(
-          maybeAdjustBounds(style.x.get(), style.y.get(), 1, rotate)
-        );
-
-        api.start({
-          ...point,
-          rotate,
-          config: {
-            // easing: easings.easeInBack,
-            duration: 200,
-          },
-        });
-
+        rotateImage(dir);
         break;
       default:
         break;

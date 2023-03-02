@@ -11,6 +11,8 @@ export const mediaTypes = Object.freeze({
 });
 
 export enum KeyboardEventKeys {
+  ArrowUp = "ArrowUp",
+  ArrowDown = "ArrowDown",
   ArrowRight = "ArrowRight",
   ArrowLeft = "ArrowLeft",
   Escape = "Escape",

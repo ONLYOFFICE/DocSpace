@@ -304,6 +304,7 @@ function MediaViewer({
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
+    if (props.deleteDialogVisible) return;
 
     if (code in KeyboardEventKeys) {
       const includesKeyboardCode = [
@@ -315,34 +316,18 @@ function MediaViewer({
 
       if (!includesKeyboardCode || ctrlKey) event.preventDefault();
     }
-    if (props.deleteDialogVisible) return;
 
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateLeftElement = document.getElementsByClassName(
-            "iconContainer rotateLeft"
-          )?.[0] as HTMLElement | undefined;
-          rotateLeftElement?.click();
-        } else {
-          prevMedia();
-        }
-
+        if (!ctrlKey) prevMedia();
         break;
 
       case KeyboardEventKeys.ArrowRight:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateRightElement = document.getElementsByClassName(
-            "iconContainer rotateRight"
-          )?.[0] as HTMLElement | undefined;
-          rotateRightElement?.click();
-        } else {
-          nextMedia();
-        }
+        if (!ctrlKey) nextMedia();
 
         break;
 
@@ -361,16 +346,6 @@ function MediaViewer({
 
       case KeyboardEventKeys.KeyS:
         if (ctrlKey) onDownload();
-        break;
-
-      case KeyboardEventKeys.Digit1:
-      case KeyboardEventKeys.Numpad1:
-        if (ctrlKey) {
-          const resetElement = document.getElementsByClassName(
-            "iconContainer reset"
-          )?.[0] as HTMLElement | undefined;
-          resetElement?.click();
-        }
         break;
 
       case KeyboardEventKeys.Delete:
