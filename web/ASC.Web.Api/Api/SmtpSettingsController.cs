@@ -26,6 +26,10 @@
 
 namespace ASC.Api.Settings;
 
+///<summary>
+/// SMTP settings API.
+///</summary>
+///<name>smtpsettings</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -50,6 +54,15 @@ public class SmtpSettingsController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the current portal SMTP settings.
+    /// </summary>
+    /// <short>
+    /// Get the SMTP settings
+    /// </short>
+    /// <returns>SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("smtp")]
     public SmtpSettingsDto GetSmtpSettings()
     {
@@ -61,8 +74,18 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
+    /// <summary>
+    /// Saves the SMTP settings for the current portal.
+    /// </summary>
+    /// <short>
+    /// Save the SMTP settings
+    /// </short>
+    /// <param name="inDto">SMTP settings: host, port, sender address, sender display name, credentials user name, credentials user password, enable SSL or not, enable auth or not</param>
+    /// <returns>SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("smtp")]
-    public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
+    public SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 
@@ -82,6 +105,15 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
+    /// <summary>
+    /// Resets SMTP settings of the current portal.
+    /// </summary>
+    /// <short>
+    /// Reset the SMTP settings
+    /// </short>
+    /// <returns>Default SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("smtp")]
     public SmtpSettingsDto ResetSmtpSettings()
     {
@@ -101,6 +133,15 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
+    // <summary>
+    // Tests the SMTP settings for the current portal (send test message to the user email).
+    // </summary>
+    // <short>
+    // Test the SMTP settings
+    // </short>
+    // <returns>SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test</path>
+    // <httpMethod>GET</httpMethod>
     //[HttpGet("smtp/test")]
     //public SmtpOperationStatus TestSmtpSettings()
     //{
@@ -116,6 +157,15 @@ public class SmtpSettingsController : ControllerBase
     //    return ToSmtpOperationStatus();
     //}
 
+    // <summary>
+    // Returns the SMTP test process status.
+    // </summary>
+    // <short>
+    // Get the SMTP test process status
+    // </short>
+    // <returns>SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test/status</path>
+    // <httpMethod>GET</httpMethod>
     //[HttpGet("smtp/test/status")]
     //public SmtpOperationStatus GetSmtpOperationStatus()
     //{
