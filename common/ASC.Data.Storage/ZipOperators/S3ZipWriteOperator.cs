@@ -89,8 +89,8 @@ public class S3ZipWriteOperator : IDataWriteOperator
         {
             var fs = _fileStream;
             _fileStream = null;
-            Upload(fs);
             Computehash(fs, false);
+            Upload(fs);
         }
     }
 
@@ -134,12 +134,13 @@ public class S3ZipWriteOperator : IDataWriteOperator
         _tarOutputStream.Close();
         _tarOutputStream.Dispose();
 
+        Computehash(_fileStream, true);
         Upload(_fileStream);
+
         Task.WaitAll(_tasks.ToArray());
 
         StoragePath = await _sessionHolder.FinalizeAsync(_chunkedUploadSession);
 
-        Computehash(_fileStream, true);
         Hash = BitConverter.ToString(_sha.Hash).Replace("-", string.Empty);
         _sha.Dispose();
 
