@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   hugeMobile,
   smallTablet,
@@ -49,6 +49,13 @@ export const StyledInfo = styled.div`
     gap: 16px;
   }
 
+  .label {
+    min-width: 75px;
+    max-width: 75px;
+    white-space: nowrap;
+    color: ${(props) => props.theme.profile.main.descriptionTextColor};
+  }
+
   .rows-container {
     display: flex;
     flex-direction: column;
@@ -85,69 +92,71 @@ export const StyledInfo = styled.div`
 
     .email-text-container {
       padding-left: 8px;
-    }
 
-    .send-again-text {
-      line-height: 15px;
-
-      color: #316daa;
-
-      border-bottom: 1px solid #316daa;
-
-      width: fit-content;
-
-      display: none;
-
-      @media ${smallTablet} {
-        display: block;
-
-        cursor: pointer;
-      }
-    }
-
-    .send-again-icon {
-      display: none;
-
-      @media ${smallTablet} {
-        display: block;
-        padding-left: 5px;
-
-        max-width: 12px;
-        max-height: 12px;
-      }
+      ${(props) =>
+        props.withActivationBar &&
+        css`
+          color: ${props.theme.profile.main.pendingEmailTextColor};
+        `}
     }
 
     .send-again-container {
-      display: flex;
-      align-items: center;
+      flex-grow: 1;
 
-      margin-left: 8px;
+      max-width: 50%;
+      cursor: pointer;
+
+      align-items: center;
 
       cursor: pointer;
 
-      .send-again-text {
-        display: block;
+      height: 18px;
 
-        margin-left: 4px;
+      .send-again-text {
+        margin-left: 5px;
+
+        line-height: 15px;
+
+        color: ${(props) => props.currentColorScheme.main.accent};
+
+        border-bottom: 1px solid
+          ${(props) => props.currentColorScheme.main.accent};
+
+        margin-top: 2px;
       }
+
       .send-again-icon {
         display: block;
-      }
 
-      @media ${smallTablet} {
-        display: none;
+        width: 12px;
+        height: 12px;
 
-        .send-again-text,
-        .send-again-icon {
-          display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        div {
+          width: 12px;
+          height: 12px;
+        }
+
+        svg {
+          width: 12px;
+          height: 12px;
+
+          path {
+            fill: ${(props) => props.currentColorScheme.main.accent};
+          }
         }
       }
     }
 
-    .label {
-      min-width: 75px;
-      max-width: 75px;
-      white-space: nowrap;
+    .send-again-desktop {
+      display: flex;
+    }
+
+    .send-again-mobile {
+      display: none;
     }
 
     .edit-button {
@@ -165,19 +174,7 @@ export const StyledInfo = styled.div`
         gap: 2px;
 
         .email-text-container {
-          display: flex;
-
-          .send-again-icon {
-            margin-left: 4px;
-
-            display: flex;
-            align-items: center;
-
-            div {
-              display: flex;
-              align-items: center;
-            }
-          }
+          padding-left: 0px;
         }
 
         & > p {
@@ -199,8 +196,14 @@ export const StyledInfo = styled.div`
         min-width: 12px;
       }
 
-      .email-text-container {
-        padding-left: 0px;
+      .send-again-desktop {
+        display: none;
+
+        margin-left: 8px;
+      }
+
+      .send-again-mobile {
+        display: flex;
       }
     }
   }

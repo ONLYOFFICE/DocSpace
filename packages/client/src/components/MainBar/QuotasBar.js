@@ -11,7 +11,7 @@ const StyledLink = styled(Link)`
   line-height: 16px;
   font-weight: 400;
 
-  color: #316daa;
+  color: ${(props) => props.currentColorScheme.main.accent};
 `;
 
 const QuotasBar = ({
@@ -23,6 +23,7 @@ const QuotasBar = ({
   onClick,
   onClose,
   onLoad,
+  currentColorScheme,
 }) => {
   const onClickAction = () => {
     onClick && onClick(isRoomQuota);
@@ -37,7 +38,10 @@ const QuotasBar = ({
     description: (
       <Trans i18nKey="RoomQuotaDescription" t={t}>
         You can archived the unnecessary rooms or
-        <StyledLink onClick={onClickAction}>
+        <StyledLink
+          currentColorScheme={currentColorScheme}
+          onClick={onClickAction}
+        >
           {{ clickHere: t("ClickHere") }}
         </StyledLink>{" "}
         to find a better pricing plan for your portal.
@@ -50,7 +54,10 @@ const QuotasBar = ({
     description: (
       <Trans i18nKey="StorageQuotaDescription" t={t}>
         You can remove the unnecessary files or{" "}
-        <StyledLink onClick={onClickAction}>
+        <StyledLink
+          currentColorScheme={currentColorScheme}
+          onClick={onClickAction}
+        >
           {{ clickHere: t("ClickHere") }}
         </StyledLink>{" "}
         to find a better pricing plan for your portal.
