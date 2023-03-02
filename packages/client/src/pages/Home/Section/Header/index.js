@@ -27,7 +27,6 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -40,7 +39,6 @@ import TrashWarning from "@docspace/common/components/Navigation/sub-components/
 import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -95,14 +93,6 @@ class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { navigationItems: [] };
-  }
-
-  componentDidMount() {
-    window.addEventListener("popstate", this.onBackToParentFolder);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.onBackToParentFolder);
   }
 
   onCreate = (format) => {
@@ -563,14 +553,6 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  onBackToParentFolder = () => {
-    if (this.props.isRoom) {
-      return this.moveToRoomsPage();
-    }
-
-    this.props.backToParentFolder();
-  };
-
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
     this.props.setSelected(key);
@@ -613,10 +595,15 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
+    const {
+      setSelectedNode,
+      setIsLoading,
+      fetchFiles,
+      moveToRoomsPage,
+    } = this.props;
 
     if (isRootRoom) {
-      return this.moveToRoomsPage();
+      return moveToRoomsPage();
     }
 
     setSelectedNode(id);
@@ -624,32 +611,6 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(id, null, true, false)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
-  };
-
-  moveToRoomsPage = () => {
-    const {
-      setIsLoading,
-
-      fetchRooms,
-
-      setAlreadyFetchingRooms,
-
-      rootFolderType,
-    } = this.props;
-
-    setIsLoading(true);
-
-    setAlreadyFetchingRooms(true);
-
-    const filter = RoomsFilter.getDefault();
-
-    if (rootFolderType === FolderType.Archive) {
-      filter.searchArea = RoomSearchArea.Archive;
-    }
-
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
   };
 
   render() {
@@ -681,6 +642,7 @@ class SectionHeaderContent extends React.Component {
       isVisitor,
       isRoom,
       isGroupMenuBlocked,
+      onClickBack,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -738,7 +700,7 @@ class SectionHeaderContent extends React.Component {
                       isArchiveFolder ? isEmptyArchive : isEmptyFilesList
                     }
                     clearTrash={this.onEmptyTrashAction}
-                    onBackToParentFolder={this.onBackToParentFolder}
+                    onBackToParentFolder={onClickBack}
                     toggleInfoPanel={this.onToggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
@@ -833,8 +795,9 @@ export default inject(
       deleteAction,
       downloadAction,
       getHeaderMenu,
-      backToParentFolder,
       isGroupMenuBlocked,
+      moveToRoomsPage,
+      onClickBack,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -845,7 +808,6 @@ export default inject(
       roomType,
       pathParts,
       navigationPath,
-      rootFolderType,
     } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
@@ -908,7 +870,6 @@ export default inject(
       setDeleteDialogVisible,
       downloadAction,
       getHeaderMenu,
-      backToParentFolder,
       getCheckboxItemLabel,
       getCheckboxItemId,
       setSelectFileDialogVisible,
@@ -947,12 +908,13 @@ export default inject(
       onClickArchive,
       onCopyLink,
 
-      rootFolderType,
-
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
       isGroupMenuBlocked,
+
+      moveToRoomsPage,
+      onClickBack,
     };
   }
 )(
