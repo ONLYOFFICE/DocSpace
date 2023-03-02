@@ -101,7 +101,7 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     newFilter.payments = payments;
-    console.log(newFilter);
+    //console.log(newFilter);
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
