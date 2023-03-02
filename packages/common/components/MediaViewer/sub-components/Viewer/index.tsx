@@ -27,6 +27,8 @@ function Viewer(props: ViewerProps) {
 
   const [imageTimer, setImageTimer] = useState<NodeJS.Timeout>();
 
+  const panelVisibleRef = useRef<boolean>(false);
+
   const contextMenuRef = useRef<ContextMenu>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
 
@@ -46,10 +48,21 @@ function Viewer(props: ViewerProps) {
   }, [isPlay, isOpenContextMenu, props.isImage]);
 
   const resetToolbarVisibleTimer = () => {
-    setPanelVisible(true);
-    clearTimeout(timerIDRef.current);
-    timerIDRef.current = setTimeout(() => setPanelVisible(false), 2500);
-    setImageTimer(timerIDRef.current);
+    if (panelVisibleRef.current) {
+      clearTimeout(timerIDRef.current);
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
+    } else {
+      setPanelVisible(true);
+      panelVisibleRef.current = true;
+
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
+    }
   };
 
   useEffect(() => {
