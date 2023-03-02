@@ -7,7 +7,6 @@ import toastr from "@docspace/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
 import { withTranslation } from "react-i18next";
-import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import { FolderType } from "@docspace/common/constants";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
