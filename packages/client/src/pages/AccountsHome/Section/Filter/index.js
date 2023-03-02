@@ -11,7 +11,11 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-import { EmployeeType, PaymentsType } from "@docspace/common/constants";
+import {
+  EmployeeType,
+  EmployeeStatus,
+  PaymentsType,
+} from "@docspace/common/constants";
 
 const getStatus = (filterValues) => {
   const employeeStatus = result(
@@ -79,8 +83,12 @@ const SectionFilterContent = ({
     const newFilter = filter.clone();
 
     if (status === 3) {
-      newFilter.employeeStatus = 2;
+      newFilter.employeeStatus = EmployeeStatus.Disabled;
       newFilter.activationStatus = null;
+    } else if (status === 2) {
+      console.log(status);
+      newFilter.employeeStatus = EmployeeStatus.Active;
+      newFilter.activationStatus = status;
     } else {
       newFilter.employeeStatus = null;
       newFilter.activationStatus = status;
@@ -93,6 +101,7 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     newFilter.payments = payments;
+    //console.log(newFilter);
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
