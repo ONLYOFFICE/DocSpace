@@ -21,7 +21,7 @@ import Icon15x from "PUBLIC_DIR/images/media.viewer15x.react.svg";
 import Icon2x from "PUBLIC_DIR/images/media.viewer2x.react.svg";
 
 import BigIconPlay from "PUBLIC_DIR/images/media.bgplay.react.svg";
-import { useSwipeable } from "../../react-swipeable";
+import { useSwipeable } from "@docspace/components/react-swipeable";
 import { MediaError } from "./media-error";
 
 let iconWidth = 80;

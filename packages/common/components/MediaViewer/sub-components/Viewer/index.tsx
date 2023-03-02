@@ -3,7 +3,6 @@ import { isMobileOnly, isMobile } from "react-device-detect";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 
 import ContextMenu from "@docspace/components/context-menu";
-import ViewerPlayer from "@docspace/components/viewer/sub-components/viewer-player";
 
 import { StyledViewerContainer } from "../../StyledComponents";
 
@@ -12,6 +11,7 @@ import PrevButton from "../PrevButton";
 import ImageViewer from "../ImageViewer";
 import MobileDetails from "../MobileDetails";
 import DesktopDetails from "../DesktopDetails";
+import ViewerPlayer from "../ViewerPlayer/viewer-player";
 
 import type ViewerProps from "./Viewer.props";
 
