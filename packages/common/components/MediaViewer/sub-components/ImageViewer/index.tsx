@@ -195,7 +195,7 @@ function ImageViewer({
     return Math.trunc(a) > Math.trunc(b);
   };
 
-  const getSizeByAngel = (
+  const getSizeByAngle = (
     width: number,
     height: number,
     angle: number
@@ -208,10 +208,10 @@ function ImageViewer({
     const s = sin(angleByRadians);
     const halfw = 0.5 * width;
     const halfh = 0.5 * height;
-    const widthAngle = 2 * (abs(c * halfw) + abs(s * halfh));
-    const heightAngle = 2 * (abs(s * halfw) + abs(c * halfh));
+    const newWidth = 2 * (abs(c * halfw) + abs(s * halfh));
+    const newHeight = 2 * (abs(s * halfw) + abs(c * halfh));
 
-    return [widthAngle, heightAngle];
+    return [newWidth, newHeight];
   };
 
   const getBounds = (
@@ -223,7 +223,7 @@ function ImageViewer({
     let imageBounds = imgRef.current.getBoundingClientRect();
     const containerBounds = containerRef.current.getBoundingClientRect();
 
-    const [width, height] = getSizeByAngel(
+    const [width, height] = getSizeByAngle(
       imageBounds.width,
       imageBounds.height,
       angle
