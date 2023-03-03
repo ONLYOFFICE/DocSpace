@@ -52,6 +52,7 @@ function ImageViewer({
   toolbar,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
+  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const unmountRef = useRef<boolean>(false);
@@ -782,9 +783,11 @@ function ImageViewer({
       },
 
       onClick: ({ pinching, event }) => {
-        if (!imgRef.current || !containerRef.current || pinching) return;
+        if (isDesktop && event.target === imgWrapperRef.current)
+          return onMask();
 
-        if (isDesktop) return onMask();
+        if (!imgRef.current || !containerRef.current || pinching || isDesktop)
+          return;
 
         const time = new Date().getTime();
 
@@ -930,7 +933,7 @@ function ImageViewer({
         $backgroundBlack={backgroundBlack}
       >
         <ViewerLoader isLoading={isLoading} />
-        <ImageWrapper $isLoading={isLoading}>
+        <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
             src={src}
             ref={imgRef}
