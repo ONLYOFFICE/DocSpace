@@ -119,7 +119,7 @@ function ImageViewer({
   }
 
   const RestartScaleAndSize = () => {
-    if (!imgRef.current || style.rotate.isAnimating) return;
+    if (!imgRef.current || style.scale.isAnimating) return;
 
     const naturalWidth = imgRef.current.naturalWidth;
     const naturalHeight = imgRef.current.naturalHeight;
@@ -128,10 +128,21 @@ function ImageViewer({
       naturalWidth,
       naturalHeight
     );
+
+    if (!imagePositionAndSize) return;
+
+    const { x, y, width, height } = imagePositionAndSize;
+
+    const ratio = 1 / style.scale.get();
+
+    const point = maybeAdjustImage({ x, y }, ratio);
+
     toolbarRef.current?.setPercentValue(1);
 
     api.start({
-      ...imagePositionAndSize,
+      ...point,
+      width,
+      height,
       scale: 1,
     });
   };
@@ -262,7 +273,7 @@ function ImageViewer({
   const maybeAdjustBounds = (
     x: number,
     y: number,
-    diffScale: number,
+    diffScale: number = 1,
     angle: number = 0
   ) => {
     const bounds = getBounds(diffScale, angle);
@@ -286,13 +297,38 @@ function ImageViewer({
     return { x, y };
   };
 
-  const maybeAdjustImage = (point: { x: number; y: number }) => {
-    if (!imgRef.current || !containerRef.current) return;
+  const maybeAdjustImage = (
+    point: { x: number; y: number },
+    diffScale: number = 1
+  ) => {
+    if (!imgRef.current || !containerRef.current) return point;
 
     // debugger;
 
-    const imageBounds = imgRef.current.getBoundingClientRect();
+    let imageBounds = imgRef.current.getBoundingClientRect();
     const containerBounds = containerRef.current.getBoundingClientRect();
+
+    if (diffScale !== 1) {
+      const { x, y, width, height } = imageBounds;
+
+      const newWidth = imageBounds.width * diffScale;
+      const newHeight = imageBounds.height * diffScale;
+
+      const newX = x + width / 2 - newWidth / 2;
+      const newY = y + height / 2 - newHeight / 2;
+
+      imageBounds = {
+        ...imageBounds,
+        width: newWidth,
+        height: newHeight,
+        left: newX,
+        top: newY,
+        right: newX + newWidth,
+        bottom: newY + newHeight,
+        x: newX,
+        y: newY,
+      };
+    }
 
     const originalWidth = imgRef.current.clientWidth;
     const widthOverhang = (imageBounds.width - originalWidth) / 2;
@@ -483,6 +519,8 @@ function ImageViewer({
       | MouseEvent
       | React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
+    if (style.scale.isAnimating) return;
+
     if (style.scale.get() !== 1) {
       RestartScaleAndSize();
     } else {
@@ -519,7 +557,7 @@ function ImageViewer({
     const newScale = Math.min(style.scale.get() + scale, MaxScale);
     const ratio = newScale / style.scale.get();
 
-    const point = maybeAdjustBounds(dx, dy, ratio);
+    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio), ratio);
 
     toolbarRef.current?.setPercentValue(newScale);
 
@@ -527,6 +565,9 @@ function ImageViewer({
       ...point,
       scale: newScale,
       config: config.default,
+      // onChange(result) {
+      //   api.start(maybeAdjustImage({ x: dx, y: dy }));
+      // },
       onResolve() {
         api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
       },
@@ -654,7 +695,9 @@ function ImageViewer({
 
         const ratio = dScale / LScale;
 
-        const point = maybeAdjustBounds(x, y, ratio, dRotate);
+        const { x: dx, y: dy } = maybeAdjustImage({ x, y }, ratio);
+
+        const point = maybeAdjustBounds(dx, dy, ratio, dRotate);
 
         scaleRef.current = dScale;
 
@@ -665,10 +708,13 @@ function ImageViewer({
           delay: 0,
           onChange(result) {
             api.start({
-              ...maybeAdjustImage({
-                x: result.value.x,
-                y: result.value.y,
-              }),
+              ...maybeAdjustImage(
+                {
+                  x: result.value.x,
+                  y: result.value.y,
+                },
+                ratio
+              ),
               delay: 0,
               config: {
                 duration: 200,
@@ -795,7 +841,7 @@ function ImageViewer({
 
         const ratio = dScale / lScale;
 
-        const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+        const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio), ratio);
         toolbarRef.current?.setPercentValue(dScale);
         api.start({
           ...point,
@@ -805,7 +851,7 @@ function ImageViewer({
             duration: 300,
           },
           onResolve() {
-            api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
+            api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy)));
           },
         });
 
