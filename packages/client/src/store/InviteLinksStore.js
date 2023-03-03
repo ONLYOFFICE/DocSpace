@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import {
   getInvitationLinks,
   getShortenedLink,
@@ -39,10 +39,12 @@ class InviteLinksStore {
 
     const links = await getInvitationLinks();
 
-    this.setUserLink(links.userLink);
-    this.setGuestLink(links.guestLink);
-    this.setAdminLink(links.adminLink);
-    this.setCollaboratorLink(links.collaboratorLink);
+    runInAction(() => {
+      this.setUserLink(links.userLink);
+      this.setGuestLink(links.guestLink);
+      this.setAdminLink(links.adminLink);
+      this.setCollaboratorLink(links.collaboratorLink);
+    });
   };
 
   getShortenedLink = async (link, forUser = false) => {

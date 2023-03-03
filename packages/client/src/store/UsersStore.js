@@ -33,10 +33,6 @@ class UsersStore {
       filterData.pageCount = 100;
     }
 
-    if (filterData.employeeStatus === EmployeeStatus.Active) {
-      filterData.employeeStatus = null;
-    }
-
     if (filterData.group && filterData.group === "root")
       filterData.group = undefined;
 
