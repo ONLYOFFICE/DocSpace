@@ -27,14 +27,15 @@ const Submenu = (props) => {
   );
 
   useEffect(() => {
-    window.addEventListener("popstate", onClickBack);
+    window.addEventListener("popstate", onCheckCurrentItem);
+    onCheckCurrentItem();
 
     return () => {
-      window.removeEventListener("popstate", onClickBack);
+      window.removeEventListener("popstate", onCheckCurrentItem);
     };
   }, []);
 
-  const onClickBack = useCallback(() => {
+  const onCheckCurrentItem = useCallback(() => {
     const isSelect = data.find((item) =>
       window.location.pathname.endsWith(item.id)
     );
