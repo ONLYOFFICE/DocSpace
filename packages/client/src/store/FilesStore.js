@@ -2201,6 +2201,7 @@ class FilesStore {
         this.setFilter(newFilter);
         this.setFiles(files);
         this.setFolders(folders);
+        this.setTempActionFilesIds([]);
       });
 
       return;

@@ -9,10 +9,7 @@ import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
 
-import {
-  FilterGroups,
-  FilterKeys,
-} from "@docspace/client/src/helpers/filesConstants";
+import { FilterGroups, FilterKeys } from "@docspace/common/constants";
 
 import { getUser } from "@docspace/common/api/people";
 import {

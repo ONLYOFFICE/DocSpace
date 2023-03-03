@@ -52,6 +52,12 @@
           match[0] += "Mobile";
         }
 
+        if ((temp = agent.match(/mobile/i)) != null) {
+          if ((temp = agent.match(/chrome\/?\s*(\d+)/i))) {
+            match[1] = temp[1];
+          }
+        }
+
         return { name: match[0], version: match[1] };
       })();
     }
