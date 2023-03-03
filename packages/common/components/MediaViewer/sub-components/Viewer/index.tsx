@@ -67,7 +67,7 @@ function Viewer(props: ViewerProps) {
 
   useEffect(() => {
     if (isMobile) return;
-
+    resetToolbarVisibleTimer();
     document.addEventListener("mousemove", resetToolbarVisibleTimer, {
       passive: true,
     });
