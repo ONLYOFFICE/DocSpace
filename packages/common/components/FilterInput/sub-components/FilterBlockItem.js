@@ -24,6 +24,7 @@ import {
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import XIcon from "PUBLIC_DIR/images/x.react.svg";
+import { FilterGroups, FilterKeys } from "../../../constants";
 
 const FilterBlockItem = ({
   group,
@@ -184,16 +185,21 @@ const FilterBlockItem = ({
   };
 
   const getTagItem = (item) => {
-    const isAuthor = item.key === "user";
-
-    const [meItem, otherItem, userItem] = groupItem;
+    const isAuthor = item.key === FilterKeys.user;
 
     if (
-      item.key === otherItem.key &&
-      userItem?.isSelected &&
-      !meItem?.isSelected
-    )
-      return;
+      item.group === FilterGroups.filterAuthor ||
+      item.group === FilterGroups.roomFilterSubject
+    ) {
+      const [meItem, otherItem, userItem] = groupItem;
+
+      if (
+        item.key === otherItem.key &&
+        userItem?.isSelected &&
+        !meItem?.isSelected
+      )
+        return;
+    }
 
     return (
       <ColorTheme
@@ -202,7 +208,7 @@ const FilterBlockItem = ({
         name={`${item.label}-${item.key}`}
         id={item.id}
         onClick={
-          item.key === "other"
+          item.key === FilterKeys.other
             ? (event) => showSelectorAction(event, isAuthor, item.group, [])
             : () =>
                 changeFilterValueAction(
