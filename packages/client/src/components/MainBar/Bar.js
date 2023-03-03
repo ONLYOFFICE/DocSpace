@@ -39,6 +39,8 @@ const Bar = (props) => {
 
     showRoomQuotaBar,
     showStorageQuotaBar,
+
+    currentColorScheme,
   } = props;
 
   const [barVisible, setBarVisible] = useState({
@@ -112,13 +114,7 @@ const Bar = (props) => {
   }, []);
 
   const sendActivationLinkAction = () => {
-    if (sendActivationLink) {
-      sendActivationLink(t).finally(() => {
-        return onCloseActivationBar();
-      });
-    } else {
-      onCloseActivationBar();
-    }
+    sendActivationLink && sendActivationLink(t);
   };
 
   const onCloseActivationBar = () => {
@@ -183,6 +179,7 @@ const Bar = (props) => {
 
   return (isRoomQuota || isStorageQuota) && tReady ? (
     <QuotasBar
+      currentColorScheme={currentColorScheme}
       isRoomQuota={isRoomQuota}
       {...quotasValue}
       onClick={onClickQuota}
@@ -191,6 +188,7 @@ const Bar = (props) => {
     />
   ) : withActivationBar && barVisible.confirmEmail && tReady ? (
     <ConfirmEmailBar
+      currentColorScheme={currentColorScheme}
       onLoad={onLoad}
       onClick={sendActivationLinkAction}
       onClose={onCloseActivationBar}
@@ -221,6 +219,8 @@ export default inject(({ auth, profileActionsStore }) => {
     showStorageQuotaBar,
   } = auth.currentQuotaStore;
 
+  const { currentColorScheme } = auth.settingsStore;
+
   return {
     isAdmin: user?.isAdmin,
     withActivationBar,
@@ -236,5 +236,7 @@ export default inject(({ auth, profileActionsStore }) => {
 
     showRoomQuotaBar,
     showStorageQuotaBar,
+
+    currentColorScheme,
   };
 })(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));

@@ -104,6 +104,7 @@ const PureHome = ({
         <Section.SectionBody>
           <SectionBodyContent />
         </Section.SectionBody>
+
         <Section.InfoPanelHeader>
           <InfoPanelHeaderContent />
         </Section.InfoPanelHeader>

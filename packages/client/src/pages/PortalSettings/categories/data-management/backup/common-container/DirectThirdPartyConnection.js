@@ -283,7 +283,7 @@ const DirectThirdPartyConnection = (props) => {
       onClickInput={onClickInput}
       isPanelVisible={isPanelVisible}
       searchParam=".gz"
-      filesListTitle={t("SelectFileInGZFormat")}
+      filesListTitle={t("Settings:SelectFileInGZFormat")}
       withoutResetFolderTree
       isArchiveOnly
       isDisabled={
@@ -357,7 +357,7 @@ const DirectThirdPartyConnection = (props) => {
               isLoading ||
               accounts.length === 0
             }
-            isNeedBorder
+            displayIconBorder
           />
         )}
       </div>
