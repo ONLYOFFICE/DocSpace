@@ -81,11 +81,11 @@ function ImageViewer({
   useEffect(() => {
     unmountRef.current = false;
 
-    window.addEventListener("resize", Resize);
+    window.addEventListener("resize", resize);
 
     return () => {
       setTimeoutIDTapRef.current && clearTimeout(setTimeoutIDTapRef.current);
-      window.removeEventListener("resize", Resize);
+      window.removeEventListener("resize", resize);
       unmountRef.current = true;
     };
   }, []);
@@ -103,7 +103,7 @@ function ImageViewer({
     };
   }, []);
 
-  function Resize() {
+  function resize() {
     if (!imgRef.current || isLoading) return;
 
     const naturalWidth = imgRef.current.naturalWidth;
@@ -118,7 +118,7 @@ function ImageViewer({
     }
   }
 
-  const RestartScaleAndSize = () => {
+  const restartScaleAndSize = () => {
     if (!imgRef.current || style.scale.isAnimating) return;
 
     const naturalWidth = imgRef.current.naturalWidth;
@@ -135,7 +135,7 @@ function ImageViewer({
 
     const ratio = 1 / style.scale.get();
 
-    const point = maybeAdjustImage({ x, y }, ratio);
+    const point = calculateAdjustImage({ x, y }, ratio);
 
     toolbarRef.current?.setPercentValue(1);
 
@@ -191,7 +191,7 @@ function ImageViewer({
     setIsLoading(false);
   }
 
-  const CompareTo = (a: number, b: number) => {
+  const compareTo = (a: number, b: number) => {
     return Math.trunc(a) > Math.trunc(b);
   };
 
@@ -270,7 +270,7 @@ function ImageViewer({
     return bounds;
   };
 
-  const maybeAdjustBounds = (
+  const calculateAdjustBounds = (
     x: number,
     y: number,
     diffScale: number = 1,
@@ -297,7 +297,7 @@ function ImageViewer({
     return { x, y };
   };
 
-  const maybeAdjustImage = (
+  const calculateAdjustImage = (
     point: { x: number; y: number },
     diffScale: number = 1
   ) => {
@@ -341,12 +341,12 @@ function ImageViewer({
     const isHeightOutContainer = imageBounds.height >= containerBounds.height;
 
     if (
-      CompareTo(imageBounds.left, containerBounds.left) &&
+      compareTo(imageBounds.left, containerBounds.left) &&
       isWidthOutContainer
     ) {
       point.x = widthOverhang;
     } else if (
-      CompareTo(containerBounds.right, imageBounds.right) &&
+      compareTo(containerBounds.right, imageBounds.right) &&
       isWidthOutContainer
     ) {
       point.x = containerBounds.width - imageBounds.width + widthOverhang;
@@ -355,12 +355,12 @@ function ImageViewer({
     }
 
     if (
-      CompareTo(imageBounds.top, containerBounds.top) &&
+      compareTo(imageBounds.top, containerBounds.top) &&
       isHeightOutContainer
     ) {
       point.y = heightOverhang;
     } else if (
-      CompareTo(containerBounds.bottom, imageBounds.bottom) &&
+      compareTo(containerBounds.bottom, imageBounds.bottom) &&
       isHeightOutContainer
     ) {
       point.y = containerBounds.height - imageBounds.height + heightOverhang;
@@ -377,8 +377,8 @@ function ImageViewer({
 
     const rotate = style.rotate.get() + dir * 90;
 
-    const point = maybeAdjustImage(
-      maybeAdjustBounds(style.x.get(), style.y.get(), 1, rotate)
+    const point = calculateAdjustImage(
+      calculateAdjustBounds(style.x.get(), style.y.get(), 1, rotate)
     );
 
     api.start({
@@ -390,7 +390,7 @@ function ImageViewer({
       },
       onResolve(result) {
         api.start({
-          ...maybeAdjustImage({
+          ...calculateAdjustImage({
             x: result.value.x,
             y: result.value.y,
           }),
@@ -427,7 +427,7 @@ function ImageViewer({
 
     const ratio = scale / style.scale.get();
 
-    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio));
+    const point = calculateAdjustImage(calculateAdjustBounds(dx, dy, ratio));
     toolbarRef.current?.setPercentValue(scale);
 
     api.start({
@@ -438,7 +438,7 @@ function ImageViewer({
       },
       onResolve: (result) => {
         api.start({
-          ...maybeAdjustImage({
+          ...calculateAdjustImage({
             x: result.value.x,
             y: result.value.y,
           }),
@@ -505,7 +505,7 @@ function ImageViewer({
       case KeyboardEventKeys.Digit1:
       case KeyboardEventKeys.Numpad1:
         if (ctrlKey) {
-          RestartScaleAndSize();
+          restartScaleAndSize();
         }
         break;
       default:
@@ -522,7 +522,7 @@ function ImageViewer({
     if (style.scale.isAnimating) return;
 
     if (style.scale.get() !== 1) {
-      RestartScaleAndSize();
+      restartScaleAndSize();
     } else {
       zoomOnDoubleTap(event);
     }
@@ -557,7 +557,10 @@ function ImageViewer({
     const newScale = Math.min(style.scale.get() + scale, MaxScale);
     const ratio = newScale / style.scale.get();
 
-    const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio), ratio);
+    const point = calculateAdjustImage(
+      calculateAdjustBounds(dx, dy, ratio),
+      ratio
+    );
 
     toolbarRef.current?.setPercentValue(newScale);
 
@@ -569,7 +572,7 @@ function ImageViewer({
       //   api.start(maybeAdjustImage({ x: dx, y: dy }));
       // },
       onResolve() {
-        api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy, 1)));
+        api.start(calculateAdjustImage(calculateAdjustBounds(dx, dy, 1)));
       },
     });
   };
@@ -636,7 +639,7 @@ function ImageViewer({
           }
         }
 
-        const newPoint = maybeAdjustImage({
+        const newPoint = calculateAdjustImage({
           x: style.x.get(),
           y: style.y.get(),
         });
@@ -695,9 +698,9 @@ function ImageViewer({
 
         const ratio = dScale / LScale;
 
-        const { x: dx, y: dy } = maybeAdjustImage({ x, y }, ratio);
+        const { x: dx, y: dy } = calculateAdjustImage({ x, y }, ratio);
 
-        const point = maybeAdjustBounds(dx, dy, ratio, dRotate);
+        const point = calculateAdjustBounds(dx, dy, ratio, dRotate);
 
         scaleRef.current = dScale;
 
@@ -708,7 +711,7 @@ function ImageViewer({
           delay: 0,
           onChange(result) {
             api.start({
-              ...maybeAdjustImage(
+              ...calculateAdjustImage(
                 {
                   x: result.value.x,
                   y: result.value.y,
@@ -743,7 +746,7 @@ function ImageViewer({
               )
             : startAngleRef.current;
 
-        const newPoint = maybeAdjustImage({
+        const newPoint = calculateAdjustImage({
           x: style.x.get(),
           y: style.y.get(),
         });
@@ -754,7 +757,7 @@ function ImageViewer({
           delay: 0,
           onResolve: () => {
             api.start({
-              ...maybeAdjustImage({
+              ...calculateAdjustImage({
                 x: style.x.get(),
                 y: style.y.get(),
               }),
@@ -767,7 +770,7 @@ function ImageViewer({
           },
           onChange(result) {
             api.start({
-              ...maybeAdjustImage({
+              ...calculateAdjustImage({
                 x: result.value.x,
                 y: result.value.y,
               }),
@@ -844,7 +847,10 @@ function ImageViewer({
 
         const ratio = dScale / lScale;
 
-        const point = maybeAdjustImage(maybeAdjustBounds(dx, dy, ratio), ratio);
+        const point = calculateAdjustImage(
+          calculateAdjustBounds(dx, dy, ratio),
+          ratio
+        );
         toolbarRef.current?.setPercentValue(dScale);
         api.start({
           ...point,
@@ -855,8 +861,8 @@ function ImageViewer({
           },
           onResolve(result) {
             api.start(
-              maybeAdjustImage(
-                maybeAdjustBounds(result.value.x, result.value.y)
+              calculateAdjustImage(
+                calculateAdjustBounds(result.value.x, result.value.y)
               )
             );
           },
@@ -914,14 +920,14 @@ function ImageViewer({
         rotateImage(dir);
         break;
       case ToolbarActionType.Reset:
-        RestartScaleAndSize();
+        restartScaleAndSize();
         break;
       default:
         break;
     }
   };
 
-  function ToolbarEvent(item: ToolbarItemType) {
+  function toolbarEvent(item: ToolbarItemType) {
     if (item.onClick) {
       item.onClick();
     } else {
@@ -953,7 +959,7 @@ function ImageViewer({
           toolbar={toolbar}
           generateContextMenu={generateContextMenu}
           setIsOpenContextMenu={setIsOpenContextMenu}
-          ToolbarEvent={ToolbarEvent}
+          toolbarEvent={toolbarEvent}
         />
       )}
     </>

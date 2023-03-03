@@ -9,7 +9,7 @@ interface ImageViewerToolbarProps {
     bottom?: string
   ) => JSX.Element;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
-  ToolbarEvent: (item: ToolbarItemType) => void;
+  toolbarEvent: (item: ToolbarItemType) => void;
 }
 
 export type ToolbarItemType = ReturnType<typeof getCustomToolbar>[number];

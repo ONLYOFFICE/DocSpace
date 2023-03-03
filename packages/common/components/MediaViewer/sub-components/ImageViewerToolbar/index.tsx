@@ -21,7 +21,7 @@ import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 function ImageViewerToolbar(
   {
     toolbar,
-    ToolbarEvent,
+    toolbarEvent,
     generateContextMenu,
     setIsOpenContextMenu,
   }: ImageViewerToolbarProps,
@@ -90,7 +90,7 @@ function ImageViewerToolbar(
         $isSeparator={item.actionType === -1}
         key={item.key}
         onClick={() => {
-          ToolbarEvent(item);
+          toolbarEvent(item);
         }}
         data-key={item.key}
       >
