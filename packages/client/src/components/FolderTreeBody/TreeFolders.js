@@ -419,7 +419,7 @@ class TreeFolders extends React.Component {
       data: incomingDate,
       certainFolders,
       roomsFolderId,
-      expandedPanelKeys,
+      expandedPanelKeys = [],
     } = this.props;
     isExpand && this.setState({ isExpand: true });
     //console.log("load data...", treeNode);
