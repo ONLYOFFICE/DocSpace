@@ -57,7 +57,7 @@ const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")
 );
 
-const Backup = lazy(() => import("./categories/data-management/backup"));
+const Backup = lazy(() => import("./categories/data-management/index"));
 
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index")
