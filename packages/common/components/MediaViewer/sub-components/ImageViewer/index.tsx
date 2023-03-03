@@ -853,8 +853,12 @@ function ImageViewer({
             ...config.default,
             duration: 300,
           },
-          onResolve() {
-            api.start(maybeAdjustImage(maybeAdjustBounds(dx, dy)));
+          onResolve(result) {
+            api.start(
+              maybeAdjustImage(
+                maybeAdjustBounds(result.value.x, result.value.y)
+              )
+            );
           },
         });
 
