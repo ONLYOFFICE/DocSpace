@@ -82,7 +82,6 @@ const dialogsStore = new DialogsStore(
 
 const peopleStore = new PeopleStore(
   authStore,
-  authStore.infoPanelStore,
   setupStore,
   accessRightsStore,
   dialogsStore

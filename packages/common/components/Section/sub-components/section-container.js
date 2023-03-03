@@ -73,6 +73,12 @@ const StyledSectionContainer = styled.section`
     max-width: 100vw !important;
   `}
 
+  .layout-progress-bar_wrapper {
+    position: fixed;
+    right: ${(props) =>
+      props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+  }
+
   .layout-progress-bar {
     position: fixed;
     right: ${(props) =>

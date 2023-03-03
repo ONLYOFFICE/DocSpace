@@ -45,19 +45,12 @@ class PeopleStore {
   inviteLinksStore = null;
   dialogStore = null;
   loadingStore = null;
-  infoPanelStore = null;
   setupStore = null;
   accessRightsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
 
-  constructor(
-    authStore,
-    infoPanelStore,
-    setupStore,
-    accessRightsStore,
-    dialogsStore
-  ) {
+  constructor(authStore, setupStore, accessRightsStore, dialogsStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -71,7 +64,6 @@ class PeopleStore {
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
-    this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
     this.dialogsStore = dialogsStore;
@@ -188,7 +180,7 @@ class PeopleStore {
   };
 
   onOpenInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
@@ -208,7 +200,7 @@ class PeopleStore {
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { isVisible } = this.infoPanelStore;
+    const { isVisible } = this.authStore.infoPanelStore;
 
     const options = [];
 
