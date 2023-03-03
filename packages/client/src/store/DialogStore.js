@@ -15,6 +15,7 @@ class DialogStore {
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
   deleteDialogVisible = false;
+  resetAuthDialogVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -64,6 +65,10 @@ class DialogStore {
     this.deleteDialogVisible = visible;
   };
 
+  setResetAuthDialogVisible = (visible) => {
+    this.resetAuthDialogVisible = visible;
+  };
+
   closeDialogs = () => {
     this.setChangeEmailDialogVisible(false);
     this.setChangePasswordDialogVisible(false);
@@ -77,6 +82,7 @@ class DialogStore {
 
     this.setSendInviteDialogVisible(false);
     this.setDeleteDialogVisible(false);
+    this.setResetAuthDialogVisible(false);
   };
 }
 
