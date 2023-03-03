@@ -3,7 +3,7 @@ import { ContextMenuModel, PlaylistType } from "../../types";
 
 interface ViewerProps {
   title: string;
-  images: { src: string; alt: string }[];
+  fileUrl?: string;
   isAudio: boolean;
   isVideo: boolean;
   visible: boolean;
@@ -13,10 +13,9 @@ interface ViewerProps {
   inactive: boolean;
 
   audioIcon: string;
-  zoomSpeed: number;
   errorTitle: string;
   headerIcon: string;
-  customToolbar: () => ReturnType<typeof getCustomToolbar>;
+  toolbar: ReturnType<typeof getCustomToolbar>;
   playlistPos: number;
   archiveRoom: boolean;
   isPreviewFile: boolean;
@@ -27,8 +26,8 @@ interface ViewerProps {
   onDownloadClick: VoidFunction;
   generateContextMenu: (
     isOpen: boolean,
-    right: string,
-    bottom: string
+    right?: string,
+    bottom?: string
   ) => JSX.Element;
   onSetSelectionFile: VoidFunction;
 }

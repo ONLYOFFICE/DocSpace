@@ -142,11 +142,11 @@ class FileRow extends Component {
   onCancelCurrentUpload = (e) => {
     //console.log("cancel upload ", e);
     const { id, action, fileId } = e.currentTarget.dataset;
-    const { cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
+    const { t, cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
 
     return action === "convert"
       ? cancelCurrentFileConversion(fileId)
-      : cancelCurrentUpload(id);
+      : cancelCurrentUpload(id, t);
   };
 
   onMediaClick = (id) => {

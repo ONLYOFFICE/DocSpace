@@ -32,7 +32,6 @@ import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
-const storageCheckbox = JSON.parse(localStorage.getItem("createWithoutDialog"));
 
 let requestCounter = 0;
 
@@ -56,7 +55,6 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  createWithoutDialog = storageCheckbox ? true : false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -567,11 +565,6 @@ class FilesStore {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
     viewAs === "tile" && this.createThumbnails();
-  };
-
-  setCreateWithoutDialog = (checked) => {
-    this.createWithoutDialog = checked;
-    localStorage.setItem("createWithoutDialog", JSON.stringify(checked));
   };
 
   setPageItemsLength = (pageItemsLength) => {
@@ -2184,6 +2177,7 @@ class FilesStore {
         this.setFilter(newFilter);
         this.setFiles(files);
         this.setFolders(folders);
+        this.setTempActionFilesIds([]);
       });
 
       return;
