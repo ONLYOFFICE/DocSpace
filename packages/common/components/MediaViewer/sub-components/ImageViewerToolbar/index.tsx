@@ -14,7 +14,7 @@ import {
   ImageViewerToolbarWrapper,
   ListTools,
   ToolbarItem,
-} from "./imagleViewerToolbar.styled";
+} from "./imageViewerToolbar.styled";
 
 import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 
