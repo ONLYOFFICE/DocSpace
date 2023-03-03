@@ -93,8 +93,6 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<UserManager>();
         DIHelper.TryAdd<SocketServiceClient>();
         DIHelper.TryAdd<FileStorageService<int>>();
-        DIHelper.TryAdd<FileDataProvider>();
-        DIHelper.TryAdd<BuilderQueue<int>>();
         DIHelper.TryAdd<Builder<int>>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
@@ -112,14 +110,9 @@ public class Startup : BaseWorkerStartup
 
         services.AddBaseDbContextPool<FilesDbContext>();
 
-        if (!int.TryParse(_configuration["thumbnail:boundedChannelCapacity"], out var boundedChannelCapacity))
-        {
-            boundedChannelCapacity = 100;
-        }
-
-        services.AddSingleton(Channel.CreateBounded<IEnumerable<FileData<int>>>(new BoundedChannelOptions(boundedChannelCapacity) { SingleReader = true, SingleWriter = false }));
-        services.AddSingleton(svc => svc.GetRequiredService<Channel<IEnumerable<FileData<int>>>>().Reader);
-        services.AddSingleton(svc => svc.GetRequiredService<Channel<IEnumerable<FileData<int>>>>().Writer);
+        services.AddSingleton(Channel.CreateUnbounded<FileData<int>>(new UnboundedChannelOptions { SingleReader = true, SingleWriter = false }));
+        services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Reader);
+        services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Writer);
     }
 
 }

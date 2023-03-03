@@ -65,7 +65,7 @@ public static class CommonPhotoManager
 
             if (!transparent)
             {
-                thumbnail.Mutate(x => x.Clear(Color.White));
+                thumbnail.Mutate(x => x.BackgroundColor(Color.White));
             }
             var point = new Point(locationX, locationY);
             image.Mutate(y => y.Resize(finalWidth, finalHeigth));
@@ -77,7 +77,7 @@ public static class CommonPhotoManager
 
             if (!transparent)
             {
-                thumbnail.Mutate(x => x.Clear(Color.White));
+                thumbnail.Mutate(x => x.BackgroundColor(Color.White));
             }
             image.Mutate(y => y.Resize(finalWidth, finalHeigth));
             thumbnail.Mutate(x => x.DrawImage(image, 1));

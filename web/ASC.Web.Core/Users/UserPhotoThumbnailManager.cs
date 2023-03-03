@@ -95,8 +95,8 @@ public static class UserPhotoThumbnailManager
         IImageFormat imgFormat;
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
         }
         catch (OutOfMemoryException)
         {
@@ -129,8 +129,8 @@ public static class UserPhotoThumbnailManager
 
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
             width = img.Width;
             height = img.Height;
             var maxWidth = maxsize.Width;

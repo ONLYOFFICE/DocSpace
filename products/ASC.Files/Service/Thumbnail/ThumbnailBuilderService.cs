@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Threading.Channels;
-
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
@@ -34,20 +32,17 @@ public class ThumbnailBuilderService : BackgroundService
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ILogger<ThumbnailBuilderService> _logger;
-    private readonly BuilderQueue<int> _builderQueue;
-    private readonly ChannelReader<IEnumerable<FileData<int>>> _channelReader;
+    private readonly ChannelReader<FileData<int>> _channelReader;
 
     public ThumbnailBuilderService(
-        BuilderQueue<int> builderQueue,
         IServiceScopeFactory serviceScopeFactory,
         ILogger<ThumbnailBuilderService> logger,
         ThumbnailSettings settings,
-        ChannelReader<IEnumerable<FileData<int>>> channelReader)
+        ChannelReader<FileData<int>> channelReader)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _thumbnailSettings = settings;
         _logger = logger;
-        _builderQueue = builderQueue;
         _channelReader = channelReader;
     }
 
@@ -59,25 +54,38 @@ public class ThumbnailBuilderService : BackgroundService
 
         var fetchedData = new List<FileData<int>>();
 
-        while (!stoppingToken.IsCancellationRequested)
+        _logger.TraceProcedureStart();
+
+        var splitter = _channelReader.Split(2, (n, i, p) => p.TariffState == TariffState.Paid ? 0 : 1, stoppingToken);
+        var premiumTenants = splitter[0].Split((int)(_thumbnailSettings.MaxDegreeOfParallelism * 0.7), null, stoppingToken);
+        var otherTenants = splitter[1].Split((int)(_thumbnailSettings.MaxDegreeOfParallelism * 0.3), null, stoppingToken);
+        var readers = premiumTenants.Union(otherTenants).ToList();
+
+        var tasks = new List<Task>();
+
+        for (var i = 0; i < readers.Count; i++)
         {
-            _logger.TraceProcedureStart();
+            var reader = readers[i];
+            var index = i;
 
-            await foreach (var rawData in _channelReader.ReadAllAsync(stoppingToken))
+            tasks.Add(Task.Run(async () =>
             {
-                fetchedData.AddRange(rawData);
-
-                if (_channelReader.CanCount && _channelReader.Count > 0 && _thumbnailSettings.BatchSize >= fetchedData.Count())
+                await foreach (var fileData in reader.ReadAllAsync(stoppingToken))
                 {
-                    continue;
+                    await using var scope = _serviceScopeFactory.CreateAsyncScope();
+
+                    var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+                    commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
+
+                    var builder = scope.ServiceProvider.GetService<Builder<int>>();
+
+                    await builder.BuildThumbnail(fileData);
                 }
-
-                await _builderQueue.BuildThumbnails(fetchedData);
-
-                fetchedData = new List<FileData<int>>();
-            }
+            }, stoppingToken));
         }
 
-        _logger.InformationThumbnailWorkerStopping();
+        await Task.WhenAll(tasks);
     }
+
+
 }
