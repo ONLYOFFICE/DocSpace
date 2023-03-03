@@ -86,54 +86,15 @@ const ArticleBodyContent = (props) => {
             ? RoomSearchArea.Archive
             : RoomSearchArea.Active;
 
-        fetchRooms(folderId, filter)
-          .then(() => {
-            const url = getCategoryUrl(
-              folderId === archiveFolderId
-                ? CategoryType.Archive
-                : CategoryType.Shared
-            );
-
-            const filterParamsStr = filter.toUrlParams();
-
-            history.push(
-              combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                homepage,
-                `${url}?${filterParamsStr}`
-              )
-            );
-          })
-          .finally(() => {
-            if (filesSection) {
-              setIsLoading(false);
-            } else {
-              hideLoader();
-            }
-          });
+        fetchRooms(folderId, filter).finally(() => {
+          if (filesSection) {
+            setIsLoading(false);
+          } else {
+            hideLoader();
+          }
+        });
       } else {
         fetchFiles(folderId, null, true, false)
-          .then(() => {
-            if (!filesSection) {
-              const filter = FilesFilter.getDefault();
-
-              filter.folder = folderId;
-
-              const filterParamsStr = filter.toUrlParams();
-
-              const url = getCategoryUrl(categoryType, filter.folder);
-
-              const pathname = `${url}?${filterParamsStr}`;
-
-              history.push(
-                combineUrl(
-                  window.DocSpaceConfig?.proxy?.url,
-                  config.homepage,
-                  pathname
-                )
-              );
-            }
-          })
           .catch((err) => toastr.error(err))
           .finally(() => {
             if (filesSection) {

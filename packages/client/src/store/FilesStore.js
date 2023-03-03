@@ -1068,15 +1068,16 @@ class FilesStore {
 
     const pathname = `${url}?${filterParamsStr}`;
 
-    // console.log("setFilterUrl", {
-    //   categoryType: this.categoryType,
-    //   url,
-    //   filterParamsStr,
-    // });
-
-    history.push(
-      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
+    const currentUrl = window.location.href.replace(window.location.origin, "");
+    const newUrl = combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      config.homepage,
+      pathname
     );
+
+    if (newUrl === currentUrl) return;
+
+    history.push(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
