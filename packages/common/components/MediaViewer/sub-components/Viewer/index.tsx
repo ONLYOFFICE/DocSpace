@@ -161,7 +161,6 @@ function Viewer(props: ViewerProps) {
               onNext={props.onNextClick}
               isLastImage={!isNotLastElement}
               isFistImage={!isNotFirstElement}
-              setPanelVisible={setPanelVisible}
               generateContextMenu={props.generateContextMenu}
               setIsOpenContextMenu={setIsOpenContextMenu}
               resetToolbarVisibleTimer={resetToolbarVisibleTimer}

@@ -1,6 +1,6 @@
 import { useGesture } from "@use-gesture/react";
 import { isMobile, isDesktop } from "react-device-detect";
-import { useSpring, config, easings } from "@react-spring/web";
+import { useSpring, config } from "@react-spring/web";
 import React, {
   SyntheticEvent,
   useEffect,
@@ -45,7 +45,6 @@ function ImageViewer({
   isFistImage,
   isLastImage,
   panelVisible,
-  setPanelVisible,
   generateContextMenu,
   setIsOpenContextMenu,
   resetToolbarVisibleTimer,

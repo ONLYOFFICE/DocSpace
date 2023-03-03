@@ -15,17 +15,7 @@ type DesktopDetailsProps = {
 function DesktopDetails({ onMaskClick, title }: DesktopDetailsProps) {
   return (
     <div className="details">
-      <Text
-        isBold
-        fontSize="14px"
-        className="title"
-        title={undefined}
-        tag={undefined}
-        as={undefined}
-        fontWeight={undefined}
-        color={undefined}
-        textAlign={undefined}
-      >
+      <Text isBold fontSize="14px" className="title">
         {title}
       </Text>
       <ControlBtn onClick={onMaskClick} className="mediaPlayerClose">

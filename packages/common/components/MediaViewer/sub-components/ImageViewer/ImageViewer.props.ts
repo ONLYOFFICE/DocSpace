@@ -15,7 +15,6 @@ interface ImageViewerProps {
   onMask: VoidFunction;
 
   resetToolbarVisibleTimer: VoidFunction;
-  setPanelVisible: Dispatch<SetStateAction<boolean>>;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
   generateContextMenu: (
     isOpen: boolean,
