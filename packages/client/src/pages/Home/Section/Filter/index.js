@@ -1075,7 +1075,7 @@ const SectionFilterContent = ({
     };
     const erasure = {
       id: "sort-by_erasure",
-      key: "Erasure",
+      key: "DateAndTime",
       label: t("ByErasure"),
       default: true,
     };
