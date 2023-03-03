@@ -357,7 +357,7 @@ const DirectThirdPartyConnection = (props) => {
               isLoading ||
               accounts.length === 0
             }
-            isNeedBorder
+            displayIconBorder
           />
         )}
       </div>
