@@ -210,7 +210,7 @@ public class NotifyClient
 
         var folderDao = _daoFactory.GetFolderDao<T>();
         var (roomId, roomTitle) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
-        var roomUrl = _pathProvider.GetRoomsUrl(roomId.ToString());       
+        var roomUrl = _pathProvider.GetRoomsUrl(roomId);       
 
         foreach (var recipientId in recipientIds)
         {

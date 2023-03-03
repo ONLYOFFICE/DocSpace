@@ -1006,6 +1006,51 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DocSpace Administrator.
+        /// </summary>
+        public static string RoleEnum_DocSpaceAdmin {
+            get {
+                return ResourceManager.GetString("RoleEnum_DocSpaceAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editor.
+        /// </summary>
+        public static string RoleEnum_Editor {
+            get {
+                return ResourceManager.GetString("RoleEnum_Editor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Administrator.
+        /// </summary>
+        public static string RoleEnum_RoomAdmin {
+            get {
+                return ResourceManager.GetString("RoleEnum_RoomAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string RoleEnum_User {
+            get {
+                return ResourceManager.GetString("RoleEnum_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewer.
+        /// </summary>
+        public static string RoleEnum_Viewer {
+            get {
+                return ResourceManager.GetString("RoleEnum_Viewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
         public static string UnknownFirstName {

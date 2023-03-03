@@ -291,8 +291,14 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        if (inDto.IsUser)
+        {
+            _messageService.Send(MessageAction.GuestCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+        else
+        {
+            _messageService.Send(MessageAction.UserCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
+        }
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
@@ -1003,7 +1009,8 @@ public class UserController : PeopleControllerBase
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
@@ -1120,8 +1127,8 @@ public class UserController : PeopleControllerBase
             }
         }
         
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), 
-            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+            _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
+            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)), users.Select(x => x.Id).ToList(), type);
         
         foreach (var user in users)
         {

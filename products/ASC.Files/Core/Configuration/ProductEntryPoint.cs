@@ -41,6 +41,9 @@ public class ProductEntryPoint : Product
     private readonly TenantManager _tenantManager;
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
     private readonly PathProvider _pathProvider;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileSecurity _fileSecurity;
+    private readonly GlobalFolder _globalFolder;
 
     //public SubscriptionManager SubscriptionManager { get; }
 
@@ -56,7 +59,10 @@ public class ProductEntryPoint : Product
         IDaoFactory daoFactory,
         TenantManager tenantManager,
         RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
-        PathProvider pathProvider
+        PathProvider pathProvider,
+        FilesLinkUtility filesLinkUtility,
+        FileSecurity fileSecurity,
+        GlobalFolder globalFolder
         //            SubscriptionManager subscriptionManager
         )
     {
@@ -70,6 +76,9 @@ public class ProductEntryPoint : Product
         _tenantManager = tenantManager;
         _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
         _pathProvider = pathProvider;
+        _filesLinkUtility = filesLinkUtility;
+        _fileSecurity = fileSecurity;
+        _globalFolder = globalFolder;
         //SubscriptionManager = subscriptionManager;
     }
 
@@ -138,9 +147,9 @@ public class ProductEntryPoint : Product
             events = _auditEventsRepository.GetByFilterWithActions(
                 withoutUserId: userId,
                 actions: StudioWhatsNewNotify.RoomsActivityActions,
-                from: scheduleDate.Date.AddHours(-1),
-                   to: scheduleDate.Date.AddSeconds(-1),
-                   limit: 100);
+                from: scheduleDate.AddHours(-1),
+                to: scheduleDate.AddSeconds(-1),
+                limit: 100);
         }
         else
         {
@@ -152,67 +161,86 @@ public class ProductEntryPoint : Product
             limit: 100);
         }
 
-        var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(userId);
+        var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
 
-        var roomIds = new List<string>();
+        var userRoomsWithRole = await GetUserRoomsWithRole(userId);
+
+        var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
+        var userRoomsForSend = userRoomsWithRole.Keys;
+
+        var docSpaceAdmin = _userManager.IsDocSpaceAdmin(userId);
+
         var result = new List<ActivityInfo>();
 
         foreach (var e in events)
         {
-            RoomInfo roomInfo = null;
-
-            var obj = e.Description[e.Description.Count - 1];
-            roomInfo = JsonSerializer.Deserialize<RoomInfo>(obj);
-
-            var roomId = roomInfo.Id;
-            var withRoom = true;
-
-            if (roomId > 0 && disabledRooms.Contains(roomId))
-            {
-                continue;
-            }
-            else if (roomId > 0)
-            {
-                if (!roomIds.Contains(roomId.ToString()))
-                {
-                    roomIds.Add(roomId.ToString());
-                }
-            }
-            else if (roomId < 0)
-            {
-                withRoom = false;
-            }
-
-            result.Add(new ActivityInfo
+            var activityInfo = new ActivityInfo
             {
                 UserId = e.UserId,
                 Action = (MessageAction)e.Action,
                 Data = e.Date,
-                Page = e.Page,
-                FileTitle = e.Description[0],
-                RoomUri = withRoom ? _pathProvider.GetRoomsUrl(roomId.ToString()) : default,
-                RoomId = withRoom ? roomInfo?.Id.ToString() : default,
-                RoomTitle = withRoom ? roomInfo?.Title : default,
-                RoomOldTitle = withRoom ? roomInfo?.OldTitle : default
-            });
+                FileTitle = e.Description[0]
+            };
+
+            if (e.Action == (int)MessageAction.UserCreated
+            || e.Action == (int)MessageAction.UserUpdated)
+            {
+                if (docSpaceAdmin) 
+                {
+                    result.Add(activityInfo);
+                }
+
+                continue;
+            }
+
+            if (e.Action == (int)MessageAction.FileCreated
+                || e.Action == (int)MessageAction.FileUpdatedRevisionComment
+                || e.Action == (int)MessageAction.FileUploaded
+                || e.Action == (int)MessageAction.FileUpdated)
+            {
+                activityInfo.FileUrl = _filesLinkUtility.GetFileWebEditorUrl(e.Target.GetItems().FirstOrDefault());
+            }
+
+            AdditionalNotificationInfo additionalInfo = null;
+
+            var obj = e.Description.LastOrDefault();
+            additionalInfo = JsonSerializer.Deserialize<AdditionalNotificationInfo>(obj);
+
+            activityInfo.TargetUsers = additionalInfo.UserIds;
+
+            if (e.Action == (int)MessageAction.UsersUpdatedType)
+            {
+                if (docSpaceAdmin)
+                {
+                    activityInfo.UserRole = GetDocSpaceRoleString(additionalInfo.DocSpaceRole);
+                    result.Add(activityInfo);
+                }
+                continue;
+            }
+
+            var roomId = additionalInfo.RoomId;
+
+            if (roomId <= 0 || !userRoomsForSend.Contains(roomId.ToString()))
+            {
+                continue;
+            }
+
+            var isRoomAdmin = userRoomsWithRoleForSend
+                .Where(r => r.Key == roomId.ToString())
+                .Select(r => r.Value).FirstOrDefault();
+
+            if (!CheckRightsToReceive(userId, (MessageAction)e.Action, isRoomAdmin, activityInfo.TargetUsers))
+            {
+                continue;
+            }
+
+            activityInfo.RoomUri = _pathProvider.GetRoomsUrl(roomId.ToString());
+            activityInfo.RoomTitle = additionalInfo.RoomTitle;
+            activityInfo.RoomOldTitle = additionalInfo.RoomOldTitle;
+            activityInfo.UserRole = GetRoomRoleString(additionalInfo.RoomRole);
+
+            result.Add(activityInfo);
         }
-
-        var roomsShareInfo = new List<FileShareRecord>();
-
-        if (roomIds.Count() > 0)
-        {
-            var folderDao = _daoFactory.GetSecurityDao<int>();
-            roomsShareInfo = await folderDao.GetShareForEntryIdsAsync(userId, roomIds).ToListAsync();
-        }
-
-        foreach (var activity in result)
-        {
-            var record = roomsShareInfo.Where(r => r.EntryId.ToString() == activity.RoomId).FirstOrDefault();
-
-            activity.IsAdmin = userId == record?.Owner || record?.Share == FileShare.RoomAdmin;
-            activity.IsMemder = activity.UserId == record?.Subject && record?.Share > FileShare.None;
-        }
-
         return result;
     }
 
@@ -244,4 +272,115 @@ public class ProductEntryPoint : Product
     public override string ProductClassName => "files";
     public override ProductContext Context => _productContext;
     public override string ApiURL => string.Empty;
+
+    private async Task<Dictionary<string,bool>> GetUserRoomsWithRole(Guid userId)
+    {
+        var result = new Dictionary<string, bool>();
+
+        var folderDao = _daoFactory.GetFolderDao<int>();
+        var securityDao = _daoFactory.GetSecurityDao<int>();
+
+        var currentUserSubjects = _fileSecurity.GetUserSubjects(userId);
+        var currentUsersRecords = await securityDao.GetSharesAsync(currentUserSubjects).ToListAsync();
+
+        foreach (var record in currentUsersRecords)
+        {
+            if(record.Owner == userId || record.Share == FileShare.RoomAdmin)
+            {
+                result.Add(record.EntryId.ToString(), true);
+            }
+            else
+            {
+                result.Add(record.EntryId.ToString(), false);
+            }      
+        }
+
+        var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<int>(_daoFactory);
+        var ArchiveFolderId = await _globalFolder.GetFolderArchiveAsync<int>(_daoFactory);
+
+        var rooms = await folderDao.GetRoomsAsync(new List<int> { virtualRoomsFolderId, ArchiveFolderId }, new List<int>(), FilterType.None, null, Guid.Empty, null, false, false, false, ProviderFilter.None, SubjectFilter.Owner, null).ToListAsync();
+
+        foreach (var room in rooms)
+        {
+            var roomId = room.Id.ToString();
+
+            if (!result.ContainsKey(roomId))
+            {
+                result.Add(roomId, true);
+            }
+        }
+
+        return result;
+    }
+
+    private bool CheckRightsToReceive(Guid userId, MessageAction action, bool isRoomAdmin, List<Guid> targetUsers)
+    {
+        if (isRoomAdmin)
+        {
+            return true;
+        }
+        else if (IsRoomAdminAction())
+        {
+            return false;
+        }
+        else if (targetUsers != null
+            && !targetUsers.Contains(userId)
+            && IsRoomAdminOrTargetUserAction())
+        {
+            return false;
+        }
+
+        return true;
+
+        bool IsRoomAdminAction()
+        {
+            if (action == MessageAction.RoomRenamed
+                || action == MessageAction.RoomArchived
+                || action == MessageAction.RoomCreateUser
+                || action == MessageAction.RoomRemoveUser)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        bool IsRoomAdminOrTargetUserAction()
+        {
+            if (action == MessageAction.RoomUpdateAccessForUser
+                || action == MessageAction.RoomDeleted
+                || action == MessageAction.UsersUpdatedType)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    private static string GetDocSpaceRoleString(EmployeeType employeeType)
+    {
+        switch (employeeType)
+        {
+            case EmployeeType.User:
+            case EmployeeType.RoomAdmin:
+            case EmployeeType.DocSpaceAdmin:
+                return FilesCommonResource.ResourceManager.GetString("RoleEnum_" + employeeType.ToStringFast());
+            default:
+                return string.Empty;
+        }
+    }
+
+    private static string GetRoomRoleString(UserRoomRole userRoomRole)
+    {
+        switch (userRoomRole)
+        {
+            case UserRoomRole.Viewer:
+            case UserRoomRole.Editor:
+            case UserRoomRole.RoomAdmin:
+                return FilesCommonResource.ResourceManager.GetString("RoleEnum_" + userRoomRole.ToString());
+            default:
+                return string.Empty;
+        }
+    }
 }

@@ -194,7 +194,7 @@
   </data>
   <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
     <value>This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
-&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Unsubscribe&lt;/a&gt;
+&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href="{1}"  target="_blank"&gt;Unsubscribe&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
 </root>

@@ -95,7 +95,7 @@ public class StudioNotifyServiceSender
         if (!_coreBaseSettings.Personal)
         {
             _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
-            _workContext.RegisterSendMethod(SendRoomsActivity, "0 * * ? * *"); //every minute
+            _workContext.RegisterSendMethod(SendRoomsActivity, "0 0 * ? * *"); //every hour
         }
     }
 

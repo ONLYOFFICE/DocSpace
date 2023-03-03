@@ -145,7 +145,7 @@ public class AuditEventsRepository
         var isNeedFindEntry = entry.HasValue && entry.Value != EntryType.None && target != null;
 
 
-        if (actions.Any() && actions[0] != null && actions[0] != MessageAction.None)
+        if (actions != null && actions.Any() && actions[0] != null && actions[0] != MessageAction.None)
         {
             query = query.Where(r => actions.Contains(r.Event.Action != null ? (MessageAction)r.Event.Action : MessageAction.None));
         }

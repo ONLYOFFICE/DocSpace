@@ -241,15 +241,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new folder: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
-        /// </summary>
-        public static string ActionFolderCreated {
-            get {
-                return ResourceManager.GetString("ActionFolderCreated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; added a new comment to the document version: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
         /// </summary>
         public static string ActionNewComment {
@@ -259,20 +250,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to archive - &lt;b&gt;{3}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionRoomArchived {
+            get {
+                return ResourceManager.GetString("ActionRoomArchived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
         /// </summary>
         public static string ActionRoomCreated {
             get {
                 return ResourceManager.GetString("ActionRoomCreated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to the archive - &lt;b&gt;{3}&lt;/b&gt;.
-        /// </summary>
-        public static string ActionRoomMoved {
-            get {
-                return ResourceManager.GetString("ActionRoomMoved", resourceCulture);
             }
         }
         
@@ -295,20 +286,56 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was assigned the role of &lt;b&gt;{1}&lt;/b&gt; in the room: &lt;a href={2}&gt;{3}&lt;/a&gt;.
+        /// </summary>
+        public static string ActionRoomUpdateAccessForUser {
+            get {
+                return ResourceManager.GetString("ActionRoomUpdateAccessForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt;  was added to the room: &lt;a href={1}&gt;{2}&lt;/a&gt;.
         /// </summary>
-        public static string ActionUserAdded {
+        public static string ActionUserAddedToRoom {
             get {
-                return ResourceManager.GetString("ActionUserAdded", resourceCulture);
+                return ResourceManager.GetString("ActionUserAddedToRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New DocSpace user added: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUserCreated {
+            get {
+                return ResourceManager.GetString("ActionUserCreated", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was removed from the room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
         /// </summary>
-        public static string ActionUserRemoved {
+        public static string ActionUserRemovedFromRoom {
             get {
-                return ResourceManager.GetString("ActionUserRemoved", resourceCulture);
+                return ResourceManager.GetString("ActionUserRemovedFromRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; changed the access level of the users &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUsersUpdatedType {
+            get {
+                return ResourceManager.GetString("ActionUsersUpdatedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocSpace user updated: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUserUpdated {
+            get {
+                return ResourceManager.GetString("ActionUserUpdated", resourceCulture);
             }
         }
         

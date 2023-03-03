@@ -151,7 +151,7 @@ internal class RoomsActionMapper : IModuleActionMapper
                             MessageAction.DeletedRoomTags,
                             MessageAction.RoomLogoCreated,
                             MessageAction.RoomLogoDeleted,
-                            MessageAction.RoomUpdateAccess,
+                            MessageAction.RoomUpdateAccessForUser,
                             MessageAction.RoomLinkUpdate,
                         }
                     },

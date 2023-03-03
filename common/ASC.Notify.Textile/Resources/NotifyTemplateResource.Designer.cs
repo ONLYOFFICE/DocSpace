@@ -114,7 +114,7 @@ namespace ASC.Notify.Textile.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt; DocSpace&lt;/a&gt;.
-        ///&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href=&quot;{1}&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
+        ///&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href=&quot;{1}&quot;  target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
         ///&lt;br /&gt;.
         /// </summary>
         public static string TextForFooterUnsubsribeDocSpace {

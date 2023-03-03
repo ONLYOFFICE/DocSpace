@@ -60,9 +60,19 @@ public class PathProvider
         return _webImageSupplier.GetAbsoluteWebPath(imgFileName, ProductEntryPoint.ID);
     }
 
+    public string RoomUrlString
+    {
+        get { return $"/rooms/shared/{{0}}/filter?withSubfolders=true&folder={{0}}&count=100&page=1&sortby=DateAndTime&sortorder=descending"; }
+    }
+
+    public string GetRoomsUrl(int roomId)
+    {
+        return _commonLinkUtility.GetFullAbsolutePath(string.Format(RoomUrlString, roomId));//ToDo
+    }
+
     public string GetRoomsUrl(string roomId)
     {
-        return _commonLinkUtility.GetFullAbsolutePath($"/rooms/shared/{roomId}/filter?withSubfolders=true&folder={roomId}&count=100&page=1&sortby=DateAndTime&sortorder=descending");
+        return _commonLinkUtility.GetFullAbsolutePath(string.Format(RoomUrlString, roomId));//ToDo
     }
 
     public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)

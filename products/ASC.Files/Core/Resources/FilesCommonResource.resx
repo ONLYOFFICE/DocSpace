@@ -442,4 +442,19 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
     <value>You don't have permission to edit the room</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Administrator</value>
+  </data>
+  <data name="RoleEnum_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Room Administrator</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="RoleEnum_Viewer" xml:space="preserve">
+    <value>Viewer</value>
+  </data>
 </root>

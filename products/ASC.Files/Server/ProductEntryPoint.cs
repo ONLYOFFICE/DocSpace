@@ -47,7 +47,10 @@ public class ApiProductEntryPoint : ProductEntryPoint
        IDaoFactory daoFactory,
        TenantManager tenantManager,
        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
-       PathProvider pathProvider
+       PathProvider pathProvider,
+       FilesLinkUtility filesLinkUtility,
+       FileSecurity fileSecurity,
+       GlobalFolder globalFolder
        //SubscriptionManager subscriptionManager
        ) : base(filesSpaceUsageStatManager,
            coreBaseSettings,
@@ -58,7 +61,10 @@ public class ApiProductEntryPoint : ProductEntryPoint
            daoFactory, 
            tenantManager, 
            roomsNotificationSettingsHelper,
-           pathProvider)
+           pathProvider,
+           filesLinkUtility,
+           fileSecurity,
+           globalFolder)
     {
 
     }

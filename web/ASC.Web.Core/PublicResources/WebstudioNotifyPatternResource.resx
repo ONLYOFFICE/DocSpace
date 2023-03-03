@@ -1823,9 +1823,6 @@ ONLYOFFICE Team
   <data name="ActionFileCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; created a new document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
   </data>
-  <data name="ActionRoomMoved" xml:space="preserve">
-    <value>&lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to the archive - &lt;b&gt;{3}&lt;/b&gt;</value>
-  </data>
   <data name="ActionNewComment" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; added a new comment to the document version: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
   </data>
@@ -1838,19 +1835,31 @@ ONLYOFFICE Team
   <data name="ActionRoomCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; created a new room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
   </data>
-  <data name="ActionUserRemoved" xml:space="preserve">
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; was removed from the room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
   </data>
   <data name="ActionFileEdited" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; edited the document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
   </data>
-  <data name="ActionFolderCreated" xml:space="preserve">
-    <value>&lt;b&gt;{0}&lt;/b&gt; created a new folder: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
-  </data>
   <data name="ActionRoomRemoved" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; deleted the room: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
-  <data name="ActionUserAdded" xml:space="preserve">
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt;  was added to the room: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to archive - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; was assigned the role of &lt;b&gt;{1}&lt;/b&gt; in the room: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>New DocSpace user added: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; changed the access level of the users &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace user updated: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

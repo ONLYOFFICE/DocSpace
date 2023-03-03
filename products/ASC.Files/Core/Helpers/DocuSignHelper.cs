@@ -185,7 +185,7 @@ public class DocuSignHelper
 
         var url = CreateEnvelope(account.AccountId, document, docuSignData, apiClient);
 
-        _filesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
+        _ = _filesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
 
         return url;
     }

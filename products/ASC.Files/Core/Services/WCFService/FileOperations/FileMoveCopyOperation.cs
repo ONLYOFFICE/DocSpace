@@ -453,11 +453,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         await TagDao.RemoveTags(pins);
                                     }
 
-                                    filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
+                                    _ = filesMessageService.Send(folder, _headers, MessageAction.RoomArchived, folder.Title);
                                 }
                                 else
                                 {
-                                    filesMessageService.Send(folder, _headers, MessageAction.RoomUnarchived, folder.Title);
+                                    _ = filesMessageService.Send(folder, _headers, MessageAction.RoomUnarchived, folder.Title);
                                 }
                             }
                             else

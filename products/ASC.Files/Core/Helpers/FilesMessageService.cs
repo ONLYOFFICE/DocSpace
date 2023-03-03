@@ -63,14 +63,40 @@ public class FilesMessageService
         SendHeadersMessage(headers, action, null, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    {
+        await Send(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle, MessageAction action, params string[] description)
+    {
+        await Send(entry, headers, action, oldTitle, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, Guid userId, params string[] description)
+    {
+        await Send(entry, headers, action, null, FileShare.None, userId, description);
+    }
+
+    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, FileShare userRole, Guid userId, params string[] description)
+    {
+        description = description.Append(FileStorageService<T>.GetAccessString(userRole)).ToArray();
+        await Send(entry, headers, action, null, userRole, userId, description);
+    }
+
+    private async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, string oldTitle, FileShare userRole, Guid userId, params string[] description)
     {
         if (entry == null)
-        {
+        {   
             return;
         }
 
-        description = AddNotificationParams(entry, action, description).Result;
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action, oldTitle, userId, userRole);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
+        }
 
         SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
     }
@@ -97,7 +123,7 @@ public class FilesMessageService
         _messageService.Send(headers, action, target, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async Task Send<T>(FileEntry<T> entry, MessageAction action, string description)
     {
         if (entry == null)
         {
@@ -111,7 +137,16 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), description);
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action);
+
+        if (additionalParam != "")
+        {
+            _messageService.Send(action, _messageTarget.Create(entry.Id), description, additionalParam);
+        }
+        else
+        {
+            _messageService.Send(action, _messageTarget.Create(entry.Id), description);
+        }
     }
 
     public void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
@@ -140,37 +175,57 @@ public class FilesMessageService
         _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
     }
 
-    private async Task<string[]> AddNotificationParams<T>(FileEntry<T> entry, MessageAction action, params string[] description)
+    private async Task<string> GetAdditionalNotificationParamAsync<T>(FileEntry<T> entry, MessageAction action, string oldTitle = null, Guid userid = default(Guid), FileShare userRole = FileShare.None)
     {
-        if (StudioWhatsNewNotify.DailyActions.Contains(action) || StudioWhatsNewNotify.RoomsActivityActions.Contains(action))
+        if (!StudioWhatsNewNotify.DailyActions.Contains(action)
+            && !StudioWhatsNewNotify.RoomsActivityActions.Contains(action))
         {
-            var folderDao = _daoFactory.GetFolderDao<T>();
-            var roomInfo = await folderDao.GetParentRoomInfoFromFileEntryAsync(entry);
-
-            var oldTitle = "";
-            if (action == MessageAction.RoomRenamed)
-            {
-                oldTitle = description.LastOrDefault();
-                description = description.SkipLast(1).ToArray();
-            }
-
-            var serializedParams = JsonSerializer.Serialize(new RoomInfo
-            {
-                Id = roomInfo.RoomId,
-                Title = roomInfo.RoomTitle,
-                OldTitle = oldTitle
-            });
-
-            description = description.Append(serializedParams).ToArray();
+            return "";
         }
 
-        return description;
-    }
-}
+        var folderDao = _daoFactory.GetFolderDao<int>();
+        var roomInfo = await folderDao.GetParentRoomInfoFromFileEntryAsync(entry);
 
-public class RoomInfo
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string OldTitle { get; set; }
+        var info = new AdditionalNotificationInfo
+        {
+            RoomId = roomInfo.RoomId,
+            RoomTitle = roomInfo.RoomTitle
+        };
+
+        if (action == MessageAction.RoomRenamed 
+            && (oldTitle != null || oldTitle!= ""))
+        {
+            info.RoomOldTitle = oldTitle;
+        }
+
+        if ((action == MessageAction.RoomCreateUser || action == MessageAction.RoomRemoveUser)
+            && userid != Guid.Empty)
+        {
+            info.UserIds = new List<Guid> { userid };
+        }
+
+        if (action == MessageAction.RoomUpdateAccessForUser 
+            && (userRole != FileShare.None)  
+            && userid != Guid.Empty)
+        {
+            info.UserIds = new List<Guid> { userid };
+
+            switch (userRole)
+            {
+                case FileShare.ReadWrite:
+                    info.RoomRole = UserRoomRole.Editor;
+                    break;
+                case FileShare.RoomAdmin:
+                    info.RoomRole = UserRoomRole.RoomAdmin;
+                    break;
+                case FileShare.Read:
+                    info.RoomRole = UserRoomRole.Viewer;
+                    break;
+            }
+        }
+
+        var serializedParam = JsonSerializer.Serialize(info);
+
+        return serializedParam;
+    }
 }
