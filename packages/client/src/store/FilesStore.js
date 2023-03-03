@@ -1060,9 +1060,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(
-      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
-    );
+    history.push(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
