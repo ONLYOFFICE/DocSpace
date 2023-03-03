@@ -783,8 +783,9 @@ function ImageViewer({
       },
 
       onClick: ({ pinching, event }) => {
-        if (!imgRef.current || !containerRef.current || isDesktop || pinching)
-          return;
+        if (!imgRef.current || !containerRef.current || pinching) return;
+
+        if (isDesktop) return onMask();
 
         const time = new Date().getTime();
 
