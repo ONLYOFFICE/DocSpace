@@ -11,14 +11,10 @@ import { StyledDropDownItem } from "../StyledDropDownItem";
 import ViewerWrapperProps from "./ViewerWrapper.props";
 
 function ViewerWrapper(props: ViewerWrapperProps) {
-  const onClickContextItem = useCallback(
-    (item: ContextMenuModel) => {
-      if (isSeparator(item)) return;
-      item.onClick();
-      props.onClose();
-    },
-    [props.onClose]
-  );
+  const onClickContextItem = useCallback((item: ContextMenuModel) => {
+    if (isSeparator(item)) return;
+    item.onClick();
+  }, []);
 
   const generateContextMenu = (
     isOpen: boolean,
