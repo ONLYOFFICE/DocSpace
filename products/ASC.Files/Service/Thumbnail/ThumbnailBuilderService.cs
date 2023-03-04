@@ -66,8 +66,7 @@ public class ThumbnailBuilderService : BackgroundService
         for (var i = 0; i < readers.Count; i++)
         {
             var reader = readers[i];
-            var index = i;
-
+      
             tasks.Add(Task.Run(async () =>
             {
                 await foreach (var fileData in reader.ReadAllAsync(stoppingToken))

@@ -25,6 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using ASC.Data.Storage.DiscStorage;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Scope]
@@ -354,10 +356,20 @@ public class Builder<T>
     {
         using var sourceImg = await Image.LoadAsync(stream);
 
-        Parallel.ForEach(_config.Sizes, async w =>
+        if (_globalStore.GetStore() is DiscDataStore)
         {
-            await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
-        });
+            foreach(var w in _config.Sizes)
+            {
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+            }
+        } 
+        else
+        {
+            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (w, t) =>
+            {
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+            });
+        }
 
         GC.Collect();
     }
