@@ -20,12 +20,14 @@ const SubmenuCommon = (props) => {
     setIsLoadedSubmenu,
     loadBaseInfo,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   } = props;
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
     return () => {
       resetSessionStorage();
+      getWhiteLabelLogoUrls();
     };
   }, []);
 
@@ -93,6 +95,7 @@ export default inject(({ common }) => {
     setIsLoadedSubmenu,
     initSettings,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   } = common;
   return {
     loadBaseInfo: async () => {
@@ -101,6 +104,7 @@ export default inject(({ common }) => {
     isLoaded,
     setIsLoadedSubmenu,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   };
 })(
   withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))
