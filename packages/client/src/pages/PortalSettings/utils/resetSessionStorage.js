@@ -10,6 +10,11 @@ export const resetSessionStorage = () => {
   const timezoneFromSessionStorage = getFromSessionStorage("timezone");
   const timezoneDefaultFromSessionStorage = getFromSessionStorage("timezoneDefault");
 
+  const selectColorId = getFromSessionStorage("selectColorId");
+  const defaultColorId = getFromSessionStorage("defaultColorId");
+  const selectColorAccent = getFromSessionStorage("selectColorAccent");
+  const defaultColorAccent = getFromSessionStorage("defaultColorAccent");
+
   const currentPasswordSettings = getFromSessionStorage("currentPasswordSettings");
   const defaultPasswordSettings = getFromSessionStorage("defaultPasswordSettings");
   const currentTfaSettings = getFromSessionStorage("currentTfaSettings");
@@ -45,33 +50,39 @@ export const resetSessionStorage = () => {
     saveToSessionStorage("timezone", timezoneDefaultFromSessionStorage);
   }
   if (currentPasswordSettings !== defaultPasswordSettings) {
-    saveToSessionStorage("currentPasswordSettings", defaultPasswordSettings)
+    saveToSessionStorage("currentPasswordSettings", defaultPasswordSettings);
   }
   if (currentTfaSettings !== defaultTfaSettings) {
-    saveToSessionStorage("currentTfaSettings", "none")
+    saveToSessionStorage("currentTfaSettings", "none");
   }
   if (currentTrustedMailSettings !== defaultTrustedMailSettings) {
-    saveToSessionStorage("currentTrustedMailSettings", defaultTrustedMailSettings)
+    saveToSessionStorage("currentTrustedMailSettings", defaultTrustedMailSettings);
   }
   if (currentIPSettings !== defaultIPSettings) {
-    saveToSessionStorage("currentIPSettings", defaultIPSettings)
+    saveToSessionStorage("currentIPSettings", defaultIPSettings);
   }
   if (currentAdminMessageSettings !== defaultAdminMessageSettings) {
-    saveToSessionStorage("currentAdminMessageSettings", defaultAdminMessageSettings)
+    saveToSessionStorage("currentAdminMessageSettings", defaultAdminMessageSettings);
   }
   if (currentSessionLifetimeSettings !== defaultSessionLifetimeSettings) {
-    saveToSessionStorage("currentSessionLifetimeSettings", defaultSessionLifetimeSettings)
+    saveToSessionStorage("currentSessionLifetimeSettings", defaultSessionLifetimeSettings);
   }
   if (storagePeriodSettings !== defaultStoragePeriodSettings) {
-    saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings)
+    saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings);
   }
   if (companyNameFromeSessionStorage !== "ONLYOFFICE") {
-    saveToSessionStorage("companyName", "ONLYOFFICE")
+    saveToSessionStorage("companyName", "ONLYOFFICE");
   }
   if (companySettingsFromSessionStorage !== defaultCompanySettingsFromSessionStorage) {
-    saveToSessionStorage("companySettings", defaultCompanySettingsFromSessionStorage)
+    saveToSessionStorage("companySettings", defaultCompanySettingsFromSessionStorage);
   }
   if (additionalSettings !== defaultAdditionalSettings) {
-    saveToSessionStorage("additionalSettings", defaultAdditionalSettings)
+    saveToSessionStorage("additionalSettings", defaultAdditionalSettings);
+  }
+  if (selectColorId !== defaultColorId) {
+    saveToSessionStorage("selectColorId", defaultColorId);
+  }
+  if (selectColorAccent !== defaultColorAccent) {
+    saveToSessionStorage("selectColorAccent", defaultColorAccent);
   }
 };
