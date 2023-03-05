@@ -159,13 +159,13 @@ class FilesStore {
       if (!(this.isLoading || this.operationAction))
         switch (opt?.cmd) {
           case "create":
-            this.wsModifyFolderCreate();
+            this.wsModifyFolderCreate(opt);
             break;
           case "update":
-            this.wsModifyFolderUpdate();
+            this.wsModifyFolderUpdate(opt);
             break;
           case "delete":
-            this.wsModifyFolderDelete();
+            this.wsModifyFolderDelete(opt);
             break;
         }
 
