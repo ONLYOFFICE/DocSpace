@@ -91,8 +91,6 @@ export const StyledInfo = styled.div`
     }
 
     .email-text-container {
-      padding-left: 8px;
-
       ${(props) =>
         props.withActivationBar &&
         css`
@@ -163,6 +161,14 @@ export const StyledInfo = styled.div`
       min-width: 12px;
     }
 
+    .email-edit-button {
+      padding-bottom: 18px;
+    }
+
+    .email-container {
+      padding-left: 8px;
+    }
+
     @media ${smallTablet} {
       gap: 8px;
       background: ${(props) => props.theme.profile.main.background};
@@ -173,7 +179,7 @@ export const StyledInfo = styled.div`
         flex-direction: column;
         gap: 2px;
 
-        .email-text-container {
+        .email-container {
           padding-left: 0px;
         }
 
