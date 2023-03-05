@@ -20,6 +20,8 @@ const User = ({
   selectionParentRoom,
   setSelectionParentRoom,
   changeUserType,
+  isScrollLocked,
+  setIsScrollLocked,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -111,6 +113,10 @@ const User = ({
     }
   };
 
+  const onToggle = () => {
+    setIsScrollLocked(!isScrollLocked);
+  };
+
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
   const role = getUserRole(user);
@@ -156,6 +162,8 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              directionY="both"
+              toggleAction={onToggle}
               displaySelectedOption
             />
           ) : (

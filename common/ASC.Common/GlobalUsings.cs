@@ -106,3 +106,4 @@ global using RabbitMQ.Client.Events;
 global using StackExchange.Redis.Extensions.Core.Abstractions;
 
 global using ILogger = Microsoft.Extensions.Logging.ILogger;
+global using System.Threading.Channels;

@@ -618,8 +618,9 @@ public class UserPhotoManager
 
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+
+            imgFormat = img.Metadata.DecodedImageFormat;
             width = img.Width;
             height = img.Height;
             var maxWidth = maxsize.Width;
@@ -726,9 +727,10 @@ public class UserPhotoManager
 
             var data = item.Data;
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out var format);
-            var imgFormat = format;
-            if (item.Size != img.Size())
+            using var img = Image.Load(stream);
+            var imgFormat = img.Metadata.DecodedImageFormat;
+
+            if (item.Size != img.Size)
             {
                 using var img2 = item.Settings.IsDefault ?
                     CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
@@ -809,8 +811,10 @@ public class UserPhotoManager
         if (await store.IsFileAsync(_tempDomainName, fileName))
         {
             using var s = await store.GetReadStreamAsync(_tempDomainName, fileName);
-            using var img = Image.Load(s, out var format);
-            var imgFormat = format;
+            using var img = Image.Load(s);
+
+            var imgFormat = img.Metadata.DecodedImageFormat;
+            
             byte[] data;
 
             if (img.Width != newWidth || img.Height != newHeight)
@@ -854,8 +858,10 @@ public class UserPhotoManager
             var data = _userManager.GetUserPhoto(userID);
             if (data != null)
             {
-                var img = Image.Load(data, out var imgFormat);
-                format = imgFormat;
+                var img = Image.Load(data);
+                
+                format = img.Metadata.DecodedImageFormat;
+
                 return img;
             }
         }
@@ -868,7 +874,7 @@ public class UserPhotoManager
     {
         var moduleID = Guid.Empty;
         var widening = CommonPhotoManager.GetImgFormatName(format);
-        var size = img.Size();
+        var size = img.Size;
         var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", moduleID == Guid.Empty ? "" : moduleID.ToString(), userID, img.Width, img.Height, widening);
 
         var store = GetDataStore();

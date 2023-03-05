@@ -82,7 +82,7 @@ public class PhotoController : PeopleControllerBase
 
             if (inDto.Width == 0 && inDto.Height == 0)
             {
-                using var img = Image.Load(data, out var format);
+                using var img = Image.Load(data);
                 settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, img.Width, img.Height);
             }
             else
@@ -263,8 +263,8 @@ public class PhotoController : PeopleControllerBase
         IImageFormat imgFormat;
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
         }
         catch (OutOfMemoryException)
         {

@@ -137,6 +137,7 @@ class Section extends React.Component {
       settingsStudio,
       clearUploadedFilesHistory,
       isInfoPanelVisible,
+      isInfoPanelScrollLocked,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -352,7 +353,9 @@ class Section extends React.Component {
                       <SubInfoPanelHeader>
                         {infoPanelHeaderContent}
                       </SubInfoPanelHeader>
-                      <SubInfoPanelBody>
+                      <SubInfoPanelBody
+                        isInfoPanelScrollLocked={isInfoPanelScrollLocked}
+                      >
                         {infoPanelBodyContent}
                       </SubInfoPanelBody>
                     </InfoPanel>
@@ -416,7 +419,10 @@ export default inject(({ auth }) => {
     showText,
   } = settingsStore;
 
-  const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
+  const {
+    isVisible: isInfoPanelVisible,
+    isScrollLocked: isInfoPanelScrollLocked,
+  } = auth.infoPanelStore;
 
   return {
     isTabletView,
@@ -428,5 +434,6 @@ export default inject(({ auth }) => {
     showText,
 
     isInfoPanelVisible,
+    isInfoPanelScrollLocked,
   };
 })(observer(Section));

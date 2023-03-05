@@ -158,7 +158,6 @@ const InfoPanel = ({
 
     return () => {
       document.removeEventListener("mousedown", onMouseDown);
-      closeInfoPanel();
     };
   }, []);
 
