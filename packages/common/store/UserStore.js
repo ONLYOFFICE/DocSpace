@@ -62,6 +62,19 @@ class UserStore {
     this.setIsLoading(false);
   };
 
+  updateEmailActivationStatus = async (activationStatus, userId, key) => {
+    this.setIsLoading(true);
+
+    const user = await api.people.updateActivationStatus(
+      activationStatus,
+      userId,
+      key
+    );
+
+    this.setUser(user);
+    this.setIsLoading(false);
+  };
+
   changeTheme = async (key) => {
     this.setIsLoading(true);
 

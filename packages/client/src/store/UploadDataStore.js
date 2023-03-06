@@ -580,7 +580,16 @@ class UploadDataStore {
       len = filesToConversion.length;
     }
 
-    if (this.uploaded) {
+    const allFilesIsUploaded =
+      this.files.findIndex(
+        (f) =>
+          f.action !== "uploaded" &&
+          f.action !== "convert" &&
+          f.action !== "converted" &&
+          !f.error
+      ) === -1;
+
+    if (this.uploaded || (this.isParallel && allFilesIsUploaded)) {
       this.setConversionPercent(100);
       this.finishUploadFiles();
     } else {
@@ -599,15 +608,19 @@ class UploadDataStore {
       ...this.tempConversionFiles,
     ];
 
-    if (this.uploaded) {
-      const newUploadData = {
+    if (this.uploaded || this.isParallel) {
+      let newUploadData = {
         files: this.files,
         filesSize: this.convertFilesSize,
         uploadedFiles: this.uploadedFiles,
         percent: this.percent,
         uploaded: false,
-        converted: false,
+        // converted: false,
       };
+
+      if (!this.isParallel)
+        newUploadData = { ...newUploadData, converted: false };
+
       this.tempConversionFiles = [];
 
       this.setUploadData(newUploadData);
@@ -688,7 +701,9 @@ class UploadDataStore {
       convertSize += file.size;
     }
 
-    const countUploadingFiles = newFiles.length;
+    const countUploadingFiles = this.isParallel
+      ? this.removeDuplicate([...this.files, ...newFiles]).length
+      : newFiles.length;
     const countConversionFiles = this.tempConversionFiles.length;
 
     if (countUploadingFiles && !countConversionFiles) {
@@ -712,14 +727,21 @@ class UploadDataStore {
 
     this.uploadedFilesHistory = clearArray;
 
-    const newUploadData = {
-      files: newFiles,
+    let newUploadData = {
+      files: this.isParallel
+        ? this.removeDuplicate([...this.files, ...newFiles])
+        : newFiles,
       filesSize,
       uploadedFiles: this.uploadedFiles,
       percent: this.percent,
       uploaded: false,
-      converted: !!this.tempConversionFiles.length,
+      // converted: !!this.tempConversionFiles.length,
     };
+    if (!this.isParallel)
+      newUploadData = {
+        ...newUploadData,
+        converted: !!this.tempConversionFiles.length,
+      };
 
     const isParallel = this.isParallel ? true : this.uploaded;
 
@@ -904,7 +926,8 @@ class UploadDataStore {
           this.files[indexOfFile].action = "uploaded";
           this.files[indexOfFile].fileId = fileId;
           this.files[indexOfFile].fileInfo = fileInfo;
-          this.percent = newPercent;
+
+          if (!this.isParallel) this.percent = newPercent;
 
           if (this.isParallel) {
             this.currentUploadNumber -= 1;
@@ -1164,7 +1187,11 @@ class UploadDataStore {
 
         const allFilesIsUploaded =
           this.files.findIndex(
-            (f) => f.action !== "uploaded" && f.action !== "convert" && !f.error
+            (f) =>
+              f.action !== "uploaded" &&
+              f.action !== "convert" &&
+              f.action !== "converted" &&
+              !f.error
           ) === -1;
 
         if (allFilesIsUploaded) {

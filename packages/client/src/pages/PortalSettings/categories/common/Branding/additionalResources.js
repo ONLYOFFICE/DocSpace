@@ -162,25 +162,39 @@ const AdditionalResources = (props) => {
     await getAdditionalResources();
 
     setIsLoading(false);
-  }, [
-    setIsLoading,
-    restoreAdditionalResources,
-    getAdditionalResources,
-  ]);
+  }, [setIsLoading, restoreAdditionalResources, getAdditionalResources]);
 
   const onChangeFeedback = () => {
-    setAdditionalSettings({...additionalSettings, feedbackAndSupportEnabled: !feedbackAndSupportEnabled});
-    saveToSessionStorage("additionalSettings", {...additionalSettings, feedbackAndSupportEnabled: !feedbackAndSupportEnabled});
+    setAdditionalSettings({
+      ...additionalSettings,
+      feedbackAndSupportEnabled: !feedbackAndSupportEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      feedbackAndSupportEnabled: !feedbackAndSupportEnabled,
+    });
   };
 
   const onChangeVideoGuides = () => {
-    setAdditionalSettings({...additionalSettings, videoGuidesEnabled: !videoGuidesEnabled});
-    saveToSessionStorage("additionalSettings", {...additionalSettings, videoGuidesEnabled: !videoGuidesEnabled});
+    setAdditionalSettings({
+      ...additionalSettings,
+      videoGuidesEnabled: !videoGuidesEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      videoGuidesEnabled: !videoGuidesEnabled,
+    });
   };
 
   const onChangeHelpCenter = () => {
-    setAdditionalSettings({...additionalSettings, helpCenterEnabled: !helpCenterEnabled});
-    saveToSessionStorage("additionalSettings", {...additionalSettings, helpCenterEnabled: !helpCenterEnabled});
+    setAdditionalSettings({
+      ...additionalSettings,
+      helpCenterEnabled: !helpCenterEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      helpCenterEnabled: !helpCenterEnabled,
+    });
   };
 
   if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
@@ -223,19 +237,17 @@ const AdditionalResources = (props) => {
             onChange={onChangeHelpCenter}
           />
         </div>
-        {isSettingPaid && (
-          <SaveCancelButtons
-            tabIndex={15}
-            onSaveClick={onSave}
-            onCancelClick={onRestore}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-            displaySettings={true}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            showReminder={(isSettingPaid && hasChange) || isLoading}
-            disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
-          />
-        )}
+        <SaveCancelButtons
+          tabIndex={15}
+          onSaveClick={onSave}
+          onCancelClick={onRestore}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          displaySettings={true}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          showReminder={(isSettingPaid && hasChange) || isLoading}
+          disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
+        />
       </StyledComponent>
     </>
   );
