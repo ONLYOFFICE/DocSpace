@@ -60,7 +60,7 @@ export const WebhooksList = ({ webhooks, toggleEnabled, deleteWebhook, editWebho
             <TableBody>
               {webhooks.map((webhook, index) => (
                 <WebhooksListRow
-                  key={webhook.url}
+                  key={webhook.id}
                   webhook={webhook}
                   index={index}
                   toggleEnabled={toggleEnabled}
