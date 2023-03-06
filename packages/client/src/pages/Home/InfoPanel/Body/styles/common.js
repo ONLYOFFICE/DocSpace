@@ -7,9 +7,9 @@ const StyledInfoPanelBody = styled.div`
   ${({ isAccounts }) =>
     isAccounts
       ? css`
-          padding: 0px 3px 0 20px;
+          padding: 80px 3px 0 20px;
           @media ${hugeMobile} {
-            padding: 0px 8px 0 16px;
+            padding: 80px 8px 0 16px;
           }
         `
       : css`

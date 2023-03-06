@@ -11,6 +11,8 @@ export const mediaTypes = Object.freeze({
 });
 
 export enum KeyboardEventKeys {
+  ArrowUp = "ArrowUp",
+  ArrowDown = "ArrowDown",
   ArrowRight = "ArrowRight",
   ArrowLeft = "ArrowLeft",
   Escape = "Escape",
@@ -19,6 +21,20 @@ export enum KeyboardEventKeys {
   KeyS = "KeyS",
   Numpad1 = "Numpad1",
   Digit1 = "Digit1",
+}
+
+export enum ToolbarActionType {
+  ZoomIn = 1,
+  ZoomOut = 2,
+  Prev = 3,
+  Next = 4,
+  RotateLeft = 5,
+  RotateRight = 6,
+  Reset = 7,
+  Close = 8,
+  ScaleX = 9,
+  ScaleY = 10,
+  Download = 11,
 }
 
 export const mapSupplied = {

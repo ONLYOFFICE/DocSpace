@@ -79,7 +79,7 @@ public class LogoUploader
                     using (var stream = new MemoryStream(data))
                     using (var image = Image.Load(stream))
                     {
-                        var actualSize = image.Size();
+                        var actualSize = image.Size;
                         if (actualSize.Height != size.Height && actualSize.Width != size.Width)
                         {
                             throw new ImageSizeLimitException();

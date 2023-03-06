@@ -151,7 +151,7 @@ public class LdapUserManager
             var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
             if (quotaSettings.EnableUserQuota)
             {
-                _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = ldapUserInfo.LdapQouta }, ldapUserInfo.Id);
+                _settingsManager.Save(new UserQuotaSettings { UserQuota = ldapUserInfo.LdapQouta }, ldapUserInfo.Id);
             }
 
 

@@ -50,9 +50,16 @@ const ArticleBodyContent = (props) => {
 
   const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
 
+  let loadTimeout = null;
+
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
+
+  const cleanTimer = () => {
+    loadTimeout && clearTimeout(loadTimeout);
+    loadTimeout = null;
+  };
 
   const onClick = React.useCallback(
     (folderId) => {
@@ -72,7 +79,9 @@ const ArticleBodyContent = (props) => {
       const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
       if (filesSection) {
-        setIsLoading(true);
+        loadTimeout = setTimeout(() => {
+          setIsLoading(true);
+        }, 200);
       } else {
         showLoader();
       }
@@ -86,54 +95,16 @@ const ArticleBodyContent = (props) => {
             ? RoomSearchArea.Archive
             : RoomSearchArea.Active;
 
-        fetchRooms(folderId, filter)
-          .then(() => {
-            const url = getCategoryUrl(
-              folderId === archiveFolderId
-                ? CategoryType.Archive
-                : CategoryType.Shared
-            );
-
-            const filterParamsStr = filter.toUrlParams();
-
-            history.push(
-              combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                homepage,
-                `${url}?${filterParamsStr}`
-              )
-            );
-          })
-          .finally(() => {
-            if (filesSection) {
-              setIsLoading(false);
-            } else {
-              hideLoader();
-            }
-          });
+        fetchRooms(folderId, filter).finally(() => {
+          if (filesSection) {
+            cleanTimer();
+            setIsLoading(false);
+          } else {
+            hideLoader();
+          }
+        });
       } else {
         fetchFiles(folderId, null, true, false)
-          .then(() => {
-            if (!filesSection) {
-              const filter = FilesFilter.getDefault();
-
-              filter.folder = folderId;
-
-              const filterParamsStr = filter.toUrlParams();
-
-              const url = getCategoryUrl(categoryType, filter.folder);
-
-              const pathname = `${url}?${filterParamsStr}`;
-
-              history.push(
-                combineUrl(
-                  window.DocSpaceConfig?.proxy?.url,
-                  config.homepage,
-                  pathname
-                )
-              );
-            }
-          })
           .catch((err) => toastr.error(err))
           .finally(() => {
             if (filesSection) {

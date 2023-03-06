@@ -61,7 +61,7 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _countRoomAdminChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountPaidUserFeature> _countPaidUserChecker;
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
     private readonly UserFormatter _userFormatter;
@@ -86,7 +86,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> countRoomAdrminChecker,
+        TenantQuotaFeatureCheckerCount<CountPaidUserFeature> countPaidUserChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         UserFormatter userFormatter
         )
@@ -102,7 +102,7 @@ public class UserManager
         _cardDavAddressbook = cardDavAddressbook;
         _log = log;
         _cache = cache;
-        _countRoomAdminChecker = countRoomAdrminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
         _userFormatter = userFormatter;
@@ -120,7 +120,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountPaidUserFeature> tenantQuotaFeatureChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor,
         UserFormatter userFormatter)
@@ -157,10 +157,16 @@ public class UserManager
         switch (type)
         {
             case EmployeeType.RoomAdmin:
-                users = users.Where(u => !this.IsUser(u));
+                users = users.Where(u => !this.IsUser(u) && !this.IsCollaborator(u) && !this.IsDocSpaceAdmin(u));
+                break;
+            case EmployeeType.DocSpaceAdmin:
+                users = users.Where(this.IsDocSpaceAdmin);
+                break;
+            case EmployeeType.Collaborator:
+                users = users.Where(this.IsCollaborator);
                 break;
             case EmployeeType.User:
-                users = users.Where(u => this.IsUser(u));
+                users = users.Where(this.IsUser);
                 break;
         }
 
@@ -354,15 +360,14 @@ public class UserManager
         return newUser;
     }
 
-    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, EmployeeType type = EmployeeType.RoomAdmin, bool syncCardDav = false, bool paidUserQuotaCheck = true)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, isVisitor ? EmployeeType.User : EmployeeType.RoomAdmin), 
-            Constants.Action_AddRemoveUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, type), Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -379,13 +384,13 @@ public class UserManager
             throw new InvalidOperationException("User already exist.");
         }
 
-        if (isVisitor)
+        if (type is EmployeeType.User)
         {
             await _activeUsersFeatureChecker.CheckAppend();
         }
-        else
+        else if (paidUserQuotaCheck)
         {
-            await _countRoomAdminChecker.CheckAppend();
+            await _countPaidUserChecker.CheckAppend();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
@@ -886,16 +891,23 @@ public class UserManager
         }
 
         UserGroupRef r;
-        if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID)
+        if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID || groupId == Constants.GroupCollaborator.ID)
         {
-            var user = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            var isUser = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
             if (groupId == Constants.GroupUser.ID)
             {
-                return user;
+                return isUser;
             }
+
+            var isCollaborator = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupCollaborator.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            if (groupId == Constants.GroupCollaborator.ID)
+            {
+                return isCollaborator;
+            }
+            
             if (groupId == Constants.GroupManager.ID)
             {
-                return !user;
+                return !isUser && !isCollaborator;
             }
         }
 

@@ -40,7 +40,7 @@ const SectionBodyContent = (props) => {
     setScrollToItem,
     filesList,
     uploaded,
-    setSearchTitleOpenLocation,
+    onClickBack,
   } = props;
 
   useEffect(() => {
@@ -52,6 +52,7 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
+    window.addEventListener("popstate", onClickBack);
     window.addEventListener("beforeunload", onBeforeunload);
     window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
@@ -62,6 +63,7 @@ const SectionBodyContent = (props) => {
     document.addEventListener("drop", onDropEvent);
 
     return () => {
+      window.removeEventListener("popstate", onClickBack);
       window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -71,7 +73,15 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, startDrag, folderId, viewAs, uploaded]);
+  }, [
+    onMouseUp,
+    onMouseMove,
+    onClickBack,
+    startDrag,
+    folderId,
+    viewAs,
+    uploaded,
+  ]);
 
   useEffect(() => {
     if (scrollToItem) {
@@ -117,7 +127,6 @@ const SectionBodyContent = (props) => {
       e.target.closest(".search-input-block")
     ) {
       setSelection([]);
-      setSearchTitleOpenLocation(null);
       setBufferSelection(null);
       setHotkeyCaretStart(null);
       setHotkeyCaret(null);
@@ -315,7 +324,7 @@ export default inject(
       setScrollToItem,
       filesList,
       uploaded: uploadDataStore.uploaded,
-      setSearchTitleOpenLocation: filesActionsStore.setSearchTitleOpenLocation,
+      onClickBack: filesActionsStore.onClickBack,
     };
   }
 )(

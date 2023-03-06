@@ -24,59 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SixLabors.ImageSharp.Processing;
+
+using ASC.Data.Storage.DiscStorage;
 
 namespace ASC.Files.ThumbnailBuilder;
-
-[Singletone]
-public class BuilderQueue<T>
-{
-    private readonly ThumbnailSettings _config;
-    private readonly ILogger _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public BuilderQueue(IServiceScopeFactory serviceScopeFactory, ILoggerProvider log, ThumbnailSettings settings)
-    {
-        _logger = log.CreateLogger("ASC.Files.ThumbnailBuilder");
-        _serviceScopeFactory = serviceScopeFactory;
-        _config = settings;
-    }
-
-    public async Task BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
-    {
-        try
-        {
-            await using var scope = _serviceScopeFactory.CreateAsyncScope();
-
-            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
-
-            var premiumTenants = fileDataProvider.GetPremiumTenants();
-
-            filesWithoutThumbnails = filesWithoutThumbnails
-                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
-                .ToList();
-
-
-            await Parallel.ForEachAsync(
-            filesWithoutThumbnails,
-            new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
-                async (fileData, token) =>
-            {
-                await using var scope = _serviceScopeFactory.CreateAsyncScope();
-                var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
-                commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
-
-                var builder = scope.ServiceProvider.GetService<Builder<T>>();
-                await builder.BuildThumbnail(fileData);
-            }
-        );
-        }
-        catch (Exception exception)
-        {
-            _logger.ErrorBuildThumbnailsCount(filesWithoutThumbnails.Count(), exception);
-        }
-    }
-}
 
 [Scope]
 public class Builder<T>
@@ -91,10 +42,10 @@ public class Builder<T>
     private readonly GlobalStore _globalStore;
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
-    private readonly ThumbnailSettings _thumbnailSettings;
     private readonly SocketManager _socketManager;
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
+    private readonly TempStream _tempStream;
 
     private readonly List<string> _imageFormatsCanBeCrop = new List<string>
             {
@@ -115,7 +66,7 @@ public class Builder<T>
         FFmpegService fFmpegService,
         TempPath tempPath,
         SocketManager socketManager,
-        ThumbnailSettings thumbnailSettings)
+        TempStream tempStream)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -128,8 +79,8 @@ public class Builder<T>
         _clientFactory = clientFactory;
         _fFmpegService = fFmpegService;
         _tempPath = tempPath;
+        _tempStream = tempStream;
         _socketManager = socketManager;
-        _thumbnailSettings = thumbnailSettings;
         _globalStore = globalStore;
     }
 
@@ -405,9 +356,19 @@ public class Builder<T>
     {
         using var sourceImg = await Image.LoadAsync(stream);
 
-        foreach (var w in _config.Sizes)
+        if (_globalStore.GetStore() is DiscDataStore)
         {
-            await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+            foreach(var w in _config.Sizes)
+            {
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+            }
+        } 
+        else
+        {
+            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (w, t) =>
+            {
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+            });
         }
 
         GC.Collect();
@@ -416,7 +377,8 @@ public class Builder<T>
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
     {
         using var targetImg = GetImageThumbnail(sourceImg, width, height);
-        using var targetStream = new MemoryStream();
+        using var targetStream = _tempStream.Create();
+
         switch (_global.ThumbnailExtension)
         {
             case ThumbnailExtension.bmp:
@@ -444,7 +406,7 @@ public class Builder<T>
                 await targetImg.SaveAsWebpAsync(targetStream);
                 break;
         }
-
+ 
         await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 

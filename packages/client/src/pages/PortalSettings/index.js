@@ -18,11 +18,10 @@ const SessionLifetimePage = lazy(() =>
   import("./categories/security/access-portal/sessionLifetime"),
 );
 
-const CommonSettings = lazy(() => import("./categories/common/index.js"));
+const CustomizationSettings = lazy(() => import("./categories/common/index.js"));
 
 const DeveloperTools = lazy(() => import("./categories/developer-tools/index.js"));
 
-const CustomizationSettings = lazy(() => import("./categories/common/customization"));
 const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/Customization/language-and-time-zone"),
 );
@@ -39,7 +38,7 @@ const Payments = lazy(() => import("./categories/payments"));
 const ThirdParty = lazy(() => import("./categories/integration/ThirdPartyServicesSettings"));
 const SingleSignOn = lazy(() => import("./categories/integration/SingleSignOn"));
 
-const Backup = lazy(() => import("./categories/data-management/backup"));
+const Backup = lazy(() => import("./categories/data-management/index"));
 
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index"),
@@ -51,12 +50,12 @@ const WhiteLabel = lazy(() => import("./categories/common/Branding/whitelabel"))
 const Branding = lazy(() => import("./categories/common/branding"));
 const PROXY_BASE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal-settings");
 
-const COMMON_URLS = [
+const CUSTOMIZATION_URLS = [
   PROXY_BASE_URL,
-  combineUrl(PROXY_BASE_URL, "/common"),
-  combineUrl(PROXY_BASE_URL, "/common/customization"),
-  combineUrl(PROXY_BASE_URL, "/common/branding"),
-  combineUrl(PROXY_BASE_URL, "/common/appearance"),
+  combineUrl(PROXY_BASE_URL, "/customization"),
+  combineUrl(PROXY_BASE_URL, "/customization/general"),
+  combineUrl(PROXY_BASE_URL, "/customization/branding"),
+  combineUrl(PROXY_BASE_URL, "/customization/appearance"),
 ];
 
 const DEVELOPER_URLS = [
@@ -64,12 +63,6 @@ const DEVELOPER_URLS = [
   combineUrl(PROXY_BASE_URL, "/developer/tools"),
   combineUrl(PROXY_BASE_URL, "/developer/tools/javascript-sdk"),
   combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks"),
-];
-
-const CUSTOMIZATION_URLS = [
-  combineUrl(PROXY_BASE_URL, "/common/customization"),
-  combineUrl(PROXY_BASE_URL, "/common"),
-  PROXY_BASE_URL,
 ];
 
 const BACKUP_URLS = [
@@ -81,16 +74,28 @@ const BACKUP_URLS = [
 
 const RESTORE_DATA_URL = combineUrl(PROXY_BASE_URL, "/restore");
 
-const LTZ_URL = combineUrl(PROXY_BASE_URL, "/common/customization/language-and-time-zone");
+const LTZ_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/customization/general/language-and-time-zone"
+);
 const WELCOME_PAGE_SETTINGS_URL = combineUrl(
   PROXY_BASE_URL,
-  "/common/customization/welcome-page-settings",
+  "/customization/general/welcome-page-settings"
 );
 
-const DNS_SETTINGS = combineUrl(PROXY_BASE_URL, "/common/customization/dns-settings");
+const DNS_SETTINGS = combineUrl(
+  PROXY_BASE_URL,
+  "/customization/general/dns-settings"
+);
 
-const PORTAL_RENAMING = combineUrl(PROXY_BASE_URL, "/common/customization/portal-renaming");
-const TEAM_TEMPLATE_URL = combineUrl(PROXY_BASE_URL, "/common/customization/team-template");
+const PORTAL_RENAMING = combineUrl(
+  PROXY_BASE_URL,
+  "/customization/general/portal-renaming"
+);
+const TEAM_TEMPLATE_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/customization/general/team-template"
+);
 const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-rights"),
@@ -119,7 +124,6 @@ const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
 const THIRD_PARTY_URL = combineUrl(PROXY_BASE_URL, "/integration/third-party-services");
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
-const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
 
 const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
@@ -134,45 +138,29 @@ const Settings = () => {
       <Panels />
       <Suspense fallback={null}>
         <Switch>
-          <Route exact path={COMMON_URLS} component={CommonSettings} />
-
-          {/* <Route
-            exact
-            path={CUSTOMIZATION_URLS}
-            component={CustomizationSettings}
-          /> */}
+          <Route exact path={CUSTOMIZATION_URLS} component={CustomizationSettings} />
           <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
           <Route exact path={WELCOME_PAGE_SETTINGS_URL} component={WelcomePageSettings} />
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
-
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
-
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
           <Route exact path={PASSWORD_PAGE_URL} component={PasswordStrengthPage} />
           <Route exact path={TRUSTED_MAIL_PAGE_URL} component={TrustedMailPage} />
           <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
           <Route exact path={ADMIN_MESSAGE_PAGE_URL} component={AdminMessagePage} />
           <Route exact path={SESSION_LIFETIME_PAGE_URL} component={SessionLifetimePage} />
-
           <Route exact path={INTEGRATION_URLS} component={Integration} />
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
 
           <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
-
           <Route exact path={BACKUP_URLS} component={Backup} />
-          <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
-
-          <Redirect
-            to={{
-              pathname: ERROR_404_URL,
-            }}
-          />
+          <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
+          <Redirect to={{pathname: ERROR_404_URL}} />
         </Switch>
       </Suspense>
     </Layout>

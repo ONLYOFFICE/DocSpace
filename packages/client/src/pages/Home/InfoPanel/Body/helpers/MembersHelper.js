@@ -21,6 +21,11 @@ class MembersHelper {
         label: this.t("Common:RoomAdmin"),
         access: ShareAccessRights.RoomManager,
       },
+      collaborator: {
+        key: "collaborator",
+        label: this.t("Common:Collaborator"),
+        access: ShareAccessRights.Collaborator,
+      },
       viewer: {
         key: "viewer",
         label: this.t("Translations:RoleViewer"),
@@ -69,6 +74,7 @@ class MembersHelper {
       case RoomsType.FillingFormsRoom:
         return [
           options.roomAdmin,
+          options.collaborator,
           options.formFiller,
           options.viewer,
           ...deleteOption,
@@ -76,6 +82,7 @@ class MembersHelper {
       case RoomsType.EditingRoom:
         return [
           options.roomAdmin,
+          options.collaborator,
           options.editor,
           options.viewer,
           ...deleteOption,
@@ -83,16 +90,23 @@ class MembersHelper {
       case RoomsType.ReviewRoom:
         return [
           options.roomAdmin,
+          options.collaborator,
           options.reviewer,
           options.commentator,
           options.viewer,
           ...deleteOption,
         ];
       case RoomsType.ReadOnlyRoom:
-        return [options.roomAdmin, options.viewer, ...deleteOption];
+        return [
+          options.roomAdmin,
+          options.collaborator,
+          options.viewer,
+          ...deleteOption,
+        ];
       case RoomsType.CustomRoom:
         return [
           options.roomAdmin,
+          options.collaborator,
           options.editor,
           options.formFiller,
           options.reviewer,

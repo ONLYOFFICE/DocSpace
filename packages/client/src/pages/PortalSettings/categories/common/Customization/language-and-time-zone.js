@@ -81,6 +81,7 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
+      timezone,
       rawTimezones,
       portalTimeZoneId,
       isLoaded,
@@ -153,7 +154,11 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
-    if (timezoneDefault && languageDefault) {
+    if (timezoneDefault || timezone) {
+      this.checkChanges();
+    }
+
+    if (languageDefault || language) {
       this.checkChanges();
     }
   }
@@ -327,14 +332,14 @@ class LanguageAndTimeZone extends React.Component {
   onCancelClick = () => {
     settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
-
       if (
-        valueFromSessionStorage &&
+        valueFromSessionStorage !== "none" &&
+        valueFromSessionStorage !== null &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
       ) {
         const defaultValue = this.state[settingName + "Default"];
 
-        this.setState({ [settingName]: defaultValue });
+        this.setState({ [settingName]: defaultValue || null });
         saveToSessionStorage(settingName, "");
       }
     });
@@ -378,13 +383,20 @@ class LanguageAndTimeZone extends React.Component {
         isCustomizationView: true,
       });
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,

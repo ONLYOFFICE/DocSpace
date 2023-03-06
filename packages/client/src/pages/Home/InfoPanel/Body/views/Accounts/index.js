@@ -22,7 +22,7 @@ const Accounts = ({
   const [statusLabel, setStatusLabel] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const { role, id, isVisitor } = selection;
+  const { role, id, isVisitor, isCollaborator } = selection;
 
   React.useEffect(() => {
     getStatusLabel();
@@ -50,6 +50,8 @@ const Accounts = ({
         return t("Common:DocSpaceAdmin");
       case "manager":
         return t("Common:RoomAdmin");
+      case "collaborator":
+        return t("Common:Collaborator");
       case "user":
         return t("Common:User");
     }
@@ -72,6 +74,13 @@ const Accounts = ({
       label: t("Common:RoomAdmin"),
       action: "manager",
     };
+    const collaboratorOption = {
+      id: "info-account-type_collaborator",
+      key: "collaborator",
+      title: t("Common:Collaborator"),
+      label: t("Common:Collaborator"),
+      action: "collaborator",
+    };
     const userOption = {
       id: "info-account-type_user",
       key: "user",
@@ -84,10 +93,12 @@ const Accounts = ({
 
     options.push(managerOption);
 
+    if (isVisitor || isCollaborator) options.push(collaboratorOption);
+
     isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner, isVisitor]);
+  }, [t, isAdmin, isOwner, isVisitor, isCollaborator]);
 
   const onAbort = () => {
     setIsLoading(false);

@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Link from "@docspace/components/link";
 import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
 import AboutDialog from "../../../../About/AboutDialog";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 const StyledComponent = styled.div`
   .link {
@@ -49,26 +50,28 @@ const CompanyInfoSettings = (props) => {
     personal,
   } = props;
 
-  const [companyName, setCompanyName] = useState(
-    companyInfoSettingsData.companyName
-  );
-  const [email, setEmail] = useState(companyInfoSettingsData.email);
-  const [phone, setPhone] = useState(companyInfoSettingsData.phone);
-  const [site, setSite] = useState(companyInfoSettingsData.site);
-  const [address, setAddress] = useState(companyInfoSettingsData.address);
+  const defaultCompanySettingsError = {
+    hasErrorAddress: false,
+    hasErrorCompanyName: false,
+    hasErrorEmail: false,
+    hasErrorPhone: false,
+    hasErrorSite: false,
+  };
 
-  const [hasErrorSite, setHasErrorSite] = useState(false);
-  const [hasErrorEmail, setHasErrorEmail] = useState(false);
-  const [hasErrorCompanyName, setHasErrorCompanyName] = useState(false);
-  const [hasErrorPhone, setHasErrorPhone] = useState(false);
-  const [hasErrorAddress, setHasErrorAddress] = useState(false);
-
-  const [isChangesSettings, setIsChangesSettings] = useState(false);
+  const [companySettings, setCompanySettings] = useState({});
+  const [companySettingsError, setCompanySettingsError] = useState(defaultCompanySettingsError);
+  const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
 
-  const previewData = { companyName, email, phone, site, address };
+  const { address, companyName, email, phone, site } = companySettings;
+  const {
+    hasErrorAddress,
+    hasErrorCompanyName,
+    hasErrorEmail,
+    hasErrorPhone,
+    hasErrorSite,
+  } = companySettingsError;
 
   const link = t("Common:AboutCompanyTitle");
 
@@ -78,24 +81,10 @@ const CompanyInfoSettings = (props) => {
     setIsLoadedCompanyInfoSettingsData(true);
   }, [companyInfoSettingsData, tReady]);
 
-  useEffect(() => {
-    setCompanyName(companyInfoSettingsData.companyName);
-    setEmail(companyInfoSettingsData.email);
-    setPhone(companyInfoSettingsData.phone);
-    setSite(companyInfoSettingsData.site);
-    setAddress(companyInfoSettingsData.address);
-  }, [companyInfoSettingsData]);
+  const getSettings = () => {
+    const companySettings = getFromSessionStorage("companySettings");
 
-  useEffect(() => {
-    const settings = {
-      address,
-      companyName,
-      email,
-      phone,
-      site,
-    };
-
-    const dataСompanyInfoSettings = {
+    const defaultData = {
       address: companyInfoSettingsData.address,
       companyName: companyInfoSettingsData.companyName,
       email: companyInfoSettingsData.email,
@@ -103,87 +92,119 @@ const CompanyInfoSettings = (props) => {
       site: companyInfoSettingsData.site,
     };
 
-    const hasError =
-      hasErrorSite ||
-      hasErrorEmail ||
-      hasErrorCompanyName ||
-      hasErrorPhone ||
-      hasErrorAddress;
+    saveToSessionStorage("defaultCompanySettings", defaultData);
 
-    const noСhange = isEqual(settings, dataСompanyInfoSettings);
-
-    if (!(hasError || noСhange)) {
-      setIsChangesSettings(true);
+    if (companySettings) {
+      setCompanySettings({
+        address: companySettings.address,
+        companyName: companySettings.companyName,
+        email: companySettings.email,
+        phone: companySettings.phone,
+        site: companySettings.site,
+      });
     } else {
-      setIsChangesSettings(false);
+      setCompanySettings(defaultData);
     }
-  }, [
-    address,
-    companyName,
-    email,
-    phone,
-    site,
-    hasErrorSite,
-    hasErrorEmail,
-    hasErrorCompanyName,
-    hasErrorPhone,
-    hasErrorAddress,
-    companyInfoSettingsData,
-  ]);
+  };
 
-  const validateUrl = (url) => {
+  useEffect(() => {
+    getSettings();
+  }, [isLoading]);
+
+  useEffect(() => {
+    const defaultCompanySettings = getFromSessionStorage("defaultCompanySettings");
+
+    const newSettings = {
+      address: companySettings.address,
+      companyName: companySettings.companyName,
+      email: companySettings.email,
+      phone: companySettings.phone,
+      site: companySettings.site,
+    };
+
+    saveToSessionStorage("companySettings", newSettings);
+
+    if (isEqual(defaultCompanySettings, newSettings)) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [companySettings, companyInfoSettingsData]);
+
+  const validateSite = (site) => {
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-    const hasError = !urlRegex.test(url);
+    const hasErrorSite = !urlRegex.test(site);
 
-    setHasErrorSite(hasError);
+    setCompanySettingsError({ ...companySettingsError, hasErrorSite });
   };
 
   const validateEmail = (email) => {
     const emailRegex = /.+@.+\..+/;
-    const hasError = !emailRegex.test(email);
+    const hasErrorEmail = !emailRegex.test(email);
 
-    setHasErrorEmail(hasError);
+    setCompanySettingsError({ ...companySettingsError, hasErrorEmail });
   };
 
   const validateEmpty = (value, type) => {
     const hasError = value.trim() === "";
+    const phoneRegex = /^[\d\(\)\-+]+$/;
+    const hasErrorPhone = !phoneRegex.test(value);
 
     if (type === "companyName") {
-      setHasErrorCompanyName(hasError);
+      setCompanySettingsError({
+        ...companySettingsError,
+        hasErrorCompanyName: hasError,
+      });
     }
 
     if (type === "phone") {
-      setHasErrorPhone(hasError);
+      setCompanySettingsError({
+        ...companySettingsError,
+        hasErrorPhone,
+      });
     }
 
     if (type === "address") {
-      setHasErrorAddress(hasError);
+      setCompanySettingsError({
+        ...companySettingsError,
+        hasErrorAddress: hasError,
+      });
     }
   };
 
-  const onChangeSite = (url) => {
-    validateUrl(url);
-    setSite(url);
+  const onChangeSite = (e) => {
+    const site = e.target.value;
+    validateSite(site);
+    setCompanySettings({ ...companySettings, site });
+    saveToSessionStorage("companySettings", { ...companySettings, site });
   };
 
-  const onChangeEmail = (email) => {
+  const onChangeEmail = (e) => {
+    const email = e.target.value;
     validateEmail(email);
-    setEmail(email);
+    setCompanySettings({ ...companySettings, email });
+    saveToSessionStorage("companySettings", { ...companySettings, email });
   };
 
-  const onChangeСompanyName = (companyName) => {
+  const onChangeСompanyName = (e) => {
+    const companyName = e.target.value;
     validateEmpty(companyName, "companyName");
-    setCompanyName(companyName);
+    setCompanySettings({ ...companySettings, companyName });
+    saveToSessionStorage("companySettings", {...companySettings, companyName });
   };
 
-  const onChangePhone = (phone) => {
+  const onChangePhone = (e) => {
+    const phone = e.target.value;
     validateEmpty(phone, "phone");
-    setPhone(phone);
+    setCompanySettings({ ...companySettings, phone });
+    saveToSessionStorage("companySettings", { ...companySettings, phone });
   };
 
-  const onChangeAddress = (address) => {
+  const onChangeAddress = (e) => {
+    const address = e.target.value;
     validateEmpty(address, "address");
-    setAddress(address);
+    setCompanySettings({ ...companySettings, address });
+    saveToSessionStorage("companySettings", { ...companySettings, address });
   };
 
   const onSave = useCallback(async () => {
@@ -199,30 +220,55 @@ const CompanyInfoSettings = (props) => {
 
     await getCompanyInfoSettings();
 
+    const data = {
+      address,
+      companyName,
+      email,
+      phone,
+      site,
+    };
+
+    saveToSessionStorage("companySettings", data);
+    saveToSessionStorage("defaultCompanySettings", data);
+
+    setCompanySettingsError({
+      hasErrorAddress: false,
+      hasErrorCompanyName: false,
+      hasErrorEmail: false,
+      hasErrorPhone: false,
+      hasErrorSite: false,
+    });
+
     setIsLoading(false);
   }, [
     setIsLoading,
     setCompanyInfoSettings,
     getCompanyInfoSettings,
-    address,
-    companyName,
-    email,
-    phone,
-    site,
+    companySettings,
   ]);
 
   const onRestore = useCallback(async () => {
     setIsLoading(true);
 
     await restoreCompanyInfoSettings()
-      .then(() => {
+      .then((res) => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+        setCompanySettings(res);
+        saveToSessionStorage("companySettings", res);
       })
       .catch((error) => {
         toastr.error(error);
       });
 
     await getCompanyInfoSettings();
+
+    setCompanySettingsError({
+      hasErrorAddress: false,
+      hasErrorCompanyName: false,
+      hasErrorEmail: false,
+      hasErrorPhone: false,
+      hasErrorSite: false,
+    });
 
     setIsLoading(false);
   }, [setIsLoading, restoreCompanyInfoSettings, getCompanyInfoSettings]);
@@ -246,7 +292,7 @@ const CompanyInfoSettings = (props) => {
         onClose={onCloseModal}
         buildVersionInfo={buildVersionInfo}
         personal={personal}
-        previewData={previewData}
+        previewData={companySettings}
       />
 
       <StyledComponent isSettingPaid={isSettingPaid}>
@@ -280,7 +326,7 @@ const CompanyInfoSettings = (props) => {
               scale={true}
               value={companyName}
               hasError={hasErrorCompanyName}
-              onChange={(e) => onChangeСompanyName(e.target.value)}
+              onChange={onChangeСompanyName}
               tabIndex={5}
             />
           </FieldContainer>
@@ -298,7 +344,7 @@ const CompanyInfoSettings = (props) => {
               scale={true}
               value={email}
               hasError={hasErrorEmail}
-              onChange={(e) => onChangeEmail(e.target.value)}
+              onChange={onChangeEmail}
               tabIndex={6}
             />
           </FieldContainer>
@@ -315,7 +361,7 @@ const CompanyInfoSettings = (props) => {
               scale={true}
               value={phone}
               hasError={hasErrorPhone}
-              onChange={(e) => onChangePhone(e.target.value)}
+              onChange={onChangePhone}
               tabIndex={7}
             />
           </FieldContainer>
@@ -332,7 +378,7 @@ const CompanyInfoSettings = (props) => {
               scale={true}
               value={site}
               hasError={hasErrorSite}
-              onChange={(e) => onChangeSite(e.target.value)}
+              onChange={onChangeSite}
               tabIndex={8}
             />
           </FieldContainer>
@@ -349,7 +395,7 @@ const CompanyInfoSettings = (props) => {
               scale={true}
               value={address}
               hasError={hasErrorAddress}
-              onChange={(e) => onChangeAddress(e.target.value)}
+              onChange={onChangeAddress}
               tabIndex={9}
             />
           </FieldContainer>
@@ -361,8 +407,9 @@ const CompanyInfoSettings = (props) => {
           onCancelClick={onRestore}
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          reminderTest={t("YouHaveUnsavedChanges")}
           displaySettings={true}
-          showReminder={(isSettingPaid && isChangesSettings) || isLoading}
+          showReminder={(isSettingPaid && showReminder) || isLoading}
           disableRestoreToDefault={companyInfoSettingsIsDefault || isLoading}
         />
       </StyledComponent>

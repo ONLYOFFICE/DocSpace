@@ -253,9 +253,9 @@ public class RoomLogoManager
         try
         {
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out _);
+            using var img = Image.Load(stream);
 
-            if (size.Item2 != img.Size())
+            if (size.Item2 != img.Size)
             {
                 using var img2 = UserPhotoThumbnailManager.GetImage(img, size.Item2, new UserPhotoThumbnailSettings(position, cropSize));
                 data = CommonPhotoManager.SaveToBytes(img2);

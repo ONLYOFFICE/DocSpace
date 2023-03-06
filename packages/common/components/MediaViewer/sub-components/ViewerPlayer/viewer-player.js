@@ -21,7 +21,7 @@ import Icon15x from "PUBLIC_DIR/images/media.viewer15x.react.svg";
 import Icon2x from "PUBLIC_DIR/images/media.viewer2x.react.svg";
 
 import BigIconPlay from "PUBLIC_DIR/images/media.bgplay.react.svg";
-import { useSwipeable } from "../../react-swipeable";
+import { useSwipeable } from "@docspace/components/react-swipeable";
 import { MediaError } from "./media-error";
 
 let iconWidth = 80;
@@ -422,6 +422,17 @@ export default function ViewerPlayer(props) {
   const [currentVolume, setCurrentVolume] = React.useState(stateVolume);
   const [globalTimer, setGlobalTimer] = React.useState(null);
   const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
+
+  const unmountedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    unmountedRef.current = false;
+
+    return () => {
+      unmountedRef.current = true;
+    };
+  }, []);
+
   const handlers = useSwipeable({
     onSwiping: (e) => {
       const [width, height, left, top] = getVideoPosition(videoRef.current);
@@ -472,6 +483,7 @@ export default function ViewerPlayer(props) {
       }
       if (displayUI && props.isPlay && state.isFirstTap) {
         props.setIsPlay(false);
+        videoRef.current.pause();
         return dispatch(
           createAction(ACTION_TYPES.update, {
             isFirstTap: false,
@@ -535,6 +547,12 @@ export default function ViewerPlayer(props) {
         isFirstStart: false,
       })
     );
+
+    if (!state.isPlaying) {
+      videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
   };
 
   const handleVolumeUpdate = (e) => {
@@ -734,6 +752,12 @@ export default function ViewerPlayer(props) {
 
     const lasting = `${currentTime} / ${duration}`;
 
+    if (progress === 100 || !state.isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play();
+    }
+
     dispatch(
       createAction(ACTION_TYPES.update, {
         duration: lasting,
@@ -828,19 +852,23 @@ export default function ViewerPlayer(props) {
   }, [videoRef.current, state.isFullScreen]);
 
   React.useEffect(() => {
-    state.isPlaying ? videoRef.current.play() : videoRef.current.pause();
-  }, [state.isPlaying, videoRef.current]);
-
-  React.useEffect(() => {
     if (videoRef && videoRef.current) {
-      videoRef.current.addEventListener("error", (event) => {
+      const onError = (event) => {
+        if (unmountedRef.current) return;
+
         setIsError(true);
         return dispatch(
           createAction(ACTION_TYPES.update, {
             loadingError: true,
           })
         );
-      });
+      };
+
+      videoRef.current.addEventListener("error", onError);
+
+      return () => {
+        videoRef.current?.removeEventListener("error", onError);
+      };
     }
   }, [videoRef.current]);
 
