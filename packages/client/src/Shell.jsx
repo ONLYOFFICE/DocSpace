@@ -29,6 +29,8 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
+import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
+import { IndexedDBStores } from "@docspace/common/constants";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -157,6 +159,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    userId,
   } = rest;
 
   useEffect(() => {
@@ -359,6 +362,15 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       });
   };
 
+  useEffect(async () => {
+    if (!userId) return;
+    await indexedDbHelper.init(userId, [IndexedDBStores.images]);
+
+    return () => {
+      indexedDbHelper.deleteStore(IndexedDBStores.images);
+    };
+  }, [userId]);
+
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -552,6 +564,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
+    userId: auth?.userStore?.user?.id,
     whiteLabelLogoUrls,
   };
 })(observer(Shell));
