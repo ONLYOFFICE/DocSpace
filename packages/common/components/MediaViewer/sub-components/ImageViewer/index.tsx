@@ -9,6 +9,9 @@ import React, {
   useState,
 } from "react";
 
+import indexedDBHelper from "../../../../utils/indexedDBHelper";
+import { IndexedDBStores } from "../../../../constants";
+
 import ViewerLoader from "../ViewerLoader";
 import ImageViewerToolbar from "../ImageViewerToolbar";
 
@@ -50,6 +53,8 @@ function ImageViewer({
   resetToolbarVisibleTimer,
   mobileDetails,
   toolbar,
+  thumbnailSrc,
+  imageId,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -101,6 +106,52 @@ function ImageViewer({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
+
+  const loadImage = React.useCallback(async () => {
+    const res = await fetch(src);
+    const blob = await res.blob();
+
+    // const reader = new FileReader();
+
+    // reader.addEventListener("load", () => {
+    indexedDBHelper.addItem(IndexedDBStores.images, {
+      id: imageId,
+      src: blob,
+      created: new Date(),
+    });
+
+    if (imgRef.current && !unmountRef.current) {
+      imgRef.current.src = URL.createObjectURL(blob);
+    }
+    // });
+
+    // reader.readAsDataURL(blob);
+
+    // indexedDBHelper.addItem(IndexedDBStores.images, {
+    //   id: imageId,
+    //   src: blob,
+    //   created: new Date(),
+    // });
+
+    // if (imgRef.current && !unmountRef.current) {
+    //   console.log(imageId, src);
+    //   imgRef.current.src = blob;
+    // }
+  }, [src, imageId]);
+
+  useEffect(() => {
+    if (!imageId) return;
+    indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
+      if (result) {
+        if (imgRef.current && !unmountRef.current) {
+          console.log(imageId, result.id);
+          imgRef.current.src = URL.createObjectURL(result.src);
+        }
+      } else {
+        loadImage();
+      }
+    });
+  }, [src, imageId, loadImage]);
 
   function resize() {
     if (!imgRef.current || isLoading) return;
@@ -941,7 +992,7 @@ function ImageViewer({
         <ViewerLoader isLoading={isLoading} />
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
-            src={src}
+            src={thumbnailSrc}
             ref={imgRef}
             style={style}
             onDoubleClick={handleDoubleTapOrClick}

@@ -3,6 +3,8 @@ import { getCustomToolbar } from "../../helpers/getCustomToolbar";
 
 interface ImageViewerProps {
   src?: string;
+  thumbnailSrc?: string;
+  imageId?: number;
 
   isFistImage: boolean;
   isLastImage: boolean;

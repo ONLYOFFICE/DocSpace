@@ -136,6 +136,8 @@ function Viewer(props: ViewerProps) {
   const isNotFirstElement = props.playlistPos !== 0;
   const isNotLastElement = props.playlistPos < props.playlist.length - 1;
 
+  const targetFile = props.playlist[props.playlistPos];
+
   return (
     <StyledViewerContainer visible={props.visible}>
       {!isFullscreen && !isMobile && panelVisible && (
@@ -154,7 +156,9 @@ function Viewer(props: ViewerProps) {
             <ImageViewer
               panelVisible={panelVisible}
               toolbar={props.toolbar}
-              src={props.fileUrl}
+              src={targetFile.src}
+              thumbnailSrc={targetFile.thumbnailUrl}
+              imageId={targetFile.fileId}
               mobileDetails={mobileDetails}
               onMask={props.onMaskClick}
               onPrev={props.onPrevClick}
@@ -190,7 +194,7 @@ function Viewer(props: ViewerProps) {
               setIsFullScreen={setIsFullScreen}
               setIsError={setIsError}
               videoRef={videoElementRef}
-              video={props.playlist[props.playlistPos]}
+              video={targetFile}
               activeIndex={props.playlistPos}
             />,
             containerRef.current

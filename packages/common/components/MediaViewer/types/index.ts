@@ -18,6 +18,7 @@ export type PlaylistType = {
   fileStatus: number;
   src: string;
   title: string;
+  thumbnailUrl: string;
 };
 
 export type CreatedType = {
