@@ -29,6 +29,7 @@ const Webhooks = (props) => {
     toggleEnabled,
     deleteWebhook,
     editWebhook,
+    passwordSettings,
   } = props;
 
   const closeModal = () => {
@@ -61,12 +62,17 @@ const Webhooks = (props) => {
             closeModal();
           }
         }}
+        passwordSettings={passwordSettings}
       />
     </MainWrapper>
   );
 };
 
-export default inject(({ webhooksStore }) => {
+export default inject(({ webhooksStore, auth }) => {
+  const { settingsStore } = auth;
+
+  const { passwordSettings } = settingsStore;
+
   const {
     webhooks,
     addWebhook,
@@ -85,5 +91,6 @@ export default inject(({ webhooksStore }) => {
     toggleEnabled,
     deleteWebhook,
     editWebhook,
+    passwordSettings,
   };
 })(observer(Webhooks));

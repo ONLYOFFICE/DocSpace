@@ -47,7 +47,15 @@ const ReadMore = styled.a`
   color: #333333;
 `;
 
-export const SecretKeyInput = ({ isResetVisible, name, value, onChange }) => {
+export const SecretKeyInput = ({
+  isResetVisible,
+  name,
+  value,
+  onChange,
+  passwordSettings,
+  isPasswordValid,
+  setIsPasswordValid,
+}) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
@@ -69,9 +77,14 @@ export const SecretKeyInput = ({ isResetVisible, name, value, onChange }) => {
           value={value}
           name={name}
           placeholder="Enter secret key"
+          onValidateInput={(isValid) => {
+            setIsPasswordValid(isValid);
+          }}
+          hasError={!isPasswordValid}
           isDisableTooltip={true}
           inputType="password"
           isFullWidth={true}
+          passwordSettings={passwordSettings}
         />
       )}
     </div>
