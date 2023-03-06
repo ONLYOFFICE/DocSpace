@@ -72,7 +72,7 @@ const LoginHistory = (props) => {
           securityLifetime={securityLifetime}
           setLifetimeAuditSettings={setLifetimeAuditSettings}
           content={getContent()}
-          downloadReport={t("DownloadReportBtn")}
+          downloadReport={t("DownloadReportBtnText")}
           getReport={getLoginHistoryReport}
           isSettingNotPaid={!isAuditAvailable}
         />
