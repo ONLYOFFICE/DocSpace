@@ -10,7 +10,7 @@ import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
 import { combineUrl } from "@docspace/common/utils";
 import AppLoader from "@docspace/common/components/AppLoader";
-
+import { removeLocalStorage } from "../../utils";
 import config from "../../../../../package.json";
 import ManualBackup from "./backup/manual-backup";
 import AutoBackup from "./backup/auto-backup";
@@ -23,10 +23,19 @@ const DataManagementWrapper = (props) => {
     history,
     isNotPaidPeriod,
     currentColorScheme,
+    toDefault,
   } = props;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      removeLocalStorage("LocalCopyStorageType");
+      toDefault();
+    };
+  }, []);
+
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -106,11 +115,11 @@ const DataManagementWrapper = (props) => {
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, backup }) => {
   const { initSettings } = setup;
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
-
+  const { toDefault } = backup;
   const {
     helpUrlCreatingBackup,
     isTabletView,
@@ -126,6 +135,7 @@ export default inject(({ auth, setup }) => {
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
+    toDefault,
   };
 })(
   withTranslation(["Settings", "Common"])(

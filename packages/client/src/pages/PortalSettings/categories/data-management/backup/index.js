@@ -18,14 +18,7 @@ const Backup = ({
   history,
   isNotPaidPeriod,
   currentColorScheme,
-  toDefault,
 }) => {
-  useEffect(() => {
-    return () => {
-      removeLocalStorage("LocalCopyStorageType");
-      toDefault();
-    };
-  }, []);
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -90,10 +83,9 @@ const Backup = ({
   );
 };
 
-export default inject(({ auth, backup }) => {
+export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
-  const { toDefault } = backup;
 
   const {
     helpUrlCreatingBackup,
