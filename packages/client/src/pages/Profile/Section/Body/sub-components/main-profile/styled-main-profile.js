@@ -3,6 +3,7 @@ import {
   hugeMobile,
   smallTablet,
   desktop,
+  tablet,
 } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
@@ -42,7 +43,13 @@ export const StyledInfo = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 11px;
+
+  @media ${tablet} {
+    gap: 7px;
+  }
+
+  padding-top: 5px;
 
   @media ${smallTablet} {
     width: 100%;
@@ -70,19 +77,23 @@ export const StyledInfo = styled.div`
 
   .row {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 8px;
-
+    line-height: 20px;
     max-width: 100%;
 
     @media ${desktop} {
       height: 20px;
     }
 
+    @media ${smallTablet} {
+      align-items: center;
+    }
+
     .field {
       display: flex;
       gap: 16px;
-
+      align-items: baseline;
       max-width: calc(100% - 28px);
 
       & > p {
@@ -159,14 +170,31 @@ export const StyledInfo = styled.div`
 
     .edit-button {
       min-width: 12px;
+
+      svg path {
+        fill: ${(props) => props.theme.isBase && `#657077`};
+      }
     }
 
     .email-edit-button {
-      padding-bottom: 18px;
+      display: block;
+      padding-left: 8px;
+    }
+
+    .email-edit-container {
+      display: flex;
+      padding-right: 16px;
     }
 
     .email-container {
       padding-left: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    .email-edit-button-mobile {
+      display: none;
     }
 
     @media ${smallTablet} {
@@ -195,6 +223,14 @@ export const StyledInfo = styled.div`
         max-width: 100%;
         font-size: 12px !important;
         line-height: 16px !important;
+      }
+
+      .email-edit-button-mobile {
+        display: block;
+      }
+
+      .email-edit-button {
+        display: none;
       }
 
       .edit-button {
@@ -231,6 +267,10 @@ export const StyledRow = styled.div`
     min-width: 75px;
     max-width: 75px;
     white-space: nowrap;
+  }
+
+  .language-combo-box {
+    margin-left: -8px;
   }
 
   @media ${smallTablet} {

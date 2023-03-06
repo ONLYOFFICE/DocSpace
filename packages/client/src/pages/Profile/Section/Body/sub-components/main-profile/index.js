@@ -91,13 +91,22 @@ const MainProfile = (props) => {
                 {t("Common:Email")}
               </Text>
               <div className="email-container">
-                <Text
-                  as="div"
-                  className={"email-text-container"}
-                  fontWeight={600}
-                >
-                  {profile.email}
-                </Text>
+                <div className="email-edit-container">
+                  <Text
+                    as="div"
+                    className={"email-text-container"}
+                    fontWeight={600}
+                  >
+                    {profile.email}
+                  </Text>
+
+                  <IconButton
+                    className="edit-button email-edit-button"
+                    iconName={PencilOutlineReactSvgUrl}
+                    size="12"
+                    onClick={() => setChangeEmailVisible(true)}
+                  />
+                </div>
                 {withActivationBar && (
                   <div
                     className="send-again-container send-again-desktop"
@@ -130,7 +139,7 @@ const MainProfile = (props) => {
               )}
             </div>
             <IconButton
-              className="edit-button email-edit-button"
+              className="edit-button email-edit-button-mobile"
               iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeEmailVisible(true)}
