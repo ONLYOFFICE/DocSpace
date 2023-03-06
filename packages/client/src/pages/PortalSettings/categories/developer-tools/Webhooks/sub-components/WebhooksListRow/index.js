@@ -13,7 +13,7 @@ import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import { WebhookDialog } from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
 
-export const WebhooksListRow = ({ webhook, index, setWebhooks }) => {
+export const WebhooksListRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
   const [isChecked, setIsChecked] = useState(webhook.isEnabled);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -85,10 +85,7 @@ export const WebhooksListRow = ({ webhook, index, setWebhooks }) => {
             id="toggle id"
             isChecked={isChecked}
             onChange={() => {
-              setWebhooks((prevWebhooks) => {
-                prevWebhooks[index].isEnabled = !prevWebhooks[index].isEnabled;
-                return prevWebhooks;
-              });
+              toggleEnabled(webhook);
               setIsChecked((prevIsChecked) => !prevIsChecked);
             }}
           />
@@ -112,11 +109,7 @@ export const WebhooksListRow = ({ webhook, index, setWebhooks }) => {
         isSettingsModal={true}
         webhook={webhook}
         onSubmit={(webhookInfo) => {
-          setWebhooks((prevWebhooks) =>
-            prevWebhooks.map((prevWebhook) =>
-              prevWebhook.url === webhook.url ? webhookInfo : prevWebhook,
-            ),
-          );
+          editWebhook(webhook, webhookInfo);
         }}
       />
       <DeleteWebhookDialog
@@ -124,9 +117,7 @@ export const WebhooksListRow = ({ webhook, index, setWebhooks }) => {
         onClose={onDeleteClose}
         header="Delete Webhook forever?"
         handleSubmit={() => {
-          setWebhooks((prevWebhooks) =>
-            prevWebhooks.filter((webhookInfo) => webhookInfo.url !== webhook.url),
-          );
+          deleteWebhook(webhook);
         }}
       />
     </>
