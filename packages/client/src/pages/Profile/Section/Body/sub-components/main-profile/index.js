@@ -90,13 +90,39 @@ const MainProfile = (props) => {
               <Text as="div" className="label">
                 {t("Common:Email")}
               </Text>
-              <Text
-                as="div"
-                className={"email-text-container"}
-                fontWeight={600}
-              >
-                {profile.email}
-              </Text>
+              <div className="email-container">
+                <div className="email-edit-container">
+                  <Text
+                    as="div"
+                    className={"email-text-container"}
+                    fontWeight={600}
+                  >
+                    {profile.email}
+                  </Text>
+
+                  <IconButton
+                    className="edit-button email-edit-button"
+                    iconName={PencilOutlineReactSvgUrl}
+                    size="12"
+                    onClick={() => setChangeEmailVisible(true)}
+                  />
+                </div>
+                {withActivationBar && (
+                  <div
+                    className="send-again-container send-again-desktop"
+                    onClick={sendActivationLinkAction}
+                  >
+                    <ReactSVG
+                      className="send-again-icon"
+                      src={SendClockReactSvgUrl}
+                    />
+                    <Text className="send-again-text" fontWeight={600} noSelect>
+                      {t("SendAgain")}
+                    </Text>
+                  </div>
+                )}
+              </div>
+
               {withActivationBar && (
                 <div
                   className="send-again-container send-again-mobile"
@@ -113,25 +139,11 @@ const MainProfile = (props) => {
               )}
             </div>
             <IconButton
-              className="edit-button"
+              className="edit-button email-edit-button-mobile"
               iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeEmailVisible(true)}
             />
-            {withActivationBar && (
-              <div
-                className="send-again-container send-again-desktop"
-                onClick={sendActivationLinkAction}
-              >
-                <ReactSVG
-                  className="send-again-icon"
-                  src={SendClockReactSvgUrl}
-                />
-                <Text className="send-again-text" fontWeight={600} noSelect>
-                  {t("SendAgain")}
-                </Text>
-              </div>
-            )}
           </div>
           <div className="row">
             <div className="field">
