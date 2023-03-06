@@ -424,7 +424,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.0" />
     <PackageReference Include="Twilio" Version="5.81.2" />
   </ItemGroup>
 </Project>

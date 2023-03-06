@@ -9,6 +9,7 @@
         Edge: 107,
         Opera: 93,
         Safari: 13,
+        SafariMobile: 12,
         AscDesktopEditor: 6,
         SamsungBrowser: 3,
       };
@@ -45,6 +46,16 @@
 
         if ((temp = agent.match(/version\/(\d+)/i)) != null) {
           match.splice(1, 1, temp[1]);
+        }
+
+        if ((temp = agent.match(/mobile\/(\d+)/i)) != null) {
+          match[0] += "Mobile";
+        }
+
+        if ((temp = agent.match(/mobile/i)) != null) {
+          if ((temp = agent.match(/chrome\/?\s*(\d+)/i))) {
+            match[1] = temp[1];
+          }
         }
 
         return { name: match[0], version: match[1] };

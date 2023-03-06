@@ -27,7 +27,6 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -40,7 +39,6 @@ import TrashWarning from "@docspace/common/components/Navigation/sub-components/
 import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -97,14 +95,6 @@ class SectionHeaderContent extends React.Component {
     this.state = { navigationItems: [] };
   }
 
-  componentDidMount() {
-    window.addEventListener("popstate", this.onBackToParentFolder);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.onBackToParentFolder);
-  }
-
   onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
@@ -148,7 +138,15 @@ class SectionHeaderContent extends React.Component {
 
   createFolder = () => this.onCreate();
 
-  uploadToFolder = () => console.log("Upload To Folder click");
+  // TODO: add privacy room check for files
+  onUploadAction = (type) => {
+    const element =
+      type === "file"
+        ? document.getElementById("customFileInput")
+        : document.getElementById("customFolderInput");
+
+    element?.click();
+  };
 
   getContextOptionsPlus = () => {
     const {
@@ -228,14 +226,19 @@ class SectionHeaderContent extends React.Component {
             onClick: this.createFolder,
             icon: CatalogFolderReactSvgUrl,
           },
-          /*{ key: "separator", isSeparator: true },
-      {
-        key: "upload-to-folder",
-        label: t("UploadToFolder"),
-        onClick: this.uploadToFolder,
-        disabled: true,
-        icon: ActionsUploadReactSvgUrl,
-      },*/
+          { key: "separator", isSeparator: true },
+          {
+            key: "upload-files",
+            label: t("Article:UploadFiles"),
+            onClick: () => this.onUploadAction("file"),
+            icon: ActionsUploadReactSvgUrl,
+          },
+          {
+            key: "upload-folder",
+            label: t("Article:UploadFolder"),
+            onClick: () => this.onUploadAction("folder"),
+            icon: ActionsUploadReactSvgUrl,
+          },
         ];
 
     if (enablePlugins) {
@@ -571,14 +574,6 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  onBackToParentFolder = () => {
-    if (this.props.isRoom) {
-      return this.moveToRoomsPage();
-    }
-
-    this.props.backToParentFolder();
-  };
-
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
     this.props.setSelected(key);
@@ -621,10 +616,15 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
+    const {
+      setSelectedNode,
+      setIsLoading,
+      fetchFiles,
+      moveToRoomsPage,
+    } = this.props;
 
     if (isRootRoom) {
-      return this.moveToRoomsPage();
+      return moveToRoomsPage();
     }
 
     setSelectedNode(id);
@@ -632,32 +632,6 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(id, null, true, false)
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
-  };
-
-  moveToRoomsPage = () => {
-    const {
-      setIsLoading,
-
-      fetchRooms,
-
-      setAlreadyFetchingRooms,
-
-      rootFolderType,
-    } = this.props;
-
-    setIsLoading(true);
-
-    setAlreadyFetchingRooms(true);
-
-    const filter = RoomsFilter.getDefault();
-
-    if (rootFolderType === FolderType.Archive) {
-      filter.searchArea = RoomSearchArea.Archive;
-    }
-
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
   };
 
   render() {
@@ -690,6 +664,7 @@ class SectionHeaderContent extends React.Component {
       isRoom,
       isGroupMenuBlocked,
       security,
+      onClickBack,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -743,7 +718,7 @@ class SectionHeaderContent extends React.Component {
                       isArchiveFolder ? isEmptyArchive : isEmptyFilesList
                     }
                     clearTrash={this.onEmptyTrashAction}
-                    onBackToParentFolder={this.onBackToParentFolder}
+                    onBackToParentFolder={onClickBack}
                     toggleInfoPanel={this.onToggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
@@ -838,8 +813,9 @@ export default inject(
       deleteAction,
       downloadAction,
       getHeaderMenu,
-      backToParentFolder,
       isGroupMenuBlocked,
+      moveToRoomsPage,
+      onClickBack,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -850,7 +826,6 @@ export default inject(
       roomType,
       pathParts,
       navigationPath,
-      rootFolderType,
       security,
     } = selectedFolderStore;
 
@@ -912,7 +887,6 @@ export default inject(
       setDeleteDialogVisible,
       downloadAction,
       getHeaderMenu,
-      backToParentFolder,
       getCheckboxItemLabel,
       getCheckboxItemId,
       setSelectFileDialogVisible,
@@ -951,12 +925,13 @@ export default inject(
       onClickArchive,
       onCopyLink,
 
-      rootFolderType,
-
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
       isGroupMenuBlocked,
+
+      moveToRoomsPage,
+      onClickBack,
     };
   }
 )(
@@ -966,6 +941,7 @@ export default inject(
     "Translations",
     "InfoPanel",
     "SharingPanel",
+    "Article",
   ])(
     withLoader(withRouter(observer(SectionHeaderContent)))(
       <Loaders.SectionHeader />

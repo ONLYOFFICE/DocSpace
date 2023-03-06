@@ -38,7 +38,7 @@ class AccessRightsStore {
 
     const { id: userId, statusType, role } = user;
 
-    if (userId === id || statusType === EmployeeStatus.Disabled) return false;
+    if (userId === id || statusType === "disabled") return false;
 
     switch (role) {
       case "owner":

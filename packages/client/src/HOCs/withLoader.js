@@ -55,7 +55,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
 
     return (!isEditor && firstLoad && !isGallery) ||
       !isLoaded ||
-      (isMobile && inLoad) ||
+      (isMobile && inLoad && !firstLoad) ||
       (isLoadingFilesFind && !Loader) ||
       !tReady ||
       !isInit ? (

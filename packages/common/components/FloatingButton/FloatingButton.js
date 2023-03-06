@@ -67,7 +67,7 @@ const FloatingButton = (props) => {
   }, [percent, setAnimationCompleted]);
 
   return (
-    <StyledFloatingButtonWrapper>
+    <StyledFloatingButtonWrapper className="layout-progress-bar_wrapper">
       <ColorTheme
         {...props}
         themeId={ThemeType.FloatingButton}

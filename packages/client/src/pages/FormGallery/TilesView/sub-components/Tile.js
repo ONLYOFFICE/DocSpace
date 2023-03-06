@@ -100,9 +100,8 @@ class Tile extends React.PureComponent {
   };
 
   onShowTemplateInfo = () => {
-    if (!this.props.isInfoPanelVisible) {
-      this.props.setIsInfoPanelVisible(true);
-    }
+    this.onSelectForm();
+    if (!this.props.isInfoPanelVisible) this.props.setIsInfoPanelVisible(true);
   };
 
   getOptions = () => ["create", "template-info"];

@@ -54,7 +54,7 @@ const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")
 );
 
-const Backup = lazy(() => import("./categories/data-management/backup"));
+const Backup = lazy(() => import("./categories/data-management/index"));
 
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index")
@@ -162,7 +162,6 @@ const THIRD_PARTY_URL = combineUrl(
 );
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
-const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
 
 const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),

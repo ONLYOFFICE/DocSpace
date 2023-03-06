@@ -28,7 +28,6 @@ const StyledNoItemContainer = styled.div`
   }
 
   .no-accounts {
-    padding-top: 80px;
   }
 `;
 

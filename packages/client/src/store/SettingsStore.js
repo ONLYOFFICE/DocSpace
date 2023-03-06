@@ -30,6 +30,7 @@ class SettingsStore {
   favoritesSection = null;
   recentSection = null;
   hideConfirmConvertSave = null;
+  keepNewFileName = null;
   chunkUploadSize = 1024 * 1023; // 1024 * 1023; //~0.999mb
 
   settingsIsLoaded = false;
@@ -148,6 +149,12 @@ class SettingsStore {
     api.files.storeForceSave(data).then((res) => this.setStoreForcesave(res));
 
   setStoreForcesave = (val) => (this.storeForcesave = val);
+
+  setKeepNewFileName = (data) => {
+    api.files
+      .changeKeepNewFileName(data)
+      .then((res) => this.setFilesSetting("keepNewFileName", res));
+  };
 
   setEnableThirdParty = async (data, setting) => {
     const res = await api.files.thirdParty(data);

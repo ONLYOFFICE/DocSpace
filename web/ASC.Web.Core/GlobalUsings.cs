@@ -134,7 +134,7 @@ global using Newtonsoft.Json.Linq;
 global using ProtoBuf;
 
 global using SixLabors.ImageSharp;
-global using SixLabors.ImageSharp.Drawing.Processing;
+global using SixLabors.ImageSharp.Diagnostics;
 global using SixLabors.ImageSharp.Formats;
 global using SixLabors.ImageSharp.Formats.Png;
 global using SixLabors.ImageSharp.PixelFormats;

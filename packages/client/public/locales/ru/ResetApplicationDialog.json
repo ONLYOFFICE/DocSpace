@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Настройки приложения для аутентификации будут сброшены.",
-  "ResetApplicationTitle": "Сбросить настройки приложения"
+  "ResetApplicationTitle": "Сбросить настройки приложения",
+  "SuccessResetApplication": "Настройки приложения для аутентификации успешно сброшены"
 }
