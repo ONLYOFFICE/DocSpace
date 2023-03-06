@@ -403,3 +403,7 @@ export const FilterKeys = Object.freeze({
   other: "other",
   user: "user",
 });
+
+export const IndexedDBStores = Object.freeze({
+  images: "images",
+});
