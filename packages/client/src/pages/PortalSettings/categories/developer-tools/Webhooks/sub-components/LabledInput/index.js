@@ -19,7 +19,15 @@ const Label = styled.label`
   }
 `;
 
-export const LabledInput = ({ label, placeholder, value, onChange, name }) => {
+export const LabledInput = ({
+  label,
+  placeholder,
+  value,
+  onChange,
+  name,
+  mask,
+  required = false,
+}) => {
   const [inputValue, setInputValue] = useState(value);
 
   const handleChange = (e) => {
@@ -36,6 +44,8 @@ export const LabledInput = ({ label, placeholder, value, onChange, name }) => {
         tabIndex={1}
         value={inputValue}
         onChange={handleChange}
+        required={required}
+        {...(mask ? { mask: mask } : {})}
       />
     </Label>
   );
