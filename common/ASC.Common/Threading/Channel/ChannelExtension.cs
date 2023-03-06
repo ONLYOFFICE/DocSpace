@@ -58,7 +58,7 @@ public static class ChannelExtension
                     await outputs[index].Writer.WriteAsync(item, cancellationToken);
                 }
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
                 // TODO: catch error via additional channel
                 //  var error = Channel.CreateUnbounded<T>();
@@ -96,7 +96,7 @@ public static class ChannelExtension
 
                 await Task.WhenAll(inputs.Select(i => Redirect(i)).ToArray());
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
                 // TODO: catch error via additional channel
                 //  var error = Channel.CreateUnbounded<T>();

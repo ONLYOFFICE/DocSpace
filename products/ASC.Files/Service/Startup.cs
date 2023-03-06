@@ -110,7 +110,7 @@ public class Startup : BaseWorkerStartup
 
         services.AddBaseDbContextPool<FilesDbContext>();
 
-        services.AddSingleton(Channel.CreateUnbounded<FileData<int>>(new UnboundedChannelOptions { SingleReader = true, SingleWriter = false }));
+        services.AddSingleton(Channel.CreateUnbounded<FileData<int>>());
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Reader);
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Writer);
     }

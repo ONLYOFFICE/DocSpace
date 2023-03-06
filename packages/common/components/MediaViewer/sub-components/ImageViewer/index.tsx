@@ -61,7 +61,6 @@ function ImageViewer({
   const isDoubleTapRef = useRef<boolean>(false);
   const setTimeoutIDTapRef = useRef<NodeJS.Timeout>();
   const startAngleRef = useRef<number>(0);
-  const scaleRef = useRef<number>(1);
   const toolbarRef = useRef<ImperativeHandle>(null);
 
   const [scale, setScale] = useState(1);
@@ -73,7 +72,7 @@ function ImageViewer({
     height: 0,
     x: 0,
     y: 0,
-    scale: 5,
+    scale: 1,
     rotate: 0,
     opacity: 1,
   }));
@@ -702,8 +701,6 @@ function ImageViewer({
 
         const point = calculateAdjustBounds(dx, dy, ratio, dRotate);
 
-        scaleRef.current = dScale;
-
         api.start({
           ...point,
           scale: dScale,
@@ -813,7 +810,6 @@ function ImageViewer({
       onWheel: ({
         first,
         offset: [, yWheel],
-        lastOffset: [, lYWheel],
         movement: [, mYWheel],
         pinching,
         memo,
@@ -827,8 +823,8 @@ function ImageViewer({
         )
           return memo;
 
+        resetToolbarVisibleTimer();
         const dScale = (-1 * yWheel) / RatioWheel;
-        const lScale = (-1 * lYWheel) / RatioWheel;
         const mScale = (-1 * mYWheel) / RatioWheel;
 
         if (first || !memo) {
@@ -845,7 +841,7 @@ function ImageViewer({
         const dx = memo[0] - mScale * memo[2];
         const dy = memo[1] - mScale * memo[3];
 
-        const ratio = dScale / lScale;
+        const ratio = dScale / style.scale.get();
 
         const point = calculateAdjustImage(
           calculateAdjustBounds(dx, dy, ratio),
@@ -957,6 +953,7 @@ function ImageViewer({
         <ImageViewerToolbar
           ref={toolbarRef}
           toolbar={toolbar}
+          percentValue={style.scale.get()}
           generateContextMenu={generateContextMenu}
           setIsOpenContextMenu={setIsOpenContextMenu}
           toolbarEvent={toolbarEvent}
