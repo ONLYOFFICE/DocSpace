@@ -1905,7 +1905,6 @@ class FilesActionStore {
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
-    setSelectedFolder(null);
 
     if (
       categoryType === CategoryType.SharedRoom ||
@@ -1933,10 +1932,12 @@ class FilesActionStore {
     }
 
     if (categoryType === CategoryType.Settings) {
+      setSelectedFolder(null);
       setSelectedNode(["common"]);
     }
 
     if (categoryType === CategoryType.Accounts) {
+      setSelectedFolder(null);
       setSelectedNode(["accounts", "filter"]);
     }
   };
