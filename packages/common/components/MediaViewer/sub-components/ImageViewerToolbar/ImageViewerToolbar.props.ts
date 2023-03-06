@@ -8,6 +8,7 @@ interface ImageViewerToolbarProps {
     right?: string,
     bottom?: string
   ) => JSX.Element;
+  percentValue: number;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
   toolbarEvent: (item: ToolbarItemType) => void;
 }
