@@ -703,6 +703,11 @@ export function forceSave(val) {
   return request({ method: "put", url: "files/forcesave", data });
 }
 
+export function changeKeepNewFileName(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/keepnewfilename", data });
+}
+
 export function thirdParty(val) {
   const data = { set: val };
   return request({ method: "put", url: "files/thirdparty", data });

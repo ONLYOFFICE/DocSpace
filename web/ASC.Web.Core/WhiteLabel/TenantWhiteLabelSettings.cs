@@ -687,9 +687,9 @@ public class TenantWhiteLabelSettingsHelper
         try
         {
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out var format);
+            using var img = Image.Load(stream);
 
-            if (size != img.Size())
+            if (size != img.Size)
             {
                 using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);
                 data = CommonPhotoManager.SaveToBytes(img2);
@@ -731,7 +731,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
     {
-        _settingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
+        _settingsManager.Save(tenantWhiteLabelSettings, tenantId);
 
         if (tenantId == Tenant.DefaultTenant)
         {

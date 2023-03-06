@@ -11,10 +11,17 @@ const StyledLink = styled(Link)`
   line-height: 16px;
   font-weight: 400;
 
-  color: #316daa;
+  color: ${(props) => props.currentColorScheme.main.accent};
 `;
 
-const ConfirmEmailBar = ({ t, tReady, onClick, onClose, onLoad }) => {
+const ConfirmEmailBar = ({
+  t,
+  tReady,
+  onClick,
+  onClose,
+  onLoad,
+  currentColorScheme,
+}) => {
   return (
     tReady && (
       <SnackBar
@@ -22,7 +29,12 @@ const ConfirmEmailBar = ({ t, tReady, onClick, onClose, onLoad }) => {
         text={
           <>
             {t("ConfirmEmailDescription")}{" "}
-            <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
+            <StyledLink
+              currentColorScheme={currentColorScheme}
+              onClick={onClick}
+            >
+              {t("RequestActivation")}
+            </StyledLink>
           </>
         }
         isCampaigns={false}

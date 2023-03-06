@@ -91,6 +91,7 @@ const FilesSection = React.memo(() => {
       <PrivateRoute
         restricted
         withManager
+        withCollaborator
         path={[
           "/rooms/personal",
           "/rooms/personal/filter",
@@ -144,7 +145,6 @@ const FilesSection = React.memo(() => {
       <PrivateRoute
         exact
         restricted
-        withManager
         path={"/settings/admin"}
         component={Settings}
       />

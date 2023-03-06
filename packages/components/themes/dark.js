@@ -3023,6 +3023,9 @@ const Dark = {
     main: {
       background: "#1f1f1f",
       textColor: white,
+
+      descriptionTextColor: "#858585",
+      pendingEmailTextColor: "#858585",
     },
     themePreview: {
       descriptionColor: "#ADADAD",

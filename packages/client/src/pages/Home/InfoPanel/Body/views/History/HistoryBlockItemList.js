@@ -21,14 +21,23 @@ export const HistoryBlockItemList = ({
   const onShowMore = () => setIsShowMore(true);
 
   const parsedItems = items.map((item) => {
+    const indexPoint = item.Title.lastIndexOf(".");
     const splitTitle = item.Title.split(".");
+    const splitTitleLength = splitTitle.length;
+
+    const fileExst =
+      splitTitleLength != 1 ? `.${splitTitle[splitTitleLength - 1]}` : null;
+
+    const title =
+      splitTitleLength <= 2 ? splitTitle[0] : item.Title.slice(0, indexPoint);
+
     return {
       ...item,
       isRoom: item.Item === "room",
       isFolder: item.Item === "folder",
       roomType: RoomsType[item.AdditionalInfo],
-      title: splitTitle[0],
-      fileExst: splitTitle[1] ? `.${splitTitle[1]}` : null,
+      title,
+      fileExst,
       id: item.ItemId.split("_")[0],
       viewUrl: item.itemId,
     };

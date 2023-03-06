@@ -113,8 +113,7 @@ const ControlButtons = ({
 
   return (
     <StyledContainer isDropBoxComponent={isDropBoxComponent}>
-      {(!isRootFolder && canCreate) ||
-      (isRecycleBinFolder && !isEmptyFilesList) ? (
+      {!isRootFolder || (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
           {!isMobile && canCreate && (
             <PlusButton
@@ -124,19 +123,19 @@ const ControlButtons = ({
               onPlusClick={onPlusClick}
             />
           )}
-          {!personal && (
-            <ContextMenuButton
-              id="header_optional-button"
-              zIndex={402}
-              className="option-button"
-              directionX="right"
-              iconName={VerticalDotsReactSvgUrl}
-              size={15}
-              isFill
-              getData={getContextOptionsFolder}
-              isDisabled={false}
-            />
-          )}
+
+          <ContextMenuButton
+            id="header_optional-button"
+            zIndex={402}
+            className="option-button"
+            directionX="right"
+            iconName={VerticalDotsReactSvgUrl}
+            size={15}
+            isFill
+            getData={getContextOptionsFolder}
+            isDisabled={false}
+          />
+
           {!isDesktop && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}

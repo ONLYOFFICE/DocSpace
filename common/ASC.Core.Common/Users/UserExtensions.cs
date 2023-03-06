@@ -40,7 +40,12 @@ public static class UserExtensions
 
     public static bool IsMe(this UserInfo ui, AuthContext authContext)
     {
-        return ui != null && ui.Id == authContext.CurrentAccount.ID;
+        return IsMe(ui, authContext.CurrentAccount.ID);
+    }
+
+    public static bool IsMe(this UserInfo user, Guid id)
+    {
+        return user != null && user.Id == id;
     }
 
     public static bool IsDocSpaceAdmin(this UserManager userManager, Guid id)
@@ -63,6 +68,17 @@ public static class UserExtensions
     public static bool IsUser(this UserManager userManager, UserInfo ui)
     {
         return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupUser.ID);
+    }
+
+    public static bool IsCollaborator(this UserManager userManager, UserInfo userInfo)
+    {
+        return userInfo != null && userManager.IsUserInGroup(userInfo.Id, Constants.GroupCollaborator.ID);
+    }
+    
+    public static bool IsCollaborator(this UserManager userManager, Guid id)
+    {
+        var userInfo = userManager.GetUsers(id);
+        return userManager.IsCollaborator(userInfo);
     }
 
     public static bool IsOutsider(this UserManager userManager, Guid id)
@@ -98,7 +114,15 @@ public static class UserExtensions
 
     public static EmployeeType GetUserType(this UserManager userManager, Guid id)
     {
-        return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : userManager.IsUser(id) ? EmployeeType.User : EmployeeType.RoomAdmin;
+        if (userManager.GetUsers(id).Equals(Constants.LostUser))
+        {
+            return EmployeeType.User;
+        }
+        
+        return userManager.IsDocSpaceAdmin(id) ? EmployeeType.DocSpaceAdmin : 
+            userManager.IsUser(id) ? EmployeeType.User : 
+            userManager.IsCollaborator(id) ? EmployeeType.Collaborator :
+            EmployeeType.RoomAdmin;
     }
 
     private const string _extMobPhone = "extmobphone";

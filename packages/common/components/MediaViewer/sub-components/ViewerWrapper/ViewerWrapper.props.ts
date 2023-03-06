@@ -4,7 +4,7 @@ interface ViewerWrapperProps {
   userAccess: boolean;
   visible: boolean;
   title: string;
-  images: { src: string; alt: string }[];
+  fileUrl?: string;
   inactive: boolean;
   playlist: PlaylistType[];
   playlistPos: number;
