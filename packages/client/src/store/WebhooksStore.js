@@ -24,13 +24,28 @@ class WebhooksStore {
     makeAutoObservable(this);
   }
 
-  addWebhook(webhook) {
+  addWebhook = (webhook) => {
     this.webhooks.push(webhook);
-  }
+  };
 
-  isWebhookExist(desiredWebhook) {
-    return this.webhooks.find((webhook) => webhook.id === desiredWebhook.id) !== undefined;
-  }
+  isWebhookExist = (desiredWebhook) => {
+    return this.webhooks.some((webhook) => webhook.id === desiredWebhook.id);
+  };
+
+  toggleEnabled = (desiredWebhook) => {
+    const index = this.webhooks.findIndex((webhook) => webhook.id === desiredWebhook.id);
+    this.webhooks[index].isEnabled = !this.webhooks[index].isEnabled;
+  };
+
+  deleteWebhook = (webhook) => {
+    this.webhooks = this.webhooks.filter((currentWebhook) => currentWebhook.id !== webhook.id);
+  };
+
+  editWebhook = (prevWebhook, webhookInfo) => {
+    this.webhooks = this.webhooks.map((webhook) =>
+      webhook.id === prevWebhook.id ? webhookInfo : webhook,
+    );
+  };
 
   get isWebhooksEmpty() {
     return this.webhooks.length === 0;
