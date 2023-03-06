@@ -3,6 +3,8 @@ import {
   isNullOrUndefined,
   findNearestIndex,
 } from "@docspace/common/components/MediaViewer/helpers";
+import { thumbnailStatuses } from "SRC_DIR/helpers/filesConstants";
+import api from "@docspace/common/api";
 
 class MediaViewerDataStore {
   filesStore;
@@ -117,6 +119,7 @@ class MediaViewerDataStore {
 
     const filesList = [...files];
     const playlist = [];
+    const itemsWithoutThumb = [];
     let id = 0;
 
     if (this.currentItem) {
@@ -137,6 +140,7 @@ class MediaViewerDataStore {
       filesList.forEach((file) => {
         const canOpenPlayer =
           file.viewAccessability.ImageView || file.viewAccessability.MediaView;
+
         if (canOpenPlayer) {
           playlist.push({
             id: id,
@@ -146,7 +150,15 @@ class MediaViewerDataStore {
             fileExst: file.fileExst,
             fileStatus: file.fileStatus,
             canShare: file.canShare,
+            thumbnailUrl:
+              file.thumbnailStatus === thumbnailStatuses.CREATED &&
+              file.viewAccessability.ImageView
+                ? file.thumbnailUrl
+                : null,
           });
+
+          if (file.viewAccessability.ImageView) itemsWithoutThumb.push(file);
+
           id++;
         }
       });
@@ -161,7 +173,20 @@ class MediaViewerDataStore {
         id: id,
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
+        thumbnailUrl:
+          this.previewFile.thumbnailStatus === thumbnailStatuses.CREATED &&
+          this.previewFile.viewAccessability.ImageView
+            ? this.previewFile.thumbnailUrl
+            : null,
       });
+
+      if (this.previewFile.viewAccessability.ImageView) {
+        itemsWithoutThumb.push(this.previewFile);
+      }
+    }
+
+    if (itemsWithoutThumb.length > 0) {
+      this.filesStore.createThumbnails(itemsWithoutThumb);
     }
 
     return playlist;
