@@ -196,18 +196,16 @@ const AdditionalResources = (props) => {
             onChange={() => setShowHelpCenter(!helpCenterEnabled)}
           />
         </div>
-        {isSettingPaid && (
-          <SaveCancelButtons
-            tabIndex={15}
-            onSaveClick={onSave}
-            onCancelClick={onRestore}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-            displaySettings={true}
-            showReminder={(isSettingPaid && hasChange) || isLoading}
-            disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
-          />
-        )}
+        <SaveCancelButtons
+          tabIndex={15}
+          onSaveClick={onSave}
+          onCancelClick={onRestore}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          displaySettings={true}
+          showReminder={(isSettingPaid && hasChange) || isLoading}
+          disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
+        />
       </StyledComponent>
     </>
   );
