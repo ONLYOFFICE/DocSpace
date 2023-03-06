@@ -21,6 +21,7 @@ import MediaContextMenu from "PUBLIC_DIR/images/vertical-dots.react.svg";
 function ImageViewerToolbar(
   {
     toolbar,
+    percentValue,
     toolbarEvent,
     generateContextMenu,
     setIsOpenContextMenu,
@@ -28,7 +29,9 @@ function ImageViewerToolbar(
   ref: ForwardedRef<ImperativeHandle>
 ) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [percent, setPercent] = useState<number>(100);
+  const [percent, setPercent] = useState<number>(() =>
+    Math.round(percentValue * 100)
+  );
 
   useImperativeHandle(
     ref,

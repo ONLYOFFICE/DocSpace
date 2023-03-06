@@ -73,7 +73,7 @@ function ImageViewer({
     height: 0,
     x: 0,
     y: 0,
-    scale: 5,
+    scale: 1,
     rotate: 0,
     opacity: 1,
   }));
@@ -957,6 +957,7 @@ function ImageViewer({
         <ImageViewerToolbar
           ref={toolbarRef}
           toolbar={toolbar}
+          percentValue={style.scale.get()}
           generateContextMenu={generateContextMenu}
           setIsOpenContextMenu={setIsOpenContextMenu}
           toolbarEvent={toolbarEvent}
