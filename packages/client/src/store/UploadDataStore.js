@@ -618,7 +618,7 @@ class UploadDataStore {
         // converted: false,
       };
 
-      if (this.isParallel)
+      if (!this.isParallel)
         newUploadData = { ...newUploadData, converted: false };
 
       this.tempConversionFiles = [];
@@ -737,7 +737,7 @@ class UploadDataStore {
       uploaded: false,
       // converted: !!this.tempConversionFiles.length,
     };
-    if (this.isParallel)
+    if (!this.isParallel)
       newUploadData = {
         ...newUploadData,
         converted: !!this.tempConversionFiles.length,
