@@ -33,10 +33,12 @@ export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
   Admin: 3,
+  Collaborator: 4,
   UserString: "user",
   RoomAdmin: "manager",
   DocSpaceAdmin: "admin",
   Owner: "Owner",
+  CollaboratorString: "collaborator",
 });
 /**
  * Enum for user payments type.
@@ -202,6 +204,7 @@ export const ShareAccessRights = Object.freeze({
   CustomFilter: 8,
   RoomManager: 9,
   Editing: 10,
+  Collaborator: 11,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,
@@ -387,4 +390,27 @@ export const NotificationsType = Object.freeze({
   RoomsActivity: 1,
   DailyFeed: 2,
   UsefulTips: 3,
+});
+
+export const FilterGroups = Object.freeze({
+  filterType: "filter-filterType",
+  filterAuthor: "filter-author",
+  filterFolders: "filter-folders",
+  filterContent: "filter-withContent",
+  roomFilterProviderType: "filter-provider-type",
+  roomFilterType: "filter-type",
+  roomFilterSubject: "filter-subject",
+  roomFilterOwner: "filter-owner",
+  roomFilterTags: "filter-tags",
+  roomFilterFolders: "filter-withSubfolders",
+  roomFilterContent: "filter-content",
+});
+
+export const FilterKeys = Object.freeze({
+  withSubfolders: "withSubfolders",
+  excludeSubfolders: "excludeSubfolders",
+  withContent: "withContent",
+  me: "me",
+  other: "other",
+  user: "user",
 });

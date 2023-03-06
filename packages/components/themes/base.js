@@ -3082,6 +3082,9 @@ const Base = {
     main: {
       background: "#F8F9F9",
       textColor: black,
+
+      descriptionTextColor: "#A3A9AE",
+      pendingEmailTextColor: "#A3A9AE",
     },
     themePreview: {
       descriptionColor: "#A3A9AE",

@@ -415,8 +415,13 @@ class AccountsContextOptionsStore {
   };
 
   onResetAuth = (item) => {
-    toastr.warning("Work at progress");
-    console.log(item);
+    const {
+      setDialogData,
+      setResetAuthDialogVisible,
+    } = this.peopleStore.dialogStore;
+
+    setResetAuthDialogVisible(true);
+    setDialogData(item.id);
   };
 }
 

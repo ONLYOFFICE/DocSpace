@@ -26,6 +26,7 @@ const PeopleSection = React.memo(() => {
       />
       <PrivateRoute
         exact
+		withManager
         path={["/accounts"]}
         component={HomeRedirectToFilter}
       />

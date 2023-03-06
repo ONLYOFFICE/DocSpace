@@ -816,20 +816,20 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The role is only available to a paid user.
-        /// </summary>
-        public static string ErrorMessage_PaidRole {
-            get {
-                return ResourceManager.GetString("ErrorMessage_PaidRole", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This provider is already connected to the room.
         /// </summary>
         public static string ErrorMessage_ProviderAlreadyConnect {
             get {
                 return ResourceManager.GetString("ErrorMessage_ProviderAlreadyConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The role is not available for this user type.
+        /// </summary>
+        public static string ErrorMessage_RoleNotAvailable {
+            get {
+                return ResourceManager.GetString("ErrorMessage_RoleNotAvailable", resourceCulture);
             }
         }
         

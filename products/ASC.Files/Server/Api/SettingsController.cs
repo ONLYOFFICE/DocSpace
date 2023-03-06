@@ -213,6 +213,17 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <param name="set"></param>
     /// <returns></returns>
+    [HttpPut("keepnewfilename")]
+    public bool KeepNewFileName(SettingsRequestDto inDto)
+    {
+        return _fileStorageServiceString.KeepNewFileName(inDto.Set);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="set"></param>
+    /// <returns></returns>
     [HttpPut("updateifexist")]
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {

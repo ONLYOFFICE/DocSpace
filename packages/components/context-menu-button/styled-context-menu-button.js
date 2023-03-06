@@ -8,7 +8,7 @@ const StyledOuter = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) =>
-    props.isNeedBorder &&
+    props.displayIconBorder &&
     css`
       border: ${(props) => props.theme.comboBox.button.border};
       width: 32px;
@@ -17,7 +17,7 @@ const StyledOuter = styled.div`
       border-radius: 3px;
 
       svg {
-        padding: 7px 13px 7px 2px;
+        padding: 6px 7px;
       }
       :hover {
         border-color: ${(props) =>

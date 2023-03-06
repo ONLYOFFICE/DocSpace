@@ -79,7 +79,7 @@ const LanguagesCombo = (props) => {
 
   return (
     <StyledRow>
-      <Text as="div" color="#A3A9AE" className="label">
+      <Text as="div" className="label">
         {t("Common:Language")}
         <HelpButton
           size={12}
@@ -89,6 +89,7 @@ const LanguagesCombo = (props) => {
         />
       </Text>
       <ComboBox
+        className="language-combo-box"
         directionY="both"
         options={cultureNames}
         selectedOption={selectedLanguage}

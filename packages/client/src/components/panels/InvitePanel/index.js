@@ -35,12 +35,15 @@ const InvitePanel = ({
   userLink,
   guestLink,
   adminLink,
+  collaboratorLink,
   defaultAccess,
   inviteUsers,
   setInfoPanelIsMobileHidden,
   reloadSelectionParentRoom,
   setUpdateRoomMembers,
   roomsView,
+  getUsersList,
+  filter,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -85,7 +88,8 @@ const InvitePanel = ({
 
   useEffect(() => {
     if (roomId === -1) {
-      if (!userLink || !guestLink || !adminLink) getPortalInviteLinks();
+      if (!userLink || !guestLink || !adminLink || !collaboratorLink)
+        getPortalInviteLinks();
 
       setShareLinks([
         {
@@ -106,6 +110,12 @@ const InvitePanel = ({
           shareLink: adminLink,
           access: 3,
         },
+        {
+          id: "collaborator",
+          title: "Collaborator",
+          shareLink: collaboratorLink,
+          access: 4,
+        },
       ]);
 
       return;
@@ -113,7 +123,7 @@ const InvitePanel = ({
 
     selectRoom();
     getInfo();
-  }, [roomId, userLink, guestLink, adminLink]);
+  }, [roomId, userLink, guestLink, adminLink, collaboratorLink]);
 
   useEffect(() => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -178,6 +188,10 @@ const InvitePanel = ({
     } catch (err) {
       toastr.error(err);
       setIsLoading(false);
+    } finally {
+      if (roomId === -1) {
+        await getUsersList(filter , false);
+      }
     }
   };
 
@@ -261,7 +275,8 @@ const InvitePanel = ({
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
-  const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
+  const { getUsersByQuery, inviteUsers, getUsersList } = peopleStore.usersStore;
+  const { filter } = peopleStore.filterStore;
   const {
     setIsMobileHidden: setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
@@ -275,6 +290,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
   } = peopleStore.inviteLinksStore;
 
   const {
@@ -308,11 +324,14 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
     inviteUsers,
     setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
     setUpdateRoomMembers,
     roomsView,
+    getUsersList,
+    filter,
   };
 })(
   withTranslation([

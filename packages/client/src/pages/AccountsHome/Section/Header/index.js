@@ -72,6 +72,7 @@ const StyledContainer = styled.div`
 
     width: 100%;
     height: 100%;
+    min-height: 33px;
 
     display: grid;
     align-items: center;

@@ -518,7 +518,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    getWhiteLabelLogoUrls,
     whiteLabelLogoUrls,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;

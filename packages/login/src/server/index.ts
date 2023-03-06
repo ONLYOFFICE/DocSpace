@@ -16,6 +16,7 @@ import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { getLanguage } from "@docspace/common/utils";
 import { initSSR } from "@docspace/common/api/client";
 import dns from "dns";
+import { xss } from "express-xss-sanitizer";
 
 let port = PORT;
 
@@ -32,6 +33,7 @@ const app = express();
 app.use(i18nextMiddleware.handle(i18next));
 app.use(compression());
 app.use(cookieParser());
+app.use(xss());
 app.use(
   "/login",
   express.static(path.resolve(path.join(__dirname, "client")), {

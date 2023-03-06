@@ -9,6 +9,7 @@ import ActionsPresentationReactSvgUrl from "PUBLIC_DIR/images/actions.presentati
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
@@ -29,7 +30,7 @@ import { Events, EmployeeType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 
 import { resendInvitesAgain } from "@docspace/common/api/people";
@@ -38,30 +39,36 @@ const StyledButton = styled(Button)`
   font-weight: 700;
   font-size: 16px;
   padding: 0;
-  opacity: 1;
+  opacity: ${(props) => (props.isDisabled ? 0.6 : 1)};
 
   background-color: ${({ currentColorScheme }) =>
     currentColorScheme.main.accent} !important;
   background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
   border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
 
-  :hover {
-    background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.main.accent};
-    opacity: 0.85;
-    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-  }
+  ${(props) =>
+    !props.isDisabled &&
+    css`
+      :hover {
+        background-color: ${({ currentColorScheme }) =>
+          currentColorScheme.main.accent};
+        opacity: 0.85;
+        background: ${({ currentColorScheme }) =>
+          currentColorScheme.main.accent};
+        border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+      }
 
-  :active {
-    background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.main.accent};
-    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-    opacity: 1;
-    filter: brightness(90%);
-    cursor: pointer;
-  }
+      :active {
+        background-color: ${({ currentColorScheme }) =>
+          currentColorScheme.main.accent};
+        background: ${({ currentColorScheme }) =>
+          currentColorScheme.main.accent};
+        border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+        opacity: 1;
+        filter: brightness(90%);
+        cursor: pointer;
+      }
+    `}
 
   .button-content {
     color: ${({ currentColorScheme }) => currentColorScheme.text.accent};
@@ -113,6 +120,8 @@ const ArticleMainButtonContent = (props) => {
     setInvitePanelOptions,
 
     mainButtonMobileVisible,
+
+    security,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -298,6 +307,15 @@ const ArticleMainButtonContent = (props) => {
             key: "manager",
           },
           {
+            id: "invite_room-collaborator",
+            className: "main-button_drop-down",
+            icon: PersonReactSvgUrl,
+            label: t("Common:Collaborator"),
+            onClick: onInvite,
+            action: EmployeeType.Collaborator,
+            key: "collaborator",
+          },
+          {
             id: "invite_user",
             className: "main-button_drop-down",
             icon: PersonUserReactSvgUrl,
@@ -429,26 +447,27 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled =
-    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
-    isArchiveFolder;
+  const isDisabled = isAccountsPage ? !canInvite : !security?.Create;
+
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
     <>
       {isMobileArticle ? (
         <>
-          {!isArticleLoading && !isProfile && (canCreateFiles || canInvite) && (
-            <MobileView
-              t={t}
-              titleProp={t("Upload")}
-              actionOptions={actions}
-              buttonOptions={uploadActions}
-              isRooms={isRoomsFolder}
-              mainButtonMobileVisible={mainButtonMobileVisible}
-              onMainButtonClick={onCreateRoom}
-            />
-          )}
+          {!isArticleLoading &&
+            !isProfile &&
+            (security?.Create || canInvite) && (
+              <MobileView
+                t={t}
+                titleProp={t("Upload")}
+                actionOptions={actions}
+                buttonOptions={uploadActions}
+                isRooms={isRoomsFolder}
+                mainButtonMobileVisible={mainButtonMobileVisible}
+                onMainButtonClick={onCreateRoom}
+              />
+            )}
         </>
       ) : isRoomsFolder ? (
         <StyledButton
@@ -534,9 +553,11 @@ export default inject(
 
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
+    const security = selectedFolderStore.security;
+
     const currentFolderId = selectedFolderStore.id;
 
-    const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
+    const { isAdmin, isOwner } = auth.userStore.user;
 
     const { canCreateFiles } = accessRightsStore;
 
@@ -572,9 +593,9 @@ export default inject(
 
       isAdmin,
       isOwner,
-      isVisitor,
 
       mainButtonMobileVisible,
+      security,
     };
   }
 )(

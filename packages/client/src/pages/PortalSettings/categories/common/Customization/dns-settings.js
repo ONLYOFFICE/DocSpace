@@ -76,13 +76,20 @@ const DNSSettings = (props) => {
     if (!isSmallTablet()) {
       setIsCustomizationView(true);
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/common/customization"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       setIsCustomizationView(false);
     }

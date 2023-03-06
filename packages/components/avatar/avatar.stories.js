@@ -38,6 +38,8 @@ Default.args = {
   userName: "",
   editing: false,
   hideRoleIcon: false,
+  tooltipContent: "",
+  withTooltip: false,
 };
 
 Picture.args = {
@@ -48,6 +50,8 @@ Picture.args = {
   userName: "",
   editing: false,
   hideRoleIcon: false,
+  tooltipContent: "",
+  withTooltip: false,
 };
 
 Initials.args = {
@@ -57,6 +61,8 @@ Initials.args = {
   userName: "John Doe",
   editing: false,
   hideRoleIcon: false,
+  tooltipContent: "",
+  withTooltip: false,
 };
 
 Icon.args = {
@@ -66,4 +72,6 @@ Icon.args = {
   userName: "",
   editing: false,
   hideRoleIcon: false,
+  tooltipContent: "",
+  withTooltip: false,
 };

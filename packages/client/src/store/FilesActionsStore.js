@@ -38,7 +38,11 @@ import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
 import { isTablet } from "@docspace/components/utils/device";
+import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { muteRoomNotification } from "@docspace/common/api/settings";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 class FilesActionStore {
   authStore;
@@ -52,9 +56,6 @@ class FilesActionStore {
   accessRightsStore;
 
   isBulkDownload = false;
-  searchTitleOpenLocation = null;
-  itemOpenLocation = null;
-  isLoadedLocationFiles = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
 
@@ -1212,48 +1213,26 @@ class FilesActionStore {
     }
   };
 
-  setSearchTitleOpenLocation = (searchTitleOpenLocation) => {
-    this.searchTitleOpenLocation = searchTitleOpenLocation;
-  };
-
-  setItemOpenLocation = (itemOpenLocation) => {
-    this.itemOpenLocation = itemOpenLocation;
-  };
-
-  setIsLoadedLocationFiles = (isLoadedLocationFiles) => {
-    this.isLoadedLocationFiles = isLoadedLocationFiles;
-  };
-
-  setIsLoadedSearchFiles = (isLoadedSearchFiles) => {
-    this.isLoadedSearchFiles = isLoadedSearchFiles;
-  };
-
   openLocationAction = async (locationId) => {
-    this.setIsLoadedLocationFiles(false);
     this.filesStore.setBufferSelection(null);
 
     const files = await this.filesStore.fetchFiles(locationId, null);
-    this.setIsLoadedLocationFiles(true);
     return files;
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const filterData = FilesFilter.getDefault();
+    const { filter, setHighlightFile, fetchFiles } = this.filesStore;
+    const newFilter = filter.clone();
 
-    this.setIsLoadedSearchFiles(false);
+    newFilter.page = 0;
+    newFilter.search = item.title;
 
-    if (this.itemOpenLocation?.title !== item.title) {
-      this.setSearchTitleOpenLocation(null);
-    }
-
-    this.setItemOpenLocation(null);
-
-    api.files
-      .getFolder(item.ExtraLocation, filterData)
+    fetchFiles(item.ExtraLocation, newFilter)
       .then(() => {
-        this.openLocationAction(item.ExtraLocation);
-        this.setSearchTitleOpenLocation(item.title);
-        this.setItemOpenLocation(item);
+        setHighlightFile({
+          highlightFileId: item.id,
+          isFileHasExst: !item.fileExst,
+        });
       })
       .catch((err) => toastr.error(err));
   };
@@ -1972,19 +1951,84 @@ class FilesActionStore {
     }
   };
 
+  onClickBack = () => {
+    const { roomType, parentId, setSelectedFolder } = this.selectedFolderStore;
+    const { setSelectedNode } = this.treeFoldersStore;
+
+    const categoryType = getCategoryType(location);
+    const isRoom = !!roomType;
+    setSelectedFolder(null);
+
+    if (
+      categoryType === CategoryType.SharedRoom ||
+      (categoryType === CategoryType.Archive && parentId !== 0)
+    ) {
+      if (isRoom) {
+        return this.moveToRoomsPage();
+      }
+
+      return this.backToParentFolder();
+    }
+
+    if (
+      categoryType === CategoryType.Shared ||
+      (categoryType === CategoryType.Archive && parentId === 0)
+    ) {
+      return this.moveToRoomsPage();
+    }
+
+    if (
+      categoryType === CategoryType.Personal ||
+      categoryType === CategoryType.Trash
+    ) {
+      return this.backToParentFolder();
+    }
+
+    if (categoryType === CategoryType.Settings) {
+      setSelectedNode(["common"]);
+    }
+
+    if (categoryType === CategoryType.Accounts) {
+      setSelectedNode(["accounts", "filter"]);
+    }
+  };
+
+  moveToRoomsPage = () => {
+    const {
+      setIsLoading,
+      fetchRooms,
+      setAlreadyFetchingRooms,
+    } = this.filesStore;
+
+    const categoryType = getCategoryType(location);
+
+    setIsLoading(true);
+    setAlreadyFetchingRooms(true);
+
+    const filter = RoomsFilter.getDefault();
+
+    if (categoryType == CategoryType.Archive) {
+      filter.searchArea = RoomSearchArea.Archive;
+    }
+
+    fetchRooms(null, filter).finally(() => {
+      setIsLoading(false);
+    });
+  };
+
   backToParentFolder = () => {
     const { setIsLoading, fetchFiles } = this.filesStore;
 
-    if (!this.selectedFolderStore.parentId) return;
+    let id = this.selectedFolderStore.parentId;
+
+    if (!id) {
+      const filterObj = FilesFilter.getDefault();
+      id = filterObj.folder;
+    }
 
     setIsLoading(true);
 
-    fetchFiles(
-      this.selectedFolderStore.parentId,
-      null,
-      true,
-      false
-    ).finally(() => setIsLoading(false));
+    fetchFiles(id, null, true, false).finally(() => setIsLoading(false));
   };
 
   setGroupMenuBlocked = (blocked) => {

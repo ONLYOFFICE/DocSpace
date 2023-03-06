@@ -40,6 +40,7 @@ const MainProfile = (props) => {
     setChangeAvatarVisible,
     withActivationBar,
     sendActivationLink,
+    currentColorScheme,
   } = props;
 
   const role = getUserRole(profile);
@@ -63,11 +64,14 @@ const MainProfile = (props) => {
         editing={true}
         editAction={() => setChangeAvatarVisible(true)}
       />
-      <StyledInfo>
+      <StyledInfo
+        withActivationBar={withActivationBar}
+        currentColorScheme={currentColorScheme}
+      >
         <div className="rows-container">
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Name")}
               </Text>
               <Text fontWeight={600} truncate>
@@ -83,66 +87,67 @@ const MainProfile = (props) => {
           </div>
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Email")}
               </Text>
-              <Text
-                as="div"
-                className={"email-text-container"}
-                fontWeight={600}
-              >
-                {profile.email}
-                {withActivationBar && (
-                  <HelpButton
-                    className="send-again-icon"
-                    color={"#316daa"}
-                    tooltipContent={t("EmailNotVerified")}
-                    iconName={SendClockReactSvgUrl}
+              <div className="email-container">
+                <div className="email-edit-container">
+                  <Text
+                    as="div"
+                    className={"email-text-container"}
+                    fontWeight={600}
+                  >
+                    {profile.email}
+                  </Text>
+
+                  <IconButton
+                    className="edit-button email-edit-button"
+                    iconName={PencilOutlineReactSvgUrl}
+                    size="12"
+                    onClick={() => setChangeEmailVisible(true)}
                   />
+                </div>
+                {withActivationBar && (
+                  <div
+                    className="send-again-container send-again-desktop"
+                    onClick={sendActivationLinkAction}
+                  >
+                    <ReactSVG
+                      className="send-again-icon"
+                      src={SendClockReactSvgUrl}
+                    />
+                    <Text className="send-again-text" fontWeight={600} noSelect>
+                      {t("SendAgain")}
+                    </Text>
+                  </div>
                 )}
-              </Text>
+              </div>
 
               {withActivationBar && (
-                <Text
-                  className="send-again-text"
-                  fontWeight={600}
-                  noSelect
-                  truncate
+                <div
+                  className="send-again-container send-again-mobile"
                   onClick={sendActivationLinkAction}
                 >
-                  {t("SendAgain")}
-                </Text>
+                  <ReactSVG
+                    className="send-again-icon"
+                    src={SendClockReactSvgUrl}
+                  />
+                  <Text className="send-again-text" fontWeight={600} noSelect>
+                    {t("SendAgain")}
+                  </Text>
+                </div>
               )}
             </div>
             <IconButton
-              className="edit-button"
+              className="edit-button email-edit-button-mobile"
               iconName={PencilOutlineReactSvgUrl}
               size="12"
               onClick={() => setChangeEmailVisible(true)}
             />
-            {withActivationBar && (
-              <div className="send-again-container">
-                <HelpButton
-                  className="send-again-icon"
-                  color={"#316daa"}
-                  tooltipContent={t("EmailNotVerified")}
-                  iconName={SendClockReactSvgUrl}
-                />
-                <Text
-                  className="send-again-text"
-                  fontWeight={600}
-                  noSelect
-                  truncate
-                  onClick={sendActivationLinkAction}
-                >
-                  {t("SendAgain")}
-                </Text>
-              </div>
-            )}
           </div>
           <div className="row">
             <div className="field">
-              <Text as="div" color="#A3A9AE" className="label">
+              <Text as="div" className="label">
                 {t("Common:Password")}
               </Text>
               <Text fontWeight={600}>********</Text>
@@ -199,6 +204,8 @@ export default inject(({ auth, peopleStore }) => {
 
   const { withActivationBar, sendActivationLink } = auth.userStore;
 
+  const { currentColorScheme } = auth.settingsStore;
+
   const {
     targetUser: profile,
     changeEmailVisible,
@@ -223,5 +230,6 @@ export default inject(({ auth, peopleStore }) => {
     setChangeAvatarVisible,
     withActivationBar,
     sendActivationLink,
+    currentColorScheme,
   };
 })(observer(MainProfile));

@@ -445,7 +445,8 @@ public enum MessageAction
     DocumentsForcesave = 5049,
     DocumentsStoreForcesave = 5048,
     DocumentsUploadingFormatsSettingsUpdated = 5033,
-    DocumentsExternalShareSettingsUpdated = 5069, // last
+    DocumentsExternalShareSettingsUpdated = 5069,
+    DocumentsKeepNewFileNameSettingsUpdated = 5083, // last
 
     FileConverted = 5035,
 

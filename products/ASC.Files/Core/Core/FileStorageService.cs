@@ -2671,7 +2671,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 Access = share,
                 Id = linkId,
-                SubjectType = SubjectType.InvintationLink,
+                SubjectType = SubjectType.InvitationLink,
                 FileShareOptions = new FileShareOptions
                 {
                     Title = title,
@@ -3129,6 +3129,14 @@ public class FileStorageService<T> //: IFileStorageService
         _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsUploadingFormatsSettingsUpdated);
 
         return _filesSettingsHelper.StoreOriginalFiles;
+    }
+
+    public bool KeepNewFileName(bool set)
+    {
+        _filesSettingsHelper.KeepNewFileName = set;
+        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
+
+        return _filesSettingsHelper.KeepNewFileName;
     }
 
     public bool HideConfirmConvert(bool isForSave)
