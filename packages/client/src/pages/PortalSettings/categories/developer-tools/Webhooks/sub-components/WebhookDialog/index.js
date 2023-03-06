@@ -54,6 +54,7 @@ export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSub
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
 
   const [webhookInfo, setWebhookInfo] = useState({
+    id: 0,
     title: webhook ? webhook.title : "",
     url: webhook ? webhook.url : "",
     secretKey: "",
