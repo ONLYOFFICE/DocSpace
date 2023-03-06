@@ -102,7 +102,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     focusInput();
 
     window.authCallback = authCallback;
-  }, []);
+  }, [message, confirmedEmail]);
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeLogin", e.target.value);
