@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import { LabledInput } from "../LabledInput";
@@ -44,7 +44,15 @@ const InfoHint = styled(Hint)`
   width: 320px;
 `;
 
-export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSubmit, webhook }) => {
+export const WebhookDialog = ({
+  visible,
+  onClose,
+  header,
+  isSettingsModal,
+  onSubmit,
+  webhook,
+  passwordSettings,
+}) => {
   const onModalClose = () => {
     onClose();
     isSettingsModal && setIsResetVisible(true);
@@ -52,6 +60,10 @@ export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSub
 
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
+
+  const submitButtonRef = useRef();
+
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const [webhookInfo, setWebhookInfo] = useState({
     id: 0,
@@ -68,45 +80,64 @@ export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSub
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
+    //delete, when api will be connected
+    setWebhookInfo((prevWebhookInfo) => ({
+      ...prevWebhookInfo,
+      id: Math.floor(Math.random() * 100) + 13,
+    }));
     return () => window.removeEventListener("keyup", onKeyPress);
-  });
+  }, []);
 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={onModalClose} displayType="aside">
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Hint>This webhook will be assigned to all events in DocSpace</Hint>
-        <LabledInput
-          label="Webhook name"
-          placeholder="Enter webhook name"
-          name="title"
-          value={webhookInfo.title}
-          onChange={onInputChange}
-        />
-        <LabledInput
-          label="Payload URL"
-          placeholder="Enter URL"
-          name="url"
-          value={webhookInfo.url}
-          onChange={onInputChange}
-        />
-        <SSLVerification />
-        <SecretKeyInput
-          isResetVisible={isResetVisible}
-          name="secretKey"
-          value={webhookInfo.secretKey}
-          onChange={onInputChange}
-        />
-        {isResetVisible ? (
-          <InfoHint hidden={!isResetVisible}>
-            You cannot retrieve your secret key again once it has been saved. If you've lost or
-            forgotten this secret key, you can reset it, but all integrations using this secret will
-            need to be updated.
-            <DashedButton onClick={() => setIsResetVisible(false)}>Reset key</DashedButton>
-          </InfoHint>
-        ) : (
-          <DashedButton>Generate</DashedButton>
-        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit(webhookInfo);
+            onModalClose();
+          }}>
+          <Hint>This webhook will be assigned to all events in DocSpace</Hint>
+          <LabledInput
+            label="Webhook name"
+            placeholder="Enter webhook name"
+            name="title"
+            value={webhookInfo.title}
+            onChange={onInputChange}
+            required
+          />
+          <LabledInput
+            label="Payload URL"
+            placeholder="Enter URL"
+            name="url"
+            value={webhookInfo.url}
+            onChange={onInputChange}
+            required
+          />
+          <SSLVerification />
+          <SecretKeyInput
+            isResetVisible={isResetVisible}
+            name="secretKey"
+            value={webhookInfo.secretKey}
+            onChange={onInputChange}
+            passwordSettings={passwordSettings}
+            isPasswordValid={isPasswordValid}
+            setIsPasswordValid={setIsPasswordValid}
+          />
+          {isResetVisible ? (
+            <InfoHint hidden={!isResetVisible}>
+              You cannot retrieve your secret key again once it has been saved. If you've lost or
+              forgotten this secret key, you can reset it, but all integrations using this secret
+              will need to be updated.
+              <DashedButton onClick={() => setIsResetVisible(false)}>Reset key</DashedButton>
+            </InfoHint>
+          ) : (
+            <DashedButton>Generate</DashedButton>
+          )}
+
+          <button type="submit" ref={submitButtonRef} hidden></button>
+        </form>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
@@ -116,8 +147,7 @@ export const WebhookDialog = ({ visible, onClose, header, isSettingsModal, onSub
             size="normal"
             primary={true}
             onClick={() => {
-              onSubmit(webhookInfo);
-              onModalClose();
+              isPasswordValid && submitButtonRef.current.click();
             }}
           />
           <Button label="Cancel" size="normal" onClick={onModalClose} />
