@@ -252,7 +252,7 @@ const PortalRenaming = (props) => {
       const newUrl = combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        "/portal-settings/common/customization"
+        "/portal-settings/customization/general"
       );
 
       if (newUrl === currentUrl) return;
