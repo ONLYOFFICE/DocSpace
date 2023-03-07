@@ -42,6 +42,7 @@ import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
+import { getObjectByLocation } from "@docspace/common/utils";
 
 class FilesActionStore {
   authStore;
@@ -1971,8 +1972,8 @@ class FilesActionStore {
     let id = this.selectedFolderStore.parentId;
 
     if (!id) {
-      const filterObj = FilesFilter.getDefault();
-      id = filterObj.folder;
+      const urlFilter = getObjectByLocation(location);
+      id = urlFilter.folder;
     }
 
     setIsLoading(true);
