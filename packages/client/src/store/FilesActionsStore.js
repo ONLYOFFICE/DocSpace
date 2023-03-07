@@ -1909,7 +1909,7 @@ class FilesActionStore {
 
     const urlFilter = getObjectByLocation(location);
 
-    const isArchivedRoom = !!(CategoryType.Archive && urlFilter.folder);
+    const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
 
     if (categoryType === CategoryType.SharedRoom || isArchivedRoom) {
       if (isRoom) {
