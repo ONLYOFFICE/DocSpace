@@ -1921,7 +1921,7 @@ class FilesActionStore {
 
     if (
       categoryType === CategoryType.Shared ||
-      (categoryType === CategoryType.Archive && parentId === 0)
+      categoryType === CategoryType.Archive
     ) {
       return this.moveToRoomsPage();
     }
