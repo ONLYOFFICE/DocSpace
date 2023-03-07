@@ -71,6 +71,8 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>LDAP settings</returns>
+    /// <path>api/2.0/settings/ldap</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap")]
     public LdapSettingsDto GetLdapSettings()
     {
@@ -101,13 +103,15 @@ public class LdapController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns the LDAP autosynchronous cron expression of the current portal if it exists.
+    /// Returns the LDAP autosynchronous cron expression for the current portal if it exists.
     /// </summary>
     /// <short>
     /// Get the LDAP cron expression
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Cron expression or null</returns>
+    /// <path>api/2.0/settings/ldap/cron</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap/cron")]
     public LdapCronSettingsDto GetLdapCronSettings()
     {
@@ -125,14 +129,16 @@ public class LdapController : BaseSettingsController
     }
 
     /// <summary>
-    /// Sets the LDAP autosynchronous cron expression of the current portal.
+    /// Sets the LDAP autosynchronous cron expression to the current portal.
     /// </summary>
     /// <short>
     /// Set the LDAP cron expression
     /// </short>
     /// <category>LDAP</category>
-    /// <param name="cron">Cron expression</param>
-    /// 
+    /// <path>api/2.0/settings/ldap/cron</path>
+    /// <param name="ldapCronRequest">Cron expression</param>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns></returns>
     [HttpPost("ldap/cron")]
     public void SetLdapCronSettingsFromBody(LdapCronRequestDto ldapCronRequest)
     {
@@ -176,12 +182,14 @@ public class LdapController : BaseSettingsController
     }
 
     /// <summary>
-    /// Starts synchronizing users and groups by LDAP.
+    /// Synchronizes the portal data with the new information from the LDAP server.
     /// </summary>
     /// <short>
-    /// Synchronize by LDAP
+    /// Synchronize with LDAP server
     /// </short>
     /// <category>LDAP</category>
+    /// <path>api/2.0/settings/ldap/sync</path>
+    /// <httpMethod>GET</httpMethod>
     /// <returns>Operation status</returns>
     [HttpGet("ldap/sync")]
     public LdapStatusDto SyncLdap()
@@ -204,6 +212,8 @@ public class LdapController : BaseSettingsController
     /// Test the LDAP synchronization
     /// </short>
     /// <category>LDAP</category>
+    /// <path>api/2.0/settings/ldap/sync/test</path>
+    /// <httpMethod>GET</httpMethod>
     /// <returns>Operation status</returns>
     [HttpGet("ldap/sync/test")]
     public LdapStatusDto TestLdapSync()
@@ -224,9 +234,10 @@ public class LdapController : BaseSettingsController
     /// Save the LDAP settings
     /// </short>
     /// <category>LDAP</category>
-    /// <param name="settings">LDAP settings in the serialized string format</param>
-    /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
+    /// <param name="ldapRequestsDto">LDAP settings</param>
     /// <returns>Operation status</returns>
+    /// <path>api/2.0/settings/ldap</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("ldap")]
     public LdapStatusDto SaveLdapSettings(LdapRequestsDto ldapRequestsDto)
     {
@@ -247,14 +258,15 @@ public class LdapController : BaseSettingsController
     }
 
     /// <summary>
-    /// Starts the process of collecting preliminary changes on the portal during the saving process according to the LDAP settings.
+    /// Starts the process of saving LDAP settings and collecting preliminary changes on the portal according to them.
     /// </summary>
     /// <short>
     /// Test the LDAP saving process
     /// </short>
     /// <category>LDAP</category>
-    /// <param name="settings">LDAP settings in the serialized string format</param>
-    /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
+    /// <param name="ldapSettings">LDAP settings</param>
+    /// <path>api/2.0/settings/ldap/save/test</path>
+    /// <httpMethod>POST</httpMethod>
     /// <returns>Operation status</returns>
     [HttpPost("ldap/save/test")]
     public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
@@ -276,6 +288,8 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
+    /// <path>api/2.0/settings/ldap/status</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap/status")]
     public LdapStatusDto GetLdapOperationStatus()
     {
@@ -294,6 +308,8 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <returns>LDAP default settings</returns>
+    /// <path>api/2.0/settings/ldap/default</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap/default")]
     public LdapSettingsDto GetDefaultLdapSettings()
     {
