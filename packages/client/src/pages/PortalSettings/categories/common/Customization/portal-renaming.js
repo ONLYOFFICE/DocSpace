@@ -19,6 +19,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+
 const PortalRenaming = (props) => {
   const {
     t,
@@ -251,7 +252,7 @@ const PortalRenaming = (props) => {
       const newUrl = combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        "/portal-settings/common/customization"
+        "/portal-settings/customization/general"
       );
 
       if (newUrl === currentUrl) return;

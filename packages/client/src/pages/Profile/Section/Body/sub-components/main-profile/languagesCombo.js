@@ -89,6 +89,7 @@ const LanguagesCombo = (props) => {
         />
       </Text>
       <ComboBox
+        className="language-combo-box"
         directionY="both"
         options={cultureNames}
         selectedOption={selectedLanguage}

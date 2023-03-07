@@ -16,6 +16,10 @@ const RootContainer = styled(Box)`
   max-width: 700px;
   width: 100%;
 
+  .third-party-description {
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
+
   @media ${mobile} {
     width: calc(100% - 8px);
   }
@@ -129,7 +133,9 @@ class ThirdPartyServices extends React.Component {
     return (
       <>
         <RootContainer className="RootContainer">
-          <Text>{t("ThirdPartyTitleDescription")}</Text>
+          <Text className="third-party-description">
+            {t("ThirdPartyTitleDescription")}
+          </Text>
           <Box marginProp="8px 0 24px 0">
             <Link
               color={currentColorScheme.main.accent}
