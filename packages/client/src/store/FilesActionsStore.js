@@ -1907,10 +1907,11 @@ class FilesActionStore {
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
 
-    if (
-      categoryType === CategoryType.SharedRoom ||
-      (categoryType === CategoryType.Archive && parentId !== 0)
-    ) {
+    const urlFilter = getObjectByLocation(location);
+
+    const isArchivedRoom = !!(CategoryType.Archive && urlFilter.folder);
+
+    if (categoryType === CategoryType.SharedRoom || isArchivedRoom) {
       if (isRoom) {
         return this.moveToRoomsPage();
       }
