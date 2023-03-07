@@ -34,17 +34,23 @@ public class FilesMessageService
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDaoFactory _daoFactory;
+    private readonly NotifyClient _notifyClient;
+    private readonly AuthContext _authContext;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        NotifyClient notifyClient,
+        AuthContext authContext)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
         _daoFactory = daoFactory;
+        _notifyClient = notifyClient;
+        _authContext = authContext;
     }
 
     public FilesMessageService(
@@ -52,8 +58,10 @@ public class FilesMessageService
         MessageTarget messageTarget,
         MessageService messageService,
         IHttpContextAccessor httpContextAccessor,
-        IDaoFactory daoFactory)
-        : this(options, messageTarget, messageService, daoFactory)
+        IDaoFactory daoFactory,
+        NotifyClient notifyClient,
+        AuthContext authContext)
+        : this(options, messageTarget, messageService, daoFactory, notifyClient, authContext)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -65,6 +73,17 @@ public class FilesMessageService
 
     public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
+        await Send(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, MessageAction action, params string[] description)
+    {
+        if(action == MessageAction.RoomDeleted)
+        {
+            var userId = _authContext.CurrentAccount.ID;
+            _notifyClient.SendRoomRemoved(entry, aces, userId);
+        }
+
         await Send(entry, headers, action, null, FileShare.None, Guid.Empty, description);
     }
 
@@ -87,7 +106,7 @@ public class FilesMessageService
     private async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, string oldTitle, FileShare userRole, Guid userId, params string[] description)
     {
         if (entry == null)
-        {   
+        {
             return;
         }
 
@@ -192,8 +211,8 @@ public class FilesMessageService
             RoomTitle = roomInfo.RoomTitle
         };
 
-        if (action == MessageAction.RoomRenamed 
-            && (oldTitle != null || oldTitle!= ""))
+        if (action == MessageAction.RoomRenamed
+            && (oldTitle != null || oldTitle != ""))
         {
             info.RoomOldTitle = oldTitle;
         }
@@ -204,8 +223,8 @@ public class FilesMessageService
             info.UserIds = new List<Guid> { userid };
         }
 
-        if (action == MessageAction.RoomUpdateAccessForUser 
-            && (userRole != FileShare.None)  
+        if (action == MessageAction.RoomUpdateAccessForUser
+            && (userRole != FileShare.None)
             && userid != Guid.Empty)
         {
             info.UserIds = new List<Guid> { userid };

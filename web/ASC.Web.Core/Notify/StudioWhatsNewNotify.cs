@@ -63,8 +63,7 @@ public class StudioWhatsNewNotify
          MessageAction.RoomCreateUser,
          MessageAction.RoomRemoveUser,
          MessageAction.RoomUpdateAccessForUser,
-         MessageAction.RoomDeleted,
-         MessageAction.UsersUpdatedType,
+         MessageAction.UsersUpdatedType
     };
 
     public StudioWhatsNewNotify(

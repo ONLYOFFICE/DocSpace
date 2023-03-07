@@ -109,6 +109,17 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to h1. $__AuthorName deleted a room
+        ///
+        ///$__AuthorName deleted the room: $RoomTitle.
+        /// </summary>
+        public static string pattern_RoomRemoved {
+            get {
+                return ResourceManager.GetString("pattern_RoomRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to h1. Access granted to document: &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot;
         ///
         ///$__DateTime &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; granted you the access to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; document with the following access rights: &quot;$AccessRights&quot;. 
@@ -196,7 +207,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Documents. Mentioned in document.
+        ///   Looks up a localized string similar to DocSpace notification. Mentioned in document.
         /// </summary>
         public static string subject_EditorMentions {
             get {
@@ -228,6 +239,15 @@ namespace ASC.Files.Core.Services.NotifyService {
         public static string subject_MailMergeEnd_push {
             get {
                 return ResourceManager.GetString("subject_MailMergeEnd_push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocSpace notification. Room deleted.
+        /// </summary>
+        public static string subject_RoomRemoved {
+            get {
+                return ResourceManager.GetString("subject_RoomRemoved", resourceCulture);
             }
         }
         
