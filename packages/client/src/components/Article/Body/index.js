@@ -108,6 +108,7 @@ const ArticleBodyContent = (props) => {
           .catch((err) => toastr.error(err))
           .finally(() => {
             if (filesSection) {
+              cleanTimer();
               setIsLoading(false);
             } else {
               hideLoader();
