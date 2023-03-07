@@ -360,6 +360,9 @@ const Template = (args) => (
             isOpen={false}
             themeColor="#ED7309"
             locale="en"
+            setSelectedDate={(date) => {
+              console.log("Selected date", date);
+            }}
           />
         </div>
 
@@ -444,7 +447,7 @@ const Template = (args) => (
           </BooleanValue>
         </div>
       </div>
-      <div style={{ justifySelf: "center" }}>
+      <div style={{ justifySelf: "center", width: "100%" }}>
         <div style={{ padding: "8px 0" }}>
           <Calendar
             onChange={() => {}}
@@ -455,6 +458,9 @@ const Template = (args) => (
             minDate={new Date("1970/01/01")}
             maxDate={new Date("3000/01/01")}
             locale="ru"
+            setSelectedDate={(date) => {
+              console.log(date);
+            }}
           />
         </div>
       </div>
