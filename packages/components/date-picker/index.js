@@ -27,6 +27,7 @@ class DatePicker extends Component {
     super(props);
 
     moment.locale(props.locale);
+    this.calendarRef = React.createRef();
     this.ref = React.createRef();
 
     const { isOpen, selectedDate, hasError, minDate, maxDate } = this.props;
@@ -58,6 +59,7 @@ class DatePicker extends Component {
   handleClick = (e) => {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
+      !this.calendarRef.current.contains(e.target) &&
       this.onClick(false);
   };
 
@@ -291,6 +293,7 @@ class DatePicker extends Component {
   renderBody = () => {
     const { isDisabled, minDate, maxDate, locale, themeColor } = this.props;
     const { selectedDate, displayType } = this.state;
+    const calendarRef = this.calendarRef;
 
     let calendarSize;
     displayType === "aside" ? (calendarSize = "big") : (calendarSize = "base");
@@ -306,6 +309,8 @@ class DatePicker extends Component {
         selectedDate={selectedDate}
         onChange={this.onChange}
         size={calendarSize}
+        setSelectedDate={(date) => this.setState({ selectedDate: date })}
+        ref={calendarRef}
       />
     );
   };
@@ -360,6 +365,7 @@ class DatePicker extends Component {
                 fixedDirection={fixedDirection}
                 withBlur={window.innerWidth <= 428}
                 zIndex={220}
+                style={{ padding: 0 }}
               >
                 {this.renderBody()}
               </DropDown>
