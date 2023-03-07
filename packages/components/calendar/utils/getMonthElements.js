@@ -56,7 +56,9 @@ export const getMonthElements = (
   }
 
   const currentDate = `${moment().year()}-${moment().format("M")}`;
-  const formattedDate = `${selectedDate.year()}-${selectedDate.format("M")}`;
+  const formattedDate = `${moment(selectedDate).year()}-${moment(
+    selectedDate
+  ).format("M")}`;
 
   months.forEach((month, index) => {
     if (month.key === currentDate) {

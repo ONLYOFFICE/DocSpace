@@ -64,7 +64,7 @@ export const getDayElements = (
 
   const currentDate = moment().format("YYYY-MM") + "-" + moment().date();
   const selectedDateFormated =
-    selectedDate.format("YYYY-MM") + "-" + selectedDate.date();
+    moment(selectedDate).format("YYYY-MM") + "-" + moment(selectedDate).date();
 
   for (const key in calendarDays) {
     calendarDays[key].forEach((day, index) => {

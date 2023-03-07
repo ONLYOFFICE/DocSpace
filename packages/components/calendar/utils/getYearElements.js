@@ -55,7 +55,7 @@ export const getYearElements = (
   }
 
   const currentYearIndex = years.indexOf(moment().year());
-  const selectedYearIndex = years.indexOf(selectedDate.year());
+  const selectedYearIndex = years.indexOf(moment(selectedDate).year());
   if (selectedYearIndex !== -1) {
     yearElements[selectedYearIndex] = (
       <DateItem
