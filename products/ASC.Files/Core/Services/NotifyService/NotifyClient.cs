@@ -26,6 +26,7 @@
 
 using ASC.Notify.Engine;
 
+using Actions = ASC.Web.Studio.Core.Notify.Actions;
 using Context = ASC.Notify.Context;
 
 namespace ASC.Files.Core.Services.NotifyService;
@@ -216,6 +217,11 @@ public class NotifyClient
         {
             var u = _userManager.GetUsers(recipientId);
 
+            if (!_studioNotifyHelper.IsSubscribedToNotify(u, Actions.RoomsActivity))
+            {
+                continue;
+            }
+
             var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
             var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(recipientId);
@@ -229,7 +235,6 @@ public class NotifyClient
                 NotifyConstants.EventEditorMentions,
                 file.UniqID,
                 recipient,
-                true,
                 new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
                 new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
