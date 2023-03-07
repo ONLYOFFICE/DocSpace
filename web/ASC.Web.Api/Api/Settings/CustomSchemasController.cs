@@ -49,6 +49,14 @@ public class CustomSchemasController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
+    /// <summary>
+    /// Returns all the portal custom schemas.
+    /// </summary>
+    /// <short>Get custom schemas</short>
+    /// <category>Custom schemas</category>
+    /// <returns>List of custom schemas</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas")]
     public List<SchemaRequestsDto> PeopleSchemas()
     {
@@ -76,6 +84,15 @@ public class CustomSchemasController : BaseSettingsController
                 .ToList();
     }
 
+    /// <summary>
+    /// Sets the specified custom scheme for the current portal.
+    /// </summary>
+    /// <short>Set a custom scheme</short>
+    /// <category>Custom schemas</category>
+    /// <param name="inDto">Custom scheme parameters</param>
+    /// <returns>Custom scheme</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("customschemas")]
     public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
     {
@@ -90,6 +107,15 @@ public class CustomSchemasController : BaseSettingsController
         return PeopleSchema(inDto.Id);
     }
 
+    /// <summary>
+    /// Updates the current custom scheme with the parameters specified in the request.
+    /// </summary>
+    /// <short>Update a custom scheme</short>
+    /// <category>Custom schemas</category>
+    /// <param name="inDto">Custom scheme parameters</param>
+    /// <returns>New custom scheme</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("customschemas")]
     public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
     {
@@ -141,6 +167,15 @@ public class CustomSchemasController : BaseSettingsController
         return PeopleSchema(PeopleNamesItem.CustomID);
     }
 
+    /// <summary>
+    /// Returns a custom scheme by the ID specified in the request.
+    /// </summary>
+    /// <short>Get a custom scheme by ID</short>
+    /// <category>Custom schemas</category>
+    /// <param name="id">Custom scheme ID</param>
+    /// <returns>Custom scheme</returns>
+    /// <path>api/2.0/settings/customschemas/{id}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas/{id}")]
     public SchemaRequestsDto PeopleSchema(string id)
     {
