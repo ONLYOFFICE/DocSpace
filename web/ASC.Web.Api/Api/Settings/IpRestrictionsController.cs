@@ -48,6 +48,14 @@ public class IpRestrictionsController : BaseSettingsController
         _iPRestrictionsService = iPRestrictionsService;
     }
 
+    /// <summary>
+    /// Returns the IP portal restrictions.
+    /// </summary>
+    /// <short>Get the IP portal restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <returns>IP restrictions</returns>
+    /// <path>api/2.0/settings/iprestrictions</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("iprestrictions")]
     public IEnumerable<IPRestriction> GetIpRestrictions()
     {
@@ -55,6 +63,15 @@ public class IpRestrictionsController : BaseSettingsController
         return _iPRestrictionsService.Get(Tenant.Id);
     }
 
+    /// <summary>
+    /// Saves the new portal IP restrictions specified in the request.
+    /// </summary>
+    /// <short>Save the IP restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <param name="inDto">New IP restrictions</param>
+    /// <returns>New IP restrictions</returns>
+    /// <path>api/2.0/settings/iprestrictions</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("iprestrictions")]
     public IEnumerable<IpRestrictionBase> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
@@ -62,6 +79,14 @@ public class IpRestrictionsController : BaseSettingsController
         return _iPRestrictionsService.Save(inDto.IpRestrictions, Tenant.Id);
     }
 
+    /// <summary>
+    /// Returns the IP restriction settings.
+    /// </summary>
+    /// <short>Get the IP restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <returns>IP restriction settings</returns>
+    /// <path>api/2.0/settings/iprestrictions/settings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("iprestrictions/settings")]
     public IPRestrictionsSettings ReadIpRestrictionsSettings()
     {
@@ -70,6 +95,15 @@ public class IpRestrictionsController : BaseSettingsController
         return _settingsManager.Load<IPRestrictionsSettings>();
     }
 
+    /// <summary>
+    /// Updates the IP restriction settings with a parameter specified in the request.
+    /// </summary>
+    /// <short>Update the IP restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <param name="inDto">New IP restriction settings: enable IP restrictions or not</param>
+    /// <returns>Updated IP restriction settings</returns>
+    /// <path>api/2.0/settings/iprestrictions/settings</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("iprestrictions/settings")]
     public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {
