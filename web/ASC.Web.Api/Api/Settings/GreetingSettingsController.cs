@@ -51,18 +51,43 @@ public class GreetingSettingsController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
+    /// <summary>
+    /// Returns the greeting settings for the current portal.
+    /// </summary>
+    /// <short>Get greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns>Greeting settings</returns>
+    /// <path>api/2.0/settings/greetingsettings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings")]
     public ContentResult GetGreetingSettings()
     {
         return new ContentResult { Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name };
     }
 
+    /// <summary>
+    /// Checks if the greeting settings of the current portal is default or not.
+    /// </summary>
+    /// <short>Check the default greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns>Boolean value: true if the greeting settings of the current portal is default</returns>
+    /// <path>api/2.0/settings/greetingsettings/isdefault</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings/isdefault")]
     public bool IsDefault()
     {
         return Tenant.Name == "";
     }
 
+    /// <summary>
+    /// Saves the greeting settings specified in the request to the current portal.
+    /// </summary>
+    /// <short>Save the greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <param name="inDto">Greeting settings: portal name</param>
+    /// <returns>Message about saving greeting settings successfully</returns>
+    /// <path>api/2.0/settings/greetingsettings</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings")]
     public ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
     {
@@ -76,6 +101,14 @@ public class GreetingSettingsController : BaseSettingsController
         return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
     }
 
+    /// <summary>
+    /// Restores the current portal greeting settings.
+    /// </summary>
+    /// <short>Restore the greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns>Greeting settings</returns>
+    /// <path>api/2.0/settings/greetingsettings/restore</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings/restore")]
     public ContentResult RestoreGreetingSettings()
     {
