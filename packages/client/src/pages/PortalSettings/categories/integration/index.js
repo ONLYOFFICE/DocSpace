@@ -15,9 +15,15 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, history, loadBaseInfo, enablePlugins } = props;
+  const { t, tReady, history, loadBaseInfo, enablePlugins, toDefault } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      toDefault();
+    };
+  }, []);
 
   const pluginData = {
     id: "plugins",
@@ -71,9 +77,9 @@ const IntegrationWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup, auth }) => {
+export default inject(({ setup, auth, ssoStore }) => {
   const { initSettings } = setup;
-
+  const { load: toDefault } = ssoStore;
   const { enablePlugins } = auth.settingsStore;
 
   return {
@@ -81,6 +87,7 @@ export default inject(({ setup, auth }) => {
       await initSettings();
     },
     enablePlugins,
+    toDefault,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(
