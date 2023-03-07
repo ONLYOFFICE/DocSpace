@@ -65,6 +65,7 @@ function ImageViewer({
   const lastTapTimeRef = useRef<number>(0);
   const isDoubleTapRef = useRef<boolean>(false);
   const setTimeoutIDTapRef = useRef<NodeJS.Timeout>();
+  const changeSourceTimeoutRef = useRef<NodeJS.Timeout>();
   const startAngleRef = useRef<number>(0);
   const toolbarRef = useRef<ImperativeHandle>(null);
 
@@ -94,7 +95,7 @@ function ImageViewer({
     };
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (unmountRef.current) return;
     setIsLoading(true);
   }, [src]);
@@ -106,67 +107,6 @@ function ImageViewer({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
-
-  const loadImage = React.useCallback(async () => {
-    const res = await fetch(src);
-    const blob = await res.blob();
-
-    // const reader = new FileReader();
-
-    // reader.addEventListener("load", () => {
-    indexedDBHelper.addItem(IndexedDBStores.images, {
-      id: imageId,
-      src: blob,
-      created: new Date(),
-    });
-
-    if (imgRef.current && !unmountRef.current) {
-      imgRef.current.src = URL.createObjectURL(blob);
-    }
-    // });
-
-    // reader.readAsDataURL(blob);
-
-    // indexedDBHelper.addItem(IndexedDBStores.images, {
-    //   id: imageId,
-    //   src: blob,
-    //   created: new Date(),
-    // });
-
-    // if (imgRef.current && !unmountRef.current) {
-    //   console.log(imageId, src);
-    //   imgRef.current.src = blob;
-    // }
-  }, [src, imageId]);
-
-  useEffect(() => {
-    if (!imageId) return;
-    indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
-      if (result) {
-        if (imgRef.current && !unmountRef.current) {
-          console.log(imageId, result.id);
-          imgRef.current.src = URL.createObjectURL(result.src);
-        }
-      } else {
-        loadImage();
-      }
-    });
-  }, [src, imageId, loadImage]);
-
-  function resize() {
-    if (!imgRef.current || isLoading) return;
-
-    const naturalWidth = imgRef.current.naturalWidth;
-    const naturalHeight = imgRef.current.naturalHeight;
-
-    const imagePositionAndSize = getImagePositionAndSize(
-      naturalWidth,
-      naturalHeight
-    );
-    if (imagePositionAndSize) {
-      api.set(imagePositionAndSize);
-    }
-  }
 
   const restartScaleAndSize = () => {
     if (!imgRef.current || style.scale.isAnimating) return;
@@ -196,6 +136,89 @@ function ImageViewer({
       scale: 1,
     });
   };
+
+  const changeSource = React.useCallback(
+    (src) => {
+      changeSourceTimeoutRef.current = setTimeout(() => {
+        if (imgRef.current && !unmountRef.current) {
+          imgRef.current.src = URL.createObjectURL(src);
+        }
+      }, 500);
+    },
+    [imageId]
+  );
+
+  const loadImage = React.useCallback(async () => {
+    const res = await fetch(src);
+    const blob = await res.blob();
+
+    // const reader = new FileReader();
+
+    // reader.addEventListener("load", () => {
+    indexedDBHelper.addItem(IndexedDBStores.images, {
+      id: imageId,
+      src: blob,
+      created: new Date(),
+    });
+
+    changeSource(blob);
+
+    // if (imgRef.current && !unmountRef.current) {
+    //   console.log(imageId, src);
+    //   imgRef.current.src = URL.createObjectURL(blob);
+    // }
+    // });
+
+    // reader.readAsDataURL(blob);
+
+    // indexedDBHelper.addItem(IndexedDBStores.images, {
+    //   id: imageId,
+    //   src: blob,
+    //   created: new Date(),
+    // });
+
+    // if (imgRef.current && !unmountRef.current) {
+    //   console.log(imageId, src);
+    //   imgRef.current.src = blob;
+    // }
+  }, [src, imageId, changeSource]);
+
+  useEffect(() => {
+    console.log("mount");
+    return () => console.log("unmount");
+  }, []);
+
+  useEffect(() => {
+    changeSourceTimeoutRef.current &&
+      clearTimeout(changeSourceTimeoutRef.current);
+  }, [src]);
+
+  useEffect(() => {
+    if (!imageId) return;
+    console.log(imageId, src);
+    indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
+      if (result) {
+        changeSource(result.src);
+      } else {
+        loadImage();
+      }
+    });
+  }, [src, imageId, loadImage, changeSource]);
+
+  function resize() {
+    if (!imgRef.current || isLoading) return;
+
+    const naturalWidth = imgRef.current.naturalWidth;
+    const naturalHeight = imgRef.current.naturalHeight;
+
+    const imagePositionAndSize = getImagePositionAndSize(
+      naturalWidth,
+      naturalHeight
+    );
+    if (imagePositionAndSize) {
+      api.set(imagePositionAndSize);
+    }
+  }
 
   function getImagePositionAndSize(
     imageNaturalWidth: number,
