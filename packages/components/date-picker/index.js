@@ -291,24 +291,19 @@ class DatePicker extends Component {
   }
 
   renderBody = () => {
-    const { isDisabled, minDate, maxDate, locale, themeColor } = this.props;
-    const { selectedDate, displayType } = this.state;
+    const { isDisabled, minDate, maxDate, locale, initialDate } = this.props;
+    const { selectedDate } = this.state;
     const calendarRef = this.calendarRef;
-
-    let calendarSize;
-    displayType === "aside" ? (calendarSize = "big") : (calendarSize = "base");
 
     return (
       <Calendar
         locale={locale}
-        themeColor={themeColor}
         minDate={minDate}
         maxDate={maxDate}
         isDisabled={isDisabled}
-        openToDate={selectedDate}
+        initialDate={initialDate}
         selectedDate={selectedDate}
         onChange={this.onChange}
-        size={calendarSize}
         setSelectedDate={(date) => this.setState({ selectedDate: date })}
         ref={calendarRef}
       />
@@ -404,12 +399,10 @@ class DatePicker extends Component {
 DatePicker.propTypes = {
   /** Function called when the user select a day */
   onChange: PropTypes.func,
-  /** Color of the selected day */
-  themeColor: PropTypes.string,
   /** Selected date value */
   selectedDate: PropTypes.instanceOf(Date),
   /** Opened date value */
-  openToDate: PropTypes.instanceOf(Date),
+  initialDate: PropTypes.instanceOf(Date),
   /** Minimum date that the user can select */
   minDate: PropTypes.instanceOf(Date),
   /** Maximum date that the user can select */
@@ -425,8 +418,6 @@ DatePicker.propTypes = {
   //hasWarning: PropTypes.bool,
   /** Opens calendar */
   isOpen: PropTypes.bool,
-  /** Calendar size */
-  calendarSize: PropTypes.oneOf(["base", "big"]),
   /** Calendar display type */
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   /** Calendar css z-index */

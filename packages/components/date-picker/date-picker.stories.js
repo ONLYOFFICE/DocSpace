@@ -34,9 +34,8 @@ export default {
   component: DatePicker,
 
   argTypes: {
-    themeColor: { control: "color" },
     selectedDate: { control: "date" },
-    openToDate: { control: "date" },
+    initialDate: { control: "date" },
     minDate: { control: "date" },
     maxDate: { control: "date" },
     onChange: { action: "onChange" },
@@ -63,7 +62,7 @@ const Template = (args) => {
         selectedDate={new Date(args.selectedDate)}
         minDate={new Date(args.minDate)}
         maxDate={new Date(args.maxDate)}
-        openToDate={new Date(args.openToDate)}
+        initialDate={new Date(args.initialDate)}
       />
     </div>
   );
@@ -73,11 +72,9 @@ export const Default = Template.bind({});
 Default.args = {
   isOpen: true,
   calendarHeaderContent: "Select Date",
-  themeColor: "#ED7309",
   minDate: new Date("1970/01/01"),
   selectedDate: new Date(),
   maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
-  openToDate: new Date(),
-  calendarSize: "base",
+  initialDate: new Date(),
   locale: "en",
 };
