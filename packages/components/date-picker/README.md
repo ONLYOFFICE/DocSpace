@@ -20,7 +20,6 @@ import DatePicker from "@docspace/components/date-picker";
   isReadOnly={false}
   hasError={false}
   isOpen={false}
-  themeColor="#ED7309"
   locale="en"
 />
 ```
