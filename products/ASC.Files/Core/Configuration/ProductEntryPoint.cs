@@ -287,11 +287,11 @@ public class ProductEntryPoint : Product
         {
             if(record.Owner == userId || record.Share == FileShare.RoomAdmin)
             {
-                result.Add(record.EntryId.ToString(), true);
+                result.TryAdd(record.EntryId.ToString(), true);
             }
             else
             {
-                result.Add(record.EntryId.ToString(), false);
+                result.TryAdd(record.EntryId.ToString(), false);
             }      
         }
 
@@ -306,7 +306,7 @@ public class ProductEntryPoint : Product
 
             if (!result.ContainsKey(roomId))
             {
-                result.Add(roomId, true);
+                result.TryAdd(roomId, true);
             }
         }
 
