@@ -29,7 +29,7 @@ jobs:
           cd ./build/install/docker
           REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
-          DOCKER_TAG=$GITHUB_REF_NAME \
+          DOCKER_TAG=v1.0.0 \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
@@ -37,7 +37,7 @@ jobs:
           --push
           REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
-          DOCKER_TAG=$GITHUB_REF_NAME-$BUILD_NUMBER \
+          DOCKER_TAG=v1.0.0-$BUILD_NUMBER \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
