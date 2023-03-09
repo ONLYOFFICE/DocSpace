@@ -185,7 +185,7 @@ const Members = ({
 
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
-          <Text className="title">{t("ExpectPeople")}</Text>
+          <Text className="title">{t("PendingInvitations")}</Text>
           {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
