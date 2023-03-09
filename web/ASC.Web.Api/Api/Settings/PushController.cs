@@ -44,9 +44,14 @@ public class PushController : BaseSettingsController
     }
 
     /// <summary>
-    /// Saves a documents firebase device token specified in the request.
+    /// Saves the Firebase device token specified in the request for the Documents application.
     /// </summary>
+    /// <short>Saves the Documents Firebase device token</short>
+    /// <category>Firebase</category>
+    /// <param name="inDto">Firebase request parameters: Firebase device token, subscribed to the push notification or not</param>
     /// <returns>FireBase user</returns>
+    /// <path>api/2.0/settings/push/docregisterdevice</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("push/docregisterdevice")]
     public FireBaseUser DocRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
     {
@@ -54,9 +59,14 @@ public class PushController : BaseSettingsController
     }
 
     /// <summary>
-    /// Subscribe to documents push notification.
+    /// Subscribes to the Documents push notification.
     /// </summary>
-    /// <returns>FireBase user</returns>
+    /// <short>Subscribe to Documents push notification</short>
+    /// <category>Firebase</category>
+    /// <param name="inDto">Firebase request parameters: Firebase device token, subscribed to the push notification or not</param>
+    /// <returns>Firebase user</returns>
+    /// <path>api/2.0/settings/push/docsubscribe</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("push/docsubscribe")]
     public FireBaseUser SubscribeDocumentsPushNotification(FirebaseRequestsDto inDto)
     {
