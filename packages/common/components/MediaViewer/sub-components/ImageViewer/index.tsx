@@ -1,13 +1,7 @@
 import { useGesture } from "@use-gesture/react";
 import { isMobile, isDesktop } from "react-device-detect";
 import { useSpring, config } from "@react-spring/web";
-import React, {
-  SyntheticEvent,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 import indexedDBHelper from "../../../../utils/indexedDBHelper";
 import { IndexedDBStores } from "../../../../constants";
@@ -173,8 +167,10 @@ function ImageViewer({
 
     indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
       if (result && result.version === version) {
+        console.log("change");
         changeSource(result.src);
       } else {
+        console.log("load");
         loadImage();
       }
     });
