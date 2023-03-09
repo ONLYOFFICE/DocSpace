@@ -66,6 +66,17 @@ public class OwnerController : BaseSettingsController
         _messageTarget = messageTarget;
     }
 
+    /// <summary>
+    /// Sends the instructions to change the DocSpace owner.
+    /// </summary>
+    /// <short>
+    /// Send the owner change instructions
+    /// </short>
+    /// <category>Owner</category>
+    /// <param name="inDto">New owner ID</param>
+    /// <returns>Message about the result of changing the portal owner</returns>
+    /// <path>api/2.0/settings/owner</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("owner")]
     public object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
     {
@@ -94,6 +105,17 @@ public class OwnerController : BaseSettingsController
         return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
     }
 
+    /// <summary>
+    /// Updates the current portal owner with a new one specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update the portal owner
+    /// </short>
+    /// <category>Owner</category>
+    /// <param name="inDto">New owner ID</param>
+    /// <returns></returns>
+    /// <path>api/2.0/settings/owner</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
     public void Owner(SettingsRequestsDto inDto)
