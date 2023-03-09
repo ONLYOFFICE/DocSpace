@@ -266,7 +266,8 @@ class SelectionArea extends React.Component {
       e.target.closest(".table-row-selected") ||
       e.target.closest(".row-selected") ||
       !e.target.closest("#sectionScroll") ||
-      e.target.closest(".table-container_row-checkbox")
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".media-file")
     )
       return;
 
