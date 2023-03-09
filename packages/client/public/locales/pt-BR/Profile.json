@@ -8,9 +8,7 @@
   "ProviderSuccessfullyConnected": "Provedor conectado com sucesso",
   "ProviderSuccessfullyDisconnected": "Provedor desconectado com sucesso",
   "ShowBackupCodes": "Mostrar códigos de backup",
-  "SubscriptionEmailTipsToggleLbl": "Notificação por e-mail com dicas e truques",
   "SubscriptionTurnOffToast": "Você foi removido com sucesso da lista de endereçamento. <1>Assinar novamente</1>",
-  "Subscriptions": "Assinaturas",
   "SystemTheme": "Usar tema do sistema",
   "TfaLoginSettings": "Ajustes de acesso",
   "TwoFactorDescription": "A autenticação de dois fatores por meio de um aplicativo de geração de código foi habilitada para todos os usuários pelo administrador."

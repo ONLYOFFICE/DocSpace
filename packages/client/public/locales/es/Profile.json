@@ -8,9 +8,7 @@
   "ProviderSuccessfullyConnected": "El proveedor se ha conectado correctamente",
   "ProviderSuccessfullyDisconnected": "El proveedor se ha desconectado correctamente",
   "ShowBackupCodes": "Mostrar códigos de copia de seguridad",
-  "SubscriptionEmailTipsToggleLbl": "Notificación por correo con consejos y trucos",
   "SubscriptionTurnOffToast": "Ha cancelado su suscripción a la lista de correo correctamente. <1>Suscribirse de nuevo</1>",
-  "Subscriptions": "Suscripciones",
   "SystemTheme": "Utilizar el tema del sistema",
   "TfaLoginSettings": "Ajustes de acceso",
   "TwoFactorDescription": "El administrador ha habilitado la autenticación de dos factores a través de una aplicación que genera códigos para todos los usuarios."
