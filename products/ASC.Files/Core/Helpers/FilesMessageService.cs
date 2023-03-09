@@ -184,11 +184,18 @@ public class FilesMessageService
         _messageService.Send(action, _messageTarget.Create(entry.Id), d1, d2);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async Task Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
             return;
+        }
+
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
         }
 
         _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
@@ -228,19 +235,7 @@ public class FilesMessageService
             && userid != Guid.Empty)
         {
             info.UserIds = new List<Guid> { userid };
-
-            switch (userRole)
-            {
-                case FileShare.ReadWrite:
-                    info.RoomRole = UserRoomRole.Editor;
-                    break;
-                case FileShare.RoomAdmin:
-                    info.RoomRole = UserRoomRole.RoomAdmin;
-                    break;
-                case FileShare.Read:
-                    info.RoomRole = UserRoomRole.Viewer;
-                    break;
-            }
+            info.UserRole = (int)userRole;
         }
 
         var serializedParam = JsonSerializer.Serialize(info);

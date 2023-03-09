@@ -445,7 +445,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
     <value>DocSpace Administrator</value>
   </data>
-  <data name="RoleEnum_Editor" xml:space="preserve">
+  <data name="RoleEnum_Editing" xml:space="preserve">
     <value>Editor</value>
   </data>
   <data name="RoleEnum_RoomAdmin" xml:space="preserve">
@@ -454,7 +454,16 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="RoleEnum_User" xml:space="preserve">
     <value>User</value>
   </data>
-  <data name="RoleEnum_Viewer" xml:space="preserve">
+  <data name="RoleEnum_Read" xml:space="preserve">
     <value>Viewer</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Сommentator</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Form filler</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Reviewer</value>
   </data>
 </root>

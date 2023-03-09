@@ -361,7 +361,7 @@ public class MessageService
             parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
             {
                 UserIds = userIds,
-                DocSpaceRole = userType
+                UserRole = (int)userType
             });
         }
         else if (action == MessageAction.UserCreated
@@ -386,14 +386,6 @@ public class AdditionalNotificationInfo
     public int RoomId { get; set; }
     public string RoomTitle { get; set; }
     public string RoomOldTitle { get; set; }
-    public UserRoomRole RoomRole { get; set; }
-    public EmployeeType DocSpaceRole { get; set; }
+    public int UserRole { get; set; }
     public List<Guid> UserIds { get; set; }
-}
-
-public enum UserRoomRole
-{
-    Viewer = 0,
-    Editor = 1,
-    RoomAdmin = 2
 }

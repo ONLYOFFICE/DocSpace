@@ -50,7 +50,8 @@ public class ApiProductEntryPoint : ProductEntryPoint
        PathProvider pathProvider,
        FilesLinkUtility filesLinkUtility,
        FileSecurity fileSecurity,
-       GlobalFolder globalFolder
+       GlobalFolder globalFolder,
+       CommonLinkUtility commonLinkUtility
        //SubscriptionManager subscriptionManager
        ) : base(filesSpaceUsageStatManager,
            coreBaseSettings,
@@ -64,7 +65,8 @@ public class ApiProductEntryPoint : ProductEntryPoint
            pathProvider,
            filesLinkUtility,
            fileSecurity,
-           globalFolder)
+           globalFolder,
+           commonLinkUtility)
     {
 
     }

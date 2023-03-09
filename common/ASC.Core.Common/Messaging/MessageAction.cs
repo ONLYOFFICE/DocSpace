@@ -446,7 +446,7 @@ public enum MessageAction
     DocumentsStoreForcesave = 5048,
     DocumentsUploadingFormatsSettingsUpdated = 5033,
     DocumentsExternalShareSettingsUpdated = 5069,
-    DocumentsKeepNewFileNameSettingsUpdated = 5083, // last
+    DocumentsKeepNewFileNameSettingsUpdated = 5083,
 
     FileConverted = 5035,
 
@@ -471,7 +471,7 @@ public enum MessageAction
     RoomDeleted = 5074,
     RoomUpdateAccessForUser = 5075,
     RoomRemoveUser = 5084,
-    RoomCreateUser = 5085,
+    RoomCreateUser = 5085,// last
     RoomLinkUpdate = 5082,
 
     TagCreated = 5076,

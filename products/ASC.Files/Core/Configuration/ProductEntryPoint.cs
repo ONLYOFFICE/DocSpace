@@ -42,6 +42,7 @@ public class ProductEntryPoint : Product
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
     private readonly PathProvider _pathProvider;
     private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly CommonLinkUtility _commonLinkUtility;
     private readonly FileSecurity _fileSecurity;
     private readonly GlobalFolder _globalFolder;
 
@@ -62,7 +63,8 @@ public class ProductEntryPoint : Product
         PathProvider pathProvider,
         FilesLinkUtility filesLinkUtility,
         FileSecurity fileSecurity,
-        GlobalFolder globalFolder
+        GlobalFolder globalFolder,
+        CommonLinkUtility commonLinkUtility
         //            SubscriptionManager subscriptionManager
         )
     {
@@ -79,6 +81,7 @@ public class ProductEntryPoint : Product
         _filesLinkUtility = filesLinkUtility;
         _fileSecurity = fileSecurity;
         _globalFolder = globalFolder;
+        _commonLinkUtility = commonLinkUtility;
         //SubscriptionManager = subscriptionManager;
     }
 
@@ -193,12 +196,17 @@ public class ProductEntryPoint : Product
                 continue;
             }
 
+            if (e.Action == (int)MessageAction.RoomCreated && !docSpaceAdmin)
+            {
+                continue;
+            }
+
             if (e.Action == (int)MessageAction.FileCreated
                 || e.Action == (int)MessageAction.FileUpdatedRevisionComment
                 || e.Action == (int)MessageAction.FileUploaded
-                || e.Action == (int)MessageAction.FileUpdated)
+                || e.Action == (int)MessageAction.UserFileUpdated)
             {
-                activityInfo.FileUrl = _filesLinkUtility.GetFileWebEditorUrl(e.Target.GetItems().FirstOrDefault());
+                activityInfo.FileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(e.Target.GetItems().FirstOrDefault()));
             }
 
             AdditionalNotificationInfo additionalInfo = null;
@@ -212,7 +220,7 @@ public class ProductEntryPoint : Product
             {
                 if (docSpaceAdmin)
                 {
-                    activityInfo.UserRole = GetDocSpaceRoleString(additionalInfo.DocSpaceRole);
+                    activityInfo.UserRole = GetDocSpaceRoleString((EmployeeType)additionalInfo.UserRole);
                     result.Add(activityInfo);
                 }
                 continue;
@@ -220,24 +228,31 @@ public class ProductEntryPoint : Product
 
             var roomId = additionalInfo.RoomId;
 
-            if (roomId <= 0 || !userRoomsForSend.Contains(roomId.ToString()))
+            if (e.Action != (int)MessageAction.RoomCreated)
             {
-                continue;
-            }
+                if (roomId <= 0 || !userRoomsForSend.Contains(roomId.ToString()))
+                {
+                    continue;
+                }
 
-            var isRoomAdmin = userRoomsWithRoleForSend
-                .Where(r => r.Key == roomId.ToString())
-                .Select(r => r.Value).FirstOrDefault();
+                var isRoomAdmin = userRoomsWithRoleForSend
+                    .Where(r => r.Key == roomId.ToString())
+                    .Select(r => r.Value).FirstOrDefault();
 
-            if (!CheckRightsToReceive(userId, (MessageAction)e.Action, isRoomAdmin, activityInfo.TargetUsers))
-            {
-                continue;
+                if (!CheckRightsToReceive(userId, (MessageAction)e.Action, isRoomAdmin, activityInfo.TargetUsers))
+                {
+                    continue;
+                }
             }
 
             activityInfo.RoomUri = _pathProvider.GetRoomsUrl(roomId.ToString());
             activityInfo.RoomTitle = additionalInfo.RoomTitle;
             activityInfo.RoomOldTitle = additionalInfo.RoomOldTitle;
-            activityInfo.UserRole = GetRoomRoleString(additionalInfo.RoomRole);
+
+            if (e.Action == (int)MessageAction.RoomUpdateAccessForUser)
+            {
+                activityInfo.UserRole = GetRoomRoleString((FileShare)additionalInfo.UserRole);
+            }
 
             result.Add(activityInfo);
         }
@@ -289,7 +304,7 @@ public class ProductEntryPoint : Product
             {
                 result.TryAdd(record.EntryId.ToString(), true);
             }
-            else
+            else if(record.Share != FileShare.Restrict)
             {
                 result.TryAdd(record.EntryId.ToString(), false);
             }      
@@ -371,14 +386,17 @@ public class ProductEntryPoint : Product
         }
     }
 
-    private static string GetRoomRoleString(UserRoomRole userRoomRole)
+    private static string GetRoomRoleString(FileShare userRoomRole)
     {
         switch (userRoomRole)
         {
-            case UserRoomRole.Viewer:
-            case UserRoomRole.Editor:
-            case UserRoomRole.RoomAdmin:
-                return FilesCommonResource.ResourceManager.GetString("RoleEnum_" + userRoomRole.ToString());
+            case FileShare.Read:
+            case FileShare.Review:
+            case FileShare.Comment:
+            case FileShare.FillForms:
+            case FileShare.RoomAdmin:
+            case FileShare.Editing:
+                return FilesCommonResource.ResourceManager.GetString("RoleEnum_" + userRoomRole.ToStringFast());
             default:
                 return string.Empty;
         }

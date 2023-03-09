@@ -50,6 +50,7 @@ public class StudioWhatsNewNotify
         MessageAction.FileCreated,
         MessageAction.FileUpdatedRevisionComment,
         MessageAction.RoomCreated,
+        MessageAction.RoomRemoveUser,
         MessageAction.RoomRenamed,
         MessageAction.RoomArchived,
         MessageAction.UserCreated,
@@ -59,9 +60,8 @@ public class StudioWhatsNewNotify
     public readonly static List<MessageAction?> RoomsActivityActions = new List<MessageAction?>()
     {
          MessageAction.FileUploaded,
-         MessageAction.FileUpdated,
+         MessageAction.UserFileUpdated,
          MessageAction.RoomCreateUser,
-         MessageAction.RoomRemoveUser,
          MessageAction.RoomUpdateAccessForUser,
          MessageAction.UsersUpdatedType
     };
@@ -207,7 +207,7 @@ public class StudioWhatsNewNotify
         var user = _userManager.GetUsers(activityInfo.UserId);
 
         var date = activityInfo.Data;
-        var userName = $"{user.FirstName} {user.LastName}";
+        var userName = user.FirstName != "" || user.LastName != "" ? $"{user.FirstName} {user.LastName}" : user.UserName;
         var userEmail = user.Email;
         var userRole = activityInfo.UserRole;
         var fileUrl = activityInfo.FileUrl;
@@ -289,7 +289,7 @@ public class StudioWhatsNewNotify
                     userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date)
             };
         }
-        else if (action == MessageAction.FileUpdated)
+        else if (action == MessageAction.UserFileUpdated)
         {
             whatsNewUserActivity = new WhatsNewUserActivity()
             {
