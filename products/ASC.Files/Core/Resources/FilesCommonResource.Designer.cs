@@ -1006,6 +1006,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collaborator.
+        /// </summary>
+        public static string RoleEnum_Collaborator {
+            get {
+                return ResourceManager.GetString("RoleEnum_Collaborator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Сommentator.
         /// </summary>
         public static string RoleEnum_Comment {
