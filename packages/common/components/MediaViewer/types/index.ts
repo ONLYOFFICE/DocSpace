@@ -19,6 +19,7 @@ export type PlaylistType = {
   src: string;
   title: string;
   thumbnailUrl: string;
+  version: number;
 };
 
 export type CreatedType = {
