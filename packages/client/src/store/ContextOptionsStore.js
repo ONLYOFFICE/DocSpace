@@ -993,7 +993,7 @@ class ContextOptionsStore {
       {
         id: "option_archive-room",
         key: "archive-room",
-        label: t("Archived"),
+        label: t("Archive"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
@@ -1114,7 +1114,7 @@ class ContextOptionsStore {
       if (canArchiveRoom) {
         archiveOptions = {
           key: "archive-room",
-          label: t("Archived"),
+          label: t("Archive"),
           icon: RoomArchiveSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
