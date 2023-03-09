@@ -255,6 +255,7 @@ public class SettingsManager
 
                 strategy.Execute(async () =>
                 {
+                    using var webstudioDbContext = _dbContextFactory.CreateDbContext();
                     using var tr = await webstudioDbContext.Database.BeginTransactionAsync();
                     // remove default settings
                     var s = webstudioDbContext.WebstudioSettings

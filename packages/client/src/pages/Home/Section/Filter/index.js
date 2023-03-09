@@ -1463,6 +1463,7 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      sortByTitle={t("Common:SortBy")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
       onSortButtonClick={onSortButtonClick}

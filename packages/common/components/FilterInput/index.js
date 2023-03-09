@@ -44,6 +44,7 @@ const FilterInput = React.memo(
     isRooms,
     isAccounts,
     filterTitle,
+    sortByTitle,
 
     clearSearch,
     setClearSearch,
@@ -170,6 +171,7 @@ const FilterInput = React.memo(
                 viewSelectorVisible &&
                 (isMobile || isMobileUtils() || isTabletUtils())
               }
+              title={sortByTitle}
             />
           )}
           {((viewSettings &&
