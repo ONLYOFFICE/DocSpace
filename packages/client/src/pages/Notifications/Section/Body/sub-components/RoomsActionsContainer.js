@@ -15,7 +15,7 @@ const RoomsActionsContainer = ({
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeEmailSubscription = async (e) => {
+  const onChangeBadgeSubscription = async (e) => {
     const checked = e.currentTarget.checked;
     try {
       await changeSubscription(NotificationsType.Badges, checked);
@@ -45,7 +45,7 @@ const RoomsActionsContainer = ({
       </div>
       <ToggleButton
         className="toggle-btn"
-        onChange={onChangeEmailSubscription}
+        onChange={onChangeBadgeSubscription}
         isChecked={badgesSubscription}
       />
     </div>
