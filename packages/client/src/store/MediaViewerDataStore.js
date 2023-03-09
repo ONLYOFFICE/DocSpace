@@ -141,6 +141,7 @@ class MediaViewerDataStore {
         const canOpenPlayer =
           file.viewAccessability.ImageView || file.viewAccessability.MediaView;
 
+        console.log(file);
         if (canOpenPlayer) {
           playlist.push({
             id: id,
@@ -150,6 +151,7 @@ class MediaViewerDataStore {
             fileExst: file.fileExst,
             fileStatus: file.fileStatus,
             canShare: file.canShare,
+            version: file.version,
             thumbnailUrl:
               file.thumbnailStatus === thumbnailStatuses.CREATED &&
               file.viewAccessability.ImageView
@@ -173,6 +175,7 @@ class MediaViewerDataStore {
         id: id,
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
+        version: this.previewFile.version,
         thumbnailUrl:
           this.previewFile.thumbnailStatus === thumbnailStatuses.CREATED &&
           this.previewFile.viewAccessability.ImageView
