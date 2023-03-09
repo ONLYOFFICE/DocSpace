@@ -963,7 +963,8 @@ class FilesActionStore {
               this.treeFoldersStore.fetchTreeFolders();
             });
           })
-          .then(() => toastr.success(t("RoomNotificationsDisabled")));
+          .then(() => toastr.success(t("RoomNotificationsDisabled")))
+          .catch((e) => toastr.error(e));
       case "unmute":
         return muteRoomNotification(id, false)
           .then(() => {
@@ -984,7 +985,8 @@ class FilesActionStore {
               this.treeFoldersStore.fetchTreeFolders();
             });
           })
-          .then(() => toastr.success(t("RoomNotificationsEnabled")));
+          .then(() => toastr.success(t("RoomNotificationsEnabled")))
+          .catch((e) => toastr.error(e));
     }
   };
 
