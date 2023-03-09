@@ -18,7 +18,6 @@
   "LogoutFrom": "Выйти из {{platform}} {{browser}} ?",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "MyProfile": "Мой профайл",
-  "PhoneLbl": "Основной телефон",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
   "SendAgain": "Отправить снова",
