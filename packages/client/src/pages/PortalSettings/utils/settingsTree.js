@@ -14,18 +14,18 @@ import DeveloperReactSvgUrl from "PUBLIC_DIR/images/catalog.developer.react.svg?
 
 export const settingsTree = [
   {
-    id: "portal-settings_catalog-common",
+    id: "portal-settings_catalog-customization",
     key: "0",
     icon: CommonSettingsSvgUrl,
-    link: "common",
+    link: "customization",
     tKey: "Customization",
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-customization",
+        id: "portal-settings_catalog-general",
         key: "0-0",
         icon: "",
-        link: "customization",
+        link: "general",
         tKey: "SettingsGeneral",
         isCategory: true,
         children: [

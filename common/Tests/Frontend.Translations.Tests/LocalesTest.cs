@@ -174,6 +174,7 @@ public class LocalesTest
                                let clientDir = Path.Combine(BasePath, wsPath)
                                from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
                                where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                               && !filePath.Contains(Utils.ConvertPathToOS("storybook-static/"))
                                && !filePath.Contains(".test.js")
                                && !filePath.Contains(".stories.js")
                                && !filePath.Contains(".test.ts")
@@ -317,11 +318,11 @@ public class LocalesTest
         TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
 
         TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
-        
+
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void ParseJsonTest()
     {
         Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
@@ -350,7 +351,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("LongRunning")]
+    [Category("SpellCheck")]
     public void SpellCheckTest()
     {
         var i = 0;
@@ -425,7 +426,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void SingleKeyFilesTest()
     {
         var singleKeyTranslationFiles = TranslationFiles
@@ -436,7 +437,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void DublicatesFilesByMD5HashTest()
     {
         var duplicatesByMD5 = TranslationFiles
@@ -452,7 +453,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void FullEnDublicatesTest()
     {
         var fullEnDuplicates = TranslationFiles
@@ -469,7 +470,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void EnDublicatesByContentTest()
     {
         var allRuTranslations = TranslationFiles
@@ -548,7 +549,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotAllLanguageTranslatedTest()
     {
         var groupedByLng = TranslationFiles
@@ -625,7 +626,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedKeysTest()
     {
         var message = $"Next languages are not equal 'en' by translated keys count:\r\n\r\n";
@@ -672,7 +673,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotFoundKeysTest()
     {
         var allEnKeys = TranslationFiles
@@ -694,7 +695,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void UselessTranslationKeysTest()
     {
         var allEnKeys = TranslationFiles
@@ -719,7 +720,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void UselessModuleTranslationKeysTest()
     {
         var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
@@ -807,7 +808,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedCommonKeysTest()
     {
         var message = $"Some i18n-keys are not found in COMMON translations: \r\nKeys: \r\n\r\n";
@@ -904,7 +905,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void EmptyValueKeysTest()
     {
         // Uncomment if new keys are available
@@ -1008,7 +1009,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void LanguageTranslatedPercentTest()
     {
         var message = $"Next languages translated less then 100%:\r\n\r\n";
@@ -1055,7 +1056,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedToastsTest()
     {
         var message = $"Next text not translated in toasts:\r\n\r\n";
@@ -1078,7 +1079,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void WrongTranslationVariablesTest()
     {
         var message = $"Next keys have wrong variables:\r\n\r\n";
@@ -1156,7 +1157,7 @@ public class LocalesTest
     }
 
     //[Test]
-    //[Category("FastRunning")]
+    //[Category("Locales")]
     //public void TranslationsEncodingTest()
     //{
     //    /*//Convert to UTF-8

@@ -6,7 +6,7 @@
   "ArchiveEmptyScreen": "You can archive rooms you don’t use and restore them in your DocSpace at any moment or delete them permanently. These rooms will appear here.",
   "ArchiveEmptyScreenHeader": "No archived rooms here yet",
   "ArchiveEmptyScreenUser": "Rooms that have been archived will appear here.",
-  "Archived": "Archived",
+  "Archive": "Archive",
   "ArchivedRoomAction": "The room '{{name}}' is archived",
   "ArchivedRoomsAction": "The rooms are archived",
   "Archives": "Archives",
