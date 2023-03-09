@@ -367,7 +367,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     await indexedDbHelper.init(userId, [IndexedDBStores.images]);
 
     return () => {
-      indexedDbHelper.deleteStore(IndexedDBStores.images);
+      indexedDbHelper.deleteDatabase(userId);
     };
   }, [userId]);
 
