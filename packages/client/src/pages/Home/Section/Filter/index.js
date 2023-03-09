@@ -297,6 +297,7 @@ const SectionFilterContent = ({
       const newFilter = roomsFilter.clone();
       newFilter.type = null;
       newFilter.page = 0;
+      newFilter.filterValue = "";
 
       fetchRooms(selectedFolderId, newFilter).finally(() =>
         setIsLoading(false)
@@ -304,6 +305,7 @@ const SectionFilterContent = ({
     } else {
       const newFilter = filter.clone();
       newFilter.page = 0;
+      newFilter.filterValue = "";
 
       setIsLoading(true);
 
