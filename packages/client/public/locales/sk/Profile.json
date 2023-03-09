@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Poskytovateľ bol úspešne pripojený",
   "ProviderSuccessfullyDisconnected": "Poskytovateľ bol úspešne odpojený",
   "ShowBackupCodes": "Zobraziť záložné kódy",
-  "SubscriptionTurnOffToast": "Boli ste úspešne odhlásení z odberu noviniek. <1>Znova sa prihlásiť na odber</1>",
   "SystemTheme": "Použiť tému systému",
   "TfaLoginSettings": "Nastavenia prihlasovania",
   "TwoFactorDescription": "Správca povolil všetkým používateľom dvojfaktorovú autentifikáciu prostredníctvom aplikácie generujúcej kód."

@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Провайдер успішно підключений",
   "ProviderSuccessfullyDisconnected": "Провайдер успішно відключений",
   "ShowBackupCodes": "Показати резервні коди",
-  "SubscriptionTurnOffToast": "Вас успішно видалено зі списку розсилки. <1>Підписатися знову</1>",
   "SystemTheme": "Використовувати системну тему",
   "TfaLoginSettings": "Параметри входу",
   "TwoFactorDescription": "Двофакторна автентифікація за допомогою програми генерування кодів була ввімкнена для всіх користувачів адміністратором."

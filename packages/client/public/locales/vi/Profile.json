@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Đã kết nối nhà cung cấp thành công",
   "ProviderSuccessfullyDisconnected": " Đã ngắt kết nối nhà cung cấp thành công",
   "ShowBackupCodes": "Hiển thị mã dự phòng",
-  "SubscriptionTurnOffToast": "Bạn đã hủy đăng ký danh sách nhận thư thành công. <1>Đăng ký lại</1>",
   "SystemTheme": "Sử dụng chủ đề hệ thống",
   "TfaLoginSettings": "Thiết lập đăng nhập ",
   "TwoFactorDescription": " Xác thực hai yếu tố qua ứng dụng tạo mã đã được quản trị viên bật cho tất cả người dùng."

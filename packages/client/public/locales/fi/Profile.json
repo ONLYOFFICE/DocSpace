@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",
   "ShowBackupCodes": "Näytä varakoodit\n",
-  "SubscriptionTurnOffToast": "Postituslistan tilaus on peruutettu onnistuneesti. <1>Tilaa uudelleen</1>",
   "SystemTheme": "Käytä järjestelmän teemaa",
   "TfaLoginSettings": "Kirjautumisasetukset",
   "TwoFactorDescription": "Järjestelmänvalvoja otti käyttöön kaksivaiheisen todennuksen koodia luovan sovelluksen kautta kaikille käyttäjille."

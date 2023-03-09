@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Piegādātājs ir veiksmīgi savienots",
   "ProviderSuccessfullyDisconnected": "Piegādātājs ir veiksmīgi atvienots",
   "ShowBackupCodes": "Rādīt rezerves kodus",
-  "SubscriptionTurnOffToast": "Jūs esat veiksmīgi atteicies no adresātu saraksta. <1>Abonēt vēlreiz</1>",
   "SystemTheme": "Izmantot sistēmas dizainu",
   "TfaLoginSettings": "Pieteikšanās iestatījumi",
   "TwoFactorDescription": "Administrators visiem lietotājiem ir iespējojis divu faktoru autentifikāciju, izmantojot kodu ģenerējošu lietotni."

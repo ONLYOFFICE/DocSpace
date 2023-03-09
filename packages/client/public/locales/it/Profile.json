@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Il fornitore è stato collegato con successo",
   "ProviderSuccessfullyDisconnected": "Il fornitore è stato scollegato con successo",
   "ShowBackupCodes": "Mostrare codici di backup",
-  "SubscriptionTurnOffToast": "Sei stato cancellato con successo dalla mailing list. <1>Iscriviti di nuovo</1>",
   "SystemTheme": "Usare tema di sistema",
   "TfaLoginSettings": "Impostazioni di accesso",
   "TwoFactorDescription": "L'autenticazione a due fattori tramite un'app che genera codice è stata attivata per tutti gli utenti dall'amministratore."

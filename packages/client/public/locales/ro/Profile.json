@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Furnizorul a fost conectat cu succes",
   "ProviderSuccessfullyDisconnected": "Furnizorul a fost deconectat cu succes",
   "ShowBackupCodes": "Afișare coduri de rezervă",
-  "SubscriptionTurnOffToast": "Ați fost dezabonat cu succes de la lista de corespondență. <1>Reabonare</1>",
   "SystemTheme": "Utilizare temă de sistem",
   "TfaLoginSettings": "Setări de conexiune",
   "TwoFactorDescription": "Autentificarea cu doi factori prin aplicația de generare coduri a fost activată pentru toți utilizatorii de către administratorul."

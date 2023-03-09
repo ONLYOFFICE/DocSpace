@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Anbieter erfolgreich verbunden",
   "ProviderSuccessfullyDisconnected": "Anbieter erfolgreich getrennt",
   "ShowBackupCodes": "Back-up-Codes anzeigen",
-  "SubscriptionTurnOffToast": "Sie wurden erfolgreich von der Mailingliste abgemeldet. <1>Neu anmelden</1>",
   "SystemTheme": "Wie im System",
   "TfaLoginSettings": "Login-Einstellungen",
   "TwoFactorDescription": "Zwei-Faktor-Authentifizierung über eine App für Generierung von Codes wurde für alle aktiviert."

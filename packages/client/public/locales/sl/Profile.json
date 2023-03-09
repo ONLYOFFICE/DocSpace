@@ -8,7 +8,6 @@
   "ProviderSuccessfullyConnected": "Ponudnik je uspešno povezan",
   "ProviderSuccessfullyDisconnected": "Ponudnik je bil uspešno odklopljen",
   "ShowBackupCodes": "Prikaži nadomestne kode",
-  "SubscriptionTurnOffToast": "Uspešno ste se odjavili s seznama za e-pošto. <1>Ponovna prijava</1>",
   "SystemTheme": "Uporabi sistemsko temo",
   "TfaLoginSettings": "Nastavitve za prijavo",
   "TwoFactorDescription": "Administrator je za vse uporabnike omogočil dvofaktorsko avtentikacijo preko aplikacije za ustvarjanje kode."
