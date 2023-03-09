@@ -141,7 +141,6 @@ class MediaViewerDataStore {
         const canOpenPlayer =
           file.viewAccessability.ImageView || file.viewAccessability.MediaView;
 
-        console.log(file);
         if (canOpenPlayer) {
           playlist.push({
             id: id,
