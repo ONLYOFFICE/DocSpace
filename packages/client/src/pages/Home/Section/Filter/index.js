@@ -1074,7 +1074,7 @@ const SectionFilterContent = ({
     const modifiedDate = {
       id: "sort-by_modified",
       key: "DateAndTime",
-      label: t("ByLastModified"),
+      label: t("Common:LastModifiedDate"),
       default: true,
     };
     const room = {
@@ -1092,7 +1092,7 @@ const SectionFilterContent = ({
     const creationDate = {
       id: "sort-by_created",
       key: "DateAndTimeCreation",
-      label: t("ByCreation"),
+      label: t("InfoPanel:CreationDate"),
       default: true,
     };
     const owner = {
@@ -1555,9 +1555,13 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Files", "Settings", "Common", "Translations"])(
-        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
-      )
+      withTranslation([
+        "Files",
+        "Settings",
+        "Common",
+        "Translations",
+        "InfoPanel",
+      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
     )
   )
 );
