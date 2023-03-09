@@ -518,7 +518,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_archive-room",
         key: "archive-room",
-        label: t("Archived"),
+        label: t("Archive"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e),
         disabled: !isRoom || !security?.Move,

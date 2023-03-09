@@ -50,9 +50,16 @@ const ArticleBodyContent = (props) => {
 
   const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
 
+  let loadTimeout = null;
+
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
+
+  const cleanTimer = () => {
+    loadTimeout && clearTimeout(loadTimeout);
+    loadTimeout = null;
+  };
 
   const onClick = React.useCallback(
     (folderId) => {
@@ -72,7 +79,9 @@ const ArticleBodyContent = (props) => {
       const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
       if (filesSection) {
-        setIsLoading(true);
+        loadTimeout = setTimeout(() => {
+          setIsLoading(true);
+        }, 200);
       } else {
         showLoader();
       }
@@ -88,6 +97,7 @@ const ArticleBodyContent = (props) => {
 
         fetchRooms(folderId, filter).finally(() => {
           if (filesSection) {
+            cleanTimer();
             setIsLoading(false);
           } else {
             hideLoader();
@@ -98,6 +108,7 @@ const ArticleBodyContent = (props) => {
           .catch((err) => toastr.error(err))
           .finally(() => {
             if (filesSection) {
+              cleanTimer();
               setIsLoading(false);
             } else {
               hideLoader();

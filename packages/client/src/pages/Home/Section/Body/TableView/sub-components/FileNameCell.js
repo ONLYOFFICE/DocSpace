@@ -15,11 +15,13 @@ const FileNameCell = ({
   t,
   inProgress,
 }) => {
-  const { title } = item;
+  const { title, viewAccessability } = item;
 
   const onChange = (e) => {
     onContentSelect && onContentSelect(e.target.checked, item);
   };
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>
@@ -55,7 +57,7 @@ const FileNameCell = ({
         {...linkStyles}
         color={theme.filesSection.tableView.fileName.linkColor}
         isTextOverflow
-        className="item-file-name"
+        className={`item-file-name ${isMedia ? "media-file" : ""}`}
       >
         {titleWithoutExt}
       </Link>

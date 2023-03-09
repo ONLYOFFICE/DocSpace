@@ -49,6 +49,7 @@ const FilterInput = React.memo(
     setClearSearch,
 
     onSortButtonClick,
+    onClearFilter,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -66,7 +67,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       if (clearSearch) {
         setInputValue("");
-        onClearSearch();
+        onClearFilter && onClearFilter();
         setClearSearch(false);
       }
     }, [clearSearch]);

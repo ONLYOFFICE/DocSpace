@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 
 namespace ASC.Files.ThumbnailBuilder;
@@ -46,6 +47,7 @@ public class Builder<T>
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
     private readonly TempStream _tempStream;
+    private IDataStore _dataStore;
 
     private readonly List<string> _imageFormatsCanBeCrop = new List<string>
             {
@@ -89,6 +91,8 @@ public class Builder<T>
         try
         {
             _tenantManager.SetCurrentTenant(fileData.TenantId);
+
+            _dataStore = _globalStore.GetStore();
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
@@ -356,7 +360,7 @@ public class Builder<T>
     {
         using var sourceImg = await Image.LoadAsync(stream);
 
-        if (_globalStore.GetStore() is DiscDataStore)
+        if (_dataStore is DiscDataStore)
         {
             foreach(var w in _config.Sizes)
             {
@@ -365,13 +369,13 @@ public class Builder<T>
         } 
         else
         {
-            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (w, t) =>
+            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 3 }, async (w, t) =>
             {
                 await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
             });
         }
 
-        GC.Collect();
+//        GC.Collect();
     }
 
     private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
@@ -407,7 +411,7 @@ public class Builder<T>
                 break;
         }
  
-        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
+        await _dataStore.SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
     private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
@@ -415,10 +419,11 @@ public class Builder<T>
 
         return sourceBitmap.Clone(x =>
         {
-            var resizedImage = x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0);
+            var resizedImage = x.Resize(thumbnaillWidth, 0);
 
-            var resizedImageWidth = resizedImage.GetCurrentSize().Width;
-            var resizedImageHeight = resizedImage.GetCurrentSize().Height;
+            var resizedImageSize = resizedImage.GetCurrentSize();
+            var resizedImageWidth = resizedImageSize.Width;
+            var resizedImageHeight = resizedImageSize.Height;
 
             var cropWidth = resizedImageWidth < thumbnaillWidth ? resizedImageWidth : thumbnaillWidth;
             var cropHeight = resizedImageHeight < thumbnaillHeight ? resizedImageHeight : thumbnaillHeight;
