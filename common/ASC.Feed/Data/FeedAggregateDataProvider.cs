@@ -100,10 +100,10 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction();
+            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await feedDbContext.Database.BeginTransactionAsync();
 
             foreach (var f in feeds)
             {
@@ -117,14 +117,14 @@ public class FeedAggregateDataProvider
 
                 if (f.ClearRightsBeforeInsert)
                 {
-                    var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
+                    var fu = await feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefaultAsync();
                     if (fu != null)
                     {
                         feedDbContext.FeedUsers.Remove(fu);
                     }
                 }
 
-                feedDbContext.AddOrUpdate(feedDbContext.FeedAggregates, feedAggregate);
+               await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -134,13 +134,13 @@ public class FeedAggregateDataProvider
                         UserId = u
                     };
 
-                    feedDbContext.AddOrUpdate(feedDbContext.FeedUsers, feedUser);
+                    await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedUsers, feedUser);
                 }
             }
 
-            feedDbContext.SaveChanges();
+            await feedDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
     }
 
@@ -149,15 +149,15 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDelete();
-            feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDelete();
+            await feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDeleteAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
     }
 
@@ -302,15 +302,15 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDelete();
-            feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDelete();
+            await feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDeleteAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
     }
 

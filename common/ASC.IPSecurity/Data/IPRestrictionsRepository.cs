@@ -52,12 +52,12 @@ public class IPRestrictionsRepository
         using var tenantDbContext = _dbContextManager.CreateDbContext();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var tenantDbContext = _dbContextManager.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext =await _dbContextManager.CreateDbContextAsync();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
-            tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDelete();
+            await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
@@ -68,9 +68,9 @@ public class IPRestrictionsRepository
             });
 
             tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            tenantDbContext.SaveChanges();
+            await tenantDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         return ips.ToList();

@@ -74,14 +74,14 @@ class DbQuotaService : IQuotaService
 
         strategy.Execute(async () =>
         {
-            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tr = await coreDbContext.Database.BeginTransactionAsync();
 
             await coreDbContext.Quotas
                                .Where(r => r.Tenant == id)
                                .ExecuteDeleteAsync();
 
-            tr.Commit();
+            await tr.CommitAsync();
         });
     }
 
@@ -95,12 +95,12 @@ class DbQuotaService : IQuotaService
 
         strategy.Execute(async () =>
         {
-            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tx = await coreDbContext.Database.BeginTransactionAsync();
 
             await AddQuota(coreDbContext, row.UserId);
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         async Task AddQuota(CoreDbContext coreDbContext, Guid userId)
