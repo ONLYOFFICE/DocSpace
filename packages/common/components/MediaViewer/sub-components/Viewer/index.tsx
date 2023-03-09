@@ -159,6 +159,7 @@ function Viewer(props: ViewerProps) {
               src={targetFile.src}
               thumbnailSrc={targetFile.thumbnailUrl}
               imageId={targetFile.fileId}
+              version={targetFile.version}
               mobileDetails={mobileDetails}
               onMask={props.onMaskClick}
               onPrev={props.onPrevClick}

@@ -55,6 +55,7 @@ function ImageViewer({
   toolbar,
   thumbnailSrc,
   imageId,
+  version,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -152,58 +153,32 @@ function ImageViewer({
     const res = await fetch(src);
     const blob = await res.blob();
 
-    // const reader = new FileReader();
-
-    // reader.addEventListener("load", () => {
     indexedDBHelper.addItem(IndexedDBStores.images, {
       id: imageId,
       src: blob,
       created: new Date(),
+      version,
     });
 
     changeSource(blob);
-
-    // if (imgRef.current && !unmountRef.current) {
-    //   console.log(imageId, src);
-    //   imgRef.current.src = URL.createObjectURL(blob);
-    // }
-    // });
-
-    // reader.readAsDataURL(blob);
-
-    // indexedDBHelper.addItem(IndexedDBStores.images, {
-    //   id: imageId,
-    //   src: blob,
-    //   created: new Date(),
-    // });
-
-    // if (imgRef.current && !unmountRef.current) {
-    //   console.log(imageId, src);
-    //   imgRef.current.src = blob;
-    // }
-  }, [src, imageId, changeSource]);
-
-  useEffect(() => {
-    console.log("mount");
-    return () => console.log("unmount");
-  }, []);
+  }, [src, imageId, version, changeSource]);
 
   useEffect(() => {
     changeSourceTimeoutRef.current &&
       clearTimeout(changeSourceTimeoutRef.current);
-  }, [src]);
+  }, [src, version]);
 
   useEffect(() => {
     if (!imageId) return;
-    console.log(imageId, src);
+
     indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
-      if (result) {
+      if (result && result.version === version) {
         changeSource(result.src);
       } else {
         loadImage();
       }
     });
-  }, [src, imageId, loadImage, changeSource]);
+  }, [src, imageId, version, loadImage, changeSource]);
 
   function resize() {
     if (!imgRef.current || isLoading) return;
@@ -1015,7 +990,7 @@ function ImageViewer({
         <ViewerLoader isLoading={isLoading} />
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
-            src={thumbnailSrc}
+            src={`${thumbnailSrc}&size=1280x720`}
             ref={imgRef}
             style={style}
             onDoubleClick={handleDoubleTapOrClick}

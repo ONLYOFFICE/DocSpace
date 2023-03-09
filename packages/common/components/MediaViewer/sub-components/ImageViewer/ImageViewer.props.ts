@@ -5,6 +5,7 @@ interface ImageViewerProps {
   src?: string;
   thumbnailSrc?: string;
   imageId?: number;
+  version?: number;
 
   isFistImage: boolean;
   isLastImage: boolean;
