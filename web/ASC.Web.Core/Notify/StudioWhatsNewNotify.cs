@@ -44,6 +44,7 @@ public class StudioWhatsNewNotify
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly IConfiguration _confuguration;
     private readonly WorkContext _workContext;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public readonly static List<MessageAction?> DailyActions = new List<MessageAction?>()
     {
@@ -81,7 +82,8 @@ public class StudioWhatsNewNotify
         WorkContext workContext,
         ILoggerProvider optionsMonitor,
         AuditEventsRepository auditEventsRepository,
-        WebItemManager webItemManager)
+        WebItemManager webItemManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         _webItemManager = webItemManager;
         _tenantManager = tenantManager;
@@ -98,6 +100,8 @@ public class StudioWhatsNewNotify
         _workContext = workContext;
         _auditEventsRepository = auditEventsRepository;
         _log = optionsMonitor.CreateLogger("ASC.Notify");
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+
     }
 
     public void SendMsgWhatsNew(DateTime scheduleDate, WhatsNewType whatsNewType)
@@ -207,7 +211,7 @@ public class StudioWhatsNewNotify
         var user = _userManager.GetUsers(activityInfo.UserId);
 
         var date = activityInfo.Data;
-        var userName = user.FirstName != "" || user.LastName != "" ? $"{user.FirstName} {user.LastName}" : user.UserName;
+        var userName = user.DisplayUserName(_displayUserSettingsHelper);
         var userEmail = user.Email;
         var userRole = activityInfo.UserRole;
         var fileUrl = activityInfo.FileUrl;
@@ -220,7 +224,7 @@ public class StudioWhatsNewNotify
         if (activityInfo.TargetUsers != null)
         {
             var targetUser = _userManager.GetUsers(activityInfo.TargetUsers.FirstOrDefault());
-            targetUserName = $"{targetUser.FirstName} {targetUser.LastName}";
+            targetUserName = targetUser.DisplayUserName(_displayUserSettingsHelper);
         }
 
 
@@ -331,7 +335,8 @@ public class StudioWhatsNewNotify
         }
         else if(action == MessageAction.UsersUpdatedType)
         {
-            var targetUserNames = activityInfo.TargetUsers.Select(r => _userManager.GetUsers(r).UserName);
+            var targetUsers = activityInfo.TargetUsers.Select(_userManager.GetUsers);
+            var targetUserNames = targetUsers.Select(r => r.DisplayUserName(_displayUserSettingsHelper));
             var separatedUserNames = string.Join(",", targetUserNames);
 
             whatsNewUserActivity = new WhatsNewUserActivity()
@@ -395,7 +400,6 @@ public class StudioWhatsNewNotify
 
         return d.ToString(c.TwoLetterISOLanguageName == "ru" ? "d MMMM" : "M", c);
     }
-
 
     class WhatsNewUserActivity
     {

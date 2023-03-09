@@ -380,6 +380,7 @@ public class ProductEntryPoint : Product
             case EmployeeType.User:
             case EmployeeType.RoomAdmin:
             case EmployeeType.DocSpaceAdmin:
+            case EmployeeType.Collaborator:
                 return FilesCommonResource.ResourceManager.GetString("RoleEnum_" + employeeType.ToStringFast());
             default:
                 return string.Empty;
