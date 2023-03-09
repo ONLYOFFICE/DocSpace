@@ -421,7 +421,7 @@ public class Builder<T>
             x.Resize(new ResizeOptions
             {
                  Size = new Size(thumbnaillWidth, thumbnaillHeight),
-                 Mode = ResizeMode.Max                  
+                 Mode = ResizeMode.Crop                  
             });
         });
     }
