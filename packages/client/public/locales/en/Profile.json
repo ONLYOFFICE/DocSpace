@@ -18,7 +18,6 @@
   "LogoutFrom": "Log out from {{platform}} {{browser}} ?",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
-  "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
   "SendAgain": "Send again",
