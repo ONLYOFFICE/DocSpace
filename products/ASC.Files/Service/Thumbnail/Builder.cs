@@ -416,22 +416,13 @@ public class Builder<T>
 
     private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
     {
-
         return sourceBitmap.Clone(x =>
         {
-            var resizedImage = x.Resize(thumbnaillWidth, 0);
-
-            var resizedImageSize = resizedImage.GetCurrentSize();
-            var resizedImageWidth = resizedImageSize.Width;
-            var resizedImageHeight = resizedImageSize.Height;
-
-            var cropWidth = resizedImageWidth < thumbnaillWidth ? resizedImageWidth : thumbnaillWidth;
-            var cropHeight = resizedImageHeight < thumbnaillHeight ? resizedImageHeight : thumbnaillHeight;
-
-            if ((cropHeight != resizedImageHeight) || (cropWidth != resizedImageWidth))
+            x.Resize(new ResizeOptions
             {
-                x.Crop(cropWidth, cropHeight);
-            }
+                 Size = new Size(thumbnaillWidth, thumbnaillHeight),
+                 Mode = ResizeMode.Max                  
+            });
         });
     }
 }
