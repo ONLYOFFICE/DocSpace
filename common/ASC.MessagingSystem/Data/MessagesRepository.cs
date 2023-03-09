@@ -156,9 +156,9 @@ public class MessagesRepository : IDisposable
         using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var strategy = ef.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = await ef.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
             foreach (var message in events)
@@ -189,7 +189,7 @@ public class MessagesRepository : IDisposable
                 }
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
     }
 

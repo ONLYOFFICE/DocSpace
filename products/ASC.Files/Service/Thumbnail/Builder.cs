@@ -419,7 +419,7 @@ public class Builder<T>
 
         return sourceBitmap.Clone(x =>
         {
-            var resizedImage = x.Resize(thumbnaillWidth, 0).BackgroundColor(Color.White);
+            var resizedImage = x.Resize(thumbnaillWidth, 0);
 
             var resizedImageSize = resizedImage.GetCurrentSize();
             var resizedImageWidth = resizedImageSize.Width;

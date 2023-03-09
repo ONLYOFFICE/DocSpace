@@ -79,19 +79,19 @@ class DbAzService : IAzService
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tx = userDbContext.Database.BeginTransaction();
 
-            if (!ExistEscapeRecord(r))
+            if (!await ExistEscapeRecord(r))
             {
-                InsertRecord(r);
+               await InsertRecord(r);
             }
             else
             {
                 // unescape
-                DeleteRecord(r);
+                await DeleteRecord(r);
             }
 
             tx.Commit();
@@ -107,61 +107,64 @@ class DbAzService : IAzService
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
-            using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = userDbContext.Database.BeginTransaction();
+            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await userDbContext.Database.BeginTransactionAsync();
 
-            if (ExistEscapeRecord(r))
+            if (await ExistEscapeRecord(r))
             {
                 // escape
-                InsertRecord(r);
+                await InsertRecord(r);
             }
             else
             {
-                DeleteRecord(r);
+                await DeleteRecord(r);
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
     }
 
 
-    private bool ExistEscapeRecord(AzRecord r)
+    private async Task<bool> ExistEscapeRecord(AzRecord r)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        return userDbContext.Acl
+        return await userDbContext.Acl
             .Where(a => a.Tenant == Tenant.DefaultTenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))
             .Where(a => a.AceType == r.AceType)
-            .Any();
+            .AnyAsync();
     }
 
-    private void DeleteRecord(AzRecord r)
+    private async Task DeleteRecord(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        var record = userDbContext.Acl
+        using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var record = await userDbContext.Acl
             .Where(a => a.Tenant == r.Tenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))
             .Where(a => a.AceType == r.AceType)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (record != null)
         {
             userDbContext.Acl.Remove(record);
-            userDbContext.SaveChanges();
+            await userDbContext.SaveChangesAsync();
         }
     }
 
-    private void InsertRecord(AzRecord r)
+    private async Task InsertRecord(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(userDbContext.Acl, _mapper.Map<AzRecord, Acl>(r));
-        userDbContext.SaveChanges();
+        using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await userDbContext.AddOrUpdateAsync(r => userDbContext.Acl, _mapper.Map<AzRecord, Acl>(r));
+        
+        await userDbContext.SaveChangesAsync();
     }
 }
