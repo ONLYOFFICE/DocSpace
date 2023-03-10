@@ -9,7 +9,7 @@ import Tooltip from "@docspace/components/tooltip";
 import Text from "@docspace/components/text";
 import TabContainer from "@docspace/components/tabs-container";
 import Preview from "./Appearance/preview";
-
+import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
 
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -117,6 +117,7 @@ const Appearance = (props) => {
         title: t("Profile:LightTheme"),
         content: (
           <Preview
+            appliedColorAccent={appliedColorAccent}
             previewAccent={previewAccent}
             selectThemeId={selectThemeId}
             colorCheckImg={colorCheckImg}
@@ -129,6 +130,7 @@ const Appearance = (props) => {
         title: t("Profile:DarkTheme"),
         content: (
           <Preview
+            appliedColorAccent={appliedColorAccent}
             previewAccent={previewAccent}
             selectThemeId={selectThemeId}
             colorCheckImg={colorCheckImg}
@@ -139,6 +141,25 @@ const Appearance = (props) => {
     ],
     [previewAccent, selectThemeId, colorCheckImg, tReady]
   );
+
+  const getSettings = () => {
+    const selectColorId = getFromSessionStorage("selectColorId");
+    const defaultColorId = selectedThemeId;
+    saveToSessionStorage("defaultColorId", defaultColorId);
+    if (selectColorId) {
+      setSelectThemeId(selectColorId);
+    } else {
+      setSelectThemeId(defaultColorId);
+    }
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, []);
+
+  useEffect(() => {
+    saveToSessionStorage("selectColorId", selectThemeId);
+  }, [selectThemeId]);
 
   useEffect(() => {
     onCheckView();
@@ -151,7 +172,7 @@ const Appearance = (props) => {
 
   useEffect(() => {
     if (!currentColorScheme) return;
-
+    
     setAppliedColorButtons(defaultAppliedColorButtons);
     setAppliedColorAccent(defaultAppliedColorAccent);
   }, [
@@ -286,6 +307,8 @@ const Appearance = (props) => {
 
       setPreviewAccent(accent);
       setSelectThemeId(id);
+      saveToSessionStorage("selectColorId", id);
+      saveToSessionStorage("selectColorAccent", accent);
     },
     [appearanceTheme, setPreviewAccent, setSelectThemeId]
   );
@@ -298,11 +321,14 @@ const Appearance = (props) => {
     try {
       await sendAppearanceTheme({ selected: selectThemeId });
       await getAppearanceTheme();
-
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
     }
+    saveToSessionStorage("selectColorId", selectThemeId);
+    saveToSessionStorage("defaultColorId", selectThemeId);
+    saveToSessionStorage("selectColorAccent", previewAccent);
+    saveToSessionStorage("defaultColorAccent", previewAccent);
   }, [
     selectThemeId,
     setIsDisabledSaveButton,
@@ -335,6 +361,9 @@ const Appearance = (props) => {
         setSelectThemeId(appearanceTheme[0].id);
         setPreviewAccent(appearanceTheme[0].main.accent);
       }
+
+      saveToSessionStorage("selectColorId", appearanceTheme[0].id);
+      saveToSessionStorage("selectColorAccent", appearanceTheme[0].main.accent);
 
       onCloseDialogDelete();
 

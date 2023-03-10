@@ -375,6 +375,7 @@ class SsoFormStore {
       idpSettings,
       idpCertificates,
       idpCertificateAdvanced,
+      uploadXmlUrl,
       spLoginLabel,
       spCertificates,
       spCertificateAdvanced,
@@ -425,7 +426,10 @@ class SsoFormStore {
     this.idpDecryptAlgorithm = decryptAlgorithm;
     this.ipdDecryptAssertions = decryptAssertions;
 
-    this.spLoginLabel = spLoginLabel;
+    this.spLoginLabel = spLoginLabel || "";
+    this.uploadXmlUrl = uploadXmlUrl || "";
+
+    this.serviceProviderSettings = false;
 
     //spCertificates
     this.spCertificates = [...spCertificates];
