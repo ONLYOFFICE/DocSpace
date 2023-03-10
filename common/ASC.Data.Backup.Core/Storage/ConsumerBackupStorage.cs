@@ -32,7 +32,6 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
     private IDataStore _store;
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly TempPath _tempPath;
-    private readonly ILogger<ConsumerBackupStorage> _logger;
     private readonly SetupInfo _setupInfo;
     private readonly StorageFactory _storageFactory;
 
@@ -43,13 +42,11 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
     public ConsumerBackupStorage(
         StorageSettingsHelper storageSettingsHelper,
         TempPath tempPath,
-        ILogger<ConsumerBackupStorage> logger,
         SetupInfo setupInfo,
         StorageFactory storageFactory)
     {
         _storageSettingsHelper = storageSettingsHelper;
         _tempPath = tempPath;
-        _logger = logger;
         _setupInfo = setupInfo;
         _storageFactory = storageFactory;
     }
@@ -58,14 +55,14 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
     {
         var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
         _store = _storageSettingsHelper.DataStore(settings);
-        _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
+        _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 
     public void Init(int tenant)
     {
         _isTemporary = true;
         _store = _storageFactory.GetStorage(tenant, "backup");
-        _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
+        _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 
     public async Task<string> Upload(string storageBasePath, string localPath, Guid userId)
