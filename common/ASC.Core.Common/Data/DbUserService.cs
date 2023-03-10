@@ -304,7 +304,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
 
@@ -332,7 +332,8 @@ public class EFUserService : IUserService
             }
 
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void RemoveUser(int tenant, Guid id)
@@ -347,7 +348,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             await userDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id).ExecuteDeleteAsync();
@@ -380,7 +381,8 @@ public class EFUserService : IUserService
             }
 
            await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
@@ -395,7 +397,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             var userGroups = userDbContext.UserGroups.Where(r => r.Tenant == tenant && r.Userid == userId && r.UserGroupId == groupId && r.RefType == refType);
@@ -415,7 +417,8 @@ public class EFUserService : IUserService
             await userDbContext.SaveChangesAsync();
 
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public Group SaveGroup(int tenant, Group group)
@@ -468,7 +471,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await userDbContext.Database.BeginTransactionAsync();
             var any = GetUserQuery(userDbContext, tenant)
                 .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
@@ -489,7 +492,8 @@ public class EFUserService : IUserService
             await userDbContext.AddOrUpdateAsync(r => userDbContext.Users, _mapper.Map<UserInfo, User>(user));
             await userDbContext.SaveChangesAsync();
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
 
         return user;
     }
@@ -506,6 +510,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             var user = await GetUserQuery(userDbContext, tenant).FirstOrDefaultAsync(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
@@ -517,9 +522,8 @@ public class EFUserService : IUserService
 
             await userDbContext.SaveChangesAsync();
             await tr.CommitAsync();
-        });
-
-
+        }).GetAwaiter()
+          .GetResult();
 
         return userGroupRef;
     }
@@ -548,7 +552,7 @@ public class EFUserService : IUserService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             var userPhoto = await userDbContext.Photos.FirstOrDefaultAsync(r => r.UserId == id && r.Tenant == tenant);
@@ -578,7 +582,8 @@ public class EFUserService : IUserService
 
             await userDbContext.SaveChangesAsync();
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant)

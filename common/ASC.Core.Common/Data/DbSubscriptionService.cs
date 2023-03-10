@@ -177,7 +177,7 @@ public class DbSubscriptionService : ISubscriptionService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
             var q = userDbContext.Subscriptions
                 .Where(r => r.Tenant == tenant)
@@ -197,7 +197,8 @@ public class DbSubscriptionService : ISubscriptionService
             }
 
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult(); 
     }
 
 
@@ -255,7 +256,7 @@ public class DbSubscriptionService : ISubscriptionService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             if (m.Methods == null || m.Methods.Length == 0)
@@ -289,7 +290,8 @@ public class DbSubscriptionService : ISubscriptionService
             await userDbContext.SaveChangesAsync();
             
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
 

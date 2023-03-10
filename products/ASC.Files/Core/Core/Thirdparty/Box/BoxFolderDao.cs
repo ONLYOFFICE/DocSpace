@@ -95,7 +95,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
             rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)

@@ -74,7 +74,7 @@ class DbQuotaService : IQuotaService
 
         strategy.Execute(async () =>
         {
-            using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var coreDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await coreDbContext.Database.BeginTransactionAsync();
 
             await coreDbContext.Quotas
@@ -82,7 +82,8 @@ class DbQuotaService : IQuotaService
                                .ExecuteDeleteAsync();
 
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
 
@@ -91,35 +92,19 @@ class DbQuotaService : IQuotaService
         ArgumentNullException.ThrowIfNull(row);
 
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = coreDbContext.Database.CreateExecutionStrategy();
+        var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+        dbTenantQuotaRow.UserId = row.UserId;
 
-        strategy.Execute(async () =>
+        if (exchange)
         {
-            using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
-            using var tx = await coreDbContext.Database.BeginTransactionAsync();
-
-            await AddQuota(coreDbContext, row.UserId);
-
-            await tx.CommitAsync();
-        });
-
-        async Task AddQuota(CoreDbContext coreDbContext, Guid userId)
+            coreDbContext.QuotaRows
+                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                .ExecuteUpdate(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
+        }
+        else
         {
-            var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
-            dbTenantQuotaRow.UserId = userId;
-
-            if (exchange)
-            {
-                await coreDbContext.QuotaRows
-                    .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
-                    .ExecuteUpdateAsync(x => x.SetProperty(p=> p.Counter, p => (p.Counter + row.Counter)));
-            }
-            else
-            {
-                await coreDbContext.AddOrUpdateAsync(r => r.QuotaRows, dbTenantQuotaRow);
-                await coreDbContext.SaveChangesAsync();
-            }
-
+            coreDbContext.AddOrUpdate(coreDbContext.QuotaRows, dbTenantQuotaRow);
+            coreDbContext.SaveChanges();
         }
     }
 

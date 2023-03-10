@@ -137,7 +137,7 @@ public class StatisticManager
 
         strategy.Execute(async () =>
         {
-            using var webstudioDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var webstudioDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await webstudioDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
             foreach (var v in visits)
@@ -163,6 +163,7 @@ public class StatisticManager
             }
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 }

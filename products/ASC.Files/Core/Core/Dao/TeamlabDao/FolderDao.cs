@@ -184,7 +184,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var searchByTags = tags != null && tags.Any() && !withoutTags;
         var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, r => parentsIds.Contains(r.ParentId)).AsNoTracking();
 
         q = !withSubfolders ? BuildRoomsQuery(filesDbContext, q, filter, tags, subjectId, searchByTags, withoutTags, searchByTypes, false, excludeSubject, subjectFilter, subjectEntriesIds)
@@ -214,7 +214,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var searchByTags = tags != null && tags.Any() && !withoutTags;
         var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, f => roomsIds.Contains(f.Id) || (f.CreateBy == _authContext.CurrentAccount.ID && parentsIds.Contains(f.ParentId))).AsNoTracking();
 
         q = !withSubfolders ? BuildRoomsQuery(filesDbContext, q, filter, tags, subjectId, searchByTags, withoutTags, searchByTypes, false, excludeSubject, subjectFilter, subjectEntriesIds)

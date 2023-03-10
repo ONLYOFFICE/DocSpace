@@ -81,8 +81,8 @@ class DbAzService : IAzService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
-            using var tx = userDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = await userDbContext.Database.BeginTransactionAsync();
 
             if (!await ExistEscapeRecord(r))
             {
@@ -94,8 +94,9 @@ class DbAzService : IAzService
                 await DeleteRecord(r);
             }
 
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult(); 
 
         return r;
     }
@@ -109,7 +110,7 @@ class DbAzService : IAzService
 
         strategy.Execute(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await userDbContext.Database.BeginTransactionAsync();
 
             if (await ExistEscapeRecord(r))
@@ -123,7 +124,8 @@ class DbAzService : IAzService
             }
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult(); 
 
     }
 
@@ -142,7 +144,7 @@ class DbAzService : IAzService
 
     private async Task DeleteRecord(AzRecord r)
     {
-        using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
 
         var record = await userDbContext.Acl
             .Where(a => a.Tenant == r.Tenant)
@@ -161,7 +163,7 @@ class DbAzService : IAzService
 
     private async Task InsertRecord(AzRecord r)
     {
-        using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var userDbContext = _dbContextFactory.CreateDbContext();
 
         await userDbContext.AddOrUpdateAsync(r => userDbContext.Acl, _mapper.Map<AzRecord, Acl>(r));
         
