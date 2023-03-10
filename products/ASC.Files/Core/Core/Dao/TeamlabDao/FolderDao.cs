@@ -1500,6 +1500,59 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return AsyncEnumerable.Empty<Folder<int>>();
     }
 
+    public async Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry)
+    {
+        var rootFolderType = fileEntry.RootFolderType;
+
+        if (rootFolderType != FolderType.VirtualRooms)
+        {
+            return (-1,"");
+        }
+
+        var rootFolderId = Convert.ToInt32(fileEntry.RootId);
+        var entryId = Convert.ToInt32(fileEntry.Id);
+
+        if (rootFolderId == entryId)
+        {
+            return (-1, "");
+        }
+
+        var parentId = Convert.ToInt32(fileEntry.ParentId);
+
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        if (rootFolderId == parentId)
+        {
+            return (entryId, fileEntry.Title);
+        }
+
+        int folderId;
+        var entryType = fileEntry.FileEntryType;
+
+        if (entryType == FileEntryType.File)
+        {
+            folderId = parentId;
+        }
+        else
+        {
+            folderId = entryId;
+        }
+
+        var parentFolders = await filesDbContext.Tree
+            .Join(filesDbContext.Folders, r => r.ParentId, s => s.Id, (t, f) => new { Tree = t, Folders = f })
+            .Where(r => r.Tree.FolderId == folderId)
+            .OrderByDescending(r => r.Tree.Level)
+            .Select(r => new { r.Tree.ParentId, r.Folders.Title})
+            .ToListAsync();
+
+        if(parentFolders.Count() > 1)
+        {
+            return (parentFolders[1].ParentId, parentFolders[1].Title);
+        }
+
+        return (parentFolders[0].ParentId, parentFolders[0].Title);
+    }
+
     private async IAsyncEnumerable<int> GetTenantsWithFeeds(DateTime fromTime, Expression<Func<DbFolder, bool>> filter, bool includeSecurity)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();

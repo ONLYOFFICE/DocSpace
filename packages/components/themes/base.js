@@ -576,6 +576,7 @@ const Base = {
     overflow: "hidden",
     color: white,
     backgroundColor: orangeMain,
+    disableBackgroundColor: "#A3A9AE",
   },
 
   scrollbar: {
@@ -3088,6 +3089,9 @@ const Base = {
     themePreview: {
       descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
+    },
+    notifications: {
+      textDescriptionColor: "#A3A9AE",
     },
   },
 

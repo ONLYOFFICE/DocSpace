@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const { setBackupCodes, getTfaType, getBackupCodes } = props;
+  const { setBackupCodes, getTfaType, getBackupCodes, history, t } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
 
@@ -66,7 +66,7 @@ const SectionBodyContent = (props) => {
         <LoginSettings backupCodesCount={backupCodesCount} />
       )}
       <SocialNetworks />
-      <Subscription />
+      <Subscription history={history} t={t} />
       <InterfaceTheme />
     </Wrapper>
   );
@@ -92,6 +92,7 @@ export default withRouter(
         "ResetApplicationDialog",
         "BackupCodesDialog",
         "DeleteSelfProfileDialog",
+        "Notifications",
       ])(withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />))
     )
   )

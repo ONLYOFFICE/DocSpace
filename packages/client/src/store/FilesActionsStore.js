@@ -28,7 +28,7 @@ import {
   FileStatus,
   FolderType,
 } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
@@ -39,6 +39,7 @@ import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
 import { isTablet } from "@docspace/components/utils/device";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
+import { muteRoomNotification } from "@docspace/common/api/settings";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
@@ -935,6 +936,35 @@ class FilesActionStore {
       default:
         return;
     }
+  };
+
+  setMuteAction = (action, item, t) => {
+    const { id, new: newCount, rootFolderId } = item;
+    const { treeFolders } = this.treeFoldersStore;
+    const { folders, updateRoomMute } = this.filesStore;
+
+    const muteStatus = action === "mute" ? true : false;
+
+    const folderIndex = id && folders.findIndex((x) => x.id === id);
+    if (folderIndex) updateRoomMute(folderIndex, muteStatus);
+
+    const treeIndex = treeFolders.findIndex((x) => x.id === rootFolderId);
+    const count = treeFolders[treeIndex].newItems;
+    if (treeIndex) {
+      if (muteStatus) {
+        treeFolders[treeIndex].newItems = newCount >= 0 ? count - newCount : 0;
+      } else treeFolders[treeIndex].newItems = count + newCount;
+    }
+
+    muteRoomNotification(id, muteStatus)
+      .then(() => toastr.success(t("RoomNotificationsEnabled")))
+      .catch((e) => toastr.error(e))
+      .finally(() => {
+        Promise.all([
+          this.updateCurrentFolder(null, [id]),
+          this.treeFoldersStore.fetchTreeFolders(),
+        ]);
+      });
   };
 
   setArchiveAction = async (action, folders, t) => {

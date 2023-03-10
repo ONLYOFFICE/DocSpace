@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\common\ASC.IPSecurity\ASC.IPSecurity.csproj" />
     <ProjectReference Include="..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
     <ProjectReference Include="..\..\common\ASC.Notify.Textile\ASC.Notify.Textile.csproj" />
+    <ProjectReference Include="..\..\common\services\ASC.AuditTrail\ASC.AuditTrail.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="PublicResources\WebPatternResource.Designer.cs">

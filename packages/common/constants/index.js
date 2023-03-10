@@ -381,6 +381,17 @@ export const EDITOR_ID = "docspace_editor";
 
 export const wrongPortalNameUrl = `https://www.onlyoffice.com/wrongportalname.aspx`;
 
+/**
+ * Enum for notifications.
+ * @readonly
+ */
+export const NotificationsType = Object.freeze({
+  Badges: 0,
+  RoomsActivity: 1,
+  DailyFeed: 2,
+  UsefulTips: 3,
+});
+
 export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",

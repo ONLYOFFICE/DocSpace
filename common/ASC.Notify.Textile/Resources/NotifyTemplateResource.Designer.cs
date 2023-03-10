@@ -113,9 +113,8 @@ namespace ASC.Notify.Textile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For any purchase questions, email us at &lt;a href=&quot;mailto:sales@onlyoffice.com&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;sales@onlyoffice.com&lt;/a&gt;.
-        ///&lt;br /&gt;In case of technical problems contact our &lt;a href=&quot;https://www.onlyoffice.com/support-contact-form.aspx&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;support team&lt;/a&gt;.
-        ///&lt;br /&gt; &lt;a href=&quot;{0}&quot; style=&quot;color: #7b7b7b;&quot; target=&quot;_blank&quot;&gt;Click here to unsubscribe&lt;/a&gt;
+        ///   Looks up a localized string similar to This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt; DocSpace&lt;/a&gt;.
+        ///&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href=&quot;{1}&quot;  target=&quot;_blank&quot;&gt;Unsubscribe&lt;/a&gt;
         ///&lt;br /&gt;.
         /// </summary>
         public static string TextForFooterUnsubsribeDocSpace {
