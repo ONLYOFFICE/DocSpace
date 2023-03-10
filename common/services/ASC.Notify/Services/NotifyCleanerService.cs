@@ -91,7 +91,8 @@ public class NotifyCleanerService : BackgroundService
                 await tx.CommitAsync();
 
                 _logger.InformationClearNotifyMessages(infoCount, queueCount);
-            });
+            }).GetAwaiter()
+              .GetResult();
         }
         catch (ThreadAbortException)
         {

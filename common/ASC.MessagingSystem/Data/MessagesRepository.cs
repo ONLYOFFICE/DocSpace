@@ -190,7 +190,8 @@ public class MessagesRepository : IDisposable
             }
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private int AddLoginEvent(EventMessage message, MessagesContext dbContext)

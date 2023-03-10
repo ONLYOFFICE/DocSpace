@@ -54,7 +54,7 @@ public class IPRestrictionsRepository
 
         strategy.Execute(async () =>
         {
-            using var tenantDbContext =await _dbContextManager.CreateDbContextAsync();
+            using var tenantDbContext = _dbContextManager.CreateDbContext();
             using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
             await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
@@ -71,7 +71,8 @@ public class IPRestrictionsRepository
             await tenantDbContext.SaveChangesAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
 
         return ips.ToList();
     }

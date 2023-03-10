@@ -74,7 +74,8 @@ public class DbWorker
             await dbContext.SaveChangesAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
 
         return 1;
     }
@@ -131,7 +132,8 @@ public class DbWorker
 
                 await dbContext.SaveChangesAsync();
                 await tx.CommitAsync();
-            });
+            }).GetAwaiter()
+              .GetResult(); 
 
             return messages;
         }
@@ -156,7 +158,8 @@ public class DbWorker
 
             await dbContext.SaveChangesAsync();
             await tr.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void SetState(int id, MailSendingState result)
@@ -168,7 +171,7 @@ public class DbWorker
         strategy.Execute(async () =>
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
-            using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
             using var tx = await dbContext.Database.BeginTransactionAsync();
             if (result == MailSendingState.Sended)
             {
@@ -202,6 +205,7 @@ public class DbWorker
             }
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 }

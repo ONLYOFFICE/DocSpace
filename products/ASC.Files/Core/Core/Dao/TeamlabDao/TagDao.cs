@@ -636,7 +636,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         var count = 0;
 
-        await using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
         var mappedId = (await MappingIDAsync(entryId)).ToString();
 
