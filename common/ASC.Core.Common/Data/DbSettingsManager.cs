@@ -272,7 +272,8 @@ public class SettingsManager
                     await webstudioDbContext.SaveChangesAsync();
 
                     await tr.CommitAsync();
-                });
+                }).GetAwaiter()
+                  .GetResult();
             }
             else
             {

@@ -148,7 +148,7 @@ public class AccountLinker
 
         strategy.Execute(async () =>
         {
-            using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+            using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
             using var tr = await accountLinkContext.Database.BeginTransactionAsync();
 
             var accountLinkQuery = accountLinkContext.AccountLinks
@@ -169,9 +169,8 @@ public class AccountLinker
             await accountLinkContext.SaveChangesAsync();
 
             await tr.CommitAsync();
-        });
-
-
+        }).GetAwaiter()
+          .GetResult();
 
         _accountLinkerStorage.RemoveFromCache(obj);
     }

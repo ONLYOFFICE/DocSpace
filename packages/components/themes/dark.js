@@ -569,6 +569,7 @@ const Dark = {
     overflow: "hidden",
     color: black,
     backgroundColor: "#F59931",
+    disableBackgroundColor: "#858585",
   },
 
   scrollbar: {
@@ -3088,6 +3089,9 @@ const Dark = {
       descriptionColor: "#ADADAD",
       border: "1px solid #474747",
     },
+    notifications: {
+      textDescriptionColor: "#858585",
+    },
   },
 
   activeSessions: {
@@ -3126,6 +3130,10 @@ const Dark = {
   },
 
   itemIcon: {
+    borderColor: "#474747",
+  },
+
+  invitePage: {
     borderColor: "#474747",
   },
 };

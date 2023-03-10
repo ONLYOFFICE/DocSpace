@@ -857,26 +857,6 @@ $GreenButton
 
 Пользователь [$__AuthorName]($__AuthorUrl) изменил свой профиль на портале [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Новости портала "${__VirtualRootPath}":"${__VirtualRootPath}" за $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Автор*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Если Вы не хотите получать оповещения о новых событиях на портале "${__VirtualRootPath}":"${__VirtualRootPath}", пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Тестовое письмо для проверки настроек SMTP
 
@@ -1072,9 +1052,6 @@ $GreenButton
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Оповещение об изменении профиля на портале ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Новости Вашего портала за $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Тестовое письмо для проверки настроек SMTP</value>

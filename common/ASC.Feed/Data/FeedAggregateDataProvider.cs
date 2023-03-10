@@ -102,7 +102,7 @@ public class FeedAggregateDataProvider
 
         strategy.Execute(async () =>
         {
-            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await feedDbContext.Database.BeginTransactionAsync();
 
             foreach (var f in feeds)
@@ -141,7 +141,8 @@ public class FeedAggregateDataProvider
             await feedDbContext.SaveChangesAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void RemoveFeedAggregate(DateTime fromTime)
@@ -151,14 +152,15 @@ public class FeedAggregateDataProvider
 
         strategy.Execute(async () =>
         {
-            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
             await feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDeleteAsync();
             await feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDeleteAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public List<FeedResultItem> GetFeeds(FeedApiFilter filter)
@@ -304,14 +306,15 @@ public class FeedAggregateDataProvider
 
         strategy.Execute(async () =>
         {
-            using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var feedDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
             await feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDeleteAsync();
             await feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDeleteAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private Expression<Func<FeedAggregate, bool>> GetIdSearchExpression(string id, string module, bool withRelated)

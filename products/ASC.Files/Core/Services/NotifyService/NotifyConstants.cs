@@ -37,6 +37,7 @@ public static class NotifyConstants
     public static readonly INotifyAction EventShareEncryptedDocument = new NotifyAction("ShareEncryptedDocument", "share encrypted document");
     public static readonly INotifyAction EventShareFolder = new NotifyAction("ShareFolder", "share folder");
     public static readonly INotifyAction EventEditorMentions = new NotifyAction("EditorMentions", "editor mentions");
+    public static readonly INotifyAction EventRoomRemoved = new NotifyAction("RoomRemoved", "room removed");
 
     #endregion
 
@@ -51,6 +52,8 @@ public static class NotifyConstants
     public static readonly string TagAccessRights = "AccessRights";
     public static readonly string TagMessage = "Message";
     public static readonly string TagMailsCount = "MailsCount";
+    public static readonly string RoomTitle = "RoomTitle";
+    public static readonly string RoomUrl = "RoomURL";
 
     #endregion
 }

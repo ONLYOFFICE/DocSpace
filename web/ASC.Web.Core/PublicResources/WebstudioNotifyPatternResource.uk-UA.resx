@@ -396,26 +396,6 @@ h3.Портальна адреса
 
 ^Якщо ви не бажаєте отримувати сповіщення про оновлення профілю, будь ласка, налаштуйте свої "параметрами підписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Що нового на "${__VirtualRootPath}":"${__VirtualRootPath}" для $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Налаштуйте свої "параметри підписки":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Тестове повідомлення SMTP
 
@@ -495,9 +475,6 @@ h2.$activity.Key
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} повідомлення про зміну профілю порталу</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Що нового на вашому порталі для $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Тестове повідомлення SMTP</value>

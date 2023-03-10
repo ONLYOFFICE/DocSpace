@@ -300,7 +300,7 @@ public class FileHandlerService
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
             var fileDao = _daoFactory.GetFileDao<T>();
-            int version = 0;
+            var version = 0;
             var (readLink, file, linkShare) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (!readLink && file == null)
             {
@@ -357,13 +357,13 @@ public class FileHandlerService
             {
                 if (forView)
                 {
-                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
+                    _ = _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
                 }
                 else
                 {
                     if (version == 0)
                     {
-                        _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+                        _ = _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
                     }
                     else
                     {

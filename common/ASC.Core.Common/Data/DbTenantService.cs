@@ -190,7 +190,7 @@ public class DbTenantService : ITenantService
 
         strategy.Execute(async () =>
         {
-            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
             if (!string.IsNullOrEmpty(tenant.MappedDomain))
@@ -257,7 +257,8 @@ public class DbTenantService : ITenantService
             }
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
 
         //CalculateTenantDomain(t);
         return tenant;
@@ -272,7 +273,7 @@ public class DbTenantService : ITenantService
 
         strategy.Execute(async () =>
         {
-            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
             var alias = await tenantDbContext.Tenants
@@ -297,7 +298,8 @@ public class DbTenantService : ITenantService
             await tenantDbContext.SaveChangesAsync();
 
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult(); 
     }
 
     public IEnumerable<TenantVersion> GetTenantVersions()
@@ -327,7 +329,7 @@ public class DbTenantService : ITenantService
 
         strategy.Execute(async () =>
         {
-            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tenantDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
             if (data == null || data.Length == 0)
@@ -358,7 +360,8 @@ public class DbTenantService : ITenantService
             await tenantDbContext.SaveChangesAsync();
            
             await tx.CommitAsync();
-        });
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private void ValidateDomain(string domain, int tenantId, bool validateCharacters)
