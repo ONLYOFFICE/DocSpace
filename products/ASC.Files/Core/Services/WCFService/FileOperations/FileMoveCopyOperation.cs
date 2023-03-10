@@ -116,6 +116,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
         var fileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
         this[Res] += string.Format("folder_{0}{1}", _daoFolderId, SplitChar);
 
@@ -196,8 +197,13 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
         var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
 
-        needToMark.AddRange(moveOrCopyFoldersTask);
         needToMark.AddRange(moveOrCopyFilesTask);
+
+        foreach (var folder in moveOrCopyFoldersTask)
+        {
+            needToMark.AddRange(await GetFilesAsync(scope, folder));
+            await socketManager.CreateFolderAsync(folder);
+        }
 
         var ntm = needToMark.Distinct();
         foreach (var n in ntm)
@@ -213,9 +219,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
     }
 
-    private async Task<List<FileEntry>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
+    private async Task<List<File<TTo>>> GetFilesAsync<TTo>(IServiceScope scope, Folder<TTo> folder)
     {
-        var needToMark = new List<FileEntry>();
+        var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
+
+        var files = await fileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, withSubfolders: true).ToListAsync();
+
+        return files;
+    }
+
+    private async Task<List<Folder<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents, bool checkPermissions = true)
+    {
+        var needToMark = new List<Folder<TTo>>();
 
         if (folderIds.Count == 0)
         {
@@ -466,17 +481,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
 
 
-                            if (isToFolder && toFolder.FolderType != FolderType.Archive)
+                            if (isToFolder)
                             {
-                                if (isThirdPartyRoom)
-                                {
-                                    needToMark.Add(folder);
-                                }
-                                else
-                                {
-                                    newFolder = await folderDao.GetFolderAsync(newFolderId);
-                                    needToMark.Add(newFolder);
-                                }
+                                newFolder = await folderDao.GetFolderAsync(newFolderId);
+                                needToMark.Add(newFolder);
                             }
 
                             if (ProcessedFolder(folderId))
