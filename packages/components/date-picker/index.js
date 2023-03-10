@@ -291,7 +291,7 @@ class DatePicker extends Component {
   }
 
   renderBody = () => {
-    const { isDisabled, minDate, maxDate, locale, initialDate } = this.props;
+    const { minDate, maxDate, locale, initialDate } = this.props;
     const { selectedDate } = this.state;
     const calendarRef = this.calendarRef;
 
@@ -300,7 +300,6 @@ class DatePicker extends Component {
         locale={locale}
         minDate={minDate}
         maxDate={maxDate}
-        isDisabled={isDisabled}
         initialDate={initialDate}
         selectedDate={selectedDate}
         onChange={this.onChange}
@@ -340,7 +339,7 @@ class DatePicker extends Component {
           iconName={CalendarReactSvgUrl}
           // iconColor="#A3A9AE"
           // hoverColor="#A3A9AE"
-          onIconClick={this.onClick}
+          onIconClick={isDisabled ? () => {} : this.onClick}
           value={value}
           onChange={this.handleChange}
           mask={mask}
