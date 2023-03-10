@@ -144,7 +144,7 @@ export const RegisterContainer = styled.div`
   .line:after {
     content: "";
     flex-grow: 1;
-    background: ${(props) => props.theme.invitePage.borderColor};;
+    background: ${(props) => props.theme.invitePage.borderColor};
     height: 1px;
     font-size: 0px;
     line-height: 0px;
