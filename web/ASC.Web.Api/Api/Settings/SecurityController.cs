@@ -79,6 +79,17 @@ public class SecurityController : BaseSettingsController
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Returns the security settings for the modules specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get the security settings
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="ids">List of module IDs</param>
+    /// <returns>Security settings</returns>
+    /// <path>api/2.0/settings/security</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security")]
     public async IAsyncEnumerable<SecurityDto> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
     {
@@ -113,6 +124,17 @@ public class SecurityController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the availability of the module with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get the module availability
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="id">Module ID</param>
+    /// <returns>Boolean value: true - module is enabled, false - module is disabled</returns>
+    /// <path>api/2.0/settings/security/{id}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/{id}")]
     public bool GetWebItemSecurityInfo(Guid id)
     {
@@ -121,6 +143,16 @@ public class SecurityController : BaseSettingsController
         return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
     }
 
+    /// <summary>
+    /// Returns a list of all the enabled modules.
+    /// </summary>
+    /// <short>
+    /// Get the enabled modules
+    /// </short>
+    /// <category>Security</category>
+    /// <returns>List of enabled modules</returns>
+    /// <path>api/2.0/settings/security/modules</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/modules")]
     public object GetEnabledModules()
     {
@@ -135,6 +167,16 @@ public class SecurityController : BaseSettingsController
         return EnabledModules;
     }
 
+    /// <summary>
+    /// Returns the portal password settings.
+    /// </summary>
+    /// <short>
+    /// Get the password settings
+    /// </short>
+    /// <category>Security</category>
+    /// <returns>Password settings</returns>
+    /// <path>api/2.0/settings/security/password</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/password")]
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
@@ -143,6 +185,17 @@ public class SecurityController : BaseSettingsController
         return _settingsManager.Load<PasswordSettings>();
     }
 
+    /// <summary>
+    /// Sets the portal password settings.
+    /// </summary>
+    /// <short>
+    /// Set the password settings
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="model">Password settings: minimum length, includes uppercase letters, digits and special symbols or not</param>
+    /// <returns>Password settings</returns>
+    /// <path>api/2.0/settings/security/password</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/password")]
     public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto model)
     {
@@ -163,6 +216,17 @@ public class SecurityController : BaseSettingsController
 
     }
 
+    /// <summary>
+    /// Sets the security settings to the module with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Set the module security settings
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="inDto">Module parameters: module ID, enabled or not, list of user/group IDs</param>
+    /// <path>api/2.0/settings/security</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns>Security settings</returns>
     [HttpPut("security")]
     public async Task<IEnumerable<SecurityDto>> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
@@ -200,6 +264,17 @@ public class SecurityController : BaseSettingsController
         return securityInfo;
     }
 
+    /// <summary>
+    /// Sets the access settings to the products with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Set the access settings to products
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="inDto">Module parameters: products with security information</param>
+    /// <path>api/2.0/settings/security/access</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns>Security settings</returns>
     [HttpPut("security/access")]
     public async Task<IEnumerable<SecurityDto>> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
@@ -249,6 +324,17 @@ public class SecurityController : BaseSettingsController
         return await GetWebItemSecurityInfo(itemList.Keys.ToList()).ToListAsync();
     }
 
+    /// <summary>
+    /// Returns a list of all the administrators of the product with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get the product administrators
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="productid">Product ID</param>
+    /// <returns>List of product administrators</returns>
+    /// <path>api/2.0/settings/security/administrator/{productid}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/administrator/{productid}")]
     public async IAsyncEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
@@ -260,6 +346,18 @@ public class SecurityController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Checks if the selected user is an administrator of a product with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Check the product administrator
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="productid">Product ID</param>
+    /// <param name="userid">User ID</param>
+    /// <returns>Object with the user security information</returns>
+    /// <path>api/2.0/settings/security/administrator</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/administrator")]
     public object IsProductAdministrator(Guid productid, Guid userid)
     {
@@ -267,6 +365,17 @@ public class SecurityController : BaseSettingsController
         return new { ProductId = productid, UserId = userid, Administrator = result };
     }
 
+    /// <summary>
+    /// Sets the selected user as an administrator of a product with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Set the product administrator
+    /// </short>
+    /// <category>Security</category>
+    /// <param name="inDto">Security request parameters: product ID, user ID, administrator or not</param>
+    /// <returns>Object with the user security information</returns>
+    /// <path>api/2.0/settings/security/administrator</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/administrator")]
     public async Task<object> SetProductAdministrator(SecurityRequestsDto inDto)
     {
@@ -296,6 +405,17 @@ public class SecurityController : BaseSettingsController
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
     }
 
+    /// <summary>
+    /// Updates the login settings with the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update login settings
+    /// </short>
+    /// <category>Login settings</category>
+    /// <param name="loginSettingsRequestDto">Login settings: maximum number of the user attempts to log in, the time for which the user will be blocked after unsuccessful login attempts, the time to wait for a response from the server</param>
+    /// <returns>Updated login settings</returns>
+    /// <path>api/2.0/settings/security/loginsettings</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/loginSettings")]
     public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
     {
@@ -330,6 +450,16 @@ public class SecurityController : BaseSettingsController
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
 
+    /// <summary>
+    /// Returns the portal login settings.
+    /// </summary>
+    /// <short>
+    /// Get login settings
+    /// </short>
+    /// <category>Login settings</category>
+    /// <returns>Login settings</returns>
+    /// <path>api/2.0/settings/security/loginsettings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("security/loginSettings")]
     public LoginSettingsDto GetLoginSettings()
     {
