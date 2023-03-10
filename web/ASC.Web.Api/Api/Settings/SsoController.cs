@@ -63,6 +63,8 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2")]
     public SsoSettingsV2 GetSsoSettingsV2()
     {
@@ -86,6 +88,8 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2/default</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/default")]
     public SsoSettingsV2 GetDefaultSsoSettingsV2()
     {
@@ -94,13 +98,15 @@ public class SsoController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns the constants of the SSO settings.
+    /// Returns the SSO settings constants.
     /// </summary>
     /// <short>
-    /// Get the constants of the SSO settings
+    /// Get the SSO settings constants
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Constants of the SSO settings</returns>
+    /// <returns>The SSO settings constants</returns>
+    /// <path>api/2.0/settings/ssov2/constants</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/constants")]
     public object GetSsoSettingsV2Constants()
     {
@@ -122,8 +128,10 @@ public class SsoController : BaseSettingsController
     /// Save the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <param name="serializeSettings">Serialized SSO settings</param>
+    /// <param name="model">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("ssov2")]
     public SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
     {
@@ -205,6 +213,8 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("ssov2")]
     public SsoSettingsV2 ResetSsoSettingsV2()
     {
