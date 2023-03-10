@@ -1,41 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
+import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
-import { inject, observer } from "mobx-react";
-
-import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
-
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
 import { combineUrl } from "@docspace/common/utils";
-import AppLoader from "@docspace/common/components/AppLoader";
-import { removeLocalStorage } from "../../utils";
-import config from "../../../../../package.json";
-import ManualBackup from "./backup/manual-backup";
-import AutoBackup from "./backup/auto-backup";
+import { inject, observer } from "mobx-react";
+import AutoBackup from "./auto-backup";
+import ManualBackup from "./manual-backup";
+import config from "PACKAGE_FILE";
+import { removeLocalStorage } from "../../../utils";
 
-const DataManagementWrapper = (props) => {
-  const {
-    helpUrlCreatingBackup,
-    buttonSize,
-    t,
-    history,
-    isNotPaidPeriod,
-    currentColorScheme,
-    toDefault,
-  } = props;
-
-  const [currentTab, setCurrentTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      removeLocalStorage("LocalCopyStorageType");
-      toDefault();
-    };
-  }, []);
-
+const Backup = ({
+  helpUrlCreatingBackup,
+  buttonSize,
+  t,
+  history,
+  isNotPaidPeriod,
+  currentColorScheme,
+}) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -83,15 +66,6 @@ const DataManagementWrapper = (props) => {
     },
   ];
 
-  useEffect(() => {
-    const path = location.pathname;
-
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
-
-    setIsLoading(true);
-  }, []);
-
   const onSelect = (e) => {
     history.push(
       combineUrl(
@@ -102,24 +76,17 @@ const DataManagementWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return <AppLoader />;
-
   return isNotPaidPeriod ? (
     <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
   ) : (
-    <Submenu
-      data={data}
-      startSelect={currentTab}
-      onSelect={(e) => onSelect(e)}
-    />
+    <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
 };
 
-export default inject(({ auth, setup, backup }) => {
-  const { initSettings } = setup;
+export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
-  const { toDefault } = backup;
+
   const {
     helpUrlCreatingBackup,
     isTabletView,
@@ -127,18 +94,12 @@ export default inject(({ auth, setup, backup }) => {
   } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
+
   return {
-    loadBaseInfo: async () => {
-      await initSettings();
-    },
     helpUrlCreatingBackup,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
     toDefault,
   };
-})(
-  withTranslation(["Settings", "Common"])(
-    withRouter(observer(DataManagementWrapper))
-  )
-);
+})(observer(withTranslation(["Settings", "Common"])(Backup)));
