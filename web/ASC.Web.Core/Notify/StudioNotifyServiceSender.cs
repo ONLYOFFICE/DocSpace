@@ -95,6 +95,7 @@ public class StudioNotifyServiceSender
         if (!_coreBaseSettings.Personal)
         {
             _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+            _workContext.RegisterSendMethod(SendRoomsActivity, "0 0 * ? * *"); //every hour
         }
     }
 
@@ -125,7 +126,13 @@ public class StudioNotifyServiceSender
     public void SendMsgWhatsNew(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.DailyFeed);
+    }
+
+    public void SendRoomsActivity(DateTime scheduleDate)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.RoomsActivity);
     }
 }
 

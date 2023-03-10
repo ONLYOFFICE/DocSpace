@@ -8,9 +8,6 @@
   "ProviderSuccessfullyConnected": "Poskytovatel úspěšně připojen",
   "ProviderSuccessfullyDisconnected": "Poskytovatel úspěšně odpojen",
   "ShowBackupCodes": "Zobrazit záložní kódy",
-  "SubscriptionEmailTipsToggleLbl": "E-mailové oznámení s tipy a triky",
-  "SubscriptionTurnOffToast": "Byli jste úspěšně odhlášeni ze seznamu adresátů. <1>Znovu se přihlaste k odběru</1>",
-  "Subscriptions": "Předplatné",
   "SystemTheme": "Použít systémový motiv",
   "TfaLoginSettings": "Nastavení přihlášení",
   "TwoFactorDescription": "Dvoufázové ověřování prostřednictvím aplikace generující kódy bylo správcem povoleno pro všechny uživatele."

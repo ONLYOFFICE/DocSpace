@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
@@ -984,6 +984,15 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             Tenant = -1,
                             Source = "asc.web.studio",
                             Action = "send_whats_new",
+                            Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
+                            Object = "",
+                            Unsubscribed = false
+                        },
+                        new
+                        {
+                            Tenant = -1,
+                            Source = "asc.web.studio",
+                            Action = "rooms_activity",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
                             Object = "",
                             Unsubscribed = false

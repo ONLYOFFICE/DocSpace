@@ -249,6 +249,11 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
+    public Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry)
+    {
+        throw new NotImplementedException();
+    }
+
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
@@ -578,6 +583,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     public Task SetShareAsync(FileShareRecord r)
     {
         return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds)
+    {
+        return AsyncEnumerable.Empty<FileShareRecord>();
     }
 
     public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
