@@ -8,9 +8,6 @@
   "ProviderSuccessfullyConnected": "Sağlayıcı başarıyla bağlandı",
   "ProviderSuccessfullyDisconnected": "Sağlayıcının bağlantısı başarıyla kesildi",
   "ShowBackupCodes": "Yedek kodları göster",
-  "SubscriptionEmailTipsToggleLbl": "İpuçları ve püf noktalarını içeren e-posta bildirimi",
-  "SubscriptionTurnOffToast": "Posta listesinden başarıyla ayrıldınız. <1>Yeniden abone olun</1>",
-  "Subscriptions": "Abonelikler",
   "SystemTheme": "Sistem temasını kullan",
   "TfaLoginSettings": "Giriş ayarları",
   "TwoFactorDescription": "Tüm kullanıcılar için kod üreten bir uygulama aracılığıyla iki faktörlü kimlik doğrulama yönetici tarafından etkinleştirildi."

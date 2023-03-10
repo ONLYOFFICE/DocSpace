@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Web.Core;
 
 [WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
@@ -37,4 +38,6 @@ public interface IProduct : IWebItem
     void Init();
 
     void Shutdown();
+
+    Task<IEnumerable<ActivityInfo>> GetAuditEventsAsync(DateTime scheduleDate, Guid userId, Tenant tenant,WhatsNewType whatsNewType);
 }

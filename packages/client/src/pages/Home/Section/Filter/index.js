@@ -1,6 +1,6 @@
 ﻿import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
-import React from "react";
+import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withRouter } from "react-router";
@@ -291,6 +291,37 @@ const SectionFilterContent = ({
       selectedFolderId,
     ]
   );
+
+  const onClearFilter = useCallback(() => {
+    if (isRooms) {
+      const newFilter = roomsFilter.clone();
+      newFilter.type = null;
+      newFilter.page = 0;
+      newFilter.filterValue = "";
+
+      fetchRooms(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
+    } else {
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.filterValue = "";
+
+      setIsLoading(true);
+
+      fetchFiles(selectedFolderId, newFilter).finally(() => {
+        setIsLoading(false);
+      });
+    }
+  }, [
+    isRooms,
+    setIsLoading,
+    fetchFiles,
+    fetchRooms,
+    selectedFolderId,
+    filter,
+    roomsFilter,
+  ]);
 
   const onSearch = React.useCallback(
     (data = "") => {
@@ -1043,7 +1074,7 @@ const SectionFilterContent = ({
     const modifiedDate = {
       id: "sort-by_modified",
       key: "DateAndTime",
-      label: t("ByLastModified"),
+      label: t("Common:LastModifiedDate"),
       default: true,
     };
     const room = {
@@ -1061,7 +1092,7 @@ const SectionFilterContent = ({
     const creationDate = {
       id: "sort-by_created",
       key: "DateAndTimeCreation",
-      label: t("ByCreation"),
+      label: t("InfoPanel:CreationDate"),
       default: true,
     };
     const owner = {
@@ -1420,6 +1451,7 @@ const SectionFilterContent = ({
       onChangeViewAs={onChangeViewAs}
       getViewSettingsData={getViewSettingsData}
       onSearch={onSearch}
+      onClearFilter={onClearFilter}
       getSelectedInputValue={getSelectedInputValue}
       filterHeader={t("Common:AdvancedFilter")}
       placeholder={t("Common:Search")}
@@ -1431,6 +1463,7 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      sortByTitle={t("Common:SortBy")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
       onSortButtonClick={onSortButtonClick}
@@ -1523,9 +1556,13 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Files", "Settings", "Common", "Translations"])(
-        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
-      )
+      withTranslation([
+        "Files",
+        "Settings",
+        "Common",
+        "Translations",
+        "InfoPanel",
+      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
     )
   )
 );

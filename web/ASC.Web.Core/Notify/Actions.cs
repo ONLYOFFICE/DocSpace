@@ -145,4 +145,6 @@ public static class Actions
 
     public static readonly INotifyAction SaasAdminUserAppsTipsV1 = new NotifyAction("saas_admin_user_apps_tips_v1");
     public static readonly INotifyAction EnterpriseAdminUserAppsTipsV1 = new NotifyAction("enterprise_admin_user_apps_tips_v1");
-}
+
+    public static readonly INotifyAction RoomsActivity = new NotifyAction("rooms_activity", "rooms activity");
+} 

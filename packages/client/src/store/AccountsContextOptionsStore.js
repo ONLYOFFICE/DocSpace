@@ -187,7 +187,7 @@ class AccountsContextOptionsStore {
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.authStore.infoPanelStore;
 
     const options = [];
 

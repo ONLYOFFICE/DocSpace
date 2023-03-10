@@ -123,6 +123,7 @@ class FilesStore {
   clearSearch = false;
 
   isLoadedEmptyPage = false;
+  isMuteCurrentRoomNotifications = false;
   isPreview = false;
   tempFilter = null;
 
@@ -793,7 +794,11 @@ class FilesStore {
 
     this.files[index].fileStatus = status;
   };
+  updateRoomMute = (index, status) => {
+    if (index < 0) return;
 
+    this.folders[index].mute = status;
+  };
   setFile = (file) => {
     const index = this.files.findIndex((x) => x.id === file.id);
     if (index !== -1) {
@@ -1233,11 +1238,17 @@ class FilesStore {
               roomType,
               rootFolderId,
               rootFolderType,
+              parentId,
+              mute,
             } = folderInfo;
 
             const isRootRoom =
               rootFolderId === id &&
               (rootFolderType === Rooms || rootFolderType === Archive);
+
+            if (parentId === rootFolderId) {
+              this.isMuteCurrentRoomNotifications = mute;
+            }
 
             return {
               id: folderId,
@@ -1774,6 +1785,7 @@ class FilesStore {
       const canEditRoom = item.security?.EditRoom;
 
       const canViewRoomInfo = item.security?.Read;
+      const canMuteRoom = item.security?.Mute;
 
       let roomOptions = [
         "select",
@@ -1785,6 +1797,8 @@ class FilesStore {
         "room-info",
         "pin-room",
         "unpin-room",
+        "mute-room",
+        "unmute-room",
         "separator1",
         "archive-room",
         "unarchive-room",
@@ -1830,6 +1844,17 @@ class FilesStore {
         item.pinned
           ? (roomOptions = this.removeOptions(roomOptions, ["pin-room"]))
           : (roomOptions = this.removeOptions(roomOptions, ["unpin-room"]));
+      }
+
+      if (!canMuteRoom) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "unmute-room",
+          "mute-room",
+        ]);
+      } else {
+        item.mute
+          ? (roomOptions = this.removeOptions(roomOptions, ["mute-room"]))
+          : (roomOptions = this.removeOptions(roomOptions, ["unmute-room"]));
       }
 
       if (!canViewRoomInfo) {
@@ -2508,6 +2533,7 @@ class FilesStore {
         pinned,
         security,
         viewAccessability,
+        mute,
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
@@ -2604,6 +2630,7 @@ class FilesStore {
         logo,
         locked,
         new: item.new,
+        mute,
         parentId,
         pureContentLength,
         rootFolderType,

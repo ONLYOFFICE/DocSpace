@@ -81,16 +81,18 @@ public class NotifyCleanerService : BackgroundService
 
             var strategy = dbContext.Database.CreateExecutionStrategy();
 
-            strategy.Execute(() =>
+            strategy.Execute(async () =>
             {
-                using var tx = dbContext.Database.BeginTransaction();
+                using var tx = await dbContext.Database.BeginTransactionAsync();
 
-                var infoCount = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDelete();
-                var queueCount = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDelete();
-                tx.Commit();
+                var infoCount = await dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDeleteAsync();
+                var queueCount = await dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDeleteAsync();
+
+                await tx.CommitAsync();
 
                 _logger.InformationClearNotifyMessages(infoCount, queueCount);
-            });
+            }).GetAwaiter()
+              .GetResult();
         }
         catch (ThreadAbortException)
         {

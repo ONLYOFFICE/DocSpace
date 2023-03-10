@@ -65,6 +65,11 @@ class NotifyClientImpl : INotifyClient
         SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
     }
 
+    public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, string sendername, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, new[] { recipient }, new[] { sendername }, false, args);
+    }
+
     public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
     {
         var subscriptionSource = _notifySource.GetSubscriptionProvider();

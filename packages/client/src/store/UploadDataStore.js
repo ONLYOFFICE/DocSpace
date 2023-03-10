@@ -1512,14 +1512,6 @@ class UploadDataStore {
     if (!isCopy || destFolderId === this.selectedFolderStore.id) {
       let newFilter;
 
-      if (!withPaging) {
-        removeFiles(fileIds, folderIds);
-        this.clearActiveOperations(fileIds, folderIds);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        this.dialogsStore.setIsFolderActions(false);
-        return;
-      }
-
       if (isEmptyLastPageAfterOperation()) {
         newFilter = resetFilterPage();
       }

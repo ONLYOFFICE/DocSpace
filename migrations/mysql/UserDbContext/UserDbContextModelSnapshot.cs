@@ -1009,6 +1009,15 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
+                            Source = "asc.web.studio",
+                            Action = "rooms_activity",
+                            Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
+                            Object = "",
+                            Unsubscribed = false
+                        },
+                        new
+                        {
+                            Tenant = -1,
                             Source = "6504977c-75af-4691-9099-084d3ddeea04",
                             Action = "new feed",
                             Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",

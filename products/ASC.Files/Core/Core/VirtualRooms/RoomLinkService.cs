@@ -78,17 +78,20 @@ public class RoomLinkService
 
         if (payload != default)
         {
+            options.LinkType = LinkType.InvitationToRoom;
+            
             var record = await GetRecordAsync(payload);
 
-            if (record != null)
+            if (record == null)
             {
-                options.IsCorrect = true;
-                options.LinkType = LinkType.InvitationToRoom;
-                options.RoomId = record.EntryId.ToString();
-                options.Share = record.Share;
-                options.Id = record.Subject;
-                options.EmployeeType = FileSecurity.GetTypeByShare(record.Share);
+                return options;
             }
+
+            options.IsCorrect = true;
+            options.RoomId = record.EntryId.ToString();
+            options.Share = record.Share;
+            options.Id = record.Subject;
+            options.EmployeeType = FileSecurity.GetTypeByShare(record.Share);
         }
         else if (_docSpaceLinksHelper.ValidateEmailLink(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
