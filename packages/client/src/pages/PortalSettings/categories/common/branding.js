@@ -15,6 +15,7 @@ import LoaderBrandingDescription from "./sub-components/loaderBrandingDescriptio
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
 import { UnavailableStyles } from "../../utils/commonSettingsStyles";
+import { resetSessionStorage } from "../../utils";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -55,6 +56,14 @@ const StyledComponent = styled.div`
 
 const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
   const [viewDesktop, setViewDesktop] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (!window.location.pathname.includes("customization")) {
+        resetSessionStorage();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     onCheckView();

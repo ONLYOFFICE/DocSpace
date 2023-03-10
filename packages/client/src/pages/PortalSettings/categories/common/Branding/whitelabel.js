@@ -10,7 +10,7 @@ import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import toastr from "@docspace/components/toast/toastr";
-
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
@@ -40,9 +40,15 @@ const WhiteLabel = (props) => {
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  const companyNameFromeSessionStorage = getFromSessionStorage("companyName");
+
   useEffect(() => {
-    if (logoText) {
+    if (!companyNameFromeSessionStorage) {
       setLogoTextWhiteLabel(logoText);
+      saveToSessionStorage("companyName", logoText);
+    } else {
+      setLogoTextWhiteLabel(companyNameFromeSessionStorage);
+      saveToSessionStorage("companyName", companyNameFromeSessionStorage);
     }
   }, [logoText]);
 
@@ -61,6 +67,7 @@ const WhiteLabel = (props) => {
   const onChangeCompanyName = (e) => {
     const value = e.target.value;
     setLogoTextWhiteLabel(value);
+    saveToSessionStorage("companyName", value);
   };
 
   const onUseTextAsLogo = () => {
