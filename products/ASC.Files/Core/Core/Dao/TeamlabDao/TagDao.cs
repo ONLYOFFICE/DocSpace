@@ -617,6 +617,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         await strategy.ExecuteAsync(async () =>
         {
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             var toDeleteTags = Query(filesDbContext.Tag)
@@ -642,6 +643,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         await strategy.ExecuteAsync(async () =>
         {
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             count = await Query(filesDbContext.TagLink)
