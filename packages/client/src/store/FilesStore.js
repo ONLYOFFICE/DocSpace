@@ -794,7 +794,11 @@ class FilesStore {
 
     this.files[index].fileStatus = status;
   };
+  updateRoomMute = (index, status) => {
+    if (index < 0) return;
 
+    this.folders[index].mute = status;
+  };
   setFile = (file) => {
     const index = this.files.findIndex((x) => x.id === file.id);
     if (index !== -1) {

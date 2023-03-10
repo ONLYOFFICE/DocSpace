@@ -940,54 +940,30 @@ class FilesActionStore {
   setMuteAction = (action, item, t) => {
     const { id, new: newCount, rootFolderId } = item;
     const { treeFolders } = this.treeFoldersStore;
+    const { folders, updateRoomMute } = this.filesStore;
 
-    switch (action) {
-      case "mute":
-        return muteRoomNotification(id, true)
-          .then(() => {
-            this.updateCurrentFolder(null, [id]);
-          })
-          .then(() => {
-            const foundIndex = treeFolders.findIndex(
-              (x) => x.id === rootFolderId
-            );
+    const muteStatus = action === "mute" ? true : false;
 
-            if (foundIndex == -1) return;
+    const folderIndex = id && folders.findIndex((x) => x.id === id);
+    if (folderIndex) updateRoomMute(folderIndex, muteStatus);
 
-            runInAction(() => {
-              const count = treeFolders[foundIndex].newItems;
-
-              treeFolders[foundIndex].newItems =
-                newCount >= 0 ? count - newCount : 0;
-
-              this.treeFoldersStore.fetchTreeFolders();
-            });
-          })
-          .then(() => toastr.success(t("RoomNotificationsDisabled")))
-          .catch((e) => toastr.error(e));
-      case "unmute":
-        return muteRoomNotification(id, false)
-          .then(() => {
-            this.updateCurrentFolder(null, [id]);
-          })
-          .then(() => {
-            const foundIndex = treeFolders.findIndex(
-              (x) => x.id === rootFolderId
-            );
-
-            if (foundIndex == -1) return;
-
-            runInAction(() => {
-              const count = treeFolders[foundIndex].newItems;
-
-              treeFolders[foundIndex].newItems = count + newCount;
-
-              this.treeFoldersStore.fetchTreeFolders();
-            });
-          })
-          .then(() => toastr.success(t("RoomNotificationsEnabled")))
-          .catch((e) => toastr.error(e));
+    const treeIndex = treeFolders.findIndex((x) => x.id === rootFolderId);
+    const count = treeFolders[treeIndex].newItems;
+    if (treeIndex) {
+      if (muteStatus) {
+        treeFolders[treeIndex].newItems = newCount >= 0 ? count - newCount : 0;
+      } else treeFolders[treeIndex].newItems = count + newCount;
     }
+
+    muteRoomNotification(id, muteStatus)
+      .then(() => toastr.success(t("RoomNotificationsEnabled")))
+      .catch((e) => toastr.error(e))
+      .finally(() => {
+        Promise.all([
+          this.updateCurrentFolder(null, [id]),
+          this.treeFoldersStore.fetchTreeFolders(),
+        ]);
+      });
   };
 
   setArchiveAction = async (action, folders, t) => {
