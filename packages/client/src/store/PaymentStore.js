@@ -114,17 +114,13 @@ class PaymentStore {
       toastr.error(error);
     }
 
-    if (!this.isAlreadyPaid) {
-      this.isInitPaymentPage = true;
-      return;
-    }
-
     try {
       if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
-      this.isInitPaymentPage = true;
     } catch (e) {
       console.error(e);
     }
+
+    this.isInitPaymentPage = true;
   };
 
   getSettingsPayment = async () => {

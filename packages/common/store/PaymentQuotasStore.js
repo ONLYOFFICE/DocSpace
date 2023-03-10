@@ -42,11 +42,7 @@ class PaymentQuotasStore {
     return this.portalPaymentQuotas?.title;
   }
 
-  setReplacingValuesInTranslation = (t) => {
-    this.replaceTotalSizeValue(t);
-  };
-
-  replaceTotalSizeValue = (t) => {
+  replaceTotalSizeValueInTranslation = (t) => {
     const totalSizeObj = this.portalPaymentQuotasFeatures.find(
       (el) => el.id === TOTAL_SIZE
     );
