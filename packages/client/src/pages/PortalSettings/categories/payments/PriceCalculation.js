@@ -77,15 +77,6 @@ const PriceCalculation = ({
   useEffect(async () => {
     initializeInfo();
 
-    if (isAlreadyPaid) return;
-
-    try {
-      const link = await getPaymentLink(managersCount, source?.token, backUrl);
-      setPaymentLink(link);
-    } catch (e) {
-      toastr.error(t("ErrorNotification"));
-    }
-
     return () => {
       timeout && clearTimeout(timeout);
       timeout = null;
@@ -110,7 +101,7 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await getPaymentLink(value, source.token, backUrl)
+      await getPaymentLink(value, backUrl, source.token)
         .then((link) => {
           setPaymentLink(link);
           setIsLoading(false);

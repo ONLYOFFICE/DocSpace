@@ -34,8 +34,13 @@ const ArticlePaymentAlert = ({
 }) => {
   const { t, ready } = useTranslation("Payments");
 
-  useEffect(() => {
-    isFreeTariff && setPortalPaymentQuotas();
+  useEffect(async () => {
+    if (isFreeTariff)
+      try {
+        await setPortalPaymentQuotas();
+      } catch (e) {
+        console.error(e);
+      }
   }, []);
 
   const onClick = () => {

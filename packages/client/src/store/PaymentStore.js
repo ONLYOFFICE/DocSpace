@@ -9,9 +9,10 @@ import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
 import moment from "moment";
 import { getUserByEmail } from "@docspace/common/api/people";
+import { getPaymentLink } from "@docspace/common/api/portal";
 
 class PaymentStore {
-  salesEmail = "sales@onlyoffice.com";
+  salesEmail = "";
   helpUrl = "https://helpdesk.onlyoffice.com";
   buyUrl =
     "https://www.onlyoffice.com/enterprise-edition.aspx?type=buyenterprise";
@@ -91,20 +92,16 @@ class PaymentStore {
   init = async () => {
     if (this.isInitPaymentPage) return;
 
-    const {
-      currentQuotaStore,
-      currentTariffStatusStore,
-      paymentQuotasStore,
-    } = authStore;
+    const { currentTariffStatusStore, paymentQuotasStore } = authStore;
     const { customerId } = currentTariffStatusStore;
     const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
-    const { setPortalQuota } = currentQuotaStore;
 
-    const requests = [this.getSettingsPayment(), setPortalQuota()];
+    const requests = [this.getSettingsPayment()];
 
     if (!isLoaded) requests.push(setPortalPaymentQuotas());
 
     if (this.isAlreadyPaid) requests.push(this.setPaymentAccount());
+    if (!this.isAlreadyPaid) requests.push(this.getPaymentLink());
 
     try {
       await Promise.all(requests);
@@ -119,41 +116,56 @@ class PaymentStore {
 
     try {
       if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
-      this.isInitPaymentPage = true;
+    } catch (e) {
+      console.error(e);
+    }
+
+    this.isInitPaymentPage = true;
+  };
+
+  getPaymentLink = async () => {
+    const backUrl = window.location.origin;
+
+    try {
+      const link = await getPaymentLink(this.managersCount, backUrl);
+
+      if (!link) return;
+      this.setPaymentLink(link);
     } catch (e) {
       console.error(e);
     }
   };
-
   getSettingsPayment = async () => {
-    const newSettings = await getPaymentSettings();
+    try {
+      const newSettings = await getPaymentSettings();
 
-    if (!newSettings) return;
+      if (!newSettings) return;
 
-    const {
-      buyUrl,
-      salesEmail,
-      currentLicense,
-      standalone: standaloneMode,
-      feedbackAndSupportUrl: helpUrl,
-      max,
-    } = newSettings;
+      const {
+        buyUrl,
+        salesEmail,
+        currentLicense,
+        standalone: standaloneMode,
+        feedbackAndSupportUrl: helpUrl,
+        max,
+      } = newSettings;
 
-    this.buyUrl = buyUrl;
-    this.salesEmail = salesEmail;
-    this.helpUrl = helpUrl;
-    this.standaloneMode = standaloneMode;
-    this.maxAvailableManagersCount = max;
+      this.buyUrl = buyUrl;
+      this.salesEmail = salesEmail;
+      this.helpUrl = helpUrl;
+      this.standaloneMode = standaloneMode;
+      this.maxAvailableManagersCount = max;
 
-    if (currentLicense) {
-      if (currentLicense.date)
-        this.currentLicense.expiresDate = new Date(currentLicense.date);
+      if (currentLicense) {
+        if (currentLicense.date)
+          this.currentLicense.expiresDate = new Date(currentLicense.date);
 
-      if (currentLicense.trial)
-        this.currentLicense.trialMode = currentLicense.trial;
+        if (currentLicense.trial)
+          this.currentLicense.trialMode = currentLicense.trial;
+      }
+    } catch (e) {
+      console.error(e);
     }
-
-    return newSettings;
   };
 
   setPaymentsLicense = async (confirmKey, data) => {
@@ -172,18 +184,14 @@ class PaymentStore {
   };
 
   setPaymentAccount = async () => {
-    try {
-      const res = await api.portal.getPaymentAccount();
+    const res = await api.portal.getPaymentAccount();
 
-      if (res) {
-        if (res.indexOf("error") === -1) {
-          this.accountLink = res;
-        } else {
-          toastr.error(res);
-        }
+    if (res) {
+      if (res.indexOf("error") === -1) {
+        this.accountLink = res;
+      } else {
+        toastr.error(res);
       }
-    } catch (e) {
-      console.error(e);
     }
   };
 
