@@ -42,6 +42,7 @@ import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
+import { getObjectByLocation } from "@docspace/common/utils";
 
 class FilesActionStore {
   authStore;
@@ -1905,12 +1906,12 @@ class FilesActionStore {
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
-    setSelectedFolder(null);
 
-    if (
-      categoryType === CategoryType.SharedRoom ||
-      (categoryType === CategoryType.Archive && parentId !== 0)
-    ) {
+    const urlFilter = getObjectByLocation(location);
+
+    const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
+
+    if (categoryType === CategoryType.SharedRoom || isArchivedRoom) {
       if (isRoom) {
         return this.moveToRoomsPage();
       }
@@ -1920,7 +1921,7 @@ class FilesActionStore {
 
     if (
       categoryType === CategoryType.Shared ||
-      (categoryType === CategoryType.Archive && parentId === 0)
+      categoryType === CategoryType.Archive
     ) {
       return this.moveToRoomsPage();
     }
@@ -1933,10 +1934,12 @@ class FilesActionStore {
     }
 
     if (categoryType === CategoryType.Settings) {
+      setSelectedFolder(null);
       setSelectedNode(["common"]);
     }
 
     if (categoryType === CategoryType.Accounts) {
+      setSelectedFolder(null);
       setSelectedNode(["accounts", "filter"]);
     }
   };
@@ -1970,8 +1973,8 @@ class FilesActionStore {
     let id = this.selectedFolderStore.parentId;
 
     if (!id) {
-      const filterObj = FilesFilter.getDefault();
-      id = filterObj.folder;
+      const urlFilter = getObjectByLocation(location);
+      id = urlFilter.folder;
     }
 
     setIsLoading(true);
