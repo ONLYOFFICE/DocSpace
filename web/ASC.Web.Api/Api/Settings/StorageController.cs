@@ -96,6 +96,14 @@ public class StorageController : BaseSettingsController
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns a list of all the portal storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get storages</short>
+    /// <returns>List of storages</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage")]
     public List<StorageDto> GetAllStorages()
     {
@@ -111,6 +119,14 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Returns the storage progress.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the storage progress</short>
+    /// <returns>Storage progress</returns>
+    /// <path>api/2.0/settings/storage/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("storage/progress")]
     public double GetStorageProgress()
@@ -127,6 +143,15 @@ public class StorageController : BaseSettingsController
 
     public readonly object Locker = new object();
 
+    /// <summary>
+    /// Starts the storage encryption process.
+    /// </summary>
+    /// <short>Start the storage encryption process</short>
+    /// <category>Encryption</category>
+    /// <param name="inDto">Specifies if the users will be notified about the encryption process or not</param>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/encryption/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("encryption/start")]
     public bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
     {
@@ -247,9 +272,13 @@ public class StorageController : BaseSettingsController
     }
 
     /// <summary>
-    /// Get storage encryption settings
+    /// Returns the storage encryption settings.
     /// </summary>
-    /// <returns>EncryptionSettings</returns>
+    /// <short>Get the storage encryption settings</short>
+    /// <category>Encryption</category>
+    /// <returns>Storage encryption settings</returns>
+    /// <path>api/2.0/settings/encryption/settings</path>
+    /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
     [HttpGet("encryption/settings")]
     public EncryptionSettings GetStorageEncryptionSettings()
@@ -286,6 +315,14 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the storage encryption progress.
+    /// </summary>
+    /// <short>Get the storage encryption progress</short>
+    /// <category>Encryption</category>
+    /// <returns>Storage encryption progress</returns>
+    /// <path>api/2.0/settings/encryption/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("encryption/progress")]
     public double? GetStorageEncryptionProgress()
     {
@@ -307,6 +344,15 @@ public class StorageController : BaseSettingsController
         return _encryptionWorker.GetEncryptionProgress();
     }
 
+    /// <summary>
+    /// Updates a storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update a storage</short>
+    /// <param name="inDto">Storage settings: storage name, new storage properties</param>
+    /// <returns>Updated storage</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage")]
     public StorageSettings UpdateStorage(StorageRequestsDto inDto)
     {
@@ -344,6 +390,14 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Resets the storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the storage settings</short>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage")]
     public void ResetStorageToDefault()
     {
@@ -371,6 +425,14 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns a list of all the CDN storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the CDN storages</short>
+    /// <returns>List of the CDN storages</returns>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/cdn")]
     public List<StorageDto> GetAllCdnStorages()
     {
@@ -386,6 +448,15 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Updates the CDN storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update the CDN storage</short>
+    /// <returns>Updated CDN storage</returns>
+    /// <param name="inDto">CDN storage parameters: CDN storage name, new CDN storage properties</param>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage/cdn")]
     public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
@@ -424,6 +495,14 @@ public class StorageController : BaseSettingsController
         return settings;
     }
 
+    /// <summary>
+    /// Resets the CDN storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the CDN storage settings</short>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage/cdn")]
     public void ResetCdnToDefault()
     {
@@ -437,6 +516,14 @@ public class StorageController : BaseSettingsController
         _storageSettingsHelper.Clear(_settingsManager.Load<CdnStorageSettings>());
     }
 
+    /// <summary>
+    /// Returns a list of all the backup storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the backup storages</short>
+    /// <returns>List of the backup storages</returns>
+    /// <path>api/2.0/settings/storage/backup</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/backup")]
     public List<StorageDto> GetAllBackupStorages()
     {
@@ -470,8 +557,10 @@ public class StorageController : BaseSettingsController
     /// Returns a list of all Amazon regions.
     /// </summary>
     /// <category>Storage</category>
-    /// <short>Get all Amazon regions</short>
+    /// <short>Get Amazon regions</short>
     /// <returns>List of the Amazon regions</returns>
+    /// <path>api/2.0/settings/storage/s3/regions</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/s3/regions")]
     public object GetAmazonS3Regions()
     {
