@@ -257,7 +257,8 @@ const PaymentContainer = ({
               <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
                 Grace period activated
                 <strong>
-                  from {{ gracePeriodStartDate }} to {{ gracePeriodEndDate }}
+                  from {{ fromDate: gracePeriodStartDate }} to{" "}
+                  {{ byDate: gracePeriodEndDate }}
                 </strong>
                 ({{ delayDaysCount }})
               </Trans>{" "}
