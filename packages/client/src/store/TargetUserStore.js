@@ -6,8 +6,12 @@ import {
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { setCookie } from "@docspace/common/utils";
-import { changeNotificationSubscription } from "@docspace/common/api/settings";
-
+import {
+  changeNotificationSubscription,
+  getNotificationSubscription,
+} from "@docspace/common/api/settings";
+import toastr from "@docspace/components/toast/toastr";
+const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
 class TargetUserStore {
   peopleStore = null;
   targetUser = null;
@@ -114,7 +118,7 @@ class TargetUserStore {
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 
-  setSubscriptions = async (
+  setSubscriptions = (
     isEnableBadges,
     isEnableRoomsActivity,
     isEnableDailyFeed,
@@ -127,21 +131,33 @@ class TargetUserStore {
   };
 
   changeSubscription = async (notificationType, isEnabled) => {
-    switch (notificationType) {
-      case NotificationsType.Badges:
-        this.badgesSubscription = isEnabled;
-        break;
-      case NotificationsType.DailyFeed:
-        this.dailyFeedSubscriptions = isEnabled;
-        break;
-      case NotificationsType.RoomsActivity:
-        this.roomsActivitySubscription = isEnabled;
-        break;
-      case NotificationsType.UsefulTips:
-        this.usefulTipsSubscription = isEnabled;
-        break;
+    const setNotificationValue = (notificationType, isEnabled) => {
+      switch (notificationType) {
+        case Badges:
+          this.badgesSubscription = isEnabled;
+          break;
+        case DailyFeed:
+          this.dailyFeedSubscriptions = isEnabled;
+          break;
+        case RoomsActivity:
+          this.roomsActivitySubscription = isEnabled;
+          break;
+        case UsefulTips:
+          this.usefulTipsSubscription = isEnabled;
+          break;
+      }
+    };
+
+    setNotificationValue(notificationType, isEnabled);
+
+    try {
+      await changeNotificationSubscription(notificationType, isEnabled);
+    } catch (e) {
+      toastr.error(e);
+      const notification = await getNotificationSubscription(notificationType);
+
+      setNotificationValue(notificationType, notification.isEnabled);
     }
-    await changeNotificationSubscription(notificationType, isEnabled);
   };
 }
 

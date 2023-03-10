@@ -1,32 +1,29 @@
 import { inject, observer } from "mobx-react";
-import { runInAction } from "mobx";
 import React from "react";
 
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 import { NotificationsType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
+
+import { getNotificationSubscription } from "@docspace/common/api/settings";
+
+const { Badges } = NotificationsType;
 const RoomsActionsContainer = ({
   t,
   badgesSubscription,
   changeSubscription,
   fetchTreeFolders,
-  treeFolders,
+  resetTreeItemCount,
   textProps,
   textDescriptionsProps,
 }) => {
   const onChangeBadgeSubscription = async (e) => {
     const checked = e.currentTarget.checked;
+    !checked && resetTreeItemCount();
+
     try {
       await changeSubscription(NotificationsType.Badges, checked);
-
-      runInAction(() => {
-        !checked &&
-          treeFolders.map((item) => {
-            return (item.newItems = 0);
-          });
-      });
-
       await fetchTreeFolders();
     } catch (e) {
       toastr.error(e);
@@ -54,11 +51,11 @@ const RoomsActionsContainer = ({
 
 export default inject(({ peopleStore, treeFoldersStore }) => {
   const { targetUserStore } = peopleStore;
-  const { fetchTreeFolders, treeFolders } = treeFoldersStore;
+  const { fetchTreeFolders, resetTreeItemCount } = treeFoldersStore;
   const { changeSubscription, badgesSubscription } = targetUserStore;
 
   return {
-    treeFolders,
+    resetTreeItemCount,
     fetchTreeFolders,
     changeSubscription,
     badgesSubscription,
