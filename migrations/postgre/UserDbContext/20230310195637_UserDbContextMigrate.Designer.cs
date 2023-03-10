@@ -3,593 +3,593 @@ using System;
 using ASC.Core.Common.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.UserDb
+namespace ASC.Migrations.PostgreSql.Migrations.UserDb
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230310195637_UserDbContextMigrate")]
+    partial class UserDbContextMigrate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "7.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
-                    b.Property<string>("Subject")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("subject")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                    b.Property<Guid>("Subject")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("subject");
 
-                    b.Property<string>("Action")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("action")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                    b.Property<Guid>("Action")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("action");
 
                     b.Property<string>("Object")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(255)")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("object")
-                        .HasDefaultValueSql("''")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("''");
 
                     b.Property<int>("AceType")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("acetype");
 
                     b.HasKey("Tenant", "Subject", "Action", "Object")
-                        .HasName("PRIMARY");
+                        .HasName("core_acl_pkey");
 
-                    b.ToTable("core_acl", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_acl", "onlyoffice");
 
                     b.HasData(
                         new
                         {
                             Tenant = -1,
-                            Subject = "5d5b7260-f7f7-49f1-a1c9-95fbb6a12604",
-                            Action = "ef5e6790-f346-4b6e-b662-722bc28cb0db",
+                            Subject = new Guid("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"),
+                            Action = new Guid("ef5e6790-f346-4b6e-b662-722bc28cb0db"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "5d5b7260-f7f7-49f1-a1c9-95fbb6a12604",
-                            Action = "f11e8f3f-46e6-4e55-90e3-09c22ec565bd",
+                            Subject = new Guid("5d5b7260-f7f7-49f1-a1c9-95fbb6a12604"),
+                            Action = new Guid("f11e8f3f-46e6-4e55-90e3-09c22ec565bd"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "088d5940-a80f-4403-9741-d610718ce95c",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("088d5940-a80f-4403-9741-d610718ce95c"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "08d66144-e1c9-4065-9aa1-aa4bba0a7bc8",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("08d66144-e1c9-4065-9aa1-aa4bba0a7bc8"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "08d75c97-cf3f-494b-90d1-751c941fe2dd",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("08d75c97-cf3f-494b-90d1-751c941fe2dd"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "0d1f72a8-63da-47ea-ae42-0900e4ac72a9",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("0d1f72a8-63da-47ea-ae42-0900e4ac72a9"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "13e30b51-5b4d-40a5-8575-cb561899eeb1",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("13e30b51-5b4d-40a5-8575-cb561899eeb1"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "19f658ae-722b-4cd8-8236-3ad150801d96",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("19f658ae-722b-4cd8-8236-3ad150801d96"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "2c6552b3-b2e0-4a00-b8fd-13c161e337b1",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("2c6552b3-b2e0-4a00-b8fd-13c161e337b1"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "388c29d3-c662-4a61-bf47-fc2f7094224a",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("388c29d3-c662-4a61-bf47-fc2f7094224a"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "40bf31f4-3132-4e76-8d5c-9828a89501a3",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("40bf31f4-3132-4e76-8d5c-9828a89501a3"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "49ae8915-2b30-4348-ab74-b152279364fb",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("49ae8915-2b30-4348-ab74-b152279364fb"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "9018c001-24c2-44bf-a1db-d1121a570e74",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("9018c001-24c2-44bf-a1db-d1121a570e74"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "948ad738-434b-4a88-8e38-7569d332910a",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("948ad738-434b-4a88-8e38-7569d332910a"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "9d75a568-52aa-49d8-ad43-473756cd8903",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("9d75a568-52aa-49d8-ad43-473756cd8903"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "a362fe79-684e-4d43-a599-65bc1f4e167f",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("a362fe79-684e-4d43-a599-65bc1f4e167f"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "c426c349-9ad4-47cd-9b8f-99fc30675951",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("c426c349-9ad4-47cd-9b8f-99fc30675951"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "d11ebcb9-0e6e-45e6-a6d0-99c41d687598",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("d11ebcb9-0e6e-45e6-a6d0-99c41d687598"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "d1f3b53d-d9e2-4259-80e7-d24380978395",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("d1f3b53d-d9e2-4259-80e7-d24380978395"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "d49f4e30-da10-4b39-bc6d-b41ef6e039d3",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("d49f4e30-da10-4b39-bc6d-b41ef6e039d3"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "abef62db-11a8-4673-9d32-ef1d8af19dc0",
-                            Action = "d852b66f-6719-45e1-8657-18f0bb791690",
+                            Subject = new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"),
+                            Action = new Guid("d852b66f-6719-45e1-8657-18f0bb791690"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "e0759a42-47f0-4763-a26a-d5aa665bec35",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "e37239bd-c5b5-4f1e-a9f8-3ceeac209615",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("e37239bd-c5b5-4f1e-a9f8-3ceeac209615"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "fbc37705-a04c-40ad-a68c-ce2f0423f397",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("fbc37705-a04c-40ad-a68c-ce2f0423f397"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "fcac42b8-9386-48eb-a938-d19b3c576912",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("fcac42b8-9386-48eb-a938-d19b3c576912"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "13e30b51-5b4d-40a5-8575-cb561899eeb1",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("13e30b51-5b4d-40a5-8575-cb561899eeb1"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "49ae8915-2b30-4348-ab74-b152279364fb",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("49ae8915-2b30-4348-ab74-b152279364fb"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("63e9f35f-6bb5-4fb1-afaa-e4c2f4dec9bd"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "9018c001-24c2-44bf-a1db-d1121a570e74",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("9018c001-24c2-44bf-a1db-d1121a570e74"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "d1f3b53d-d9e2-4259-80e7-d24380978395",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("d1f3b53d-d9e2-4259-80e7-d24380978395"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "e0759a42-47f0-4763-a26a-d5aa665bec35",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "e37239bd-c5b5-4f1e-a9f8-3ceeac209615",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("e37239bd-c5b5-4f1e-a9f8-3ceeac209615"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "f11e88d7-f185-4372-927c-d88008d2c483",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("f11e88d7-f185-4372-927c-d88008d2c483"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "ba74ca02-873f-43dc-8470-8620c156bc67",
-                            Action = "f11e8f3f-46e6-4e55-90e3-09c22ec565bd",
+                            Subject = new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"),
+                            Action = new Guid("f11e8f3f-46e6-4e55-90e3-09c22ec565bd"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "00e7dfc5-ac49-4fd3-a1d6-98d84e877ac4",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("00e7dfc5-ac49-4fd3-a1d6-98d84e877ac4"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "14be970f-7af5-4590-8e81-ea32b5f7866d",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("14be970f-7af5-4590-8e81-ea32b5f7866d"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "18ecc94d-6afa-4994-8406-aee9dff12ce2",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("18ecc94d-6afa-4994-8406-aee9dff12ce2"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "298530eb-435e-4dc6-a776-9abcd95c70e9",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("298530eb-435e-4dc6-a776-9abcd95c70e9"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "430eaf70-1886-483c-a746-1a18e3e6bb63",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("430eaf70-1886-483c-a746-1a18e3e6bb63"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "557d6503-633b-4490-a14c-6473147ce2b3",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("557d6503-633b-4490-a14c-6473147ce2b3"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "724cbb75-d1c9-451e-bae0-4de0db96b1f7",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("724cbb75-d1c9-451e-bae0-4de0db96b1f7"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "7cb5c0d1-d254-433f-abe3-ff23373ec631",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("7cb5c0d1-d254-433f-abe3-ff23373ec631"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "91b29dcd-9430-4403-b17a-27d09189be88",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("91b29dcd-9430-4403-b17a-27d09189be88"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "a18480a4-6d18-4c71-84fa-789888791f45",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("a18480a4-6d18-4c71-84fa-789888791f45"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "b630d29b-1844-4bda-bbbe-cf5542df3559",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("b630d29b-1844-4bda-bbbe-cf5542df3559"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "c62a9e8d-b24c-4513-90aa-7ff0f8ba38eb",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("c62a9e8d-b24c-4513-90aa-7ff0f8ba38eb"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "d7cdb020-288b-41e5-a857-597347618533",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("d7cdb020-288b-41e5-a857-597347618533"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "662f3db7-9bc8-42cf-84da-2765f563e9b0",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("662f3db7-9bc8-42cf-84da-2765f563e9b0"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "712d9ec3-5d2b-4b13-824f-71f00191dcca",
-                            Action = "e0759a42-47f0-4763-a26a-d5aa665bec35",
+                            Subject = new Guid("712d9ec3-5d2b-4b13-824f-71f00191dcca"),
+                            Action = new Guid("e0759a42-47f0-4763-a26a-d5aa665bec35"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "bba32183-a14d-48ed-9d39-c6b4d8925fbf",
-                            Action = "0d68b142-e20a-446e-a832-0d6b0b65a164",
+                            Subject = new Guid("bba32183-a14d-48ed-9d39-c6b4d8925fbf"),
+                            Action = new Guid("0d68b142-e20a-446e-a832-0d6b0b65a164"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "6f05c382-8bca-4469-9424-c807a98c40d7",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("6f05c382-8bca-4469-9424-c807a98c40d7"),
                             Object = "",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|1e04460243b54d7982f3fd6208a11960",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6743007c6f954d208c88a8601ce5e76d",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|e67be73df9ae4ce18fec1880cb518cb4",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|ea942538e68e49079394035336ee0ba8",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|32d24cb57ece46069c9419216ba42086",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|bf88953e3c434850a3fbb1e43ad53a3e",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|2a9230378b2d487b9a225ac0918acf3f",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|f4d98afdd336433287783c6945c81ea0",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|28b10049dd204f54b986873bc14ccfc7",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|3cfd481b46f24a4ab55cb8c0c9def02c",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|6a598c7491ae437da5f4ad339bd11bb2",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|742cf945cbbc4a5782d61600a12cf8ca",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|853b6eb973ee438d9b098ffeedf36234",
                             AceType = 1
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26",
                             AceType = 0
                         },
                         new
                         {
                             Tenant = -1,
-                            Subject = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e",
-                            Action = "77777777-32ae-425f-99b5-83176061d1ae",
+                            Subject = new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"),
+                            Action = new Guid("77777777-32ae-425f-99b5-83176061d1ae"),
                             Object = "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|37620ae5c40b45ce855a39dd7d76a1fa",
                             AceType = 0
                         });
@@ -597,50 +597,51 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbGroup", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
-                    b.Property<string>("CategoryId")
-                        .HasColumnType("varchar(38)")
+                    b.Property<Guid?>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
                         .HasColumnName("categoryid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("name");
 
-                    b.Property<string>("ParentId")
-                        .HasColumnType("varchar(38)")
+                    b.Property<Guid?>("ParentId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
                         .HasColumnName("parentid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Removed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("boolean")
+                        .HasColumnName("removed");
 
                     b.Property<string>("Sid")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("sid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.HasKey("Id");
@@ -652,47 +653,39 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
                         .HasDatabaseName("parentid");
 
                     b.ToTable("core_group", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbSubscriptionMethod", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.Property<string>("Source")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("source")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("source");
 
                     b.Property<string>("Action")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("action")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("action");
 
                     b.Property<string>("Recipient")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("recipient")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("recipient");
 
                     b.Property<string>("Sender")
                         .IsRequired()
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("sender")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("sender");
 
                     b.HasKey("Tenant", "Source", "Action", "Recipient")
-                        .HasName("PRIMARY");
+                        .HasName("core_subscriptionmethod_pkey");
 
-                    b.ToTable("core_subscriptionmethod", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_subscriptionmethod", "onlyoffice");
 
                     b.HasData(
                         new
@@ -956,45 +949,37 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
             modelBuilder.Entity("ASC.Core.Common.EF.Subscription", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.Property<string>("Source")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("source")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("source");
 
                     b.Property<string>("Action")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("action")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("action");
 
                     b.Property<string>("Recipient")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("recipient")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("recipient");
 
                     b.Property<string>("Object")
-                        .HasColumnType("varchar(128)")
-                        .HasColumnName("object")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("object");
 
                     b.Property<bool>("Unsubscribed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("unsubscribed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("boolean")
+                        .HasColumnName("unsubscribed");
 
                     b.HasKey("Tenant", "Source", "Action", "Recipient", "Object")
-                        .HasName("PRIMARY");
+                        .HasName("core_subscription_pkey");
 
-                    b.ToTable("core_subscription", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_subscription", "onlyoffice");
 
                     b.HasData(
                         new
@@ -1190,166 +1175,165 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
 
             modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<int>("ActivationStatus")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("activation_status")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("activation_status");
 
                     b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("bithdate");
 
                     b.Property<string>("Contacts")
-                        .HasColumnType("varchar(1024)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
                         .HasColumnName("contacts")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("create_on");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("create_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("CultureName")
-                        .HasColumnType("varchar(20)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("culture")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("email")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("firstname")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("firstname");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_modified");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("lastname")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("lastname");
 
                     b.Property<string>("Location")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("location")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("MobilePhone")
-                        .HasColumnType("varchar(255)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("phone")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("MobilePhoneActivation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("phone_activation")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("integer")
+                        .HasColumnName("phone_activation");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("notes")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Removed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("boolean")
+                        .HasColumnName("removed");
 
                     b.Property<bool?>("Sex")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("sex");
 
                     b.Property<string>("Sid")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("sid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("SsoNameId")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("sso_name_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("SsoSessionId")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("sso_session_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("status")
-                        .HasDefaultValueSql("'1'");
+                        .HasDefaultValueSql("1");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.Property<DateTime?>("TerminatedDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("terminateddate");
 
                     b.Property<string>("Title")
-                        .HasColumnType("varchar(64)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("title")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("username")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("username");
 
                     b.Property<DateTime?>("WorkFromDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("workfromdate");
 
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .HasDatabaseName("email");
 
                     b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
+                        .HasDatabaseName("last_modified_core_user");
 
-                    b.HasIndex("Tenant", "UserName")
+                    b.HasIndex("UserName", "Tenant")
                         .HasDatabaseName("username");
 
-                    b.ToTable("core_user", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_user", "onlyoffice");
 
                     b.HasData(
                         new
                         {
-                            Id = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            Id = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             ActivationStatus = 0,
                             CreateDate = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "",
@@ -1368,69 +1352,64 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
             modelBuilder.Entity("ASC.Core.Common.EF.UserDav", b =>
                 {
                     b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("user_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                    b.Property<Guid>("UserId")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
 
                     b.HasKey("TenantId", "UserId")
-                        .HasName("PRIMARY");
+                        .HasName("core_userdav_pkey");
 
-                    b.ToTable("core_userdav", (string)null);
+                    b.ToTable("core_userdav", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
                 {
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
-                    b.Property<string>("Userid")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("userid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                    b.Property<Guid>("Userid")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
-                    b.Property<string>("UserGroupId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("groupid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                    b.Property<Guid>("UserGroupId")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("groupid");
 
                     b.Property<int>("RefType")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ref_type");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<bool>("Removed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("removed")
-                        .HasDefaultValueSql("'0'");
+                        .HasColumnType("boolean")
+                        .HasColumnName("removed");
 
                     b.HasKey("Tenant", "Userid", "UserGroupId", "RefType")
-                        .HasName("PRIMARY");
+                        .HasName("core_usergroup_pkey");
 
                     b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
+                        .HasDatabaseName("last_modified_core_usergroup");
 
-                    b.ToTable("core_usergroup", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_usergroup", "onlyoffice");
 
                     b.HasData(
                         new
                         {
                             Tenant = 1,
-                            Userid = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            UserGroupId = "cd84e66b-b803-40fc-99f9-b2969a54a1de",
+                            Userid = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                            UserGroupId = new Guid("cd84e66b-b803-40fc-99f9-b2969a54a1de"),
                             RefType = 0,
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Removed = false
@@ -1439,73 +1418,69 @@ namespace ASC.Migrations.MySql.Migrations.UserDb
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserPhoto", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("userid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
                     b.Property<byte[]>("Photo")
                         .IsRequired()
-                        .HasColumnType("mediumblob")
+                        .HasColumnType("bytea")
                         .HasColumnName("photo");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.HasKey("UserId")
-                        .HasName("PRIMARY");
+                        .HasName("core_userphoto_pkey");
 
                     b.HasIndex("Tenant")
-                        .HasDatabaseName("tenant");
+                        .HasDatabaseName("tenant_core_userphoto");
 
-                    b.ToTable("core_userphoto", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_userphoto", "onlyoffice");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserSecurity", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("userid")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
                     b.Property<DateTime?>("LastModified")
-                        .IsRequired()
-                        .HasColumnType("timestamp");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("PwdHash")
-                        .HasColumnType("varchar(512)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("pwdhash")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Tenant")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("tenant");
 
                     b.HasKey("UserId")
-                        .HasName("PRIMARY");
+                        .HasName("core_usersecurity_pkey");
 
                     b.HasIndex("PwdHash")
                         .HasDatabaseName("pwdhash");
 
                     b.HasIndex("Tenant")
-                        .HasDatabaseName("tenant");
+                        .HasDatabaseName("tenant_core_usersecurity");
 
-                    b.ToTable("core_usersecurity", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
+                    b.ToTable("core_usersecurity", "onlyoffice");
 
                     b.HasData(
                         new
                         {
-                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            UserId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                             LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                             Tenant = 1

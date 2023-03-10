@@ -52,6 +52,7 @@ public class DbWorker
 
         strategy.Execute(async () =>
         {
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
             using var tx = await dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
             var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
@@ -121,6 +122,7 @@ public class DbWorker
 
             strategy.Execute(async () =>
             {
+                using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
                 using var tx = await dbContext.Database.BeginTransactionAsync();
 
                 var info = await dbContext.NotifyInfo.Where(r => messages.Keys.Any(a => a == r.NotifyId)).ToListAsync();
@@ -148,6 +150,7 @@ public class DbWorker
 
         strategy.Execute(async () =>
         {
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
             var tr = await dbContext.Database.BeginTransactionAsync();
             var info = await dbContext.NotifyInfo.Where(r => r.State == 1).ToListAsync();
 

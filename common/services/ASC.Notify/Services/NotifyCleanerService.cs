@@ -83,6 +83,7 @@ public class NotifyCleanerService : BackgroundService
 
             strategy.Execute(async () =>
             {
+                using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
                 using var tx = await dbContext.Database.BeginTransactionAsync();
 
                 var infoCount = await dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDeleteAsync();
