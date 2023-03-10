@@ -162,13 +162,6 @@ public class BaseCommonLinkUtility
 
             return _serverRootPath = result.Uri.ToString().TrimEnd('/');
         }
-        set
-        {
-            if (value == null)
-            {
-                _serverRootPath = null;
-            }
-        }
     }
 
     public string GetFullAbsolutePath(string virtualPath)
