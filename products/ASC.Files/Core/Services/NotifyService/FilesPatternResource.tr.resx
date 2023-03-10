@@ -97,9 +97,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Belgeler. İmza statüsü değişti</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Belgeler. Belgede bahsedildi.</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Belgeler. E-postalaşma tamamlandı.</value>
   </data>

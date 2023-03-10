@@ -95,9 +95,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Dokumenty. Zmienił się status podpisania.</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Dokumenty. Wymieniono w dokumencie</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Dokumenty. Wiadomości zostały wysłane.</value>
   </data>

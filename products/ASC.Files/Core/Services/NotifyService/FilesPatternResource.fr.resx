@@ -98,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>[OnlyOffice - Documents] Le statut de la signature modifié</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>[OnlyOffice - Documents] Vous avez été mentionné dans un document</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>[OnlyOffice - Documents] Diffusion est terminée. </value>
   </data>

@@ -191,8 +191,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                                 var room = await roomLogoManager.DeleteAsync(folder.Id, checkPermissions);
                                 await socketManager.UpdateFolderAsync(room);
                                 aces = await fileSharing.GetSharedInfoAsync(folder);
-
-
                             }
 
                             await FolderDao.DeleteFolderAsync(folder.Id);

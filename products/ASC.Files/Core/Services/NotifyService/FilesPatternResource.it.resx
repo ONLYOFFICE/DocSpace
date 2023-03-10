@@ -100,9 +100,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Documenti. Lo status della firma è cambiato</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documenti. Menzionato nel documento</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documenti. L'invio è stato completato.</value>
   </data>

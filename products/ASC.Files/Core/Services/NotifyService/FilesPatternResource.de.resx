@@ -98,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Dokumente. Der Signiervorgang-Status wurde geändert</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Dokumente. Sie wurden im Dokument erwähnt.</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Dokumente. Mailing ist abgeschlossen.</value>
   </data>

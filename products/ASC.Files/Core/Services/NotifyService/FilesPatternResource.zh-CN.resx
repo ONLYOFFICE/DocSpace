@@ -102,9 +102,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>文档。 签名状态已更改</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>文档。文档中提及</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文档。 邮件发送已完成。</value>
   </data>

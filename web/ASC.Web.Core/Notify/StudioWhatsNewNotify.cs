@@ -38,7 +38,6 @@ public class StudioWhatsNewNotify
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly AuthManager _authManager;
-    private readonly CommonLinkUtility _commonLinkUtility;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly CoreSettings _coreSettings;
     private readonly NotifyEngineQueue _notifyEngineQueue;
@@ -75,7 +74,6 @@ public class StudioWhatsNewNotify
         UserManager userManager,
         SecurityContext securityContext,
         AuthManager authManager,
-        CommonLinkUtility commonLinkUtility,
         CoreSettings coreSettings,
         NotifyEngineQueue notifyEngineQueue,
         IConfiguration confuguration,
@@ -93,7 +91,6 @@ public class StudioWhatsNewNotify
         _userManager = userManager;
         _securityContext = securityContext;
         _authManager = authManager;
-        _commonLinkUtility = commonLinkUtility;
         _coreSettings = coreSettings;
         _notifyEngineQueue = notifyEngineQueue;
         _confuguration = confuguration;
@@ -175,13 +172,13 @@ public class StudioWhatsNewNotify
                     auditEvents.AddRange(p.GetAuditEventsAsync(scheduleDate, user.Id, tenant, whatsNewType).Result);
                 }
 
-                var userActivities = new List<WhatsNewUserActivity>();
+                var userActivities = new List<string>();
 
                 foreach (var e in auditEvents)
                 {
-                    if (TryConvertToUserActivity(e, out var activity))
+                    if (TryGetUserActivityText(e, out var activityText))
                     {
-                        userActivities.Add(activity);
+                        userActivities.Add(activityText);
                     }
                 }
 
@@ -203,9 +200,9 @@ public class StudioWhatsNewNotify
         }
     }
 
-    private bool TryConvertToUserActivity(ActivityInfo activityInfo, out WhatsNewUserActivity whatsNewUserActivity)
+    private bool TryGetUserActivityText(ActivityInfo activityInfo, out string userActivityText)
     {
-        whatsNewUserActivity = null;
+        userActivityText = null;
         var action = activityInfo.Action;
 
         var user = _userManager.GetUsers(activityInfo.UserId);
@@ -220,130 +217,91 @@ public class StudioWhatsNewNotify
         var roomsTitle = activityInfo.RoomTitle;
         var oldRoomTitle = activityInfo.RoomOldTitle;
 
-        var targetUserName = "";
-        if (activityInfo.TargetUsers != null)
+        var targetUserNames = "";
+
+        if (action == MessageAction.UsersUpdatedType)
+        {
+            var targetUsers = activityInfo.TargetUsers.Select(_userManager.GetUsers);
+            var rawTargetUserNames = targetUsers.Select(r => r.DisplayUserName(_displayUserSettingsHelper));
+            targetUserNames = string.Join(",", rawTargetUserNames);
+        }
+        else if (activityInfo.TargetUsers != null)
         {
             var targetUser = _userManager.GetUsers(activityInfo.TargetUsers.FirstOrDefault());
-            targetUserName = targetUser.DisplayUserName(_displayUserSettingsHelper);
+            targetUserNames = targetUser.DisplayUserName(_displayUserSettingsHelper);
         }
 
 
         if (action == MessageAction.FileCreated)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionFileCreated,
-                userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionFileCreated,
+                userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date);
 
         }
         else if (action == MessageAction.FileUpdatedRevisionComment)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionNewComment,
-                   userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionNewComment,
+                userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.RoomCreated)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionRoomCreated,
-                   userName, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionRoomCreated,
+                userName, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.RoomRenamed)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionRoomRenamed,
-                   userName, oldRoomTitle, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionRoomRenamed,
+                userName, oldRoomTitle, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.RoomArchived)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionRoomArchived,
-                   userName, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionRoomArchived,
+                userName, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.UserCreated)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionUserCreated,
-                   userName, userEmail, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserCreated,
+                userName, userEmail, date);
         }
         else if (action == MessageAction.UserUpdated)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionUserUpdated,
-                   userName, userEmail, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserUpdated,
+                userName, userEmail, date);
         }
         else if (action == MessageAction.FileUploaded)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionFileUploaded,
-                    userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionFileUploaded,
+                userName, fileUrl, fileTitle, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.UserFileUpdated)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionFileEdited,
-                   userName, fileUrl, fileTitle, roomsUrl, roomsTitle)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionFileEdited,
+                userName, fileUrl, fileTitle, roomsUrl, roomsTitle);
         }
         else if (action == MessageAction.RoomCreateUser)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionUserAddedToRoom,
-                   targetUserName, roomsUrl, roomsTitle)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserAddedToRoom,
+                targetUserNames, roomsUrl, roomsTitle);
         }
         else if (action == MessageAction.RoomRemoveUser)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionUserRemovedFromRoom,
-                   targetUserName, roomsUrl, roomsTitle, date)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserRemovedFromRoom,
+                targetUserNames, roomsUrl, roomsTitle, date);
         }
         else if (action == MessageAction.RoomUpdateAccessForUser)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionRoomUpdateAccessForUser,
-                   targetUserName, userRole, roomsUrl, roomsTitle)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionRoomUpdateAccessForUser,
+                targetUserNames, userRole, roomsUrl, roomsTitle);
         }
         else if (action == MessageAction.RoomDeleted)
         {
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionRoomRemoved,
-                    userName, oldRoomTitle)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionRoomRemoved,
+                userName, oldRoomTitle);
         }
-        else if(action == MessageAction.UsersUpdatedType)
+        else if (action == MessageAction.UsersUpdatedType)
         {
-            var targetUsers = activityInfo.TargetUsers.Select(_userManager.GetUsers);
-            var targetUserNames = targetUsers.Select(r => r.DisplayUserName(_displayUserSettingsHelper));
-            var separatedUserNames = string.Join(",", targetUserNames);
-
-            whatsNewUserActivity = new WhatsNewUserActivity()
-            {
-                Action = string.Format(WebstudioNotifyPatternResource.ActionUsersUpdatedType,
-                   userName, separatedUserNames, userRole)
-            };
+            userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUsersUpdatedType,
+                userName, targetUserNames, userRole);
         }
         else
         {
@@ -371,7 +329,7 @@ public class StudioWhatsNewNotify
 
     private bool TimeToSendWhatsNew(DateTime currentTime, WhatsNewType type)
     {
-        if(type == WhatsNewType.RoomsActivity)
+        if (type == WhatsNewType.RoomsActivity)
         {
             return true;
         }
@@ -389,7 +347,7 @@ public class StudioWhatsNewNotify
 
     private static string DateToString(DateTime d, WhatsNewType type, CultureInfo c)
     {
-        if(type == WhatsNewType.DailyFeed)
+        if (type == WhatsNewType.DailyFeed)
         {
             d = d.AddDays(-1);
         }
@@ -399,11 +357,6 @@ public class StudioWhatsNewNotify
         }
 
         return d.ToString(c.TwoLetterISOLanguageName == "ru" ? "d MMMM" : "M", c);
-    }
-
-    class WhatsNewUserActivity
-    {
-        public string Action { get; set; }
     }
 }
 

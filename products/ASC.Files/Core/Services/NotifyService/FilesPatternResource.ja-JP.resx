@@ -104,9 +104,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>文書。署名ステータスが変更されました。</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>文書。文書に記載されました</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文書。メーリングは完了です。</value>
   </data>

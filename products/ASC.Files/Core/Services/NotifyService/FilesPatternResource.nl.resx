@@ -91,9 +91,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Bestanden. Ondertekenings status</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documenten. Vermeld in document</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documenten. Mailing is voltooid.</value>
   </data>

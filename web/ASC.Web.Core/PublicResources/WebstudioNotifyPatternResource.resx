@@ -931,7 +931,7 @@ ONLYOFFICE Team
     <value>h1.Here is what’s new in your DocSpace on $Date
 
 #foreach($activity in $Activities)
-$activity.Action
+$activity
 
 #end</value>
   </data>

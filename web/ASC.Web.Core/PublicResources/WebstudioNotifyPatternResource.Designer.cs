@@ -2117,7 +2117,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to h1.Here is what’s new in your DocSpace on $Date
         ///
         ///#foreach($activity in $Activities)
-        ///$activity.Action
+        ///$activity
         ///
         ///#end.
         /// </summary>

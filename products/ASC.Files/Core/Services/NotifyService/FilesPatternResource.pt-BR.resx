@@ -98,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Documentos. Status da assinatura alterado</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documentos. Mencionado no documento</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documentos. Mala direta está concluída.</value>
   </data>

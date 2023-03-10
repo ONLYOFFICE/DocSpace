@@ -91,9 +91,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Документи. Състоянието на регистрацията се промени</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Документи. Споменава се в документ</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Документи. Изпращането е пълно.</value>
   </data>

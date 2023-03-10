@@ -98,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Документы. Изменен статус подписания</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Документы. Упоминание в документе</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Документы. Рассылка завершена.</value>
   </data>
