@@ -21,8 +21,6 @@ const Row = memo(({ data, index, style }) => {
     : {};
   const newStyle = { ...style, ...separator };
 
-  console.log("Row data", data);
-
   return (
     <DropDownItem
       theme={data.theme}
