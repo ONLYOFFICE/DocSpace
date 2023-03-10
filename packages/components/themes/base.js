@@ -3129,6 +3129,10 @@ const Base = {
   itemIcon: {
     borderColor: grayLightMid,
   },
+
+  invitePage: {
+    borderColor: "#eceef1",
+  },
 };
 
 export default Base;

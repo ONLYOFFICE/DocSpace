@@ -3128,6 +3128,10 @@ const Dark = {
   itemIcon: {
     borderColor: "#474747",
   },
+
+  invitePage: {
+    borderColor: "#474747",
+  },
 };
 
 export default Dark;
