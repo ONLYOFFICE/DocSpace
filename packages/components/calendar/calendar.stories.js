@@ -9,6 +9,7 @@ export default {
     maxDate: { control: "date" },
     minDate: { control: "date" },
     initialDate: { control: "date" },
+    selectedDate: { control: "date" },
     locale: {
       type: "select",
       options: [
