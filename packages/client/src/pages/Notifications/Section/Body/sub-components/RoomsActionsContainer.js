@@ -6,9 +6,6 @@ import ToggleButton from "@docspace/components/toggle-button";
 import { NotificationsType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
-import { getNotificationSubscription } from "@docspace/common/api/settings";
-
-const { Badges } = NotificationsType;
 const RoomsActionsContainer = ({
   t,
   badgesSubscription,
