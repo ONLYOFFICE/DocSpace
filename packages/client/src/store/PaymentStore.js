@@ -110,21 +110,26 @@ class PaymentStore {
       await Promise.all(requests);
       this.setRangeStepByQuota();
       this.setTariffDates();
+
+      if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
       toastr.error(error);
+      return;
     }
 
     try {
       if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
+      this.isInitPaymentPage = true;
     } catch (e) {
       console.error(e);
     }
-
-    this.isInitPaymentPage = true;
   };
 
   getSettingsPayment = async () => {
     const newSettings = await getPaymentSettings();
+
+    if (!newSettings) return;
+
     const {
       buyUrl,
       salesEmail,
