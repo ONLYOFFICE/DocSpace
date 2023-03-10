@@ -92,15 +92,15 @@ class PaymentStore {
     if (this.isInitPaymentPage) return;
 
     const {
-      //currentQuotaStore,
+      currentQuotaStore,
       currentTariffStatusStore,
       paymentQuotasStore,
     } = authStore;
     const { customerId } = currentTariffStatusStore;
     const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
-    //const {setPortalQuota} = currentQuotaStore;
+    const { setPortalQuota } = currentQuotaStore;
 
-    const requests = [this.getSettingsPayment()];
+    const requests = [this.getSettingsPayment(), setPortalQuota()];
 
     if (!isLoaded) requests.push(setPortalPaymentQuotas());
 
