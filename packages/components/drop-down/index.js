@@ -21,6 +21,8 @@ const Row = memo(({ data, index, style }) => {
     : {};
   const newStyle = { ...style, ...separator };
 
+  console.log("Row data", data);
+
   return (
     <DropDownItem
       theme={data.theme}
@@ -252,7 +254,12 @@ class DropDown extends React.PureComponent {
     const { directionX, directionY, width, manualY } = this.state;
 
     let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+    let itemCount = children.length;
+
+    if (!showDisabledItems) {
+      cleanChildren = this.hideDisabledItems();
+      if (cleanChildren) itemCount = cleanChildren.length;
+    }
 
     const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
@@ -282,7 +289,7 @@ class DropDown extends React.PureComponent {
             height={calculatedHeight}
             width={width}
             itemSize={getItemSize}
-            itemCount={children.length}
+            itemCount={itemCount}
             itemData={{ children: cleanChildren, theme: theme }}
             outerElementType={CustomScrollbarsVirtualList}
           >
