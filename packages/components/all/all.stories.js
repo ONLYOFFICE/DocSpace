@@ -14,7 +14,7 @@ import RadioButtonGroup from "../radio-button-group";
 import TextInput from "../text-input";
 import Textarea from "../textarea";
 //import ContextMenuButton from "../context-menu-button";
-import DatePicker from "../date-picker";
+// import DatePicker from "../date-picker";
 import FieldContainer from "../field-container";
 import Heading from "../heading";
 import Link from "../link";
@@ -174,10 +174,9 @@ const Template = (args) => (
   <>
     <div
       style={{
-        display: "grid",
-        gridGap: 15,
-        //gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))"
-        gridTemplateColumns: "repeat(auto-fill, 300px)",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "25px",
       }}
     >
       <div style={{ justifySelf: "center" }}>
@@ -346,7 +345,7 @@ const Template = (args) => (
           </StringValue>
         </div>
 
-        <div style={{ padding: "8px 0" }}>
+        {/* <div style={{ padding: "8px 0" }}>
           <DatePicker
             onChange={(date) => {
               console.log("Selected date", date);
@@ -364,7 +363,7 @@ const Template = (args) => (
               console.log("Selected date", date);
             }}
           />
-        </div>
+        </div> */}
 
         <div style={{ padding: "8px 0" }}>
           <StringValue>
@@ -447,7 +446,7 @@ const Template = (args) => (
           </BooleanValue>
         </div>
       </div>
-      <div style={{ justifySelf: "center", width: "100%" }}>
+      <div style={{ justifySelf: "center" }}>
         <div style={{ padding: "8px 0" }}>
           <Calendar
             onChange={() => {}}
