@@ -189,7 +189,6 @@ const PriceCalculation = ({
           isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
-          isAlreadyPaid={isAlreadyPaid}
         />
       )}
 
@@ -199,7 +198,6 @@ const PriceCalculation = ({
       <ButtonContainer
         isDisabled={isDisabled}
         t={t}
-        isAlreadyPaid={isAlreadyPaid}
         isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
       />
     </StyledBody>
@@ -215,6 +213,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     initializeInfo,
     managersCount,
+    isAlreadyPaid,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -229,6 +228,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    isAlreadyPaid,
     managersCount,
 
     isFreeTariff,

@@ -1,5 +1,5 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -13,12 +13,11 @@ import PriceCalculation from "./PriceCalculation";
 import BenefitsContainer from "./BenefitsContainer";
 import { size, desktop } from "@docspace/components/utils/device";
 import ContactContainer from "./ContactContainer";
-import toastr from "@docspace/components/toast/toastr";
+
 import moment from "moment";
 import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
-import { TariffState } from "@docspace/common/constants";
-import { getUserByEmail } from "@docspace/common/api/people";
+
 import { Consumer } from "@docspace/components/utils/context";
 
 const StyledBody = styled.div`
@@ -86,67 +85,40 @@ const StyledBody = styled.div`
   }
 `;
 
-let paymentTerm,
-  isValidDelayDueDate,
-  fromDate,
-  byDate,
-  delayDaysCount,
-  payerInfo = null,
-  isAlreadyPaid = false;
 const PaymentsPage = ({
-  setPortalPaymentQuotas,
   language,
   isFreeTariff,
   isGracePeriod,
   theme,
-  setPaymentAccount,
   isNotPaidPeriod,
-  getSettingsPayment,
-  setRangeBound,
   payerEmail,
   user,
   isPaidPeriod,
   currencySymbol,
   startValue,
-  dueDate,
-  delayDueDate,
   setReplacingValuesInTranslation,
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
-  setPortalQuota,
-  currentPortalQuota,
-  portalTariffStatus,
   portalPaymentQuotas,
+
+  isLoadedTariffStatus,
+  isLoadedCurrentQuota,
+  isInitPaymentPage,
+
+  gracePeriodEndDate,
+  gracePeriodStartDate,
+  delayDaysCount,
+  init,
+  isValidPaymentDateYear,
+  isAlreadyPaid,
+  paymentDate,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
-
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
-
-  const gracePeriodDays = () => {
-    const fromDateMoment = moment(dueDate);
-    const byDateMoment = moment(delayDueDate);
-
-    fromDate = fromDateMoment.format("LL");
-    byDate = byDateMoment.format("LL");
-
-    delayDaysCount = fromDateMoment.to(byDateMoment, true);
-  };
-
-  const setPortalDates = () => {
-    paymentTerm = moment(
-      isGracePeriod || isNotPaidPeriod ? delayDueDate : dueDate
-    ).format("LL");
-    const paymentTermYear = moment(delayDueDate).year();
-
-    isValidDelayDueDate = paymentTermYear !== 9999;
-
-    isGracePeriod && gracePeriodDays();
-  };
 
   useEffect(() => {
     moment.locale(language);
@@ -158,39 +130,10 @@ const PaymentsPage = ({
   }, [ready, portalPaymentQuotas.title]);
 
   useEffect(() => {
-    (async () => {
-      if (
-        Object.keys(currentPortalQuota).length === 0 ||
-        Object.keys(portalTariffStatus).length === 0
-      )
-        return;
+    if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
 
-      isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
-
-      const requests = [getSettingsPayment(), setPortalQuota()];
-
-      if (!currencySymbol && !startValue)
-        requests.push(setPortalPaymentQuotas());
-
-      if (isAlreadyPaid) requests.push(setPaymentAccount());
-
-      try {
-        await Promise.all(requests);
-        setRangeBound();
-        setPortalDates();
-      } catch (error) {
-        toastr.error(error);
-      }
-
-      try {
-        if (isAlreadyPaid) payerInfo = await getUserByEmail(payerEmail);
-      } catch (e) {
-        console.error(e);
-      }
-
-      setIsInitialLoading(false);
-    })();
-  }, [currentPortalQuota.title, portalTariffStatus.state]);
+    init();
+  }, [isLoadedTariffStatus, isLoadedCurrentQuota]);
 
   const renderTooltip = () => {
     return (
@@ -243,7 +186,7 @@ const PaymentsPage = ({
         color={theme.client.settings.payment.warningColor}
       >
         <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
-          {{ date: paymentTerm }} {{ planName: tariffPlanTitle }}
+          {{ date: paymentDate }} {{ planName: tariffPlanTitle }}
         </Trans>
       </Text>
     );
@@ -305,7 +248,7 @@ const PaymentsPage = ({
           color={theme.client.settings.payment.warningColor}
         >
           <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
-            {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
+            {{ date: paymentDate }} {{ planName: currentTariffPlanTitle }}
           </Trans>
         </Text>
       );
@@ -316,9 +259,9 @@ const PaymentsPage = ({
 
   const isPayer = user.email === payerEmail;
 
-  const isFreeAfterPaidPeriod = isFreeTariff && payerEmail.length !== 0;
+  const isFreeAfterPaidPeriod = isFreeTariff && payerEmail?.length !== 0;
 
-  return isInitialLoading || !ready ? (
+  return !isInitPaymentPage || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
     <Consumer>
@@ -329,17 +272,11 @@ const PaymentsPage = ({
             context.sectionWidth < size.smallTablet && expandArticle
           }
         >
-          {isNotPaidPeriod && isValidDelayDueDate
+          {isNotPaidPeriod && isValidPaymentDateYear
             ? expiredTitleSubscriptionWarning()
             : currentPlanTitle()}
 
-          {isAlreadyPaid && (
-            <PayerInformationContainer
-              payerInfo={payerInfo}
-              isPayer={isPayer}
-              payerEmail={payerEmail}
-            />
-          )}
+          {isAlreadyPaid && <PayerInformationContainer isPayer={isPayer} />}
 
           <CurrentTariffContainer />
 
@@ -350,7 +287,7 @@ const PaymentsPage = ({
               <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
                 Grace period activated
                 <strong>
-                  from {{ fromDate }} to {{ byDate }}
+                  from {{ gracePeriodStartDate }} to {{ gracePeriodEndDate }}
                 </strong>
                 ({{ delayDaysCount }})
               </Trans>{" "}
@@ -368,7 +305,7 @@ const PaymentsPage = ({
               className="payment-info_managers-price"
             >
               <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
-                {{ finalDate: paymentTerm }}
+                {{ finalDate: paymentDate }}
               </Trans>
             </Text>
           )}
@@ -394,7 +331,6 @@ const PaymentsPage = ({
             <PriceCalculation
               t={t}
               isPayer={isPayer}
-              isAlreadyPaid={isAlreadyPaid}
               isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
             />
 
@@ -425,62 +361,66 @@ export default inject(({ auth, payments }) => {
   const {
     isFreeTariff,
     currentTariffPlanTitle,
-    setPortalQuota,
-    currentPortalQuota,
+    isLoaded: isLoadedCurrentQuota,
   } = currentQuotaStore;
   const {
     isNotPaidPeriod,
     isPaidPeriod,
     isGracePeriod,
     customerId,
-    dueDate,
-    delayDueDate,
     portalTariffStatus,
+    isLoaded: isLoadedTariffStatus,
   } = currentTariffStatusStore;
 
   const {
-    setPortalPaymentQuotas,
     planCost,
     setReplacingValuesInTranslation,
     tariffPlanTitle,
     portalPaymentQuotas,
   } = paymentQuotasStore;
-  const { organizationName, theme } = auth.settingsStore;
+
+  const { theme } = auth.settingsStore;
 
   const {
-    tariffsInfo,
-    setPaymentAccount,
-    getSettingsPayment,
-    setRangeBound,
+    isInitPaymentPage,
+    gracePeriodEndDate,
+    gracePeriodStartDate,
+    delayDaysCount,
+    init,
+    isValidPaymentDateYear,
+    isAlreadyPaid,
+    paymentDate,
   } = payments;
 
   const { user } = userStore;
 
   return {
+    paymentDate,
+    isAlreadyPaid,
+    isValidPaymentDateYear,
+    init,
+    gracePeriodEndDate,
+    gracePeriodStartDate,
+    delayDaysCount,
+    isLoadedTariffStatus,
+    isLoadedCurrentQuota,
+    isInitPaymentPage,
+
     expandArticle,
     isFreeTariff,
     tariffPlanTitle,
     language,
-    organizationName,
-    tariffsInfo,
+
     isGracePeriod,
     theme,
-    setPaymentAccount,
     currencySymbol: planCost.currencySymbol,
     startValue: planCost.value,
     isNotPaidPeriod,
-    getSettingsPayment,
-    setRangeBound,
     payerEmail: customerId,
     user,
     isPaidPeriod,
-    setPortalPaymentQuotas,
-    dueDate,
-    delayDueDate,
     setReplacingValuesInTranslation,
     currentTariffPlanTitle,
-    setPortalQuota,
-    currentPortalQuota,
     portalTariffStatus,
     portalPaymentQuotas,
   };

@@ -7,6 +7,8 @@ import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
+import moment from "moment";
+import { getUserByEmail } from "@docspace/common/api/people";
 
 class PaymentStore {
   salesEmail = "sales@onlyoffice.com";
@@ -30,9 +32,100 @@ class PaymentStore {
   stepByQuotaForTotalSize = 107374182400;
   minAvailableTotalSizeValue = 107374182400;
 
+  isInitPaymentPage = false;
+
+  paymentDate = "";
+
+  gracePeriodStartDate = "";
+  gracePeriodEndDate = "";
+  delayDaysCount = "";
+
+  payerInfo = null;
+
   constructor() {
     makeAutoObservable(this);
   }
+
+  get isValidPaymentDateYear() {
+    const { currentTariffStatusStore } = authStore;
+    const { delayDueDate } = currentTariffStatusStore;
+    const paymentTermYear = moment(delayDueDate).year();
+
+    return paymentTermYear !== 9999;
+  }
+
+  get isAlreadyPaid() {
+    const { currentQuotaStore, currentTariffStatusStore } = authStore;
+    const { customerId } = currentTariffStatusStore;
+    const { isFreeTariff } = currentQuotaStore;
+
+    return customerId?.length !== 0 || !isFreeTariff;
+  }
+
+  setTariffDates = () => {
+    const { currentTariffStatusStore } = authStore;
+    const {
+      isGracePeriod,
+      isNotPaidPeriod,
+      delayDueDate,
+      dueDate,
+    } = currentTariffStatusStore;
+
+    const setGracePeriodDays = () => {
+      const fromDateMoment = moment(dueDate);
+      const byDateMoment = moment(delayDueDate);
+
+      this.gracePeriodStartDate = fromDateMoment.format("LL");
+      this.gracePeriodEndDate = byDateMoment.format("LL");
+
+      this.delayDaysCount = fromDateMoment.to(byDateMoment, true);
+    };
+
+    this.paymentDate = moment(
+      isGracePeriod || isNotPaidPeriod ? delayDueDate : dueDate
+    ).format("LL");
+
+    isGracePeriod && setGracePeriodDays();
+  };
+
+  init = async () => {
+    if (this.isInitPaymentPage) return;
+
+    const {
+      //currentQuotaStore,
+      currentTariffStatusStore,
+      paymentQuotasStore,
+    } = authStore;
+    const { customerId } = currentTariffStatusStore;
+    const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
+    //const {setPortalQuota} = currentQuotaStore;
+
+    const requests = [this.getSettingsPayment()];
+
+    if (!isLoaded) requests.push(setPortalPaymentQuotas());
+
+    if (this.isAlreadyPaid) requests.push(this.setPaymentAccount());
+
+    try {
+      await Promise.all(requests);
+      this.setRangeStepByQuota();
+      this.setTariffDates();
+    } catch (error) {
+      toastr.error(error);
+    }
+
+    if (!this.isAlreadyPaid) {
+      this.isInitPaymentPage = true;
+      return;
+    }
+
+    try {
+      if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
+      this.isInitPaymentPage = true;
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   getSettingsPayment = async () => {
     const newSettings = await getPaymentSettings();
@@ -159,13 +252,17 @@ class PaymentStore {
     return this.managersCount < this.minAvailableManagersValue;
   }
 
-  setRangeBound = () => {
-    this.stepByQuotaForManager =
-      authStore.paymentQuotasStore.stepAddingQuotaManagers;
+  setRangeStepByQuota = () => {
+    const { paymentQuotasStore } = authStore;
+    const {
+      stepAddingQuotaManagers,
+      stepAddingQuotaTotalSize,
+    } = paymentQuotasStore;
+
+    this.stepByQuotaForManager = stepAddingQuotaManagers;
     this.minAvailableManagersValue = this.stepByQuotaForManager;
 
-    this.stepByQuotaForTotalSize =
-      authStore.paymentQuotasStore.stepAddingQuotaTotalSize;
+    this.stepByQuotaForTotalSize = stepAddingQuotaTotalSize;
     this.minAvailableTotalSizeValue = this.stepByQuotaForManager;
   };
 
