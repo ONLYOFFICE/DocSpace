@@ -58,11 +58,9 @@ const PayerInformationContainer = ({
   accountLink,
   isPayer,
   payerInfo,
-  payerEmail,
+  email,
 }) => {
   const { t } = useTranslation("Payments");
-
-  const email = payerEmail;
 
   const isLinkAvailable = user.isOwner || isPayer;
 
@@ -191,15 +189,17 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { userStore, settingsStore } = auth;
-  const { accountLink } = payments;
+  const { userStore, settingsStore, currentTariffStatusStore } = auth;
+  const { accountLink, payerInfo } = payments;
   const { theme } = settingsStore;
-
+  const { customerId } = currentTariffStatusStore;
   const { user } = userStore;
 
   return {
     theme,
     user,
     accountLink,
+    payerInfo,
+    email: customerId,
   };
 })(observer(PayerInformationContainer));

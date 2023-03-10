@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { getConvertedSize } from "@docspace/common/utils";
-import toastr from "@docspace/components/toast/toastr";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -42,11 +41,7 @@ class PaymentQuotasStore {
     return this.portalPaymentQuotas?.title;
   }
 
-  setReplacingValuesInTranslation = (t) => {
-    this.replaceTotalSizeValue(t);
-  };
-
-  replaceTotalSizeValue = (t) => {
+  replaceTotalSizeValueInTranslation = (t) => {
     const totalSizeObj = this.portalPaymentQuotasFeatures.find(
       (el) => el.id === TOTAL_SIZE
     );
@@ -77,21 +72,17 @@ class PaymentQuotasStore {
   setPortalPaymentQuotas = async (t) => {
     if (this.isLoaded) return;
 
-    try {
-      const res = await api.portal.getPortalPaymentQuotas();
+    const res = await api.portal.getPortalPaymentQuotas();
 
-      if (!res) return;
+    if (!res) return;
 
-      runInAction(() => {
-        this.portalPaymentQuotas = res[0];
+    runInAction(() => {
+      this.portalPaymentQuotas = res[0];
 
-        this.portalPaymentQuotasFeatures = res[0].features;
-      });
+      this.portalPaymentQuotasFeatures = res[0].features;
+    });
 
-      this.setIsLoaded(true);
-    } catch (e) {
-      toastr.error(e);
-    }
+    this.setIsLoaded(true);
   };
 }
 
