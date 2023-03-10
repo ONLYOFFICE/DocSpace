@@ -611,7 +611,7 @@ function Editor({
 
         const defaultFileName = getDefaultFileName(fileExt);
 
-        if (!user.isVisitor)
+        if (!user.isVisitor && !isDesktopEditor)
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
