@@ -158,6 +158,7 @@ public class MessagesRepository : IDisposable
 
         strategy.Execute(async () =>
         {
+            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
             using var tx = await ef.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 

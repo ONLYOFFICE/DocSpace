@@ -40,28 +40,31 @@ public class QuotaHelper
         _serviceProvider = serviceProvider;
     }
 
-    public IEnumerable<QuotaDto> GetQuotas()
+    public async IAsyncEnumerable<QuotaDto> GetQuotas()
     {
         var quotaList = _tenantManager.GetTenantQuotas(false);
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
+        foreach (var quota in quotaList)
+        {
+            yield return await ToQuotaDto(quota, priceInfo, currentRegion);
+        }
     }
 
-    public QuotaDto GetCurrentQuota()
+    public async Task<QuotaDto> GetCurrentQuota()
     {
         var quota = _tenantManager.GetCurrentTenantQuota();
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return ToQuotaDto(quota, priceInfo, currentRegion, true);
+        return await ToQuotaDto(quota, priceInfo, currentRegion, true);
     }
 
-    private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false)
+    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = GetFeatures(quota, getUsed);
+        var features = await GetFeatures(quota, getUsed).ToListAsync();
 
         return new QuotaDto
         {

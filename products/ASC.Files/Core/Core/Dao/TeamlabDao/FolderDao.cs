@@ -1123,6 +1123,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 await strategy.ExecuteAsync(async () =>
                 {
+                    using var filesDbContext = _dbContextFactory.CreateDbContext();
                     using var tx = await filesDbContext.Database.BeginTransactionAsync();//NOTE: Maybe we shouldn't start transaction here at all
 
                     newFolderId = await SaveFolderAsync(folder, tx); //Save using our db manager
@@ -1238,6 +1239,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             await strategy.ExecuteAsync(async () =>
             {
+                using var filesDbContext = _dbContextFactory.CreateDbContext();
                 using var tx = await filesDbContext.Database.BeginTransactionAsync(); //NOTE: Maybe we shouldn't start transaction here at all
                 newFolderId = await SaveFolderAsync(folder, tx); //Save using our db manager
                 var toInsert = new DbFilesBunchObjects
