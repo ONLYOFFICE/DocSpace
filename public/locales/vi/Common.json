@@ -122,7 +122,6 @@
   "Pages": "Trang",
   "Password": "Mật khẩu",
   "PasswordLimitDigits": "chữ số",
-  "PasswordLimitLength": "từ {{fromNumber}} đến {{toNumber}} ký tự",
   "PasswordLimitMessage": "Mật khẩu cần phải bao gồm",
   "PasswordLimitSpecialSymbols": "ký tự đặc biệt",
   "PasswordLimitUpperCase": "chữ in hoa",

@@ -122,7 +122,6 @@
   "Pages": "Sivua",
   "Password": "Salasana",
   "PasswordLimitDigits": "numerot",
-  "PasswordLimitLength": "{{fromNumber}} - {{toNumber}} merkkiä",
   "PasswordLimitMessage": "Salasanan on sisällettävä",
   "PasswordLimitSpecialSymbols": "erikoismerkkejä",
   "PasswordLimitUpperCase": "isoja kirjaimia",

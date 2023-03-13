@@ -122,7 +122,6 @@
   "Pages": "Сторінки",
   "Password": "Пароль",
   "PasswordLimitDigits": "цифри",
-  "PasswordLimitLength": "від {{fromNumber}} до {{toNumber}} символів",
   "PasswordLimitMessage": "Пароль має містити",
   "PasswordLimitSpecialSymbols": "спеціальні символи",
   "PasswordLimitUpperCase": "великі літери",

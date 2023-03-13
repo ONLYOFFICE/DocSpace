@@ -120,7 +120,6 @@
   "Pages": "Pagini",
   "Password": "Parola",
   "PasswordLimitDigits": "cifre",
-  "PasswordLimitLength": "între {{fromNumber}} și {{toNumber}} caractere",
   "PasswordLimitMessage": "Parola trebuie să conțină",
   "PasswordLimitSpecialSymbols": "caractere speciale",
   "PasswordLimitUpperCase": "majuscule",

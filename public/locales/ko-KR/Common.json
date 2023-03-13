@@ -121,7 +121,6 @@
   "Pages": "페이지",
   "Password": "비밀번호",
   "PasswordLimitDigits": "숫자",
-  "PasswordLimitLength": "{{fromNumber}}~{{toNumber}}글자",
   "PasswordLimitMessage": "비밀번호에는 반드시 다음이 포함되어야 합니다:",
   "PasswordLimitSpecialSymbols": "특수 문자",
   "PasswordLimitUpperCase": "대문자",

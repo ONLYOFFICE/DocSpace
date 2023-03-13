@@ -121,7 +121,6 @@
   "Pages": "ページ",
   "Password": "パスワード",
   "PasswordLimitDigits": "桁",
-  "PasswordLimitLength": "{{fromNumber}}から{{toNumber}}までの字数",
   "PasswordLimitMessage": "パスワードには、以下が含まれていなければなりません。",
   "PasswordLimitSpecialSymbols": "特殊な文字",
   "PasswordLimitUpperCase": "大文字",

@@ -122,7 +122,6 @@
   "Pages": "Strany",
   "Password": "Heslo",
   "PasswordLimitDigits": "číslice",
-  "PasswordLimitLength": "od {{fromNumber}} do {{toNumber}} znakov",
   "PasswordLimitMessage": "Heslo musí obsahovať",
   "PasswordLimitSpecialSymbols": "špeciálne znaky",
   "PasswordLimitUpperCase": "veľké písmená",

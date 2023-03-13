@@ -118,7 +118,6 @@
   "Pages": "ຫນ້າ",
   "Password": "ລະຫັດຜ່ານ",
   "PasswordLimitDigits": "ຕົວເລກ",
-  "PasswordLimitLength": "ຕັ້ງຄ່າຕົວອັກສອນ {{fromNumber}} ເຖິງ {{toNumber}}",
   "PasswordLimitMessage": "ລະຫັດຜ່ານຕ້ອງມີ",
   "PasswordLimitSpecialSymbols": "ຕົວອັກສອນພິເສດ",
   "PasswordLimitUpperCase": "ໂຕອັກສອນໃຫຍ່",
