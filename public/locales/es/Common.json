@@ -122,7 +122,6 @@
   "Pages": "Páginas",
   "Password": "Contraseña",
   "PasswordLimitDigits": "dígitos",
-  "PasswordLimitLength": "desde {{fromNumber}} hasta {{toNumber}} caracteres",
   "PasswordLimitMessage": "La contraseña debe contener",
   "PasswordLimitSpecialSymbols": "caracteres especiales",
   "PasswordLimitUpperCase": "letras mayúsculas",

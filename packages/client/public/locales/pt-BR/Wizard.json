@@ -5,10 +5,6 @@
   "ErrorInitWizard": "O serviço atualmente não está disponível, por favor tente novamente mais tarde.",
   "ErrorInitWizardButton": "Tente novamente",
   "ErrorLicenseBody": "A licença não é válida. Certifique-se de selecionar o arquivo correto",
-  "ErrorLicenseRead": "Aceite o contrato de licença",
-  "ErrorLicenseTitle": "Erro de carregamento",
-  "ErrorParamsBody": "Dados incorretos inseridos:",
-  "ErrorParamsTitle": "Erro de registro",
   "ErrorPassword": "A senha não atende aos requisitos",
   "ErrorUploadLicenseFile": "Selecione um arquivo de licença",
   "GeneratePassword": "Gerar senha",
@@ -16,6 +12,5 @@
   "LicenseLink": "Contratos de licença",
   "PlaceholderLicense": "Seu arquivo de licença",
   "Timezone": "Fuso horário:",
-  "WelcomeTitle": "Bem-vindo ao seu portal!",
-  "WizardTitle": "Configure seu portal"
+  "WelcomeTitle": "Bem-vindo ao seu portal!"
 }

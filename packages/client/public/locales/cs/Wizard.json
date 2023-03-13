@@ -5,10 +5,6 @@
   "ErrorInitWizard": "Služba je momentálně nedostupná, zkuste to prosím později.",
   "ErrorInitWizardButton": "Zkuste to znovu",
   "ErrorLicenseBody": "Licence není platná. Ujistěte se, že jste vybrali správný soubor.",
-  "ErrorLicenseRead": "Přijměte licenční smlouvu",
-  "ErrorLicenseTitle": "Chyba při načítání",
-  "ErrorParamsBody": "Nesprávně zadané údaje:",
-  "ErrorParamsTitle": "Chyba registrace",
   "ErrorPassword": "Heslo nesplňuje požadavky",
   "ErrorUploadLicenseFile": "Vyberte licenční soubor",
   "GeneratePassword": "Generovat heslo",
@@ -16,6 +12,5 @@
   "LicenseLink": "Licenční ujednání",
   "PlaceholderLicense": "Váš licenční soubor",
   "Timezone": "Časové pásmo:",
-  "WelcomeTitle": "Vítejte na svém portálu!",
-  "WizardTitle": "Nastavení vašeho portálu"
+  "WelcomeTitle": "Vítejte na svém portálu!"
 }

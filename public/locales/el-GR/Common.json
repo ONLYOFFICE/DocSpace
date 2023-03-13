@@ -121,7 +121,6 @@
   "Pages": "Σελίδες",
   "Password": "Κωδικός πρόσβασης",
   "PasswordLimitDigits": "ψηφία",
-  "PasswordLimitLength": "από {{fromNumber}} έως {{toNumber}}} χαρακτήρες",
   "PasswordLimitMessage": "Ο κωδικός πρόσβασης πρέπει να περιέχει",
   "PasswordLimitSpecialSymbols": "ειδικούς χαρακτήρες",
   "PasswordLimitUpperCase": "κεφαλαία γράμματα",

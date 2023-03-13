@@ -122,7 +122,6 @@
   "Pages": "Sayfalar",
   "Password": "Şifre",
   "PasswordLimitDigits": "karakter",
-  "PasswordLimitLength": "“{{fromNumber}} ila {{toNumber}} karakter arası",
   "PasswordLimitMessage": "Şifre şunları içermelidir",
   "PasswordLimitSpecialSymbols": "özel karakterler",
   "PasswordLimitUpperCase": "büyük harfler",

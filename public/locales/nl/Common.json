@@ -122,7 +122,6 @@
   "Pages": "Pagina's",
   "Password": "Wachtwoord",
   "PasswordLimitDigits": "getallen",
-  "PasswordLimitLength": "van {{fromNumber}} tot {{toNumber}} tekens",
   "PasswordLimitMessage": "Wachtwoord moet bevatten",
   "PasswordLimitSpecialSymbols": "speciale tekens",
   "PasswordLimitUpperCase": "hoofdletters",

@@ -29,7 +29,6 @@
   "FormTemplates": "Шаблоны форм",
   "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
   "LinkValidTime": "Эта ссылка действительна только {{days_count}} дней",
-  "MediaLoadError": "Медиа файл не может быть загружен",
   "MobileAndroid": "Скачать ONLYOFFICE Документы в Google Play",
   "MobileIos": "Скачать ONLYOFFICE Документы в App Store",
   "MobileLinux": "Скачать десктопные редакторы ONLYOFFICE для Linux",

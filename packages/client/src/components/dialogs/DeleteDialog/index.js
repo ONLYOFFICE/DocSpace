@@ -135,17 +135,17 @@ const DeleteDialogComponent = (props) => {
 
     if (isPersonalRoom) {
       return isSingle
-        ? t(
-            isFolder
-              ? "MoveToTrashFolderFromPersonal"
-              : "MoveToTrashFileFromPersonal"
-          )
+        ? isFolder
+          ? t("MoveToTrashFolderFromPersonal")
+          : t("MoveToTrashFileFromPersonal")
         : t("MoveToTrashItemsFromPersonal");
     }
 
     if (isRoom) {
       return isSingle
-        ? t(isFolder ? "MoveToTrashFolder" : "MoveToTrashFile")
+        ? isFolder
+          ? t("MoveToTrashFolder")
+          : t("MoveToTrashFile")
         : t("MoveToTrashItems");
     }
   };

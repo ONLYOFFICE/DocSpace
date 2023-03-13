@@ -122,7 +122,6 @@
   "Pages": "səhifələr",
   "Password": "Şifrə",
   "PasswordLimitDigits": "Rəqəmlər",
-  "PasswordLimitLength": "ən az {{fromNumber}}, ən çox {{toNumber}} simvol",
   "PasswordLimitMessage": "Şifrədə olmalıdır",
   "PasswordLimitSpecialSymbols": "Xüsusi işarələr",
   "PasswordLimitUpperCase": "Böyük hərflər",

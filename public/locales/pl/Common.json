@@ -122,7 +122,6 @@
   "Pages": "Strony",
   "Password": "Hasło",
   "PasswordLimitDigits": "cyfry",
-  "PasswordLimitLength": "od {{fromNumber}} do {{toNumber}} znaków",
   "PasswordLimitMessage": "Hasło musi zawierać",
   "PasswordLimitSpecialSymbols": "znaki specjale",
   "PasswordLimitUpperCase": "duże litery",

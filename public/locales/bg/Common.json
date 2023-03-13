@@ -122,7 +122,6 @@
   "Pages": "Страници",
   "Password": "Парола",
   "PasswordLimitDigits": "числа",
-  "PasswordLimitLength": "от {{fromNumber}} до {{toNumber}} символа",
   "PasswordLimitMessage": "Паролата трябва да съдържа",
   "PasswordLimitSpecialSymbols": "специални символи",
   "PasswordLimitUpperCase": "главни букви",

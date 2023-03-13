@@ -122,7 +122,6 @@
   "Pages": "页面",
   "Password": "密码",
   "PasswordLimitDigits": "数字",
-  "PasswordLimitLength": "{{fromNumber}}到{{toNumber}}个字符",
   "PasswordLimitMessage": "密码必须包含",
   "PasswordLimitSpecialSymbols": "特殊字符",
   "PasswordLimitUpperCase": "大写字母",

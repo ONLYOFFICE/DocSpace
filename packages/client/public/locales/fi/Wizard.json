@@ -5,10 +5,6 @@
   "ErrorInitWizard": "Palvelu ei ole tällä hetkellä käytettävissä, yritä myöhemmin uudelleen.",
   "ErrorInitWizardButton": "Yritä uudelleen",
   "ErrorLicenseBody": "Lisenssi ei ole voimassa. Varmista, että valitset oikean tiedoston",
-  "ErrorLicenseRead": "Hyväksy lisenssisopimus",
-  "ErrorLicenseTitle": "Latausvirhe",
-  "ErrorParamsBody": "Virheellisesti syötetyt tiedot:",
-  "ErrorParamsTitle": "Rekisteröintivirhe",
   "ErrorPassword": "Salasana ei täytä vaatimuksia",
   "ErrorUploadLicenseFile": "Valitse lisenssitiedosto",
   "GeneratePassword": "Luo salasana",
@@ -16,6 +12,5 @@
   "LicenseLink": "Lisenssisopimukset",
   "PlaceholderLicense": "Lisenssitiedosto",
   "Timezone": "Aikavyöhyke:",
-  "WelcomeTitle": "Tervetuloa portaaliisi!",
-  "WizardTitle": "Määritä portaalisi"
+  "WelcomeTitle": "Tervetuloa portaaliisi!"
 }

@@ -122,7 +122,6 @@
   "Pages": "Strani",
   "Password": "Geslo",
   "PasswordLimitDigits": "številk",
-  "PasswordLimitLength": "od {{fromNumber}} do {{toNumber}} znakov",
   "PasswordLimitMessage": "Geslo mora vsebovati",
   "PasswordLimitSpecialSymbols": "specialni znaki",
   "PasswordLimitUpperCase": "velike črke",

@@ -122,7 +122,6 @@
   "Pages": "Lapas",
   "Password": "Parole",
   "PasswordLimitDigits": "cipari",
-  "PasswordLimitLength": "no {{fromNumber}} līdz {{toNumber}} rakstzīmēm",
   "PasswordLimitMessage": "Parolei ir jāsatur",
   "PasswordLimitSpecialSymbols": "īpašās rakstzīmes",
   "PasswordLimitUpperCase": "lielie burti",
