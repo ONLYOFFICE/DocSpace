@@ -28,10 +28,10 @@ const PaymentsPage = ({
   }, [ready]);
 
   useEffect(() => {
-    if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
+    if (!isLoadedTariffStatus || !isLoadedCurrentQuota || !ready) return;
 
-    init();
-  }, [isLoadedTariffStatus, isLoadedCurrentQuota]);
+    init(t);
+  }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
   return !isInitPaymentPage || !ready ? (
     <Loaders.PaymentsLoader />

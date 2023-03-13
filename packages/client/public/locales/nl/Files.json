@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Kopieer {{element}} elementen",
   "TrashEmptyDescription": "Alle verwijderde bestanden worden verplaatst naar de 'Prullenbak'. Je kan deze terugzetten als ze per ongeluk verwijderd zijn of je kan ze permanent verwijderen. Wees ervan bewust dat als de bestanden eenmaal uit de Prullenbak zijn verwijderd deze niet meer terug te krijgen zijn.",
   "UnblockVersion": "Deblokkeren/inchecken",
-  "UploadToFolder": "Upload naar map",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Versie geschiedenis",
   "ViewList": "Lijst",

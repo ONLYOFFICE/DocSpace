@@ -1,5 +1,5 @@
 import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
-import React, { useEffect } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { Trans } from "react-i18next";
@@ -91,7 +91,6 @@ const PaymentContainer = ({
   isPaidPeriod,
   currencySymbol,
   startValue,
-  replaceTotalSizeValueInTranslation,
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
@@ -104,10 +103,6 @@ const PaymentContainer = ({
   paymentDate,
   t,
 }) => {
-  useEffect(() => {
-    replaceTotalSizeValueInTranslation(t);
-  }, []);
-
   const renderTooltip = () => {
     return (
       <>
@@ -260,7 +255,7 @@ const PaymentContainer = ({
                   from {{ fromDate: gracePeriodStartDate }} to{" "}
                   {{ byDate: gracePeriodEndDate }}
                 </strong>
-                ({{ delayDaysCount }})
+                (days remaining: {{ delayDaysCount }})
               </Trans>{" "}
               <Text as="span" fontSize="14px" lineHeight="16px">
                 {t("GracePeriodActivatedDescription")}
@@ -333,12 +328,7 @@ export default inject(({ auth, payments }) => {
     portalTariffStatus,
   } = currentTariffStatusStore;
 
-  const {
-    planCost,
-    replaceTotalSizeValueInTranslation,
-    tariffPlanTitle,
-    portalPaymentQuotas,
-  } = paymentQuotasStore;
+  const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
 
   const { theme } = auth.settingsStore;
 
@@ -375,7 +365,6 @@ export default inject(({ auth, payments }) => {
     payerEmail: customerId,
     user,
     isPaidPeriod,
-    replaceTotalSizeValueInTranslation,
     currentTariffPlanTitle,
     portalTariffStatus,
     portalPaymentQuotas,

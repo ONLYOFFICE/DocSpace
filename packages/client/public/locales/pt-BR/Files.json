@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
   "TrashEmptyDescription": "A sessão 'Lixeira' é o lugar para o qual todos os arquivos excluídos serão movidos. Você pode restaurá-los caso tenha excluído por engano ou permanentemente. Observe que quando você exclui arquivos da \"Lixeira\", eles não poderão mais ser restaurados.",
   "UnblockVersion": "Desbloqueio/Check-in",
-  "UploadToFolder": "Upload para pasta",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Histórico de Versão",
   "ViewList": "Lista",

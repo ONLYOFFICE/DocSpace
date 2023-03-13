@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Di chuyển {{element}} thành phần",
   "TrashEmptyDescription": "Phần 'Thùng rác' là nơi chứa tất cả các file đã xoá. Bạn có thể khôi phục chúng nếu là do xóa nhầm hoặc xóa bỏ chúng vĩnh viễn. Lưu ý rằng khi bạn xóa các file từ 'Thùng rác' chúng sẽ không thể được khôi phục lại.",
   "UnblockVersion": "Bỏ chặn/Đăng ký",
-  "UploadToFolder": "Tải lên thư mục",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Lịch sử phiên bản",
   "ViewList": "Danh sách",

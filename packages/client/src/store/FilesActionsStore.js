@@ -957,7 +957,13 @@ class FilesActionStore {
     }
 
     muteRoomNotification(id, muteStatus)
-      .then(() => toastr.success(t("RoomNotificationsEnabled")))
+      .then(() =>
+        toastr.success(
+          muteStatus
+            ? t("RoomNotificationsDisabled")
+            : t("RoomNotificationsEnabled")
+        )
+      )
       .catch((e) => toastr.error(e))
       .finally(() => {
         Promise.all([
@@ -1613,7 +1619,7 @@ class FilesActionStore {
           return {
             id: "menu-archive",
             key: "archive",
-            label: t("Archive"),
+            label: t("ToArchive"),
             iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,

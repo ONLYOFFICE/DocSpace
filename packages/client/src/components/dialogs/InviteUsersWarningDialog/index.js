@@ -8,6 +8,8 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
+import { getDaysRemaining } from "../../../helpers/filesUtils";
+
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
   "/portal-settings"
@@ -24,6 +26,7 @@ const InviteUsersWarningDialog = (props) => {
     visible,
     setIsVisible,
     isGracePeriod,
+    currentTariffPlanTitle,
   } = props;
 
   const [datesData, setDatesData] = useState({});
@@ -43,7 +46,7 @@ const InviteUsersWarningDialog = (props) => {
     setDatesData({
       fromDate: fromDateMoment.format("LL"),
       byDate: byDateMoment.format("LL"),
-      delayDaysCount: fromDateMoment.to(byDateMoment, true),
+      delayDaysCount: getDaysRemaining(byDateMoment),
     });
   };
 
@@ -72,7 +75,9 @@ const InviteUsersWarningDialog = (props) => {
         {isGracePeriod ? (
           <>
             <Text fontWeight={700} noSelect>
-              {t("BusinessPlanPaymentOverdue")}
+              {t("BusinessPlanPaymentOverdue", {
+                planName: currentTariffPlanTitle,
+              })}
             </Text>
             <br />
             <Text noSelect as="div">
@@ -81,7 +86,7 @@ const InviteUsersWarningDialog = (props) => {
                 <strong>
                   from {{ fromDate }} to {{ byDate }}
                 </strong>
-                ({{ delayDaysCount }})
+                (days remaining: {{ delayDaysCount }})
               </Trans>
             </Text>
             <br />
@@ -126,6 +131,7 @@ export default inject(({ auth, dialogsStore }) => {
     delayDueDate,
     isGracePeriod,
   } = auth.currentTariffStatusStore;
+  const { currentTariffPlanTitle } = auth.currentQuotaStore;
 
   const {
     inviteUsersWarningDialogVisible,
@@ -133,6 +139,7 @@ export default inject(({ auth, dialogsStore }) => {
   } = dialogsStore;
 
   return {
+    currentTariffPlanTitle,
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,
     setIsVisible: setInviteUsersWarningDialogVisible,
