@@ -83,10 +83,6 @@ public class WhitelabelController : BaseSettingsController
             foreach (var l in inDto.Logo)
             {
                 var key = Int32.Parse(l.Key);
-                if (key == (int)WhiteLabelLogoTypeEnum.Favicon && !(l.Value.Light.EndsWith("ico") || l.Value.Light.EndsWith("svg")))
-                {
-                    throw new InvalidOperationException("Favicon must have .ico or .svg extension");
-                }
 
                 logoDict.Add(key, new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
