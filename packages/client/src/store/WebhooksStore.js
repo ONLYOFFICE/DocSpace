@@ -1,4 +1,13 @@
 import { makeAutoObservable } from "mobx";
+import {
+  createWebhook,
+  getAllWebhooks,
+  updateWebhook,
+  removeWebhook,
+  getJournal,
+  retryWebhook,
+  retryWebhooks,
+} from "@docspace/common/api/settings";
 
 class WebhooksStore {
   webhooks = [
@@ -24,7 +33,19 @@ class WebhooksStore {
     makeAutoObservable(this);
   }
 
-  addWebhook = (webhook) => {
+  loadWebhookhs = async () => {
+    const webhooks = await getAllWebhooks();
+    this.webhooks = webhooks;
+  };
+
+  addWebhook = async (webhook) => {
+    // const webhookData = await createWebhook(webhook.title, webhook.url, webhook.secretKey);
+    // this.webhooks.push({
+    //   id: webhookData.Id,
+    //   url: webhookData.Uri,
+    //   title: "default",
+    //   isEnabled: webhookData.Enabled,
+    // });
     this.webhooks.push(webhook);
   };
 
@@ -37,14 +58,29 @@ class WebhooksStore {
     this.webhooks[index].isEnabled = !this.webhooks[index].isEnabled;
   };
 
-  deleteWebhook = (webhook) => {
+  deleteWebhook = async (webhook) => {
+    // await removeWebhook(webhook.id);
     this.webhooks = this.webhooks.filter((currentWebhook) => currentWebhook.id !== webhook.id);
   };
 
-  editWebhook = (prevWebhook, webhookInfo) => {
+  editWebhook = async (prevWebhook, webhookInfo) => {
+    await updateWebhook(webhookInfo.title, webhookInfo.url, webhookInfo.secretKey);
+    console.log(prevWebhook, webhookInfo);
     this.webhooks = this.webhooks.map((webhook) =>
       webhook.id === prevWebhook.id ? webhookInfo : webhook,
     );
+  };
+
+  retryWebhookEvent = async (id) => {
+    return await retryWebhook(id);
+  };
+
+  retryWebhookEvents = async (ids) => {
+    return await retryWebhooks(ids);
+  };
+
+  getWebhookHistory = async (hookname, logCount) => {
+    return await getJournal(hookname, logCount);
   };
 
   get isWebhooksEmpty() {
