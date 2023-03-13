@@ -5,7 +5,6 @@
   "ErrorInitWizard": "Служба наразі недоступна. Повторіть спробу пізніше.",
   "ErrorInitWizardButton": "Повторити спробу",
   "ErrorLicenseBody": "Ліцензія недійсна. Переконайтеся, що ви вибрали правильний файл",
-  "ErrorParamsBody": "Введено неправильні дані:",
   "ErrorParamsTitle": "Помилка реєстрації",
   "ErrorPassword": "Пароль не відповідає вимогам",
   "ErrorUploadLicenseFile": "Виберіть файл ліцензії",

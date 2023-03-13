@@ -5,7 +5,6 @@
   "ErrorInitWizard": "Bu hizmet şu anda kullanılamamaktadır, lütfen daha sonra tekrar deneyin.",
   "ErrorInitWizardButton": "Tekrar dene",
   "ErrorLicenseBody": "Lisans geçerli değil. Doğru dosyayı seçtiğinizden emin olun",
-  "ErrorParamsBody": "Yanlış veri girildi:",
   "ErrorParamsTitle": "Kayıt hatası",
   "ErrorPassword": "Şifre gereksinimleri karşılamıyor",
   "ErrorUploadLicenseFile": "Lisans dosyası seçin",
