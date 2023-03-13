@@ -171,18 +171,18 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return AccessTokenUrl;
     }
 
-    public File<string> GetFile(string fileId, out bool editable)
+    public Task<FileWithEditableWrapper> GetFileAsync(string fileId)
     {
         _logger.DebugGoogleDriveAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = _tokenHelper.GetToken(AppAttr);
         var driveFile = GetDriveFile(fileId, token);
-        editable = false;
+        var wrapper = new FileWithEditableWrapper();
 
         if (driveFile == null)
         {
-            return null;
+            return Task.FromResult(wrapper);
         }
 
         var jsonFile = JObject.Parse(driveFile);
@@ -202,9 +202,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             file.CreateByString = owners[0]["displayName"].Value<string>();
         }
 
-        editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
-
-        return file;
+        wrapper.Editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
+        wrapper.File = file;
+        return Task.FromResult(wrapper);
     }
 
     public string GetFileStreamUrl(File<string> file)
@@ -355,7 +355,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (_authContext.IsAuthenticated)
         {
-            if (!CurrentUser(googleUserId))
+            if (!(await CurrentUserAsync(googleUserId)))
             {
                 _logger.DebugGoogleDriveAppLogout(googleUserId);
                 _cookiesManager.ClearCookies(CookiesType.AuthKey);
@@ -388,9 +388,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 _personalSettingsHelper.IsNotActivated = true;
             }
 
-            if (!string.IsNullOrEmpty(googleUserId) && !CurrentUser(googleUserId))
+            if (!string.IsNullOrEmpty(googleUserId) && !(await CurrentUserAsync(googleUserId)))
             {
-                AddLinker(googleUserId);
+                await AddLinkerAsync(googleUserId);
             }
         }
 
@@ -611,18 +611,18 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return null;
     }
 
-    private bool CurrentUser(string googleId)
+    private async Task<bool> CurrentUserAsync(string googleId)
     {
-        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
+        var linkedProfiles = await _accountLinker.GetLinkedObjectsByHashIdAsync(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
 
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
 
-    private void AddLinker(string googleUserId)
+    private Task AddLinkerAsync(string googleUserId)
     {
         _logger.DebugGoogleDriveApAddLinker(googleUserId);
 
-        _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
+        return _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
 
     private async Task<UserInfoWrapper> GetUserInfo(Token token)

@@ -75,8 +75,9 @@ public class EditorControllerThirdparty : EditorController<string>
     {
         fileId = "app-" + fileId;
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
-        bool editable;
-        var file = app.GetFile(fileId?.ToString(), out editable);
+        var wrapper = await app.GetFileAsync(fileId?.ToString());
+        var file = wrapper.File;
+        var editable = wrapper.Editable;
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
         var configuration = docParams.Configuration;
         configuration.Document.Url = app.GetFileStreamUrl(file);
@@ -86,7 +87,7 @@ public class EditorControllerThirdparty : EditorController<string>
 
         if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
-            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)
             {
                 configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
@@ -220,7 +221,7 @@ public abstract class EditorController<T> : ApiControllerBase
 
         if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
-            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)
             {
                 configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig

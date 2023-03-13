@@ -111,7 +111,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpGet("keys")]
-    public EncryptionKeyPairDto GetKeys()
+    public Task<EncryptionKeyPairDto> GetKeysAsync()
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -120,7 +120,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
             throw new SecurityException();
         }
 
-        return _encryptionKeyPairHelper.GetKeyPair();
+        return _encryptionKeyPairHelper.GetKeyPairAsync();
     }
 
 
@@ -142,7 +142,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpPut("keys")]
-    public object SetKeys(PrivacyRoomRequestDto inDto)
+    public async Task<object> SetKeysAsync(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -151,7 +151,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
             throw new SecurityException();
         }
 
-        var keyPair = _encryptionKeyPairHelper.GetKeyPair();
+        var keyPair = await _encryptionKeyPairHelper.GetKeyPairAsync();
         if (keyPair != null)
         {
             if (!string.IsNullOrEmpty(keyPair.PublicKey) && !inDto.Update)
@@ -162,7 +162,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
             _logger.InformationUpdateAddress(_authContext.CurrentAccount.ID);
         }
 
-        _encryptionKeyPairHelper.SetKeyPair(inDto.PublicKey, inDto.PrivateKeyEnc);
+        await _encryptionKeyPairHelper.SetKeyPairAsync(inDto.PublicKey, inDto.PrivateKeyEnc);
 
         return new
         {

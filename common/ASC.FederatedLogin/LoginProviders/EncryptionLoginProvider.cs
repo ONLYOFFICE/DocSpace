@@ -50,11 +50,11 @@ public class EncryptionLoginProvider
     }
 
 
-    public void SetKeys(Guid userId, string keys)
+    public Task SetKeysAsync(Guid userId, string keys)
     {
         if (string.IsNullOrEmpty(keys))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var loginProfile = new LoginProfile(_signature, _instanceCrypto)
@@ -63,17 +63,17 @@ public class EncryptionLoginProvider
             Name = _instanceCrypto.Encrypt(keys)
         };
 
-        _accountLinker.AddLink(userId.ToString(), loginProfile);
+        return _accountLinker.AddLinkAsync(userId.ToString(), loginProfile);
     }
 
-    public string GetKeys()
+    public Task<string> GetKeysAsync()
     {
-        return GetKeys(_securityContext.CurrentAccount.ID);
+        return GetKeysAsync(_securityContext.CurrentAccount.ID);
     }
 
-    public string GetKeys(Guid userId)
+    public async Task<string> GetKeysAsync(Guid userId)
     {
-        var profile = _accountLinker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
+        var profile = (await _accountLinker.GetLinkedProfilesAsync(userId.ToString(), ProviderConstants.Encryption)).FirstOrDefault();
         if (profile == null)
         {
             return null;
@@ -91,9 +91,9 @@ public class EncryptionLoginProvider
         }
     }
 
-    public IDictionary<Guid, string> GetKeys(IEnumerable<Guid> usrsIds)
+    public async Task<IDictionary<Guid, string>> GetKeysAsync(IEnumerable<Guid> usrsIds)
     {
-        var profiles = _accountLinker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
+        var profiles = await _accountLinker.GetLinkedProfilesAsync(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
         var keys = new Dictionary<Guid, string>(profiles.Count);
 
         foreach (var profilePair in profiles)

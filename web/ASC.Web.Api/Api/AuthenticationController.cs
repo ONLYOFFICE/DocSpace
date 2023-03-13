@@ -468,8 +468,8 @@ public class AuthenticationController : ControllerBase
 
             var userInfo = Constants.LostUser;
 
-            Guid userId;
-            if (TryGetUserByHash(loginProfile.HashId, out userId))
+            var userId = await GetUserByHashAsync(loginProfile.HashId);
+            if (userId != Guid.Empty)
             {
                 userInfo = _userManager.GetUsers(userId);
             }
@@ -562,7 +562,7 @@ public class AuthenticationController : ControllerBase
             }
         }
 
-        _accountLinker.AddLink(userInfo.Id.ToString(), loginProfile);
+        await _accountLinker.AddLinkAsync(userInfo.Id.ToString(), loginProfile);
 
         return userInfo;
     }
@@ -600,22 +600,22 @@ public class AuthenticationController : ControllerBase
         return userInfo;
     }
 
-    private bool TryGetUserByHash(string hashId, out Guid userId)
+    private async Task<Guid> GetUserByHashAsync(string hashId)
     {
-        userId = Guid.Empty;
+        var userId = Guid.Empty;
         if (string.IsNullOrEmpty(hashId))
         {
-            return false;
+            return userId;
         }
 
-        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(hashId);
+        var linkedProfiles = await _accountLinker.GetLinkedObjectsByHashIdAsync(hashId);
         var tmp = Guid.Empty;
         if (linkedProfiles.Any(profileId => Guid.TryParse(profileId, out tmp) && _userManager.UserExists(tmp)))
         {
             userId = tmp;
         }
 
-        return true;
+        return userId;
     }
 }
 

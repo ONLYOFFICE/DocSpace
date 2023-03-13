@@ -151,7 +151,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         return AccessTokenUrl;
     }
 
-    public File<string> GetFile(string fileId, out bool editable)
+    public async Task<FileWithEditableWrapper> GetFileAsync(string fileId)
     {
         _logger.DebugBoxAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
@@ -159,11 +159,11 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var token = _tokenHelper.GetToken(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
-        editable = true;
+        var wrapper = new FileWithEditableWrapper();
 
         if (boxFile == null)
         {
-            return null;
+            return wrapper;
         }
 
         var jsonFile = JObject.Parse(boxFile);
@@ -198,11 +198,12 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 var lockedUserId = lockedBy.Value<string>("id");
                 _logger.DebugBoxAppLockedBy(lockedUserId);
 
-                editable = CurrentUser(lockedUserId);
+                wrapper.Editable = await CurrentUserAsync(lockedUserId);
             }
         }
 
-        return file;
+        wrapper.File = file;
+        return wrapper;
     }
 
     public string GetFileStreamUrl(File<string> file)
@@ -351,7 +352,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (_authContext.IsAuthenticated)
         {
-            if (!CurrentUser(boxUserId))
+            if (!(await CurrentUserAsync(boxUserId)))
             {
                 _logger.DebugBoxAppLogout(boxUserId);
                 _cookiesManager.ClearCookies(CookiesType.AuthKey);
@@ -384,9 +385,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 _personalSettingsHelper.IsNotActivated = true;
             }
 
-            if (!string.IsNullOrEmpty(boxUserId) && !CurrentUser(boxUserId))
+            if (!string.IsNullOrEmpty(boxUserId) && !(await CurrentUserAsync(boxUserId)))
             {
-                AddLinker(boxUserId);
+                await AddLinkerAsync(boxUserId);
             }
         }
 
@@ -463,18 +464,18 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         }
     }
 
-    private bool CurrentUser(string boxUserId)
+    private async Task<bool> CurrentUserAsync(string boxUserId)
     {
-        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
+        var linkedProfiles = await _accountLinker.GetLinkedObjectsByHashIdAsync(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
 
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
 
-    private void AddLinker(string boxUserId)
+    private Task AddLinkerAsync(string boxUserId)
     {
         _logger.DebugBoxAppAddLinker(boxUserId);
 
-        _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
+        return _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
 
     private async Task<UserInfoWrapper> GetUserInfo(Token token)

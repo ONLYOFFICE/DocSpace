@@ -95,14 +95,14 @@ public class ThirdpartyController : ApiControllerBase
 
     [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
-    public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+    public async Task<ICollection<AccountInfoDto>> GetAuthProvidersAsync(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
     {
         ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
         IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
 
         if (_authContext.IsAuthenticated)
         {
-            linkedAccounts = _accountLinker.GetLinkedProfiles(_authContext.CurrentAccount.ID.ToString());
+            linkedAccounts = await _accountLinker.GetLinkedProfilesAsync(_authContext.CurrentAccount.ID.ToString());
         }
 
         fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
@@ -135,7 +135,7 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [HttpPut("thirdparty/linkaccount")]
-    public void LinkAccount(LinkAccountRequestDto inDto)
+    public async Task LinkAccountAsync(LinkAccountRequestDto inDto)
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
@@ -146,7 +146,7 @@ public class ThirdpartyController : ApiControllerBase
 
         if (string.IsNullOrEmpty(profile.AuthorizationError))
         {
-            _accountLinker.AddLink(_securityContext.CurrentAccount.ID.ToString(), profile);
+            await _accountLinker.AddLinkAsync(_securityContext.CurrentAccount.ID.ToString(), profile);
             _messageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
         }
         else
@@ -202,7 +202,7 @@ public class ThirdpartyController : ApiControllerBase
                 await SaveContactImage(userID, thirdPartyProfile.Avatar);
             }
 
-            _accountLinker.AddLink(userID.ToString(), thirdPartyProfile);
+            await _accountLinker.AddLinkAsync(userID.ToString(), thirdPartyProfile);
         }
         finally
         {
@@ -228,9 +228,9 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [HttpDelete("thirdparty/unlinkaccount")]
-    public void UnlinkAccount(string provider)
+    public async Task UnlinkAccountAsync(string provider)
     {
-        _accountLinker.RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
+        await _accountLinker.RemoveProviderAsync(_securityContext.CurrentAccount.ID.ToString(), provider);
 
         _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }

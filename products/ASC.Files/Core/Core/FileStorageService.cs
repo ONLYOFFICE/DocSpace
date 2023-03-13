@@ -494,7 +494,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (@private)
         {
             aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
+            await CheckEncryptionKeysAsync(aces);
         }
 
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
@@ -541,7 +541,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (@private)
         {
             aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
+            await CheckEncryptionKeysAsync(aces);
         }
 
         var result = roomType switch
@@ -1127,7 +1127,9 @@ public class FileStorageService<T> //: IFileStorageService
             }
             else
             {
-                var file = app.GetFile(fileId.ToString(), out var editable);
+                var wrapper = await app.GetFileAsync(fileId.ToString());
+                var file = wrapper.File;
+                var editable = wrapper.Editable;
                 fileOptions = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
             }
 
@@ -3377,10 +3379,10 @@ public class FileStorageService<T> //: IFileStorageService
         return dict.Values.ToList();
     }
 
-    private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
+    private async Task CheckEncryptionKeysAsync(IEnumerable<AceWrapper> aceWrappers)
     {
         var users = aceWrappers.Select(s => s.Id).ToList();
-        var keys = _encryptionLoginProvider.GetKeys(users);
+        var keys = await _encryptionLoginProvider.GetKeysAsync(users);
 
         foreach (var user in users)
         {
