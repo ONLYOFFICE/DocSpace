@@ -85,7 +85,6 @@
   "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list.",
   "EnableAutomaticBackup": "Enable automatic backup.",
   "EnableAutomaticBackupDescription": "Use this option to back up the space data.",
-  "EnterPath": "Enter path",
   "EnterTitle": "Enter title",
   "EveryDay": "Every day",
   "EveryMonth": "Every month",
