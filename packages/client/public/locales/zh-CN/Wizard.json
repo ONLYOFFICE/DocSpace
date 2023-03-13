@@ -5,7 +5,6 @@
   "ErrorInitWizard": "该服务目前不可用，请稍后重试。",
   "ErrorInitWizardButton": "再试一次",
   "ErrorLicenseBody": "许可无效。确保选择正确的文件",
-  "ErrorParamsTitle": "注册错误",
   "ErrorPassword": "密码不符合要求",
   "ErrorUploadLicenseFile": "选择许可文件",
   "GeneratePassword": "生成密码",
