@@ -469,4 +469,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaborator</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
 </root>
