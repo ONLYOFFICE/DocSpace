@@ -26,6 +26,7 @@ const InviteUsersWarningDialog = (props) => {
     visible,
     setIsVisible,
     isGracePeriod,
+    currentTariffPlanTitle,
   } = props;
 
   const [datesData, setDatesData] = useState({});
@@ -74,7 +75,9 @@ const InviteUsersWarningDialog = (props) => {
         {isGracePeriod ? (
           <>
             <Text fontWeight={700} noSelect>
-              {t("BusinessPlanPaymentOverdue")}
+              {t("BusinessPlanPaymentOverdue", {
+                planName: currentTariffPlanTitle,
+              })}
             </Text>
             <br />
             <Text noSelect as="div">
@@ -128,6 +131,7 @@ export default inject(({ auth, dialogsStore }) => {
     delayDueDate,
     isGracePeriod,
   } = auth.currentTariffStatusStore;
+  const { currentTariffPlanTitle } = auth.currentQuotaStore;
 
   const {
     inviteUsersWarningDialogVisible,
@@ -135,6 +139,7 @@ export default inject(({ auth, dialogsStore }) => {
   } = dialogsStore;
 
   return {
+    currentTariffPlanTitle,
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,
     setIsVisible: setInviteUsersWarningDialogVisible,
