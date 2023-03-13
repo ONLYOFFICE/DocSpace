@@ -66,6 +66,17 @@ public class WhitelabelController : BaseSettingsController
         _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
     }
 
+    /// <summary>
+    /// Saves the white label settings specified in the request.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param name="inDto">White label settings: logo text, tenant IDs with their logos</param>
+    /// <returns>True if the operation is sucessful</returns>
+    /// <path>api/2.0/settings/whitelabel/save</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
     public async Task<bool> SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
@@ -100,6 +111,16 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Saves the white label settings from files.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings from files
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/savefromfiles</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
     public async Task<bool> SaveWhiteLabelSettingsFromFiles()
@@ -159,6 +180,18 @@ public class WhitelabelController : BaseSettingsController
         fileExt = parts.Last();
     }
 
+    /// <summary>
+    /// Returns the white label logos.
+    /// </summary>
+    /// <short>
+    /// Get the white label logos
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param name="inDto">Specifies if the logo is for a dark theme or not</param>
+    /// <returns>White label logos</returns>
+    /// <path>api/2.0/settings/whitelabel/logos</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     ///<visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
@@ -214,6 +247,16 @@ public class WhitelabelController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the white label logo text.
+    /// </summary>
+    /// <short>
+    /// Get the white label logo text
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns>Logo text</returns>
+    /// <path>api/2.0/settings/whitelabel/logotext</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [AllowNotPayment]
     [HttpGet("whitelabel/logotext")]
@@ -227,6 +270,16 @@ public class WhitelabelController : BaseSettingsController
     }
 
 
+    /// <summary>
+    /// Restores the white label options.
+    /// </summary>
+    /// <short>
+    /// Restore the white label options
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/restore</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("whitelabel/restore")]
     public async Task<bool> RestoreWhiteLabelOptions()
@@ -245,6 +298,14 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Returns the licensor data.
+    /// </summary>
+    /// <short>Get the licensor data</short>
+    /// <category>Rebranding</category>
+    /// <returns>List of company white label settings</returns>
+    /// <path>api/2.0/settings/companywhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("companywhitelabel")]
     public List<CompanyWhiteLabelSettings> GetLicensorData()
@@ -263,6 +324,15 @@ public class WhitelabelController : BaseSettingsController
         return result;
     }
 
+    /// <summary>
+    /// Saves the company white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the company white label settings</short>
+    /// <param name="companyWhiteLabelSettingsWrapper">Company white label settings: company name, site, email, address, phone, licensor or not, default settings or not</param>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/company")]
     public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
@@ -282,6 +352,14 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Returns the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the company white label settings</short>
+    /// <returns>Company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
     public CompanyWhiteLabelSettingsDto GetCompanyWhiteLabelSettings()
@@ -289,6 +367,14 @@ public class WhitelabelController : BaseSettingsController
         return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(_settingsManager.Load<CompanyWhiteLabelSettings>());
     }
 
+    /// <summary>
+    /// Deletes the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the company white label settings</short>
+    /// <returns>Default company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/company")]
     public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
@@ -303,6 +389,15 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the additional white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the additional white label settings</short>
+    /// <param name="wrapper">Additional white label settings: StartDocsEnabled, HelpCenterEnabled, FeedbackAndSupportEnabled, FeedbackAndSupportUrl, UserForumEnabled, UserForumUrl, VideoGuidesEnabled, VideoGuidesUrl, SalesEmail, BuyUrl, LicenseAgreementsEnabled, IsDefault, LicenseAgreementsUrl</param>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/additional")]
     public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -320,6 +415,14 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Returns the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the additional white label settings</short>
+    /// <returns>Additional white label settings: StartDocsEnabled, HelpCenterEnabled, FeedbackAndSupportEnabled, FeedbackAndSupportUrl, UserForumEnabled, UserForumUrl, VideoGuidesEnabled, VideoGuidesUrl, SalesEmail, BuyUrl, LicenseAgreementsEnabled, IsDefault, LicenseAgreementsUrl</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettingsDto GetAdditionalWhiteLabelSettings()
@@ -327,6 +430,14 @@ public class WhitelabelController : BaseSettingsController
         return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(_settingsManager.Load<AdditionalWhiteLabelSettings>());
     }
 
+    /// <summary>
+    /// Deletes the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the additional white label settings</short>
+    /// <returns>Default additional white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/additional")]
     public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
@@ -341,6 +452,15 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the mail white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the mail white label settings</short>
+    /// <param name="settings">Mail white label settings: FooterEnabled, FooterSocialEnabled, SupportUrl, SupportEmail, SalesEmail, DemoUrl, SiteUrl</param>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/mail")]
     public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
@@ -354,6 +474,15 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Updates the mail white label settings with a paramater specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Update the mail white label settings</short>
+    /// <param name="inDto">Specifies if a footer will be enabled or not</param>
+    /// <returns>True if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("rebranding/mail")]
     public bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
@@ -370,6 +499,14 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Returns the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the mail white label settings</short>
+    /// <returns>Mail white label settings: FooterEnabled, FooterSocialEnabled, SupportUrl, SupportEmail, SalesEmail, DemoUrl, SiteUrl</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("rebranding/mail")]
     public MailWhiteLabelSettings GetMailWhiteLabelSettings()
@@ -377,6 +514,14 @@ public class WhitelabelController : BaseSettingsController
         return _settingsManager.Load<MailWhiteLabelSettings>();
     }
 
+    /// <summary>
+    /// Deletes the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the mail white label settings</short>
+    /// <returns>Default mail white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/mail")]
     public MailWhiteLabelSettings DeleteMailWhiteLabelSettings()
@@ -391,6 +536,14 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Checks if the white label is enabled or not.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Check the white label availability</short>
+    /// <returns>Boolean value: true if the white label is enabled</returns>
+    /// <path>api/2.0/settings/enableWhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("enableWhitelabel")]
     public bool GetEnableWhitelabel()
