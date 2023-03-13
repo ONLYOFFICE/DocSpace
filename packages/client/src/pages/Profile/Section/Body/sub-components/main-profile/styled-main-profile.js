@@ -183,6 +183,7 @@ export const StyledInfo = styled.div`
 
     .email-edit-container {
       display: flex;
+      align-items: center;
       padding-right: 16px;
     }
 

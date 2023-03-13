@@ -52,7 +52,7 @@ const getTreeItems = (data, path, t) => {
       case "PortalDeletion":
         return t("PortalDeletion");
       case "Payments":
-        return t("Payments");
+        return t("Common:PaymentsTitle");
       case "SingleSignOn":
         return t("SingleSignOn");
       case "DeveloperTools":
@@ -223,7 +223,7 @@ class ArticleBodyContent extends React.Component {
       case "Backup":
         return t("Backup");
       case "Payments":
-        return t("Payments");
+        return t("Common:PaymentsTitle");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":

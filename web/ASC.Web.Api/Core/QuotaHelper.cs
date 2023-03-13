@@ -106,7 +106,10 @@ public class QuotaHelper
 
         foreach (var feature in quota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
         {
-            var result = new TenantQuotaFeatureDto();
+            var result = new TenantQuotaFeatureDto()
+            {
+                Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}")
+            };
 
             if (feature.Paid)
             {
@@ -121,6 +124,7 @@ public class QuotaHelper
             {
                 result.Value = size.Value == long.MaxValue ? -1 : size.Value;
                 result.Type = "size";
+                result.Title = string.Format(result.Title, FileSizeComment.FilesSizeToString((long)result.Value));
 
                 await GetStat<long>();
             }
@@ -150,7 +154,6 @@ public class QuotaHelper
             }
             else
             {
-                result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
                 var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
 
                 if (img != null)

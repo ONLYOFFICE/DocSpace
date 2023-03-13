@@ -174,7 +174,11 @@ const PriceCalculation = ({
           : t("PriceCalculation")}
       </Text>
       {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-        <CurrentUsersCountContainer isNeedPlusSign={isNeedPlusSign} t={t} />
+        <CurrentUsersCountContainer
+          isNeedPlusSign={isNeedPlusSign}
+          t={t}
+          isDisabled={isDisabled}
+        />
       ) : (
         <SelectUsersCountContainer
           isNeedPlusSign={isNeedPlusSign}

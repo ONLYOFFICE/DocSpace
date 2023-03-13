@@ -1,6 +1,6 @@
 {
   "name": "docspace",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "private": true,
   "workspaces": {
     "packages": [
@@ -8,7 +8,7 @@
     ]
   },
   "engines": {
-    "node": ">=14",
+    "node": ">=18",
     "yarn": ">=3"
   },
   "scripts": {
