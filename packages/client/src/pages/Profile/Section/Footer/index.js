@@ -36,7 +36,7 @@ const tickIcon = (
 
 const ActiveSessions = ({
   t,
-  culture,
+  locale,
   getAllSessions,
   removeAllSessions,
   removeSession,
@@ -106,7 +106,7 @@ const ActiveSessions = ({
   };
 
   const convertTime = (date) => {
-    return new Date(date).toLocaleString(culture);
+    return new Date(date).toLocaleString(locale);
   };
 
   return (
@@ -239,6 +239,9 @@ const ActiveSessions = ({
 
 export default inject(({ auth, setup }) => {
   const { culture } = auth.settingsStore;
+  const { user } = auth.userStore;
+  const locale = (user && user.cultureName) || culture || "en";
+
   const {
     getAllSessions,
     removeAllSessions,
@@ -250,7 +253,7 @@ export default inject(({ auth, setup }) => {
     removeAllExecptThis,
   } = setup;
   return {
-    culture,
+    locale,
     getAllSessions,
     removeAllSessions,
     removeSession,
