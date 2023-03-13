@@ -255,7 +255,7 @@ const PaymentContainer = ({
                   from {{ fromDate: gracePeriodStartDate }} to{" "}
                   {{ byDate: gracePeriodEndDate }}
                 </strong>
-                ({{ delayDaysCount }})
+                (days remaining: {{ delayDaysCount }})
               </Trans>{" "}
               <Text as="span" fontSize="14px" lineHeight="16px">
                 {t("GracePeriodActivatedDescription")}

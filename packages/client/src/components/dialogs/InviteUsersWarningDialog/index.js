@@ -8,6 +8,8 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
+import { getDaysRemaining } from "../../../helpers/filesUtils";
+
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
   "/portal-settings"
@@ -43,7 +45,7 @@ const InviteUsersWarningDialog = (props) => {
     setDatesData({
       fromDate: fromDateMoment.format("LL"),
       byDate: byDateMoment.format("LL"),
-      delayDaysCount: fromDateMoment.to(byDateMoment, true),
+      delayDaysCount: getDaysRemaining(byDateMoment),
     });
   };
 
@@ -81,7 +83,7 @@ const InviteUsersWarningDialog = (props) => {
                 <strong>
                   from {{ fromDate }} to {{ byDate }}
                 </strong>
-                ({{ delayDaysCount }})
+                (days remaining: {{ delayDaysCount }})
               </Trans>
             </Text>
             <br />

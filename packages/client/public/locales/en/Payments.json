@@ -19,7 +19,7 @@
   "FreeStartupPlan": "Free {{planName}} plan",
   "GracePeriodActivated": "Grace period activated",
   "GracePeriodActivatedDescription": "During the grace period, admins cannot create new rooms and add new users. After the due date of the grace period, DocSpace will become unavailable until the payment is made.",
-  "GracePeriodActivatedInfo": "Grace period is effective <1>from {{fromDate}} to {{byDate}}</1> ({{delayDaysCount}}).",
+  "GracePeriodActivatedInfo": "Grace period is effective <1>from {{fromDate}} to {{byDate}}</1> (days remaining: {{delayDaysCount}}).",
   "InvalidEmail": "Invalid email",
   "LatePayment": "Late payment",
   "ManagerTypesDescription": "Admin account types and their privileges",

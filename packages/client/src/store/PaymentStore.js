@@ -10,7 +10,7 @@ import authStore from "@docspace/common/store/AuthStore";
 import moment from "moment";
 import { getUserByEmail } from "@docspace/common/api/people";
 import { getPaymentLink } from "@docspace/common/api/portal";
-
+import { getDaysRemaining } from "../helpers/filesUtils";
 class PaymentStore {
   salesEmail = "";
   helpUrl = "https://helpdesk.onlyoffice.com";
@@ -79,7 +79,7 @@ class PaymentStore {
       this.gracePeriodStartDate = fromDateMoment.format("LL");
       this.gracePeriodEndDate = byDateMoment.format("LL");
 
-      this.delayDaysCount = fromDateMoment.to(byDateMoment, true);
+      this.delayDaysCount = getDaysRemaining(byDateMoment);
     };
 
     this.paymentDate = moment(
