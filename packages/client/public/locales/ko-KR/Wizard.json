@@ -5,7 +5,6 @@
   "ErrorInitWizard": "현재 서비스를 이용할 수 없습니다, 나중에 다시 시도해주세요.",
   "ErrorInitWizardButton": "다시 시도",
   "ErrorLicenseBody": "유효하지 않은 라이센스입니다. 올바른 파일을 선택해주세요",
-  "ErrorLicenseTitle": "오류 로드 중",
   "ErrorParamsBody": "유효하지 않은 데이터가 입력되었습니다:",
   "ErrorParamsTitle": "등록 오류",
   "ErrorPassword": "비밀번호가 조건에 부합하지 않습니다",

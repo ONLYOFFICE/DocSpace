@@ -5,7 +5,6 @@
   "ErrorInitWizard": "В данный момент сервис недоступен, попробуйте позже.",
   "ErrorInitWizardButton": "Попробовать снова",
   "ErrorLicenseBody": "Лицензия недействительна. Убедитесь, что вы выбрали верный файл",
-  "ErrorLicenseTitle": "Ошибка загрузки",
   "ErrorParamsBody": "Введены некорректные данные:",
   "ErrorParamsTitle": "Ошибка регистрации",
   "ErrorPassword": "Пароль не соответствует требованиям",
