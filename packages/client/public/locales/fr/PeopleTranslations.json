@@ -4,6 +4,7 @@
   "DisabledEmployeeStatus": "Désactivé",
   "EmailChangeButton": "Modifier e-mail",
   "EnableUserButton": "Activer ",
+  "InviteLinkTitle": "Lien d'invitation",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Modifier le mot de passe",
   "PendingTitle": "En attente",

@@ -4,6 +4,7 @@
   "DisabledEmployeeStatus": "已禁用",
   "EmailChangeButton": "更改电子邮件",
   "EnableUserButton": "启用",
+  "InviteLinkTitle": "邀请链接",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "更改密码",
   "PendingTitle": "待定",
