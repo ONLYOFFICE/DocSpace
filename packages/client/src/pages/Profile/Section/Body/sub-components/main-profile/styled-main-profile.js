@@ -289,5 +289,9 @@ export const StyledRow = styled.div`
         padding-left: 8px !important;
       }
     }
+
+    .language-combo-box {
+      margin-left: 0;
+    }
   }
 `;

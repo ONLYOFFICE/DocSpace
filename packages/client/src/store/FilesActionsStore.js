@@ -1613,7 +1613,7 @@ class FilesActionStore {
           return {
             id: "menu-archive",
             key: "archive",
-            label: t("Archive"),
+            label: t("ToArchive"),
             iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,
