@@ -48,6 +48,15 @@ public class VersionController : BaseSettingsController
         _buildVersion = buildVersion;
     }
 
+    /// <summary>
+    /// Returns the current build version.
+    /// </summary>
+    /// <short>Get the current build version</short>
+    /// <category>Versions</category>
+    /// <path>api/2.0/settings/version/build</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <returns>Current ONLYOFFICE, editor, mailserver versions</returns>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("version/build")]
@@ -56,12 +65,33 @@ public class VersionController : BaseSettingsController
         return await _buildVersion.GetCurrentBuildVersionAsync();
     }
 
+    /// <summary>
+    /// Returns a list of the availibe portal versions including the current version.
+    /// </summary>
+    /// <short>
+    /// Get the portal versions
+    /// </short>
+    /// <category>Versions</category>
+    /// <path>api/2.0/settings/version</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns>List of availibe portal versions including the current version</returns>
     [HttpGet("version")]
     public TenantVersionDto GetVersions()
     {
         return new TenantVersionDto(Tenant.Version, _tenantManager.GetTenantVersions());
     }
 
+    /// <summary>
+    /// Sets a version with the ID specified in the request to the current tenant.
+    /// </summary>
+    /// <short>
+    /// Change the portal version
+    /// </short>
+    /// <category>Versions</category>
+    /// <param name="inDto">Version ID</param>
+    /// <path>api/2.0/settings/version</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns>List of availibe portal versions including the current version</returns>
     [HttpPut("version")]
     public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
     {
