@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
-import { getConvertedSize } from "@docspace/common/utils";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -40,18 +39,6 @@ class PaymentQuotasStore {
   get tariffTitle() {
     return this.portalPaymentQuotas?.title;
   }
-
-  replaceTotalSizeValueInTranslation = (t) => {
-    const totalSizeObj = this.portalPaymentQuotasFeatures.find(
-      (el) => el.id === TOTAL_SIZE
-    );
-    const replacedValue = totalSizeObj.title.replace(
-      "{0}",
-      getConvertedSize(t, totalSizeObj.value)
-    );
-
-    totalSizeObj.title = replacedValue;
-  };
 
   get usedTotalStorageSizeTitle() {
     const result = this.portalPaymentQuotasFeatures.find(
