@@ -26,12 +26,7 @@ export function getPortalPasswordSettings(confirmKey = null) {
   return request(options);
 }
 
-export function setPortalPasswordSettings(
-  minLength,
-  upperCase,
-  digits,
-  specSymbols
-) {
+export function setPortalPasswordSettings(minLength, upperCase, digits, specSymbols) {
   return request({
     method: "put",
     url: "/settings/security/password.json",
@@ -225,13 +220,7 @@ export function restoreWhiteLabelSettings(isDefault) {
   });
 }
 
-export function setCompanyInfoSettings(
-  address,
-  companyName,
-  email,
-  phone,
-  site
-) {
+export function setCompanyInfoSettings(address, companyName, email, phone, site) {
   const data = {
     settings: { address, companyName, email, phone, site },
   };
@@ -267,7 +256,7 @@ export function getCustomSchemaList() {
 export function setAdditionalResources(
   feedbackAndSupportEnabled,
   videoGuidesEnabled,
-  helpCenterEnabled
+  helpCenterEnabled,
 ) {
   const data = {
     settings: {
@@ -314,7 +303,7 @@ export function setCustomSchema(
   regDateCaption,
   groupHeadCaption,
   guestCaption,
-  guestsCaption
+  guestsCaption,
 ) {
   const data = {
     userCaption,
@@ -379,14 +368,7 @@ export function getMachineName(confirmKey = null) {
   return request(options);
 }
 
-export function setPortalOwner(
-  email,
-  hash,
-  lng,
-  timeZone,
-  confirmKey = null,
-  analytics
-) {
+export function setPortalOwner(email, hash, lng, timeZone, confirmKey = null, analytics) {
   const options = {
     method: "put",
     url: "/settings/wizard/complete.json",
@@ -692,5 +674,58 @@ export function removeActiveSession(eventId) {
     method: "put",
     url: `/security/activeconnections/logout/${eventId}`,
     data: { eventId },
+  });
+}
+
+export function createWebhook(name, url, secretKey) {
+  return request({
+    method: "post",
+    url: `/settings/webhook`,
+    data: { Name: name, Uri: url, SecretKey: secretKey },
+  });
+}
+
+export function getAllWebhooks() {
+  return request({
+    method: "get",
+    url: `/settings/webhook`,
+  });
+}
+
+export function updateWebhook(name, url, secretKey) {
+  return request({
+    method: "put",
+    url: `/settings/webhook`,
+    data: { Name: name, Uri: url, SecretKey: secretKey },
+  });
+}
+
+export function removeWebhook(id) {
+  return request({
+    method: "delete",
+    url: `/settings/webhook/${id}`
+  });
+}
+
+export function getJournal(hookname, logCount) {
+  return request({
+    method: "get",
+    url: `/settings/webhooks/log?count=${logCount}`,
+    data: { hookname },
+  });
+}
+
+export function retryWebhook(webhookId) {
+  return request({
+    method: "put",
+    url: `/settings/webhook/${webhookId}/retry`,
+  });
+}
+
+export function retryWebhooks(webhooksIds) {
+  return request({
+    method: "put",
+    url: `/settings/webhook/retry`,
+    data: { Ids: webhooksIds },
   });
 }
