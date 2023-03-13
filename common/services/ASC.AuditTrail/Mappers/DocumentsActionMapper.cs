@@ -120,7 +120,7 @@ internal class FoldersActionMapper : IModuleActionMapper
                 EntryType.Folder, EntryType.Folder, new Dictionary<ActionType, MessageAction[]>()
                 {
                     { ActionType.Copy, new[] { MessageAction.FolderCopied, MessageAction.FolderCopiedWithOverwriting } },
-                    { ActionType.Move, new[] { MessageAction.FolderMoved, MessageAction.FolderMovedFrom, MessageAction.FolderMovedWithOverwriting } },
+                    { ActionType.Move, new[] { MessageAction.FolderMoved, MessageAction.FolderMovedWithOverwriting } },
                 }
             },
         };
@@ -151,8 +151,12 @@ internal class RoomsActionMapper : IModuleActionMapper
                             MessageAction.DeletedRoomTags,
                             MessageAction.RoomLogoCreated,
                             MessageAction.RoomLogoDeleted,
+                            MessageAction.RoomCreateUser,
                             MessageAction.RoomUpdateAccessForUser,
-                            MessageAction.RoomLinkUpdate,
+                            MessageAction.RoomRemoveUser,
+                            MessageAction.RoomLinkCreated,
+                            MessageAction.RoomLinkUpdated,
+                            MessageAction.RoomLinkDeleted
                         }
                     },
                     {
