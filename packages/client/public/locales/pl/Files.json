@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Przenieś elementy {{element}}",
   "TrashEmptyDescription": "Dział 'Kosz' zawiera wszystkie usunięte pliki. Możesz przywrócić pliki jeśli zostały one usunięte przez pomyłkę lub usunąć ostatecznie. Po usunięciu ostatecznym przywrócenie już nie będzie możliwe.",
   "UnblockVersion": "Odblokuj/Check-in",
-  "UploadToFolder": "Wgraj do folderu",
   "VersionBadge": "W.{{version}}",
   "VersionHistory": "Historia wersji",
   "ViewList": "Lista",

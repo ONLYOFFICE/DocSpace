@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Přesunout prvky {{element}}",
   "TrashEmptyDescription": "Sekce 'Koš' je místo, kam jsou všechny smazané soubory přemístěny. Můžete je obnovit v případě, že byly smazány nedopatřením nebo je odstraňte trvale. Prosím berte v úvahu, že pokud vymažete Vaše soubory z 'Koše', již je nemůžete znovu obnovit.",
   "UnblockVersion": "Odblokování/přihlášení",
-  "UploadToFolder": "Nahrát do složky",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Historie verzí",
   "ViewList": "Seznam",

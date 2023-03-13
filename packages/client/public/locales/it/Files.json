@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Sposta {{element}} elementi",
   "TrashEmptyDescription": "Tutti i file eliminati vengono spostati nel 'Cestino'. Ripristina i file cancellati per errore o cancellali definitivamente. Tieni presente che i file eliminati dal 'Cestino' non possono più essere ripristinati.",
   "UnblockVersion": "Sblocca/Controlla",
-  "UploadToFolder": "Carica nella cartella",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Cronologia delle versioni",
   "ViewList": "Lista",
