@@ -27,6 +27,7 @@ const InviteUsersWarningDialog = (props) => {
     setIsVisible,
     isGracePeriod,
     currentTariffPlanTitle,
+    isPaymentPageAvailable,
   } = props;
 
   const [datesData, setDatesData] = useState({});
@@ -107,10 +108,12 @@ const InviteUsersWarningDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={t("UpgradePlan")}
+          label={
+            isPaymentPageAvailable ? t("UpgradePlan") : t("Common:OKButton")
+          }
           size="normal"
           primary
-          onClick={onUpgradePlan}
+          onClick={isPaymentPageAvailable ? onUpgradePlan : onClose}
           scale
         />
         <Button
@@ -126,6 +129,7 @@ const InviteUsersWarningDialog = (props) => {
 };
 
 export default inject(({ auth, dialogsStore }) => {
+  const { isPaymentPageAvailable } = auth;
   const {
     dueDate,
     delayDueDate,
@@ -139,6 +143,7 @@ export default inject(({ auth, dialogsStore }) => {
   } = dialogsStore;
 
   return {
+    isPaymentPageAvailable,
     currentTariffPlanTitle,
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,

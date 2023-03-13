@@ -134,6 +134,14 @@ class AuthStore {
     return !user.isAdmin && !user.isOwner && !user.isVisitor;
   }
 
+  get isPaymentPageAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin;
+  }
+
   login = async (user, hash, session = true) => {
     try {
       const response = await api.user.login(user, hash, session);
