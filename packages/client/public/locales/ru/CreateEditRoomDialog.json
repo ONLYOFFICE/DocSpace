@@ -11,6 +11,7 @@
   "DropzoneTitleSecondary": "или перетащите сюда файл",
   "FillingFormsRoomDescription": "Данная комната подойдет для сбора форм/анкет/тестов и тд.",
   "FillingFormsRoomTitle": "Комната для заполнения форм",
+  "Icon": "Иконка",
   "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
   "MakeRoomPrivateLimitationsWarningDescription": "С данной функцией Вы можете пригласить только уже существующих пользователей на портале. После создания комнаты изменить список пользователей будет нельзя.",
   "MakeRoomPrivateTitle": "Сделайте комнату приватной",

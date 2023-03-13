@@ -17,6 +17,7 @@ import { getRoomTypeDefaultTagTranslation } from "../data";
 
 import ImageEditor from "@docspace/components/ImageEditor";
 import PreviewTile from "@docspace/components/ImageEditor/PreviewTile";
+import Text from "@docspace/components/text";
 
 const StyledSetRoomParams = styled.div`
   display: flex;
@@ -24,6 +25,9 @@ const StyledSetRoomParams = styled.div`
   width: 100%;
   gap: 22px;
 
+  .icon-editor_text {
+    margin-bottom: 6px;
+  }
   .icon-editor {
     display: flex;
     flex-direction: row;
@@ -126,27 +130,32 @@ const SetRoomParams = ({
         />
       )}
 
-      <ImageEditor
-        t={t}
-        isDisabled={isDisabled}
-        image={roomParams.icon}
-        setPreview={setPreviewIcon}
-        onChangeImage={onChangeIcon}
-        classNameWrapperImageCropper={"icon-editor"}
-        Preview={
-          <PreviewTile
-            t={t}
-            title={roomParams.title || t("Files:NewRoom")}
-            previewIcon={previewIcon}
-            tags={roomParams.tags.map((tag) => tag.name)}
-            isDisabled={isDisabled}
-            defaultTagLabel={getRoomTypeDefaultTagTranslation(
-              roomParams.type,
-              t
-            )}
-          />
-        }
-      />
+      <div>
+        <Text fontWeight={600} className="icon-editor_text">
+          {t("Icon")}
+        </Text>
+        <ImageEditor
+          t={t}
+          isDisabled={isDisabled}
+          image={roomParams.icon}
+          setPreview={setPreviewIcon}
+          onChangeImage={onChangeIcon}
+          classNameWrapperImageCropper={"icon-editor"}
+          Preview={
+            <PreviewTile
+              t={t}
+              title={roomParams.title || t("Files:NewRoom")}
+              previewIcon={previewIcon}
+              tags={roomParams.tags.map((tag) => tag.name)}
+              isDisabled={isDisabled}
+              defaultTagLabel={getRoomTypeDefaultTagTranslation(
+                roomParams.type,
+                t
+              )}
+            />
+          }
+        />
+      </div>
     </StyledSetRoomParams>
   );
 };
