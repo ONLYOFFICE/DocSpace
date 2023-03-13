@@ -438,11 +438,11 @@ public class StorageController : BaseSettingsController
     }
 
     [HttpGet("storage/backup")]
-    public List<StorageDto> GetAllBackupStorages()
+    public async Task<List<StorageDto>> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var schedule = _backupAjaxHandler.GetSchedule();
+        var schedule = await _backupAjaxHandler.GetScheduleAsync();
         var current = new StorageSettings();
 
         if (schedule != null && schedule.StorageType == BackupStorageType.ThirdPartyConsumer)

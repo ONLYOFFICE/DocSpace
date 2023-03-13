@@ -69,7 +69,7 @@ public class BackupRestoreRequestedIntegrationEventHandler : IIntegrationEventHa
             _tenantManager.SetCurrentTenant(@event.TenantId);
             _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
 
-            _backupAjaxHandler.StartRestore(@event.BackupId,
+            await _backupAjaxHandler.StartRestoreAsync(@event.BackupId,
                                             @event.StorageType,
                                             @event.StorageParams,
                                             @event.Notify);

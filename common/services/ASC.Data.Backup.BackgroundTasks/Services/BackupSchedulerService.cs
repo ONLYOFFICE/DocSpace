@@ -73,7 +73,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
             _logger.DebugBackupSchedulerServiceDoingWork();
 
-            ExecuteBackupScheduler(stoppingToken);
+            await ExecuteBackupSchedulerAsync(stoppingToken);
 
             await Task.Delay(_backupSchedulerPeriod, stoppingToken);
         }
@@ -81,7 +81,7 @@ public sealed class BackupSchedulerService : BackgroundService
         _logger.DebugBackupSchedulerServiceStopping();
     }
 
-    private void ExecuteBackupScheduler(CancellationToken stoppingToken)
+    private async Task ExecuteBackupSchedulerAsync(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
@@ -92,7 +92,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
         _logger.DebugStartedToSchedule();
 
-        var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
+        var backupsToSchedule = (await backupRepository.GetBackupSchedulesAsync()).Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
 
         _logger.DebugBackupsSchedule(backupsToSchedule.Count);
 
@@ -113,7 +113,7 @@ public sealed class BackupSchedulerService : BackgroundService
                     {
                         schedule.LastBackupTime = DateTime.UtcNow;
 
-                        backupRepository.SaveBackupSchedule(schedule);
+                        await backupRepository.SaveBackupScheduleAsync(schedule);
 
                         _logger.DebugStartScheduledBackup(schedule.TenantId, schedule.StorageType, schedule.StorageBasePath);
 

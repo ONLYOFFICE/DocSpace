@@ -53,9 +53,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup Schedule</returns>
     [HttpGet("getbackupschedule")]
-    public BackupAjaxHandler.Schedule GetBackupSchedule()
+    public Task<BackupAjaxHandler.Schedule> GetBackupSchedule()
     {
-        return _backupHandler.GetSchedule();
+        return _backupHandler.GetScheduleAsync();
     }
 
     /// <summary>
@@ -87,9 +87,9 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     [HttpDelete("deletebackupschedule")]
-    public bool DeleteBackupSchedule()
+    public async Task<bool> DeleteBackupSchedule()
     {
-        _backupHandler.DeleteSchedule();
+        await _backupHandler.DeleteScheduleAsync();
 
         return true;
     }

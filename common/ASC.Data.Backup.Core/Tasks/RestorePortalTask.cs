@@ -118,7 +118,7 @@ public class RestorePortalTask : PortalTaskBase
 
                     await restoreTask.RunJob();
                 }
-                _backupRepository.MigrationBackupRecords(TenantId, _columnMapper.GetTenantMapping(), _region);
+                await _backupRepository.MigrationBackupRecordsAsync(TenantId, _columnMapper.GetTenantMapping(), _region);
             }
 
             _options.DebugEndRestoreData();

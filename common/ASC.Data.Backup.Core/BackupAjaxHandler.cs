@@ -127,7 +127,7 @@ public class BackupAjaxHandler
     {
         DemandPermissionsBackup();
 
-        await _backupService.DeleteAllBackups(GetCurrentTenantId());
+        await _backupService.DeleteAllBackupsAsync(GetCurrentTenantId());
     }
 
     public async Task<List<BackupHistoryRecord>> GetBackupHistory()
@@ -173,16 +173,16 @@ public class BackupAjaxHandler
                 break;
         }
 
-        _backupService.CreateSchedule(scheduleRequest);
+        _backupService.CreateScheduleAsync(scheduleRequest);
     }
 
-    public Schedule GetSchedule()
+    public async Task<Schedule> GetScheduleAsync()
     {
         DemandPermissionsBackup();
 
         ScheduleResponse response;
 
-        response = _backupService.GetSchedule(GetCurrentTenantId());
+        response = await _backupService.GetScheduleAsync(GetCurrentTenantId());
         if (response == null)
         {
             return null;
@@ -224,7 +224,7 @@ public class BackupAjaxHandler
                 StorageParams = schedule.StorageParams
             };
 
-            _backupService.CreateSchedule(Schedule);
+            _backupService.CreateScheduleAsync(Schedule);
 
         }
         else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
@@ -235,12 +235,11 @@ public class BackupAjaxHandler
         return schedule;
     }
 
-    public void DeleteSchedule()
+    public Task DeleteScheduleAsync()
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteSchedule(GetCurrentTenantId());
-
+        return _backupService.DeleteScheduleAsync(GetCurrentTenantId());
     }
 
     private void DemandPermissionsBackup()
@@ -257,7 +256,7 @@ public class BackupAjaxHandler
 
     #region restore
 
-    public void StartRestore(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
+    public Task StartRestoreAsync(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
     {
         DemandPermissionsRestore();
 
@@ -283,7 +282,7 @@ public class BackupAjaxHandler
             }
         }
 
-        _backupService.StartRestore(restoreRequest);
+        return _backupService.StartRestoreAsync(restoreRequest);
     }
 
     public BackupProgress GetRestoreProgress()

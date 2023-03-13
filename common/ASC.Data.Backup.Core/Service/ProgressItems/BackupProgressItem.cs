@@ -137,7 +137,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             var repo = _backupRepository;
 
-            repo.SaveBackupRecord(
+            await repo.SaveBackupRecordAsync(
                 new BackupRecord
                 {
                     Id = Guid.Parse(Id),

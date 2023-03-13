@@ -46,9 +46,7 @@ public class BackupDeleteScheldureRequestedIntegrationEventHandler : IIntegratio
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            _backupService.DeleteSchedule(@event.TenantId);
-
-            await Task.CompletedTask;
+            await _backupService.DeleteScheduleAsync(@event.TenantId);
         }
     }
 }

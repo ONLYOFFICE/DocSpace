@@ -132,7 +132,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             if (!_coreBaseSettings.Standalone)
             {
                 var backupHash = BackupWorker.GetBackupHash(tempFile);
-                var record = _backupRepository.GetBackupRecord(backupHash, TenantId);
+                var record = await _backupRepository.GetBackupRecordAsync(backupHash, TenantId);
 
                 if (record == null)
                 {

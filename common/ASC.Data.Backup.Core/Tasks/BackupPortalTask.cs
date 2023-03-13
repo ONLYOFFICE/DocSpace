@@ -261,8 +261,8 @@ public class BackupPortalTask : PortalTaskBase
     private async Task<IEnumerable<BackupFileInfo>> GetFiles(int tenantId)
     {
         var files = (await GetFilesToProcess(tenantId)).ToList();
-        using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        using var backupRecordContext = await _dbContextFactory.CreateDbContextAsync();
+        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -625,8 +625,8 @@ public class BackupPortalTask : PortalTaskBase
     {
         var files = (await GetFilesToProcess(TenantId)).ToList();
 
-        using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        using var backupRecordContext = await _dbContextFactory.CreateDbContextAsync();
+        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 

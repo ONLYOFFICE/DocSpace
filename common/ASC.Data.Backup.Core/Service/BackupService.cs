@@ -60,8 +60,8 @@ public class BackupService : IBackupService
 
     public async Task DeleteBackup(Guid id)
     {
-        var backupRecord = _backupRepository.GetBackupRecord(id);
-        _backupRepository.DeleteBackupRecord(backupRecord.Id);
+        var backupRecord = await _backupRepository.GetBackupRecordAsync(id);
+        await _backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
 
         var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
         if (storage == null)
@@ -72,13 +72,13 @@ public class BackupService : IBackupService
         await storage.Delete(backupRecord.StoragePath);
     }
 
-    public async Task DeleteAllBackups(int tenantId)
+    public async Task DeleteAllBackupsAsync(int tenantId)
     {
-        foreach (var backupRecord in _backupRepository.GetBackupRecordsByTenantId(tenantId))
+        foreach (var backupRecord in await _backupRepository.GetBackupRecordsByTenantIdAsync(tenantId))
         {
             try
             {
-                _backupRepository.DeleteBackupRecord(backupRecord.Id);
+                await _backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
                 var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
                 if (storage == null)
                 {
@@ -97,7 +97,7 @@ public class BackupService : IBackupService
     public async Task<List<BackupHistoryRecord>> GetBackupHistory(int tenantId)
     {
         var backupHistory = new List<BackupHistoryRecord>();
-        foreach (var record in _backupRepository.GetBackupRecordsByTenantId(tenantId))
+        foreach (var record in await _backupRepository.GetBackupRecordsByTenantIdAsync(tenantId))
         {
             var storage = _backupStorageFactory.GetBackupStorage(record);
             if (storage == null)
@@ -118,7 +118,7 @@ public class BackupService : IBackupService
             }
             else
             {
-                _backupRepository.DeleteBackupRecord(record.Id);
+                await _backupRepository.DeleteBackupRecordAsync(record.Id);
             }
         }
         return backupHistory;
@@ -133,7 +133,7 @@ public class BackupService : IBackupService
         }
     }
 
-    public void StartRestore(StartRestoreRequest request)
+    public async Task StartRestoreAsync(StartRestoreRequest request)
     {
         if (request.StorageType == BackupStorageType.Local)
         {
@@ -145,7 +145,7 @@ public class BackupService : IBackupService
 
         if (!request.BackupId.Equals(Guid.Empty))
         {
-            var backupRecord = _backupRepository.GetBackupRecord(request.BackupId);
+            var backupRecord = await _backupRepository.GetBackupRecordAsync(request.BackupId);
             if (backupRecord == null)
             {
                 throw new FileNotFoundException();
@@ -183,9 +183,9 @@ public class BackupService : IBackupService
         return _backupWorker.TempFolder;
     }
 
-    public void CreateSchedule(CreateScheduleRequest request)
+    public Task CreateScheduleAsync(CreateScheduleRequest request)
     {
-        _backupRepository.SaveBackupSchedule(
+        return _backupRepository.SaveBackupScheduleAsync(
             new BackupSchedule()
             {
                 TenantId = request.TenantId,
@@ -197,14 +197,14 @@ public class BackupService : IBackupService
             });
     }
 
-    public void DeleteSchedule(int tenantId)
+    public Task DeleteScheduleAsync(int tenantId)
     {
-        _backupRepository.DeleteBackupSchedule(tenantId);
+        return _backupRepository.DeleteBackupScheduleAsync(tenantId);
     }
 
-    public ScheduleResponse GetSchedule(int tenantId)
+    public async Task<ScheduleResponse> GetScheduleAsync(int tenantId)
     {
-        var schedule = _backupRepository.GetBackupSchedule(tenantId);
+        var schedule = await _backupRepository.GetBackupScheduleAsync(tenantId);
         if (schedule != null)
         {
             var tmp = new ScheduleResponse
