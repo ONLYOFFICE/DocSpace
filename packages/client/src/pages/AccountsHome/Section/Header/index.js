@@ -173,6 +173,8 @@ const SectionHeaderContent = (props) => {
     isOwner,
 
     setInvitePanelOptions,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -215,6 +217,11 @@ const SectionHeaderContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.target.dataset.type;
+
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setInvitePanelOptions({
       visible: true,
@@ -353,9 +360,13 @@ export default withRouter(
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
-    const { setInvitePanelOptions } = dialogsStore;
+    const {
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const { isOwner, isAdmin } = auth.userStore.user;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
@@ -384,6 +395,8 @@ export default withRouter(
       isOwner,
       isAdmin,
       setInvitePanelOptions,
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
     };
   })(
     withTranslation([
