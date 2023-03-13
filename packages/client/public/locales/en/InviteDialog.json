@@ -1,14 +1,14 @@
 {
+  "AddManually": "Add manually",
+  "AddManuallyDescriptionAccounts": "Invite new users to DocSpace personally via email",
+  "AddManuallyDescriptionRoom": "Add existing DocSpace users to the room using the names or invite new users personally via email",
   "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
   "InviteAccountSearchPlaceholder": "Invite people by email",
   "InviteRoomSearchPlaceholder": "Invite people by name or email",
+  "InviteViaLink": "Invite via link",
+  "InviteViaLinkDescriptionAccounts": "Create a universal link for self-authorization in DocSpace",
+  "InviteViaLinkDescriptionRoom": "Create a universal link for self-authorization in the room",
   "Invited": "Invited",
   "LinkCopySuccess": "Link has been copied",
-  "SendInvitation": "Send invitation",
-  "InviteViaLink": "Invite via link",
-  "InviteViaLinkDescriptionRoom": "Create a universal link for self-authorization in the room",
-  "InviteViaLinkDescriptionAccounts": "Create a universal link for self-authorization in DocSpace",
-  "AddManually": "Add manually",
-  "AddManuallyDescriptionRoom": "Add existing DocSpace users to the room using the names or invite new users personally via email",
-  "AddManuallyDescriptionAccounts": "Invite new users to DocSpace personally via email"
+  "SendInvitation": "Send invitation"
 }
