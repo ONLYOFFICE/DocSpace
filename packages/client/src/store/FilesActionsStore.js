@@ -957,7 +957,13 @@ class FilesActionStore {
     }
 
     muteRoomNotification(id, muteStatus)
-      .then(() => toastr.success(t("RoomNotificationsEnabled")))
+      .then(() =>
+        toastr.success(
+          muteStatus
+            ? t("RoomNotificationsDisabled")
+            : t("RoomNotificationsEnabled")
+        )
+      )
       .catch((e) => toastr.error(e))
       .finally(() => {
         Promise.all([
