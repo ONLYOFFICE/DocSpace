@@ -122,6 +122,8 @@ const ArticleMainButtonContent = (props) => {
     mainButtonMobileVisible,
 
     security,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -202,6 +204,11 @@ const ArticleMainButtonContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.action;
+
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setInvitePanelOptions({
       visible: true,
@@ -547,7 +554,11 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible, setInvitePanelOptions } = dialogsStore;
+    const {
+      setSelectFileDialogVisible,
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -558,10 +569,13 @@ export default inject(
     const currentFolderId = selectedFolderStore.id;
 
     const { isAdmin, isOwner } = auth.userStore.user;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const { canCreateFiles } = accessRightsStore;
 
     return {
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
 
