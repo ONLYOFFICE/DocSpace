@@ -222,6 +222,7 @@
   "Type": "Type",
   "Unknown": "Unknown",
   "UnknownError": "Unknown error",
+  "UnexpectedError": "An unexpected error occurred. Try again later or contact support.",
   "User": "User",
   "UsersInvited": "Users invited",
   "Version": "Version",

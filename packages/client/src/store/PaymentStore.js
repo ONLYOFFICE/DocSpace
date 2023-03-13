@@ -89,7 +89,7 @@ class PaymentStore {
     isGracePeriod && setGracePeriodDays();
   };
 
-  init = async () => {
+  init = async (t) => {
     if (this.isInitPaymentPage) return;
 
     const { currentTariffStatusStore, paymentQuotasStore } = authStore;
@@ -110,7 +110,8 @@ class PaymentStore {
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
-      toastr.error(error);
+      toastr.error(t("Common:UnexpectedError"));
+      console.error(error);
       return;
     }
 
