@@ -154,6 +154,11 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);
