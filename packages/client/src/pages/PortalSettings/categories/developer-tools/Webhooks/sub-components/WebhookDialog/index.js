@@ -53,30 +53,35 @@ export const WebhookDialog = ({
   webhook,
   passwordSettings,
 }) => {
+  const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [webhookInfo, setWebhookInfo] = useState({
+    id: 0,
+    title: webhook ? webhook.title : "",
+    url: webhook ? webhook.url : "",
+    secretKey: webhook ? webhook.secretKey : "",
+    isEnabled: webhook ? webhook.isEnabled : true,
+  });
+
+  const submitButtonRef = useRef();
+
   const onModalClose = () => {
     onClose();
     isSettingsModal && setIsResetVisible(true);
   };
 
-  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
-  const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
+  const hideReset = () => setIsResetVisible(false);
 
-  const submitButtonRef = useRef();
-
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-
-  const [webhookInfo, setWebhookInfo] = useState({
-    id: 0,
-    title: webhook ? webhook.title : "",
-    url: webhook ? webhook.url : "",
-    secretKey: "",
-    isEnabled: webhook ? webhook.isEnabled : true,
-  });
   const onInputChange = (e) =>
     setWebhookInfo((prevWebhookInfo) => {
       prevWebhookInfo[e.target.name] = e.target.value;
       return prevWebhookInfo;
     });
+
+  const handleSubmitClick = () => {
+    isPasswordValid && submitButtonRef.current.click();
+    isResetVisible && submitButtonRef.current.click();
+  };
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
@@ -87,6 +92,8 @@ export const WebhookDialog = ({
     }));
     return () => window.removeEventListener("keyup", onKeyPress);
   }, []);
+
+  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={onModalClose} displayType="aside">
@@ -130,7 +137,7 @@ export const WebhookDialog = ({
               You cannot retrieve your secret key again once it has been saved. If you've lost or
               forgotten this secret key, you can reset it, but all integrations using this secret
               will need to be updated.
-              <DashedButton onClick={() => setIsResetVisible(false)}>Reset key</DashedButton>
+              <DashedButton onClick={hideReset}>Reset key</DashedButton>
             </InfoHint>
           ) : (
             <DashedButton>Generate</DashedButton>
@@ -146,9 +153,7 @@ export const WebhookDialog = ({
             label={isSettingsModal ? "Save" : "Create"}
             size="normal"
             primary={true}
-            onClick={() => {
-              isPasswordValid && submitButtonRef.current.click();
-            }}
+            onClick={handleSubmitClick}
           />
           <Button label="Cancel" size="normal" onClick={onModalClose} />
         </Footer>
