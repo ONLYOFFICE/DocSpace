@@ -97,7 +97,7 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
           error instanceof Error &&
           error.message === "recursion depth exceeded"
         ) {
-          toastr.error(t("CreateEditRoomDialog:SizeImageLarge"));
+          toastr.error(t("Common:SizeImageLarge"));
         }
         console.error(error);
       })

@@ -16,7 +16,6 @@
   "ReviewRoomTitle": "Review room",
   "RoomEditing": "Room editing",
   "RootLabel": "Root",
-  "SizeImageLarge": "The image size is too large, please select another image.",
   "TagsPlaceholder": "Add a tag",
   "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
