@@ -76,6 +76,8 @@
   "DeveloperTools": "Инструменты разработчика",
   "Disabled": "Отключено",
   "DownloadCopy": "Скачать копию",
+  "DownloadReportBtnText": "Скачать отчет",
+  "DownloadReportDescription": "Отчет будет сохранен в Мои документы",
   "DownloadStatisticsText": "Для просмотра подробной статистики вы можете скачать отчет по данным, доступным в течение выбранного периода хранения.",
   "EditColorScheme": "Редактирование цветовой схемы",
   "EditCurrentTheme": "Редактирование текущей темы",
