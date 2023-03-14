@@ -198,7 +198,7 @@ class ProfileActionsStore {
       // {
       //   key: "user-menu-video",
       //   icon: VideoGuidesReactSvgUrl,
-      //   label: t("Common:VideoGuides"),
+      //   label: "VideoGuides",
       //   onClick: this.onVideoGuidesClick,
       // },
       hotkeys,
