@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 
 import styled from "styled-components";
 
@@ -6,7 +6,7 @@ import TableContainer from "@docspace/components/table-container/TableContainer"
 import TableHeader from "@docspace/components/table-container/TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
 
-import { WebhooksListRow } from "../WebhooksListRow";
+import { WebhooksTableRow } from "../WebhooksTableRow";
 
 import { Consumer } from "@docspace/components/utils/context";
 
@@ -14,10 +14,10 @@ const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
 `;
 
-export const WebhooksList = ({ webhooks, toggleEnabled, deleteWebhook, editWebhook }) => {
-  const ref = useRef(null);
+export const WebhooksTable = ({ webhooks, toggleEnabled, deleteWebhook, editWebhook }) => {
+  const tableRef = useRef(null);
 
-  const [columns, setColumns] = useState([
+  const columns = useRef([
     {
       key: "Name",
       title: "Name",
@@ -48,10 +48,10 @@ export const WebhooksList = ({ webhooks, toggleEnabled, deleteWebhook, editWebho
     <Consumer>
       {(context) => {
         return (
-          <TableWrapper forwardedRef={ref}>
+          <TableWrapper forwardedRef={tableRef}>
             <TableHeader
-              columns={columns}
-              containerRef={ref}
+              columns={columns.current}
+              containerRef={tableRef}
               checkboxMargin="12px"
               checkboxSize="48px"
               sectionWidth={context.sectionWidth}
@@ -59,7 +59,7 @@ export const WebhooksList = ({ webhooks, toggleEnabled, deleteWebhook, editWebho
             />
             <TableBody>
               {webhooks.map((webhook, index) => (
-                <WebhooksListRow
+                <WebhooksTableRow
                   key={webhook.id}
                   webhook={webhook}
                   index={index}
