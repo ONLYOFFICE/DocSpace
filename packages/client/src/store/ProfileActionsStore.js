@@ -195,12 +195,12 @@ class ProfileActionsStore {
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
       },
-      {
-        key: "user-menu-video",
-        icon: VideoGuidesReactSvgUrl,
-        label: t("Common:VideoGuides"),
-        onClick: this.onVideoGuidesClick,
-      },
+      // {
+      //   key: "user-menu-video",
+      //   icon: VideoGuidesReactSvgUrl,
+      //   label: t("Common:VideoGuides"),
+      //   onClick: this.onVideoGuidesClick,
+      // },
       hotkeys,
       {
         key: "user-menu-about",
