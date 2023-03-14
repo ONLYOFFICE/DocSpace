@@ -106,16 +106,17 @@ const SetRoomParams = ({
         setIsScrollLocked={setIsScrollLocked}
         isDisabled={isDisabled}
       />
-      {/* //TODO: Uncomment when private rooms are done */}
-      {/* {!isEdit && (
+      {/* //TODO: Uncomment when private rooms are done
+      {!isEdit && (
         <IsPrivateParam
           t={t}
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
       )} */}
-      {/* //TODO: Uncomment when third-party storages will be stable */}
-      {/* {!isEdit && enableThirdParty && (
+
+      {/* //TODO: Uncomment when third-party storages will be stable
+       {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
