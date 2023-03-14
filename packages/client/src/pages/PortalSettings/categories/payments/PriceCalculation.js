@@ -135,7 +135,7 @@ const PriceCalculation = ({
         }
         fontWeight={600}
       >
-        <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+        <Trans t={t} i18nKey="PerUserMonth" ns="Common">
           ""
           <Text
             fontSize="16px"

@@ -284,7 +284,7 @@ const PaymentContainer = ({
                 fontSize={"14px"}
                 className="payment-info_managers-price"
               >
-                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+                <Trans t={t} i18nKey="PerUserMonth" ns="Common">
                   From {{ currencySymbol }}
                   {{ price: startValue }} per admin/month
                 </Trans>
