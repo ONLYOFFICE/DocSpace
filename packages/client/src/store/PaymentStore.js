@@ -46,14 +46,6 @@ class PaymentStore {
     makeAutoObservable(this);
   }
 
-  get isValidPaymentDateYear() {
-    const { currentTariffStatusStore } = authStore;
-    const { delayDueDate } = currentTariffStatusStore;
-    const paymentTermYear = moment(delayDueDate).year();
-
-    return paymentTermYear !== 9999;
-  }
-
   get isAlreadyPaid() {
     const { currentQuotaStore, currentTariffStatusStore } = authStore;
     const { customerId } = currentTariffStatusStore;

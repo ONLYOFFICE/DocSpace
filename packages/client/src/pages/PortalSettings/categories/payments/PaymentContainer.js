@@ -97,7 +97,6 @@ const PaymentContainer = ({
   gracePeriodEndDate,
   delayDaysCount,
 
-  isValidPaymentDateYear,
   isAlreadyPaid,
   paymentDate,
   t,
@@ -236,7 +235,7 @@ const PaymentContainer = ({
             context.sectionWidth < size.smallTablet && expandArticle
           }
         >
-          {isNotPaidPeriod && isValidPaymentDateYear
+          {isNotPaidPeriod
             ? expiredTitleSubscriptionWarning()
             : currentPlanTitle()}
 
@@ -335,7 +334,6 @@ export default inject(({ auth, payments }) => {
     gracePeriodEndDate,
     delayDaysCount,
 
-    isValidPaymentDateYear,
     isAlreadyPaid,
     paymentDate,
   } = payments;
@@ -345,7 +343,6 @@ export default inject(({ auth, payments }) => {
   return {
     paymentDate,
     isAlreadyPaid,
-    isValidPaymentDateYear,
 
     gracePeriodEndDate,
     delayDaysCount,
