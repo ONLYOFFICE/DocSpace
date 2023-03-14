@@ -390,7 +390,7 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = (item) => {
-    const { setIsVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     const { setBufferSelection } = this.peopleStore.selectionStore;
     setBufferSelection(item);
     setIsVisible(true);
