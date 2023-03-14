@@ -79,7 +79,6 @@ const SetRoomParams = ({
           isDisabled={isDisabled}
         />
       )}
-
       {isEdit && (
         <PermanentSettings
           t={t}
@@ -90,7 +89,6 @@ const SetRoomParams = ({
           isDisabled={isDisabled}
         />
       )}
-
       <InputParam
         id="shared_room-name"
         title={`${t("Common:Name")}:`}
@@ -102,14 +100,13 @@ const SetRoomParams = ({
         errorMessage={t("Common:RequiredField")}
         isAutoFocussed={true}
       />
-
       <TagInput
         t={t}
         tagHandler={tagHandler}
         setIsScrollLocked={setIsScrollLocked}
         isDisabled={isDisabled}
       />
-
+      //TODO: Uncomment when private rooms are done
       {/* {!isEdit && (
         <IsPrivateParam
           t={t}
@@ -117,8 +114,8 @@ const SetRoomParams = ({
           onChangeIsPrivate={onChangeIsPrivate}
         />
       )} */}
-
-      {!isEdit && enableThirdParty && (
+      //TODO: Uncomment when third-party storages will be stable
+      {/* {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
@@ -128,8 +125,7 @@ const SetRoomParams = ({
           setIsOauthWindowOpen={setIsOauthWindowOpen}
           isDisabled={isDisabled}
         />
-      )}
-
+      )} */}
       <div>
         <Text fontWeight={600} className="icon-editor_text">
           {t("Icon")}
