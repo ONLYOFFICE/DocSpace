@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Link, InfoText, InfoWrapper } from '../../styled-components';
 
-export const Info = () => {
+export const WebhookInfo = () => {
   return (
     <InfoWrapper>
       <InfoText>
