@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledSeveralItemsContainer = styled.div`
+  margin: 80px auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;

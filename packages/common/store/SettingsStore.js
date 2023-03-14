@@ -188,12 +188,12 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getSettings = async (withPassword) => {
+  getSettings = async () => {
     let newSettings = null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(withPassword);
+    else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(

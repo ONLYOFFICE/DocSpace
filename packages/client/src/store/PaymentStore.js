@@ -37,7 +37,6 @@ class PaymentStore {
 
   paymentDate = "";
 
-  gracePeriodStartDate = "";
   gracePeriodEndDate = "";
   delayDaysCount = "";
 
@@ -45,14 +44,6 @@ class PaymentStore {
 
   constructor() {
     makeAutoObservable(this);
-  }
-
-  get isValidPaymentDateYear() {
-    const { currentTariffStatusStore } = authStore;
-    const { delayDueDate } = currentTariffStatusStore;
-    const paymentTermYear = moment(delayDueDate).year();
-
-    return paymentTermYear !== 9999;
   }
 
   get isAlreadyPaid() {
@@ -73,20 +64,16 @@ class PaymentStore {
     } = currentTariffStatusStore;
 
     const setGracePeriodDays = () => {
-      const fromDateMoment = moment(dueDate);
-      const byDateMoment = moment(delayDueDate);
+      const delayDueDateByMoment = moment(delayDueDate);
 
-      this.gracePeriodStartDate = fromDateMoment.format("LL");
-      this.gracePeriodEndDate = byDateMoment.format("LL");
+      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
 
-      this.delayDaysCount = getDaysRemaining(byDateMoment);
+      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
     };
 
-    this.paymentDate = moment(
-      isGracePeriod || isNotPaidPeriod ? delayDueDate : dueDate
-    ).format("LL");
+    this.paymentDate = moment(dueDate).format("LL");
 
-    isGracePeriod && setGracePeriodDays();
+    (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
   };
 
   init = async (t) => {
