@@ -124,6 +124,16 @@ const PaymentContainer = ({
   };
 
   const currentPlanTitle = () => {
+    if (isFreeTariff) {
+      return (
+        <Text noSelect fontSize="16px" isBold>
+          <Trans t={t} i18nKey="StartupTitle" ns="Payments">
+            {{ planName: currentTariffPlanTitle }}
+          </Trans>
+        </Text>
+      );
+    }
+
     if (isPaidPeriod || isGracePeriod) {
       return (
         <Text noSelect fontSize="16px" isBold>
@@ -133,14 +143,6 @@ const PaymentContainer = ({
         </Text>
       );
     }
-
-    return (
-      <Text noSelect fontSize="16px" isBold>
-        <Trans t={t} i18nKey="StartupTitle" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>
-      </Text>
-    );
   };
 
   const expiredTitleSubscriptionWarning = () => {
