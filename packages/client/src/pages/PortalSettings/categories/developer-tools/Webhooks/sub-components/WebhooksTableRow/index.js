@@ -13,54 +13,53 @@ import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import { WebhookDialog } from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
 
-export const WebhooksListRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
+export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
   const [isChecked, setIsChecked] = useState(webhook.isEnabled);
-
   const [isOpen, setIsOpen] = useState(false);
+  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
+  const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
-  const [isSettings, setIsSettings] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
-  const onSettingsClose = () => {
-    setIsSettings(false);
-  };
-  const onDeleteClose = () => {
-    setIsDelete(false);
+  const closeSettings = () => setIsSettingsOpened(false);
+  const openSettings = () => setIsSettingsOpened(true);
+  const onDeleteClose = () => setIsDeleteOpened(false);
+  const toggleContextMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
+
+  const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
+  const handleWebhookDelete = () => deleteWebhook(webhook);
+  const handleToggleEnabled = () => {
+    toggleEnabled(webhook);
+    setIsChecked((prevIsChecked) => !prevIsChecked);
   };
 
-  const onClickHandler = () => {
-    setIsOpen((prevIsOpen) => !prevIsOpen);
-  };
-
-  const getData = () => {
+  const getDropdownItems = () => {
     return [
       {
-        key: "key1",
+        key: "Settings dropdownItem",
         label: "Settings",
         icon: SettingsIcon,
-        onClick: () => setIsSettings(true),
+        onClick: openSettings,
       },
       {
-        key: "key2",
+        key: "Webhook history dropdownItem",
         label: "Webhook history",
         icon: HistoryIcon,
-        onClick: () => console.log("Button 1 clicked"),
+        onClick: () => console.log("webhooks history"),
       },
       {
-        key: "key3",
+        key: "Retry dropdownItem",
         label: "Retry",
         icon: RetryIcon,
-        onClick: () => console.log("Button 1 clicked"),
+        onClick: () => console.log("retry"),
       },
       {
-        key: "key4",
+        key: "Separator dropdownItem",
         isSeparator: true,
-        onClick: () => console.log("label2"),
       },
       {
-        key: "key5",
+        key: "Delete webhook dropdownItem",
         label: "Delete webhook",
         icon: DeleteIcon,
-        onClick: () => setIsDelete(true),
+        onClick: () => setIsDeleteOpened(true),
       },
     ];
   };
@@ -71,11 +70,11 @@ export const WebhooksListRow = ({ webhook, toggleEnabled, deleteWebhook, editWeb
         <TableCell>
           {webhook.title}{" "}
           {webhook.responseStatus === "success" ? (
-            <SuccessBadge label={webhook.badgeTitle} />
+            <SuccessBadge label={webhook.responseCode} />
           ) : webhook.responseStatus === "error" ? (
-            <FailBadge label={webhook.badgeTitle} />
+            <FailBadge label={webhook.responseCode} />
           ) : (
-            <span></span>
+            ""
           )}
         </TableCell>
         <TableCell>{webhook.url}</TableCell>
@@ -84,41 +83,33 @@ export const WebhooksListRow = ({ webhook, toggleEnabled, deleteWebhook, editWeb
             className="toggle toggleButton"
             id="toggle id"
             isChecked={isChecked}
-            onChange={() => {
-              toggleEnabled(webhook);
-              setIsChecked((prevIsChecked) => !prevIsChecked);
-            }}
+            onChange={handleToggleEnabled}
           />
         </TableCell>
 
         <TableCell>
           <ContextMenuButton
             directionX="right"
-            getData={getData}
-            isDisabled={false}
+            getData={getDropdownItems}
             opened={isOpen}
-            onClick={onClickHandler}
+            onClick={toggleContextMenu}
             title="Actions"
           />
         </TableCell>
       </TableRow>
       <WebhookDialog
-        visible={isSettings}
-        onClose={onSettingsClose}
+        visible={isSettingsOpened}
+        onClose={closeSettings}
         header="Setting webhook"
         isSettingsModal={true}
         webhook={webhook}
-        onSubmit={(webhookInfo) => {
-          editWebhook(webhook, webhookInfo);
-        }}
+        onSubmit={handleWebhookUpdate}
       />
       <DeleteWebhookDialog
-        visible={isDelete}
+        visible={isDeleteOpened}
         onClose={onDeleteClose}
         header="Delete Webhook forever?"
-        handleSubmit={() => {
-          deleteWebhook(webhook);
-        }}
+        handleSubmit={handleWebhookDelete}
       />
     </>
   );
