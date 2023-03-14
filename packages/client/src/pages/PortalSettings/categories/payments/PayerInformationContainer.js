@@ -131,10 +131,6 @@ const PayerInformationContainer = ({
   );
 
   const payerName = () => {
-    let emailUnfoundedUser = email;
-
-    if (email) emailUnfoundedUser = "«" + emailUnfoundedUser + "»";
-
     return (
       <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
         {payerInfo ? (
@@ -147,7 +143,7 @@ const PayerInformationContainer = ({
               color={theme.client.settings.payment.warningColor}
               fontWeight={600}
             >
-              {{ email: emailUnfoundedUser }}
+              {{ email }}
             </Text>
             is not found
           </Trans>
