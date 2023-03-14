@@ -59,6 +59,9 @@ export const SecretKeyInput = ({
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
+  const handleInputValidation = (isValid) => {
+    setIsPasswordValid(isValid);
+  };
   return (
     <div>
       <Header>
@@ -77,9 +80,7 @@ export const SecretKeyInput = ({
           value={value}
           name={name}
           placeholder="Enter secret key"
-          onValidateInput={(isValid) => {
-            setIsPasswordValid(isValid);
-          }}
+          onValidateInput={handleInputValidation}
           hasError={!isPasswordValid}
           isDisableTooltip={true}
           inputType="password"
