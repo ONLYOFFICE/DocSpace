@@ -58,7 +58,6 @@
   "MarkRead": "Mark as read",
   "MarkedAsFavorite": "Added to favorites",
   "Media": "Media",
-  "MediaError": "Media URL could not be loaded",
   "MoveItem": "<strong>{{title}}</strong> moved",
   "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
   "MoveOrCopy": "Move or copy",

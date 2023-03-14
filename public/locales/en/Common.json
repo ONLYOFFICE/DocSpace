@@ -129,6 +129,7 @@
   "ManyEmails": "Too many email addresses parsed",
   "MaxLengthExceeded": "The maximum length of a user name or another local part is 64 characters.",
   "MeLabel": "Me",
+  "MediaError": "Media URL could not be loaded",
   "Megabyte": "MB",
   "Member": "Member",
   "Members": "Members",
