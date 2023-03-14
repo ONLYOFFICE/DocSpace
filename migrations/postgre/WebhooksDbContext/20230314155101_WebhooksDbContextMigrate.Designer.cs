@@ -9,46 +9,48 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20221019144344_WebhooksDbContextMigrate")]
+    [Migration("20230314155101_WebhooksDbContextMigrate")]
     partial class WebhooksDbContextMigrate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                b.Property<string>("Route")
-                    .IsRequired()
-                    .HasMaxLength(200)
-                    .HasColumnType("character varying(200)")
-                    .HasColumnName("route");
+                    b.Property<string>("Method")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("method")
+                        .HasDefaultValueSql("''");
 
-                b.Property<string>("Method")
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnType("character varying(10)")
-                    .HasColumnName("method");
+                    b.Property<string>("Route")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("route")
+                        .HasDefaultValueSql("''");
 
-                b.HasKey("Id")
-                    .HasName("PRIMARY");
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
 
-                b.ToTable("webhooks", (string)null);
-
-                b.HasAnnotation("MySql:CharSet", "utf8");
-            });
+                    b.ToTable("webhooks", (string)null);
+                });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
@@ -134,10 +136,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("text")
                         .HasColumnName("response_payload");
 
-                    b.Property<int>("WebhookId")
-                        .HasColumnType("int")
-                        .HasColumnName("webhook_id");
-
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
@@ -151,6 +149,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar")
                         .HasColumnName("uid");
+
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

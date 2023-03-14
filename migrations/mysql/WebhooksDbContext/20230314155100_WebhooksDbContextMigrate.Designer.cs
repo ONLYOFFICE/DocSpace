@@ -8,45 +8,48 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20221019144343_WebhooksDbContextMigrate")]
+    [Migration("20230314155100_WebhooksDbContextMigrate")]
     partial class WebhooksDbContextMigrate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                b.Property<string>("Route")
-                    .IsRequired()
-                    .HasMaxLength(200)
-                    .HasColumnType("varchar(200)")
-                    .HasColumnName("route");
+                    b.Property<string>("Method")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("method")
+                        .HasDefaultValueSql("''");
 
-                b.Property<string>("Method")
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnType("varchar(10)")
-                    .HasColumnName("method");
+                    b.Property<string>("Route")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("route")
+                        .HasDefaultValueSql("''");
 
-                b.HasKey("Id")
-                    .HasName("PRIMARY");
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
 
-                b.ToTable("webhooks", (string)null);
+                    b.ToTable("webhooks", (string)null);
 
-                b.HasAnnotation("MySql:CharSet", "utf8");
-            });
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+                });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
                 {
@@ -136,10 +139,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("ConfigId")
-                        .HasColumnType("int")
-                        .HasColumnName("config_id");
-
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
@@ -154,6 +153,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("uid")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations
+namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
     partial class WebhooksDbContextModelSnapshot : ModelSnapshot
@@ -63,6 +63,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("true");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
@@ -102,10 +108,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("config_id");
 
-                    b.Property<int>("WebhookId")
-                        .HasColumnType("int")
-                        .HasColumnName("webhook_id");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime")
                         .HasColumnName("creation_time");
@@ -144,6 +146,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar")
                         .HasColumnName("uid");
+
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
