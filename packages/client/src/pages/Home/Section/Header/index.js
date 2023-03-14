@@ -109,6 +109,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onCreateRoom = () => {
+    if (this.props.isGracePeriod) {
+      this.props.setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };
@@ -799,6 +804,7 @@ export default inject(
       setArchiveDialogVisible,
       setRestoreAllArchive,
       setArchiveAction,
+      setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
     const {
@@ -832,6 +838,7 @@ export default inject(
     const selectedFolder = { ...selectedFolderStore };
 
     const { enablePlugins } = auth.settingsStore;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
 
@@ -851,6 +858,8 @@ export default inject(
     const isEmptyArchive = !canRestoreAll && !canDeleteAll;
 
     return {
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
 
