@@ -69,6 +69,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collaborator.
+        /// </summary>
+        public static string AceStatusEnum_Collaborator {
+            get {
+                return ResourceManager.GetString("AceStatusEnum_Collaborator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comment.
         /// </summary>
         public static string AceStatusEnum_Comment {

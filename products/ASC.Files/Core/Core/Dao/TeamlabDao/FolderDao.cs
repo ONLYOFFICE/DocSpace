@@ -1506,7 +1506,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var rootFolderType = fileEntry.RootFolderType;
 
-        if (rootFolderType != FolderType.VirtualRooms)
+        if (rootFolderType != FolderType.VirtualRooms && rootFolderType != FolderType.Archive)
         {
             return (-1,"");
         }
@@ -1519,26 +1519,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             return (-1, "");
         }
 
-        var parentId = Convert.ToInt32(fileEntry.ParentId);
+        var folderId = Convert.ToInt32(fileEntry.ParentId);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-
-        if (rootFolderId == parentId)
+        if (rootFolderId == folderId)
         {
             return (entryId, fileEntry.Title);
         }
-
-        int folderId;
-        var entryType = fileEntry.FileEntryType;
-
-        if (entryType == FileEntryType.File)
-        {
-            folderId = parentId;
-        }
-        else
-        {
-            folderId = entryId;
-        }
+        
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var parentFolders = await filesDbContext.Tree
             .Join(filesDbContext.Folders, r => r.ParentId, s => s.Id, (t, f) => new { Tree = t, Folders = f })
@@ -1547,7 +1535,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Select(r => new { r.Tree.ParentId, r.Folders.Title})
             .ToListAsync();
 
-        if(parentFolders.Count() > 1)
+        if (parentFolders.Count > 1)
         {
             return (parentFolders[1].ParentId, parentFolders[1].Title);
         }

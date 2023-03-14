@@ -2664,6 +2664,22 @@ public class FileStorageService<T> //: IFileStorageService
 
         var folderDao = GetFolderDao();
         var room = (await folderDao.GetFolderAsync(roomId)).NotFoundIfNull();
+        var messageAction = MessageAction.RoomLinkCreated;
+
+        if (share == FileShare.None)
+        {
+            messageAction = MessageAction.RoomLinkDeleted;
+        }
+        else
+        {
+            var linkExist = (await _fileSecurity.GetSharesAsync(room))
+                .Any(r => r.Subject == linkId && r.SubjectType == SubjectType.InvitationLink);
+            
+            if (linkExist)
+            {
+                messageAction = MessageAction.RoomLinkUpdated;
+            }
+        }
 
         var aces = new List<AceWrapper>
         {
@@ -2685,7 +2701,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _ = _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
+                _ = _filesMessageService.Send(room, GetHttpHeaders(), messageAction, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -3391,6 +3407,7 @@ public class FileStorageService<T> //: IFileStorageService
             case FileShare.Restrict:
             case FileShare.RoomAdmin:
             case FileShare.Editing:
+            case FileShare.Collaborator:
             case FileShare.None:
                 return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToStringFast());
             default:

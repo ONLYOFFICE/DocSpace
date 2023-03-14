@@ -428,7 +428,6 @@ public enum MessageAction
     FolderCopied = 5022,
     FolderCopiedWithOverwriting = 5023,
     FolderMoved = 5024,
-    FolderMovedFrom = 5067,
     FolderMovedWithOverwriting = 5025,
     FolderMovedToTrash = 5026,
     FolderDeleted = 5027,
@@ -469,10 +468,13 @@ public enum MessageAction
     RoomArchived = 5072,
     RoomUnarchived = 5073,
     RoomDeleted = 5074,
+    
     RoomUpdateAccessForUser = 5075,
     RoomRemoveUser = 5084,
     RoomCreateUser = 5085,// last
-    RoomLinkUpdate = 5082,
+    RoomLinkUpdated = 5082,
+    RoomLinkCreated = 5086,
+    RoomLinkDeleted = 5087,
 
     TagCreated = 5076,
     TagsDeleted = 5077,

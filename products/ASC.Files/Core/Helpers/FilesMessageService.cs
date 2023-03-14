@@ -120,11 +120,18 @@ public class FilesMessageService
         SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
     }
 
-    public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
             return;
+        }
+
+        var additionalParams = await GetAdditionalNotificationParamAsync(entry1, action);
+
+        if (!string.IsNullOrEmpty(additionalParams))
+        {
+            description = description.Append(additionalParams).ToArray();
         }
 
         SendHeadersMessage(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
@@ -203,12 +210,6 @@ public class FilesMessageService
 
     private async Task<string> GetAdditionalNotificationParamAsync<T>(FileEntry<T> entry, MessageAction action, string oldTitle = null, Guid userid = default(Guid), FileShare userRole = FileShare.None)
     {
-        if (!StudioWhatsNewNotify.DailyActions.Contains(action)
-            && !StudioWhatsNewNotify.RoomsActivityActions.Contains(action))
-        {
-            return "";
-        }
-
         var folderDao = _daoFactory.GetFolderDao<int>();
         var roomInfo = await folderDao.GetParentRoomInfoFromFileEntryAsync(entry);
 
