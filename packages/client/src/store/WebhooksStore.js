@@ -64,10 +64,9 @@ class WebhooksStore {
   };
 
   editWebhook = async (prevWebhook, webhookInfo) => {
-    await updateWebhook(webhookInfo.title, webhookInfo.url, webhookInfo.secretKey);
-    console.log(prevWebhook, webhookInfo);
+    // await updateWebhook(webhookInfo.title, webhookInfo.url, webhookInfo.secretKey);
     this.webhooks = this.webhooks.map((webhook) =>
-      webhook.id === prevWebhook.id ? webhookInfo : webhook,
+      webhook.id === prevWebhook.id ? { ...prevWebhook, ...webhookInfo } : webhook,
     );
   };
 
