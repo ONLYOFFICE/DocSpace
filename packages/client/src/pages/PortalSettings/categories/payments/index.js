@@ -24,7 +24,7 @@ const PaymentsPage = ({
   }, []);
 
   useEffect(() => {
-    setDocumentTitle(t("Settings:Payments"));
+    setDocumentTitle(t("Common:PaymentsTitle"));
   }, [ready]);
 
   useEffect(() => {
