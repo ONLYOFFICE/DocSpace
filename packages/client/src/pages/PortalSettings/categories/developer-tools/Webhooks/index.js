@@ -1,8 +1,8 @@
 import Button from "@docspace/components/button";
 import React, { useState, useEffect } from "react";
 import { WebhookDialog } from "./sub-components/WebhookDialog";
-import { Info } from "./sub-components/Info";
-import { WebhooksList } from "./sub-components/WebhooksList";
+import { WebhookInfo } from "./sub-components/WebhookInfo";
+import { WebhooksTable } from "./sub-components/WebhooksTable";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 import { inject, observer } from "mobx-react";
@@ -19,8 +19,6 @@ const MainWrapper = styled.div`
 `;
 
 const Webhooks = (props) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const {
     webhooks,
     addWebhook,
@@ -32,9 +30,17 @@ const Webhooks = (props) => {
     passwordSettings,
   } = props;
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onCreateWebhook = (webhookInfo) => {
+    if (!isWebhookExist(webhookInfo)) {
+      addWebhook(webhookInfo);
+      closeModal();
+    }
   };
+
+  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => setIsModalOpen(true);
 
   useEffect(() => {
     setDocumentTitle("Developer Tools");
@@ -42,10 +48,10 @@ const Webhooks = (props) => {
 
   return (
     <MainWrapper>
-      <Info />
-      <Button label="Create webhook" primary size="small" onClick={() => setIsModalOpen(true)} />
+      <WebhookInfo />
+      <Button label="Create webhook" primary size="small" onClick={openModal} />
       {!isWebhooksEmpty && (
-        <WebhooksList
+        <WebhooksTable
           webhooks={webhooks}
           toggleEnabled={toggleEnabled}
           deleteWebhook={deleteWebhook}
@@ -56,12 +62,7 @@ const Webhooks = (props) => {
         visible={isModalOpen}
         onClose={closeModal}
         header="Create webhook"
-        onSubmit={(webhookInfo) => {
-          if (!isWebhookExist(webhookInfo)) {
-            addWebhook(webhookInfo);
-            closeModal();
-          }
-        }}
+        onSubmit={onCreateWebhook}
         passwordSettings={passwordSettings}
       />
     </MainWrapper>
@@ -70,7 +71,6 @@ const Webhooks = (props) => {
 
 export default inject(({ webhooksStore, auth }) => {
   const { settingsStore } = auth;
-
   const { passwordSettings } = settingsStore;
 
   const {
