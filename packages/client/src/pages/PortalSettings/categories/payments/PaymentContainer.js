@@ -95,7 +95,6 @@ const PaymentContainer = ({
   tariffPlanTitle,
   expandArticle,
   gracePeriodEndDate,
-  gracePeriodStartDate,
   delayDaysCount,
 
   isValidPaymentDateYear,
@@ -154,7 +153,7 @@ const PaymentContainer = ({
         color={theme.client.settings.payment.warningColor}
       >
         <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
-          {{ date: paymentDate }} {{ planName: tariffPlanTitle }}
+          {{ date: gracePeriodEndDate }} {{ planName: tariffPlanTitle }}
         </Trans>
       </Text>
     );
@@ -252,7 +251,7 @@ const PaymentContainer = ({
               <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
                 Grace period activated
                 <strong>
-                  from {{ fromDate: gracePeriodStartDate }} to{" "}
+                  from {{ fromDate: paymentDate }} to
                   {{ byDate: gracePeriodEndDate }}
                 </strong>
                 (days remaining: {{ delayDaysCount }})
@@ -334,7 +333,6 @@ export default inject(({ auth, payments }) => {
 
   const {
     gracePeriodEndDate,
-    gracePeriodStartDate,
     delayDaysCount,
 
     isValidPaymentDateYear,
@@ -350,7 +348,6 @@ export default inject(({ auth, payments }) => {
     isValidPaymentDateYear,
 
     gracePeriodEndDate,
-    gracePeriodStartDate,
     delayDaysCount,
 
     expandArticle,
