@@ -52,7 +52,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
         _backupWorker = backupWorker;
     }
 
-    public async Task Handle(BackupRequestIntegrationEvent @event)
+    public async Task HandleAsync(BackupRequestIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
@@ -67,7 +67,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
             }
 
             _tenantManager.SetCurrentTenant(@event.TenantId);
-            _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
+            await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
 
             if (@event.IsScheduled)
             {

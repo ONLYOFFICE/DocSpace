@@ -139,7 +139,7 @@ public class ThirdpartyController : ApiControllerBase
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
-        if (!(_coreBaseSettings.Standalone || _tenantManager.GetCurrentTenantQuota().Oauth))
+        if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetCurrentTenantQuotaAsync()).Oauth))
         {
             throw new Exception("ErrorNotAllowedOption");
         }
@@ -161,7 +161,7 @@ public class ThirdpartyController : ApiControllerBase
 
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]
-    public async Task SignupAccount(SignupAccountRequestDto inDto)
+    public async Task SignupAccountAsync(SignupAccountRequestDto inDto)
     {
         var employeeType = inDto.EmplType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
@@ -192,7 +192,7 @@ public class ThirdpartyController : ApiControllerBase
         var userID = Guid.Empty;
         try
         {
-            _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
             var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
             var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
@@ -211,13 +211,13 @@ public class ThirdpartyController : ApiControllerBase
 
         var user = _userManager.GetUsers(userID);
 
-        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
 
         _studioNotifyService.UserHasJoin();
 
         if (mustChangePassword)
         {
-            _studioNotifyService.UserPasswordChange(user);
+            await _studioNotifyService.UserPasswordChangeAsync(user);
         }
 
         _userHelpTourHelper.IsNewUser = true;
@@ -255,7 +255,7 @@ public class ThirdpartyController : ApiControllerBase
             userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
+        return await _userManagerWrapper.AddUserAsync(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
     }
 
     private async Task SaveContactImage(Guid userID, string url)

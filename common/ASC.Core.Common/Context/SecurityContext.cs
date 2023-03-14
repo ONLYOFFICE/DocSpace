@@ -84,7 +84,7 @@ public class SecurityContext
     }
 
 
-    public string AuthenticateMe(string login, string passwordHash, Func<int> funcLoginEvent = null)
+    public Task<string> AuthenticateMeAsync(string login, string passwordHash, Func<int> funcLoginEvent = null)
     {
         ArgumentNullException.ThrowIfNull(login);
         ArgumentNullException.ThrowIfNull(passwordHash);
@@ -92,7 +92,7 @@ public class SecurityContext
         var tenantid = _tenantManager.GetCurrentTenant().Id;
         var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
 
-        return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
+        return AuthenticateMeAsync(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
     }
 
     public async Task<bool> AuthenticateMe(string cookie)
@@ -168,7 +168,7 @@ public class SecurityContext
                 return false;
             }
 
-            AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
+            await AuthenticateMeWithoutCookieAsync(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
             return true;
         }
         catch (InvalidCredentialException ice)
@@ -188,15 +188,15 @@ public class SecurityContext
         return false;
     }
 
-    public string AuthenticateMe(Guid userId, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    public Task<string> AuthenticateMeAsync(Guid userId, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
         var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
-        return AuthenticateMe(account, funcLoginEvent, additionalClaims);
+        return AuthenticateMeAsync(account, funcLoginEvent, additionalClaims);
     }
 
-    public string AuthenticateMe(IAccount account, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    public async Task<string> AuthenticateMeAsync(IAccount account, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
-        AuthenticateMeWithoutCookie(account, additionalClaims);
+        await AuthenticateMeWithoutCookieAsync(account, additionalClaims);
 
         string cookie = null;
 
@@ -214,7 +214,7 @@ public class SecurityContext
         return cookie;
     }
 
-    public void AuthenticateMeWithoutCookie(IAccount account, List<Claim> additionalClaims = null)
+    public async Task AuthenticateMeWithoutCookieAsync(IAccount account, List<Claim> additionalClaims = null)
     {
         if (account == null || account.Equals(Configuration.Constants.Guest))
         {
@@ -246,7 +246,7 @@ public class SecurityContext
             // for LDAP users only
             if (u.Sid != null)
             {
-                if (!_tenantManager.GetTenantQuota(tenant.Id).Ldap)
+                if (!(await _tenantManager.GetTenantQuotaAsync(tenant.Id)).Ldap)
                 {
                     throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                 }
@@ -277,11 +277,11 @@ public class SecurityContext
         _authContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
     }
 
-    public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
+    public Task AuthenticateMeWithoutCookieAsync(Guid userId, List<Claim> additionalClaims = null)
     {
         var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
 
-        AuthenticateMeWithoutCookie(account, additionalClaims);
+        return AuthenticateMeWithoutCookieAsync(account, additionalClaims);
     }
 
     public void Logout()

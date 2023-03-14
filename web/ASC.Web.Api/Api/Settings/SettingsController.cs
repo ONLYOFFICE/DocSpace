@@ -133,7 +133,7 @@ public class SettingsController : BaseSettingsController
 
     [HttpGet("")]
     [AllowNotPayment, AllowSuspended, AllowAnonymous]
-    public SettingsDto GetSettings(bool? withpassword)
+    public async Task<SettingsDto> GetSettingsAsync(bool? withpassword)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
 
@@ -147,7 +147,7 @@ public class SettingsController : BaseSettingsController
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
-            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
+            EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync()
         };
 
         if (_authContext.IsAuthenticated)
@@ -286,9 +286,9 @@ public class SettingsController : BaseSettingsController
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
     [HttpGet("timezones")]
     [AllowNotPayment]
-    public List<TimezonesRequestsDto> GetTimeZones()
+    public async Task<List<TimezonesRequestsDto>> GetTimeZonesAsyncAsync()
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
         var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
         if (timeZones.All(tz => tz.Id != "UTC"))
@@ -347,13 +347,13 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment]
     [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
+    public async Task<WizardSettings> CompleteWizardAsync(WizardRequestsDto inDto)
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(inDto);
+        return await _firstTimeTenantSettings.SaveDataAsync(inDto);
     }
 
     ///<visible>false</visible>
@@ -668,11 +668,11 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPost("authservice")]
-    public bool SaveAuthKeys(AuthServiceRequestsDto inDto)
+    public async Task<bool> SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var saveAvailable = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ThirdParty;
+        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
         {
@@ -734,11 +734,11 @@ public class SettingsController : BaseSettingsController
 
     [AllowNotPayment]
     [HttpGet("payment")]
-    public object PaymentSettings()
+    public async Task<object> PaymentSettingsAsync()
     {
         var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        var currentQuota = _tenantManager.GetCurrentTenantQuota();
-        var currentTariff = _tenantExtra.GetCurrentTariff();
+        var currentQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        var currentTariff = await _tenantExtra.GetCurrentTariffAsync();
 
         if (!int.TryParse(_configuration["core:payment:max-quantity"], out var maxQuotaQuantity))
         {

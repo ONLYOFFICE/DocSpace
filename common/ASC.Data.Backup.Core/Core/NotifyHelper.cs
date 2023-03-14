@@ -94,7 +94,7 @@ public class NotifyHelper
             new TagValue(Tags.OwnerName, _userManager.GetUsers(userId).DisplayUserName(_displayUserSettingsHelper)));
     }
 
-    public void SendAboutRestoreStarted(Tenant tenant, bool notifyAllUsers)
+    public async Task SendAboutRestoreStartedAsync(Tenant tenant, bool notifyAllUsers)
     {
         _tenantManager.SetCurrentTenant(tenant.Id);
 
@@ -103,8 +103,8 @@ public class NotifyHelper
         var owner = _userManager.GetUsers(tenant.OwnerId);
         var users =
             notifyAllUsers
-                ? _studioNotifyHelper.RecipientFromEmail(_userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
-                : owner.ActivationStatus == EmployeeActivationStatus.Activated ? _studioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
+                ? await _studioNotifyHelper.RecipientFromEmailAsync(_userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
+                : owner.ActivationStatus == EmployeeActivationStatus.Activated ? await _studioNotifyHelper.RecipientFromEmailAsync(owner.Email, false) : new IDirectRecipient[0];
 
         client.SendNoticeToAsync(
             Actions.RestoreStarted,

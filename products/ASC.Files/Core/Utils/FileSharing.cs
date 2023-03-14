@@ -150,7 +150,7 @@ public class FileSharingAceHelper<T>
                 }
                 else
                 {
-                    _usersInRoomChecker.CheckAdd(usersInRoomCount + (i++));
+                    await _usersInRoomChecker.CheckAddAsync(usersInRoomCount + (i++));
                 }
 
                 try
@@ -227,7 +227,7 @@ public class FileSharingAceHelper<T>
             if (emailInvite)
             {
                 var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
+                await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
 

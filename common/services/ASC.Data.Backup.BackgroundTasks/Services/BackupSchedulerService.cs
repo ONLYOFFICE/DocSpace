@@ -105,9 +105,9 @@ public sealed class BackupSchedulerService : BackgroundService
 
             try
             {
-                if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackupRestore)
+                if (_coreBaseSettings.Standalone || (await tenantManager.GetTenantQuotaAsync(schedule.TenantId)).AutoBackupRestore)
                 {
-                    var tariff = tariffService.GetTariff(schedule.TenantId);
+                    var tariff = await tariffService.GetTariffAsync(schedule.TenantId);
 
                     if (tariff.State < TariffState.Delay)
                     {

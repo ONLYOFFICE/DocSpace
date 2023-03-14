@@ -294,7 +294,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    public async Task Check(IServiceProvider serviceProvider)
+    public async Task CheckAsync(IServiceProvider serviceProvider)
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {

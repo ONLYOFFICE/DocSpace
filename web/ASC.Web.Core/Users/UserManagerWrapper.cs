@@ -152,7 +152,7 @@ public sealed class UserManagerWrapper
         return newUser;
     }
 
-    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, EmployeeType type = EmployeeType.RoomAdmin, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+    public async Task<UserInfo> AddUserAsync(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, EmployeeType type = EmployeeType.RoomAdmin, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
         bool updateExising = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
@@ -186,7 +186,7 @@ public sealed class UserManagerWrapper
 
         if (_coreBaseSettings.Personal)
         {
-            _studioNotifyService.SendUserWelcomePersonal(newUserInfo);
+            await _studioNotifyService.SendUserWelcomePersonalAsync(newUserInfo);
             return newUserInfo;
         }
 
@@ -197,16 +197,16 @@ public sealed class UserManagerWrapper
             {
                 if (type is EmployeeType.User)
                 {
-                    _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
+                    await _studioNotifyService.GuestInfoAddedAfterInviteAsync(newUserInfo);
                 }
                 else
                 {
-                    _studioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
+                    await _studioNotifyService.UserInfoAddedAfterInviteAsync(newUserInfo);
                 }
 
                 if (fromInviteLink)
                 {
-                    _studioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
+                    await _studioNotifyService.SendEmailActivationInstructionsAsync(newUserInfo, newUserInfo.Email);
                 }
             }
             else
@@ -214,11 +214,11 @@ public sealed class UserManagerWrapper
                 //Send user invite
                 if (type is EmployeeType.User)
                 {
-                    _studioNotifyService.GuestInfoActivation(newUserInfo);
+                    await _studioNotifyService.GuestInfoActivationAsync(newUserInfo);
                 }
                 else
                 {
-                    _studioNotifyService.UserInfoActivation(newUserInfo);
+                    await _studioNotifyService.UserInfoActivationAsync(newUserInfo);
                 }
 
             }
@@ -363,7 +363,7 @@ public sealed class UserManagerWrapper
         return new Regex(passwordRegex).IsMatch(password);
     }
 
-    public string SendUserPassword(string email)
+    public async Task<string> SendUserPasswordAsync(string email)
     {
         email = (email ?? "").Trim();
         if (!email.TestEmailRegex())
@@ -396,7 +396,7 @@ public sealed class UserManagerWrapper
             return Resource.CouldNotRecoverPasswordForSsoUser;
         }
 
-        _studioNotifyService.UserPasswordChange(userInfo);
+        await _studioNotifyService.UserPasswordChangeAsync(userInfo);
 
         return null;
     }

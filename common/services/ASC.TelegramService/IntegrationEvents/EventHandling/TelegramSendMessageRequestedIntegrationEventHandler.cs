@@ -46,7 +46,7 @@ public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationE
         _telegramHandler = telegramHandler;
     }
 
-    public async Task Handle(NotifySendTelegramMessageRequestedIntegrationEvent @event)
+    public async Task HandleAsync(NotifySendTelegramMessageRequestedIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {

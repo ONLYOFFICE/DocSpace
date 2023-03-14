@@ -352,7 +352,7 @@ public class DocumentServiceTrackerHelper
         UserInfo user = null;
         try
         {
-            _securityContext.AuthenticateMeWithoutCookie(userId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
             user = _userManager.GetUsers(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -472,7 +472,7 @@ public class DocumentServiceTrackerHelper
 
         try
         {
-            _securityContext.AuthenticateMeWithoutCookie(userId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
             var user = _userManager.GetUsers(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);

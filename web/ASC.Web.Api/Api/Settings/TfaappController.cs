@@ -135,12 +135,12 @@ public class TfaappController : BaseSettingsController
 
     [HttpPost("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,TfaAuth,Everyone")]
-    public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
+    public async Task<bool> TfaValidateAuthCodeAsync(TfaValidateRequestsDto inDto)
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         _securityContext.Logout();
-        return _tfaManager.ValidateAuthCode(user, inDto.Code);
+        return await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code);
     }
 
     [HttpGet("tfaapp/confirm")]
@@ -171,7 +171,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPut("tfaapp")]
-    public async Task<bool> TfaSettings(TfaRequestsDto inDto)
+    public async Task<bool> TfaSettingsAsync(TfaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -182,7 +182,7 @@ public class TfaappController : BaseSettingsController
         switch (inDto.Type)
         {
             case "sms":
-                if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings())
+                if (! await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync())
                 {
                     throw new Exception(Resource.SmsNotAvailable);
                 }
@@ -220,7 +220,7 @@ public class TfaappController : BaseSettingsController
 
                 action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }
@@ -235,7 +235,7 @@ public class TfaappController : BaseSettingsController
                     _tfaAppAuthSettingsHelper.Enable = false;
                 }
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }
@@ -265,7 +265,7 @@ public class TfaappController : BaseSettingsController
     [HttpPut("tfaappwithlink")]
     public async Task<object> TfaSettingsLink(TfaRequestsDto inDto)
     {
-        if (await TfaSettings(inDto))
+        if (await TfaSettingsAsync(inDto))
         {
             return TfaConfirmUrl();
         }
@@ -275,9 +275,9 @@ public class TfaappController : BaseSettingsController
 
     [HttpGet("tfaapp/setup")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
-    public SetupCode TfaAppGenerateSetupCode()
+    public async Task<SetupCode> TfaAppGenerateSetupCodeAsync()
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings ||
@@ -334,7 +334,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPut("tfaappnewapp")]
-    public async Task<object> TfaAppNewApp(TfaRequestsDto inDto)
+    public async Task<object> TfaAppNewAppAsync(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty) || id.Equals(_authContext.CurrentAccount.ID);
@@ -365,7 +365,7 @@ public class TfaappController : BaseSettingsController
             return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
         }
 
-        _studioNotifyService.SendMsgTfaReset(user);
+        await _studioNotifyService.SendMsgTfaResetAsync(user);
         return string.Empty;
     }
 }

@@ -40,20 +40,20 @@ public class QuotaHelper
         _serviceProvider = serviceProvider;
     }
 
-    public IEnumerable<QuotaDto> GetQuotas()
+    public async Task<IEnumerable<QuotaDto>> GetQuotasAsync()
     {
-        var quotaList = _tenantManager.GetTenantQuotas(false);
-        var priceInfo = _tenantManager.GetProductPriceInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var quotaList = await _tenantManager.GetTenantQuotasAsync(false);
+        var priceInfo = await _tenantManager.GetProductPriceInfoAsync();
+        var currentRegion = await _regionHelper.GetCurrentRegionInfoAsync();
 
         return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
     }
 
-    public QuotaDto GetCurrentQuota()
+    public async Task<QuotaDto> GetCurrentQuotaAsync()
     {
-        var quota = _tenantManager.GetCurrentTenantQuota();
-        var priceInfo = _tenantManager.GetProductPriceInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var quota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        var priceInfo = await _tenantManager.GetProductPriceInfoAsync();
+        var currentRegion = await _regionHelper.GetCurrentRegionInfoAsync();
 
         return ToQuotaDto(quota, priceInfo, currentRegion, true);
     }
@@ -173,7 +173,7 @@ public class QuotaHelper
 
                 if (statisticProvider != null)
                 {
-                    used = await statisticProvider.GetValue();
+                    used = await statisticProvider.GetValueAsync();
                 }
             }
         }

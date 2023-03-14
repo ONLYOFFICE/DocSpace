@@ -79,7 +79,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             Percentage = 0;
             Status = DistributedTaskStatus.Running;
 
-            securityContext.AuthenticateMeWithoutCookie(_currentUserId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
             long crmSpace;
             var wrapper = await GetUsageSpace(webItemManagerSecurity);

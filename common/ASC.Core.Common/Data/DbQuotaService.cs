@@ -37,105 +37,88 @@ class DbQuotaService : IQuotaService
         _mapper = mapper;
     }
 
-    public IEnumerable<TenantQuota> GetTenantQuotas()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-        return coreDbContext.Quotas
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await coreDbContext.Quotas
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
     }
 
-    public TenantQuota GetTenantQuota(int id)
+    public async Task<TenantQuota> GetTenantQuotaAsync(int id)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-        return coreDbContext.Quotas
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await coreDbContext.Quotas
             .Where(r => r.Tenant == id)
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .SingleOrDefault();
+            .SingleOrDefaultAsync();
     }
 
-    public TenantQuota SaveTenantQuota(TenantQuota quota)
+    public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
         ArgumentNullException.ThrowIfNull(quota);
 
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-        coreDbContext.AddOrUpdate(coreDbContext.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
-        coreDbContext.SaveChanges();
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        await coreDbContext.AddOrUpdateAsync(q => q.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
+        await coreDbContext.SaveChangesAsync();
 
         return quota;
     }
 
-    public void RemoveTenantQuota(int id)
+    public async Task RemoveTenantQuotaAsync(int id)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = coreDbContext.Database.CreateExecutionStrategy();
-
-        strategy.Execute(() =>
-        {
-            using var coreDbContext = _dbContextFactory.CreateDbContext();
-            using var tr = coreDbContext.Database.BeginTransaction();
-            var d = coreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
-                 .SingleOrDefault();
-
-            if (d != null)
-            {
-                coreDbContext.Quotas.Remove(d);
-                coreDbContext.SaveChanges();
-            }
-
-            tr.Commit();
-        });
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        await coreDbContext.Quotas.Where(r => r.Tenant == id).ExecuteDeleteAsync();
     }
 
 
-    public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
+    public async Task SetTenantQuotaRowAsync(TenantQuotaRow row, bool exchange)
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = coreDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
-            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tx = coreDbContext.Database.BeginTransaction();
 
 
-            AddQuota(coreDbContext, row.UserId);
+            await AddQuotaAsync(coreDbContext, row.UserId);
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
-        void AddQuota(CoreDbContext coreDbContext, Guid userId)
+        async Task AddQuotaAsync(CoreDbContext coreDbContext, Guid userId)
         {
             var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
             dbTenantQuotaRow.UserId = userId;
 
             if (exchange)
             {
-                var counter = coreDbContext.QuotaRows
+                var counter = await coreDbContext.QuotaRows
                 .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
                 .Select(r => r.Counter)
                 .Take(1)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
                 dbTenantQuotaRow.Counter = counter + row.Counter;
             }
-
-            coreDbContext.AddOrUpdate(coreDbContext.QuotaRows, dbTenantQuotaRow);
-            coreDbContext.SaveChanges();
+            
+            await coreDbContext.AddOrUpdateAsync(q => q.QuotaRows, dbTenantQuotaRow);
+            await coreDbContext.SaveChangesAsync();
         }
     }
 
-    public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
+    public Task<IEnumerable<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId)
     {
-        return FindUserQuotaRows(tenantId, Guid.Empty);
+        return FindUserQuotaRowsAsync(tenantId, Guid.Empty);
     }
 
-    public IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
+    public async Task<IEnumerable<TenantQuotaRow>> FindUserQuotaRowsAsync(int tenantId, Guid userId)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
         var q = coreDbContext.QuotaRows.Where(r => r.UserId == userId);
 
         if (tenantId != Tenant.DefaultTenant)
@@ -143,6 +126,6 @@ class DbQuotaService : IQuotaService
             q = q.Where(r => r.Tenant == tenantId);
         }
 
-        return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
+        return await q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToListAsync();
     }
 }

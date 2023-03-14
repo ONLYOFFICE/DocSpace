@@ -41,7 +41,7 @@ public class MaxFileSizeStatistic : ITenantQuotaFeatureStat<MaxFileSizeFeature, 
     {
     }
 
-    public Task<long> GetValue()
+    public Task<long> GetValueAsync()
     {
         return Task.FromResult(0L);
     }

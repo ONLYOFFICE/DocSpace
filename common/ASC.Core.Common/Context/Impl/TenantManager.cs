@@ -45,7 +45,7 @@ public class TenantManager
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    private readonly static object _lock = new object();
+    private readonly static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
     static TenantManager()
     {
@@ -273,34 +273,34 @@ public class TenantManager
     }
 
 
-    public IEnumerable<TenantQuota> GetTenantQuotas()
+    public Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return GetTenantQuotas(false);
+        return GetTenantQuotasAsync(false);
     }
 
-    public IEnumerable<TenantQuota> GetTenantQuotas(bool all)
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync(bool all)
     {
-        return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        return (await QuotaService.GetTenantQuotasAsync()).Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
-    public TenantQuota GetCurrentTenantQuota()
+    public Task<TenantQuota> GetCurrentTenantQuotaAsync()
     {
-        return GetTenantQuota(GetCurrentTenant().Id);
+        return GetTenantQuotaAsync(GetCurrentTenant().Id);
     }
 
-    public TenantQuota GetTenantQuota(int tenant)
+    public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
+        var defaultQuota = await QuotaService.GetTenantQuotaAsync(tenant) ?? await QuotaService.GetTenantQuotaAsync(Tenant.DefaultTenant) ?? TenantQuota.Default;
         if (defaultQuota.Tenant != tenant && TariffService != null)
         {
-            var tariff = TariffService.GetTariff(tenant);
+            var tariff = await TariffService.GetTariffAsync(tenant);
 
             TenantQuota currentQuota = null;
             foreach (var tariffRow in tariff.Quotas)
             {
                 var qty = tariffRow.Quantity;
 
-                var quota = QuotaService.GetTenantQuota(tariffRow.Id);
+                var quota = await QuotaService.GetTenantQuotaAsync(tariffRow.Id);
 
                 quota *= qty;
                 currentQuota += quota;
@@ -312,9 +312,9 @@ public class TenantManager
         return defaultQuota;
     }
 
-    public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo()
+    public async Task<IDictionary<string, Dictionary<string, decimal>>> GetProductPriceInfoAsync()
     {
-        var quotas = GetTenantQuotas(false);
+        var quotas = await GetTenantQuotasAsync(false);
         var productIds = quotas
             .Select(p => p.ProductId)
             .Where(id => !string.IsNullOrEmpty(id))
@@ -326,23 +326,24 @@ public class TenantManager
         return result;
     }
 
-    public TenantQuota SaveTenantQuota(TenantQuota quota)
+    public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
-        quota = QuotaService.SaveTenantQuota(quota);
+        quota = await QuotaService.SaveTenantQuotaAsync(quota);
 
         return quota;
     }
 
-    public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
+    public async Task SetTenantQuotaRowAsync(TenantQuotaRow row, bool exchange)
     {
-        lock (_lock)
-        {
-            QuotaService.SetTenantQuotaRow(row, exchange);
-        }
+        await _semaphore.WaitAsync();
+
+        await QuotaService.SetTenantQuotaRowAsync(row, exchange);
+
+        _semaphore.Release();
     }
 
-    public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
+    public async Task<List<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId)
     {
-        return QuotaService.FindTenantQuotaRows(tenantId).ToList();
+        return (await QuotaService.FindTenantQuotaRowsAsync(tenantId)).ToList();
     }
 }

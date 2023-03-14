@@ -39,7 +39,7 @@ public class FileHandler
 
     public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
     {
-        await fileHandlerService.Invoke(context);
+        await fileHandlerService.InvokeAsync(context);
     }
 }
 
@@ -144,19 +144,18 @@ public class FileHandlerService
         _thumbnailSettings = thumbnailSettings;
     }
 
-    public Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
-        if (_tenantExtra.IsNotPaid())
+        if (await _tenantExtra.IsNotPaidAsync())
         {
             context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
             //context.Response.StatusDescription = "Payment Required.";
-            return Task.CompletedTask;
         }
 
-        return InternalInvoke(context);
+        await InternalInvokeAsync(context);
     }
 
-    private async Task InternalInvoke(HttpContext context)
+    private async Task InternalInvokeAsync(HttpContext context)
     {
         try
         {

@@ -73,7 +73,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
 
     public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
     {
-        if (searchSettings.CanSearchByContent(GetType()))
+        if (searchSettings.CanSearchByContentAsync(GetType()).Result)
         {
             return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
         }

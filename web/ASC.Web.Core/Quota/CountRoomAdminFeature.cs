@@ -47,7 +47,7 @@ public class CountPaidUserStatistic : ITenantQuotaFeatureStat<CountPaidUserFeatu
         _serviceProvider = serviceProvider;
     }
 
-    public Task<int> GetValue()
+    public Task<int> GetValueAsync()
     {
         var userManager = _serviceProvider.GetService<UserManager>();
         var adminsCount = userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length;

@@ -119,7 +119,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             tenant = _tenantManager.GetTenant(TenantId);
             _tenantManager.SetCurrentTenant(tenant);
-            _notifyHelper.SendAboutRestoreStarted(tenant, Notify);
+            await _notifyHelper.SendAboutRestoreStartedAsync(tenant, Notify);
             tenant.SetStatus(TenantStatus.Restoring);
             _tenantManager.SaveTenant(tenant);
 
@@ -127,7 +127,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             var storage = _backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
 
-            await storage.Download(StoragePath, tempFile);
+            await storage.DownloadAsync(StoragePath, tempFile);
 
             if (!_coreBaseSettings.Standalone)
             {

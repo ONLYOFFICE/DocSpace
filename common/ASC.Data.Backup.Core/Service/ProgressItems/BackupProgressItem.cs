@@ -125,7 +125,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             if (writer.NeedUpload)
             {
-                storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
+                storagePath = await backupStorage.UploadAsync(_storageBasePath, tempFile, _userId);
                 hash = BackupWorker.GetBackupHash(tempFile);
             }
             else
@@ -133,7 +133,7 @@ public class BackupProgressItem : BaseBackupProgressItem
                 storagePath = writer.StoragePath;
                 hash = writer.Hash;
             }
-            Link = await backupStorage.GetPublicLink(storagePath);
+            Link = await backupStorage.GetPublicLinkAsync(storagePath);
 
             var repo = _backupRepository;
 

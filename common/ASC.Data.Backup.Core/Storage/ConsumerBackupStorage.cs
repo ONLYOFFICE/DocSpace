@@ -68,7 +68,7 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 
-    public async Task<string> Upload(string storageBasePath, string localPath, Guid userId)
+    public async Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId)
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
@@ -76,14 +76,14 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         return storagePath;
     }
 
-    public async Task Download(string storagePath, string targetLocalPath)
+    public async Task DownloadAsync(string storagePath, string targetLocalPath)
     {
         using var source = await _store.GetReadStreamAsync(Domain, storagePath);
         using var destination = File.OpenWrite(targetLocalPath);
         await source.CopyToAsync(destination);
     }
 
-    public async Task Delete(string storagePath)
+    public async Task DeleteAsync(string storagePath)
     {
         if (await _store.IsFileAsync(Domain, storagePath))
         {
@@ -91,7 +91,7 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         }
     }
 
-    public async Task<bool> IsExists(string storagePath)
+    public async Task<bool> IsExistsAsync(string storagePath)
     {
         if (_store != null)
         {
@@ -103,7 +103,7 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         }
     }
 
-    public async Task<string> GetPublicLink(string storagePath)
+    public async Task<string> GetPublicLinkAsync(string storagePath)
     {
         if (_isTemporary)
         {

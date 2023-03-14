@@ -73,7 +73,7 @@ public class FirstTimeTenantSettings
         _clientFactory = clientFactory;
     }
 
-    public WizardSettings SaveData(WizardRequestsDto inDto)
+    public async Task<WizardSettings> SaveDataAsync(WizardRequestsDto inDto)
     {
         try
         {
@@ -129,7 +129,7 @@ public class FirstTimeTenantSettings
                 TariffSettings.SetLicenseAccept(_settingsManager);
                 _messageService.Send(MessageAction.LicenseKeyUploaded);
 
-                _licenseReader.RefreshLicense();
+                await _licenseReader.RefreshLicenseAsync();
             }
 
             settings.Completed = true;
@@ -141,7 +141,7 @@ public class FirstTimeTenantSettings
 
             _tenantManager.SaveTenant(tenant);
 
-            _studioNotifyService.SendCongratulations(currentUser);
+            await _studioNotifyService.SendCongratulationsAsync(currentUser);
             _studioNotifyService.SendRegData(currentUser);
 
             if (subscribeFromSite && _tenantExtra.Opensource && !_coreBaseSettings.CustomMode)

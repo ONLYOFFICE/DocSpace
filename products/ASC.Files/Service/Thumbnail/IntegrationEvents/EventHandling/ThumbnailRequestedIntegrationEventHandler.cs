@@ -74,7 +74,7 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
         return result.ToList().Select(r =>
         {
-            var tariff = _tariffService.GetTariff(r.TenantId);
+            var tariff = _tariffService.GetTariffAsync(r.TenantId).Result;
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
 
             return fileData;
@@ -82,13 +82,13 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
     }
 
 
-    public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
+    public async Task HandleAsync(ThumbnailRequestedIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            var tariff = _tariffService.GetTariff(@event.TenantId);
+            var tariff = await _tariffService.GetTariffAsync(@event.TenantId);
             var freezingThumbnails = await GetFreezingThumbnailsAsync();
             var data = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl, tariff.State))
                           .Union(freezingThumbnails);

@@ -198,7 +198,7 @@ public abstract class BaseStartup
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = ctx =>
+                    OnTokenValidated = async ctx =>
                     {
                         using var scope = ctx.HttpContext.RequestServices.CreateScope();
 
@@ -213,9 +213,7 @@ public abstract class BaseStartup
 
                         var userId = new Guid(claimUserId);
 
-                        securityContext.AuthenticateMeWithoutCookie(userId, ctx.Principal.Claims.ToList());
-
-                        return Task.CompletedTask;
+                        await securityContext.AuthenticateMeWithoutCookieAsync(userId, ctx.Principal.Claims.ToList());
                     }
                 };
             })

@@ -40,7 +40,7 @@ public class BackupDeleteScheldureRequestedIntegrationEventHandler : IIntegratio
         _backupService = backupService;
     }
 
-    public async Task Handle(IntegrationEvent @event)
+    public async Task HandleAsync(IntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {

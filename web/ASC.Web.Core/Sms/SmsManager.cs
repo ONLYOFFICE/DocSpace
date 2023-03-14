@@ -91,7 +91,7 @@ public class SmsManager
         {
             try
             {
-                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
                 await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
             }
             finally
@@ -108,14 +108,14 @@ public class SmsManager
         return mobilePhone;
     }
 
-    public Task PutAuthCodeAsync(UserInfo user, bool again)
+    public async Task PutAuthCodeAsync(UserInfo user, bool again)
     {
         if (user == null || Equals(user, Constants.LostUser))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+        if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             throw new MethodAccessException();
         }
@@ -124,7 +124,7 @@ public class SmsManager
 
         if (_smsKeyStorage.ExistsKey(mobilePhone) && !again)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (!_smsKeyStorage.GenerateKey(mobilePhone, out var key))
@@ -132,20 +132,20 @@ public class SmsManager
             throw new Exception(Resource.SmsTooMuchError);
         }
 
-        return InternalPutAuthCodeAsync(mobilePhone, key);
+        await InternalPutAuthCodeAsync(mobilePhone, key);
     }
 
     private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
     {
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
+            await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
         }
     }
 
-    public void ValidateSmsCode(UserInfo user, string code, bool isEntryPoint = false)
+    public async Task ValidateSmsCodeAsync(UserInfo user, string code, bool isEntryPoint = false)
     {
-        if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings()
+        if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync()
             || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             return;
@@ -176,7 +176,7 @@ public class SmsManager
         if (!_securityContext.IsAuthenticated)
         {
             var action = isEntryPoint ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaSms;
-            _cookieManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            await _cookieManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
         }
 
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)

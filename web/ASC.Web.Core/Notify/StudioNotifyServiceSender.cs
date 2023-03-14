@@ -59,7 +59,7 @@ public class StudioNotifyServiceSender
     {
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetRequiredService<StudioNotifyWorker>();
-        scopeClass.OnMessage(item);
+        scopeClass.OnMessageAsync(item).Wait();
     }
 
     public void RegisterSendMethod()
@@ -119,13 +119,13 @@ public class StudioNotifyServiceSender
     public void SendLettersPersonal(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLettersAsync(EMailSenderName, scheduleDate).Wait();
     }
 
     public void SendMsgWhatsNew(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNewAsync(scheduleDate).Wait();
     }
 }
 
@@ -158,7 +158,7 @@ public class StudioNotifyWorker
         _workContext = workContext;
     }
 
-    public void OnMessage(NotifyItem item)
+    public async Task OnMessageAsync(NotifyItem item)
     {
         _commonLinkUtilitySettings.ServerUri = item.BaseUrl;
         _tenantManager.SetCurrentTenant(item.TenantId);
@@ -176,7 +176,7 @@ public class StudioNotifyWorker
 
         if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
         {
-            _securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
+            await _securityContext.AuthenticateMeWithoutCookieAsync(Guid.Parse(item.UserId));
             var user = _userManager.GetUsers(userId);
             if (!string.IsNullOrEmpty(user.CultureName))
             {

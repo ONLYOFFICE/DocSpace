@@ -67,7 +67,7 @@ public class BackupController : ControllerBase
     /// <param name="cronParams">Cron parameters</param>
     /// <category>Backup</category>
     [HttpPost("createbackupschedule")]
-    public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
+    public async Task<bool> CreateBackupScheduleAsync(BackupScheduleDto backupSchedule)
     {
         var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
         var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
@@ -78,7 +78,7 @@ public class BackupController : ControllerBase
             Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
             Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
         };
-        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron);
+        await _backupHandler.CreateScheduleAsync(storageType, storageParams, backupStored, cron);
         return true;
     }
 

@@ -141,7 +141,6 @@ public class ThirdpartyController : ApiControllerBase
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
         return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
-
     }
 
     /// <visible>false</visible>

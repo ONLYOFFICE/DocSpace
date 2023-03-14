@@ -68,7 +68,7 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpPut("self/delete")]
-    public object SendInstructionsToDelete()
+    public async Task<object> SendInstructionsToDeleteAsync()
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
@@ -77,7 +77,7 @@ public class RemoveUserDataController : ApiControllerBase
             throw new SecurityException();
         }
 
-        _studioNotifyService.SendMsgProfileDeletion(user);
+        await _studioNotifyService.SendMsgProfileDeletionAsync(user);
         _messageService.Send(MessageAction.UserSentDeleteInstructions);
 
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");

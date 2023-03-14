@@ -120,7 +120,7 @@ public class SsoHandlerService
                 throw new SSOException("Single sign-on settings are disabled", MessageKey.SsoSettingsDisabled);
             }
 
-            if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso))
+            if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).Sso))
             {
                 throw new SSOException("Single sign-on settings are not paid", MessageKey.ErrorNotAllowedOption);
             }
@@ -189,7 +189,7 @@ public class SsoHandlerService
 
                 userInfo = await AddUser(userInfo);
 
-                var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
+                var authKey = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
 
                 context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
 
@@ -216,7 +216,7 @@ public class SsoHandlerService
                     throw new SSOException("Current user is terminated", MessageKey.SsoSettingsUserTerminated);
                 }
 
-                _securityContext.AuthenticateMeWithoutCookie(userInfo.Id);
+                await _securityContext.AuthenticateMeWithoutCookieAsync(userInfo.Id);
 
                 var loginName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
                 _messageService.Send(loginName, MessageAction.Logout);
@@ -264,7 +264,7 @@ public class SsoHandlerService
 
             _log.DebugAddingOrUpdatingUser(userInfo.Id);
 
-            _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
@@ -279,7 +279,7 @@ public class SsoHandlerService
                     type = EmployeeType.User;
                 }
 
-                newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
+                newUserInfo = await _userManagerWrapper.AddUserAsync(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
                   false, type);
             }
             else

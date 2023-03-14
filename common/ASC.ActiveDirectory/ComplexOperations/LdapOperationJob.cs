@@ -140,7 +140,7 @@ public class LdapOperationJob : DistributedTaskProgress
     {
         try
         {
-            _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);

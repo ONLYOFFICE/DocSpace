@@ -61,12 +61,13 @@ public class CapabilitiesController : ControllerBase
     ///<returns>CapabilitiesData</returns>
     [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
     [AllowNotPayment]
-    public CapabilitiesDto GetPortalCapabilities()
+    public async Task<CapabilitiesDto> GetPortalCapabilitiesAsync()
     {
+        var quota = await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id);
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,
-            OauthEnabled = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth,
+            OauthEnabled = _coreBaseSettings.Standalone || quota.Oauth,
             Providers = new List<string>(0),
             SsoLabel = string.Empty,
             SsoUrl = string.Empty
@@ -76,7 +77,7 @@ public class CapabilitiesController : ControllerBase
         {
             if (_coreBaseSettings.Standalone
                     || SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap)
+                        && quota.Ldap)
             {
                 //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -115,7 +116,7 @@ public class CapabilitiesController : ControllerBase
         {
             if (_coreBaseSettings.Standalone
                     || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
+                        && quota.Sso)
             {
                 var settings = _settingsManager.Load<SsoSettingsV2>();
 

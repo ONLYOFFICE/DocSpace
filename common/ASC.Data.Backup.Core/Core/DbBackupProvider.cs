@@ -73,15 +73,14 @@ public class DbBackupProvider : IBackupProvider
         return xml.AsEnumerable();
     }
 
-    public Task LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
+    public async Task LoadFromAsync(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
     {
         _processedTables.Clear();
 
         foreach (var connectionString in GetConnectionStrings(configs))
         {
-            RestoreDatabase(connectionString, elements, reader);
+            await RestoreDatabaseAsync(connectionString, elements, reader);
         }
-        return Task.CompletedTask;
     }
 
     public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
@@ -196,7 +195,7 @@ public class DbBackupProvider : IBackupProvider
         return xml;
     }
 
-    private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
+    private async Task RestoreDatabaseAsync(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
     {
         var dbName = connectionString.Name;
         var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
@@ -229,7 +228,7 @@ public class DbBackupProvider : IBackupProvider
                 {
                     var data = new DataTable();
                     data.ReadXml(stream);
-                    _dbHelper.SetTable(data);
+                    await _dbHelper.SetTableAsync(data);
                 }
                 _processedTables.Add(table);
             }

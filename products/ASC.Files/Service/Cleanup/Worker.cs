@@ -64,10 +64,10 @@ public class Worker
 
         _logger.InfoFoundUsers(activeTenantsUsers.Count);
 
-        await Parallel.ForEachAsync(activeTenantsUsers, cancellationToken, DeleteFilesAndFolders);
+        await Parallel.ForEachAsync(activeTenantsUsers, cancellationToken, DeleteFilesAndFoldersAsync);
     }
 
-    private async ValueTask DeleteFilesAndFolders(TenantUserSettings tenantUser, CancellationToken cancellationToken)
+    private async ValueTask DeleteFilesAndFoldersAsync(TenantUserSettings tenantUser, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -94,7 +94,7 @@ public class Worker
                     return;
                 }
 
-                securityContext.AuthenticateMeWithoutCookie(userAccount);
+                await securityContext.AuthenticateMeWithoutCookieAsync(userAccount);
 
                 var fileDao = daoFactory.GetFileDao<int>();
                 var folderDao = daoFactory.GetFolderDao<int>();

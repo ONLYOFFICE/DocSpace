@@ -145,7 +145,7 @@ public class RestorePortalTask : PortalTaskBase
             _options.DebugRefreshLicense();
             try
             {
-                _licenseReader.RejectLicense();
+                await _licenseReader.RejectLicenseAsync();
             }
             catch (Exception ex)
             {

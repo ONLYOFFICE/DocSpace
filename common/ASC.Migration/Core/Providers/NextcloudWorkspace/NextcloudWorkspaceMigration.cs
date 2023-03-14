@@ -555,11 +555,11 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
             try
             {
                 var currentUser = _securityContext.CurrentAccount;
-                _securityContext.AuthenticateMe(user.Guid);
+                await _securityContext.AuthenticateMeAsync(user.Guid);
                 user.MigratingFiles.SetUsersDict(usersForImport.Except(failedUsers));
                 user.MigratingFiles.SetGroupsDict(groupsForImport);
                 await user.MigratingFiles.Migrate();
-                _securityContext.AuthenticateMe(currentUser.ID);
+                await _securityContext.AuthenticateMeAsync(currentUser.ID);
             }
             catch (Exception ex)
             {

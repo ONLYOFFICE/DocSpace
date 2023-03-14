@@ -52,7 +52,7 @@ public class NotificationController : ApiControllerBase
     }
 
     [HttpPost("phone")]
-    public object SendNotificationToChange(UpdateMemberRequestDto inDto)
+    public async Task<object> SendNotificationToChangeAsync(UpdateMemberRequestDto inDto)
     {
         var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
             ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
@@ -73,7 +73,7 @@ public class NotificationController : ApiControllerBase
             return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation);
         }
 
-        _studioNotifyService.SendMsgMobilePhoneChange(user);
+        await _studioNotifyService.SendMsgMobilePhoneChangeAsync(user);
 
         return string.Empty;
     }

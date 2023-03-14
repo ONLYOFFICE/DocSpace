@@ -46,9 +46,9 @@ public class RegionHelper
         _userManager = userManager;
     }
 
-    public RegionInfo GetCurrentRegionInfo()
+    public async Task<RegionInfo> GetCurrentRegionInfoAsync()
     {
-        var priceInfo = _tenantManager.GetProductPriceInfo();
+        var priceInfo = await _tenantManager.GetProductPriceInfoAsync();
         var defaultRegion = GetDefaultRegionInfo();
 
         var countryCode = _httpContextAccessor.HttpContext.Request.Query["country"];

@@ -111,8 +111,8 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                var tariff = _tariffService.GetTariff(tenant.Id);
-                var quota = _tenantManager.GetTenantQuota(tenant.Id);
+                var tariff = await _tariffService.GetTariffAsync(tenant.Id);
+                var quota = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
                 var createdDate = tenant.CreationDateTime.Date;
 
                 var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
@@ -310,8 +310,8 @@ public class StudioPeriodicNotify
                 _tenantManager.SetCurrentTenant(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-                var tariff = _tariffService.GetTariff(tenant.Id);
-                var quota = _tenantManager.GetTenantQuota(tenant.Id);
+                var tariff = await _tariffService.GetTariffAsync(tenant.Id);
+                var quota = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
                 var createdDate = tenant.CreationDateTime.Date;
 
                 var actualEndDate = tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate;
@@ -464,7 +464,7 @@ public class StudioPeriodicNotify
         _log.InformationEndSendOpensourceTariffLetters();
     }
 
-    public void SendPersonalLetters(string senderName, DateTime scheduleDate)
+    public async Task SendPersonalLettersAsync(string senderName, DateTime scheduleDate)
     {
         _log.InformationStartSendLettersPersonal();
 
@@ -490,7 +490,7 @@ public class StudioPeriodicNotify
                 {
                     INotifyAction action;
 
-                    _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
+                    await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(tenant.Id, user.Id));
 
                     var culture = tenant.GetCulture();
                     if (!string.IsNullOrEmpty(user.CultureName))
@@ -532,7 +532,7 @@ public class StudioPeriodicNotify
                     client.SendNoticeToAsync(
                       action,
                       null,
-                          _studioNotifyHelper.RecipientFromEmail(user.Email, true),
+                         await _studioNotifyHelper.RecipientFromEmailAsync(user.Email, true),
                       new[] { senderName },
                       TagValues.PersonalHeaderStart(),
                       TagValues.PersonalHeaderEnd(),

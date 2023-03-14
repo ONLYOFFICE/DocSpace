@@ -69,7 +69,7 @@ public class BackupService : IBackupService
             return;
         }
 
-        await storage.Delete(backupRecord.StoragePath);
+        await storage.DeleteAsync(backupRecord.StoragePath);
     }
 
     public async Task DeleteAllBackupsAsync(int tenantId)
@@ -85,7 +85,7 @@ public class BackupService : IBackupService
                     continue;
                 }
 
-                await storage.Delete(backupRecord.StoragePath);
+                await storage.DeleteAsync(backupRecord.StoragePath);
             }
             catch (Exception error)
             {
@@ -105,7 +105,7 @@ public class BackupService : IBackupService
                 continue;
             }
 
-            if (await storage.IsExists(record.StoragePath))
+            if (await storage.IsExistsAsync(record.StoragePath))
             {
                 backupHistory.Add(new BackupHistoryRecord
                 {

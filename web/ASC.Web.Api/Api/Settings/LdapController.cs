@@ -72,9 +72,9 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>LDAP settings</returns>
     [HttpGet("ldap")]
-    public LdapSettingsDto GetLdapSettings()
+    public async Task<LdapSettingsDto> GetLdapSettingsAsync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var settings = _settingsManager.Load<LdapSettings>();
 
@@ -90,7 +90,7 @@ public class LdapController : BaseSettingsController
         settings.PasswordBytes = null;
 
         if (settings.IsDefault)
-            return _mapper.Map<LdapSettings, LdapSettingsDto>(settings); ;
+            return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
 
         var defaultSettings = settings.GetDefault();
 
@@ -109,9 +109,9 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Cron expression or null</returns>
     [HttpGet("ldap/cron")]
-    public LdapCronSettingsDto GetLdapCronSettings()
+    public async Task<LdapCronSettingsDto> GetLdapCronSettingsAsync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var settings = _settingsManager.Load<LdapCronSettings>();
 
@@ -134,14 +134,9 @@ public class LdapController : BaseSettingsController
     /// <param name="cron">Cron expression</param>
     /// 
     [HttpPost("ldap/cron")]
-    public void SetLdapCronSettingsFromBody(LdapCronRequestDto ldapCronRequest)
+    public async Task SetLdapCronSettingsAsync(LdapCronRequestDto ldapCronRequest)
     {
-        SetLdapCronSettings(ldapCronRequest);
-    }
-
-    private void SetLdapCronSettings(LdapCronRequestDto ldapCronRequest)
-    {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var cron = ldapCronRequest.Cron;
 
@@ -184,9 +179,9 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [HttpGet("ldap/sync")]
-    public LdapStatusDto SyncLdap()
+    public async Task<LdapStatusDto> SyncLdapAsync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var ldapSettings = _settingsManager.Load<LdapSettings>();
 
@@ -206,9 +201,9 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [HttpGet("ldap/sync/test")]
-    public LdapStatusDto TestLdapSync()
+    public async Task<LdapStatusDto> TestLdapSync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var ldapSettings = _settingsManager.Load<LdapSettings>();
 
@@ -228,15 +223,15 @@ public class LdapController : BaseSettingsController
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
     [HttpPost("ldap")]
-    public LdapStatusDto SaveLdapSettings(LdapRequestsDto ldapRequestsDto)
+    public async Task<LdapStatusDto> SaveLdapSettingsAsync(LdapRequestsDto ldapRequestsDto)
     {
         var ldapSettings = _mapper.Map<LdapRequestsDto, LdapSettings>(ldapRequestsDto);
 
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         if (!ldapSettings.EnableLdapAuthentication)
         {
-            SetLdapCronSettings(null);
+            await SetLdapCronSettingsAsync(null);
         }
 
         var userId = _authContext.CurrentAccount.ID.ToString();
@@ -257,9 +252,9 @@ public class LdapController : BaseSettingsController
     /// <param name="acceptCertificate">Specifies if the errors of checking certificates are allowed (true) or not (false)</param>
     /// <returns>Operation status</returns>
     [HttpPost("ldap/save/test")]
-    public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
+    public async Task<LdapStatusDto> TestLdapSaveAsync(LdapSettings ldapSettings)
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
@@ -277,9 +272,9 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>Operation status</returns>
     [HttpGet("ldap/status")]
-    public LdapStatusDto GetLdapOperationStatus()
+    public async Task<LdapStatusDto> GetLdapOperationStatusAsync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var result = _ldapSaveSyncOperation.ToLdapOperationStatus(Tenant.Id);
 
@@ -295,22 +290,22 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <returns>LDAP default settings</returns>
     [HttpGet("ldap/default")]
-    public LdapSettingsDto GetDefaultLdapSettings()
+    public async Task<LdapSettingsDto> GetDefaultLdapSettingsAsync()
     {
-        CheckLdapPermissions();
+        await CheckLdapPermissionsAsync();
 
         var settings = new LdapSettings().GetDefault();
 
         return _mapper.Map<LdapSettings, LdapSettingsDto>(settings);
     }
 
-    private void CheckLdapPermissions()
+    private async Task CheckLdapPermissionsAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                || !_tenantManager.GetCurrentTenantQuota().Ldap))
+                || !(await _tenantManager.GetCurrentTenantQuotaAsync()).Ldap))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
         }

@@ -77,7 +77,7 @@ public class PaymentController : ControllerBase
     [HttpPut("payment/url")]
     public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
-        if (_tariffService.GetPayments(Tenant.Id).Any() ||
+        if ((await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
             !_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID))
         {
             return null;
@@ -85,7 +85,7 @@ public class PaymentController : ControllerBase
 
         var currency = _regionHelper.GetCurrencyFromRequest();
 
-        return await _tariffService.GetShoppingUri(Tenant.Id, currency,
+        return await _tariffService.GetShoppingUriAsync(Tenant.Id, currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
             inDto.Quantity,
@@ -93,24 +93,24 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("payment/update")]
-    public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
+    public async Task<bool> PaymentUpdateAsync(PaymentUrlRequestsDto inDto)
     {
-        var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
+        var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
         var payer = _userManager.GetUserByEmail(payerId);
 
-        if (!_tariffService.GetPayments(Tenant.Id).Any() ||
+        if (!(await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
             _securityContext.CurrentAccount.ID != payer.Id)
         {
             return false;
         }
 
-        return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
+        return await _tariffService.PaymentChangeAsync(Tenant.Id, inDto.Quantity);
     }
 
     [HttpGet("payment/account")]
-    public Uri GetPaymentAccount(string backUrl)
+    public async Task<Uri> GetPaymentAccountAsync(string backUrl)
     {
-        var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
+        var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
         var payer = _userManager.GetUserByEmail(payerId);
 
         if (_securityContext.CurrentAccount.ID != payer.Id &&
@@ -123,20 +123,20 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/prices")]
-    public object GetPrices()
+    public async Task<object> GetPricesAsync()
     {
         var currency = _regionHelper.GetCurrencyFromRequest();
-        var result = _tenantManager.GetProductPriceInfo()
+        var result = (await _tenantManager.GetProductPriceInfoAsync())
             .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
         return result;
     }
 
 
     [HttpGet("payment/currencies")]
-    public IEnumerable<CurrenciesDto> GetCurrencies()
+    public async IAsyncEnumerable<CurrenciesDto> GetCurrenciesAsync()
     {
         var defaultRegion = _regionHelper.GetDefaultRegionInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var currentRegion = await _regionHelper.GetCurrentRegionInfoAsync();
 
         yield return new CurrenciesDto(defaultRegion);
 
@@ -147,19 +147,19 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/quotas")]
-    public IEnumerable<QuotaDto> GetQuotas()
+    public Task<IEnumerable<QuotaDto>> GetQuotas()
     {
-        return _quotaHelper.GetQuotas();
+        return _quotaHelper.GetQuotasAsync();
     }
 
     [HttpGet("payment/quota")]
-    public QuotaDto GetQuota()
+    public Task<QuotaDto> GetQuotaAsync()
     {
-        return _quotaHelper.GetCurrentQuota();
+        return _quotaHelper.GetCurrentQuotaAsync();
     }
 
     [HttpPost("payment/request")]
-    public void SendSalesRequest(SalesRequestsDto inDto)
+    public async Task SendSalesRequestAsync(SalesRequestsDto inDto)
     {
         if (!inDto.Email.TestEmailRegex())
         {
@@ -173,7 +173,7 @@ public class PaymentController : ControllerBase
 
         CheckCache("salesrequest");
 
-        _studioNotifyService.SendMsgToSales(inDto.Email, inDto.UserName, inDto.Message);
+         await _studioNotifyService.SendMsgToSalesAsync(inDto.Email, inDto.UserName, inDto.Message);
         _messageService.Send(MessageAction.ContactSalesMailSent);
     }
 

@@ -156,12 +156,9 @@ public class TenantLogoManager
         return !_authContext.IsAuthenticated;
     }
 
-    public bool WhiteLabelPaid
+    public async Task<bool> GetWhiteLabelPaidAsync()
     {
-        get
-        {
-            return _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).WhiteLabel;
-        }
+        return (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).WhiteLabel;
     }
 
     private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;

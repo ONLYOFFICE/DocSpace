@@ -152,7 +152,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                 PublishChanges();
 
                 var account = _authentication.GetAccountByID(TenantId, user.Id);
-                _securityContext.AuthenticateMe(account);
+                await _securityContext.AuthenticateMeAsync(account);
 
                 foreach (var item in webItems)
                 {

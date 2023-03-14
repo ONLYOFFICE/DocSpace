@@ -60,13 +60,13 @@ internal class FileConverterService<T> : BackgroundService
                 continue;
             }
 
-            await ExecuteCheckFileConverterStatus(serviceScope);
+            await ExecuteCheckFileConverterStatusAsync(serviceScope);
 
             await Task.Delay(_timerDelay, stoppingToken);
         }
     }
 
-    private async Task ExecuteCheckFileConverterStatus(IServiceScope scope)
+    private async Task ExecuteCheckFileConverterStatusAsync(IServiceScope scope)
     {
         TenantManager tenantManager;
         UserManager userManager;
@@ -117,7 +117,7 @@ internal class FileConverterService<T> : BackgroundService
 
                 tenantManager.SetCurrentTenant(converter.TenantId);
 
-                securityContext.AuthenticateMeWithoutCookie(converter.Account);
+                await securityContext.AuthenticateMeWithoutCookieAsync(converter.Account);
 
                 var file = await daoFactory.GetFileDao<T>().GetFileAsync(fileId, fileVersion);
                 var fileUri = file.Id.ToString();

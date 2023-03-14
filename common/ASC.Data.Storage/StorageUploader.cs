@@ -155,7 +155,7 @@ public class MigrateOperation : DistributedTaskProgress
             var tenant = tenantManager.GetTenant(_tenantId);
             tenantManager.SetCurrentTenant(tenant);
 
-            securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);
 
             foreach (var module in _modules)
             {

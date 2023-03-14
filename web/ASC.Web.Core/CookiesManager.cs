@@ -171,7 +171,7 @@ public class CookiesManager
             await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
         }
 
-        AuthenticateMeAndSetCookies(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
+        await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
     }
 
     public int GetLifeTime(int tenantId)
@@ -191,7 +191,7 @@ public class CookiesManager
 
         if (!userId.HasValue)
         {
-            AuthenticateMeAndSetCookies(tenant, currentUserId, MessageAction.LoginSuccess);
+            await AuthenticateMeAndSetCookiesAsync(tenant, currentUserId, MessageAction.LoginSuccess);
         }
     }
 
@@ -211,7 +211,7 @@ public class CookiesManager
         await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
     }
 
-    public string AuthenticateMeAndSetCookies(int tenantId, Guid userId, MessageAction action, bool session = false)
+    public async Task<string> AuthenticateMeAndSetCookiesAsync(int tenantId, Guid userId, MessageAction action, bool session = false)
     {
         var isSuccess = true;
         var cookies = string.Empty;
@@ -219,7 +219,7 @@ public class CookiesManager
 
         try
         {
-            cookies = _securityContext.AuthenticateMe(userId, funcLoginEvent);
+            cookies = await _securityContext.AuthenticateMeAsync(userId, funcLoginEvent);
         }
         catch (Exception)
         {
@@ -238,7 +238,7 @@ public class CookiesManager
         return cookies;
     }
 
-    public void AuthenticateMeAndSetCookies(string login, string passwordHash, MessageAction action, bool session = false)
+    public async Task AuthenticateMeAndSetCookiesAsync(string login, string passwordHash, MessageAction action, bool session = false)
     {
         var isSuccess = true;
         var cookies = string.Empty;
@@ -246,7 +246,7 @@ public class CookiesManager
 
         try
         {
-            cookies = _securityContext.AuthenticateMe(login, passwordHash, funcLoginEvent);
+            cookies = await _securityContext.AuthenticateMeAsync(login, passwordHash, funcLoginEvent);
         }
         catch (Exception)
         {

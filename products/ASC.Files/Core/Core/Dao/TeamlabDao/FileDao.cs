@@ -422,7 +422,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (quotaLimit != -1)
             {
-                var userUsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(TenantID, user.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+                var userUsedSpace = Math.Max(0, (await _quotaService.FindUserQuotaRowsAsync(TenantID, user.Id)).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
                 if (quotaLimit - userUsedSpace < file.ContentLength)
                 {

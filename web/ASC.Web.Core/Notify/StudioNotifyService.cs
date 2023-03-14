@@ -98,13 +98,13 @@ public class StudioNotifyService
         _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
-    public void SendMsgToSales(string email, string userName, string message)
+    public async Task SendMsgToSalesAsync(string email, string userName, string message)
     {
         var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
 
         _client.SendNoticeToAsync(
             Actions.UserMessageToSales,
-            _studioNotifyHelper.RecipientFromEmail(settings.SalesEmail, false),
+            await _studioNotifyHelper.RecipientFromEmailAsync(settings.SalesEmail, false),
             new[] { EMailSenderName },
             new TagValue(Tags.Body, message),
             new TagValue(Tags.UserEmail, email),
@@ -163,7 +163,7 @@ public class StudioNotifyService
 
     #region User Password
 
-    public void UserPasswordChange(UserInfo userInfo)
+    public async Task UserPasswordChangeAsync(UserInfo userInfo)
     {
         var auditEventDate = DateTime.UtcNow;
 
@@ -189,7 +189,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
                 action,
-                    _studioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
+                    await _studioNotifyHelper.RecipientFromEmailAsync(userInfo.Email, false),
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
 
@@ -202,7 +202,7 @@ public class StudioNotifyService
 
     #region User Email
 
-    public void SendEmailChangeInstructions(UserInfo user, string email)
+    public async Task SendEmailChangeInstructionsAsync(UserInfo user, string email)
     {
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmailChange, _authContext.CurrentAccount.ID);
 
@@ -214,13 +214,13 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
                 action,
-                    _studioNotifyHelper.RecipientFromEmail(email, false),
+                    await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(CommonTags.Culture, user.GetCulture().Name));
     }
 
-    public void SendEmailActivationInstructions(UserInfo user, string email)
+    public async Task SendEmailActivationInstructionsAsync(UserInfo user, string email)
     {
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmailActivation, null, user.Id);
 
@@ -228,33 +228,33 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
                 Actions.ActivateEmail,
-                    _studioNotifyHelper.RecipientFromEmail(email, false),
+                    await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                     new TagValue(Tags.UserDisplayName, (user.DisplayUserName(_displayUserSettingsHelper) ?? string.Empty).Trim()));
     }
 
-    public void SendEmailRoomInvite(string email, string roomTitle, string confirmationUrl)
+    public async Task SendEmailRoomInviteAsync(string email, string roomTitle, string confirmationUrl)
     {
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
             Actions.SaasRoomInvite,
-                _studioNotifyHelper.RecipientFromEmail(email, false),
+                await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.Message, roomTitle),
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
-    public void SendDocSpaceInvite(string email, string confirmationUrl)
+    public async Task SendDocSpaceInviteAsync(string email, string confirmationUrl)
     {
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
             Actions.SaasDocSpaceInvite,
-                _studioNotifyHelper.RecipientFromEmail(email, false),
+                await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
@@ -264,12 +264,12 @@ public class StudioNotifyService
 
     #region MailServer
 
-    public void SendMailboxCreated(List<string> toEmails, string username, string address)
+    public Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address)
     {
-        SendMailboxCreated(toEmails, username, address, null, null, -1, -1, null);
+        return SendMailboxCreatedAsync(toEmails, username, address, null, null, -1, -1, null);
     }
 
-    public void SendMailboxCreated(List<string> toEmails, string username, string address, string server,
+    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address, string server,
         string encyption, int portImap, int portSmtp, string login, bool skipSettings = false)
     {
         var tags = new List<ITagValue>
@@ -295,16 +295,16 @@ public class StudioNotifyService
             ? Actions.MailboxWithoutSettingsCreated
             : Actions.MailboxCreated,
         null,
-            _studioNotifyHelper.RecipientFromEmail(toEmails, false),
+            await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
         new[] { EMailSenderName });
     }
 
-    public void SendMailboxPasswordChanged(List<string> toEmails, string username, string address)
+    public async Task SendMailboxPasswordChangedAsync(List<string> toEmails, string username, string address)
     {
         _client.SendNoticeToAsync(
         Actions.MailboxPasswordChanged,
         null,
-            _studioNotifyHelper.RecipientFromEmail(toEmails, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(toEmails, false),
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, username ?? string.Empty),
         new TagValue(Tags.Address, address ?? string.Empty));
@@ -312,7 +312,7 @@ public class StudioNotifyService
 
     #endregion
 
-    public void SendMsgMobilePhoneChange(UserInfo userInfo)
+    public async Task SendMsgMobilePhoneChangeAsync(UserInfo userInfo)
     {
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
@@ -320,12 +320,12 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         Actions.PhoneChange,
-            _studioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(userInfo.Email, false),
         new[] { EMailSenderName },
         TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
-    public void SendMsgTfaReset(UserInfo userInfo)
+    public async Task SendMsgTfaResetAsync(UserInfo userInfo)
     {
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
@@ -333,7 +333,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         Actions.TfaChange,
-            _studioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(userInfo.Email, false),
         new[] { EMailSenderName },
         TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
@@ -347,7 +347,7 @@ public class StudioNotifyService
         }
     }
 
-    public void SendJoinMsg(string email, EmployeeType emplType)
+    public async Task SendJoinMsgAsync(string email, EmployeeType emplType)
     {
         var inviteUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)emplType)
                     + string.Format("&emplType={0}", (int)emplType);
@@ -356,13 +356,13 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
                 Actions.JoinUsers,
-                    _studioNotifyHelper.RecipientFromEmail(email, true),
+                   await _studioNotifyHelper.RecipientFromEmailAsync(email, true),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, inviteUrl),
                 TagValues.GreenButton(greenButtonText, inviteUrl));
     }
 
-    public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
+    public async Task UserInfoAddedAfterInviteAsync(UserInfo newUserInfo)
     {
         if (!_userManager.UserExists(newUserInfo))
         {
@@ -409,7 +409,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         notifyAction,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
         new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
@@ -418,7 +418,7 @@ public class StudioNotifyService
             new TagValue(CommonTags.MasterTemplate, _coreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"));
     }
 
-    public void GuestInfoAddedAfterInvite(UserInfo newUserInfo)
+    public async Task GuestInfoAddedAfterInviteAsync(UserInfo newUserInfo)
     {
         if (!_userManager.UserExists(newUserInfo))
         {
@@ -450,7 +450,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         notifyAction,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
         new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
@@ -458,7 +458,7 @@ public class StudioNotifyService
         new TagValue(CommonTags.Footer, footer));
     }
 
-    public void UserInfoActivation(UserInfo newUserInfo)
+    public async Task UserInfoActivationAsync(UserInfo newUserInfo)
     {
         if (newUserInfo.IsActive)
         {
@@ -490,7 +490,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         notifyAction,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.ActivateUrl, confirmationUrl),
         TagValues.GreenButton(greenButtonText, confirmationUrl),
@@ -498,7 +498,7 @@ public class StudioNotifyService
         new TagValue(CommonTags.Footer, footer));
     }
 
-    public void GuestInfoActivation(UserInfo newUserInfo)
+    public async Task GuestInfoActivationAsync(UserInfo newUserInfo)
     {
         if (newUserInfo.IsActive)
         {
@@ -530,7 +530,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         notifyAction,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.ActivateUrl, confirmationUrl),
         TagValues.GreenButton(greenButtonText, confirmationUrl),
@@ -538,7 +538,7 @@ public class StudioNotifyService
         new TagValue(CommonTags.Footer, footer));
     }
 
-    public void SendMsgProfileDeletion(UserInfo user)
+    public async Task SendMsgProfileDeletionAsync(UserInfo user)
     {
         var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.ProfileRemove, _authContext.CurrentAccount.ID, _authContext.CurrentAccount.ID);
 
@@ -550,7 +550,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         action,
-            _studioNotifyHelper.RecipientFromEmail(user.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(user.Email, false),
         new[] { EMailSenderName },
         TagValues.GreenButton(greenButtonText, confirmationUrl),
         new TagValue(CommonTags.Culture, user.GetCulture().Name));
@@ -645,7 +645,7 @@ public class StudioNotifyService
         new TagValue(Tags.Message, message));
     }
 
-    public void SendAdminWelcome(UserInfo newUserInfo)
+    public async Task SendAdminWelcomeAsync(UserInfo newUserInfo)
     {
         if (!_userManager.UserExists(newUserInfo))
         {
@@ -681,7 +681,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
         notifyAction,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, false),
         new[] { EMailSenderName },
         tagValues.ToArray());
     }
@@ -763,7 +763,7 @@ public class StudioNotifyService
             new TagValue(Tags.OwnerName, owner.DisplayUserName(_displayUserSettingsHelper)));
     }
 
-    public void SendCongratulations(UserInfo u)
+    public async Task SendCongratulationsAsync(UserInfo u)
     {
         try
         {
@@ -793,7 +793,7 @@ public class StudioNotifyService
 
             _client.SendNoticeToAsync(
             notifyAction,
-                _studioNotifyHelper.RecipientFromEmail(u.Email, false),
+               await _studioNotifyHelper.RecipientFromEmailAsync(u.Email, false),
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
             TagValues.GreenButton(greenButtonText, confirmationUrl),
@@ -807,7 +807,7 @@ public class StudioNotifyService
 
     #region Personal
 
-    public void SendInvitePersonal(string email, string additionalMember = "")
+    public async Task SendInvitePersonalAsync(string email, string additionalMember = "")
     {
         var newUserInfo = _userManager.GetUserByEmail(email);
         if (_userManager.UserExists(newUserInfo))
@@ -828,14 +828,14 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
             _coreBaseSettings.CustomMode ? Actions.PersonalCustomModeConfirmation : Actions.PersonalConfirmation,
-            _studioNotifyHelper.RecipientFromEmail(email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.InviteLink, confirmUrl),
             new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
         new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
     }
 
-    public void SendAlreadyExist(string email)
+    public async Task SendAlreadyExistAsync(string email)
     {
         var userInfo = _userManager.GetUserByEmail(email);
         if (!_userManager.UserExists(userInfo))
@@ -851,7 +851,7 @@ public class StudioNotifyService
 
         _client.SendNoticeToAsync(
             _coreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
-            _studioNotifyHelper.RecipientFromEmail(email, false),
+           await _studioNotifyHelper.RecipientFromEmailAsync(email, false),
         new[] { EMailSenderName },
         new TagValue(Tags.PortalUrl, portalUrl),
         new TagValue(Tags.LinkToRecovery, linkToRecovery),
@@ -859,11 +859,11 @@ public class StudioNotifyService
         new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
     }
 
-    public void SendUserWelcomePersonal(UserInfo newUserInfo)
+    public async Task SendUserWelcomePersonalAsync(UserInfo newUserInfo)
     {
         _client.SendNoticeToAsync(
             _coreBaseSettings.CustomMode ? Actions.PersonalCustomModeAfterRegistration1 : Actions.PersonalAfterRegistration1,
-            _studioNotifyHelper.RecipientFromEmail(newUserInfo.Email, true),
+            await _studioNotifyHelper.RecipientFromEmailAsync(newUserInfo.Email, true),
         new[] { EMailSenderName },
             new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
         new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"));

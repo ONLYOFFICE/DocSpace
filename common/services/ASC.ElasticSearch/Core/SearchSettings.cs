@@ -163,12 +163,12 @@ public class SearchSettingsHelper
         return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }
 
-    public bool CanSearchByContent<T>() where T : class, ISearchItem
+    public Task<bool> CanSearchByContentAsync<T>() where T : class, ISearchItem
     {
-        return CanSearchByContent(typeof(T));
+        return CanSearchByContentAsync(typeof(T));
     }
 
-    public bool CanSearchByContent(Type t)
+    public async Task<bool> CanSearchByContentAsync(Type t)
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         if (!CanIndexByContent(t, tenantId))
@@ -181,7 +181,7 @@ public class SearchSettingsHelper
             return true;
         }
 
-        return _tenantManager.GetTenantQuota(tenantId).ContentSearch;
+        return (await _tenantManager.GetTenantQuotaAsync(tenantId)).ContentSearch;
     }
 }
 

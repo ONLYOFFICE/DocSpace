@@ -85,7 +85,7 @@ public class StudioWhatsNewNotify
         _log = optionsMonitor.CreateLogger("ASC.Notify");
     }
 
-    public void SendMsgWhatsNew(DateTime scheduleDate)
+    public async Task SendMsgWhatsNewAsync(DateTime scheduleDate)
     {
         if (_webItemManager.GetItemsAll<IProduct>().Count == 0)
         {
@@ -100,7 +100,7 @@ public class StudioWhatsNewNotify
 
         foreach (var tenantid in tenants)
         {
-            SendMsgWhatsNew(tenantid, scheduleDate, products);
+            await SendMsgWhatsNewAsync(tenantid, scheduleDate, products);
         }
     }
 
@@ -109,7 +109,7 @@ public class StudioWhatsNewNotify
         return _feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
     }
 
-    private void SendMsgWhatsNew(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)
+    private async Task SendMsgWhatsNewAsync(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)
     {
         try
         {
@@ -117,7 +117,7 @@ public class StudioWhatsNewNotify
             if (tenant == null ||
                 tenant.Status != TenantStatus.Active ||
                 !TimeToSendWhatsNew(_tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                TariffState.NotPaid <= _tariffService.GetTariff(tenantid).State)
+                TariffState.NotPaid <= (await _tariffService.GetTariffAsync(tenantid)).State)
             {
                 return;
             }
@@ -133,7 +133,7 @@ public class StudioWhatsNewNotify
                     continue;
                 }
 
-                _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
+                await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(tenant.Id, user.Id));
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 

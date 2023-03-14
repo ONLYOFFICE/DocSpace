@@ -309,8 +309,6 @@ public class EditorConfiguration<T>
 
     public bool ModeWrite { get; set; }
 
-    public PluginsConfig Plugins { get; set; }
-
     public List<RecentConfig> Recent
     {
         get
@@ -434,7 +432,6 @@ public class EditorConfiguration<T>
         FilesLinkUtility filesLinkUtility,
         FileUtility fileUtility,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        PluginsConfig pluginsConfig,
         EmbeddedConfig embeddedConfig,
         CustomizationConfig<T> customizationConfig,
         FilesSettingsHelper filesSettingsHelper,
@@ -452,7 +449,6 @@ public class EditorConfiguration<T>
         _daoFactory = daoFactory;
         _entryManager = entryManager;
         _documentServiceTrackerHelper = documentServiceTrackerHelper;
-        Plugins = pluginsConfig;
         Embedded = embeddedConfig;
         _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
 
@@ -1010,56 +1006,6 @@ public class LogoConfig<T>
     }
 }
 
-[Transient]
-public class PluginsConfig
-{
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-
-    private readonly ConsumerFactory _consumerFactory;
-
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantManager _tenantManager;
-
-    public string[] PluginsData
-    {
-        get
-        {
-            var plugins = new List<string>();
-
-            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuota().Free)
-            {
-                var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
-                if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
-                {
-                    plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/easybib/config.json"));
-                }
-
-                var wordpressLoginProvider = _consumerFactory.Get<WordpressLoginProvider>();
-                if (!string.IsNullOrEmpty(wordpressLoginProvider.ClientID) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.ClientSecret) &&
-                    !string.IsNullOrEmpty(wordpressLoginProvider.RedirectUri))
-                {
-                    plugins.Add(_baseCommonLinkUtility.GetFullAbsolutePath("ThirdParty/plugin/wordpress/config.json"));
-                }
-            }
-
-            return plugins.ToArray();
-        }
-    }
-
-    public PluginsConfig(
-        ConsumerFactory consumerFactory,
-        BaseCommonLinkUtility baseCommonLinkUtility,
-        CoreBaseSettings coreBaseSettings,
-        TenantManager tenantManager)
-    {
-        _consumerFactory = consumerFactory;
-        _baseCommonLinkUtility = baseCommonLinkUtility;
-        _coreBaseSettings = coreBaseSettings;
-        _tenantManager = tenantManager;
-    }
-}
-
 public class RecentConfig
 {
     public string Folder { get; set; }
@@ -1093,7 +1039,6 @@ public static class ConfigurationExtention
         services.TryAdd<EditorConfiguration<string>>();
         services.TryAdd<EditorConfiguration<int>>();
 
-        services.TryAdd<PluginsConfig>();
         services.TryAdd<EmbeddedConfig>();
 
         services.TryAdd<CustomizationConfig<string>>();

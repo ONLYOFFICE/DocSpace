@@ -162,14 +162,14 @@ public class AuthenticationController : ControllerBase
 
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+            if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
-                _smsManager.ValidateSmsCode(user, inDto.Code, true);
+                await _smsManager.ValidateSmsCodeAsync(user, inDto.Code, true);
             }
             else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
-                if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
+                if (await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code, true, true))
                 {
                     _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
                 }
@@ -179,7 +179,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+            var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             var result = new AuthenticationTokenDto
@@ -228,7 +228,7 @@ public class AuthenticationController : ControllerBase
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+        if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
@@ -272,7 +272,7 @@ public class AuthenticationController : ControllerBase
         try
         {
             var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
 
             var tenant = _tenantManager.GetCurrentTenant().Id;
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
@@ -326,7 +326,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("setphone")]
     public async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
         _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
@@ -416,7 +416,7 @@ public class AuthenticationController : ControllerBase
             }
             else
             {
-                if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth))
+                if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).Oauth))
                 {
                     throw new Exception(Resource.ErrorNotAllowedOption);
                 }
@@ -481,7 +481,7 @@ public class AuthenticationController : ControllerBase
                 {
                     try
                     {
-                        _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                        await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
                         await _userManager.DeleteUser(userInfo.Id);
                         userInfo = Constants.LostUser;
                     }
@@ -553,8 +553,8 @@ public class AuthenticationController : ControllerBase
 
             try
             {
-                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword());
+                await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
+                userInfo = await _userManagerWrapper.AddUserAsync(newUserInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {

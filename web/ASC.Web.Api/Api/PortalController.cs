@@ -174,9 +174,9 @@ public class PortalController : ControllerBase
             customMode = _coreBaseSettings.CustomMode,
             opensource = _tenantExtra.Opensource,
             enterprise = _tenantExtra.Enterprise,
-            tariff = _tenantExtra.GetCurrentTariff(),
-            quota = _tenantManager.GetCurrentTenantQuota(),
-            notPaid = _tenantExtra.IsNotPaid(),
+            tariff = await _tenantExtra.GetCurrentTariffAsync(),
+            quota = await _tenantManager.GetCurrentTenantQuotaAsync(),
+            notPaid = await _tenantExtra.IsNotPaidAsync(),
             licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
             enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                 (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
@@ -189,10 +189,10 @@ public class PortalController : ControllerBase
 
 
     [HttpGet("usedspace")]
-    public double GetUsedSpace()
+    public async Task<double> GetUsedSpaceAsync()
     {
         return Math.Round(
-            _tenantManager.FindTenantQuotaRows(Tenant.Id)
+            (await _tenantManager.FindTenantQuotaRowsAsync(Tenant.Id))
                         .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                         .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
     }
@@ -206,25 +206,25 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpGet("tariff")]
-    public Tariff GetTariff()
+    public Task<Tariff> GetTariffAsync()
     {
-        return _tariffService.GetTariff(Tenant.Id);
+        return _tariffService.GetTariffAsync(Tenant.Id);
     }
 
     [AllowNotPayment]
     [HttpGet("quota")]
-    public TenantQuota GetQuota()
+    public Task<TenantQuota> GetQuotaAsync()
     {
-        return _tenantManager.GetTenantQuota(Tenant.Id);
+        return _tenantManager.GetTenantQuotaAsync(Tenant.Id);
     }
 
     [HttpGet("quota/right")]
-    public TenantQuota GetRightQuota()
+    public async Task<TenantQuota> GetRightQuotaAsync()
     {
-        var usedSpace = GetUsedSpace();
+        var usedSpace = await GetUsedSpaceAsync();
         var needUsersCount = GetUsersCount();
 
-        return _tenantManager.GetTenantQuotas().OrderBy(r => r.Price)
+        return (await _tenantManager.GetTenantQuotasAsync()).OrderBy(r => r.Price)
                             .FirstOrDefault(quota =>
                                             quota.CountUser > needUsersCount
                                             && quota.MaxTotalSize > usedSpace);
@@ -398,7 +398,7 @@ public class PortalController : ControllerBase
         {
             if (!_securityContext.IsAuthenticated)
             {
-                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
             }
 
             _messageService.Send(MessageAction.PortalDeleted);
@@ -431,7 +431,7 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpPost("delete")]
-    public void SendDeleteInstructions()
+    public async Task SendDeleteInstructionsAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -443,8 +443,8 @@ public class PortalController : ControllerBase
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
-                        _tariffService.GetPayments(Tenant.Id).Any() &&
-                        !_tenantManager.GetCurrentTenantQuota().Trial;
+                        (await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() &&
+                        !(await _tenantManager.GetCurrentTenantQuotaAsync()).Trial;
 
         _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 
@@ -500,7 +500,7 @@ public class PortalController : ControllerBase
         {
             if (!_securityContext.IsAuthenticated)
             {
-                _securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                await _securityContext.AuthenticateMeAsync(ASC.Core.Configuration.Constants.CoreSystem);
                 authed = true;
             }
 
@@ -522,7 +522,7 @@ public class PortalController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("sendcongratulations")]
-    public void SendCongratulations([FromQuery] SendCongratulationsDto inDto)
+    public async Task SendCongratulationsAsync([FromQuery] SendCongratulationsDto inDto)
     {
         var authInterval = TimeSpan.FromHours(1);
         var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(inDto.Userid.ToString() + ConfirmType.Auth, inDto.Key, authInterval);
@@ -532,7 +532,7 @@ public class PortalController : ControllerBase
             case ValidationResult.Ok:
                 var currentUser = _userManager.GetUsers(inDto.Userid);
 
-                _studioNotifyService.SendCongratulations(currentUser);
+                await _studioNotifyService.SendCongratulationsAsync(currentUser);
                 _studioNotifyService.SendRegData(currentUser);
 
                 if (!SetupInfo.IsSecretEmail(currentUser.Email))

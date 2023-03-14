@@ -272,7 +272,7 @@ public class SecurityController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && _tenantManager.GetCurrentTenantQuota().Free;
+        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && (await _tenantManager.GetCurrentTenantQuotaAsync()).Free;
         if (isStartup)
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Administrator");

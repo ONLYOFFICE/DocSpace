@@ -114,10 +114,10 @@ public class MessageSettingsController : BaseSettingsController
 
     [AllowAnonymous]
     [HttpPost("sendadmmail")]
-    public object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
+    public async Task<object> SendAdmMailAsync(AdminMessageSettingsRequestsDto inDto)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
-        var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
+        var enableAdmMess = studioAdminMessageSettings.Enable || (await _tenantExtra.IsNotPaidAsync());
 
         if (!enableAdmMess)
         {
@@ -204,7 +204,7 @@ public class MessageSettingsController : BaseSettingsController
                         var address = new MailAddress(email);
                         if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
-                            _studioNotifyService.SendJoinMsg(email, emplType);
+                            await _studioNotifyService.SendJoinMsgAsync(email, emplType);
                             _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                             return Resource.FinishInviteJoinEmailMessage;
                         }
@@ -213,7 +213,7 @@ public class MessageSettingsController : BaseSettingsController
                     }
                 case TenantTrustedDomainsType.All:
                     {
-                        _studioNotifyService.SendJoinMsg(email, emplType);
+                        await _studioNotifyService.SendJoinMsgAsync(email, emplType);
                         _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                         return Resource.FinishInviteJoinEmailMessage;
                     }

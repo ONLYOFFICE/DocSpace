@@ -376,7 +376,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
+            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {
@@ -675,8 +675,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             try
             {
-                _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = await _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
+                await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
+                userInfo = await _userManagerWrapper.AddUserAsync(userInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {

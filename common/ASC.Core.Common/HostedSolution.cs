@@ -203,38 +203,38 @@ public class HostedSolution
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }
 
-    public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)
+    public Task<Tariff> GetTariffAsync(int tenant, bool withRequestToPaymentSystem = true)
     {
-        return TariffService.GetTariff(tenant, withRequestToPaymentSystem);
+        return TariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
     }
 
-    public TenantQuota GetTenantQuota(int tenant)
+    public Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        return ClientTenantManager.GetTenantQuota(tenant);
+        return ClientTenantManager.GetTenantQuotaAsync(tenant);
     }
 
-    public IEnumerable<TenantQuota> GetTenantQuotas()
+    public Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return ClientTenantManager.GetTenantQuotas();
+        return ClientTenantManager.GetTenantQuotasAsync();
     }
 
-    public TenantQuota SaveTenantQuota(TenantQuota quota)
+    public Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
-        return ClientTenantManager.SaveTenantQuota(quota);
+        return ClientTenantManager.SaveTenantQuotaAsync(quota);
     }
 
-    public void SetTariff(int tenant, bool paid)
+    public async Task SetTariffAsync(int tenant, bool paid)
     {
-        var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
+        var quota = (await QuotaService.GetTenantQuotasAsync()).FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            TariffService.SetTariff(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
+            await TariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 
-    public void SetTariff(int tenant, Tariff tariff)
+    public Task SetTariffAsync(int tenant, Tariff tariff)
     {
-        TariffService.SetTariff(tenant, tariff);
+        return TariffService.SetTariffAsync(tenant, tariff);
     }
 
     public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)

@@ -186,7 +186,7 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
+        user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
@@ -205,7 +205,7 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     public async Task<EmployeeFullDto> AddMember(MemberRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
         if (options is { IsCorrect: false })
@@ -275,7 +275,7 @@ public class UserController : PeopleControllerBase
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
 
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
+        user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && options is { IsCorrect: true }, true, true, byEmail);
 
         await UpdateDepartments(inDto.Department, user);
@@ -320,7 +320,7 @@ public class UserController : PeopleControllerBase
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
-            _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             _logger.Debug(link);
         }
 
@@ -340,7 +340,7 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
         _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
 
         var user = _userManager.GetUsers(userid);
@@ -423,7 +423,7 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public async Task<EmployeeFullDto> DeleteProfile()
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         if (_userManager.IsSystemUser(_securityContext.CurrentAccount.ID))
         {
@@ -442,7 +442,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
+        await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
         _userManager.UpdateUserInfo(user);
@@ -531,7 +531,7 @@ public class UserController : PeopleControllerBase
         var isInvite = _httpContextAccessor.HttpContext.User.Claims
                .Any(role => role.Type == ClaimTypes.Role && ConfirmTypeExtensions.TryParse(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
 
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         var user = _userManager.GetUserByUserName(username);
         if (user.Id == Constants.LostUser.Id)
@@ -682,7 +682,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("invite")]
-    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvitesAsync(UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
 
@@ -737,11 +737,11 @@ public class UserController : PeopleControllerBase
                 }
 
                 var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             }
             else
             {
-                _studioNotifyService.SendEmailActivationInstructions(user, user.Email);
+                await _studioNotifyService.SendEmailActivationInstructionsAsync(user, user.Email);
             }
         }
 
@@ -787,7 +787,7 @@ public class UserController : PeopleControllerBase
 
     [AllowNotPayment]
     [HttpPost("email")]
-    public async Task<object> SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
+    public async Task<object> SendEmailChangeInstructionsAsync(UpdateMemberRequestDto inDto)
     {
         Guid.TryParse(inDto.UserId, out var userid);
 
@@ -830,7 +830,7 @@ public class UserController : PeopleControllerBase
 
         if (!_userManager.IsDocSpaceAdmin(viewer))
         {
-            _studioNotifyService.SendEmailChangeInstructions(user, email);
+            await _studioNotifyService.SendEmailChangeInstructionsAsync(user, email);
         }
         else
         {
@@ -842,7 +842,7 @@ public class UserController : PeopleControllerBase
             user.Email = email;
             user.ActivationStatus = EmployeeActivationStatus.NotActivated;
             await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-            _studioNotifyService.SendEmailActivationInstructions(user, email);
+            await _studioNotifyService.SendEmailActivationInstructionsAsync(user, email);
         }
 
         _messageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
@@ -853,9 +853,9 @@ public class UserController : PeopleControllerBase
     [AllowNotPayment]
     [AllowAnonymous]
     [HttpPost("password")]
-    public object SendUserPassword(MemberRequestDto inDto)
+    public async Task<object> SendUserPasswordAsync(MemberRequestDto inDto)
     {
-        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        var error = await _userManagerWrapper.SendUserPasswordAsync(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
             _logger.ErrorPasswordRecovery(inDto.Email, error);
@@ -868,7 +868,7 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
@@ -1126,7 +1126,7 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPut("quota")]
-    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuotaAsync(UpdateMembersQuotaRequestDto inDto)
     {
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
@@ -1138,13 +1138,13 @@ public class UserController : PeopleControllerBase
             if (inDto.Quota != -1)
             {
                 var usedSpace = Math.Max(0,
-                    _quotaService.FindUserQuotaRows(
+                    (await _quotaService.FindUserQuotaRowsAsync(
                             _tenantManager.GetCurrentTenant().Id,
                             user.Id
-                        )
+                        ))
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
-                var tenanSpaceQuota = _quotaService.GetTenantQuota(Tenant.Id).MaxTotalSize;
+                var tenanSpaceQuota = (await _quotaService.GetTenantQuotaAsync(Tenant.Id)).MaxTotalSize;
 
                 if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
                 {
@@ -1256,13 +1256,13 @@ public class UserController : PeopleControllerBase
             {
                 if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
                 {
-                    _studioNotifyService.SendAlreadyExist(inDto.Email);
+                    await _studioNotifyService.SendAlreadyExistAsync(inDto.Email);
                     return string.Empty;
                 }
 
                 try
                 {
-                    _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+                    await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
                     await _userManager.DeleteUser(newUserInfo.Id);
                 }
                 finally
@@ -1291,7 +1291,7 @@ public class UserController : PeopleControllerBase
                 }
             }
 
-            _studioNotifyService.SendInvitePersonal(inDto.Email);
+            await _studioNotifyService.SendInvitePersonalAsync(inDto.Email);
         }
         catch (Exception ex)
         {

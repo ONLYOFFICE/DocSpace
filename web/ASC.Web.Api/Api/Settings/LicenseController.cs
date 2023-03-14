@@ -74,20 +74,20 @@ public class LicenseController : BaseSettingsController
 
     [HttpGet("license/refresh")]
     [AllowNotPayment]
-    public bool RefreshLicense()
+    public async Task<bool> RefreshLicenseAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
             return false;
         }
 
-        _licenseReader.RefreshLicense();
+        await _licenseReader.RefreshLicenseAsync();
         return true;
     }
 
     [AllowNotPayment]
     [HttpPost("license/accept")]
-    public object AcceptLicense()
+    public async Task<object> AcceptLicenseAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
@@ -99,7 +99,7 @@ public class LicenseController : BaseSettingsController
 
         try
         {
-            _licenseReader.RefreshLicense();
+            await _licenseReader.RefreshLicenseAsync();
         }
         catch (BillingNotFoundException)
         {
@@ -123,7 +123,7 @@ public class LicenseController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("license/trial")]
-    public bool ActivateTrial()
+    public async Task<bool> ActivateTrialAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
@@ -135,7 +135,7 @@ public class LicenseController : BaseSettingsController
             throw new SecurityException();
         }
 
-        var curQuota = _tenantManager.GetCurrentTenantQuota();
+        var curQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
         if (curQuota.Tenant != Tenant.DefaultTenant)
         {
             return false;
@@ -146,7 +146,7 @@ public class LicenseController : BaseSettingsController
             return false;
         }
 
-        var curTariff = _tenantExtra.GetCurrentTariff();
+        var curTariff = await _tenantExtra.GetCurrentTariffAsync();
         if (curTariff.DueDate.Date != DateTime.MaxValue.Date)
         {
             return false;
@@ -162,7 +162,7 @@ public class LicenseController : BaseSettingsController
         };
         quota.Trial = true;
 
-        _tenantManager.SaveTenantQuota(quota);
+        await _tenantManager.SaveTenantQuotaAsync(quota);
 
         const int DEFAULT_TRIAL_PERIOD = 30;
 
@@ -172,7 +172,7 @@ public class LicenseController : BaseSettingsController
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        await _tariffService.SetTariffAsync(-1, tariff);
 
         _messageService.Send(MessageAction.LicenseKeyUploaded);
 
@@ -191,11 +191,11 @@ public class LicenseController : BaseSettingsController
     [AllowNotPayment]
     [HttpPost("license")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
-    public object UploadLicense([FromForm] UploadLicenseRequestsDto inDto)
+    public async Task<object> UploadLicenseAsync([FromForm] UploadLicenseRequestsDto inDto)
     {
         try
         {
-            ApiContext.AuthByClaim();
+            await ApiContext.AuthByClaimAsync();
             if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed)
             {
                 throw new SecurityException(Resource.PortalSecurity);
@@ -212,7 +212,7 @@ public class LicenseController : BaseSettingsController
             return dueDate >= DateTime.UtcNow.Date
                                     ? Resource.LicenseUploaded
                                     : string.Format(
-                                        _tenantManager.GetCurrentTenantQuota().Update
+                                        (await _tenantManager.GetCurrentTenantQuotaAsync()).Update
                                             ? Resource.LicenseUploadedOverdueSupport
                                             : Resource.LicenseUploadedOverdue,
                                                     "",

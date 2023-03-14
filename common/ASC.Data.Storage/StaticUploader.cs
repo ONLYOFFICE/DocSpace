@@ -196,7 +196,7 @@ public class UploadOperation
             path = path.TrimStart('/');
             var tenant = _tenantManager.GetTenant(tenantId);
             _tenantManager.SetCurrentTenant(tenant);
-            _securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);
 
             var dataStore = _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>());
 

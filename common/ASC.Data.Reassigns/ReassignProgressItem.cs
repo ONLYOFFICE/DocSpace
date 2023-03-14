@@ -82,7 +82,7 @@ public class ReassignProgressItem : DistributedTaskProgress
             Percentage = 0;
             Status = DistributedTaskStatus.Running;
 
-            securityContext.AuthenticateMeWithoutCookie(_currentUserId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
             logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
 

@@ -87,7 +87,7 @@ public class SmtpOperation
         _logger = logger;
     }
 
-    public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    public async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
     {
         try
         {
@@ -99,7 +99,7 @@ public class SmtpOperation
 
             SetProgress(10, "Setup user");
 
-            _securityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
             SetProgress(15, "Find user data");
 

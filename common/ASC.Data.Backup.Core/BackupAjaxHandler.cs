@@ -137,7 +137,7 @@ public class BackupAjaxHandler
         return await _backupService.GetBackupHistory(GetCurrentTenantId());
     }
 
-    public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
+    public async Task CreateScheduleAsync(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
     {
         DemandPermissionsBackup();
 
@@ -173,7 +173,7 @@ public class BackupAjaxHandler
                 break;
         }
 
-        _backupService.CreateScheduleAsync(scheduleRequest);
+        await _backupService.CreateScheduleAsync(scheduleRequest);
     }
 
     public async Task<Schedule> GetScheduleAsync()
@@ -224,7 +224,7 @@ public class BackupAjaxHandler
                 StorageParams = schedule.StorageParams
             };
 
-            _backupService.CreateScheduleAsync(Schedule);
+            await _backupService.CreateScheduleAsync(Schedule);
 
         }
         else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
@@ -256,9 +256,9 @@ public class BackupAjaxHandler
 
     #region restore
 
-    public Task StartRestoreAsync(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
+    public async Task StartRestoreAsync(string backupId, BackupStorageType storageType, Dictionary<string, string> storageParams, bool notify)
     {
-        DemandPermissionsRestore();
+        await DemandPermissionsRestoreAsync();
 
         var restoreRequest = new StartRestoreRequest
         {
@@ -282,7 +282,7 @@ public class BackupAjaxHandler
             }
         }
 
-        return _backupService.StartRestoreAsync(restoreRequest);
+        await _backupService.StartRestoreAsync(restoreRequest);
     }
 
     public BackupProgress GetRestoreProgress()
@@ -295,12 +295,13 @@ public class BackupAjaxHandler
         return result;
     }
 
-    public void DemandPermissionsRestore()
+    public async Task DemandPermissionsRestoreAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
+        var quota = await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id);
         if (!SetupInfo.IsVisibleSettings("Restore") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
+            (!_coreBaseSettings.Standalone && !quota.AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -308,18 +309,18 @@ public class BackupAjaxHandler
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings("Restore")
-                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
+                || !quota.AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
     }
 
-    public void DemandPermissionsAutoBackup()
+    public async Task DemandPermissionsAutoBackupAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
+            (!_coreBaseSettings.Standalone && !(await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
@@ -329,9 +330,9 @@ public class BackupAjaxHandler
 
     #region transfer
 
-    public void StartTransfer(string targetRegion, bool notifyUsers)
+    public async Task StartTransferAsync(string targetRegion, bool notifyUsers)
     {
-        DemandPermissionsTransfer();
+        await DemandPermissionsTransferAsync();
 
         _messageService.Send(MessageAction.StartTransferSetting);
         _backupService.StartTransfer(
@@ -349,14 +350,14 @@ public class BackupAjaxHandler
         return _backupService.GetTransferProgress(GetCurrentTenantId());
     }
 
-    private void DemandPermissionsTransfer()
+    private async Task DemandPermissionsTransferAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
         || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
-        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantManager.GetCurrentTenantQuota().AutoBackupRestore)
+        || !SetupInfo.IsSecretEmail(currentUser.Email) && !(await _tenantManager.GetCurrentTenantQuotaAsync()).AutoBackupRestore)
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }

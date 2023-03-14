@@ -93,7 +93,7 @@ public class SecurityController : ControllerBase
     }
 
     [HttpGet("/audit/login/filter")]
-    public IEnumerable<LoginEventDto> GetLoginEventsByFilter(Guid userId,
+    public async Task<IEnumerable<LoginEventDto>> GetLoginEventsByFilterAsync(Guid userId,
     MessageAction action,
     ApiDateTime from,
     ApiDateTime to)
@@ -106,20 +106,20 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
             return GetLastLoginEvents();
         }
         else
         {
-            DemandAuditPermission();
+            await DemandAuditPermissionAsync();
 
             return _loginEventsRepository.GetByFilter(userId, action, from, to, startIndex, limit).Select(x => new LoginEventDto(x));
         }
     }
 
     [HttpGet("/audit/events/filter")]
-    public IEnumerable<AuditEventDto> GetAuditEventsByFilter(Guid userId,
+    public async Task<IEnumerable<AuditEventDto>> GetAuditEventsByFilterAsync(Guid userId,
             ProductType productType,
             ModuleType moduleType,
             ActionType actionType,
@@ -137,13 +137,13 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
             return GetLastAuditEvents();
         }
         else
         {
-            DemandAuditPermission();
+            await DemandAuditPermissionAsync();
 
             return _auditEventsRepository.GetByFilter(userId, productType, moduleType, actionType, action, entryType, target, from, to, startIndex, limit).Select(x => new AuditEventDto(x, _auditActionMapper));
         }
@@ -192,7 +192,7 @@ public class SecurityController : ControllerBase
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
         var settings = _settingsManager.Load<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
 
@@ -214,7 +214,7 @@ public class SecurityController : ControllerBase
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
@@ -245,11 +245,11 @@ public class SecurityController : ControllerBase
     }
 
     [HttpPost("audit/settings/lifetime")]
-    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+    public async Task<TenantAuditSettings> SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
         if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
         {
@@ -267,11 +267,11 @@ public class SecurityController : ControllerBase
         return wrapper.Settings;
     }
 
-    private void DemandAuditPermission()
+    private async Task DemandAuditPermissionAsync()
     {
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString())
-                || !_tenantManager.GetCurrentTenantQuota().Audit))
+                || !(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
         }

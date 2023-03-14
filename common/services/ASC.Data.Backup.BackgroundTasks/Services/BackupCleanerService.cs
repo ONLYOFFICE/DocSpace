@@ -126,7 +126,7 @@ internal sealed class BackupCleanerService : BackgroundService
                     continue;
                 }
 
-                await backupStorage.Delete(backupRecord.StoragePath);
+                await backupStorage.DeleteAsync(backupRecord.StoragePath);
 
                 await backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
             }

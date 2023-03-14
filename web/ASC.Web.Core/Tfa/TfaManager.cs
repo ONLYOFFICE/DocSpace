@@ -96,7 +96,7 @@ public class TfaManager
         return _tfa.GenerateSetupCode(_setupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
     }
 
-    public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
+    public async Task<bool> ValidateAuthCodeAsync(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
     {
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings
             || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -144,7 +144,7 @@ public class TfaManager
         if (!_securityContext.IsAuthenticated)
         {
             var action = isEntryPoint ? MessageAction.LoginSuccessViaApiTfa : MessageAction.LoginSuccesViaTfaApp;
-            _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
         }
 
         if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))

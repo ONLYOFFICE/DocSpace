@@ -241,7 +241,7 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <param name="isSendWelcomeEmail"></param>
     [HttpPost("finish")]
-    public void Finish(bool isSendWelcomeEmail)
+    public async Task FinishAsync(bool isSendWelcomeEmail)
     {
         if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
         {
@@ -259,7 +259,7 @@ public class MigrationController : ControllerBase
             foreach (var gu in guidUsers)
             {
                 var u = _userManager.GetUsers(gu);
-                _studioNotifyService.UserInfoActivation(u);
+                await _studioNotifyService.UserInfoActivationAsync(u);
             }
         }
         ClearCache();

@@ -665,7 +665,7 @@ public class LdapUserManager
                     var log = scope.ServiceProvider.GetRequiredService<ILogger<LdapUserManager>>();
 
                     tenantManager.SetCurrentTenant(tenant);
-                    securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+                    await securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
 
                     var uInfo = await SyncLDAPUser(ldapUserInfo.Item1);
 
@@ -710,7 +710,7 @@ public class LdapUserManager
         UserInfo userInfo;
         try
         {
-            _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
 
             userInfo = await SyncLDAPUser(ldapUserInfo.Item1);
 

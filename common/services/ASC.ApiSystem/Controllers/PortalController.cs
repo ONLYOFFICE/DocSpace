@@ -279,7 +279,7 @@ public class PortalController : ControllerBase
                     Quotas = new List<Quota> { new Quota(trialQuotaId, 1) },
                     DueDate = dueDate
                 };
-                _hostedSolution.SetTariff(t.Id, tariff);
+                await _hostedSolution.SetTariffAsync(t.Id, tariff);
             }
         }
 

@@ -74,11 +74,11 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private static bool TryAuthenticate(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
+    private static async Task<bool> TryAuthenticateAsync(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
     {
         try
         {
-            securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
+            await securityContext.AuthenticateMeWithoutCookieAsync(authManager.GetAccountByID(tenantId, userid));
             return true;
         }
         catch
@@ -157,7 +157,7 @@ public class FeedAggregatorService : FeedBaseService
 
                         foreach (var u in users)
                         {
-                            if (!TryAuthenticate(securityContext, authManager, tenant1, u.Id))
+                            if (!await TryAuthenticateAsync(securityContext, authManager, tenant1, u.Id))
                             {
                                 continue;
                             }

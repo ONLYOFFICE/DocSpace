@@ -127,12 +127,12 @@ public class StudioNotifyHelper
         return RecipientsProvider.GetRecipient(userId.ToString());
     }
 
-    public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
+    public Task<IRecipient[]> RecipientFromEmailAsync(string email, bool checkActivation)
     {
-        return RecipientFromEmail(new List<string> { email }, checkActivation);
+        return RecipientFromEmailAsync(new List<string> { email }, checkActivation);
     }
 
-    public IRecipient[] RecipientFromEmail(List<string> emails, bool checkActivation)
+    public async Task<IRecipient[]> RecipientFromEmailAsync(List<string> emails, bool checkActivation)
     {
         var res = new List<IRecipient>();
 
@@ -150,7 +150,7 @@ public class StudioNotifyHelper
             && _tenantExtra.Saas && !_coreBaseSettings.Personal)
         {
             var tenant = _tenantManager.GetCurrentTenant();
-            var tariff = _tenantManager.GetTenantQuota(tenant.Id);
+            var tariff = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
             if (tariff.Free || tariff.Trial)
             {
                 var spamEmailSettings = _settingsManager.Load<SpamEmailSettings>();
