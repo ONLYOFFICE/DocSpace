@@ -37,6 +37,9 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 100;
   margin-top: -80px;
   margin-left: -20px;
   padding: 24px 0 24px 20px;
