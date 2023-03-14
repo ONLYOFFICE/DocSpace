@@ -25,10 +25,6 @@ const StyledAccountsItemTitle = styled.div`
     padding: 24px 20px 24px 20px;
   }
 
-  @media (max-width: 549px) {
-    width: calc(100vw - 69px - 40px);
-  }
-
   @media ${hugeMobile} {
     width: calc(100vw - 32px);
     padding: 24px 0 24px 16px;
@@ -40,10 +36,8 @@ const StyledAccountsItemTitle = styled.div`
 
   .info-panel__info-text {
     padding-top: 24px;
-
     display: flex;
     flex-direction: ${(props) => (props.isPending ? "row" : "column")};
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -69,7 +63,6 @@ const StyledAccountsItemTitle = styled.div`
 
   .context-button {
     padding-top: 24px;
-
     margin-left: auto;
   }
 `;
@@ -92,9 +85,7 @@ const StyledAccountContent = styled.div`
     display: grid;
     grid-template-rows: 28px 28px 28px 28px;
     grid-template-columns: 80px 1fr;
-
     grid-gap: 0 24px;
-
     align-items: center;
 
     .type-combobox {
