@@ -127,15 +127,13 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
         <input {...getInputProps()} />
         <div className="dropzone-link">
           <ColorTheme className="dropzone-link-main" themeId={ThemeType.Link}>
-            {t("CreateEditRoomDialog:DropzoneTitleLink")}
+            {t("Common:DropzoneTitleLink")}
           </ColorTheme>
           <span className="dropzone-link-secondary">
-            {t("CreateEditRoomDialog:DropzoneTitleSecondary")}
+            {t("Common:DropzoneTitleSecondary")}
           </span>
         </div>
-        <div className="dropzone-exsts">
-          {t("CreateEditRoomDialog:DropzoneTitleExsts")}
-        </div>
+        <div className="dropzone-exsts">{t("Common:DropzoneTitleExsts")}</div>
       </div>
     </StyledDropzone>
   );
