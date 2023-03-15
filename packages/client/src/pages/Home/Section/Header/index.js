@@ -367,6 +367,11 @@ class SectionHeaderContent extends React.Component {
 
     if (isExistActiveItems) return;
 
+    if (this.props.isGracePeriod) {
+      this.props.setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     this.props.setArchiveAction("unarchive");
     this.props.setRestoreAllArchive(true);
     this.props.setArchiveDialogVisible(true);
