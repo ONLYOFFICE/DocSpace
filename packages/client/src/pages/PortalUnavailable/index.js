@@ -83,7 +83,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
         visible={isVisible}
         t={t}
         emailPlaceholderText={t("Common:RegistrationEmail")}
-        textBody={t("AccessingProblem")}
+        textBody={t("PortalUnavailable:AccessingProblem")}
         onClose={onCloseDialog}
       />
       <ErrorContainer
@@ -96,7 +96,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
             className="portal-unavailable_text"
             color={theme.text.disableColor}
           >
-            {t("AccessingProblem")}
+            {t("PortalUnavailable:AccessingProblem")}
           </Text>
           <Button
             scale
@@ -110,7 +110,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
             onClick={onClickToContact}
             color={theme.login.linkColor}
           >
-            {t("ContactAdministrator")}
+            {t("PortalUnavailable:ContactAdministrator")}
           </Text>
         </StyledBodyContent>
       </ErrorContainer>
