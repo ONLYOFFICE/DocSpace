@@ -1459,7 +1459,17 @@ class FilesActionStore {
   };
 
   archiveRooms = (action) => {
-    const { setArchiveAction, setArchiveDialogVisible } = this.dialogsStore;
+    const {
+      setArchiveAction,
+      setArchiveDialogVisible,
+      setInviteUsersWarningDialogVisible,
+    } = this.dialogsStore;
+    const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+
+    if (action === "unarchive" && isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setArchiveAction(action);
     setArchiveDialogVisible(true);
