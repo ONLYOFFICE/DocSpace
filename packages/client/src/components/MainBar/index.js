@@ -28,19 +28,26 @@ const StyledContainer = styled.div`
   }
 `;
 
+const pathname = window.location.pathname;
 const MainBar = ({
   firstLoad,
   checkedMaintenance,
   snackbarExist,
   setMaintenanceExist,
+  isNotPaidPeriod,
 }) => {
   React.useEffect(() => {
     return () => setMaintenanceExist && setMaintenanceExist(false);
   }, []);
 
+  const isVisibleBar =
+    !isNotPaidPeriod &&
+    pathname !== "/confirm/LinkInvite" &&
+    pathname !== "/preparation-portal";
+
   return (
     <StyledContainer id={"main-bar"} className={"main-bar"}>
-      {checkedMaintenance && !snackbarExist && (
+      {isVisibleBar && checkedMaintenance && !snackbarExist && (
         <Bar firstLoad={firstLoad} setMaintenanceExist={setMaintenanceExist} />
       )}
     </StyledContainer>
@@ -48,13 +55,20 @@ const MainBar = ({
 };
 
 export default inject(({ auth, filesStore }) => {
+  const { currentTariffStatusStore, settingsStore } = auth;
   const {
     checkedMaintenance,
     setMaintenanceExist,
     snackbarExist,
-  } = auth.settingsStore;
-
+  } = settingsStore;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
   const { firstLoad } = filesStore;
 
-  return { firstLoad, checkedMaintenance, snackbarExist, setMaintenanceExist };
+  return {
+    firstLoad,
+    checkedMaintenance,
+    snackbarExist,
+    setMaintenanceExist,
+    isNotPaidPeriod,
+  };
 })(observer(MainBar));
