@@ -71,11 +71,13 @@ class AuthStore {
         );
       }
 
+      this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
+        requests.push(this.settingsStore.getAdditionalResources());
+
       if (!this.settingsStore.passwordSettings) {
         if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
           requests.push(
             this.settingsStore.getPortalPasswordSettings(),
-            this.settingsStore.getAdditionalResources(),
             this.settingsStore.getCompanyInfoSettings()
           );
         }
