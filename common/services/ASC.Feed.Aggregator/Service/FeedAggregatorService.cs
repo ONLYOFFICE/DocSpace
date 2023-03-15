@@ -113,7 +113,7 @@ public class FeedAggregatorService : FeedBaseService
             foreach (var module in modules)
             {
                 var result = new List<FeedRow>();
-                var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
+                var fromTime = await feedAggregateDataProvider.GetLastTimeAggregateAsync(module.GetType().Name);
                 if (fromTime == default)
                 {
                     fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
@@ -173,7 +173,7 @@ public class FeedAggregatorService : FeedBaseService
                     }
                 }
 
-                feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime, cfg.PortionSize);
+                await feedAggregateDataProvider.SaveFeedsAsync(result, module.GetType().Name, toTime, cfg.PortionSize);
 
                 foreach (var res in result)
                 {

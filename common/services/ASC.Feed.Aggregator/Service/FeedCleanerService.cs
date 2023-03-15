@@ -49,13 +49,13 @@ public class FeedCleanerService : FeedBaseService
         {
             await Task.Delay(cfg.RemovePeriod, stoppingToken);
 
-            RemoveFeeds(cfg.AggregateInterval);
+            await RemoveFeedsAsync(cfg.AggregateInterval);
         }
 
         _logger.InformationFeedCleanerStopping();
     }
 
-    private void RemoveFeeds(object interval)
+    private async Task RemoveFeedsAsync(object interval)
     {
         try
         {
@@ -64,7 +64,7 @@ public class FeedCleanerService : FeedBaseService
 
             _logger.DebugStartRemoving();
 
-            feedAggregateDataProvider.RemoveFeedAggregate(DateTime.UtcNow.Subtract((TimeSpan)interval));
+            await feedAggregateDataProvider.RemoveFeedAggregateAsync(DateTime.UtcNow.Subtract((TimeSpan)interval));
         }
         catch (Exception ex)
         {

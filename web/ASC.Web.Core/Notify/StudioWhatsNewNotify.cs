@@ -96,7 +96,7 @@ public class StudioWhatsNewNotify
         _log.InformationStartSendWhatsNew();
 
         var products = _webItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
-        var tenants = GetChangedTenants(scheduleDate);
+        var tenants = await GetChangedTenantsAsync(scheduleDate);
 
         foreach (var tenantid in tenants)
         {
@@ -104,9 +104,9 @@ public class StudioWhatsNewNotify
         }
     }
 
-    private IEnumerable<int> GetChangedTenants(DateTime date)
+    private Task<IEnumerable<int>> GetChangedTenantsAsync(DateTime date)
     {
-        return _feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+        return _feedAggregateDataProvider.GetTenantsAsync(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
     }
 
     private async Task SendMsgWhatsNewAsync(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)
@@ -140,7 +140,7 @@ public class StudioWhatsNewNotify
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
 
-                var feeds = _feedAggregateDataProvider.GetFeeds(new FeedApiFilter
+                var feeds = await _feedAggregateDataProvider.GetFeedsAsync(new FeedApiFilter
                 {
                     From = scheduleDate.Date.AddDays(-1),
                     To = scheduleDate.Date.AddSeconds(-1),
