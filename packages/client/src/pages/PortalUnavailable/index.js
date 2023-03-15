@@ -7,6 +7,7 @@ import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
 import Button from "@docspace/components/button";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledBodyContent = styled.div`
   max-width: 480px;
@@ -40,6 +41,9 @@ const StyledBody = styled.div`
     }
   }
 
+  .portal-unavailable_text {
+    color: ${(props) => props.theme.portalUnavailable.textDescription};
+  }
   @media (max-width: 768px) {
     .portal-unavailable_svg {
       margin-top: 0px;
@@ -91,11 +95,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
         headerText={t("ErrorUnavailableText")}
       >
         <StyledBodyContent>
-          <Text
-            textAlign="center"
-            className="portal-unavailable_text"
-            color={theme.text.disableColor}
-          >
+          <Text textAlign="center" className="portal-unavailable_text">
             {t("PortalUnavailable:AccessingProblem")}
           </Text>
           <Button
@@ -104,14 +104,15 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
             size={"medium"}
             onClick={onClick}
           />
-          <Text
+
+          <ColorTheme
             textAlign="center"
+            themeId={ThemeType.Link}
             className="portal-unavailable_contact-text"
             onClick={onClickToContact}
-            color={theme.login.linkColor}
           >
             {t("PortalUnavailable:ContactAdministrator")}
-          </Text>
+          </ColorTheme>
         </StyledBodyContent>
       </ErrorContainer>
     </StyledBody>
