@@ -15,6 +15,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader";
 import FilterBlock from "./FilterBlockLoader";
 import ProfileView from "./ProfileViewLoader";
+import ProfileFooter from "./ProfileFooterLoader";
 import Notifications from "./NotificationsLoader";
 
 import Group from "./GroupLoader";
@@ -61,6 +62,7 @@ export default {
   Filter,
   FilterBlock,
   ProfileView,
+  ProfileFooter,
 
   Group,
   HistoryRows,
