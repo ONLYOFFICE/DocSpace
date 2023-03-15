@@ -122,7 +122,7 @@ public class ElasticSearchIndexService : BackgroundService
 
             _logger.DebugProduct(product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
-            await product.IndexAll();
+            await product.IndexAllAsync();
         }
         catch (Exception e)
         {

@@ -59,7 +59,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task AddLinkAsync(string sourceId, string linkedId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         await filesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
         {
@@ -74,7 +74,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task<string> GetSourceAsync(string linkedId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         linkedId = (await MappingIDAsync(linkedId)).ToString();
 
@@ -88,7 +88,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task<string> GetLinkedAsync(string sourceId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         sourceId = (await MappingIDAsync(sourceId)).ToString();
 
@@ -102,7 +102,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteLinkAsync(string sourceId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         sourceId = (await MappingIDAsync(sourceId)).ToString();
 
@@ -117,7 +117,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
     public async Task DeleteAllLinkAsync(string fileId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         fileId = (await MappingIDAsync(fileId)).ToString();
 

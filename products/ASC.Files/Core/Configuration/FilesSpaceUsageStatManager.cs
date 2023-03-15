@@ -67,9 +67,9 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         _fileMarker = fileMarker;
     }
 
-    public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
+    public override async ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var myFiles = filesDbContext.Files
             .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
@@ -88,7 +88,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
             .GroupBy(r => Constants.LostUser.Id)
             .Select(r => new { CreateBy = Constants.LostUser.Id, Size = r.Sum(a => a.file.ContentLength) });
 
-        return myFiles.Union(commonFiles)
+        return await myFiles.Union(commonFiles)
             .AsAsyncEnumerable()
             .GroupByAwait(
             async r => await Task.FromResult(r.CreateBy),
@@ -124,7 +124,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         var my = _globalFolder.GetFolderMy(_fileMarker, _daoFactory);
         var trash = await _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         return await filesDbContext.Files
             .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
             .SumAsync(r => r.ContentLength);

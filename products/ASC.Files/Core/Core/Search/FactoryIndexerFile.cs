@@ -97,7 +97,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         _settings = settings;
     }
 
-    public override async Task IndexAll()
+    public override async Task IndexAllAsync()
     {
         (int, int, int) getCount(DateTime lastIndexed)
         {

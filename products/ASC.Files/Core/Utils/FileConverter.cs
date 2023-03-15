@@ -374,7 +374,7 @@ public class FileConverter
         return _fileUtility.ExtsMustConvert.Contains(ext);
     }
 
-    public bool EnableConvert<T>(File<T> file, string toExtension)
+    public async Task<bool> EnableConvertAsync<T>(File<T> file, string toExtension)
     {
         if (file == null || string.IsNullOrEmpty(toExtension))
         {
@@ -398,7 +398,7 @@ public class FileConverter
             return true;
         }
 
-        return _fileUtility.ExtsConvertible.ContainsKey(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
+        return (await _fileUtility.GetExtsConvertibleAsync()).ContainsKey(fileExtension) && (await _fileUtility.GetExtsConvertibleAsync())[fileExtension].Contains(toExtension);
     }
 
     public Task<Stream> ExecAsync<T>(File<T> file)
@@ -408,7 +408,7 @@ public class FileConverter
 
     public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)
     {
-        if (!EnableConvert(file, toExtension))
+        if (!await EnableConvertAsync(file, toExtension))
         {
             var fileDao = _daoFactory.GetFileDao<T>();
 

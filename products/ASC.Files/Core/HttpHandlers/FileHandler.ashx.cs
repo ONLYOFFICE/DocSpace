@@ -394,7 +394,7 @@ public class FileHandlerService
 
                         var outType = (context.Request.Query[FilesLinkUtility.OutType].FirstOrDefault() ?? "").Trim();
                         if (!string.IsNullOrEmpty(outType)
-                            && _fileUtility.ExtsConvertible.ContainsKey(ext) && _fileUtility.ExtsConvertible[ext].Contains(outType))
+                            && (await _fileUtility.GetExtsConvertibleAsync()).ContainsKey(ext) && (await _fileUtility.GetExtsConvertibleAsync())[ext].Contains(outType))
                         {
                             ext = outType;
                         }
@@ -426,7 +426,7 @@ public class FileHandlerService
                         }
                         else
                         {
-                            if (!_fileConverter.EnableConvert(file, ext))
+                            if (!await _fileConverter.EnableConvertAsync(file, ext))
                             {
                                 if (!readLink && await fileDao.IsSupportedPreSignedUriAsync(file))
                                 {

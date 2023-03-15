@@ -98,11 +98,11 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpPost("wordpress")]
-    public bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
+    public async Task<bool> CreateWordpressPostAsync(CreateWordpressPostRequestDto inDto)
     {
         try
         {
-            var token = _wordpressToken.GetToken();
+            var token = await _wordpressToken.GetTokenAsync();
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var parser = JObject.Parse(meInfo);
             if (parser == null)
@@ -145,12 +145,12 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpGet("wordpress-delete")]
-    public object DeleteWordpressInfo()
+    public async Task<object> DeleteWordpressInfoAsync()
     {
-        var token = _wordpressToken.GetToken();
+        var token = await _wordpressToken.GetTokenAsync();
         if (token != null)
         {
-            _wordpressToken.DeleteToken(token);
+            await _wordpressToken.DeleteTokenAsync(token);
             return new
             {
                 success = true
@@ -215,9 +215,9 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpGet("wordpress-info")]
-    public object GetWordpressInfo()
+    public async Task<object> GetWordpressInfoAsync()
     {
-        var token = _wordpressToken.GetToken();
+        var token = await _wordpressToken.GetTokenAsync();
         if (token != null)
         {
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
@@ -312,7 +312,7 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpPost("wordpress-save")]
-    public object WordpressSave(WordpressSaveRequestDto inDto)
+    public async Task<object> WordpressSaveAsync(WordpressSaveRequestDto inDto)
     {
         if (inDto.Code.Length == 0)
         {
@@ -323,7 +323,7 @@ public class ThirdpartyController : ApiControllerBase
         }
         try
         {
-            var token = _wordpressToken.SaveTokenFromCode(inDto.Code);
+            var token = await _wordpressToken.SaveTokenFromCodeAsync(inDto.Code);
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
 

@@ -1930,7 +1930,7 @@ public class FileStorageService<T> //: IFileStorageService
         return _filesSettingsHelper.EnableThirdParty;
     }
 
-    public bool SaveDocuSign(string code)
+    public async Task<bool> SaveDocuSignAsync(string code)
     {
         ErrorIf(!_authContext.IsAuthenticated
                 || _userManager.IsUser(_authContext.CurrentAccount.ID)
@@ -1938,17 +1938,15 @@ public class FileStorageService<T> //: IFileStorageService
                 || !_thirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
         var token = _consumerFactory.Get<DocuSignLoginProvider>().GetAccessToken(code);
-        _docuSignHelper.ValidateToken(token);
-        _docuSignToken.SaveToken(token);
+        await _docuSignHelper.ValidateTokenAsync(token);
+        await _docuSignToken.SaveTokenAsync(token);
 
         return true;
     }
 
-    public object DeleteDocuSign()
+    public Task DeleteDocuSignAsync()
     {
-        _docuSignToken.DeleteToken();
-
-        return null;
+         return _docuSignToken.DeleteTokenAsync();
     }
 
     public Task<string> SendDocuSignAsync(T fileId, DocuSignData docuSignData)
@@ -2299,7 +2297,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
         //delete docuSign
-        _docuSignToken.DeleteToken(userId);
+        await _docuSignToken.DeleteTokenAsync(userId);
 
         var providerDao = GetProviderDao();
         if (providerDao != null)

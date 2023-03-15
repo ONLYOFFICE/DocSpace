@@ -1440,7 +1440,7 @@ public class EntryManager
 
         if (file.ProviderEntry && !newExtension.Equals(currentExt))
         {
-            if (_fileUtility.ExtsConvertible.ContainsKey(newExtension) && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
+            if ((await _fileUtility.GetExtsConvertibleAsync()).ContainsKey(newExtension) && (await _fileUtility.GetExtsConvertibleAsync())[newExtension].Contains(currentExt))
             {
                 if (stream != null)
                 {

@@ -49,7 +49,7 @@ public interface IFactoryIndexer
 {
     string IndexName { get; }
     string SettingsTitle { get; }
-    Task IndexAll();
+    Task IndexAllAsync();
     void ReIndex();
 }
 
@@ -533,7 +533,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         _indexer.Refresh();
     }
 
-    public virtual Task IndexAll()
+    public virtual Task IndexAllAsync()
     {
         return Task.CompletedTask;
     }

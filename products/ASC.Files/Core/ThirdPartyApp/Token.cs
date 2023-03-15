@@ -37,7 +37,7 @@ public class Token : OAuth20Token
         App = app;
     }
 
-    public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
+    public async Task<string> GetRefreshedTokenAsync(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper, ThirdPartySelector thirdPartySelector)
     {
         if (IsExpired)
         {
@@ -57,7 +57,7 @@ public class Token : OAuth20Token
                     ExpiresIn = refreshed.ExpiresIn;
                     Timestamp = DateTime.UtcNow;
 
-                    tokenHelper.SaveToken(this);
+                    await tokenHelper.SaveTokenAsync(this);
                 }
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ public class TokenHelper
         _tenantManager = tenantManager;
     }
 
-    public void SaveToken(Token token)
+    public async Task SaveTokenAsync(Token token)
     {
         var dbFilesThirdpartyApp = new DbFilesThirdpartyApp
         {
@@ -104,25 +104,25 @@ public class TokenHelper
             ModifiedOn = DateTime.UtcNow
         };
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        filesDbContext.AddOrUpdate(filesDbContext.ThirdpartyApp, dbFilesThirdpartyApp);
-        filesDbContext.SaveChanges();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        await filesDbContext.AddOrUpdateAsync(q => q.ThirdpartyApp, dbFilesThirdpartyApp);
+        await filesDbContext.SaveChangesAsync();
     }
 
-    public Token GetToken(string app)
+    public Task<Token> GetTokenAsync(string app)
     {
-        return GetToken(app, _authContext.CurrentAccount.ID);
+        return GetTokenAsync(app, _authContext.CurrentAccount.ID);
     }
 
-    public Token GetToken(string app, Guid userId)
+    public async Task<Token> GetTokenAsync(string app, Guid userId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var oAuth20Token = filesDbContext.ThirdpartyApp
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var oAuth20Token = await filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == userId)
             .Where(r => r.App == app)
             .Select(r => r.Token)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (oAuth20Token == null)
         {
@@ -132,16 +132,14 @@ public class TokenHelper
         return new Token(DecryptToken(oAuth20Token), app);
     }
 
-    public void DeleteToken(string app, Guid? userId = null)
+    public async Task DeleteTokenAsync(string app, Guid? userId = null)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var apps = filesDbContext.ThirdpartyApp
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        await filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
-            .Where(r => r.App == app);
-
-        filesDbContext.RemoveRange(apps);
-        filesDbContext.SaveChanges();
+            .Where(r => r.App == app)
+            .ExecuteDeleteAsync();
     }
 
     private string EncryptToken(OAuth20Token token)

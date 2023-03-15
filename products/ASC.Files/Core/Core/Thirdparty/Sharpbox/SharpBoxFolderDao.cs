@@ -238,12 +238,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         var folder = GetFolderById(folderId);
         var id = MakeId(folder);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

@@ -389,7 +389,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                         compressTo.CreateEntry(newtitle, file.ModifiedOn);
                         try
                         {
-                            if (fileConverter.EnableConvert(file, convertToExt))
+                            if (await fileConverter.EnableConvertAsync(file, convertToExt))
                             {
                                 //Take from converter
                                 using (var readStream = await fileConverter.ExecAsync(file, convertToExt))

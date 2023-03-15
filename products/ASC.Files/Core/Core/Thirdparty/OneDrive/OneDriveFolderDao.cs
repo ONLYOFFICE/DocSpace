@@ -245,12 +245,12 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         var onedriveFolder = await GetOneDriveItemAsync(folderId);
         var id = MakeId(onedriveFolder);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)

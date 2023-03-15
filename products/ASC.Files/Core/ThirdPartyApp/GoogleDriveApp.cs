@@ -171,18 +171,18 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return AccessTokenUrl;
     }
 
-    public Task<FileWithEditableWrapper> GetFileAsync(string fileId)
+    public async Task<FileWithEditableWrapper> GetFileAsync(string fileId)
     {
         _logger.DebugGoogleDriveAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
         var driveFile = GetDriveFile(fileId, token);
         var wrapper = new FileWithEditableWrapper();
 
         if (driveFile == null)
         {
-            return Task.FromResult(wrapper);
+            return wrapper;
         }
 
         var jsonFile = JObject.Parse(driveFile);
@@ -204,7 +204,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         wrapper.Editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
         wrapper.File = file;
-        return Task.FromResult(wrapper);
+        return wrapper;
     }
 
     public string GetFileStreamUrl(File<string> file)
@@ -244,7 +244,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _logger.DebugGoogleDriveAppSaveFileStream(fileId, stream == null ? downloadUrl : "stream");
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var driveFile = GetDriveFile(fileId, token);
         if (driveFile == null)
@@ -365,7 +365,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!_authContext.IsAuthenticated)
         {
-            var wrapper = await GetUserInfo(token);
+            var wrapper = await GetUserInfoAsync(token);
             var userInfo = wrapper.UserInfo;
             var isNew = wrapper.IsNew;
 
@@ -394,7 +394,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
         }
 
-        _tokenHelper.SaveToken(token);
+        await _tokenHelper.SaveTokenAsync(token);
 
         var action = stateJson.Value<string>("action");
         switch (action)
@@ -476,7 +476,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (Guid.TryParse(userId, out var userIdGuid))
             {
-                token = _tokenHelper.GetToken(AppAttr, userIdGuid);
+                token = await _tokenHelper.GetTokenAsync(AppAttr, userIdGuid);
             }
 
             if (token == null)
@@ -540,7 +540,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         var fileId = context.Request.Query[FilesLinkUtility.FileId];
         _logger.DebugGoogleDriveAppConfirmConvertFile(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var driveFile = GetDriveFile(fileId, token);
         if (driveFile == null)
@@ -561,7 +561,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
         _logger.DebugGoogleDriveAppCreateFile(folderId, fileName);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
         var storeTemplate = _globalStore.GetStoreTemplate();
@@ -625,7 +625,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
 
-    private async Task<UserInfoWrapper> GetUserInfo(Token token)
+    private async Task<UserInfoWrapper> GetUserInfoAsync(Token token)
     {
         var wrapper = new UserInfoWrapper();
         if (token == null)
@@ -638,7 +638,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         LoginProfile loginProfile = null;
         try
         {
-            loginProfile = _googleLoginProvider.Instance.GetLoginProfile(token.GetRefreshedToken(_tokenHelper, _oAuth20TokenHelper, _thirdPartySelector));
+            loginProfile = _googleLoginProvider.Instance.GetLoginProfile(await token.GetRefreshedTokenAsync(_tokenHelper, _oAuth20TokenHelper, _thirdPartySelector));
         }
         catch (Exception ex)
         {

@@ -156,7 +156,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _logger.DebugBoxAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
         var wrapper = new FileWithEditableWrapper();
@@ -238,7 +238,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _logger.DebugBoxAppSaveFileStream(fileId, stream == null ? downloadUrl : "stream");
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
         if (boxFile == null)
@@ -391,7 +391,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
         }
 
-        _tokenHelper.SaveToken(token);
+        await _tokenHelper.SaveTokenAsync(token);
 
         var fileId = context.Request.Query["id"];
 
@@ -422,7 +422,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (Guid.TryParse(userId, out var userIdGuid))
             {
-                token = _tokenHelper.GetToken(AppAttr, userIdGuid);
+                token = await _tokenHelper.GetTokenAsync(AppAttr, userIdGuid);
             }
 
             if (token == null)
