@@ -43,13 +43,13 @@ public class GeolocationHelper
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public IPGeolocationInfo GetIPGeolocation(string ip)
+    public async Task<IPGeolocationInfo> GetIPGeolocationAsync(string ip)
     {
         try
         {
-            using var dbContext = _dbContextFactory.CreateDbContext();
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             var ipformatted = FormatIP(ip);
-            var q = dbContext.DbipLocation
+            var q = await dbContext.DbipLocation
                 .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
                 .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
                 .OrderByDescending(r => r.IPStart)
@@ -62,7 +62,7 @@ public class GeolocationHelper
                     TimezoneOffset = r.TimezoneOffset ?? 0,
                     TimezoneName = r.TimezoneName
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return q ?? IPGeolocationInfo.Default;
         }
@@ -74,14 +74,14 @@ public class GeolocationHelper
         return IPGeolocationInfo.Default;
     }
 
-    public IPGeolocationInfo GetIPGeolocationFromHttpContext()
+    public async Task<IPGeolocationInfo> GetIPGeolocationFromHttpContextAsync()
     {
         if (_httpContextAccessor.HttpContext?.Request != null)
         {
             var ip = (string)(_httpContextAccessor.HttpContext.Items["X-Forwarded-For"] ?? _httpContextAccessor.HttpContext.Items["REMOTE_ADDR"]);
             if (!string.IsNullOrWhiteSpace(ip))
             {
-                return GetIPGeolocation(ip);
+                return await GetIPGeolocationAsync(ip);
             }
         }
 

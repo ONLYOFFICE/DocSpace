@@ -36,7 +36,7 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
         _dbContextFactory = dbContextFactory;
     }
 
-    public void RegisterInstall(string userEmail, MobileAppType appType)
+    public async Task RegisterInstallAsync(string userEmail, MobileAppType appType)
     {
         var mai = new MobileAppInstall
         {
@@ -46,14 +46,14 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
             LastSign = DateTime.UtcNow
         };
 
-        using var dbContext = _dbContextFactory.CreateDbContext();
-        dbContext.MobileAppInstall.Add(mai);
-        dbContext.SaveChanges();
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.MobileAppInstall.AddAsync(mai);
+        await dbContext.SaveChangesAsync();
     }
 
-    public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
+    public async Task<bool> IsInstallRegisteredAsync(string userEmail, MobileAppType? appType)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var q = dbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
 
         if (appType.HasValue)
@@ -61,6 +61,6 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
             q = q.Where(r => r.AppType == (int)appType.Value);
         }
 
-        return q.Any();
+        return await q.AnyAsync();
     }
 }

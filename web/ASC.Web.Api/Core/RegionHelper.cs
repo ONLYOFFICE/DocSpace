@@ -53,7 +53,7 @@ public class RegionHelper
 
         var countryCode = _httpContextAccessor.HttpContext.Request.Query["country"];
 
-        var currentRegion = GetRegionInfo(countryCode) ?? FindRegionInfo();
+        var currentRegion = GetRegionInfo(countryCode) ?? await FindRegionInfoAsync();
 
         if (currentRegion != null && !currentRegion.Name.Equals(defaultRegion.Name))
         {
@@ -70,10 +70,10 @@ public class RegionHelper
         return GetRegionInfo("US");
     }
 
-    public string GetCurrencyFromRequest()
+    public async Task<string> GetCurrencyFromRequestAsync()
     {
         var regionInfo = GetDefaultRegionInfo();
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
+        var geoinfo = await _geolocationHelper.GetIPGeolocationFromHttpContextAsync();
 
         if (!string.IsNullOrEmpty(geoinfo.Key))
         {
@@ -88,12 +88,12 @@ public class RegionHelper
         return regionInfo.ISOCurrencySymbol;
     }
 
-    private RegionInfo FindRegionInfo()
+    private async Task<RegionInfo> FindRegionInfoAsync()
     {
         RegionInfo regionInfo = null;
 
         var tenant = _tenantManager.GetCurrentTenant();
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
+        var geoinfo = await _geolocationHelper.GetIPGeolocationFromHttpContextAsync();
 
         if (geoinfo != null)
         {

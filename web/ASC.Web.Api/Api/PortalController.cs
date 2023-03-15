@@ -287,17 +287,17 @@ public class PortalController : ControllerBase
     }
 
     [HttpPost("mobile/registration")]
-    public void RegisterMobileAppInstall(MobileAppRequestsDto inDto)
+    public Task RegisterMobileAppInstallAsync(MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
+        return _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, inDto.Type);
     }
 
     [HttpPost("mobile/registration")]
-    public void RegisterMobileAppInstall(MobileAppType type)
+    public Task RegisterMobileAppInstall(MobileAppType type)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
+        return _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, type);
     }
 
     /// <summary>

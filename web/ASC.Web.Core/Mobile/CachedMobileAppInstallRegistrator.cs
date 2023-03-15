@@ -46,19 +46,19 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
         this._cacheExpiration = cacheExpiration;
     }
 
-    public void RegisterInstall(string userEmail, MobileAppType appType)
+    public async Task RegisterInstallAsync(string userEmail, MobileAppType appType)
     {
         if (string.IsNullOrEmpty(userEmail))
         {
             return;
         }
 
-        _registrator.RegisterInstall(userEmail, appType);
+        await _registrator.RegisterInstallAsync(userEmail, appType);
         _cache.Insert(GetCacheKey(userEmail, null), true, _cacheExpiration);
         _cache.Insert(GetCacheKey(userEmail, appType), true, _cacheExpiration);
     }
 
-    public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
+    public async Task<bool> IsInstallRegisteredAsync(string userEmail, MobileAppType? appType)
     {
         if (string.IsNullOrEmpty(userEmail))
         {
@@ -73,7 +73,7 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
             return cachedValue;
         }
 
-        var isRegistered = _registrator.IsInstallRegistered(userEmail, appType);
+        var isRegistered = await _registrator.IsInstallRegisteredAsync(userEmail, appType);
         _cache.Insert(GetCacheKey(userEmail, appType), isRegistered.ToString(), _cacheExpiration);
         return isRegistered;
     }

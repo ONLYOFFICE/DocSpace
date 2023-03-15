@@ -83,7 +83,7 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        var currency = _regionHelper.GetCurrencyFromRequest();
+        var currency = await _regionHelper.GetCurrencyFromRequestAsync();
 
         return await _tariffService.GetShoppingUriAsync(Tenant.Id, currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
@@ -125,7 +125,7 @@ public class PaymentController : ControllerBase
     [HttpGet("payment/prices")]
     public async Task<object> GetPricesAsync()
     {
-        var currency = _regionHelper.GetCurrencyFromRequest();
+        var currency = await _regionHelper.GetCurrencyFromRequestAsync();
         var result = (await _tenantManager.GetProductPriceInfoAsync())
             .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
         return result;

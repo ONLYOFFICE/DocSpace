@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Diagnostics;
+
 namespace ASC.Web.Api;
 
 [Scope]
@@ -81,7 +83,8 @@ public class ConnectionsController : ControllerBase
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.Tenant, user.Id);
-        var listLoginEvents = loginEvents.ConvertAll(Convert);
+        var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
+        var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
         var loginEventId = GetLoginEventIdFromCookie();
         if (loginEventId != 0)
         {
@@ -112,7 +115,7 @@ public class ConnectionsController : ControllerBase
                     IP = ip
                 };
 
-                listLoginEvents.Add(Convert(baseEvent));
+                listLoginEvents.Add(await ConvertAsync(baseEvent));
             }
         }
 
@@ -224,9 +227,9 @@ public class ConnectionsController : ControllerBase
         return loginEventId;
     }
 
-    private CustomEvent Convert(BaseEvent baseEvent)
+    private async Task<CustomEvent> ConvertAsync(BaseEvent baseEvent)
     {
-        var location = GetGeolocation(baseEvent.IP);
+        var location = await GetGeolocationAsync(baseEvent.IP);
         return new CustomEvent
         {
             Id = baseEvent.Id,
@@ -239,11 +242,11 @@ public class ConnectionsController : ControllerBase
         };
     }
 
-    private string[] GetGeolocation(string ip)
+    private async Task<string[]> GetGeolocationAsync(string ip)
     {
         try
         {
-            var location = _geolocationHelper.GetIPGeolocation(ip);
+            var location = await _geolocationHelper.GetIPGeolocationAsync(ip);
             if (string.IsNullOrEmpty(location.Key))
             {
                 return new string[] { string.Empty, string.Empty };
