@@ -42,7 +42,7 @@ const MainBar = ({
 
   const isVisibleBar =
     !isNotPaidPeriod &&
-    pathname !== "/confirm/LinkInvite" &&
+    pathname.indexOf("confirm") === -1 &&
     pathname !== "/preparation-portal";
 
   return (
