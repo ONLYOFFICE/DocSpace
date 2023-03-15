@@ -1447,4 +1447,7 @@
   <data name="RoomLinkDeleted" xml:space="preserve">
     <value>Link deleted</value>
   </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Rooms</value>
+  </data>
 </root>
