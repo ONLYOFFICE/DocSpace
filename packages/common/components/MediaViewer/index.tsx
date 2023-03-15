@@ -443,7 +443,7 @@ function MediaViewer({
           isPreviewFile={props.isPreviewFile}
           onDownloadClick={onDownload}
           archiveRoom={archiveRoom}
-          errorTitle={props.t("Files:MediaError")}
+          errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
         />

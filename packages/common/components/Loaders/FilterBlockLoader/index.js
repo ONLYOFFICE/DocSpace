@@ -10,6 +10,7 @@ const FilterBlockLoader = ({
   style,
   isRooms,
   isAccounts,
+
   ...rest
 }) => {
   return (
@@ -55,32 +56,34 @@ const FilterBlockLoader = ({
           />
           <div className="row-loader">
             <RectangleLoader
-              width={"32"}
-              height={"32"}
-              borderRadius={"6"}
+              width={"51"}
+              height={"28"}
+              borderRadius={"16"}
               className={"loader-item"}
             />
             <RectangleLoader
-              width={"103"}
-              height={"16"}
-              borderRadius={"3"}
+              width={"68"}
+              height={"28"}
+              borderRadius={"16"}
               className={"loader-item"}
             />
           </div>
-          <div className="row-loader">
-            <RectangleLoader
-              width={"16"}
-              height={"16"}
-              borderRadius={"3"}
-              className={"loader-item"}
-            />
-            <RectangleLoader
-              width={"137"}
-              height={"20"}
-              borderRadius={"3"}
-              className={"loader-item"}
-            />
-          </div>
+          {isRooms && (
+            <div className="row-loader">
+              <RectangleLoader
+                width={"16"}
+                height={"16"}
+                borderRadius={"3"}
+                className={"loader-item"}
+              />
+              <RectangleLoader
+                width={"137"}
+                height={"20"}
+                borderRadius={"3"}
+                className={"loader-item"}
+              />
+            </div>
+          )}
         </StyledBlock>
       )}
 
