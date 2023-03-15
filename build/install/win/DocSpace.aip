@@ -79,6 +79,7 @@
     <ROW Property="ServiceName_DocEditor" Value="ASC.DocEditor"/>
     <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
     <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
+    <ROW Property="ServiceName_WebHealthChecksUI" Value="ASC.Web.HealthChecks.UI"/>
     <ROW Property="ServiceName_Login" Value="ASC.Login"/>
     <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
     <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
@@ -121,6 +122,7 @@
     <ROW Directory="ASC.SsoAuth_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.SSO|ASC.SsoAuth" DirectoryOptions="12"/>
     <ROW Directory="ASC.Studio.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSTU~1.NOT|ASC.Studio.Notify" DirectoryOptions="12"/>
     <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Web.HealthChecks.UI_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.UI|ASC.Web.HealthChecks.UI" DirectoryOptions="12"/>
     <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio" DirectoryOptions="12"/>
     <ROW Directory="Data_Dir" Directory_Parent="APPDIR" DefaultDir="Data" DirectoryOptions="12"/>
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
@@ -145,6 +147,7 @@
     <ROW Directory="service_1_Dir" Directory_Parent="ASC.Socket.IO_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Backup.BackgroundTasks_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_4_Dir" Directory_Parent="ASC.Web.HealthChecks.UI_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_5_Dir" Directory_Parent="ASC.SsoAuth_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_6_Dir" Directory_Parent="ASC.Migration.Runner_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_7_Dir" Directory_Parent="ASC.Files.Service_Dir" DefaultDir="service" DirectoryOptions="12"/>
@@ -159,6 +162,7 @@
     <ROW Directory="temp_2_Dir" Directory_Parent="service_3_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_3_Dir" Directory_Parent="service_7_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_4_Dir" Directory_Parent="service_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_5_Dir" Directory_Parent="service_4_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_6_Dir" Directory_Parent="service_6_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_7_Dir" Directory_Parent="service_9_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_8_Dir" Directory_Parent="service_11_Dir" DefaultDir="temp" DirectoryOptions="12"/>
@@ -195,6 +199,8 @@
     <ROW Component="ASC.Studio.Notify.exe" ComponentId="{AFB3D13A-4F5B-46E1-8819-3517A228C22B}" Directory_="service_11_Dir" Attributes="0" KeyPath="ASC.Studio.Notify.exe"/>
     <ROW Component="ASC.Web.Api" ComponentId="{CFFB4D5A-23D0-4BD6-BB8D-A62FCE92B883}" Directory_="ASC.Web.Api_Dir" Attributes="0"/>
     <ROW Component="ASC.Web.Api.exe" ComponentId="{E726DF21-2E7E-4C62-8F6E-C63C65B041EC}" Directory_="service_15_Dir" Attributes="0" KeyPath="ASC.Web.Api.exe"/>
+    <ROW Component="ASC.Web.HealthChecks.UI" ComponentId="{77802297-A251-40DC-9C14-DC5EFEFCC6A4}" Directory_="ASC.Web.HealthChecks.UI_Dir" Attributes="0"/>
+    <ROW Component="ASC.Web.HealthChecks.UI.exe" ComponentId="{B0D68212-8EA5-4898-ACC8-5FE8F897FD7C}" Directory_="service_4_Dir" Attributes="0" KeyPath="ASC.Web.HealthChecks.UI.exe"/>
     <ROW Component="ASC.Web.Studio" ComponentId="{8C58AEA7-5FC3-4506-ACF6-611A801D0426}" Directory_="ASC.Web.Studio_Dir" Attributes="0"/>
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="0" KeyPath="ASC.Web.Studio.exe"/>
     <ROW Component="AppPath" ComponentId="{F467DB41-342F-44DC-82DB-8DA6420C4372}" Directory_="APPDIR" Attributes="260" KeyPath="Path"/>
@@ -229,6 +235,7 @@
     <ROW Component="service_ASC.Socket.IO" ComponentId="{F050F8C3-24CF-45F6-AFA4-05F2C121BA1E}" Directory_="service_1_Dir" Attributes="0"/>
     <ROW Component="service_ASC.SsoAuth" ComponentId="{1DD71548-898E-4C6D-9D54-7DB4ABF7E976}" Directory_="service_5_Dir" Attributes="0"/>
     <ROW Component="service_ASC.Studio.Notify" ComponentId="{C30289A6-F81B-4C4B-9C77-969DBD83EF66}" Directory_="service_11_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Web.HealthChecks.UI" ComponentId="{5D4A7A5F-9B7C-47A4-850A-DCDC98E1C8FB}" Directory_="service_4_Dir" Attributes="0"/>
     <ROW Component="service_ASC.Web.Studio" ComponentId="{24E30A59-BC9C-4497-9B31-9FDD1130851B}" Directory_="service_16_Dir" Attributes="0"/>
     <ROW Component="service_ASC.WebApi" ComponentId="{C9664C57-4333-4E95-B94E-E78C6CB28058}" Directory_="service_15_Dir" Attributes="0"/>
     <ROW Component="services" ComponentId="{8F9FE4E0-772E-487A-A61D-7019807D88D4}" Directory_="services_Dir" Attributes="0"/>
@@ -242,6 +249,7 @@
     <ROW Component="temp_ASC.People" ComponentId="{F4E45171-654B-455B-A261-A7C52830AEC0}" Directory_="temp_14_Dir" Attributes="0"/>
     <ROW Component="temp_ASC.Studio.Notify" ComponentId="{F61A9699-F7DF-47F7-BE8B-B57ED43CCAC6}" Directory_="temp_8_Dir" Attributes="0"/>
     <ROW Component="temp_ASC.Web.Api" ComponentId="{BBE4771E-AF81-4B40-84C8-AACD26A8AAEE}" Directory_="temp_9_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Web.HealthChecks.UI" ComponentId="{CFD45649-A1C7-4219-9450-20B6EBE1851E}" Directory_="temp_5_Dir" Attributes="0"/>
     <ROW Component="temp_ASC.Web.Studio" ComponentId="{50C05886-70FB-42A5-B4F9-333B317B1E25}" Directory_="temp_10_Dir" Attributes="0"/>
     <ROW Component="temp_nginx" ComponentId="{44C32C3C-30B2-4FB2-B6C0-F88B4C3F3F26}" Directory_="temp_Dir" Attributes="0"/>
     <ROW Component="tools" ComponentId="{3BE057FE-EC94-4514-8961-A8660D9E6EB4}" Directory_="tools_Dir" Attributes="0"/>
@@ -256,6 +264,7 @@
     <ROW Feature="DotnetServices" Feature_Parent="MainFeature" Title=".NET services" Description="Feature contains all .NET services" Display="3" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ROW Feature="File" Feature_Parent="DotnetServices" Title=".NET File Service" Description="Feature contains .NET File service" Display="23" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ROW Feature="Files" Feature_Parent="DotnetServices" Title=".NET Files Service" Description="Feature contains .NET Files service" Display="21" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="WebHealthChecksUI" Feature_Parent="DotnetServices" Title=".NET WebHealthChecksUI Service" Description="Feature contains .NET WebHealthChecksUI service" Display="33" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ROW Feature="Login" Feature_Parent="NodeJSServices" Title="Node.js Login Service" Description="Feature contains Node.js Login service" Display="5" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ROW Feature="MainFeature" Title="MainFeature" Description="MainFeature" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ROW Feature="MigrationRunner" Feature_Parent="DotnetServices" Title=".NET MigrationRunner" Description="Feature contains .NET MigrationRunner" Display="17" Level="1" Directory_="APPDIR" Attributes="0"/>
@@ -289,6 +298,7 @@
     <ROW File="DocEditor.exe" Component_="DocEditor.exe" FileName="DOCEDI~1.EXE|DocEditor.exe" Attributes="0" SourcePath="Files\tools\DocEditor.exe" SelfReg="false" DigSign="true"/>
     <ROW File="Login.exe" Component_="Login.exe" FileName="LOGIN~1.EXE|Login.exe" Attributes="0" SourcePath="Files\tools\Login.exe" SelfReg="false" DigSign="true"/>
     <ROW File="icon.ico" Component_="icon.ico" FileName="icon.ico" Attributes="0" SourcePath="Resources\icon.ico" SelfReg="false"/>
+    <ROW File="ASC.Web.HealthChecks.UI.exe" Component_="ASC.Web.HealthChecks.UI.exe" FileName="ASCWEB~1.EXE|ASC.Web.HealthChecks.UI.exe" Attributes="0" SourcePath="Files\services\ASC.Web.HealthChecks.UI\service\ASC.Web.HealthChecks.UI.exe" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -496,6 +506,7 @@
     <ROW Feature_="WebApi" Level="4" Condition="WEB_API_SERVICE = 0"/>
     <ROW Feature_="WebStudio" Level="4" Condition="WEB_STUDIO_SERVICE = 0"/>
     <ROW Feature_="Proxy" Level="4" Condition="PROXY_SERVICE = 0"/>
+    <ROW Feature_="WebHealthChecksUI" Level="4" Condition="WEB_HEALTHCHECKS_UI_SERVICE = 0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
     <ROW Dialog_="AdminBrowseDlg" Control="OK" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_OK]" Order="300" TextLocId="-" MsiKey="AdminBrowseDlg#OK"/>
@@ -855,6 +866,8 @@
     <ROW Directory_="products_Dir" Component_="products" ManualDelete="false"/>
     <ROW Directory_="ASC.Files_Dir" Component_="ASC.Files" ManualDelete="false"/>
     <ROW Directory_="server_2_Dir" Component_="server_ASC.Files" ManualDelete="false"/>
+    <ROW Directory_="ASC.Web.HealthChecks.UI_Dir" Component_="ASC.Web.HealthChecks.UI" ManualDelete="false"/>
+    <ROW Directory_="service_4_Dir" Component_="service_ASC.Web.HealthChecks.UI" ManualDelete="false"/>
     <ROW Directory_="ASC.Login_Dir" Component_="ASC.Login" ManualDelete="false"/>
     <ROW Directory_="ASC.People_Dir" Component_="ASC.People" ManualDelete="false"/>
     <ROW Directory_="server_5_Dir" Component_="server_ASC.People" ManualDelete="false"/>
@@ -888,6 +901,7 @@
     <ROW Directory_="temp_2_Dir" Component_="temp_ASC.Data.Backup.BackgroundTasks" ManualDelete="false"/>
     <ROW Directory_="temp_3_Dir" Component_="temp_ASC.File.Service" ManualDelete="false"/>
     <ROW Directory_="temp_4_Dir" Component_="temp_ASC.Data.Buckup" ManualDelete="false"/>
+    <ROW Directory_="temp_5_Dir" Component_="temp_ASC.Web.HealthChecks.UI" ManualDelete="false"/>
     <ROW Directory_="temp_6_Dir" Component_="temp_ASC.Migration.Runner" ManualDelete="false"/>
     <ROW Directory_="temp_7_Dir" Component_="temp_ASC.Notify" ManualDelete="false"/>
     <ROW Directory_="temp_8_Dir" Component_="temp_ASC.Studio.Notify" ManualDelete="false"/>
@@ -1056,6 +1070,10 @@
     <ROW Feature_="Files" Component_="ASC.Files.Service.exe"/>
     <ROW Feature_="Files" Component_="service_ASC.File.Service"/>
     <ROW Feature_="Files" Component_="temp_ASC.File.Service"/>
+    <ROW Feature_="WebHealthChecksUI" Component_="ASC.Web.HealthChecks.UI"/>
+    <ROW Feature_="WebHealthChecksUI" Component_="ASC.Web.HealthChecks.UI.exe"/>
+    <ROW Feature_="WebHealthChecksUI" Component_="service_ASC.Web.HealthChecks.UI"/>
+    <ROW Feature_="WebHealthChecksUI" Component_="temp_ASC.Web.HealthChecks.UI"/>
     <ROW Feature_="Login" Component_="ASC.Login"/>
     <ROW Feature_="Login" Component_="login"/>
     <ROW Feature_="Login" Component_="Login.exe"/>
@@ -1247,6 +1265,8 @@
     <ROW LockObject="service_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
     <ROW LockObject="ASC.Files.Service_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
     <ROW LockObject="service_7_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Web.HealthChecks.UI_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_4_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
     <ROW LockObject="ASC.Notify_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
     <ROW LockObject="service_9_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
     <ROW LockObject="ASC.SsoAuth_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
@@ -1265,6 +1285,7 @@
     <ROW LockObject="temp_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_3_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_4_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_5_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_6_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_7_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_8_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
@@ -1323,6 +1344,7 @@
     <ROW Registry="Windows" Root="-1" Key="Software\Microsoft\Windows" Name="\"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigComponent">
+    <ROW MsiServiceConfig="ServiceName_WebHealthChecksUI" Name="[ServiceName_WebHealthChecksUI]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.HealthChecks.UI.exe"/>
     <ROW MsiServiceConfig="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ApiSystem.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.exe"/>
@@ -1341,6 +1363,7 @@
     <ROW MsiServiceConfig="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigFailureActionsComponent">
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebHealthChecksUI" Name="[ServiceName_WebHealthChecksUI]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.HealthChecks.UI.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.ApiSystem.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
@@ -1359,6 +1382,7 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
+    <ROW ServiceControl="ServiceName_WebHealthChecksUI" Name="[ServiceName_WebHealthChecksUI]" Event="161" Wait="0" Component_="ASC.Web.HealthChecks.UI.exe"/>
     <ROW ServiceControl="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" Event="161" Wait="0" Component_="ASC.ApiSystem.exe"/>
     <ROW ServiceControl="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="161" Wait="0" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW ServiceControl="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="161" Wait="0" Component_="ASC.Data.Backup.exe"/>
@@ -1377,6 +1401,7 @@
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
+    <ROW ServiceInstall="ServiceName_WebHealthChecksUI" Name="[ServiceName_WebHealthChecksUI]" DisplayName="[ServiceName_WebHealthChecksUI]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5033" Component_="ASC.Web.HealthChecks.UI.exe"/>
     <ROW ServiceInstall="ServiceName_ApiSystemService" Name="[ServiceName_ApiSystemService]" DisplayName="[ServiceName_ApiSystemService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5010 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_ApiSystemService]" Component_="ASC.ApiSystem.exe"/>
     <ROW ServiceInstall="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" DisplayName="[ServiceName_BackgroundTasks]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5032 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW ServiceInstall="ServiceName_BackupService" Name="[ServiceName_BackupService]" DisplayName="[ServiceName_BackupService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5012 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.exe"/>

@@ -379,7 +379,10 @@ export const PortalFeaturesLimitations = Object.freeze({
 
 export const EDITOR_ID = "docspace_editor";
 
-export const wrongPortalNameUrl = `https://www.onlyoffice.com/wrongportalname.aspx`;
+export const wrongPortalNameUrl =
+  (typeof window !== "undefined" &&
+    window.DocSpaceConfig?.wrongPortalNameUrl) ||
+  `https://www.onlyoffice.com/wrongportalname.aspx`;
 
 /**
  * Enum for notifications.
