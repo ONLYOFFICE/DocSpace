@@ -93,7 +93,11 @@ export default withRouter(
         "BackupCodesDialog",
         "DeleteSelfProfileDialog",
         "Notifications",
-      ])(withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />))
+      ])(
+        withPeopleLoader(SectionBodyContent)(
+          <Loaders.ProfileView isProfileView />
+        )
+      )
     )
   )
 );
