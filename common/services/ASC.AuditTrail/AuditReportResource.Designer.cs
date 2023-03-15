@@ -3426,6 +3426,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rooms.
+        /// </summary>
+        public static string RoomsModule {
+            get {
+                return ResourceManager.GetString("RoomsModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Room unarchived.
         /// </summary>
         public static string RoomUnarchived {
