@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { isMobileOnly } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
 const StyledThumbnail = styled.div`
@@ -7,13 +7,13 @@ const StyledThumbnail = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: ${isMobileOnly ? "188" : "240"}px;
+  height: ${isMobile ? (isTablet ? "240" : "188") : "200"}px;
   img {
     border: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
     border-radius: 6px;
     width: 100%;
     height: 100%;
-    object-fit: none;
+    object-fit: cover;
     object-position: top;
   }
 `;
