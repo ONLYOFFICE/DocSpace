@@ -159,7 +159,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 4;
+    const disableMobileView = optionsCount < 5;
 
     return (
       <StyledComboBox
