@@ -9,4 +9,6 @@ elif [ "$1" = "Restart" ]
   then (sh $root/build/start/restart.backend.docker.sh)
 elif [ "$1" = "Stop" ]
   then (sh $root/build/start/stop.backend.docker.sh)
+else
+  echo "Unknown command"
 fi
