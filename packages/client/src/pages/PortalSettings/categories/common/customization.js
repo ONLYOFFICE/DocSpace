@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./Customization/language-and-time-zone";
 import WelcomePageSettings from "./Customization/welcome-page-settings";
+import { isMobileOnly } from "react-device-detect";
 import PortalRenaming from "./Customization/portal-renaming";
 import DNSSettings from "./Customization/dns-settings";
 import { isSmallTablet } from "@docspace/components/utils/device";
@@ -91,7 +92,7 @@ const Customization = (props) => {
     }
   };
 
-  const isMobile = !!(isSmallTablet() && mobileView);
+  const isMobile = !!((isSmallTablet() || isMobileOnly) && mobileView);
 
   return isMobile ? (
     <CustomizationNavbar isLoadedPage={isLoadedPage} />

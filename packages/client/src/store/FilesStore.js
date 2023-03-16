@@ -1295,6 +1295,9 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
+      
+        if (err?.response?.status === 402)
+          this.authStore.currentTariffStatusStore.setPortalTariff();
 
         if (requestCounter > 0) return;
 
@@ -1427,6 +1430,9 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
+          if (err?.response?.status === 402)
+            this.authStore.currentTariffStatusStore.setPortalTariff();
+
           if (axios.isCancel(err)) {
             console.log("Request canceled", err.message);
           } else {

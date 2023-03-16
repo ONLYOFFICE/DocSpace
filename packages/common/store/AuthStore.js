@@ -27,13 +27,6 @@ class AuthStore {
   capabilities = [];
   isInit = false;
 
-  quota = {};
-  portalPaymentQuotas = {};
-  portalQuota = {};
-  portalTariff = {};
-  pricePerManager = null;
-  currencies = [];
-
   isLogout = false;
   constructor() {
     this.userStore = new UserStore();
@@ -352,11 +345,6 @@ class AuthStore {
     });
 
     return promise;
-  };
-
-  setQuota = async () => {
-    const res = await api.settings.getPortalQuota();
-    if (res) this.quota = res;
   };
 
   getAuthProviders = async () => {

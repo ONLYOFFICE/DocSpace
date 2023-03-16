@@ -85,6 +85,7 @@ class PeopleStore {
     //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
+    await this.authStore.tfaStore.getTfaType();
 
     this.loadingStore.setIsLoaded(true);
   };

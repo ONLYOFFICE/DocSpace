@@ -158,6 +158,7 @@ class AccountsContextOptionsStore {
             icon: RestoreAuthReactSvgUrl,
             label: t("PeopleTranslations:ResetAuth"),
             onClick: () => this.onResetAuth(item),
+            disabled: this.authStore.tfaStore.tfaSettings !== "app",
           };
         default:
           break;
