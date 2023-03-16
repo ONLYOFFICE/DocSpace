@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
@@ -6,10 +6,12 @@ const StyledAccountsItemTitle = styled.div`
   min-height: 80px;
   height: 80px;
   max-height: 104px;
+
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 16px;
+
   position: fixed;
   margin-top: -80px;
   margin-left: -20px;

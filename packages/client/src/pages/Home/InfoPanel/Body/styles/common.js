@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { hugeMobile, tablet } from "@docspace/components/utils/device";
+import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
   height: auto;
@@ -83,6 +83,10 @@ const StyledTitle = styled.div`
     padding: 24px 20px 24px 20px;
   }
 
+  /* @media (max-width: 549px) {
+    width: calc(100vw - 69px - 40px);
+  } */
+
   @media ${hugeMobile} {
     width: calc(100vw - 32px);
     padding: 24px 0 24px 16px;
@@ -124,8 +128,10 @@ const StyledProperties = styled.div`
     .property-content {
       max-width: 100%;
       margin: auto 0;
+
       font-weight: 600;
       font-size: 13px;
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -148,7 +154,6 @@ const StyledProperties = styled.div`
         }
       }
     }
-
     .property-comment_editor {
       &-display {
         display: flex;
@@ -182,6 +187,7 @@ const StyledProperties = styled.div`
         display: flex;
         flex-direction: column;
         gap: 8px;
+
         &-buttons {
           display: flex;
           flex-direction: row;
