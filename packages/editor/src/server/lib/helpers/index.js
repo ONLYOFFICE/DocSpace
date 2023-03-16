@@ -147,8 +147,14 @@ export const initDocEditor = async (req) => {
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;
 
+    const errorStatus =
+      typeof err !== "string"
+        ? err?.response?.data?.statusCode || err?.response?.data?.status
+        : null;
+
     error = {
       errorMessage: message,
+      errorStatus,
     };
     return { error, user, logoUrls };
   }

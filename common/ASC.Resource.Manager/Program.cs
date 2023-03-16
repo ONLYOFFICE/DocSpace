@@ -118,7 +118,7 @@ class Program
             }
 
             enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
-            cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
+            cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).ToList();//.Intersect(enabledSettings.Langs).ToList();
             projects = scopeClass.ResourceData.GetAllFiles();
 
             ExportWithProject(project, module, filePath, culture, exportPath, key);
