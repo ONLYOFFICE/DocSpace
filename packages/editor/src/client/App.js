@@ -55,7 +55,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   }, [rest?.config?.documentType]);
 
   useEffect(() => {
-    if (rest.error?.errorStatus === 402) {
+    if (rest?.error?.errorStatus === 402) {
       const portalUrl = window.location.origin;
 
       history.pushState({}, null, portalUrl);
