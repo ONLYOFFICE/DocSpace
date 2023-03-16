@@ -9,7 +9,7 @@
     {
       "label": "Start",
       "type": "shell",
-      "command": "tasks-scripts\\start.sh ${input:start-param}",
+      "command": "tasks-scripts/start.sh ${input:start-param}",
       "windows": {
         "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
         // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
@@ -18,7 +18,7 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "${workspaceFolder}\\build\\build.backend.docker.sh",
+      "command": "${workspaceFolder}/build/build.backend.docker.sh",
       "windows": {
         "command": "${workspaceFolder}\\build\\build.bat"
       }
