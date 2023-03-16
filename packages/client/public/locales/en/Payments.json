@@ -14,7 +14,7 @@
   "ContactUs": "For sales questions, contact us at",
   "DelayedPayment": "Delayed payment of the {{planName}} plan dated {{date}}",
   "DowngradeNow": "Downgrade now",
-  "ErrorNotification": "Failed to update tariff plan. Try again later or contact the sales department",
+  "ErrorNotification": "Failed to update tariff plan. Try again later or contact the sales department.",
   "GracePeriodActivatedDescription": "During the grace period, admins cannot create new rooms and add new users. After the due date of the grace period, DocSpace will become unavailable until the payment is made.",
   "GracePeriodActivatedInfo": "Grace period is effective <1>from {{fromDate}} to {{byDate}}</1> (days remaining: {{delayDaysCount}}).",
   "InvalidEmail": "Invalid email",

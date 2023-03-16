@@ -112,7 +112,7 @@
   "TrustedMailDescription": "Vertrouwde Maildomein Instellingen is een manier om de mailservers te specificeren die worden gebruikt voor zelfstandige registratie van gebruikers.",
   "TrustedMailHelper": "U kunt de optie Aangepaste domeinen aanvinken en de vertrouwde mailserver invullen in het veld hieronder, zodat een persoon die daar een account heeft, zichzelf kan registreren door op de uitnodigingslink te klikken op de Inlog pagina of deze optie uit te schakelen.",
   "TwoFactorAuth": "Twee-factor authenticatie",
-  "TwoFactorAuthDescription": "Twee-factor authenticatie biedt een veiligere manier om in te loggen. Na het invoeren van de inloggegevens moet de gebruiker een code invoeren uit een SMS of de authenticatie app.. ",
+  "TwoFactorAuthDescription": "Twee-factor authenticatie biedt een veiligere manier om in te loggen. Na het invoeren van de inloggegevens moet de gebruiker een code invoeren uit een SMS of de authenticatie app.",
   "TwoFactorAuthHelper": "Let op: SMS-berichten kunnen alleen verstuurd worden als u een positief saldo heeft. U kunt uw huidige saldo altijd controleren in de rekening van uw SMS-provider. Vergeet niet uw saldo tijdig aan te vullen.",
   "UseAsLogoButton": "Gebruik als logo",
   "UseDigits": "Gebruik cijfers",

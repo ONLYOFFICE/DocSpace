@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Şifrə uğurla dəyişdirildi",
-  "ConfirmOwnerPortalSuccessMessage": "Portal sahibi uğurla dəyişdirildi. 10 saniyə ərzində yönləndiriləcəksiniz",
-  "ConfirmOwnerPortalTitle": "Lütfən portal sahibini {{newOwner}} olaraq dəyişdirmək istədiyinizi təsdiqləyin",
+  "ConfirmOwnerPortalSuccessMessage": "DocSpace sahibi uğurla dəyişdirildi. 10 saniyə ərzində yönləndiriləcəksiniz",
+  "ConfirmOwnerPortalTitle": "Lütfən DocSpace sahibini {{newOwner}} olaraq dəyişdirmək istədiyinizi təsdiqləyin",
   "CurrentNumber": "Cari mobil telefon nömrəniz",
   "DeleteProfileBtn": "Hesabımı silin",
   "DeleteProfileConfirmation": "Diqqət! Hesabınızı silmək üzrəsiniz.",
@@ -17,9 +17,9 @@
   "InviteTitle": "Siz portala qoşulmaq üçün dəvət olunmusunuz!",
   "LoginRegistryButton": "Qoşulun",
   "PassworResetTitle": "İndi yeni şifrə yarada bilərsiniz.",
-  "PhoneSubtitle": "Əlavə portal təhlükəsizliyini təmin etmək üçün iki faktorlu autentifikasiya işə salınıb. Portalda işə davam etmək üçün mobil telefon nömrənizi daxil edin. Mobil telefon nömrəsi ölkə kodu ilə beynəlxalq formatda daxil edilməlidir.",
+  "PhoneSubtitle": "Əlavə təhlükəsizliyini təmin etmək üçün iki faktorlu autentifikasiya işə salınıb. DocSpace işə davam etmək üçün mobil telefon nömrənizi daxil edin. Mobil telefon nömrəsi ölkə kodu ilə beynəlxalq formatda daxil edilməlidir.",
   "SetAppButton": "Tətbiqə qoşulun",
-  "SetAppDescription": "İki faktorlu avtorizasiya kodu aktivləşdirildi. Portalda işləməyə davam etmək üçün doğrulama tətbiqini quraşdırın. Doğrulama tətbiqini <1>Android</1> və <4>iOS</4> və ya <8>Windows Phone</8> üçün istifadə edə bilərsiniz.",
+  "SetAppDescription": "İki faktorlu avtorizasiya kodu aktivləşdirildi. DocSpace-də işləməyə davam etmək üçün doğrulama tətbiqini quraşdırın. Doğrulama tətbiqini <1>Android</1> və <4>iOS</4> və ya <8>Windows Phone</8> üçün istifadə edə bilərsiniz.",
   "SetAppInstallDescription": "Tətbiqə qoşulmaq üçün QR kodu skan edin və ya manual olaraq öz gizli açarınızı <1>{{ secretKey }}</1>, daha sonra isə aşağıdakı xanada tətbiqdən əldə etdiyiz 6 rəqəmli kodu daxil edin.",
   "SetAppTitle": "Doğrulama tətbiqini quraşdırın",
   "WelcomeUser": "Portalımıza xoş gəlmisiniz!\nBaşlamaq üçün qeydiyyatdan keçin və ya sosial şəbəkə vasitəsilə giriş edin."

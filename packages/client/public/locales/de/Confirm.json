@@ -17,7 +17,7 @@
   "InviteTitle": "Sie sind eingeladen, diesem Portal beizutreten!",
   "LoginRegistryButton": "Beitreten",
   "PassworResetTitle": "Jetzt können Sie ein neues Kennwort erstellen.",
-  "PhoneSubtitle": "Die Zwei-Faktor-Authentifizierung ist für die zusätzliche Sicherheit des Portals bereitgestellt. Geben Sie eine neue Telefonnummer ein, um die Arbeit auf dem Portal fortzusetzen. Die Mobiltelefonnummer muss im internationalen Format mit dem Ländercode eingegeben werden.",
+  "PhoneSubtitle": "Die Zwei-Faktor-Authentifizierung ist für die zusätzliche Sicherheit des Portals bereitgestellt. Geben Sie eine neue Telefonnummer ein, um die Arbeit auf dem DocSpace fortzusetzen. Die Mobiltelefonnummer muss im internationalen Format mit dem Ländercode eingegeben werden.",
   "SetAppButton": "App verbinden",
   "SetAppDescription": "Zwei-Faktor-Authentifizierung ist aktiv. Konfigurieren Sie Ihre Authentifizierungsanwendung für weitere Arbeit auf dem Portal. Sie können Google Authenticator für <1>Android</1> und <4>iOS</4> oder Authenticator für <8>Windows Phone</8> benutzen.",
   "SetAppInstallDescription": "Verbinden Sie die App, indem Sie den QR-Code einscannen oder den Geheimschlüssel <1>{{ secretKey }}</1> manuell eingeben. Geben Sie dann den sechsstelligen Code aus Ihrer App im unten stehenden Feld ein.",
