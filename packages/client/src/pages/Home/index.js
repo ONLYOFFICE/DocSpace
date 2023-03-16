@@ -552,12 +552,6 @@ class PureHome extends React.Component {
             </Section.SectionFilter>
           )}
 
-          {isLoadedEmptyPage && (
-            <Section.SectionFilter>
-              <div style={{ height: "32px" }} />
-            </Section.SectionFilter>
-          )}
-
           <Section.SectionBody>
             <Consumer>
               {(context) => (
