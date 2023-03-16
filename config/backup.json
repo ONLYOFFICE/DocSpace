@@ -15,6 +15,7 @@
 			"Cleaner":
 			{
 				"Period":"00:15:00"
-			}
+			},
+			"ChunkSize": 20971520
 		}
 }

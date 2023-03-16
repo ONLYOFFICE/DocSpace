@@ -171,6 +171,7 @@ const SortButton = ({
   viewSelectorVisible,
 
   onSortButtonClick,
+  title,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -311,6 +312,7 @@ const SortButton = ({
         isDesc={selectedSortData.sortDirection === "desc"}
         onClick={toggleCombobox}
         id={id}
+        title={title}
       >
         <ComboBox
           opened={isOpen}

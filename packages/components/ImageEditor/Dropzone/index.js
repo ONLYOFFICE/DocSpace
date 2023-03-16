@@ -97,7 +97,7 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
           error instanceof Error &&
           error.message === "recursion depth exceeded"
         ) {
-          toastr.error(t("CreateEditRoomDialog:SizeImageLarge"));
+          toastr.error(t("Common:SizeImageLarge"));
         }
         console.error(error);
       })
@@ -127,15 +127,13 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
         <input {...getInputProps()} />
         <div className="dropzone-link">
           <ColorTheme className="dropzone-link-main" themeId={ThemeType.Link}>
-            {t("CreateEditRoomDialog:DropzoneTitleLink")}
+            {t("Common:DropzoneTitleLink")}
           </ColorTheme>
           <span className="dropzone-link-secondary">
-            {t("CreateEditRoomDialog:DropzoneTitleSecondary")}
+            {t("Common:DropzoneTitleSecondary")}
           </span>
         </div>
-        <div className="dropzone-exsts">
-          {t("CreateEditRoomDialog:DropzoneTitleExsts")}
-        </div>
+        <div className="dropzone-exsts">{t("Common:DropzoneTitleExsts")}</div>
       </div>
     </StyledDropzone>
   );

@@ -107,7 +107,10 @@ const FilesRowContent = ({
     title,
     isRoom,
     daysRemaining,
+    viewAccessability,
   } = item;
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>
@@ -117,7 +120,7 @@ const FilesRowContent = ({
         isFile={fileExst || contentLength}
       >
         <Link
-          className="row-content-link"
+          className={`row-content-link ${isMedia ? "media-file" : ""}`}
           containerWidth="55%"
           type="page"
           title={title}

@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Mutare elemente {{element}}",
   "TrashEmptyDescription": "Toate fișierele eliminate sunt mutate în 'Coșul' de gunoi. Puteți să restabiliți fișierele pe care le-ați mutat din greșeală sau să le ștergeți definitiv. Vă rugăm să rețineți că nu puteți recupera fișierele șterse din 'Coșul' de gunoi.",
   "UnblockVersion": "Deblocare/Blocare",
-  "UploadToFolder": "Încarcă în dosarul",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Istoricul versiune",
   "ViewList": "Listă",

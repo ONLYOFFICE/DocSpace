@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Add members",
   "DeleteSelfProfile": "Delete profile",
   "DisableUserButton": "Disable",
   "DisabledEmployeeStatus": "Disabled",
   "EmailChangeButton": "Change email",
   "EnableUserButton": "Enable",
+  "InviteLinkTitle": "Invitation link",
   "LDAPLbl": "LDAP",
   "NameChangeButton": "Change name",
   "PasswordChangeButton": "Change password",

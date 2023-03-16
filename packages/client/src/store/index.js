@@ -156,7 +156,8 @@ const createEditRoomStore = new CreateEditRoomStore(
   tagsStore,
   thirdPartyStore,
   authStore.settingsStore,
-  authStore.infoPanelStore
+  authStore.infoPanelStore,
+  authStore.currentQuotaStore
 );
 
 const store = {

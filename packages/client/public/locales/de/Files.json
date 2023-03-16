@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",
   "TrashEmptyDescription": "Die Sektion 'Papierkorb' enthält alle gelöschten Dateien. Sie können diese Dokumente entweder wiederherstellen, wenn sie versehentlich gelöscht wurden, oder unwiderruflich entfernen. Bitte beachten Sie, wenn Sie die Dateien aus dem 'Papierkorb' entfernen, können diese nicht mehr wiederhergestellt werden.",
   "UnblockVersion": "Entsperren/Einchecken",
-  "UploadToFolder": "In den Ordner hochladen",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Versionshistorie",
   "ViewList": "Liste",

@@ -576,6 +576,7 @@ const Base = {
     overflow: "hidden",
     color: white,
     backgroundColor: orangeMain,
+    disableBackgroundColor: "#A3A9AE",
   },
 
   scrollbar: {
@@ -3089,6 +3090,9 @@ const Base = {
       descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
     },
+    notifications: {
+      textDescriptionColor: "#A3A9AE",
+    },
   },
 
   activeSessions: {
@@ -3128,6 +3132,14 @@ const Base = {
 
   itemIcon: {
     borderColor: grayLightMid,
+  },
+
+  invitePage: {
+    borderColor: "#eceef1",
+  },
+
+  portalUnavailable: {
+    textDescriptionColor: "#A3A9AE",
   },
 };
 
