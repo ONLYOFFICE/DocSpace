@@ -30,6 +30,7 @@ dotnet publish "%PathToRepository%\common\services\ASC.Data.Backup.BackgroundTas
 dotnet publish "%PathToRepository%\common\services\ASC.ClearEvents\ASC.ClearEvents.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.ClearEvents\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Api\ASC.Web.Api.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Api\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Studio\ASC.Web.Studio.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Studio\service"
+dotnet publish "%PathToRepository%\web\ASC.Web.HealthChecks.UI\ASC.Web.HealthChecks.UI.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.HealthChecks.UI\service"
 
 rem backend services (Nodejs) in directory 'services'
 mkdir "%PathToAppFolder%\services\ASC.Socket.IO\service"

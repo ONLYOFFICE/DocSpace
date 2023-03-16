@@ -3137,6 +3137,10 @@ const Base = {
   invitePage: {
     borderColor: "#eceef1",
   },
+
+  portalUnavailable: {
+    textDescriptionColor: "#A3A9AE",
+  },
 };
 
 export default Base;

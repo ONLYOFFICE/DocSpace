@@ -31,7 +31,7 @@ const getThumbSize = (width) => {
     imgWidth = 440;
   }
 
-  return `${imgWidth}x300`;
+  return `${imgWidth}x156`;
 };
 
 const elementResizeDetector = elementResizeDetectorMaker({

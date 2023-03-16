@@ -49,6 +49,7 @@ const CreateEvent = ({
   setEventDialogVisible,
   eventDialogVisible,
   keepNewFileName,
+  setPortalTariff,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -119,6 +120,10 @@ const CreateEvent = ({
           )
         : null;
 
+    const isPaymentRequiredError = (err) => {
+      if (err?.response?.status === 402) setPortalTariff();
+    };
+
     if (!extension) {
       createFolder(parentId, newValue)
         .then((folder) => {
@@ -128,7 +133,10 @@ const CreateEvent = ({
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
         .then(() => completeAction(item, type, true))
-        .catch((e) => toastr.error(e))
+        .catch((e) => {
+          isPaymentRequiredError(e);
+          toastr.error(e);
+        })
         .finally(() => {
           const folderIds = [+id];
           createdFolderId && folderIds.push(createdFolderId);
@@ -149,6 +157,8 @@ const CreateEvent = ({
           })
           .then(() => completeAction(item, type))
           .catch((err) => {
+            isPaymentRequiredError(e);
+
             let errorMessage = "";
             if (typeof err === "object") {
               errorMessage =
@@ -208,7 +218,10 @@ const CreateEvent = ({
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => completeAction(item, type))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            isPaymentRequiredError(e);
+            toastr.error(e);
+          })
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
@@ -244,7 +257,10 @@ const CreateEvent = ({
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
           .then(() => completeAction(item, type))
-          .catch((e) => toastr.error(e))
+          .catch((e) => {
+            isPaymentRequiredError(e);
+            toastr.error(e);
+          })
           .finally(() => {
             const fileIds = [+id];
             createdFileId && fileIds.push(createdFileId);
@@ -311,9 +327,15 @@ export default inject(
 
     const { id: parentId } = selectedFolderStore;
 
-    const { replaceFileStream, setEncryptionAccess } = auth;
+    const {
+      replaceFileStream,
+      setEncryptionAccess,
+      currentTariffStatusStore,
+    } = auth;
 
     const { isDesktopClient } = auth.settingsStore;
+
+    const { setPortalTariff } = currentTariffStatusStore;
 
     const {
       setConvertPasswordDialogVisible,
@@ -325,6 +347,7 @@ export default inject(
     const { keepNewFileName } = settingsStore;
 
     return {
+      setPortalTariff,
       setEventDialogVisible,
       eventDialogVisible,
       setIsLoading,

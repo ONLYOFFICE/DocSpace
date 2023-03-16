@@ -406,7 +406,7 @@ function Editor({
   };
 
   const onDocumentReady = () => {
-    console.log("onDocumentReady", arguments);
+    console.log("onDocumentReady", arguments, { docEditor });
     documentIsReady = true;
 
     // if (isSharingAccess) {

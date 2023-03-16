@@ -68,6 +68,8 @@ const StyledAccountsItemTitle = styled.div`
 StyledAccountsItemTitle.defaultProps = { theme: Base };
 
 const StyledAccountContent = styled.div`
+  margin: 80px auto 0;
+
   .data__header {
     width: 100%;
     padding: 24px 0;

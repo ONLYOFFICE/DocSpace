@@ -3136,6 +3136,10 @@ const Dark = {
   invitePage: {
     borderColor: "#474747",
   },
+
+  portalUnavailable: {
+    textDescriptionColor: "#858585",
+  },
 };
 
 export default Dark;

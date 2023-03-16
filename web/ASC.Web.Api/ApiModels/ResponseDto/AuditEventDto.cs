@@ -99,7 +99,7 @@ public class AuditEventDto
 
         if (maps.ProductType == ProductType.Documents)
         {
-            var rawNotificationInfo = auditEvent.Description.LastOrDefault();
+            var rawNotificationInfo = auditEvent.Description?.LastOrDefault();
 
             if (!string.IsNullOrEmpty(rawNotificationInfo) && rawNotificationInfo.StartsWith('{') && rawNotificationInfo.EndsWith('}'))
             {

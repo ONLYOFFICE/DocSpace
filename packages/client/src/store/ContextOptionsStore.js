@@ -562,8 +562,17 @@ class ContextOptionsStore {
   onClickArchive = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
+    const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+    const {
+      setArchiveDialogVisible,
+      setArchiveAction,
+      setInviteUsersWarningDialogVisible,
+    } = this.dialogsStore;
 
-    const { setArchiveDialogVisible, setArchiveAction } = this.dialogsStore;
+    if (action === "unarchive" && isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setArchiveAction(action);
     setArchiveDialogVisible(true);
