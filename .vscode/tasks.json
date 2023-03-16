@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "problemMatcher": [],
+  "presentation": {
+    "focus": true,
+    "close": true
+  },
+  "tasks": [
+    {
+      "label": "Start",
+      "type": "shell",
+      "command": "tasks-scripts\\start.sh ${input:start-param}",
+      "windows": {
+        "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
+        // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
+      }
+    },
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "${workspaceFolder}\\build\\build.sh",
+      "windows": {
+        "command": "${workspaceFolder}\\build\\build.bat"
+      }
+    },
+    {
+      "label": "Frontend",
+      "type": "shell",
+      "command": "yarn start"
+    }
+
+    // {
+    //   "label": "Migrate",
+    //   "type": "shell",
+    //   "command": "${workspaceFolder}\\build\\runMigrations.sh",
+    //   "windows": {
+    //     "command": "${workspaceFolder}\\build\\runMigrations.bat"
+    //   }
+    // }
+  ],
+  "inputs": [
+    {
+      "id": "start-param",
+      "description": "Command",
+      "default": "Start",
+      "type": "pickString",
+      "options": ["Start", "Restart", "Stop"]
+    },
+    {
+      "id": "local-docker",
+      "description": "Manipulation",
+      "default": "Local",
+      "type": "pickString",
+      "options": ["Local", "Docker"]
+    }
+  ]
+}
