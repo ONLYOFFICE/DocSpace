@@ -59,7 +59,6 @@
   "TooltipElementsMoveMessage": "{{element}} öğelerini taşı",
   "TrashEmptyDescription": "'Çöp Kutusu' bölümü silinen dosyalarınızın taşındığı bölümdür. Yanlışlıkla sildiyseniz geri alabilir yada kalıcı olarak silebilirsiniz. Lütfen unutmayın, 'Çöp kutusundan' dosyaları sildiğiniz zaman artık bir daha geri alamazsınız.",
   "UnblockVersion": "Engellemeyi Kaldır/Giriş Yap",
-  "UploadToFolder": "Klasöre yükle",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": " Versiyon Geçmişi",
   "ViewList": "Liste",

@@ -71,11 +71,13 @@ class AuthStore {
         );
       }
 
+      this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
+        requests.push(this.settingsStore.getAdditionalResources());
+
       if (!this.settingsStore.passwordSettings) {
         if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
           requests.push(
             this.settingsStore.getPortalPasswordSettings(),
-            this.settingsStore.getAdditionalResources(),
             this.settingsStore.getCompanyInfoSettings()
           );
         }
@@ -132,6 +134,14 @@ class AuthStore {
     if (!user) return false;
 
     return !user.isAdmin && !user.isOwner && !user.isVisitor;
+  }
+
+  get isPaymentPageAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin;
   }
 
   login = async (user, hash, session = true) => {

@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -23,8 +24,6 @@ class QuotasStore {
     if (this.isLoaded) return;
 
     await this.setPortalQuota();
-
-    this.setIsLoaded(true);
   };
 
   setIsLoaded = (isLoaded) => {
@@ -181,10 +180,17 @@ class QuotasStore {
     this.currentPortalQuotaFeatures = res.features;
   };
   setPortalQuota = async () => {
-    const res = await api.portal.getPortalQuota();
-    if (!res) return;
+    try {
+      const res = await api.portal.getPortalQuota();
 
-    this.setPortalQuotaValue(res);
+      if (!res) return;
+
+      this.setIsLoaded(true);
+
+      this.setPortalQuotaValue(res);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 }
 

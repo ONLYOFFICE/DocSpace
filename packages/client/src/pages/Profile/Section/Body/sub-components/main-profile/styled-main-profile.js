@@ -183,6 +183,7 @@ export const StyledInfo = styled.div`
 
     .email-edit-container {
       display: flex;
+      align-items: center;
       padding-right: 16px;
     }
 
@@ -287,6 +288,10 @@ export const StyledRow = styled.div`
       & > div {
         padding-left: 8px !important;
       }
+    }
+
+    .language-combo-box {
+      margin-left: 0;
     }
   }
 `;

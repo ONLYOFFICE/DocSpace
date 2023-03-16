@@ -79,7 +79,9 @@ const FilesTileContent = ({
   theme,
   isRooms,
 }) => {
-  const { fileExst, title } = item;
+  const { fileExst, title, viewAccessability } = item;
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>
@@ -89,7 +91,7 @@ const FilesTileContent = ({
         isRooms={isRooms}
       >
         <Link
-          className="item-file-name"
+          className={`item-file-name ${isMedia ? "media-file" : ""}`}
           containerWidth="100%"
           type="page"
           title={title}

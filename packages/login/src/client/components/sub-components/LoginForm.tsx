@@ -156,8 +156,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     const session = !isChecked;
     login(user, hash, session)
       .then((res: string | object) => {
+        const isConfirm = typeof res === "string" && res.includes("confirm");
         const redirectPath = sessionStorage.getItem("referenceUrl");
-        if (redirectPath) {
+        if (redirectPath && !isConfirm) {
           sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
           return;

@@ -122,6 +122,8 @@ const ArticleMainButtonContent = (props) => {
     mainButtonMobileVisible,
 
     security,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -152,6 +154,11 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);
@@ -202,6 +209,11 @@ const ArticleMainButtonContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.action;
+
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setInvitePanelOptions({
       visible: true,
@@ -330,7 +342,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-document",
             className: "main-button_drop-down",
             icon: ActionsDocumentsReactSvgUrl,
-            label: t("Common:NewDocument"),
+            label: t("Files:Document"),
             onClick: onCreate,
             action: "docx",
             key: "docx",
@@ -339,7 +351,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-spreadsheet",
             className: "main-button_drop-down",
             icon: SpreadsheetReactSvgUrl,
-            label: t("Common:NewSpreadsheet"),
+            label: t("Files:Spreadsheet"),
             onClick: onCreate,
             action: "xlsx",
             key: "xlsx",
@@ -348,7 +360,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-presentation",
             className: "main-button_drop-down",
             icon: ActionsPresentationReactSvgUrl,
-            label: t("Common:NewPresentation"),
+            label: t("Files:Presentation"),
             onClick: onCreate,
             action: "pptx",
             key: "pptx",
@@ -358,7 +370,7 @@ const ArticleMainButtonContent = (props) => {
             id: "actions_new-folder",
             className: "main-button_drop-down",
             icon: CatalogFolderReactSvgUrl,
-            label: t("Common:NewFolder"),
+            label: t("Files:Folder"),
             onClick: onCreate,
             key: "new-folder",
           },
@@ -547,7 +559,11 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible, setInvitePanelOptions } = dialogsStore;
+    const {
+      setSelectFileDialogVisible,
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -558,10 +574,13 @@ export default inject(
     const currentFolderId = selectedFolderStore.id;
 
     const { isAdmin, isOwner } = auth.userStore.user;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const { canCreateFiles } = accessRightsStore;
 
     return {
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
 

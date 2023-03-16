@@ -69,7 +69,7 @@ public static class DbQuotaExtension
                     Tenant = -2,
                     Name = "admin",
                     Description = null,
-                    Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
+                    Features = "audit,ldap,sso,whitelabel,thirdparty,restore,contentsearch,total_size:107374182400,file_size:1024,manager:1",
                     Price = 30,
                     ProductId = "1002",
                     Visible = true

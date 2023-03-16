@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 
 namespace ASC.Files.ThumbnailBuilder;
@@ -46,6 +47,7 @@ public class Builder<T>
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
     private readonly TempStream _tempStream;
+    private IDataStore _dataStore;
 
     private readonly List<string> _imageFormatsCanBeCrop = new List<string>
             {
@@ -89,6 +91,8 @@ public class Builder<T>
         try
         {
             _tenantManager.SetCurrentTenant(fileData.TenantId);
+
+            _dataStore = _globalStore.GetStore();
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
@@ -261,7 +265,7 @@ public class Builder<T>
             }
             while (string.IsNullOrEmpty(thumbnailUrl));
 
-            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height);
+            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height, AnchorPositionMode.Top);
         }
     }
 
@@ -305,7 +309,7 @@ public class Builder<T>
         return (operationResultProgress, url);
     }
 
-    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height)
+    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
         _logger.DebugMakeThumbnail3(file.Id.ToString(), thumbnailUrl);
 
@@ -318,7 +322,7 @@ public class Builder<T>
         {
             using (var sourceImg = await Image.LoadAsync(stream))
             {
-                await CropAsync(sourceImg, fileDao, file, width, height);
+                await CropAsync(sourceImg, fileDao, file, width, height, anchorPositionMode);
             }
         }
 
@@ -356,7 +360,7 @@ public class Builder<T>
     {
         using var sourceImg = await Image.LoadAsync(stream);
 
-        if (_globalStore.GetStore() is DiscDataStore)
+        if (_dataStore is DiscDataStore)
         {
             foreach(var w in _config.Sizes)
             {
@@ -365,18 +369,18 @@ public class Builder<T>
         } 
         else
         {
-            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (w, t) =>
+            await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 3 }, async (w, t) =>
             {
                 await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
             });
         }
 
-        GC.Collect();
+//        GC.Collect();
     }
 
-    private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
+    private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
-        using var targetImg = GetImageThumbnail(sourceImg, width, height);
+        using var targetImg = GetImageThumbnail(sourceImg, width, height, anchorPositionMode);
         using var targetStream = _tempStream.Create();
 
         switch (_global.ThumbnailExtension)
@@ -407,26 +411,19 @@ public class Builder<T>
                 break;
         }
  
-        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
+        await _dataStore.SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight, AnchorPositionMode anchorPositionMode)
     {
-
         return sourceBitmap.Clone(x =>
         {
-            var resizedImage = x.BackgroundColor(Color.White).Resize(thumbnaillWidth, 0);
-
-            var resizedImageWidth = resizedImage.GetCurrentSize().Width;
-            var resizedImageHeight = resizedImage.GetCurrentSize().Height;
-
-            var cropWidth = resizedImageWidth < thumbnaillWidth ? resizedImageWidth : thumbnaillWidth;
-            var cropHeight = resizedImageHeight < thumbnaillHeight ? resizedImageHeight : thumbnaillHeight;
-
-            if ((cropHeight != resizedImageHeight) || (cropWidth != resizedImageWidth))
+            x.Resize(new ResizeOptions
             {
-                x.Crop(cropWidth, cropHeight);
-            }
+                 Size = new Size(thumbnaillWidth, thumbnaillHeight),
+                 Mode = ResizeMode.Crop,
+                 Position = anchorPositionMode
+            });
         });
     }
 }

@@ -24,7 +24,7 @@ const StyledSnackBar = styled(Box)`
   align-items: flex-start;
   color: white;
   line-height: 16px;
-  padding: 12px;
+  padding: 12px 20px;
   margin: 0;
   opacity: ${(props) => props.opacity || 0};
   width: 100%;

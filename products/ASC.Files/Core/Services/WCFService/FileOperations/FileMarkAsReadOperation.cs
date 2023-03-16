@@ -86,12 +86,12 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
             if (entry.FileEntryType == FileEntryType.File)
             {
                 ProcessedFile(((File<T>)entry).Id);
-                filesMessageService.Send(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
+                _ = filesMessageService.Send(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
             }
             else
             {
                 ProcessedFolder(((Folder<T>)entry).Id);
-                filesMessageService.Send(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
+                _ = filesMessageService.Send(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
             }
 
             ProgressStep();

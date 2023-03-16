@@ -1397,42 +1397,57 @@
     <value>Website Contact Form Key Updated</value>
   </data>
   <data name="RoomCreated" xml:space="preserve">
-    <value>Room Created: {0}</value>
+    <value>Room created</value>
   </data>
   <data name="RoomArchived" xml:space="preserve">
-    <value>Room Archived: {0}</value>
+    <value>Room archived</value>
   </data>
   <data name="RoomUnarchived" xml:space="preserve">
-    <value>Room Unarchived: {0}</value>
+    <value>Room unarchived</value>
   </data>
   <data name="RoomRenamed" xml:space="preserve">
-    <value>Room Renamed: {0}</value>
+    <value>Room renamed: {0}</value>
   </data>
   <data name="RoomLogoCreated" xml:space="preserve">
-    <value>Room Logo Created: {0}</value>
+    <value>Logo created</value>
   </data>
   <data name="RoomLogoDeleted" xml:space="preserve">
-    <value>Room Logo Deleted: {0}</value>
+    <value>Logo deleted</value>
   </data>
-  <data name="RoomUpdateAccess" xml:space="preserve">
-    <value>{0} appointed {1}</value>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} appointed: {1}</value>
   </data>
-  <data name="RoomLinkUpdate" xml:space="preserve">
-    <value>Room {0}. Link Update Access: {1}</value>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link updated. Role: {1}</value>
   </data>
   <data name="RoomDeleted" xml:space="preserve">
-    <value>Room Deleted: {0}</value>
+    <value>Room deleted</value>
   </data>
   <data name="AddedRoomTags" xml:space="preserve">
-    <value>Room: {0}. Added Tags: [{1}]</value>
+    <value>Added tags: [{1}]</value>
   </data>
   <data name="DeletedRoomTags" xml:space="preserve">
-    <value>Room: {0}. Deleted Tags: [{1}]</value>
+    <value>Deleted tags: [{1}]</value>
   </data>
   <data name="TagCreated" xml:space="preserve">
-    <value>Tag Created: {0}</value>
+    <value>Tag created: {0}</value>
   </data>
   <data name="TagsDeleted" xml:space="preserve">
-    <value>Tags Deleted: {0}</value>
+    <value>Tags deleted: {0}</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Added user: {0}. Role: {1}</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Deleted user: {0}</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link created. Role: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link deleted</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Rooms</value>
   </data>
 </root>

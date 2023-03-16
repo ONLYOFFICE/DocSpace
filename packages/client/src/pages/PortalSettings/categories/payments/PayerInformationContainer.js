@@ -58,11 +58,9 @@ const PayerInformationContainer = ({
   accountLink,
   isPayer,
   payerInfo,
-  payerEmail,
+  email,
 }) => {
   const { t } = useTranslation("Payments");
-
-  const email = payerEmail;
 
   const isLinkAvailable = user.isOwner || isPayer;
 
@@ -133,10 +131,6 @@ const PayerInformationContainer = ({
   );
 
   const payerName = () => {
-    let emailUnfoundedUser = email;
-
-    if (email) emailUnfoundedUser = "«" + emailUnfoundedUser + "»";
-
     return (
       <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
         {payerInfo ? (
@@ -149,7 +143,7 @@ const PayerInformationContainer = ({
               color={theme.client.settings.payment.warningColor}
               fontWeight={600}
             >
-              {{ email: emailUnfoundedUser }}
+              {{ email }}
             </Text>
             is not found
           </Trans>
@@ -191,15 +185,17 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { userStore, settingsStore } = auth;
-  const { accountLink } = payments;
+  const { userStore, settingsStore, currentTariffStatusStore } = auth;
+  const { accountLink, payerInfo } = payments;
   const { theme } = settingsStore;
-
+  const { customerId } = currentTariffStatusStore;
   const { user } = userStore;
 
   return {
     theme,
     user,
     accountLink,
+    payerInfo,
+    email: customerId,
   };
 })(observer(PayerInformationContainer));
