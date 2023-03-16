@@ -265,7 +265,7 @@ public class Builder<T>
             }
             while (string.IsNullOrEmpty(thumbnailUrl));
 
-            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height);
+            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height, AnchorPositionMode.Top);
         }
     }
 
@@ -309,7 +309,7 @@ public class Builder<T>
         return (operationResultProgress, url);
     }
 
-    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height)
+    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
         _logger.DebugMakeThumbnail3(file.Id.ToString(), thumbnailUrl);
 
@@ -322,7 +322,7 @@ public class Builder<T>
         {
             using (var sourceImg = await Image.LoadAsync(stream))
             {
-                await CropAsync(sourceImg, fileDao, file, width, height);
+                await CropAsync(sourceImg, fileDao, file, width, height, anchorPositionMode);
             }
         }
 
@@ -378,9 +378,9 @@ public class Builder<T>
 //        GC.Collect();
     }
 
-    private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height)
+    private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
-        using var targetImg = GetImageThumbnail(sourceImg, width, height);
+        using var targetImg = GetImageThumbnail(sourceImg, width, height, anchorPositionMode);
         using var targetStream = _tempStream.Create();
 
         switch (_global.ThumbnailExtension)
@@ -414,14 +414,15 @@ public class Builder<T>
         await _dataStore.SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight, AnchorPositionMode anchorPositionMode)
     {
         return sourceBitmap.Clone(x =>
         {
             x.Resize(new ResizeOptions
             {
                  Size = new Size(thumbnaillWidth, thumbnaillHeight),
-                 Mode = ResizeMode.Crop                  
+                 Mode = ResizeMode.Crop,
+                 Position = anchorPositionMode
             });
         });
     }

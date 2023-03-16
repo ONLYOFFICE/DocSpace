@@ -62,10 +62,10 @@ const Details = ({
       {selection.thumbnailUrl && !isThumbnailError ? (
         <StyledThumbnail>
           <img
-            src={selection.thumbnailUrl}
+            src={`${selection.thumbnailUrl}&size=1280x720`}
             alt="thumbnail-image"
-            height={260}
-            width={360}
+            //height={260}
+            //width={360}
             onError={onThumbnailError}
           />
         </StyledThumbnail>
