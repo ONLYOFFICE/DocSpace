@@ -9,10 +9,10 @@ import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
 
-import { FilterGroups, FilterKeys } from "@docspace/common/constants";
-
 import { getUser } from "@docspace/common/api/people";
 import {
+  FilterGroups,
+  FilterKeys,
   FilterType,
   RoomsType,
   RoomsProviderType,
@@ -731,36 +731,46 @@ const SectionFilterContent = ({
             isHeader: true,
             isLast: isLastTypeOptionsRooms,
           },
-          {
-            id: "filter_type-custom",
-            key: RoomsType.CustomRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("CustomRooms"),
-          },
-          {
-            id: "filter_type-filling-form",
-            key: RoomsType.FillingFormsRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("FillingFormRooms"),
-          },
-          {
-            id: "filter_type-collaboration",
-            key: RoomsType.EditingRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("CollaborationRooms"),
-          },
-          {
-            id: "filter_type-review",
-            key: RoomsType.ReviewRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("Common:Review"),
-          },
-          {
-            id: "filter_type-view-only",
-            key: RoomsType.ReadOnlyRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("ViewOnlyRooms"),
-          },
+          ...Object.values(RoomsType).map((roomType) => {
+            switch (roomType) {
+              case RoomsType.FillingFormsRoom:
+                return {
+                  id: "filter_type-filling-form",
+                  key: RoomsType.FillingFormsRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("FillingFormRooms"),
+                };
+              case RoomsType.EditingRoom:
+                return {
+                  id: "filter_type-collaboration",
+                  key: RoomsType.EditingRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("CollaborationRooms"),
+                };
+              case RoomsType.ReviewRoom:
+                return {
+                  id: "filter_type-review",
+                  key: RoomsType.ReviewRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("Common:Review"),
+                };
+              case RoomsType.ReadOnlyRoom:
+                return {
+                  id: "filter_type-view-only",
+                  key: RoomsType.ReadOnlyRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("ViewOnlyRooms"),
+                };
+              case RoomsType.CustomRoom:
+              default:
+                return {
+                  id: "filter_type-custom",
+                  key: RoomsType.CustomRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("CustomRooms"),
+                };
+            }
+          }),
         ]
       : [
           {
