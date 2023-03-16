@@ -9,7 +9,7 @@
     {
       "label": "Backend  | Start",
       "type": "shell",
-      "command": "tasks-scripts/start.sh ${input:start-param}",
+      "command": "${workspaceFolder}/.vscode/tasks-scripts/start.sh ${input:start-param}",
       "windows": {
         "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
         // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
