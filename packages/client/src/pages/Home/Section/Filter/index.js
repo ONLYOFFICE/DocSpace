@@ -1,6 +1,6 @@
 ﻿import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withRouter } from "react-router";
@@ -26,6 +26,7 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
 import { TableVersions } from "SRC_DIR/helpers/constants";
+import { showLoader, hideLoader } from "./FilterUtils";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -180,7 +181,7 @@ const SectionFilterContent = ({
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEmptyPage) {
       setIsLoadedFilter(isLoadedEmptyPage);
     }
@@ -1433,8 +1434,12 @@ const SectionFilterContent = ({
     }
   };
 
+  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
+    isLoadedFilter,
+  ]);
+
   if (!isLoadedFilter) {
-    return <Loaders.Filter />;
+    return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
   }
 
   return (
