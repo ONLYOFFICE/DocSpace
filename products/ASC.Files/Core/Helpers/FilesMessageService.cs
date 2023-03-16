@@ -54,32 +54,32 @@ public class FilesMessageService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public void Send(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
-        SendHeadersMessage(headers, action, null, description);
+        await SendHeadersMessageAsync(headers, action, null, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
+        await SendHeadersMessageAsync(headers, action, _messageTarget.Create(entry.Id), description);
     }
 
-    public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async Task SendAsync<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
+        await SendHeadersMessageAsync(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
     }
 
-    private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
+    private async Task SendHeadersMessageAsync(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
     {
         if (headers == null)//todo check need if
         {
@@ -88,10 +88,10 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(headers, action, target, description);
+        await _messageService.SendAsync(headers, action, target, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string description)
     {
         if (entry == null)
         {
@@ -105,10 +105,10 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), description);
+        await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
     {
         if (entry == null)
         {
@@ -121,16 +121,16 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), d1, d2);
+        await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), d1, d2);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async Task SendAsync<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
             return;
         }
 
-        _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
+        await _messageService.SendAsync(initiator, action, _messageTarget.Create(entry.Id), description);
     }
 }

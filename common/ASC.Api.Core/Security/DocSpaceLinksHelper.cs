@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 using ValidationResult = ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult;
 
 namespace ASC.Api.Core.Security;
@@ -78,12 +80,12 @@ public class DocSpaceLinkHelper
         return _signature.Read<Guid>(key);
     }
 
-    public ValidationResult Validate(string key, string email, EmployeeType employeeType)
+    public async Task<ValidationResult> ValidateAsync(string key, string email, EmployeeType employeeType)
     {
-        return string.IsNullOrEmpty(email) ? ValidateRoomExternalLink(key) : ValidateEmailLink(email, key, employeeType);
+        return string.IsNullOrEmpty(email) ? ValidateRoomExternalLink(key) : await ValidateEmailLinkAsync(email, key, employeeType);
     }
 
-    public ValidationResult ValidateEmailLink(string email, string key, EmployeeType employeeType)
+    public async Task<ValidationResult> ValidateEmailLinkAsync(string email, string key, EmployeeType employeeType)
     {
         var result = _emailValidationKeyProvider.ValidateEmailKey(MakeKey(email, employeeType), key, ExpirationInterval);
 
@@ -96,7 +98,7 @@ public class DocSpaceLinkHelper
                 return ValidationResult.Invalid;
             }
 
-            if (!CanUsed(email, key, ExpirationVisitInterval))
+            if (! await CanUsedAsync(email, key, ExpirationVisitInterval))
             {
                 return ValidationResult.Expired;
             }
@@ -117,13 +119,13 @@ public class DocSpaceLinkHelper
         return _emailValidationKeyProvider.ValidateEmailKey(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType, key);
     }
 
-    private bool CanUsed(string email, string key, TimeSpan interval)
+    private async Task<bool> CanUsedAsync(string email, string key, TimeSpan interval)
     {
-        var message = GetLinkInfo(email, key);
+        var message = await GetLinkInfoAsync(email, key);
 
         if (message == null)
         {
-            SaveVisitLinkInfo(email, key);
+            await SaveVisitLinkInfoAsync(email, key);
 
             return true;
         }
@@ -131,9 +133,9 @@ public class DocSpaceLinkHelper
         return message.Date + interval > DateTime.UtcNow;
     }
 
-    private AuditEvent GetLinkInfo(string email, string key)
+    private async Task<AuditEvent> GetLinkInfoAsync(string email, string key)
     {
-        using var context = _dbContextFactory.CreateDbContext();
+        using var context = await _dbContextFactory.CreateDbContextAsync();
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
@@ -141,17 +143,17 @@ public class DocSpaceLinkHelper
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
 
-        var message = context.AuditEvents.Where(a => a.Target == target.ToString() &&
-            a.DescriptionRaw == description).FirstOrDefault();
+        var message = await context.AuditEvents.Where(a => a.Target == target.ToString() &&
+            a.DescriptionRaw == description).FirstOrDefaultAsync();
 
         return message;
     }
 
-    private void SaveVisitLinkInfo(string email, string key)
+    private async Task SaveVisitLinkInfoAsync(string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
         var target = _messageTarget.Create(email);
 
-        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
+        await _messageService.SendAsync(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
 }

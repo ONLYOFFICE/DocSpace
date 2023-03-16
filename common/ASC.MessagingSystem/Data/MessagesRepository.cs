@@ -52,7 +52,7 @@ public class MessagesRepository : IDisposable
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
 
-        _timer = new Timer(FlushCache);
+        _timer = new Timer(async state => await FlushCacheAsync(state));
 
         _mapper = mapper;
 
@@ -65,7 +65,7 @@ public class MessagesRepository : IDisposable
 
     ~MessagesRepository()
     {
-        FlushCache(true);
+        _ = FlushCacheAsync(true);
     }
 
     private bool ForseSave(EventMessage message)
@@ -79,7 +79,7 @@ public class MessagesRepository : IDisposable
         return _forceSaveAuditActions.Contains(message.Action);
     }
 
-    public int Add(EventMessage message)
+    public async Task<int> AddAsync(EventMessage message)
     {
         if (ForseSave(message))
         {
@@ -97,15 +97,15 @@ public class MessagesRepository : IDisposable
             }
 
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+            using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
 
             if ((int)message.Action < 2000)
             {
-                id = AddLoginEvent(message, ef);
+                id = await AddLoginEventAsync(message, ef);
             }
             else
             {
-                id = AddAuditEvent(message, ef);
+                id = await AddAuditEventAsync(message, ef);
             }
             return id;
         }
@@ -125,12 +125,12 @@ public class MessagesRepository : IDisposable
         }
         return 0;
     }
-    private void FlushCache(object state)
+    private async Task FlushCacheAsync(object state)
     {
-        FlushCache(false);
+        await FlushCacheAsync(false);
     }
 
-    private void FlushCache(bool isDisposed = false)
+    private async Task FlushCacheAsync(bool isDisposed = false)
     {
         List<EventMessage> events = null;
 
@@ -153,10 +153,10 @@ public class MessagesRepository : IDisposable
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
-        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+        using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
         var strategy = ef.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
             using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
@@ -180,11 +180,11 @@ public class MessagesRepository : IDisposable
                     // messages with action code < 2000 are related to login-history
                     if ((int)message.Action < 2000)
                     {
-                        AddLoginEvent(message, ef);
+                        await AddLoginEventAsync(message, ef);
                     }
                     else
                     {
-                        AddAuditEvent(message, ef);
+                        await AddAuditEventAsync(message, ef);
                     }
                 }
             }
@@ -193,22 +193,22 @@ public class MessagesRepository : IDisposable
         });
     }
 
-    private int AddLoginEvent(EventMessage message, MessagesContext dbContext)
+    private async Task<int> AddLoginEventAsync(EventMessage message, MessagesContext dbContext)
     {
         var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
 
-        dbContext.LoginEvents.Add(loginEvent);
-        dbContext.SaveChanges();
+        await dbContext.LoginEvents.AddAsync(loginEvent);
+        await dbContext.SaveChangesAsync();
 
         return loginEvent.Id;
     }
 
-    private int AddAuditEvent(EventMessage message, MessagesContext dbContext)
+    private async Task<int> AddAuditEventAsync(EventMessage message, MessagesContext dbContext)
     {
         var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
 
-        dbContext.AuditEvents.Add(auditEvent);
-        dbContext.SaveChanges();
+        await dbContext.AuditEvents.AddAsync(auditEvent);
+        await dbContext.SaveChangesAsync();
 
         return auditEvent.Id;
     }

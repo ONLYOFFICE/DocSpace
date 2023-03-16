@@ -69,7 +69,7 @@ public class BackupAjaxHandler
         _storageFactory = storageFactory;
     }
 
-    public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams)
+    public async Task StartBackupAsync(BackupStorageType storageType, Dictionary<string, string> storageParams)
     {
         DemandPermissionsBackup();
 
@@ -97,7 +97,7 @@ public class BackupAjaxHandler
                 break;
         }
 
-        _messageService.Send(MessageAction.StartBackupSetting);
+        await _messageService.SendAsync(MessageAction.StartBackupSetting);
 
         _backupService.StartBackup(backupRequest);
     }
@@ -334,7 +334,7 @@ public class BackupAjaxHandler
     {
         await DemandPermissionsTransferAsync();
 
-        _messageService.Send(MessageAction.StartTransferSetting);
+        await _messageService.SendAsync(MessageAction.StartTransferSetting);
         _backupService.StartTransfer(
             new StartTransferRequest
             {

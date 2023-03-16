@@ -154,7 +154,7 @@ public class SsoHandlerService
 
                 if (userData == null)
                 {
-                    _messageService.Send(MessageAction.LoginFailViaSSO);
+                    await _messageService.SendAsync(MessageAction.LoginFailViaSSO);
                     throw new SSOException("SAML response is not valid", MessageKey.SsoSettingsNotValidToken);
                 }
 
@@ -177,7 +177,7 @@ public class SsoHandlerService
                     if (!Equals(userInfo, authenticatedUserInfo))
                     {
                         var loginName = authenticatedUserInfo.DisplayUserName(false, _displayUserSettingsHelper);
-                        _messageService.Send(loginName, MessageAction.Logout);
+                        await _messageService.SendAsync(loginName, MessageAction.Logout);
                         await _cookiesManager.ResetUserCookie();
                         _securityContext.Logout();
                     }
@@ -207,7 +207,7 @@ public class SsoHandlerService
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
-                    _messageService.Send(MessageAction.LoginFailViaSSO);
+                    await _messageService.SendAsync(MessageAction.LoginFailViaSSO);
                     throw new SSOException("Can't logout userInfo using current SAML response", MessageKey.SsoSettingsNotValidToken);
                 }
 
@@ -219,7 +219,7 @@ public class SsoHandlerService
                 await _securityContext.AuthenticateMeWithoutCookieAsync(userInfo.Id);
 
                 var loginName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
-                _messageService.Send(loginName, MessageAction.Logout);
+                await _messageService.SendAsync(loginName, MessageAction.Logout);
 
                 await _cookiesManager.ResetUserCookie();
                 _securityContext.Logout();

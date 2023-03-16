@@ -84,7 +84,7 @@ public class SecurityContext
     }
 
 
-    public Task<string> AuthenticateMeAsync(string login, string passwordHash, Func<int> funcLoginEvent = null)
+    public Task<string> AuthenticateMeAsync(string login, string passwordHash, Func<Task<int>> funcLoginEvent = null)
     {
         ArgumentNullException.ThrowIfNull(login);
         ArgumentNullException.ThrowIfNull(passwordHash);
@@ -188,13 +188,13 @@ public class SecurityContext
         return false;
     }
 
-    public Task<string> AuthenticateMeAsync(Guid userId, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    public Task<string> AuthenticateMeAsync(Guid userId, Func<Task<int>> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
         var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
         return AuthenticateMeAsync(account, funcLoginEvent, additionalClaims);
     }
 
-    public async Task<string> AuthenticateMeAsync(IAccount account, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    public async Task<string> AuthenticateMeAsync(IAccount account, Func<Task<int>> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
         await AuthenticateMeWithoutCookieAsync(account, additionalClaims);
 
@@ -205,7 +205,7 @@ public class SecurityContext
             var loginEventId = 0;
             if (funcLoginEvent != null)
             {
-                loginEventId = funcLoginEvent();
+                loginEventId = await funcLoginEvent();
             }
 
             cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().Id, account.ID, loginEventId);

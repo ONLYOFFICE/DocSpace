@@ -356,17 +356,17 @@ public class FileHandlerService
             {
                 if (forView)
                 {
-                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
+                    await _filesMessageService.SendAsync(file, MessageAction.FileReaded, file.Title);
                 }
                 else
                 {
                     if (version == 0)
                     {
-                        _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+                        await _filesMessageService.SendAsync(file, MessageAction.FileDownloaded, file.Title);
                     }
                     else
                     {
-                        _filesMessageService.Send(file, MessageAction.FileRevisionDownloaded, file.Title, file.Version.ToString());
+                        await _filesMessageService.SendAsync(file, MessageAction.FileRevisionDownloaded, file.Title, file.Version.ToString());
                     }
                 }
             }

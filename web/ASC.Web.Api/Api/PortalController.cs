@@ -401,7 +401,7 @@ public class PortalController : ControllerBase
                 await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
             }
 
-            _messageService.Send(MessageAction.PortalDeleted);
+            await _messageService.SendAsync(MessageAction.PortalDeleted);
         }
         finally
         {
@@ -411,7 +411,7 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpPost("suspend")]
-    public void SendSuspendInstructions()
+    public async Task SendSuspendInstructionsAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -426,7 +426,7 @@ public class PortalController : ControllerBase
 
         _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
 
-        _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
     [AllowNotPayment]
@@ -448,7 +448,7 @@ public class PortalController : ControllerBase
 
         _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 
-        _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
     [AllowSuspended]
@@ -462,11 +462,11 @@ public class PortalController : ControllerBase
 
     [HttpPut("suspend")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
-    public void SuspendPortal()
+    public async Task SuspendPortalAsync()
     {
         Tenant.SetStatus(TenantStatus.Suspended);
         _tenantManager.SaveTenant(Tenant);
-        _messageService.Send(MessageAction.PortalDeactivated);
+        await _messageService.SendAsync(MessageAction.PortalDeactivated);
     }
 
     [AllowNotPayment]
@@ -504,7 +504,7 @@ public class PortalController : ControllerBase
                 authed = true;
             }
 
-            _messageService.Send(MessageAction.PortalDeleted);
+            await _messageService.SendAsync(MessageAction.PortalDeleted);
 
         }
         finally

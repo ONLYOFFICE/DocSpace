@@ -123,7 +123,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             Percentage = 99;
             PublishChanges();
 
-            SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, wrapper.DocsSpace, crmSpace, wrapper.MailSpace, wrapper.TalkSpace);
+            await SendSuccessNotifyAsync(studioNotifyService, messageService, messageTarget, userName, wrapper.DocsSpace, crmSpace, wrapper.MailSpace, wrapper.TalkSpace);
 
             Percentage = 100;
             Status = DistributedTaskStatus.Completed;
@@ -216,7 +216,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
     }
 
-    private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+    private async Task SendSuccessNotifyAsync(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
     {
         if (_notify)
         {
@@ -226,11 +226,11 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
+            await messageService.SendAsync(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
         }
     }
 

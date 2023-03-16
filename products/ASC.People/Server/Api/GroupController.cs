@@ -125,7 +125,7 @@ public class GroupController : ControllerBase
             }
         }
 
-        _messageService.Send(MessageAction.GroupCreated, _messageTarget.Create(group.ID), group.Name);
+        await _messageService.SendAsync(MessageAction.GroupCreated, _messageTarget.Create(group.ID), group.Name);
 
         return await _groupFullDtoHelper.Get(group, true);
     }
@@ -155,7 +155,7 @@ public class GroupController : ControllerBase
             }
         }
 
-        _messageService.Send(MessageAction.GroupUpdated, _messageTarget.Create(groupid), group.Name);
+        await _messageService.SendAsync(MessageAction.GroupUpdated, _messageTarget.Create(groupid), group.Name);
 
         return await GetById(groupid);
     }
@@ -169,7 +169,7 @@ public class GroupController : ControllerBase
 
         _userManager.DeleteGroup(groupid);
 
-        _messageService.Send(MessageAction.GroupDeleted, _messageTarget.Create(group.ID), group.Name);
+        await _messageService.SendAsync(MessageAction.GroupDeleted, _messageTarget.Create(group.ID), group.Name);
 
         return await _groupFullDtoHelper.Get(group, false);
     }

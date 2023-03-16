@@ -64,14 +64,14 @@ public class GreetingSettingsController : BaseSettingsController
     }
 
     [HttpPost("greetingsettings")]
-    public ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
+    public async Task<ContentResult> SaveGreetingSettingsAsync(GreetingSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         Tenant.Name = inDto.Title;
         _tenantManager.SaveTenant(Tenant);
 
-        _messageService.Send(MessageAction.GreetingSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.GreetingSettingsUpdated);
 
         return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
     }

@@ -250,7 +250,7 @@ public class TfaappController : BaseSettingsController
             await _cookiesManager.ResetTenantCookie();
         }
 
-        _messageService.Send(action);
+        await _messageService.SendAsync(action);
         return result;
 
         void SetSettingsProperty<T>(TfaSettingsBase<T> settings) where T : class, ISettings<T>
@@ -314,7 +314,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpPut("tfaappnewcodes")]
-    public IEnumerable<object> TfaAppRequestNewCodes()
+    public async Task<IEnumerable<object>> TfaAppRequestNewCodesAsync()
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
@@ -329,7 +329,7 @@ public class TfaappController : BaseSettingsController
         }
 
         var codes = _tfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
-        _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserConnectedTfaApp, _messageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, _displayUserSettingsHelper));
         return codes;
     }
 
@@ -357,7 +357,7 @@ public class TfaappController : BaseSettingsController
         }
 
         TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
-        _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (isMe)
         {

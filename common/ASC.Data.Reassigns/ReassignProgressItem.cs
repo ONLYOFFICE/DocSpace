@@ -115,7 +115,7 @@ public class ReassignProgressItem : DistributedTaskProgress
                 PublishChanges();
             }
 
-            SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
+            await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
             Percentage = 100;
             Status = DistributedTaskStatus.Completed;
@@ -146,7 +146,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
+    private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         var fromUser = userManager.GetUsers(FromUser);
         var toUser = userManager.GetUsers(ToUser);
@@ -158,11 +158,11 @@ public class ReassignProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+           await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
     }
 
@@ -185,11 +185,11 @@ public class ReassignProgressItem : DistributedTaskProgress
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+            await messageService.SendAsync(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
         }
     }
 }

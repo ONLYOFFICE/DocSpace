@@ -67,7 +67,7 @@ public class OwnerController : BaseSettingsController
     }
 
     [HttpPost("owner")]
-    public object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
+    public async Task<object> SendOwnerChangeInstructionsAsync(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -88,7 +88,7 @@ public class OwnerController : BaseSettingsController
         var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
         _studioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
 
-        _messageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
 
         var emailLink = $"<a href=\"mailto:{owner.Email}\">{owner.Email}</a>";
         return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
@@ -96,7 +96,7 @@ public class OwnerController : BaseSettingsController
 
     [HttpPut("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-    public void Owner(SettingsRequestsDto inDto)
+    public async void Owner(SettingsRequestsDto inDto)
     {
         var newOwner = Constants.LostUser;
         try
@@ -120,6 +120,6 @@ public class OwnerController : BaseSettingsController
         curTenant.OwnerId = newOwner.Id;
         _tenantManager.SaveTenant(curTenant);
 
-        _messageService.Send(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 }

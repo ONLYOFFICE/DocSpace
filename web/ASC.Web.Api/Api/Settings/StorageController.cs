@@ -147,7 +147,7 @@ public class StorageController : BaseSettingsController
         return true;
     }
 
-    private void StartEncryption(bool notifyUsers)
+    private async void StartEncryption(bool notifyUsers)
     {
         if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
         {
@@ -205,7 +205,7 @@ public class StorageController : BaseSettingsController
             settings.Status = EncryprtionStatus.DecryptionStarted;
         }
 
-        _messageService.Send(settings.Status == EncryprtionStatus.EncryptionStarted ? MessageAction.StartStorageEncryption : MessageAction.StartStorageDecryption);
+        await _messageService.SendAsync(settings.Status == EncryprtionStatus.EncryptionStarted ? MessageAction.StartStorageEncryption : MessageAction.StartStorageDecryption);
 
         var serverRootPath = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 

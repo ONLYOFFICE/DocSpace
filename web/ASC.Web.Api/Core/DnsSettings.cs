@@ -58,7 +58,7 @@ public class DnsSettings
         _messageService = messageService;
     }
 
-    public string SaveDnsSettings(string dnsName, bool enableDns)
+    public async Task<string> SaveDnsSettingsAsync(string dnsName, bool enableDns)
     {
         try
         {
@@ -92,7 +92,7 @@ public class DnsSettings
                     var u = _userManager.GetUsers(tenant.OwnerId);
                     _studioNotifyService.SendMsgDnsChange(tenant, GenerateDnsChangeConfirmUrl(u.Email, dnsName, tenant.Alias, ConfirmType.DnsChange), portalAddress, dnsName);
 
-                    _messageService.Send(MessageAction.DnsSettingsUpdated);
+                    await _messageService.SendAsync(MessageAction.DnsSettingsUpdated);
                     return string.Format(Resource.DnsChangeMsg, string.Format("<a href=\"mailto:{0}\">{0}</a>", u.Email.HtmlEncode()));
                 }
 

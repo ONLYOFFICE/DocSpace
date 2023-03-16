@@ -617,7 +617,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             await _socketManager.CreateFolderAsync(folder);
 
-            _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
+            await _filesMessageService.SendAsync(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 
             return folder;
         }
@@ -656,11 +656,11 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (DocSpaceHelper.IsRoom(folder.FolderType))
             {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.RoomRenamed, folder.Title);
+                await _filesMessageService.SendAsync(folder, GetHttpHeaders(), MessageAction.RoomRenamed, folder.Title);
             }
             else
             {
-                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
+                await _filesMessageService.SendAsync(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
             }
 
             //if (!folder.ProviderEntry)
@@ -962,7 +962,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
         }
 
-        _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileCreated, file.Title);
+        await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileCreated, file.Title);
 
         await _fileMarker.MarkAsNewAsync(file);
 
@@ -1056,7 +1056,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (file != null)
             {
-                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
             }
 
             return file;
@@ -1088,7 +1088,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (file != null)
             {
-                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
             }
 
             return file;
@@ -1168,7 +1168,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (fileRename.Renamed)
             {
-                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRenamed, file.Title);
+                await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileRenamed, file.Title);
 
                 //if (!file.ProviderEntry)
                 //{
@@ -1210,7 +1210,7 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<KeyValuePair<File<T>, IAsyncEnumerable<File<T>>>> UpdateToVersionAsync(T fileId, int version)
     {
         var file = await _entryManager.UpdateToVersionFileAsync(fileId, version);
-        _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+        await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
         if (file.RootFolderType == FolderType.USER
             && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
@@ -1236,7 +1236,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         comment = await fileDao.UpdateCommentAsync(fileId, version, comment);
 
-        _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedRevisionComment, file.Title, version.ToString(CultureInfo.InvariantCulture));
+        await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileUpdatedRevisionComment, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
         return comment;
     }
@@ -1245,7 +1245,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         var file = await _entryManager.CompleteVersionFileAsync(fileId, version, continueVersion);
 
-        _filesMessageService.Send(file, GetHttpHeaders(),
+        await _filesMessageService.SendAsync(file, GetHttpHeaders(),
                                  continueVersion ? MessageAction.FileDeletedVersion : MessageAction.FileCreatedVersion,
                                  file.Title, version == 0 ? (file.Version - 1).ToString(CultureInfo.InvariantCulture) : version.ToString(CultureInfo.InvariantCulture));
 
@@ -1294,7 +1294,7 @@ public class FileStorageService<T> //: IFileStorageService
                 await _documentServiceHelper.DropUserAsync(docKey, usersDrop, file.Id);
             }
 
-            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
+            await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
         }
         else
         {
@@ -1302,7 +1302,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 await tagDao.RemoveTags(tagLocked);
 
-                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUnlocked, file.Title);
+                await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileUnlocked, file.Title);
             }
 
             if (!file.ProviderEntry)
@@ -1452,7 +1452,7 @@ public class FileStorageService<T> //: IFileStorageService
             file = await _entryManager.SaveEditingAsync(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
         }
 
-        _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+        await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
         await foreach (var f in GetFileDao().GetEditHistoryAsync(_documentServiceHelper, file.Id))
         {
@@ -1814,7 +1814,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
         ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-        _filesMessageService.Send(parentFolder, GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
+        await _filesMessageService.SendAsync(parentFolder, GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
 
         if (thirdPartyParams.Corporate && lostFolderType != FolderType.COMMON)
         {
@@ -1885,7 +1885,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folderDao1 = GetFolderDao();
         var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
 
-        _filesMessageService.Send(GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
+        await _filesMessageService.SendAsync(GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
 
         return folder;
     }
@@ -1915,17 +1915,17 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await providerDao.RemoveProviderInfoAsync(folder.ProviderId);
-        _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.Id, providerInfo.ProviderKey);
+        await _filesMessageService.SendAsync(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.Id, providerInfo.ProviderKey);
 
         return folder.Id;
     }
 
-    public bool ChangeAccessToThirdparty(bool enable)
+    public async Task<bool> ChangeAccessToThirdpartyAsync(bool enable)
     {
         ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
         _filesSettingsHelper.EnableThirdParty = enable;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsThirdPartySettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsThirdPartySettingsUpdated);
 
         return _filesSettingsHelper.EnableThirdParty;
     }
@@ -2406,7 +2406,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         foreach (var entry in entries)
         {
-            _filesMessageService.Send(entry, MessageAction.FileMarkedAsFavorite, entry.Title);
+            await _filesMessageService.SendAsync(entry, MessageAction.FileMarkedAsFavorite, entry.Title);
         }
 
         return entries;
@@ -2434,7 +2434,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         foreach (var entry in entries)
         {
-            _filesMessageService.Send(entry, MessageAction.FileRemovedFromFavorite, entry.Title);
+            await _filesMessageService.SendAsync(entry, MessageAction.FileRemovedFromFavorite, entry.Title);
         }
 
         return entries;
@@ -2548,12 +2548,12 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, name, GetAccessString(ace.Access));
+                            await _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, name, GetAccessString(ace.Access));
                         }
                         else
                         {
 
-                            _filesMessageService.Send(entry, GetHttpHeaders(),
+                            await _filesMessageService.SendAsync(entry, GetHttpHeaders(),
                                                  entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
                                                  entry.Title, name, GetAccessString(ace.Access));
                         }
@@ -2582,7 +2582,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var entry = await fileDao.GetFileAsync(fileId);
             await _fileSharingAceHelper.RemoveAceAsync(entry);
-            _filesMessageService.Send(entry, headers, MessageAction.FileRemovedFromList, entry.Title);
+            await _filesMessageService.SendAsync(entry, headers, MessageAction.FileRemovedFromList, entry.Title);
 
         }
 
@@ -2590,7 +2590,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var entry = await folderDao.GetFolderAsync(folderId);
             await _fileSharingAceHelper.RemoveAceAsync(entry);
-            _filesMessageService.Send(entry, headers, MessageAction.FolderRemovedFromList, entry.Title);
+            await _filesMessageService.SendAsync(entry, headers, MessageAction.FolderRemovedFromList, entry.Title);
         }
     }
 
@@ -2639,7 +2639,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
+                await _filesMessageService.SendAsync(room, GetHttpHeaders(), MessageAction.RoomLinkUpdate, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -2670,7 +2670,7 @@ public class FileStorageService<T> //: IFileStorageService
             var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileExternalLinkAccessUpdated, file.Title, GetAccessString(share));
+                await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileExternalLinkAccessUpdated, file.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -2883,7 +2883,7 @@ public class FileStorageService<T> //: IFileStorageService
                     {
                         foreach (var ace in aces)
                         {
-                            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
+                            await _filesMessageService.SendAsync(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
                         }
                     }
                     recipients.Add(recipient.Id);
@@ -2926,7 +2926,7 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<EncryptionKeyPairDto>(fileKeyPair);
     }
 
-    public bool ChangeExternalShareSettings(bool enable)
+    public async Task<bool> ChangeExternalShareSettingsAsync(bool enable)
     {
         ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
@@ -2937,18 +2937,18 @@ public class FileStorageService<T> //: IFileStorageService
             _filesSettingsHelper.ExternalShareSocialMedia = false;
         }
 
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsExternalShareSettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsExternalShareSettingsUpdated);
 
         return _filesSettingsHelper.ExternalShare;
     }
 
-    public bool ChangeExternalShareSocialMediaSettings(bool enable)
+    public async Task<bool> ChangeExternalShareSocialMediaSettingsAsync(bool enable)
     {
         ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
         _filesSettingsHelper.ExternalShareSocialMedia = _filesSettingsHelper.ExternalShare && enable;
 
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsExternalShareSettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsExternalShareSettingsUpdated);
 
         return _filesSettingsHelper.ExternalShareSocialMedia;
     }
@@ -3013,7 +3013,7 @@ public class FileStorageService<T> //: IFileStorageService
                 await _socketManager.CreateFolderAsync(newFolder);
                 await _entryStatusManager.SetIsFavoriteFolderAsync(folder);
 
-                _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
+                await _filesMessageService.SendAsync(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
 
             yield return newFolder;
@@ -3075,24 +3075,24 @@ public class FileStorageService<T> //: IFileStorageService
 
                 await _entryStatusManager.SetFileStatusAsync(newFile);
 
-                _filesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
+                await _filesMessageService.SendAsync(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
             }
             yield return newFile;
         }
     }
 
-    public bool StoreOriginal(bool set)
+    public async Task<bool> StoreOriginalAsync(bool set)
     {
         _filesSettingsHelper.StoreOriginalFiles = set;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsUploadingFormatsSettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsUploadingFormatsSettingsUpdated);
 
         return _filesSettingsHelper.StoreOriginalFiles;
     }
 
-    public bool KeepNewFileName(bool set)
+    public async Task<bool> KeepNewFileNameAsync(bool set)
     {
         _filesSettingsHelper.KeepNewFileName = set;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsKeepNewFileNameSettingsUpdated);
 
         return _filesSettingsHelper.KeepNewFileName;
     }
@@ -3111,30 +3111,30 @@ public class FileStorageService<T> //: IFileStorageService
         return true;
     }
 
-    public bool UpdateIfExist(bool set)
+    public async Task<bool> UpdateIfExistAsync(bool set)
     {
         ErrorIf(_userManager.IsUser(_authContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_SecurityException);
 
         _filesSettingsHelper.UpdateIfExist = set;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsOverwritingSettingsUpdated);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsOverwritingSettingsUpdated);
 
         return _filesSettingsHelper.UpdateIfExist;
     }
 
-    public bool Forcesave(bool set)
+    public async Task<bool> ForcesaveAsync(bool set)
     {
         _filesSettingsHelper.Forcesave = set;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsForcesave);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsForcesave);
 
         return _filesSettingsHelper.Forcesave;
     }
 
-    public bool StoreForcesave(bool set)
+    public async Task<bool> StoreForcesaveAsync(bool set)
     {
         ErrorIf(!_global.IsDocSpaceAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
         _filesSettingsHelper.StoreForcesave = set;
-        _messageService.Send(GetHttpHeaders(), MessageAction.DocumentsStoreForcesave);
+        await _messageService.SendAsync(GetHttpHeaders(), MessageAction.DocumentsStoreForcesave);
 
         return _filesSettingsHelper.StoreForcesave;
     }

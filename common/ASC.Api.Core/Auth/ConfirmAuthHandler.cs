@@ -72,7 +72,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         EmailValidationKeyProvider.ValidationResult checkKeyResult;
         try
         {
-            checkKeyResult = _emailValidationKeyModelHelper.Validate(emailValidationKeyModel);
+            checkKeyResult = await _emailValidationKeyModelHelper.ValidateAsync(emailValidationKeyModel);
         }
         catch (ArgumentNullException)
         {

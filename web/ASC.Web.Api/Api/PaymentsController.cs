@@ -174,7 +174,7 @@ public class PaymentController : ControllerBase
         CheckCache("salesrequest");
 
          await _studioNotifyService.SendMsgToSalesAsync(inDto.Email, inDto.UserName, inDto.Message);
-        _messageService.Send(MessageAction.ContactSalesMailSent);
+         await _messageService.SendAsync(MessageAction.ContactSalesMailSent);
     }
 
     internal void CheckCache(string basekey)

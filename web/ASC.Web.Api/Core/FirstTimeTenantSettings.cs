@@ -127,7 +127,7 @@ public class FirstTimeTenantSettings
             if (RequestLicense)
             {
                 TariffSettings.SetLicenseAccept(_settingsManager);
-                _messageService.Send(MessageAction.LicenseKeyUploaded);
+                await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
                 await _licenseReader.RefreshLicenseAsync();
             }

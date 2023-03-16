@@ -43,7 +43,7 @@ public class ClearEventsService : IHostedService, IDisposable
     {
         _logger.InformationTimerRunnig();
 
-        _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero,
+        _timer = new Timer(async state => await DeleteOldEventsAsync(state), null, TimeSpan.Zero,
             TimeSpan.FromDays(1));
 
         return Task.CompletedTask;
@@ -75,12 +75,12 @@ public class ClearEventsService : IHostedService, IDisposable
         handle.WaitOne();
     }
 
-    private void DeleteOldEvents(object state)
+    private async Task DeleteOldEventsAsync(object state)
     {
         try
         {
-            GetOldEvents(r => r.LoginEvents, "LoginHistoryLifeTime");
-            GetOldEvents(r => r.AuditEvents, "AuditTrailLifeTime");
+            await GetOldEventsAsync(r => r.LoginEvents, "LoginHistoryLifeTime");
+            await GetOldEventsAsync(r => r.AuditEvents, "AuditTrailLifeTime");
         }
         catch (Exception ex)
         {
@@ -88,17 +88,14 @@ public class ClearEventsService : IHostedService, IDisposable
         }
     }
 
-    private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
+    private async Task GetOldEventsAsync<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
-        List<T> ids;
         var compile = func.Compile();
-        do
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-            var table = compile.Invoke(ef);
 
-            var ae = table
+        using var scope = _serviceScopeFactory.CreateScope();
+        using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
+        var table = compile.Invoke(ef);
+        await table
                 .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
                 .Select(r => new
                 {
@@ -112,18 +109,6 @@ public class ClearEventsService : IHostedService, IDisposable
                     .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
                     .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
                     .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
-                .Take(1000);
-
-            ids = ae.Select(r => r.ef).ToList();
-
-            if (!ids.Any())
-            {
-                return;
-            }
-
-            table.RemoveRange(ids);
-            ef.SaveChanges();
-
-        } while (ids.Any());
+                .Select(r => r.ef).ExecuteDeleteAsync();
     }
 }

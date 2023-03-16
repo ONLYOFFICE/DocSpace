@@ -97,7 +97,7 @@ public class EmailValidationKeyModelHelper
         };
     }
 
-    public ValidationResult Validate(EmailValidationKeyModel inDto)
+    public async Task<ValidationResult> ValidateAsync(EmailValidationKeyModel inDto)
     {
         var (key, emplType, email, uiD, type) = inDto;
 
@@ -111,7 +111,7 @@ public class EmailValidationKeyModelHelper
 
             case ConfirmType.LinkInvite:
                 checkKeyResult = string.IsNullOrEmpty(email) ? _docSpaceLinkHelper.ValidateRoomExternalLink(key)
-                        : _docSpaceLinkHelper.ValidateEmailLink(email, key, emplType ?? default);
+                        : await _docSpaceLinkHelper.ValidateEmailLinkAsync(email, key, emplType ?? default);
 
                 if (checkKeyResult == ValidationResult.Invalid)
                 {
@@ -128,7 +128,7 @@ public class EmailValidationKeyModelHelper
                 break;
             case ConfirmType.PasswordChange:
                 var userInfo = _userManager.GetUserByEmail(email);
-                var auditEvent = _auditEventsRepository.GetByFilter(action: MessageAction.UserSentPasswordChangeInstructions, entry: EntryType.User, target: _messageTarget.Create(userInfo.Id).ToString(), limit: 1).FirstOrDefault();
+                var auditEvent = (await _auditEventsRepository.GetByFilterAsync(action: MessageAction.UserSentPasswordChangeInstructions, entry: EntryType.User, target: _messageTarget.Create(userInfo.Id).ToString(), limit: 1)).FirstOrDefault();
                 var passwordStamp = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id);
 
                 string hash;

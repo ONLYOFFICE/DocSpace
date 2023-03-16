@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Threading.Tasks;
+
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class SettingsController : BaseSettingsController
@@ -224,7 +226,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPost("maildomainsettings")]
-    public object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
+    public async Task<object> SaveMailDomainSettingsAsync(MailDomainSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -254,7 +256,7 @@ public class SettingsController : BaseSettingsController
 
         _tenantManager.SaveTenant(Tenant);
 
-        _messageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.TrustedMailDomainSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
@@ -319,9 +321,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsRequestsDto model)
+    public async Task<object> SaveDnsSettingsAsync(DnsSettingsRequestsDto model)
     {
-        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        return await _dnsSettings.SaveDnsSettingsAsync(model.DnsName, model.Enable);
     }
 
     [HttpGet("recalculatequota")]
@@ -381,7 +383,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("colortheme")]
-    public CustomColorThemesSettingsDto SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
+    public async Task<CustomColorThemesSettingsDto> SaveColorThemeAsync(CustomColorThemesSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var settings = _settingsManager.Load<CustomColorThemesSettings>();
@@ -440,14 +442,14 @@ public class SettingsController : BaseSettingsController
         {
             settings.Selected = inDto.Selected.Value;
             _settingsManager.Save(settings);
-            _messageService.Send(MessageAction.ColorThemeChanged);
+            await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
         return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpDelete("colortheme")]
-    public CustomColorThemesSettingsDto DeleteColorTheme(int id)
+    public async Task<CustomColorThemesSettingsDto> DeleteColorThemeAsync(int id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -463,7 +465,7 @@ public class SettingsController : BaseSettingsController
         if (settings.Selected == id)
         {
             settings.Selected = settings.Themes.Min(r => r.Id);
-            _messageService.Send(MessageAction.ColorThemeChanged);
+           await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
         _settingsManager.Save(settings);
@@ -486,7 +488,7 @@ public class SettingsController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("timeandlanguage")]
-    public object TimaAndLanguage(SettingsRequestsDto inDto)
+    public async Task<object> TimaAndLanguageAsync(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -516,11 +518,11 @@ public class SettingsController : BaseSettingsController
         {
             if (!Tenant.TimeZone.Equals(oldTimeZone))
             {
-                _messageService.Send(MessageAction.TimeZoneSettingsUpdated);
+                await _messageService.SendAsync(MessageAction.TimeZoneSettingsUpdated);
             }
             if (changelng)
             {
-                _messageService.Send(MessageAction.LanguageSettingsUpdated);
+                await _messageService.SendAsync(MessageAction.LanguageSettingsUpdated);
             }
         }
 
@@ -529,13 +531,13 @@ public class SettingsController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("defaultpage")]
-    public object SaveDefaultPageSetting(SettingsRequestsDto inDto)
+    public async Task<object> SaveDefaultPageSettingAsync(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
 
-        _messageService.Send(MessageAction.DefaultStartPageSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.DefaultStartPageSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
@@ -726,7 +728,7 @@ public class SettingsController : BaseSettingsController
 
         if (changed)
         {
-            _messageService.Send(MessageAction.AuthorizationKeysSetting);
+            await _messageService.SendAsync(MessageAction.AuthorizationKeysSetting);
         }
 
         return changed;

@@ -192,7 +192,7 @@ public class SsoController : BaseSettingsController
 
         var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
 
-        _messageService.Send(messageAction);
+        await _messageService.SendAsync(messageAction);
 
         return settings;
     }
@@ -219,7 +219,7 @@ public class SsoController : BaseSettingsController
 
         ConverSsoUsersToOrdinary();
 
-        _messageService.Send(MessageAction.SSODisabled);
+        await _messageService.SendAsync(MessageAction.SSODisabled);
 
         return defaultSettings;
     }

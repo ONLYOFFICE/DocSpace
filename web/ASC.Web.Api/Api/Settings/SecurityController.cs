@@ -144,7 +144,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security/password")]
-    public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto model)
+    public async Task<PasswordSettings> UpdatePasswordSettingsAsync(PasswordSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -157,7 +157,7 @@ public class SecurityController : BaseSettingsController
 
         _settingsManager.Save(userPasswordSettings);
 
-        _messageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.PasswordStrengthSettingsUpdated);
 
         return userPasswordSettings;
 
@@ -180,7 +180,7 @@ public class SecurityController : BaseSettingsController
 
         if (!inDto.Subjects.Any())
         {
-            _messageService.Send(MessageAction.ProductAccessOpened, productName);
+            await _messageService.SendAsync(MessageAction.ProductAccessOpened, productName);
         }
         else
         {
@@ -188,11 +188,11 @@ public class SecurityController : BaseSettingsController
             {
                 if (info.Groups.Any())
                 {
-                    _messageService.Send(MessageAction.GroupsOpenedProductAccess, productName, info.Groups.Select(x => x.Name));
+                    await _messageService.SendAsync(MessageAction.GroupsOpenedProductAccess, productName, info.Groups.Select(x => x.Name));
                 }
                 if (info.Users.Any())
                 {
-                    _messageService.Send(MessageAction.UsersOpenedProductAccess, productName, info.Users.Select(x => HttpUtility.HtmlDecode(x.DisplayName)));
+                    await _messageService.SendAsync(MessageAction.UsersOpenedProductAccess, productName, info.Users.Select(x => HttpUtility.HtmlDecode(x.DisplayName)));
                 }
             }
         }
@@ -244,7 +244,7 @@ public class SecurityController : BaseSettingsController
             _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);
         }
 
-        _messageService.Send(MessageAction.ProductsListUpdated);
+        await _messageService.SendAsync(MessageAction.ProductsListUpdated);
 
         return await GetWebItemSecurityInfo(itemList.Keys.ToList()).ToListAsync();
     }
@@ -285,12 +285,12 @@ public class SecurityController : BaseSettingsController
         if (inDto.ProductId == Guid.Empty)
         {
             var messageAction = inDto.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), admin.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(messageAction, _messageTarget.Create(admin.Id), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
         else
         {
             var messageAction = inDto.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), GetProductName(inDto.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(messageAction, _messageTarget.Create(admin.Id), GetProductName(inDto.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };

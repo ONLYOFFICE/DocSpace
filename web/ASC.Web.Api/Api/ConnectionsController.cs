@@ -145,7 +145,7 @@ public class ConnectionsController : ControllerBase
             var hash = auditEventDate.ToString("s");
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-            _messageService.Send(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
+            await _messageService.SendAsync(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
 
             return confirmationUrl;
         }
@@ -179,7 +179,7 @@ public class ConnectionsController : ControllerBase
 
             await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThis(loginEventFromCookie, user.Tenant, user.Id);
 
-            _messageService.Send(MessageAction.UserLogoutActiveConnections, userName);
+            await _messageService.SendAsync(MessageAction.UserLogoutActiveConnections, userName);
             return userName;
         }
         catch (Exception ex)
@@ -199,7 +199,7 @@ public class ConnectionsController : ControllerBase
 
             await _dbLoginEventsManager.LogOutEvent(loginEventId);
 
-            _messageService.Send(MessageAction.UserLogoutActiveConnection, userName);
+            await _messageService.SendAsync(MessageAction.UserLogoutActiveConnection, userName);
             return true;
         }
         catch (Exception ex)
@@ -216,7 +216,7 @@ public class ConnectionsController : ControllerBase
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         var auditEventDate = DateTime.UtcNow;
 
-        _messageService.Send(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
+        await _messageService.SendAsync(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
         await _cookiesManager.ResetUserCookie(user.Id);
     }
 

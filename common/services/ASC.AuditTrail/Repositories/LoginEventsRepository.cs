@@ -43,7 +43,7 @@ public class LoginEventsRepository
         _mapper = mapper;
     }
 
-    public IEnumerable<LoginEventDto> GetByFilter(
+    public async Task<IEnumerable<LoginEventDto>> GetByFilterAsync(
         Guid? login = null,
         MessageAction? action = null,
         DateTime? fromDate = null,
@@ -52,7 +52,7 @@ public class LoginEventsRepository
         int limit = 0)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
-        using var messagesContext = _dbContextFactory.CreateDbContext();
+        using var messagesContext = await _dbContextFactory.CreateDbContextAsync();
 
         var query =
             from q in messagesContext.LoginEvents
@@ -108,12 +108,12 @@ public class LoginEventsRepository
             }
         }
 
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(query.ToList());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(await query.ToListAsync());
     }
 
-    public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
+    public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        using var messagesContext = _dbContextFactory.CreateDbContext();
+        using var messagesContext = await _dbContextFactory.CreateDbContextAsync();
         var query = messagesContext.LoginEvents
             .Where(l => l.TenantId == tenant);
 
@@ -122,7 +122,7 @@ public class LoginEventsRepository
             query = query.Where(l => l.Date >= from & l.Date <= to);
         }
 
-        return query.Count();
+        return await query.CountAsync();
     }
 }
 

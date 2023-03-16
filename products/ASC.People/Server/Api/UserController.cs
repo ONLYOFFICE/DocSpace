@@ -302,7 +302,7 @@ public class UserController : PeopleControllerBase
         }
 
         var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
@@ -381,10 +381,10 @@ public class UserController : PeopleControllerBase
         if (!string.IsNullOrEmpty(inDto.PasswordHash))
         {
             _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
-            _messageService.Send(MessageAction.UserUpdatedPassword);
+            await _messageService.SendAsync(MessageAction.UserUpdatedPassword);
 
             await _cookiesManager.ResetUserCookie(userid);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
+            await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
         return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
@@ -414,7 +414,7 @@ public class UserController : PeopleControllerBase
         await _userManager.DeleteUser(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
-        _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+        await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
@@ -447,16 +447,16 @@ public class UserController : PeopleControllerBase
 
         _userManager.UpdateUserInfo(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
+        await _messageService.SendAsync(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
         await _cookiesManager.ResetUserCookie(user.Id);
-        _messageService.Send(MessageAction.CookieSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
 
         if (_coreBaseSettings.Personal)
         {
             await _userPhotoManager.RemovePhoto(user.Id);
             await _userManager.DeleteUser(user.Id);
-            _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+            await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
         else
         {
@@ -673,7 +673,7 @@ public class UserController : PeopleControllerBase
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
 
-        _messageService.Send(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
+        await _messageService.SendAsync(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
 
         foreach (var user in users)
         {
@@ -745,7 +745,7 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        _messageService.Send(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        await _messageService.SendAsync(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
         foreach (var user in users)
         {
@@ -845,7 +845,7 @@ public class UserController : PeopleControllerBase
             await _studioNotifyService.SendEmailActivationInstructionsAsync(user, email);
         }
 
-        _messageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
     }
@@ -915,7 +915,7 @@ public class UserController : PeopleControllerBase
                     throw;
                 }
 
-                _messageService.Send(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+                await _messageService.SendAsync(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
             }
         }
@@ -1017,12 +1017,12 @@ public class UserController : PeopleControllerBase
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
             await _cookiesManager.ResetUserCookie(user.Id);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
+            await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -1069,12 +1069,12 @@ public class UserController : PeopleControllerBase
                     await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
                     await _cookiesManager.ResetUserCookie(user.Id);
-                    _messageService.Send(MessageAction.CookieSettingsUpdated);
+                    await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
                     break;
             }
         }
 
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        await _messageService.SendAsync(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
         foreach (var user in users)
         {
@@ -1102,7 +1102,7 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)),
+        await _messageService.SendAsync(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)),
             updatedUsers.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
         foreach (var user in users)

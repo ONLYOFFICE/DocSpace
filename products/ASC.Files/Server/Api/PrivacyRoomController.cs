@@ -177,7 +177,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [HttpPut("")]
-    public bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
+    public async Task<bool> SetPrivacyRoomAsync(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -191,7 +191,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
 
         PrivacyRoomSettings.SetEnabled(_settingsManager, inDto.Enable);
 
-        _messageService.Send(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+        await _messageService.SendAsync(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
         return inDto.Enable;
     }

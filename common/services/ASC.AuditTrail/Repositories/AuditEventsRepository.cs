@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.AuditTrail.Repositories;
 
 [Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
@@ -46,9 +48,9 @@ public class AuditEventsRepository
         _mapper = mapper;
     }
 
-    private IEnumerable<AuditEventDto> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
+    private async Task<IEnumerable<AuditEventDto>> GetAsync(int tenant, DateTime? fromDate, DateTime? to, int? limit)
     {
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
         var query =
            (from q in auditTrailContext.AuditEvents
             from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -72,10 +74,10 @@ public class AuditEventsRepository
             query = query.Take((int)limit);
         }
 
-        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
+        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(await query.ToListAsync());
     }
 
-    public IEnumerable<AuditEventDto> GetByFilter(
+    public async Task<IEnumerable<AuditEventDto>> GetByFilterAsync(
         Guid? userId = null,
         ProductType? productType = null,
         ModuleType? moduleType = null,
@@ -89,7 +91,7 @@ public class AuditEventsRepository
         int limit = 0)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
         var query =
            from q in auditTrailContext.AuditEvents
            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -196,7 +198,7 @@ public class AuditEventsRepository
         {
             query = query.Take(limit);
         }
-        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
+        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(await query.ToListAsync());
     }
 
     private static void FindByEntry(IQueryable<AuditEventQuery> q, EntryType entry, string target, IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actions)
@@ -214,9 +216,9 @@ public class AuditEventsRepository
         q = q.Where(a);
     }
 
-    public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
+    public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
 
         var query = auditTrailContext.AuditEvents
             .Where(a => a.TenantId == tenant);
@@ -226,7 +228,7 @@ public class AuditEventsRepository
             query = query.Where(a => a.Date >= from & a.Date <= to);
         }
 
-        return query.Count();
+        return await query.CountAsync();
     }
 }
 

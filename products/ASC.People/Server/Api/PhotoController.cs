@@ -102,12 +102,12 @@ public class PhotoController : PeopleControllerBase
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
 
     [HttpDelete("{userid}/photo")]
-    public async Task<ThumbnailsDataDto> DeleteMemberPhoto(string userid)
+    public async Task<ThumbnailsDataDto> DeleteMemberPhotoAsync(string userid)
     {
         var user = GetUserInfo(userid);
 
@@ -120,7 +120,7 @@ public class PhotoController : PeopleControllerBase
 
         await _userPhotoManager.RemovePhoto(user.Id);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
@@ -154,7 +154,7 @@ public class PhotoController : PeopleControllerBase
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }

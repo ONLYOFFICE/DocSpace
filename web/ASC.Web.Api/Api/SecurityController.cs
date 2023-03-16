@@ -73,23 +73,23 @@ public class SecurityController : ControllerBase
     }
 
     [HttpGet("audit/login/last")]
-    public IEnumerable<LoginEventDto> GetLastLoginEvents()
+    public async Task<IEnumerable<LoginEventDto>> GetLastLoginEventsAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         DemandBaseAuditPermission();
 
-        return _loginEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new LoginEventDto(x));
+        return (await _loginEventsRepository.GetByFilterAsync(startIndex: 0, limit: 20)).Select(x => new LoginEventDto(x));
     }
 
     [HttpGet("audit/events/last")]
-    public IEnumerable<AuditEventDto> GetLastAuditEvents()
+    public async Task<IEnumerable<AuditEventDto>> GetLastAuditEventsAsync()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         DemandBaseAuditPermission();
 
-        return _auditEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new AuditEventDto(x, _auditActionMapper));
+        return (await _auditEventsRepository.GetByFilterAsync(startIndex: 0, limit: 20)).Select(x => new AuditEventDto(x, _auditActionMapper));
     }
 
     [HttpGet("/audit/login/filter")]
@@ -108,13 +108,13 @@ public class SecurityController : ControllerBase
 
         if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
-            return GetLastLoginEvents();
+            return await GetLastLoginEventsAsync();
         }
         else
         {
             await DemandAuditPermissionAsync();
 
-            return _loginEventsRepository.GetByFilter(userId, action, from, to, startIndex, limit).Select(x => new LoginEventDto(x));
+            return (await _loginEventsRepository.GetByFilterAsync(userId, action, from, to, startIndex, limit)).Select(x => new LoginEventDto(x));
         }
     }
 
@@ -139,13 +139,13 @@ public class SecurityController : ControllerBase
 
         if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
-            return GetLastAuditEvents();
+            return await GetLastAuditEventsAsync();
         }
         else
         {
             await DemandAuditPermissionAsync();
 
-            return _auditEventsRepository.GetByFilter(userId, productType, moduleType, actionType, action, entryType, target, from, to, startIndex, limit).Select(x => new AuditEventDto(x, _auditActionMapper));
+            return (await _auditEventsRepository.GetByFilterAsync(userId, productType, moduleType, actionType, action, entryType, target, from, to, startIndex, limit)).Select(x => new AuditEventDto(x, _auditActionMapper));
         }
     }
 
@@ -200,12 +200,12 @@ public class SecurityController : ControllerBase
         var from = to.Subtract(TimeSpan.FromDays(settings.LoginHistoryLifeTime));
 
         var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
-        var events = _loginEventsRepository.GetByFilter(fromDate: from, to: to);
+        var events = await _loginEventsRepository.GetByFilterAsync(fromDate: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
-        _messageService.Send(MessageAction.LoginHistoryReportDownloaded);
+        await _messageService.SendAsync(MessageAction.LoginHistoryReportDownloaded);
         return result;
     }
 
@@ -225,12 +225,12 @@ public class SecurityController : ControllerBase
 
         var reportName = string.Format(AuditReportResource.AuditTrailReportName + ".csv", from.ToString("MM.dd.yyyy"), to.ToString("MM.dd.yyyy"));
 
-        var events = _auditEventsRepository.GetByFilter(from: from, to: to);
+        var events = await _auditEventsRepository.GetByFilterAsync(from: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
-        _messageService.Send(MessageAction.AuditTrailReportDownloaded);
+        await _messageService.SendAsync(MessageAction.AuditTrailReportDownloaded);
         return result;
     }
 
@@ -262,7 +262,7 @@ public class SecurityController : ControllerBase
         }
 
         _settingsManager.Save(wrapper.Settings, _tenantManager.GetCurrentTenant().Id);
-        _messageService.Send(MessageAction.AuditSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.AuditSettingsUpdated);
 
         return wrapper.Settings;
     }

@@ -95,7 +95,7 @@ public class LicenseController : BaseSettingsController
         }
 
         TariffSettings.SetLicenseAccept(_settingsManager);
-        _messageService.Send(MessageAction.LicenseKeyUploaded);
+        await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
         try
         {
@@ -174,7 +174,7 @@ public class LicenseController : BaseSettingsController
 
         await _tariffService.SetTariffAsync(-1, tariff);
 
-        _messageService.Send(MessageAction.LicenseKeyUploaded);
+        await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
         return true;
     }

@@ -90,7 +90,7 @@ public class RoomLinkService
                 options.EmployeeType = FileSecurity.GetTypeByShare(record.Share);
             }
         }
-        else if (_docSpaceLinksHelper.ValidateEmailLink(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
+        else if (await _docSpaceLinksHelper.ValidateEmailLinkAsync(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
             options.IsCorrect = true;
             options.LinkType = LinkType.InvitationByEmail;

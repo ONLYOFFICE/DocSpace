@@ -196,17 +196,17 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
             var key = file.Id;
             if (_files.ContainsKey(key) && !string.IsNullOrEmpty(_files[key]))
             {
-                filesMessageService.Send(file, _headers, MessageAction.FileDownloadedAs, file.Title, _files[key]);
+                await filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloadedAs, file.Title, _files[key]);
             }
             else
             {
-                filesMessageService.Send(file, _headers, MessageAction.FileDownloaded, file.Title);
+                await filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloaded, file.Title);
             }
         }
 
         foreach (var folder in folderForSend)
         {
-            filesMessageService.Send(folder, _headers, MessageAction.FolderDownloaded, folder.Title);
+            await filesMessageService.SendAsync(folder, _headers, MessageAction.FolderDownloaded, folder.Title);
         }
     }
 

@@ -115,7 +115,7 @@ public class CustomNavigationController : BaseSettingsController
 
         _settingsManager.Save(settings);
 
-        _messageService.Send(MessageAction.CustomNavigationSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.CustomNavigationSettingsUpdated);
 
         return item;
     }
@@ -140,6 +140,6 @@ public class CustomNavigationController : BaseSettingsController
         settings.Items.Remove(terget);
         _settingsManager.Save(settings);
 
-        _messageService.Send(MessageAction.CustomNavigationSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.CustomNavigationSettingsUpdated);
     }
 }

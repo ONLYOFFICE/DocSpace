@@ -215,7 +215,7 @@ public class CookiesManager
     {
         var isSuccess = true;
         var cookies = string.Empty;
-        Func<int> funcLoginEvent = () => { return GetLoginEventId(action); };
+        var funcLoginEvent = async () => { return await GetLoginEventIdAsync(action); };
 
         try
         {
@@ -242,7 +242,7 @@ public class CookiesManager
     {
         var isSuccess = true;
         var cookies = string.Empty;
-        Func<int> funcLoginEvent = () => { return GetLoginEventId(action); };
+        var funcLoginEvent = async () => { return await GetLoginEventIdAsync(action); };
 
         try
         {
@@ -263,13 +263,13 @@ public class CookiesManager
         }
     }
 
-    public int GetLoginEventId(MessageAction action)
+    public async Task<int> GetLoginEventIdAsync(MessageAction action)
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var userId = _securityContext.CurrentAccount.ID;
         var data = new MessageUserData(tenantId, userId);
 
-        return _messageService.SendLoginMessage(data, action);
+        return await _messageService.SendLoginMessage(data, action);
     }
 
     public string GetAscCookiesName()

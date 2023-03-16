@@ -171,7 +171,7 @@ public class AuthenticationController : ControllerBase
             {
                 if (await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code, true, true))
                 {
-                    _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
+                    await _messageService.SendAsync(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
                 }
             }
             else
@@ -202,7 +202,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
-            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), sms
+            await _messageService.SendAsync(user.DisplayUserName(false, _displayUserSettingsHelper), sms
                                                                           ? MessageAction.LoginFailViaApiSms
                                                                           : MessageAction.LoginFailViaApiTfa,
                                 _messageTarget.Create(user.Id));
@@ -285,7 +285,7 @@ public class AuthenticationController : ControllerBase
         }
         catch (Exception ex)
         {
-            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), viaEmail ? MessageAction.LoginFailViaApi : MessageAction.LoginFailViaApiSocialAccount);
+            await _messageService.SendAsync(user.DisplayUserName(false, _displayUserSettingsHelper), viaEmail ? MessageAction.LoginFailViaApi : MessageAction.LoginFailViaApiSocialAccount);
             _logger.ErrorWithException(ex);
             throw new AuthenticationException("User authentication failed");
         }
@@ -306,7 +306,7 @@ public class AuthenticationController : ControllerBase
 
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         var loginName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _messageService.Send(loginName, MessageAction.Logout);
+        await _messageService.SendAsync(loginName, MessageAction.Logout);
 
         _cookiesManager.ClearCookies(CookiesType.AuthKey);
         _cookiesManager.ClearCookies(CookiesType.SocketIO);
@@ -316,9 +316,9 @@ public class AuthenticationController : ControllerBase
 
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
+    public async Task<ValidationResult> CheckConfirmAsync(EmailValidationKeyModel inDto)
     {
-        return _emailValidationKeyModelHelper.Validate(inDto);
+        return await _emailValidationKeyModelHelper.ValidateAsync(inDto);
     }
 
     [AllowNotPayment]
@@ -329,7 +329,7 @@ public class AuthenticationController : ControllerBase
         await _apiContext.AuthByClaimAsync();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
-        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
+        await _messageService.SendAsync(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
 
         return new AuthenticationTokenDto
         {
@@ -439,12 +439,12 @@ public class AuthenticationController : ControllerBase
         }
         catch (BruteForceCredentialException)
         {
-            _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
+            await _messageService.SendAsync(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
             throw new AuthenticationException("Login Fail. Too many attempts");
         }
         catch (Exception ex)
         {
-            _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, action);
+            await _messageService.SendAsync(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, action);
             _logger.ErrorWithException(ex);
             throw new AuthenticationException("User authentication failed");
         }

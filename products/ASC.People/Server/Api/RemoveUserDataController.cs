@@ -78,7 +78,7 @@ public class RemoveUserDataController : ApiControllerBase
         }
 
         await _studioNotifyService.SendMsgProfileDeletionAsync(user);
-        _messageService.Send(MessageAction.UserSentDeleteInstructions);
+        await _messageService.SendAsync(MessageAction.UserSentDeleteInstructions);
 
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }

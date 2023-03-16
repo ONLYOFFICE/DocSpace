@@ -77,7 +77,7 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [HttpPost("customschemas")]
-    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveNamingSettingsAsync(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -85,13 +85,13 @@ public class CustomSchemasController : BaseSettingsController
 
         _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
         return PeopleSchema(inDto.Id);
     }
 
     [HttpPut("customschemas")]
-    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveCustomNamingSettingsAsync(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -136,7 +136,7 @@ public class CustomSchemasController : BaseSettingsController
 
         _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
         return PeopleSchema(PeopleNamesItem.CustomID);
     }
