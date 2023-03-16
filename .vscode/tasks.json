@@ -7,7 +7,7 @@
   },
   "tasks": [
     {
-      "label": "Start",
+      "label": "Backend  | Start",
       "type": "shell",
       "command": "tasks-scripts/start.sh ${input:start-param}",
       "windows": {
@@ -16,7 +16,7 @@
       }
     },
     {
-      "label": "Build",
+      "label": "Backend  | Build",
       "type": "shell",
       "command": "${workspaceFolder}/build/build.backend.docker.sh",
       "windows": {
@@ -24,7 +24,7 @@
       }
     },
     {
-      "label": "Frontend",
+      "label": "Frontend | Start",
       "type": "shell",
       "command": "yarn start"
     }
