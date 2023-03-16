@@ -1,5 +1,5 @@
 {
-  "Desc": "Veuillez configurer les données d'enregistrement du portail.",
+  "Desc": "Veuillez configurer les données d'enregistrement de DocSpace.",
   "Domain": "Domaine :",
   "ErrorEmail": "Adresse mail invalide",
   "ErrorInitWizard": "Le service est actuellement indisponible, merci de réessayer ultérieurement.",

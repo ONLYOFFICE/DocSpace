@@ -2,6 +2,6 @@
   "ChangeUserTypeButton": "Vaihda tyyppiä",
   "ChangeUserTypeHeader": "Muuta käyttäjän tyyppiä",
   "ChangeUserTypeMessage": "Käyttäjät, joiden tyyppi on ’{{firstType}}’, siirretään tyypiksi ’{{secondType}}’.",
-  "ChangeUserTypeMessageWarning": "Et voi muuttaa portaalin järjestelmänvalvojan tai omaa tilaasi",
+  "ChangeUserTypeMessageWarning": "Et voi muuttaa DocSpace järjestelmänvalvojan tai omaa tilaasi",
   "SuccessChangeUserType": "Käyttäjän tila muutettu onnistuneesti"
 }

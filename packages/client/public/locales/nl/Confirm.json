@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Wachtwoord is succesvol gewijzigd",
-  "ConfirmOwnerPortalSuccessMessage": "Portaal eigenaar is met succes gewijzigd. Over 10 seconden wordt u doorgestuurd",
-  "ConfirmOwnerPortalTitle": "Bevestig dat u de eigenaar van het portaal wilt wijzigen naar {{newOwner}}",
+  "ConfirmOwnerPortalSuccessMessage": "DocSpace eigenaar is met succes gewijzigd. Over 10 seconden wordt u doorgestuurd",
+  "ConfirmOwnerPortalTitle": "Bevestig dat u de eigenaar van het DocSpace wilt wijzigen naar {{newOwner}}",
   "CurrentNumber": "Uw huidige mobiele nummer",
   "DeleteProfileBtn": "Verwijder mijn account",
   "DeleteProfileConfirmation": "Let op! U staat op het punt uw account te verwijderen.",
@@ -17,9 +17,9 @@
   "InviteTitle": "U bent uitgenodigd om lid te worden van dit portaal!",
   "LoginRegistryButton": "Lid worden van",
   "PassworResetTitle": "Nu kunt u een nieuw wachtwoord aanmaken.",
-  "PhoneSubtitle": "De twee-factor authenticatie is ingeschakeld om extra portaalbeveiliging te bieden. Voer uw mobiele telefoonnummer in om door te gaan met werken op het portaal. Het mobiele telefoonnummer moet ingevoerd worden in een internationaal formaat, met landcode.",
+  "PhoneSubtitle": "De twee-factor authenticatie is ingeschakeld om extra beveiliging te bieden. Voer uw mobiele telefoonnummer in om door te gaan met werken in de DocSpace. Het mobiele telefoonnummer moet ingevoerd worden in een internationaal formaat, met landcode.",
   "SetAppButton": "App verbinden",
-  "SetAppDescription": "Twee-factor authenticatie is ingeschakeld. Configureer uw authenticator app om op het portaal te kunnen blijven werken. U kunt Google Authenticator voor <1>Android</1> en <4>iOS</4> of Authenticator voor <8>Windows Phone</8> gebruiken.",
+  "SetAppDescription": "Twee-factor authenticatie is ingeschakeld. Configureer uw authenticator app om in de DocSpace te kunnen blijven werken. U kunt Google Authenticator voor <1>Android</1> en <4>iOS</4> of Authenticator voor <8>Windows Phone</8> gebruiken.",
   "SetAppInstallDescription": "Om de app te verbinden scant u de QR-code of voert u handmatig uw geheime code in <1>{{ secretKey }}</1>, en voert u vervolgens een 6-cijferige code van uw app in het onderstaande veld in.",
   "SetAppTitle": "Configureer uw authenticatietoepassing",
   "WelcomeUser": "Welkom bij ons portaal!\nOm te beginnen kunt u zich inschrijven, of inloggen via sociale netwerken."
