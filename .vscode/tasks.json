@@ -7,6 +7,11 @@
   },
   "tasks": [
     {
+      "label": "Workspace folder test",
+      "type": "shell",
+      "command": "echo ${workspaceFolder}"
+    },
+    {
       "label": "Backend  | Start",
       "type": "shell",
       "command": "${workspaceFolder}/.vscode/tasks-scripts/start.sh ${input:start-param}",
