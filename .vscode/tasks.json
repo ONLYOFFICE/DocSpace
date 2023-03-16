@@ -9,16 +9,19 @@
     {
       "label": "Workspace folder test",
       "type": "shell",
-      "command": "echo ${workspaceFolder}"
+      "command": "echo ${workspaceFolder} && pause",
+      "osx": {
+        "command": "echo ${workspaceFolder} && read -p 'Press any key ...'"
+      }
     },
     {
       "label": "Backend  | Start",
       "type": "shell",
-      "command": "${workspaceFolder}/.vscode/tasks-scripts/start.sh ${input:start-param}",
-      "windows": {
-        "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
-        // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
-      }
+      "command": "${workspaceFolder}/.vscode/tasks-scripts/start.sh ${input:start-param} "
+      // "windows": {
+      // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
+      // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
+      // }
     },
     {
       "label": "Backend  | Build",
@@ -31,7 +34,7 @@
     {
       "label": "Frontend | Start",
       "type": "shell",
-      "command": "cd ${workspaceFolder} && yarn start"
+      "command": "cd ${workspaceFolder} ; yarn start"
     }
 
     // {
