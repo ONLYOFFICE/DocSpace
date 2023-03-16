@@ -1,17 +1,49 @@
-import styled, { css } from "styled-components";
-import { CalendarStyle } from "@docspace/components/calendar/styled-calendar";
+import styled, { css } from 'styled-components';
+import {
+  Container,
+  DateItem,
+  CurrentDateItem,
+  RoundButton,
+} from '@docspace/components/calendar/styled-components';
 
-const getDefaultStyles = ({ $currentColorScheme, color }) =>
+const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
-    .calendar-month_selected-day {
-      background-color: ${color ? color : $currentColorScheme.main.accent};
-      color: ${$currentColorScheme.text.accent};
-      &:hover {
-        background-color: ${color ? color : $currentColorScheme.main.accent};
-        color: ${$currentColorScheme.text.accent};
+    ${CurrentDateItem} {
+      background: ${$currentColorScheme.main.accent};
+      :hover {
+        background-color: ${$currentColorScheme.main.accent};
+      }
+
+      :focus {
+        background-color: ${$currentColorScheme.main.accent};
+      }
+    }
+    ${DateItem} {
+      color: ${(props) =>
+        props.disabled
+          ? props.theme.calendar.disabledColor
+          : props.focused
+          ? $currentColorScheme.main.accent
+          : props.theme.calendar.color};
+      border-color: ${(props) => (props.focused ? $currentColorScheme.main.accent : 'transparent')};
+      :focus {
+        color: ${$currentColorScheme.main.accent};
+        border-color: ${$currentColorScheme.main.accent};
+      }
+    }
+    ${RoundButton} {
+      :hover {
+        outline: ${(props) =>
+          props.disabled
+            ? `1px solid ${props.theme.calendar.outlineColor}`
+            : `2px solid ${$currentColorScheme.main.accent}`};
+        span {
+          border-color: ${(props) =>
+            props.disabled ? props.theme.calendar.disabledArrow : $currentColorScheme.main.accent};
+        }
       }
     }
   `;
 
-export default styled(CalendarStyle)(getDefaultStyles);
+export default styled(Container)(getDefaultStyles);

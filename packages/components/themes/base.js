@@ -846,16 +846,6 @@ const Base = {
   },
 
   textArea: {
-    width: "100%",
-    height: "90%",
-    border: "none",
-    outline: "none",
-    resize: "none",
-    overflow: "hidden",
-    padding: "5px 8px 2px 8px",
-    fontSize: "13px",
-    lineHeight: "1.5",
-
     disabledColor: grayLight,
 
     focusBorderColor: blueMain,
@@ -864,6 +854,11 @@ const Base = {
 
     scrollWidth: "100%",
     scrollHeight: "91px",
+
+    numerationColor: "#A3A9AE",
+
+    copyIconFilter:
+      "invert(71%) sepia(1%) saturate(1597%) hue-rotate(166deg) brightness(100%) contrast(73%)",
   },
 
   link: {
@@ -1722,67 +1717,15 @@ const Base = {
   },
 
   calendar: {
-    baseWidth: "265px",
-    bigWidth: "289px",
-
-    baseMaxWidth: "293px",
-    bigMaxWidth: "325px",
-
-    hover: {
-      backgroundColor: grayLightMid,
-      borderRadius: "16px",
-      cursor: "pointer",
-    },
-
-    day: {
-      width: "32px",
-      height: "32px",
-      baseSizeWidth: "270px",
-      bigSizeWidth: "294px",
-      baseMarginTop: "3px",
-      bigMarginTop: "7.5px",
-      lineHeight: "33px",
-    },
-
-    weekdays: {
-      color: black,
-      disabledColor: gray,
-      baseWidth: "272px",
-      bigWidth: "295px",
-      marginBottom: "-5px",
-    },
-
-    month: {
-      baseWidth: "267px",
-      bigWidth: "295px",
-      color: black,
-      weekendColor: gray,
-      disabledColor: grayLightMid,
-      neighboringHoverColor: black,
-      neighboringColor: grayLightMid,
-    },
-
-    selectedDay: {
-      backgroundColor: orangeMain,
-      borderRadius: "16px",
-      cursor: "pointer",
-      color: white,
-    },
-
-    comboBox: {
-      color: black,
-      minWidth: "80px",
-      height: "32px",
-      marginLeft: "8px",
-      padding: "0 0 24px 0",
-    },
-    comboBoxMonth: {
-      baseWidth: "172px",
-      bigWidth: "205px",
-
-      baseMaxWidth: "172px",
-      bigMaxWidth: "196px",
-    },
+    color: "#333333",
+    disabledColor: "#DFE2E3",
+    pastColor: "#A3A9AE",
+    onHoverBackground: "#f3f4f4",
+    titleColor: "#555F65",
+    outlineColor: "#eceef1",
+    arrowColor: "#555f65",
+    disabledArrow: "#A3A9AE",
+    weekdayColor: "#A3A9AE",
   },
 
   datePicker: {

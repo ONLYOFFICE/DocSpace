@@ -1,7 +1,18 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { StyledTextarea, StyledScrollbar } from "./styled-textarea";
+import {
+  StyledTextarea,
+  StyledScrollbar,
+  StyledCopyIcon,
+  Wrapper,
+  Numeration,
+} from "./styled-textarea";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import Toast from "@docspace/components/toast";
+import toastr from "@docspace/components/toast/toastr";
+import { isJSON, beautifyJSON } from "./utils";
+
+import copy from "copy-to-clipboard";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
@@ -25,43 +36,108 @@ const Textarea = ({
   theme,
   autoFocus,
   areaSelect,
+  isJSONField,
+  copyInfoText,
 }) => {
   const areaRef = useRef(null);
+  const [isError, setIsError] = useState(hasError);
+  const [modifiedValue, setModifiedValue] = useState(value);
 
-  React.useEffect(() => {
+  const lineHeight = 1.5;
+  const padding = 7;
+  const numberOfLines = modifiedValue.split("\n").length;
+  const textareaHeight = isJSONField
+    ? numberOfLines * fontSize * lineHeight + padding + 4
+    : heightTextArea;
+
+  const defaultPaddingLeft = 42;
+  const numberOfDigits =
+    String(numberOfLines).length - 2 > 0 ? String(numberOfLines).length : 0;
+  const paddingLeft = isJSONField
+    ? fontSize < 13
+      ? `${defaultPaddingLeft + numberOfDigits * 6}px`
+      : `${((defaultPaddingLeft + numberOfDigits * 4) * fontSize) / 13}px`
+    : "8px";
+
+  const numerationValue = [];
+
+  for (let i = 1; i <= numberOfLines; i++) {
+    numerationValue.push(i);
+  }
+
+  function onTextareaClick() {
+    areaRef.current.select();
+  }
+
+  useEffect(() => {
+    if (isJSONField) {
+      if (modifiedValue && isJSON(modifiedValue)) {
+        setModifiedValue(beautifyJSON(modifiedValue));
+      } else {
+        setIsError(true);
+      }
+    }
+  }, [isJSONField]);
+
+  useEffect(() => {
     if (areaSelect && areaRef.current) {
       areaRef.current.select();
     }
   }, [areaSelect]);
 
   return (
-    <ColorTheme
-      themeId={ThemeType.Textarea}
-      className={className}
-      style={style}
-      stype="preMediumBlack"
-      isDisabled={isDisabled}
-      hasError={hasError}
-      heightScale={heightScale}
-      heighttextarea={heightTextArea}
+    <Wrapper
+      isJSONField={isJSONField}
+      onFocus={isJSONField ? onTextareaClick : undefined}
     >
-      <StyledTextarea
-        id={id}
-        placeholder={placeholder}
-        onChange={(e) => onChange && onChange(e)}
-        maxLength={maxLength}
-        name={name}
-        tabIndex={tabIndex}
+      {isJSONField && (
+        <StyledCopyIcon
+          onClick={() => {
+            copy(modifiedValue);
+            toastr.success(copyInfoText);
+          }}
+          heightScale={heightScale}
+          isJSONField={isJSONField}
+        />
+      )}
+      <ColorTheme
+        themeId={ThemeType.Textarea}
+        className={className}
+        style={style}
+        stype="preMediumBlack"
         isDisabled={isDisabled}
-        disabled={isDisabled}
-        readOnly={isReadOnly}
-        value={value}
-        fontSize={fontSize}
-        color={color}
-        autoFocus={autoFocus}
-        ref={areaRef}
-      />
-    </ColorTheme>
+        hasError={isError}
+        heightScale={heightScale}
+        heighttextarea={textareaHeight}
+      >
+        <Toast />
+
+        {isJSONField && (
+          <Numeration fontSize={fontSize}>
+            {numerationValue.join("\n")}
+          </Numeration>
+        )}
+
+        <StyledTextarea
+          id={id}
+          paddingLeft={paddingLeft}
+          isJSONField={isJSONField}
+          placeholder={placeholder}
+          onChange={(e) => onChange && onChange(e)}
+          maxLength={maxLength}
+          name={name}
+          tabIndex={tabIndex}
+          isDisabled={isDisabled}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          value={isJSONField ? modifiedValue : value}
+          fontSize={fontSize}
+          color={color}
+          autoFocus={autoFocus}
+          ref={areaRef}
+        />
+      </ColorTheme>
+    </Wrapper>
   );
 };
 
@@ -100,6 +176,10 @@ Textarea.propTypes = {
   color: PropTypes.string,
   autoFocus: PropTypes.bool,
   areaSelect: PropTypes.bool,
+  /** Prettifies Json and adds lines numeration */
+  isJSONField: PropTypes.bool,
+  /** Indicates the text of toast/informational alarm */
+  copyInfoText: PropTypes.string,
 };
 
 Textarea.defaultProps = {
@@ -114,6 +194,8 @@ Textarea.defaultProps = {
   fontSize: 13,
   isAutoFocussed: false,
   areaSelect: false,
+  isJSONField: false,
+  copyInfoText: "Content was copied successfully!",
 };
 
 export default Textarea;

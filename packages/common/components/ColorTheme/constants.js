@@ -3,6 +3,7 @@ export const ThemeType = {
   MainButton: "mainButton",
   CatalogItem: "catalogItem",
   Badge: "badge",
+  Calendar: 'calendar',
   SubmenuText: "submenuText",
   SubmenuItemLabel: "submenuItemLabel",
   ToggleButton: "toggleButton",
