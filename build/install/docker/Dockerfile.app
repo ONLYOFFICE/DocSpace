@@ -227,7 +227,8 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM dotnetrun AS files_services
-RUN apt-get install -yq ffmpeg
+RUN apt-get -y update && \
+    apt-get install -yq ffmpeg
 
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
