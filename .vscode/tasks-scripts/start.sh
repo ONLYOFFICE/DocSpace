@@ -4,9 +4,9 @@ scriptLocation=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 root=$(builtin cd $scriptLocation/../../; pwd)
 
 if [ "$1" = "Start" ]
-  then (cd $root/build/start && sh ./start.backend.docker.sh)
+  then (sh $root/build/start/start.backend.docker.sh)
 elif [ "$1" = "Restart" ]
-  then (cd $root/build/start && sh ./restart.backend.docker.sh)
+  then (sh $root/build/start/restart.backend.docker.sh)
 elif [ "$1" = "Stop" ]
-  then (cd $root/build/start && sh ./stop.backend.docker.sh)
+  then (sh $root/build/start/stop.backend.docker.sh)
 fi
