@@ -30,7 +30,7 @@ const locales = [
 ];
 
 export default {
-  // title: "Components/DatePicker",
+  title: "Components/DatePicker",
   component: DatePicker,
 
   argTypes: {
