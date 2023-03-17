@@ -78,7 +78,7 @@ export const SecretKeyInput = ({
         <PasswordInput
           onChange={onChange}
           value={value}
-          name={name}
+          inputName={name}
           placeholder="Enter secret key"
           onValidateInput={handleInputValidation}
           hasError={!isPasswordValid}
