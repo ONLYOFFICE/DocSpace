@@ -32,10 +32,10 @@ DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ
 DOCUMENT_SERVER_URL_PUBLIC = os.environ["DOCUMENT_SERVER_URL_PUBLIC"] if environ.get("DOCUMENT_SERVER_URL_PUBLIC") else "/ds-vpath/"
 DOCUMENT_SERVER_URL_INTERNAL = os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else "http://onlyoffice-document-server/"
 
-ELK_SHEME = {"Scheme": os.environ["ELK_SHEME"]} if environ.get("ELK_SHEME") else {"Scheme": "http"}
-ELK_HOST = {"Host": os.environ["ELK_HOST"]} if environ.get("ELK_HOST") else {"Host": "onlyoffice-elasticsearch"}
-ELK_PORT = {"Port": os.environ["ELK_PORT"]} if environ.get("ELK_PORT") else  {"Port": "9200"}
-ELK_THREADS = {"Threads": os.environ["ELK_THREADS"]} if environ.get("ELK_THREADS") else {"Threads": "1"}
+ELK_SHEME = os.environ["ELK_SHEME"] if environ.get("ELK_SHEME") else "http"
+ELK_HOST = os.environ["ELK_HOST"] if environ.get("ELK_HOST") else "onlyoffice-elasticsearch"
+ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
+ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
 
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
 RUN_FILE = sys.argv[1] if (len(sys.argv) > 1) else "none"
@@ -148,10 +148,10 @@ writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
-jsonData["elastic"].update(ELK_SHEME)
-jsonData["elastic"].update(ELK_HOST)
-jsonData["elastic"].update(ELK_PORT)
-jsonData["elastic"].update(ELK_THREADS)
+jsonData["elastic"]["Scheme"] = ELK_SHEME
+jsonData["elastic"]["Host"] = ELK_HOST
+jsonData["elastic"]["Port"] = ELK_PORT
+jsonData["elastic"]["Threads"] = ELK_THREADS
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/kafka.json"
