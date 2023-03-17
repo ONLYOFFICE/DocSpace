@@ -386,6 +386,7 @@ public class AdditionalNotificationInfo
     public int RoomId { get; set; }
     public string RoomTitle { get; set; }
     public string RoomOldTitle { get; set; }
+    public string RootFolderTitle { get; set; }
     public int UserRole { get; set; }
     public List<Guid> UserIds { get; set; }
 }
