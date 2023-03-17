@@ -73,7 +73,7 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_DB_PWD=$DS_COMMON_NAME;
 	
 	declare -x JWT_ENABLED=true;
-	declare -x JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)";
+	declare -x JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)";
 	declare -x JWT_HEADER="AuthorizationJwt";
 		
 	if ! su - postgres -s /bin/bash -c "psql -lqt" | cut -d \| -f 1 | grep -q ${DS_DB_NAME}; then
