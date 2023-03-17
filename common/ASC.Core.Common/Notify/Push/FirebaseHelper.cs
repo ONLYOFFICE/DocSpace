@@ -104,7 +104,7 @@ public class FirebaseHelper
                         Body = msg.Content
                     }
                 };
-                FirebaseAdminMessaging.FirebaseMessaging.DefaultInstance.SendAsync(m);
+                await FirebaseAdminMessaging.FirebaseMessaging.DefaultInstance.SendAsync(m);
             }
         }
     }

@@ -57,7 +57,7 @@ public class SmtpSender : INotifySender
         _initProperties = properties;
     }
 
-    public virtual Task<NoticeSendResult> Send(NotifyMessage m)
+    public virtual Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();

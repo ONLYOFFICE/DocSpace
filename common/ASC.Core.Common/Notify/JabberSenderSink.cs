@@ -53,7 +53,7 @@ class JabberSenderSink : Sink
             }
             else
             {
-                await _sender.Send(m);
+                await _sender.SendAsync(m);
             }
 
             return new SendResponse(message, _senderName, result);

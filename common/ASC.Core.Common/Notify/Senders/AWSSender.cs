@@ -56,7 +56,7 @@ public class AWSSender : SmtpSender, IDisposable
         _lastRefresh = DateTime.UtcNow - _refreshTimeout; //set to refresh on first send
     }
 
-    public override async Task<NoticeSendResult> Send(NotifyMessage m)
+    public override async Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         NoticeSendResult result;
         try
@@ -71,7 +71,7 @@ public class AWSSender : SmtpSender, IDisposable
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
                 if (!configuration.SmtpSettings.IsDefaultSettings)
                 {
-                    result = await base.Send(m);
+                    result = await base.SendAsync(m);
                 }
                 else
                 {
@@ -106,7 +106,7 @@ public class AWSSender : SmtpSender, IDisposable
         if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
         {
             _logger.DebugAmazonSendingFailed(result);
-            result = await base.Send(m);
+            result = await base.SendAsync(m);
         }
 
         return result;

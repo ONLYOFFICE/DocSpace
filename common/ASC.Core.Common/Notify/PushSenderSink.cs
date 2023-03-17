@@ -58,7 +58,7 @@ class PushSenderSink : Sink
             }
             else
             {
-                await _sender.Send(m);
+                await _sender.SendAsync(m);
             }
 
             return new SendResponse(message, Constants.NotifyPushSenderSysName, result);

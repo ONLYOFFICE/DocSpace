@@ -62,7 +62,7 @@ public class NotifyCleanerService : BackgroundService
                 continue;
             }
 
-            Clear();
+            await ClearAsync();
 
             await Task.Delay(_waitingPeriod, stoppingToken);
         }
@@ -70,24 +70,24 @@ public class NotifyCleanerService : BackgroundService
         _logger.InformationNotifyCleanerStopping();
     }
 
-    private void Clear()
+    private async Task ClearAsync()
     {
         try
         {
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
             using var scope = _scopeFactory.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
 
             var strategy = dbContext.Database.CreateExecutionStrategy();
 
-            strategy.Execute(() =>
+            await strategy.ExecuteAsync(async () =>
             {
-                using var tx = dbContext.Database.BeginTransaction();
+                using var tx = await dbContext.Database.BeginTransactionAsync();
 
-                var infoCount = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDelete();
-                var queueCount = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDelete();
-                tx.Commit();
+                var infoCount = await dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDeleteAsync();
+                var queueCount = await dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDeleteAsync();
+                await tx.CommitAsync();
 
                 _logger.InformationClearNotifyMessages(infoCount, queueCount);
             });

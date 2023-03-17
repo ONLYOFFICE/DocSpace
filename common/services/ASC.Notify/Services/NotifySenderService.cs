@@ -75,7 +75,7 @@ public class NotifySenderService : BackgroundService
                 continue;
             }
 
-            await ThreadManagerWork(stoppingToken);
+            await ThreadManagerWorkAsync(stoppingToken);
         }
 
         _logger.InformationNotifySenderStopping();
@@ -92,7 +92,7 @@ public class NotifySenderService : BackgroundService
         }
     }
 
-    private async Task ThreadManagerWork(CancellationToken stoppingToken)
+    private async Task ThreadManagerWorkAsync(CancellationToken stoppingToken)
     {
         var tasks = new List<Task>(_notifyServiceCfg.Process.MaxThreads);
 
@@ -100,10 +100,10 @@ public class NotifySenderService : BackgroundService
         {
             if (tasks.Count < _notifyServiceCfg.Process.MaxThreads)
             {
-                var messages = _db.GetMessages(_notifyServiceCfg.Process.BufferSize);
+                var messages = await _db.GetMessagesAsync(_notifyServiceCfg.Process.BufferSize);
                 if (messages.Count > 0)
                 {
-                    var t = new Task(() => SendMessages(messages, stoppingToken), stoppingToken, TaskCreationOptions.LongRunning);
+                    var t = new Task(async () => await SendMessagesAsync(messages, stoppingToken), stoppingToken, TaskCreationOptions.LongRunning);
                     tasks.Add(t);
                     t.Start(TaskScheduler.Default);
                 }
@@ -127,7 +127,7 @@ public class NotifySenderService : BackgroundService
         }
     }
 
-    private void SendMessages(object messages, CancellationToken stoppingToken)
+    private async Task SendMessagesAsync(object messages, CancellationToken stoppingToken)
     {
         try
         {
@@ -144,7 +144,7 @@ public class NotifySenderService : BackgroundService
                     var sender = _notifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.SenderType);
                     if (sender != null)
                     {
-                        sender.NotifySender.Send(m.Value);
+                        await sender.NotifySender.SendAsync(m.Value);
                     }
                     else
                     {
@@ -159,7 +159,7 @@ public class NotifySenderService : BackgroundService
                     _logger.ErrorWithException(e);
                 }
 
-                _db.SetState(m.Key, result);
+                await _db.SetStateAsync(m.Key, result);
             }
         }
         catch (ThreadAbortException)
