@@ -364,9 +364,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 </Link>*/}
           {enableAdmMess && (
             <>
-              <Text color="#A3A9AE" className="login-or-access-text">
-                {t("Or")}
-              </Text>
+              <Text className="login-or-access-text">{t("Or")}</Text>
               <Link
                 id="login_recover-link"
                 fontWeight="600"
