@@ -42,6 +42,7 @@ const LoginContainer = styled.div`
 
   .login-or-access-text {
     text-transform: lowercase;
+    ${(props) => props.theme.login.orTextColor};
   }
 
   .recover-link {
@@ -76,7 +77,7 @@ const LoginContainer = styled.div`
     padding: 32px 0;
 
     @media ${tablet} {
-      width: 480px;
+      width: 416px;
     }
 
     @media ${hugeMobile} {
