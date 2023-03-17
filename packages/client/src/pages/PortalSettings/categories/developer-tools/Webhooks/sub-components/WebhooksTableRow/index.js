@@ -13,7 +13,13 @@ import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import { WebhookDialog } from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
 
-export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
+export const WebhooksTableRow = ({
+  webhook,
+  toggleEnabled,
+  deleteWebhook,
+  editWebhook,
+  retryWebhookEvent,
+}) => {
   const [isChecked, setIsChecked] = useState(webhook.isEnabled);
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -49,7 +55,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
         key: "Retry dropdownItem",
         label: "Retry",
         icon: RetryIcon,
-        onClick: () => console.log("retry"),
+        onClick: () => retryWebhookEvent(webhook.id),
       },
       {
         key: "Separator dropdownItem",
