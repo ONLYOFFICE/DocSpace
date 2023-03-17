@@ -60,6 +60,7 @@ const Textarea = ({
         color={color}
         autoFocus={autoFocus}
         ref={areaRef}
+        heighttextarea={heightTextArea}
       />
     </ColorTheme>
   );
