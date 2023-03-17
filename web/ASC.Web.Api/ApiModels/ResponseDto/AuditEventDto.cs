@@ -97,16 +97,6 @@ public class AuditEventDto
             Target = auditEvent.Target.GetItems();
         }
 
-        if (maps.ProductType == ProductType.Documents)
-        {
-            var rawNotificationInfo = auditEvent.Description?.LastOrDefault();
-
-            if (!string.IsNullOrEmpty(rawNotificationInfo) && rawNotificationInfo.StartsWith('{') && rawNotificationInfo.EndsWith('}'))
-            {
-                var notificationInfo = JsonSerializer.Deserialize<AdditionalNotificationInfo>(rawNotificationInfo);
-
-                Room = auditEvent.Action == (int)MessageAction.RoomRenamed ? notificationInfo?.RoomOldTitle : notificationInfo?.RoomTitle;
-            }
-        }
+        Room = auditEvent.Context;
     }
 }
