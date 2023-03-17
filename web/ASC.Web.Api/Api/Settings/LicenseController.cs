@@ -77,7 +77,7 @@ public class LicenseController : BaseSettingsController
     /// </summary>
     /// <short>Refresh the license</short>
     /// <category>License</category>
-    /// <returns>Boolean value: true - an operation is successful, false - an operation is unsuccessful</returns>
+    /// <returns>Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/license/refresh</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("license/refresh")]
@@ -217,6 +217,7 @@ public class LicenseController : BaseSettingsController
     /// <returns>Boolean value: true if the license is required</returns>
     /// <path>api/2.0/settings/license/required</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("license/required")]
@@ -232,7 +233,7 @@ public class LicenseController : BaseSettingsController
     /// <short>
     /// Upload a license
     /// </short>
-    /// <param name="inDto">License attachments</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license: Files (IEnumerable&lt;IFormFile&lt;) - license attachments</param>
     /// <category>License</category>
     /// <returns>License</returns>
     /// <path>api/2.0/settings/license</path>

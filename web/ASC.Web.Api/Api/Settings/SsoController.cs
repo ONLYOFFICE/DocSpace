@@ -62,7 +62,7 @@ public class SsoController : BaseSettingsController
     /// Get the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>SSO settings</returns>
+    /// <returns>SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2")]
@@ -87,7 +87,7 @@ public class SsoController : BaseSettingsController
     /// Get the default SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Default SSO settings</returns>
+    /// <returns>Default SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
     /// <path>api/2.0/settings/ssov2/default</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/default")]
@@ -104,7 +104,7 @@ public class SsoController : BaseSettingsController
     /// Get the SSO settings constants
     /// </short>
     /// <category>SSO</category>
-    /// <returns>The SSO settings constants</returns>
+    /// <returns>The SSO settings constants: SSO name ID format type, SSO binding type, SSO signing algorithm type, SSO SP certificate action type, SSO IDP certificate action type</returns>
     /// <path>api/2.0/settings/ssov2/constants</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/constants")]
@@ -128,8 +128,8 @@ public class SsoController : BaseSettingsController
     /// Save the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <param name="model">Serialized SSO settings</param>
-    /// <returns>SSO settings</returns>
+    /// <param name="model">SSO settings request parameters: SerializeSettings (string) - serialized SSO settings</param>
+    /// <returns>SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("ssov2")]
@@ -212,7 +212,7 @@ public class SsoController : BaseSettingsController
     /// Reset the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Default SSO settings</returns>
+    /// <returns>Default SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("ssov2")]

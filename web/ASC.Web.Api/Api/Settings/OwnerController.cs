@@ -73,8 +73,8 @@ public class OwnerController : BaseSettingsController
     /// Send the owner change instructions
     /// </short>
     /// <category>Owner</category>
-    /// <param name="inDto">New owner ID</param>
-    /// <returns>Message about the result of changing the portal owner</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: OwnerId (Guid) - new owner ID</param>
+    /// <returns>Message about changing the portal owner</returns>
     /// <path>api/2.0/settings/owner</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("owner")]
@@ -112,7 +112,7 @@ public class OwnerController : BaseSettingsController
     /// Update the portal owner
     /// </short>
     /// <category>Owner</category>
-    /// <param name="inDto">New owner ID</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: OwnerId (Guid) - new owner ID</param>
     /// <returns></returns>
     /// <path>api/2.0/settings/owner</path>
     /// <httpMethod>PUT</httpMethod>

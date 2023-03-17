@@ -101,7 +101,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get storages</short>
-    /// <returns>List of storages</returns>
+    /// <returns>List of storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("storage")]
@@ -148,7 +148,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Start the storage encryption process</short>
     /// <category>Encryption</category>
-    /// <param name="inDto">Specifies if the users will be notified about the encryption process or not</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage encryption request parameters: NotifyUsers (bool) - specifies if the users will be notified about the encryption process or not</param>
     /// <returns>Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/encryption/start</path>
     /// <httpMethod>POST</httpMethod>
@@ -276,7 +276,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Get the storage encryption settings</short>
     /// <category>Encryption</category>
-    /// <returns>Storage encryption settings</returns>
+    /// <returns>Storage encryption settings: password, status, notify users or not</returns>
     /// <path>api/2.0/settings/encryption/settings</path>
     /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
@@ -349,8 +349,13 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Update a storage</short>
-    /// <param name="inDto">Storage settings: storage name, new storage properties</param>
-    /// <returns>Updated storage</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage settings request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Module</b> (string) - storage name,</li>
+    ///     <li><b>Props</b> (IEnumerable&lt;ItemKeyValuePair&lt;string, string&gt;&gt;) - new storage properties.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Updated storage settings: module, properties</returns>
     /// <path>api/2.0/settings/storage</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage")]
@@ -430,7 +435,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get the CDN storages</short>
-    /// <returns>List of the CDN storages</returns>
+    /// <returns>List of the CDN storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage/cdn</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/cdn")]
@@ -452,9 +457,14 @@ public class StorageController : BaseSettingsController
     /// Updates the CDN storage with the parameters specified in the request.
     /// </summary>
     /// <category>Storage</category>
-    /// <short>Update the CDN storage</short>
+    /// <short>Update the CDN storage: module, properties</short>
     /// <returns>Updated CDN storage</returns>
-    /// <param name="inDto">CDN storage parameters: CDN storage name, new CDN storage properties</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">CDN storage settings request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Module</b> (string) - CDN storage name,</li>
+    ///     <li><b>Props</b> (IEnumerable&lt;ItemKeyValuePair&lt;string, string&gt;&gt;) - new CDN storage properties.</li>
+    /// </ul>
+    /// ]]></param>
     /// <path>api/2.0/settings/storage/cdn</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage/cdn")]
@@ -521,7 +531,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get the backup storages</short>
-    /// <returns>List of the backup storages</returns>
+    /// <returns>List of the backup storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage/backup</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/backup")]

@@ -123,10 +123,10 @@ public class SecurityController : ControllerBase
     /// Get filtered login events
     /// </short>
     /// <category>Login history</category>
-    /// <param name="userId">User ID</param>
-    /// <param name="action">Action</param>
-    /// <param name="from">Start date</param>
-    /// <param name="to">End date</param>
+    /// <param type="System.Guid, System" name="userId">User ID</param>
+    /// <param type="ASC.MessagingSystem.Core.MessageAction, ASC.MessagingSystem.Core" name="action">Action</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
     /// <returns>List of filtered login events</returns>
     /// <path>api/2.0/security/audit/login/filter</path>
     /// <httpMethod>GET</httpMethod>
@@ -163,15 +163,15 @@ public class SecurityController : ControllerBase
     /// Get filtered audit trail data
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param name="userId">User ID</param>
-    /// <param name="productType">Product</param>
-    /// <param name="moduleType">Module</param>
-    /// <param name="actionType">Action type</param>
-    /// <param name="action">Action</param>
-    /// <param name="entryType">Entry</param>
-    /// <param name="target">Target</param>
-    /// <param name="from">Start date</param>
-    /// <param name="to">End date</param>
+    /// <param type="System.Guid, System" name="userId">User ID</param>
+    /// <param type="ASC.AuditTrail.Types.ProductType, ASC.AuditTrail.Types" name="productType">Product (None, CRM, Documents, Login, Others, People, Projects, Settings)</param>
+    /// <param type="ASC.AuditTrail.Types.ModuleType, ASC.AuditTrail.Types" name="moduleType">Module (None, Files, Folders, DocumentsSettings, Companies, Persons, Contacts, CrmTasks, Opportunities, Invoices, Cases, CommonCrmSettings, ContactsSettings, ContactTypes, InvoiceSettings, OtherCrmSettings, Users, Groups, Projects, Milestones, Tasks, Discussions, TimeTracking, Reports, ProjectsSettings, General, Products, Rooms)</param>
+    /// <param type="ASC.AuditTrail.Types.ActionType, ASC.AuditTrail.Types" name="actionType">Action type (None, Create, Update, Delete, Link, Unlink, Attach, Detach, Send, Import, Export, UpdateAccess, Download, Upload, Copy, Move, Reassigns, Follow, Unfollow, Logout)</param>
+    /// <param type="ASC.MessagingSystem.Core.MessageAction, ASC.MessagingSystem.Core" name="action">Action</param>
+    /// <param type="ASC.AuditTrail.Types.EntryType, ASC.AuditTrail.Types" name="entryType">Entry (None, File, Folder, Project, Contact, Milestone, Task, Comment, SubTask, Message, TimeSpend, ReportTemplate, Template, Relationship, CRMTask, Opportunity, Invoice, Case, ListItem, InvoiceItem, InvoiceTax, FieldDescription, OpportunityMilestone, User, Group, Room, Tag)</param>
+    /// <param type="System.String, System" name="target">Target</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
     /// <returns>List of filtered audit trail data</returns>
     /// <path>api/2.0/security/audit/events/filter</path>
     /// <httpMethod>GET</httpMethod>
@@ -216,6 +216,7 @@ public class SecurityController : ControllerBase
     /// <returns>Audit trail types</returns>
     /// <path>api/2.0/security/audit/types</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpGet("audit/types")]
     public object GetTypes()
@@ -237,11 +238,12 @@ public class SecurityController : ControllerBase
     /// Get audit trail mappers
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param name="productType">Product</param>
-    /// <param name="moduleType">Module</param>
+    /// <param type="System.Nullable{ASC.AuditTrail.Types.ProductType}, System" name="productType">Product</param>
+    /// <param type="System.Nullable{ASC.AuditTrail.Types.ModuleType}, System" name="moduleType">Module</param>
     /// <returns>Audit trail mappers</returns>
     /// <path>api/2.0/security/audit/mappers</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpGet("/audit/mappers")]
     public object GetMappers(ProductType? productType, ModuleType? moduleType)
@@ -360,7 +362,15 @@ public class SecurityController : ControllerBase
     /// Set the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param name="wrapper">Audit trail settings</param>
+    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Tenants" name="wrapper">Audit trail settings: <![CDATA[
+    /// <ul>
+    ///     <li><b>Settings</b> (TenantAuditSettings) - audit trail settings:</li>
+    ///     <ul>
+    ///         <li><b>LoginHistoryLifeTime</b> (integer) - login history lifetime,</li>
+    ///         <li><b>AuditTrailLifeTime</b> (integer) - audit trail lifetime.</li>
+    ///     </ul>
+    /// </ul>
+    /// ]]></param>
     /// <returns>Audit trail settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>POST</httpMethod>

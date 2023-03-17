@@ -56,7 +56,7 @@ public class VersionController : BaseSettingsController
     /// <path>api/2.0/settings/version/build</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
-    /// <returns>Current ONLYOFFICE, editor, mailserver versions</returns>
+    /// <returns>Current DocSpace, Community Server, Document Server, Mail Server, XMPP server versions</returns>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("version/build")]
@@ -88,7 +88,7 @@ public class VersionController : BaseSettingsController
     /// Change the portal version
     /// </short>
     /// <category>Versions</category>
-    /// <param name="inDto">Version ID</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: VersionId (integer) - version ID</param>
     /// <path>api/2.0/settings/version</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns>List of availibe portal versions including the current version</returns>

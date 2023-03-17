@@ -155,8 +155,8 @@ public class PortalController : ControllerBase
     /// Get a user by ID
     /// </short>
     /// <category>Users</category>
-    /// <param name="userID">User ID</param>
-    /// <returns>User</returns>
+    /// <param type="System.Guid, System" name="userID">User ID</param>
+    /// <returns>User information</returns>
     /// <path>api/2.0/portal/users/{userID}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("users/{userID}")]
@@ -171,7 +171,7 @@ public class PortalController : ControllerBase
     /// <short>
     /// Get an invitation link
     /// </short>
-    /// <param name="employeeType">Employee type (RoomAdmin, User, DocSpaceAdmin, or All)</param>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Users" name="employeeType">Employee type (All, RoomAdmin, User, DocSpaceAdmin)</param>
     /// <category>Users</category>
     /// <returns>Invitation link</returns>
     /// <path>api/2.0/portal/users/invite/{employeeType}</path>
@@ -193,7 +193,7 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Get a shortened link</short>
     /// <category>Settings</category>
-    /// <param name="inDto">Link</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.ShortenLinkRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Shortened link request parameters: Link (string) - link</param>
     /// <returns>Shortened link</returns>
     /// <path>api/2.0/portal/getshortenlink</path>
     /// <httpMethod>PUT</httpMethod>
@@ -343,7 +343,7 @@ public class PortalController : ControllerBase
     /// Get a path to the portal
     /// </short>
     /// <category>Settings</category>
-    /// <param name="virtualPath">Portal virtual path</param>
+    /// <param type="System.String, System" name="virtualPath">Portal virtual path</param>
     /// <returns>Portal path</returns>
     /// <path>api/2.0/portal/path</path>
     /// <httpMethod>GET</httpMethod>
@@ -360,7 +360,7 @@ public class PortalController : ControllerBase
     /// Get a bookmark thumbnail
     /// </short>
     /// <category>Settings</category>
-    /// <param name="url">Bookmark URL</param>
+    /// <param type="System.String, System" name="url">Bookmark URL</param>
     /// <returns>Thumbnail</returns>
     /// <path>api/2.0/portal/thumb</path>
     /// <httpMethod>GET</httpMethod>
@@ -430,7 +430,7 @@ public class PortalController : ControllerBase
     /// Register the mobile app installation
     /// </short>
     /// <category>Settings</category>
-    /// <param name="inDto">Mobile app type ("IosProjects", "AndroidProjects", "IosDocuments", "AndroidDocuments", or "DesktopEditor")</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileAppRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Mobile app request parameters: Type (MobileAppType) - mobile app type (IosProjects, AndroidProjects, IosDocuments, AndroidDocuments, or DesktopEditor)</param>
     /// <returns></returns>
     /// <path>api/2.0/portal/mobile/registration</path>
     /// <httpMethod>POST</httpMethod>
@@ -441,6 +441,18 @@ public class PortalController : ControllerBase
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
     }
 
+    /// <summary>
+    /// Registers the mobile app installation by mobile app type.
+    /// </summary>
+    /// <short>
+    /// Register the mobile app installation by mobile app type
+    /// </short>
+    /// <category>Settings</category>
+    /// <param type="ASC.Core.Common.Notify.Push.MobileAppType, ASC.Core.Common.Notify.Push" name="type">Mobile app type (IosProjects, AndroidProjects, IosDocuments, AndroidDocuments, or DesktopEditor)</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/mobile/registration</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("mobile/registration")]
     public void RegisterMobileAppInstall(MobileAppType type)
     {
@@ -453,11 +465,11 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Update a portal name</short>
     /// <category>Settings</category>
-    /// <param name="model">New portal name</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters for portal renaming: Alias (string) - new portal name</param>
     /// <returns>Confirmation email about authentication to the portal with a new name</returns>
     /// <path>api/2.0/portal/portalrename</path>
     /// <httpMethod>PUT</httpMethod>
-    ///<visible>false</visible>
+    /// <visible>false</visible>
     [HttpPut("portalrename")]
     public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
     {
@@ -724,7 +736,12 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Send congratulations</short>
     /// <category>Users</category>
-    /// <param name="inDto">Congratulations request parameters: user ID, email key</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SendCongratulationsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Congratulations request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Userid</b> (Guid) - user ID,</li>
+    ///     <li><b>Key</b> (string) - email key.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns></returns>
     /// <path>api/2.0/portal/sendcongratulations</path>
     /// <httpMethod>POST</httpMethod>

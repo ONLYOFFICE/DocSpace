@@ -50,11 +50,11 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns all the portal custom schemas.
+    /// Returns all the portal team templates which allow you to name the organization (or group), its members and their activities within your portal.
     /// </summary>
-    /// <short>Get custom schemas</short>
-    /// <category>Custom schemas</category>
-    /// <returns>List of custom schemas</returns>
+    /// <short>Get team templates</short>
+    /// <category>Team templates</category>
+    /// <returns>List of team templates with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas")]
@@ -85,12 +85,12 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     /// <summary>
-    /// Sets the specified custom scheme for the current portal.
+    /// Saves the names from the team template with the ID specified in the request.
     /// </summary>
-    /// <short>Set a custom scheme</short>
-    /// <category>Custom schemas</category>
-    /// <param name="inDto">Custom scheme parameters</param>
-    /// <returns>Custom scheme</returns>
+    /// <short>Save the naming settings</short>
+    /// <category>Team templates</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Team template parameters: Id (string) - team template ID</param>
+    /// <returns>Team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("customschemas")]
@@ -108,12 +108,24 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     /// <summary>
-    /// Updates the current custom scheme with the parameters specified in the request.
+    /// Creates a custom team template with the parameters specified in the request.
     /// </summary>
-    /// <short>Update a custom scheme</short>
-    /// <category>Custom schemas</category>
-    /// <param name="inDto">Custom scheme parameters</param>
-    /// <returns>New custom scheme</returns>
+    /// <short>Create a custom team template</short>
+    /// <category>Team templates</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Team template parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>UserCaption</b> (string) - user caption,</li>
+    ///     <li><b>UsersCaption</b> (string) - users caption,</li>
+    ///     <li><b>GroupCaption</b> (string) - group caption,</li>
+    ///     <li><b>GroupsCaption</b> (string) - groups caption,</li>
+    ///     <li><b>UserPostCaption</b> (string) - user status caption,</li>
+    ///     <li><b>RegDateCaption</b> (string) - registration date caption,</li>
+    ///     <li><b>GroupHeadCaption</b> (string) - group lead caption,</li>
+    ///     <li><b>GuestCaption</b> (string) - guest caption,</li>
+    ///     <li><b>GuestsCaption</b> (string) - guests caption.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Custom team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("customschemas")]
@@ -168,12 +180,12 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns a custom scheme by the ID specified in the request.
+    /// Returns a team template by the ID specified in the request.
     /// </summary>
-    /// <short>Get a custom scheme by ID</short>
-    /// <category>Custom schemas</category>
-    /// <param name="id">Custom scheme ID</param>
-    /// <returns>Custom scheme</returns>
+    /// <short>Get a team template by ID</short>
+    /// <category>Team templates</category>
+    /// <param type="System.String, System" name="id">Team template ID</param>
+    /// <returns>Team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
     /// <path>api/2.0/settings/customschemas/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas/{id}")]

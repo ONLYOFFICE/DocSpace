@@ -138,10 +138,11 @@ public class SettingsController : BaseSettingsController
     /// Get the portal settings
     /// </short>
     /// <category>Common settings</category>
-    /// <param name="withpassword">Specifies if the password hasher settings will be returned or not</param>
-    /// <returns>Settings</returns>
+    /// <param type="System.Boolean, System" name="withpassword">Specifies if the password hasher settings will be returned or not</param>
+    /// <returns>Settings: time zone, trusted domains, trusted domains type, language, UTC offset, greeting settings, owner ID, team template ID, enabled to join or not, enabled to send a message to the administrator or not, enabled to connect third-party providers r not, Personal or DocSpace portal, standalone or not, Wizard token, password hash, Firebase parameters, version, ReCAPTCHA public key, send debug information or not, socket URL, tenant status, tenant alias, link to the help, domain validator, plugins</returns>
     /// <path>api/2.0/settings</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [HttpGet("")]
     [AllowNotPayment, AllowSuspended, AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
@@ -241,7 +242,13 @@ public class SettingsController : BaseSettingsController
     /// Save the mail domain settings
     /// </short>
     /// <category>Common settings</category>
-    /// <param name="inDto">Mail domain settings: trusted domain type, list of domains, invites as a user or not</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailDomainSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for mail domain settings: <![CDATA[
+    /// <ul>
+    ///     <li><b>Type</b> (TenantTrustedDomainsType) - trusted domain type (None, Custom, All),</li>
+    ///     <li><b>Domains</b> (List&lt;string&gt;) - list of trusted domains,</li>
+    ///     <li><b>InviteAsUsers</b> (bool) - invites as a user or not.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns>Message about the result of saving the mail domain settings</returns>
     /// <path>api/2.0/settings/maildomainsettings</path>
     /// <httpMethod>POST</httpMethod>
@@ -282,13 +289,13 @@ public class SettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns the space usage quota for the portal with the specified space usage for each module.
+    /// Returns the space usage quota for the portal.
     /// </summary>
     /// <short>
     /// Get the space usage
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Space usage and limits for upload</returns>
+    /// <returns>Space usage and limits for upload: storage size, maximum file size, used size, maximum number of room admins, number of room admins, available size, available number of users, storage usage, user storage size, user used size, user available size, maximum number of users, number of users</returns>
     /// <path>api/2.0/settings/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("quota")]
@@ -304,7 +311,12 @@ public class SettingsController : BaseSettingsController
     /// Save the user quota settings
     /// </short>
     /// <category>Quota</category>
-    /// <param name="inDto">The user quota settings: enabled or not, default user quota</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UserQuotaSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for the user quota settings: <![CDATA[
+    /// <ul>
+    ///     <li><b>EnableUserQuota</b> (bool) - specifies if the quota settings are enabled or not,</li>
+    ///     <li><b>DefaultUserQuota</b> (long) - default user quota.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns>Message about the result of saving the user quota settings</returns>
     /// <path>api/2.0/settings/userquotasettings</path>
     /// <httpMethod>POST</httpMethod>
@@ -326,6 +338,7 @@ public class SettingsController : BaseSettingsController
     /// <returns>List of all the available portal languages</returns>
     /// <path>api/2.0/settings/cultures</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("cultures")]
@@ -339,7 +352,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get time zones</short>
     /// <category>Common settings</category>
-    /// <returns>List of all the available time zones</returns>
+    /// <returns>List of all the available time zones with their IDs and display names</returns>
     /// <path>api/2.0/settings/timezones</path>
     /// <httpMethod>GET</httpMethod>
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
@@ -390,7 +403,12 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the DNS settings</short>
     /// <category>Common settings</category>
-    /// <param name="model">DNS settings: DNS, enabled or not</param>
+    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">DNS settings request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>DnsName</b> (string) - DNS,</li>
+    ///     <li><b>Enable</b> (bool) - enabled or not.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns>Message about changing DNS</returns>
     /// <path>api/2.0/settings/dns</path>
     /// <httpMethod>PUT</httpMethod>
@@ -455,8 +473,17 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Complete the Wizard settings</short>
     /// <category>Wizard</category>
-    /// <param name="inDto">Wizard settings: email, password hash, language, time zone, AMI ID, subscribed from the site or not</param>
-    /// <returns>Wizard settings</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Wizard settings request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Email</b> (string) - email,</li>
+    ///     <li><b>PasswordHash</b> (string) - password hash,</li>
+    ///     <li><b>Lng</b> (string) - language,</li>
+    ///     <li><b>TimeZone</b> (string) - time zone,</li>
+    ///     <li><b>AmiId</b> (string) - AMI ID,</li>
+    ///     <li><b>SubscribeFromSite</b> (bool) - subscribed from the site or not.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Wizard settings: completed or not</returns>
     /// <path>api/2.0/settings/wizard/complete</path>
     /// <httpMethod>PUT</httpMethod>
     [AllowNotPayment]
@@ -504,6 +531,7 @@ public class SettingsController : BaseSettingsController
     /// <returns>Settings of the portal themes</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous, AllowNotPayment, AllowSuspended]
     [HttpGet("colortheme")]
     public CustomColorThemesSettingsDto GetColorTheme()
@@ -517,7 +545,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Save a color theme</short>
     /// <category>Common settings</category>
     /// <param name="inDto">Portal theme settings</param>
-    /// <returns>Settings of the portal themes</returns>
+    /// <returns>Portal theme settings: custom color theme settings, selected or not, limit</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("colortheme")]
@@ -591,8 +619,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Delete a color theme</short>
     /// <category>Common settings</category>
-    /// <param name="id">Portal theme ID</param>
-    /// <returns>Settings of the portal themes</returns>
+    /// <param ype="System.Int32, System" name="id">Portal theme ID</param>
+    /// <returns>Portal theme settings: custom color theme settings, selected or not, limit</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("colortheme")]
@@ -646,8 +674,13 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Set time zone and language</short>
     /// <category>Common settings</category>
-    /// <param name="inDto">Settings request parameters: language, time zone ID</param>
-    /// <returns>Message about the operation result</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Lng</b> (string) - language,</li>
+    ///     <li><b>TimeZoneID</b> (string) - time zone ID.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Message about saving settings successfully</returns>
     /// <path>api/2.0/settings/timeandlanguage</path>
     /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
@@ -698,8 +731,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Set the default product page</short>
     /// <category>Common settings</category>
-    /// <param name="inDto">Settings request parameters: default product ID</param>
-    /// <returns>Message about the operation result</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: DefaultProductID (Guid) - default product ID</param>
+    /// <returns>Message about saving settings successfully</returns>
     /// <path>api/2.0/settings/defaultpage</path>
     /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
@@ -720,8 +753,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Update the email activation settings</short>
     /// <category>Common settings</category>
-    /// <param name="settings">Email activation settings: shown or hidden, guid ID</param>
-    /// <returns>Updated email activation settings</returns>
+    /// <param type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core" name="settings">Email activation settings: Show (bool) - shown or hidden</param>
+    /// <returns>Updated email activation settings: shown or hidden</returns>
     /// <path>api/2.0/settings/emailactivation</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("emailactivation")]
@@ -736,8 +769,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <category>Statistics</category>
     /// <short>Get the space usage statistics</short>
-    /// <param name="id">Module ID</param>
-    /// <returns>Module space usage statistics</returns>
+    /// <param ype="System.Guid, System" name="id">Module ID</param>
+    /// <returns>Module space usage statistics: name, icon, disabled or not, size, URL</returns>
     /// <path>api/2.0/settings/statistics/spaceusage/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("statistics/spaceusage/{id}")]
@@ -779,9 +812,9 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <category>Statistics</category>
     /// <short>Get the visit statistics</short>
-    /// <param name="fromDate">Start period date</param>
-    /// <param name="toDate">End period date</param>
-    /// <returns>List of point charts</returns>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="fromDate">Start period date</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="toDate">End period date</param>
+    /// <returns>List of point charts: display data, date, hosts, hits</returns>
     /// <path>api/2.0/settings/statistics/visit</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("statistics/visit")]
@@ -845,7 +878,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the socket settings</short>
     /// <path>api/2.0/settings/socket</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>Socket settings</returns>
+    /// <returns>Socket settings: hub URL</returns>
     [HttpGet("socket")]
     public object GetSocketSettings()
     {
@@ -883,7 +916,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the authorization services</short>
     /// <path>api/2.0/settings/authservice</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>Authorization services</returns>
+    /// <returns>Authorization services: name, title, description, instruction, service can be set or not, list of authorization keys</returns>
     [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()
     {
@@ -899,7 +932,12 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <category>Authorization</category>
     /// <short>Save the authorization keys</short>
-    /// <param name="inDto">Authorization service parameters: name, title, description, instruction, can be set or not, list of authorization keys</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for authorization service: <![CDATA[
+    /// <ul>
+    ///     <li><b>Name</b> (string) - name,</li>
+    ///     <li><b>Props</b> (List&lt;AuthKey&gt;) - list of authorization keys.</li>
+    /// </ul>
+    /// ]]></param>
     /// <path>api/2.0/settings/authservice</path>
     /// <httpMethod>POST</httpMethod>
     /// <returns>Boolean value: true if the authorization keys are changed</returns>
@@ -975,7 +1013,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the payment settings</short>
     /// <path>api/2.0/settings/payment</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>Payment settings</returns>
+    /// <returns>Payment settings: sales email, feedback and support URL, link to pay for a portal, Standalone or not, current license, maximum quota quantity</returns>
     [AllowNotPayment]
     [HttpGet("payment")]
     public object PaymentSettings()
@@ -1005,7 +1043,6 @@ public class SettingsController : BaseSettingsController
             };
     }
 
-    /// <visible>false</visible>
     /// <summary>
     /// Returns a link that will connect TelegramBot to your account.
     /// </summary>
@@ -1013,7 +1050,8 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the Telegram link</short>
     /// <path>api/2.0/settings/telegramlink</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>Telegram link</returns> 
+    /// <returns>Telegram link</returns>
+    /// <visible>false</visible>
     [HttpGet("telegramlink")]
     public object TelegramLink()
     {

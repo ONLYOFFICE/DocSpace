@@ -62,7 +62,7 @@ public class TipsController : BaseSettingsController
     /// </summary>
     /// <short>Update the tip settings</short>
     /// <category>Tips</category>
-    /// <param name="inDto">Specifies whether to show tips for the user or not</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: Show (bool) - specifies whether to show tips for the user or not</param>
     /// <returns>Updated tip settings</returns>
     /// <path>api/2.0/settings/tips</path>
     /// <httpMethod>PUT</httpMethod>

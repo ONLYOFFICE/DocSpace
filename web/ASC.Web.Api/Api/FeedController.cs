@@ -84,16 +84,16 @@ public class FeedController : ControllerBase
     /// <short>
     /// Get feeds
     /// </short>
-    /// <param name="id">Entity ID</param>
-    /// <param name="product">Product which feeds you want to read</param>
-    /// <param name="module">Feeds of the module that will be searched for by entity ID</param>
-    /// <param name="from">Time from which the feeds should be displayed</param>
-    /// <param name="to">Time until which the feeds should be displayed</param>
-    /// <param name="author">Author whose feeds you want to read</param>
-    /// <param name="onlyNew">Displays only fresh feeds</param>
-    /// <param name="withRelated">Includes the associated feeds related to the entity with the specified ID</param>
-    /// <param name="timeReaded">Time when the feeds were read</param>
-    /// <returns>List of filtered feeds</returns>
+    /// <param type="System.String, System" name="id">Entity ID</param>
+    /// <param type="System.String, System" name="product">Product which feeds you want to read</param>
+    /// <param type="System.String, System" name="module">Feeds of the module that will be searched for by entity ID</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Time from which the feeds should be displayed</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">Time until which the feeds should be displayed</param>
+    /// <param type="System.Nullable{System.Guid}, System" name="author">Author whose feeds you want to read</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="onlyNew">Displays only fresh feeds</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="withRelated">Includes the associated feeds related to the entity with the specified ID</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="timeReaded">Time when the feeds were read</param>
+    /// <returns>List of filtered feeds with the dates when they were read</returns>
     /// <path>api/2.0/feed/filter</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("filter")]

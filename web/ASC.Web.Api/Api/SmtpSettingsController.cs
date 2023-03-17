@@ -80,7 +80,18 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Save the SMTP settings
     /// </short>
-    /// <param name="inDto">SMTP settings: host, port, sender address, sender display name, credentials user name, credentials user password, enable SSL or not, enable auth or not</param>
+    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto" name="inDto">SMTP settings: <![CDATA[
+    /// <ul>
+    ///     <li><b>Host</b> (string) - host,</li>
+    ///     <li><b>Port</b> (int?) - port,</li>
+    ///     <li><b>SenderAddress</b> (string) - sender address,</li>
+    ///     <li><b>SenderDisplayName</b> (string) - sender display name,</li>
+    ///     <li><b>CredentialsUserName</b> (string) - credentials username,</li>
+    ///     <li><b>CredentialsUserPassword</b> (string) - credentials user password,</li>
+    ///     <li><b>EnableSSL</b> (bool) - enable SSL or not,</li>
+    ///     <li><b>EnableAuth</b> (bool) - enable authentication or not.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns>SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>POST</httpMethod>
@@ -106,7 +117,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
     /// <summary>
-    /// Resets SMTP settings of the current portal.
+    /// Resets the SMTP settings of the current portal.
     /// </summary>
     /// <short>
     /// Reset the SMTP settings
@@ -134,7 +145,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
     // <summary>
-    // Tests the SMTP settings for the current portal (send test message to the user email).
+    // Tests the SMTP settings for the current portal (sends test message to the user email).
     // </summary>
     // <short>
     // Test the SMTP settings

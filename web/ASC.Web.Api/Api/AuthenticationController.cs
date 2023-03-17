@@ -169,10 +169,30 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Authenticate a user by code
     /// </short>
-    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>UserName</b> (string) - username / email,</li>
+    ///     <li><b>Password</b> (string) - password,</li>
+    ///     <li><b>PasswordHash</b> (string) - password hash,</li>
+    ///     <li><b>Provider</b> (string) - provider type,</li>
+    ///     <li><b>AccessToken</b> (string) - provider access token,</li>
+    ///     <li><b>SerializedProfile</b> (string) - serialized user profile,</li>
+    ///     <li><b>Code</b> (string) - two-factor authentication code,</li>
+    ///     <li><b>CodeOAuth</b> (string) - code for getting a token,</li>
+    ///     <li><b>Session</b> (bool) - session based authentication or not,</li>
+    ///     <li><b>ConfirmData</b> (ConfirmData) - confirmation data:</li>
+    ///     <ul>
+    ///         <li><b>Email</b> (string) - email address,</li>
+    ///         <li><b>Module</b> (string) - module,</li>
+    ///         <li><b>First</b> (bool) - access an account for the first time or not,</li>
+    ///         <li><b>Sms</b> (bool) - sends SMS code or not,</li>
+    ///         <li><b>Key</b> (string) - key.</li>
+    ///     </ul>
+    /// </ul>
+    /// ]]></param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/{code}</path>
-    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, SMS alert</returns>
+    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number</returns>
     [AllowNotPayment]
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
@@ -242,10 +262,30 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Authenticate a user
     /// </short>
-    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>UserName</b> (string) - username / email,</li>
+    ///     <li><b>Password</b> (string) - password,</li>
+    ///     <li><b>PasswordHash</b> (string) - password hash,</li>
+    ///     <li><b>Provider</b> (string) - provider type,</li>
+    ///     <li><b>AccessToken</b> (string) - provider access token,</li>
+    ///     <li><b>SerializedProfile</b> (string) - serialized user profile,</li>
+    ///     <li><b>Code</b> (string) - two-factor authentication code,</li>
+    ///     <li><b>CodeOAuth</b> (string) - code for getting a token,</li>
+    ///     <li><b>Session</b> (bool) - session based authentication or not,</li>
+    ///     <li><b>ConfirmData</b> (ConfirmData) - confirmation data:</li>
+    ///     <ul>
+    ///         <li><b>Email</b> (string) - email address,</li>
+    ///         <li><b>Module</b> (string) - module,</li>
+    ///         <li><b>First</b> (bool) - access an account for the first time or not,</li>
+    ///         <li><b>Sms</b> (bool) - sends SMS code or not,</li>
+    ///         <li><b>Key</b> (string) - key.</li>
+    ///     </ul>
+    /// </ul>
+    /// ]]></param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication</path>
-    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, SMS alert, two-factor authentication key, confirmation email URL</returns>
+    /// <returns>Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number, two-factor authentication key, confirmation email URL</returns>
     [AllowNotPayment]
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
@@ -355,12 +395,20 @@ public class AuthenticationController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a confirmation email to validate some action (employee invitation, portal removal, phone activation, etc.).
+    /// Opens a confirmation email URL to validate some action (employee invitation, portal removal, phone activation, etc.).
     /// </summary>
     /// <short>
-    /// Get confirmation email
+    /// Open confirmation email URL
     /// </short>
-    /// <param name="inDto">Confirmation email parameters: email, employee type, key, confirmation email type, user ID</param>
+    /// <param type="ASC.Security.Cryptography.EmailValidationKeyModel, ASC.Security.Cryptography" name="inDto">Confirmation email parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Key</b> (string) - key,</li>
+    ///     <li><b>EmplType</b> (EmployeeType?) - employee type (All, RoomAdmin, User, DocSpaceAdmin),</li>
+    ///     <li><b>Email</b> (string) - email,</li>
+    ///     <li><b>UiD</b> (Guid?) - user ID,</li>
+    ///     <li><b>Type</b> (ConfirmType?) - confirmation email type (EmpInvite, LinkInvite, PortalSuspend, PortalContinue, PortalRemove, DnsChange, PortalOwnerChange, Activation, EmailChange, EmailActivation, PasswordChange, ProfileRemove, PhoneActivation, PhoneAuth, Auth, TfaActivation, TfaAuth, Wizard,).</li>
+    /// </ul>
+    /// ]]></param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/confirm</path>
     /// <returns>Validation result: Ok, Invalid, or Expired</returns>
@@ -377,10 +425,10 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Set a mobile phone
     /// </short>
-    /// <param name="inDto">Mobile phone request parameters: mobile phone.</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Mobile phone request parameters: MobilePhone (string) - mobile phone.</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/setphone</path>
-    /// <returns>Authentication data: authentication by SMS or not, SMS alert, SMS expiration time</returns>
+    /// <returns>Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [HttpPost("setphone")]
@@ -405,10 +453,30 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Send SMS code
     /// </short>
-    /// <param name="inDto">Authentication request parameters: username / email, password, password hash, provider type, provider access token, serialized user profile, two-factor authentication code, code for getting a token, session based authentication or not, confirmation data</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>UserName</b> (string) - username / email,</li>
+    ///     <li><b>Password</b> (string) - password,</li>
+    ///     <li><b>PasswordHash</b> (string) - password hash,</li>
+    ///     <li><b>Provider</b> (string) - provider type,</li>
+    ///     <li><b>AccessToken</b> (string) - provider access token,</li>
+    ///     <li><b>SerializedProfile</b> (string) - serialized user profile,</li>
+    ///     <li><b>Code</b> (string) - two-factor authentication code,</li>
+    ///     <li><b>CodeOAuth</b> (string) - code for getting a token,</li>
+    ///     <li><b>Session</b> (bool) - session based authentication or not,</li>
+    ///     <li><b>ConfirmData</b> (ConfirmData) - confirmation data:</li>
+    ///     <ul>
+    ///         <li><b>Email</b> (string) - email address,</li>
+    ///         <li><b>Module</b> (string) - module,</li>
+    ///         <li><b>First</b> (bool) - access an account for the first time or not,</li>
+    ///         <li><b>Sms</b> (bool) - sends SMS code or not,</li>
+    ///         <li><b>Key</b> (string) - key.</li>
+    ///     </ul>
+    /// </ul>
+    /// ]]></param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/sendsms</path>
-    /// <returns>Authentication data: authentication by SMS or not, SMS alert, SMS expiration time</returns>
+    /// <returns>Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
     [AllowNotPayment]
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)

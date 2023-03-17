@@ -85,7 +85,12 @@ public class PaymentController : ControllerBase
     /// Get the payment page URL
     /// </short>
     /// <category>Payment</category>
-    /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>Quantity</b> (Dictionary&lt;string, int&gt;) - the quantity of payment,</li>
+    ///     <li><b>BackUrl</b> (string) - back URL.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns>The URL to the payment page</returns>
     /// <path>api/2.0/portal/payment/url</path>
     /// <httpMethod>PUT</httpMethod>
@@ -114,7 +119,7 @@ public class PaymentController : ControllerBase
     /// Update the payment quantity
     /// </short>
     /// <category>Payment</category>
-    /// <param name="inDto">Payment URL request parameters: the quantity of payment, back URL</param>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters: Quantity (Dictionary&lt;string, int&gt;) - the quantity of payment</param>
     /// <returns>Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/portal/payment/update</path>
     /// <httpMethod>PUT</httpMethod>
@@ -140,7 +145,7 @@ public class PaymentController : ControllerBase
     /// Get the payment account
     /// </short>
     /// <category>Payment</category>
-    /// <param name="backUrl">Back URL</param>
+    /// <param type="System.String, System" name="backUrl">Back URL</param>
     /// <returns>The URL to the payment account</returns>
     /// <path>api/2.0/portal/payment/account</path>
     /// <httpMethod>GET</httpMethod>
@@ -242,7 +247,13 @@ public class PaymentController : ControllerBase
     /// Send a payment request
     /// </short>
     /// <category>Payment</category>
-    /// <param name="inDto">Portal payment request parameters: username, email, message</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SalesRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Portal payment request parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>UserName</b> (string) - username,</li>
+    ///     <li><b>Email</b> (string) - email,</li>
+    ///     <li><b>Message</b> (string) - message.</li>
+    /// </ul>
+    /// ]]></param>
     /// <returns></returns>
     /// <path>api/2.0/portal/payment/request</path>
     /// <httpMethod>POST</httpMethod>

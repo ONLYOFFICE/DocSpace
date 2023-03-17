@@ -56,7 +56,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Greeting settings</returns>
+    /// <returns>Greeting settings: tenant name</returns>
     /// <path>api/2.0/settings/greetingsettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings")]
@@ -84,7 +84,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <param name="inDto">Greeting settings: portal name</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Greeting settings: Title (string) - tenant name</param>
     /// <returns>Message about saving greeting settings successfully</returns>
     /// <path>api/2.0/settings/greetingsettings</path>
     /// <httpMethod>POST</httpMethod>
@@ -106,7 +106,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Restore the greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Greeting settings</returns>
+    /// <returns>Greeting settings: tenant name</returns>
     /// <path>api/2.0/settings/greetingsettings/restore</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings/restore")]

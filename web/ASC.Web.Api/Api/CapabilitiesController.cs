@@ -62,7 +62,7 @@ public class CapabilitiesController : ControllerBase
     ///<short>
     ///Get portal capabilities
     ///</short>
-    ///<returns>Portal capabilities: LDAP enabled or not, OAuth enabled or not, provider list, SP login label, SSO URL</returns>
+    ///<returns>Portal capabilities: LDAP enabled or not, OAuth enabled or not, list of providers, SP login label, SSO URL</returns>
     ///<path>api/2.0/capabilities</path>
     ///<httpMethod>GET</httpMethod>
     [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
