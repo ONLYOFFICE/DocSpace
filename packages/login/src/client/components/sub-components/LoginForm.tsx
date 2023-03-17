@@ -315,7 +315,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
               <Link
                 fontSize="13px"
-                color="#316DAA"
                 className="login-link"
                 type="page"
                 isHovered={false}
@@ -357,7 +356,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           {/*<Link
                   fontWeight="600"
                   fontSize="13px"
-                  color="#316DAA"
                   type="action"
                   isHovered={true}
                   onClick={onLoginWithCodeClick}
@@ -373,7 +371,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 id="login_recover-link"
                 fontWeight="600"
                 fontSize="13px"
-                color="#316DAA"
                 type="action"
                 isHovered={true}
                 className="login-link recover-link"
@@ -391,7 +388,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           <Link
             fontWeight="600"
             fontSize="13px"
-            color="#316DAA"
             type="action"
             isHovered={true}
             onClick={onLoginWithPasswordClick}
