@@ -21,20 +21,23 @@ const MainWrapper = styled.div`
 const Webhooks = (props) => {
   const {
     webhooks,
+    state,
+    loadWebhooks,
     addWebhook,
     isWebhookExist,
     isWebhooksEmpty,
     toggleEnabled,
     deleteWebhook,
     editWebhook,
+    retryWebhookEvent,
     passwordSettings,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onCreateWebhook = (webhookInfo) => {
+  const onCreateWebhook = async (webhookInfo) => {
     if (!isWebhookExist(webhookInfo)) {
-      addWebhook(webhookInfo);
+      await addWebhook(webhookInfo);
       closeModal();
     }
   };
@@ -44,9 +47,12 @@ const Webhooks = (props) => {
 
   useEffect(() => {
     setDocumentTitle("Developer Tools");
+    loadWebhooks();
   }, []);
 
-  return (
+  return state === "pending" ? (
+    "loading"
+  ) : state === "success" ? (
     <MainWrapper>
       <WebhookInfo />
       <Button label="Create webhook" primary size="small" onClick={openModal} />
@@ -56,6 +62,7 @@ const Webhooks = (props) => {
           toggleEnabled={toggleEnabled}
           deleteWebhook={deleteWebhook}
           editWebhook={editWebhook}
+          retryWebhookEvent={retryWebhookEvent}
         />
       )}
       <WebhookDialog
@@ -66,6 +73,10 @@ const Webhooks = (props) => {
         passwordSettings={passwordSettings}
       />
     </MainWrapper>
+  ) : state === "error" ? (
+    "error"
+  ) : (
+    ""
   );
 };
 
@@ -75,22 +86,28 @@ export default inject(({ webhooksStore, auth }) => {
 
   const {
     webhooks,
+    state,
+    loadWebhooks,
     addWebhook,
     isWebhookExist,
     isWebhooksEmpty,
     toggleEnabled,
     deleteWebhook,
     editWebhook,
+    retryWebhookEvent,
   } = webhooksStore;
 
   return {
     webhooks,
+    state,
+    loadWebhooks,
     addWebhook,
     isWebhookExist,
     isWebhooksEmpty,
     toggleEnabled,
     deleteWebhook,
     editWebhook,
+    retryWebhookEvent,
     passwordSettings,
   };
 })(observer(Webhooks));
