@@ -82,3 +82,26 @@ export const findNearestIndex = (
 export const isSeparator = (arg: ContextMenuModel): arg is SeparatorType => {
   return arg?.isSeparator !== undefined && arg.isSeparator;
 };
+
+export const convertToTwoDigitString = (time: number): string => {
+  return time < 10 ? `0${time}` : time.toString();
+};
+
+export const formatTime = (time: number): string => {
+  let seconds: number = Math.floor(time % 60);
+  let minutes: number = Math.floor(time / 60) % 60;
+  let hours: number = Math.floor(time / 3600);
+
+  const convertedHours = convertToTwoDigitString(hours);
+  const convertedMinutes = convertToTwoDigitString(minutes);
+  const convertedSeconds = convertToTwoDigitString(seconds);
+
+  if (hours === 0) {
+    return `${convertedMinutes}:${convertedSeconds}`;
+  }
+  return `${convertedHours}:${convertedMinutes}:${convertedSeconds}`;
+};
+
+export const compareTo = (a: number, b: number) => {
+  return Math.trunc(a) > Math.trunc(b);
+};
