@@ -790,17 +790,17 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <returns>0 - not connected, 1 - connected, 2 - awaiting confirmation</returns>
     [HttpGet("telegramisconnected")]
-    public object TelegramIsConnected()
+    public async Task<object> TelegramIsConnectedAsync()
     {
-        return (int)_telegramHelper.UserIsConnected(_authContext.CurrentAccount.ID, Tenant.Id);
+        return (int) await _telegramHelper.UserIsConnectedAsync(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 
     /// <summary>
     /// Unlinks TelegramBot from your account
     /// </summary>
     [HttpDelete("telegramdisconnect")]
-    public void TelegramDisconnect()
+    public async Task TelegramDisconnectAsync()
     {
-        _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
+        await _telegramHelper.DisconnectAsync(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 }

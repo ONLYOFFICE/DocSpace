@@ -68,7 +68,7 @@ public class UserCommands : CommandContext
 
             if (tenantId == TenantId)
             {
-                _telegramDao.RegisterUser(portalUserId, tenantId, telegramUserId);
+                await _telegramDao.RegisterUserAsync(portalUserId, tenantId, telegramUserId);
 
                 await ReplyAsync("Ok!");
 

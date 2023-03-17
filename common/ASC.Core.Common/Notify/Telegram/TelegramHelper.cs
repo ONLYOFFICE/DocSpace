@@ -85,9 +85,9 @@ public class TelegramHelper
         }
     }
 
-    public RegStatus UserIsConnected(Guid userId, int tenantId)
+    public async Task<RegStatus> UserIsConnectedAsync(Guid userId, int tenantId)
     {
-        if (_telegramDao.GetUser(userId, tenantId) != null)
+        if (await _telegramDao.GetUserAsync(userId, tenantId) != null)
         {
             return RegStatus.Registered;
         }
@@ -111,9 +111,9 @@ public class TelegramHelper
         _telegramServiceClient.DisableClient(tenantId);
     }
 
-    public void Disconnect(Guid userId, int tenantId)
+    public async Task DisconnectAsync(Guid userId, int tenantId)
     {
-        _telegramDao.Delete(userId, tenantId);
+        await _telegramDao.DeleteAsync(userId, tenantId);
     }
 
     private bool IsAwaitingRegistration(Guid userId, int tenantId)
