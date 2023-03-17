@@ -428,7 +428,8 @@ public class Builder<T>
             {
                  Size = new Size(thumbnaillWidth, thumbnaillHeight),
                  Mode = resizeMode,
-                 Position = anchorPositionMode
+                 Position = anchorPositionMode,
+                 Sampler = KnownResamplers.Lanczos3
             });
         });
     }
