@@ -157,6 +157,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
             value={description}
             onChange={onChangeDescription}
             isDisabled={loading}
+            heightTextArea={70}
           />
         </FieldContainer>
       </ModalDialog.Body>
