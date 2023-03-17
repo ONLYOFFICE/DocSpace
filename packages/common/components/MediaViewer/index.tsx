@@ -331,15 +331,6 @@ function MediaViewer({
 
         break;
 
-      case KeyboardEventKeys.Space:
-        const videoPlayElement = document.getElementsByClassName(
-          "video-play"
-        )?.[0] as HTMLElement | undefined;
-
-        videoPlayElement?.click();
-
-        break;
-
       case KeyboardEventKeys.Escape:
         if (!props.deleteDialogVisible) props.onClose();
         break;
