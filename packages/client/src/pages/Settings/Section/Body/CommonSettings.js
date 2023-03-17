@@ -33,6 +33,8 @@ const PersonalSettings = ({
 
   keepNewFileName,
   setKeepNewFileName,
+  setThumbnails1280x720,
+  thumbnails1280x720,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -52,6 +54,10 @@ const PersonalSettings = ({
   const onChangeForceSave = React.useCallback(() => {
     setForceSave(!forceSave);
   }, [setForceSave, forceSave]);
+
+  const onChangeThumbnailsSize = React.useCallback(() => {
+    setThumbnails1280x720(!thumbnails1280x720);
+  }, [setThumbnails1280x720, thumbnails1280x720]);
 
   const onChangeKeepNewFileName = React.useCallback(() => {
     setKeepNewFileName(!keepNewFileName);
@@ -88,6 +94,12 @@ const PersonalSettings = ({
             {t("Common:Common")}
           </Heading>
         )}
+        <ToggleButton
+          className="toggle-btn"
+          label={"Thumbnails 1280x720"}
+          onChange={onChangeThumbnailsSize}
+          isChecked={thumbnails1280x720}
+        />
         {!isVisitor && (
           <ToggleButton
             className="toggle-btn"
@@ -184,6 +196,9 @@ export default inject(({ auth, settingsStore, treeFoldersStore }) => {
 
     keepNewFileName,
     setKeepNewFileName,
+
+    setThumbnails1280x720,
+    thumbnails1280x720,
   } = settingsStore;
 
   const { myFolderId, commonFolderId } = treeFoldersStore;
@@ -214,5 +229,8 @@ export default inject(({ auth, settingsStore, treeFoldersStore }) => {
 
     keepNewFileName,
     setKeepNewFileName,
+
+    setThumbnails1280x720,
+    thumbnails1280x720,
   };
 })(observer(PersonalSettings));

@@ -747,7 +747,7 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]] && [[ "$UPDATE" != "true" ]]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 12);
+		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
 	fi
 }
 

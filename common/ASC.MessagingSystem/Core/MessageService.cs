@@ -364,8 +364,7 @@ public class MessageService
                 UserRole = (int)userType
             });
         }
-        else if (action == MessageAction.UserCreated
-            && action == MessageAction.UserUpdated)
+        else if (action == MessageAction.UserCreated || action == MessageAction.UserUpdated)
         {
             parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
             {
@@ -386,6 +385,7 @@ public class AdditionalNotificationInfo
     public int RoomId { get; set; }
     public string RoomTitle { get; set; }
     public string RoomOldTitle { get; set; }
+    public string RootFolderTitle { get; set; }
     public int UserRole { get; set; }
     public List<Guid> UserIds { get; set; }
 }
