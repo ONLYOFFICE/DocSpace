@@ -1,4 +1,5 @@
 #!/bin/bash
+set -xe
 
 BASEDIR="$(cd $(dirname $0) && pwd)"
 BUILD_PATH="$BASEDIR/modules"
