@@ -4,7 +4,7 @@
   "ErrorEmail": "Địa chỉ email không hợp lệ",
   "ErrorInitWizard": "Dịch vụ hiện không khả dụng, vui lòng thử lại sau.",
   "ErrorInitWizardButton": "Thử lại",
-  "ErrorLicenseBody": "Giấy phép không hợp lệ. Hãy đảm bảo rằng bạn chọn đúng tệp ",
+  "ErrorLicenseBody": "Giấy phép không hợp lệ. Hãy đảm bảo rằng bạn chọn đúng tệp.",
   "ErrorPassword": "Mật khẩu không đáp ứng yêu cầu",
   "ErrorUploadLicenseFile": "Chọn tệp giấy phép",
   "GeneratePassword": "Tạo mật khẩu",

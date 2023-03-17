@@ -4,7 +4,7 @@
   "ErrorEmail": "Endereço de e-mail inválido",
   "ErrorInitWizard": "O serviço atualmente não está disponível, por favor tente novamente mais tarde.",
   "ErrorInitWizardButton": "Tente novamente",
-  "ErrorLicenseBody": "A licença não é válida. Certifique-se de selecionar o arquivo correto",
+  "ErrorLicenseBody": "A licença não é válida. Certifique-se de selecionar o arquivo correto.",
   "ErrorPassword": "A senha não atende aos requisitos",
   "ErrorUploadLicenseFile": "Selecione um arquivo de licença",
   "GeneratePassword": "Gerar senha",

@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Wachtwoord is succesvol gewijzigd",
-  "ConfirmOwnerPortalSuccessMessage": "DocSpace eigenaar is met succes gewijzigd. Over 10 seconden wordt u doorgestuurd",
+  "ConfirmOwnerPortalSuccessMessage": "DocSpace eigenaar is met succes gewijzigd. Over 10 seconden wordt u doorgestuurd.",
   "ConfirmOwnerPortalTitle": "Bevestig dat u de eigenaar van het DocSpace wilt wijzigen naar {{newOwner}}",
   "CurrentNumber": "Uw huidige mobiele nummer",
   "DeleteProfileBtn": "Verwijder mijn account",

@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Parole ir veiksmīgi nomainīta",
-  "ConfirmOwnerPortalSuccessMessage": "DocSpace īpašnieks ir veiksmīgi nomainīts. Jūs tiksiet novirzīts pēc 10 sekundēm",
+  "ConfirmOwnerPortalSuccessMessage": "DocSpace īpašnieks ir veiksmīgi nomainīts. Jūs tiksiet novirzīts pēc 10 sekundēm.",
   "ConfirmOwnerPortalTitle": "Lūdzu, apstipriniet, ka vēlaties mainīt DocSpace īpašnieku uz {{newOwner}}",
   "CurrentNumber": "Jūsu pašreizējais mobilā tālruņa numurs",
   "DeleteProfileBtn": "Dzēst manu kontu",
