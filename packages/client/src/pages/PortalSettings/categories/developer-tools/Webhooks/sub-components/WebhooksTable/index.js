@@ -14,7 +14,13 @@ const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
 `;
 
-export const WebhooksTable = ({ webhooks, toggleEnabled, deleteWebhook, editWebhook }) => {
+export const WebhooksTable = ({
+  webhooks,
+  toggleEnabled,
+  deleteWebhook,
+  editWebhook,
+  retryWebhookEvent,
+}) => {
   const tableRef = useRef(null);
 
   const columns = useRef([
@@ -66,6 +72,7 @@ export const WebhooksTable = ({ webhooks, toggleEnabled, deleteWebhook, editWebh
                   toggleEnabled={toggleEnabled}
                   deleteWebhook={deleteWebhook}
                   editWebhook={editWebhook}
+                  retryWebhookEvent={retryWebhookEvent}
                 />
               ))}
             </TableBody>
