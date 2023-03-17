@@ -681,7 +681,7 @@ export function createWebhook(name, url, secretKey) {
   return request({
     method: "post",
     url: `/settings/webhook`,
-    data: { Name: name, Uri: url, SecretKey: secretKey },
+    data: { name, uri: url, secretKey },
   });
 }
 
@@ -692,22 +692,36 @@ export function getAllWebhooks() {
   });
 }
 
-export function updateWebhook(name, url, secretKey) {
+export function updateWebhook(id, name, url, secretKey) {
   return request({
     method: "put",
     url: `/settings/webhook`,
-    data: { Name: name, Uri: url, SecretKey: secretKey },
+    data: { id, name, uri: url, secretKey },
+  });
+}
+
+export function toggleEnabledWebhook(webhook) {
+  return request({
+    method: "put",
+    url: `/settings/webhook`,
+    data: {
+      id: webhook.id,
+      name: webhook.name,
+      uri: webhook.url,
+      secretKey: webhook.secretKey,
+      enabled: !webhook.enabled,
+    },
   });
 }
 
 export function removeWebhook(id) {
   return request({
     method: "delete",
-    url: `/settings/webhook/${id}`
+    url: `/settings/webhook/${id}`,
   });
 }
 
-export function getJournal(hookname, logCount) {
+export function getWebhooksJournal(hookname, logCount) {
   return request({
     method: "get",
     url: `/settings/webhooks/log?count=${logCount}`,
