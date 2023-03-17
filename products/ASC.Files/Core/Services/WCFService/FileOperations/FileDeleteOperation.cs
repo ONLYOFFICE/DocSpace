@@ -80,7 +80,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     protected override async Task DoJob(IServiceScope scope)
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-        var messageService = scope.ServiceProvider.GetService<MessageService>();
+        var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(CurrentTenant);
         _trashId = await folderDao.GetFolderIDTrashAsync(true);
@@ -102,7 +102,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         {
             await DeleteFilesAsync(Files, scope);
             await DeleteFoldersAsync(Folders, scope);
-            messageService.Send(_headers, MessageAction.TrashEmptied);
+            
+            var trash = await folderDao.GetFolderAsync(_trashId);
+            _ = filesMessageService.Send(trash, _headers, MessageAction.TrashEmptied);
         }
         else
         {

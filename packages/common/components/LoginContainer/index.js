@@ -42,7 +42,7 @@ const LoginContainer = styled.div`
 
   .login-or-access-text {
     text-transform: lowercase;
-    ${(props) => props.theme.login.orTextColor};
+    color: ${(props) => props.theme.login.orTextColor};
   }
 
   .recover-link {
