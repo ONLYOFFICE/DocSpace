@@ -22,7 +22,7 @@
   "FeedRenameFolder": "Переименована папка.",
   "FeedRenameRoom": "Комната <strong>«{{oldRoomTitle}}»</strong> переименована в <strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "Обновлен файл.",
-  "FeedUpdateRoom": "Изменена иконка",
+  "FeedUpdateRoom": "Изменена иконка.",
   "FeedUpdateUser": "назначена роль {{role}}",
   "FileExtension": "Расширение файла",
   "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",

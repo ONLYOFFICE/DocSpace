@@ -14,7 +14,7 @@ const StyledThumbnail = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: ${(props) => (props.isImageOrMedia ? "center" : "top")};
   }
 `;
 

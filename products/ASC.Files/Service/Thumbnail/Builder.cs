@@ -265,7 +265,7 @@ public class Builder<T>
             }
             while (string.IsNullOrEmpty(thumbnailUrl));
 
-            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height, AnchorPositionMode.Top);
+            await SaveThumbnail(fileDao, file, thumbnailUrl, w.Width, w.Height, w.ResizeMode, AnchorPositionMode.Top);
         }
     }
 
@@ -309,7 +309,7 @@ public class Builder<T>
         return (operationResultProgress, url);
     }
 
-    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
+    private async Task SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl, int width, int height, ResizeMode resizeMode, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
         _logger.DebugMakeThumbnail3(file.Id.ToString(), thumbnailUrl);
 
@@ -322,7 +322,7 @@ public class Builder<T>
         {
             using (var sourceImg = await Image.LoadAsync(stream))
             {
-                await CropAsync(sourceImg, fileDao, file, width, height, anchorPositionMode);
+                await CropAsync(sourceImg, fileDao, file, width, height, resizeMode, anchorPositionMode);
             }
         }
 
@@ -364,23 +364,29 @@ public class Builder<T>
         {
             foreach(var w in _config.Sizes)
             {
-                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height, w.ResizeMode);
             }
         } 
         else
         {
             await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 3 }, async (w, t) =>
             {
-                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height);
+                await CropAsync(sourceImg, fileDao, file, w.Width, w.Height, w.ResizeMode);
             });
         }
 
 //        GC.Collect();
     }
 
-    private async ValueTask CropAsync(Image sourceImg, IFileDao<T> fileDao, File<T> file, int width, int height, AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
+    private async ValueTask CropAsync(Image sourceImg, 
+                                      IFileDao<T> fileDao, 
+                                      File<T> file, 
+                                      int width, 
+                                      int height,
+                                      ResizeMode resizeMode,
+                                      AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
-        using var targetImg = GetImageThumbnail(sourceImg, width, height, anchorPositionMode);
+        using var targetImg = GetImageThumbnail(sourceImg, width, height, resizeMode, anchorPositionMode);
         using var targetStream = _tempStream.Create();
 
         switch (_global.ThumbnailExtension)
@@ -414,14 +420,14 @@ public class Builder<T>
         await _dataStore.SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
-    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight, AnchorPositionMode anchorPositionMode)
+    private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight, ResizeMode resizeMode, AnchorPositionMode anchorPositionMode)
     {
         return sourceBitmap.Clone(x =>
         {
             x.Resize(new ResizeOptions
             {
                  Size = new Size(thumbnaillWidth, thumbnaillHeight),
-                 Mode = ResizeMode.Crop,
+                 Mode = resizeMode,
                  Position = anchorPositionMode
             });
         });
