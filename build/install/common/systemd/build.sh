@@ -164,6 +164,10 @@ reassign_values (){
 	RESTART="always"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
 	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+
+	[[ "${SERVICE_NAME}" = "backup-background" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"
+	[[ "${SERVICE_NAME}" = "files-services" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"
+	[[ "${SERVICE_NAME}" = "notify" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_notify_queue"
   fi
 }
 
