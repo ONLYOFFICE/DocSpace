@@ -31,6 +31,9 @@ const StyledArticle = styled.article`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
 
+    height: ${(props) =>
+      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
+
     //padding: 0 8px;
   }
 
@@ -39,6 +42,9 @@ const StyledArticle = styled.article`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
     //padding: 0 8px;
+
+    height: ${(props) =>
+      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
   `}
 
   @media ${mobile} {
@@ -75,19 +81,34 @@ const StyledArticle = styled.article`
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .article-body__scrollbar {
+    height: ${(props) =>
+      `calc(100% - ${props.$withMainButton ? "190px" : "150px"})`} !important;
+
+    @media ${tablet} {
+      height: calc(100% - 194px) !important;
+    }
+
+    ${isTablet &&
+    css`
+      height: calc(100% - 194px) !important;
+    `}
+
+    @media ${mobile} {
+      height: calc(100% - 20px) !important;
+    }
+
     ${isMobileOnly &&
     css`
+      height: calc(100% - 20px) !important;
       margin-top: 32px !important;
     `}
 
     .scroll-body {
       overflow-x: hidden !important;
-      height: ${(props) =>
-        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
+
       padding: 0 20px !important;
 
       @media ${tablet} {
-        height: calc(100% - 150px);
         padding: 0 8px !important;
       }
 
@@ -97,13 +118,11 @@ const StyledArticle = styled.article`
       `}
 
       @media ${mobile} {
-        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       }
 
       ${isMobileOnly &&
       css`
-        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
       `}
     }
