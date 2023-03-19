@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
-import styled from "styled-components";
 import { FailBadge } from "../FailBadge";
 import { SuccessBadge } from "../SuccessBadge";
 import { ToggleButton } from "@docspace/components";
@@ -10,7 +9,7 @@ import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
-import { WebhookDialog } from "../WebhookDialog";
+import  WebhookDialog from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
 
 export const WebhooksTableRow = ({
