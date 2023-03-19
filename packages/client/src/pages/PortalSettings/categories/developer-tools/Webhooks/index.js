@@ -1,6 +1,6 @@
 import Button from "@docspace/components/button";
 import React, { useState, useEffect } from "react";
-import { WebhookDialog } from "./sub-components/WebhookDialog";
+import WebhookDialog from "./sub-components/WebhookDialog";
 import { WebhookInfo } from "./sub-components/WebhookInfo";
 import { WebhooksTable } from "./sub-components/WebhooksTable";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
@@ -30,7 +30,6 @@ const Webhooks = (props) => {
     deleteWebhook,
     editWebhook,
     retryWebhookEvent,
-    passwordSettings,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,7 +69,6 @@ const Webhooks = (props) => {
         onClose={closeModal}
         header="Create webhook"
         onSubmit={onCreateWebhook}
-        passwordSettings={passwordSettings}
       />
     </MainWrapper>
   ) : state === "error" ? (
@@ -80,10 +78,7 @@ const Webhooks = (props) => {
   );
 };
 
-export default inject(({ webhooksStore, auth }) => {
-  const { settingsStore } = auth;
-  const { passwordSettings } = settingsStore;
-
+export default inject(({ webhooksStore }) => {
   const {
     webhooks,
     state,
@@ -108,6 +103,5 @@ export default inject(({ webhooksStore, auth }) => {
     deleteWebhook,
     editWebhook,
     retryWebhookEvent,
-    passwordSettings,
   };
 })(observer(Webhooks));
