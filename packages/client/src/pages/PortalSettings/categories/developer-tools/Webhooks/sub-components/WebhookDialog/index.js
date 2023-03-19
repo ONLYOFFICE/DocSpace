@@ -6,6 +6,9 @@ import styled from "styled-components";
 import { Hint } from "../../styled-components";
 import { SSLVerification } from "../SSLVerification";
 import { SecretKeyInput } from "../SecretKeyInput";
+import Link from "@docspace/components/link";
+
+import { inject, observer } from "mobx-react";
 
 const Footer = styled.div`
   width: 100%;
@@ -19,24 +22,6 @@ const Footer = styled.div`
   }
 `;
 
-const DashedButton = styled.button`
-  border: none;
-  border-bottom: 1px dashed #333333;
-  color: #333333;
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 15px;
-  padding: 0;
-  background-color: transparent;
-  margin-top: 6px;
-  display: block;
-
-  :hover {
-    cursor: pointer;
-  }
-`;
-
 const InfoHint = styled(Hint)`
   position: absolute;
   z-index: 2;
@@ -44,17 +29,12 @@ const InfoHint = styled(Hint)`
   width: 320px;
 `;
 
-export const WebhookDialog = ({
-  visible,
-  onClose,
-  header,
-  isSettingsModal,
-  onSubmit,
-  webhook,
-  passwordSettings,
-}) => {
+const WebhookDialog = (props) => {
+  const { visible, onClose, header, isSettingsModal, onSubmit, webhook, passwordSettings } = props;
+
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isFormBlank, setIsFormBlank] = useState(true);
   const [webhookInfo, setWebhookInfo] = useState({
     id: 0,
     title: webhook ? webhook.title : "",
@@ -63,7 +43,11 @@ export const WebhookDialog = ({
     isEnabled: webhook ? webhook.isEnabled : true,
   });
 
-  const submitButtonRef = useRef();
+  const submitButtonRef = useRef(null);
+  const secretKeyInputRef = useRef(null);
+  const generatePassword = () => {
+    secretKeyInputRef.current.onGeneratePassword();
+  };
 
   const onModalClose = () => {
     onClose();
@@ -72,24 +56,32 @@ export const WebhookDialog = ({
 
   const hideReset = () => setIsResetVisible(false);
 
-  const onInputChange = (e) =>
-    setWebhookInfo((prevWebhookInfo) => {
-      prevWebhookInfo[e.target.name] = e.target.value;
-      return prevWebhookInfo;
-    });
+  const onInputChange = (e) => {
+    setWebhookInfo((prevWebhookInfo) => ({ ...prevWebhookInfo, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmitClick = () => {
-    isPasswordValid && submitButtonRef.current.click();
-    isResetVisible && submitButtonRef.current.click();
+    if (isPasswordValid || isResetVisible) {
+      submitButtonRef.current.click();
+    }
+  };
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(webhookInfo);
+    setWebhookInfo({
+      id: 0,
+      title: webhook ? webhook.title : "",
+      url: webhook ? webhook.url : "",
+      secretKey: webhook ? webhook.secretKey : "",
+      isEnabled: webhook ? webhook.isEnabled : true,
+    });
+    setIsFormBlank(true);
+    onModalClose();
   };
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
-    //delete, when api will be connected
-    setWebhookInfo((prevWebhookInfo) => ({
-      ...prevWebhookInfo,
-      id: Math.floor(Math.random() * 100) + 13,
-    }));
     return () => window.removeEventListener("keyup", onKeyPress);
   }, []);
 
@@ -99,12 +91,7 @@ export const WebhookDialog = ({
     <ModalDialog withFooterBorder visible={visible} onClose={onModalClose} displayType="aside">
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit(webhookInfo);
-            onModalClose();
-          }}>
+        <form onSubmit={onFormSubmit}>
           <Hint>This webhook will be assigned to all events in DocSpace</Hint>
           <LabledInput
             label="Webhook name"
@@ -131,16 +118,27 @@ export const WebhookDialog = ({
             passwordSettings={passwordSettings}
             isPasswordValid={isPasswordValid}
             setIsPasswordValid={setIsPasswordValid}
+            isFormBlank={isFormBlank}
+            setIsFormBlank={setIsFormBlank}
+            secretKeyInputRef={secretKeyInputRef}
+            generatePassword={generatePassword}
           />
           {isResetVisible ? (
             <InfoHint hidden={!isResetVisible}>
               You cannot retrieve your secret key again once it has been saved. If you've lost or
               forgotten this secret key, you can reset it, but all integrations using this secret
-              will need to be updated.
-              <DashedButton onClick={hideReset}>Reset key</DashedButton>
+              will need to be updated. <br />
+              <Link
+                type="action"
+                fontWeight={600}
+                isHovered={true}
+                onClick={hideReset}
+                style={{ marginTop: "6px", display: "inline-block" }}>
+                Reset key
+              </Link>
             </InfoHint>
           ) : (
-            <DashedButton>Generate</DashedButton>
+            <></>
           )}
 
           <button type="submit" ref={submitButtonRef} hidden></button>
@@ -161,3 +159,12 @@ export const WebhookDialog = ({
     </ModalDialog>
   );
 };
+
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { passwordSettings } = settingsStore;
+
+  return {
+    passwordSettings,
+  };
+})(observer(WebhookDialog));
