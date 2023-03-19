@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
+import Link from "@docspace/components/link";
 
 import { Hint } from "../../styled-components";
 
@@ -55,39 +56,64 @@ export const SecretKeyInput = ({
   passwordSettings,
   isPasswordValid,
   setIsPasswordValid,
+  isFormBlank,
+  setIsFormBlank,
+  secretKeyInputRef,
+  generatePassword,
 }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
+
   const handleInputValidation = (isValid) => {
     setIsPasswordValid(isValid);
   };
+
+  const handleHintDisapear = () => {
+    toggleHint();
+    generatePassword();
+  };
+
+  useEffect(() => {
+    if (secretKeyInputRef.current && isFormBlank) {
+      generatePassword();
+      setIsFormBlank(false);
+    }
+  }, [isFormBlank]);
+
   return (
     <div>
       <Header>
         Secret key <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
-      <InfoHint hidden={!isHintVisible} onClick={toggleHint}>
+      <InfoHint hidden={!isHintVisible} onClick={handleHintDisapear}>
         Setting a webhook secret allows you to verify requests sent to the payload URL. <br />
         <ReadMore href="">Read more</ReadMore>
       </InfoHint>
-      {isResetVisible ? (
-        ""
-      ) : (
+      <div hidden={isResetVisible}>
         <PasswordInput
           onChange={onChange}
           value={value}
           inputName={name}
           placeholder="Enter secret key"
           onValidateInput={handleInputValidation}
+          ref={secretKeyInputRef}
           hasError={!isPasswordValid}
           isDisableTooltip={true}
           inputType="password"
           isFullWidth={true}
           passwordSettings={passwordSettings}
         />
-      )}
+        <Link
+          type="action"
+          fontWeight={600}
+          isHovered={true}
+          onClick={generatePassword}
+          style={{ marginTop: "6px", display: "inline-block" }}>
+          Generate
+        </Link>
+      </div>
     </div>
   );
 };
