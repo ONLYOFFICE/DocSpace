@@ -516,20 +516,21 @@ function ViewerPlayer({
         <VideoWrapper $visible={isLoading} style={style} ref={playerWrapperRef}>
           <animated.video
             style={lodash.omit(style, ["x", "y"])}
-            src={src}
             playsInline
             ref={videoRef}
-            onLoadedMetadata={handleLoadedMetaDataVideo}
-            onTimeUpdate={handleTimeUpdate}
+            hidden={isAudio}
+            preload="metadata"
+            src={`${src}#t=0.001`}
             onClick={handleClickVideo}
             onEnded={handleVideoEnded}
+            onTimeUpdate={handleTimeUpdate}
             onPlaying={() => setIsWaiting(false)}
             onWaiting={() => setIsWaiting(true)}
-            hidden={isAudio}
             onError={() => {
               console.error("video error");
               setIsError(true);
             }}
+            onLoadedMetadata={handleLoadedMetaDataVideo}
           />
           <PlayerBigPlayButton
             onClick={handleBigPlayButtonClick}
