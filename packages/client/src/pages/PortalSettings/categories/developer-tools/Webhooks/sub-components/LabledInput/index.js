@@ -28,13 +28,6 @@ export const LabledInput = ({
   mask,
   required = false,
 }) => {
-  const [inputValue, setInputValue] = useState(value);
-
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
-    onChange(e);
-  };
-
   return (
     <Label>
       <span>{label}</span>
@@ -42,8 +35,8 @@ export const LabledInput = ({
         name={name}
         placeholder={placeholder}
         tabIndex={1}
-        value={inputValue}
-        onChange={handleChange}
+        value={value}
+        onChange={onChange}
         required={required}
         {...(mask ? { mask: mask } : {})}
       />
