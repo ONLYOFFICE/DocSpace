@@ -8,30 +8,16 @@ import {
   ToastSpeed,
 } from "./PlayerSpeedControl.styled";
 
+import { PlayerSpeedControlProps } from "./PlayerSpeedControl.props";
+
 import {
-  PlayerSpeedControlProps,
-  SpeedRecord,
-  SpeedType,
-} from "./PlayerSpeedControl.props";
-
-import Icon05x from "PUBLIC_DIR/images/media.viewer05x.react.svg";
-import Icon1x from "PUBLIC_DIR/images/media.viewer1x.react.svg";
-import Icon15x from "PUBLIC_DIR/images/media.viewer15x.react.svg";
-import Icon2x from "PUBLIC_DIR/images/media.viewer2x.react.svg";
-
-const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
-
-const speeds: SpeedType = ["X0.5", "X1", "X1.5", "X2"];
-
-const speedRecord: SpeedRecord<SpeedType> = {
-  "X0.5": 0.5,
-  X1: 1,
-  "X1.5": 1.5,
-  X2: 2,
-};
-
-const DefaultIndexSpeed = 1;
-const MillisecondShowSpeedToast = 2000;
+  DefaultIndexSpeed,
+  getNextIndexSpeed,
+  MillisecondShowSpeedToast,
+  speedIcons,
+  speedRecord,
+  speeds,
+} from "./PlayerSpeedControl.helper";
 
 function PlayerSpeedControl({
   handleSpeedChange,
@@ -69,30 +55,15 @@ function PlayerSpeedControl({
     };
   }, []);
 
-  const getNextIndexSpeed = (speed: number) => {
-    switch (speed) {
-      case 0:
-        return 2;
-      case 1:
-        return 0;
-      case 2:
-        return 3;
-      case 3:
-        return 1;
-      default:
-        return DefaultIndexSpeed;
-    }
-  };
-
   const toggle = () => {
     if (isMobileOnly) {
       const nextIndexSpeed = getNextIndexSpeed(currentIndexSpeed);
 
       setCurrentIndexSpeed(nextIndexSpeed);
 
-      const speed = speedRecord[speeds[nextIndexSpeed]];
+      const newSpeed = speedRecord[speeds[nextIndexSpeed]];
 
-      handleSpeedChange(speed);
+      handleSpeedChange(newSpeed);
 
       setSpeedToastVisible(true);
       clearTimeout(timerRef.current);
