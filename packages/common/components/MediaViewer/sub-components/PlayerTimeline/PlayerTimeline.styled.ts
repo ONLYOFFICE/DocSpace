@@ -39,6 +39,7 @@ const mobileCss = css`
     width: 10px;
     border-radius: 50%;
     cursor: pointer;
+    border: none;
   }
 
   input[type="range"]::-ms-fill-upper {
