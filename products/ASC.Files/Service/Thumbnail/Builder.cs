@@ -187,20 +187,32 @@ public class Builder<T>
         var thumbPath = _tempPath.GetTempFileName("jpg");
         var tempFilePath = _tempPath.GetTempFileName(Path.GetExtension(file.Title));
 
-        using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        try
         {
-            await streamFile.CopyToAsync(fileStream);
+            using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+            {
+                await streamFile.CopyToAsync(fileStream);
+            }
+
+            await _fFmpegService.CreateThumbnail(tempFilePath, thumbPath);
+
+            using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+            {
+                await Crop(fileDao, file, streamThumb);
+            }
         }
-
-        await _fFmpegService.CreateThumbnail(tempFilePath, thumbPath);
-
-        using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+        finally
         {
-            await Crop(fileDao, file, streamThumb);
-        }
+            if (Path.Exists(thumbPath))
+            {
+                File.Delete(thumbPath);
+            }
 
-        File.Delete(thumbPath);
-        File.Delete(tempFilePath);
+            if (Path.Exists(tempFilePath))
+            {
+                File.Delete(tempFilePath);
+            }
+        }
     }
 
     private async Task MakeThumbnailFromDocs(IFileDao<T> fileDao, File<T> file)
@@ -362,11 +374,11 @@ public class Builder<T>
 
         if (_dataStore is DiscDataStore)
         {
-            foreach(var w in _config.Sizes)
+            foreach (var w in _config.Sizes)
             {
                 await CropAsync(sourceImg, fileDao, file, w.Width, w.Height, w.ResizeMode);
             }
-        } 
+        }
         else
         {
             await Parallel.ForEachAsync(_config.Sizes, new ParallelOptions { MaxDegreeOfParallelism = 3 }, async (w, t) =>
@@ -375,13 +387,13 @@ public class Builder<T>
             });
         }
 
-//        GC.Collect();
+        //        GC.Collect();
     }
 
-    private async ValueTask CropAsync(Image sourceImg, 
-                                      IFileDao<T> fileDao, 
-                                      File<T> file, 
-                                      int width, 
+    private async ValueTask CropAsync(Image sourceImg,
+                                      IFileDao<T> fileDao,
+                                      File<T> file,
+                                      int width,
                                       int height,
                                       ResizeMode resizeMode,
                                       AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
@@ -416,7 +428,7 @@ public class Builder<T>
                 await targetImg.SaveAsWebpAsync(targetStream);
                 break;
         }
- 
+
         await _dataStore.SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
@@ -426,10 +438,10 @@ public class Builder<T>
         {
             x.Resize(new ResizeOptions
             {
-                 Size = new Size(thumbnaillWidth, thumbnaillHeight),
-                 Mode = resizeMode,
-                 Position = anchorPositionMode,
-                 Sampler = KnownResamplers.Lanczos8
+                Size = new Size(thumbnaillWidth, thumbnaillHeight),
+                Mode = resizeMode,
+                Position = anchorPositionMode,
+                Sampler = KnownResamplers.Lanczos8
             });
         });
     }
