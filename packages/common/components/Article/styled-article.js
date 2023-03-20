@@ -85,9 +85,12 @@ const StyledArticle = styled.article`
     height: ${(props) =>
       `calc(100% - ${props.$withMainButton ? "190px" : "150px"})`} !important;
 
-    @media ${tablet} {
-      height: calc(100% - 194px) !important;
-    }
+    ${!isMobileOnly &&
+    css`
+      @media ${tablet} {
+        height: calc(100% - 194px) !important;
+      }
+    `}
 
     @media ${mobile} {
       height: 100% !important;
