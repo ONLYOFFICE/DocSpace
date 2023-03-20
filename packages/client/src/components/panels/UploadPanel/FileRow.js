@@ -270,7 +270,7 @@ class FileRow extends Component {
                   truncate
                   onClick={() => this.onMediaClick(item.fileId)}
                 >
-                  {name}
+                  {item.file.name}
                 </Link>
               ) : (
                 <div className="upload-panel_file-name">
