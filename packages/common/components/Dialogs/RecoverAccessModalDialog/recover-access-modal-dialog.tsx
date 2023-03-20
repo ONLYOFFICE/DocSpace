@@ -115,6 +115,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           className="text-body"
           isBold={false}
           fontSize="13px"
+          noSelect
         >
           {textBody}
         </Text>
