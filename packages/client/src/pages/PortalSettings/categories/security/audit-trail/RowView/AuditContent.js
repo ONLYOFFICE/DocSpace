@@ -20,6 +20,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
   const to = moment(item.date).local();
 
   const dateStr = to.format(DATE_FORMAT);
+
   return (
     <StyledRowContent
       sideColor="#A3A9AE"
@@ -53,7 +54,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
         fontWeight={600}
         className="settings_unavailable"
       >
-        {`${item.room ? item.room && "|" : ""} ${item.action}`}
+        {`${item.context ? item.context + " |" : ""} ${item.action}`}
       </Text>
     </StyledRowContent>
   );
