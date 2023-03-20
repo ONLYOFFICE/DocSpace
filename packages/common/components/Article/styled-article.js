@@ -5,6 +5,7 @@ import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
+  hugeMobile,
 } from "@docspace/components/utils/device";
 
 import { Base } from "@docspace/components/themes";
@@ -37,7 +38,7 @@ const StyledArticle = styled.article`
     //padding: 0 8px;
   }
 
-  ${isMobile &&
+  ${isTablet &&
   css`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -88,18 +89,22 @@ const StyledArticle = styled.article`
       height: calc(100% - 194px) !important;
     }
 
+    @media ${mobile} {
+      height: 100% !important;
+    }
+
+    @media ${hugeMobile} {
+      height: 100% !important;
+    }
+
     ${isTablet &&
     css`
       height: calc(100% - 194px) !important;
     `}
 
-    @media ${mobile} {
-      height: calc(100% - 20px) !important;
-    }
-
     ${isMobileOnly &&
     css`
-      height: calc(100% - 20px) !important;
+      height: 100% !important;
       margin-top: 32px !important;
     `}
 
