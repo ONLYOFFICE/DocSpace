@@ -73,7 +73,7 @@ public class CookiesManager
         _messageService = messageService;
     }
 
-    public void SetCookies(CookiesType type, string value, bool session = false)
+    public async Task SetCookiesAsync(CookiesType type, string value, bool session = false)
     {
         if (_httpContextAccessor?.HttpContext == null)
         {
@@ -82,7 +82,7 @@ public class CookiesManager
 
         var options = new CookieOptions
         {
-            Expires = GetExpiresDate(session)
+            Expires = await GetExpiresDateAsync(session)
         };
 
         if (type == CookiesType.AuthKey)
@@ -131,22 +131,22 @@ public class CookiesManager
         }
     }
 
-    private DateTime? GetExpiresDate(bool session)
+    private async Task<DateTime?> GetExpiresDateAsync(bool session)
     {
         DateTime? expires = null;
 
         if (!session)
         {
-            var tenant = _tenantManager.GetCurrentTenant().Id;
+            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
             expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
         }
 
         return expires;
     }
 
-    public async Task SetLifeTime(int lifeTime)
+    public async Task SetLifeTimeAsync(int lifeTime)
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
@@ -179,10 +179,10 @@ public class CookiesManager
         return _tenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
     }
 
-    public async Task ResetUserCookie(Guid? userId = null)
+    public async Task ResetUserCookieAsync(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
-        var tenant = _tenantManager.GetCurrentTenant().Id;
+        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var settings = _tenantCookieSettingsHelper.GetForUser(userId ?? currentUserId);
         settings.Index = settings.Index + 1;
         _tenantCookieSettingsHelper.SetForUser(userId ?? currentUserId, settings);
@@ -195,9 +195,9 @@ public class CookiesManager
         }
     }
 
-    public async Task ResetTenantCookie()
+    public async Task ResetTenantCookieAsync()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
@@ -230,7 +230,7 @@ public class CookiesManager
         {
             if (isSuccess)
             {
-                SetCookies(CookiesType.AuthKey, cookies, session);
+                await SetCookiesAsync(CookiesType.AuthKey, cookies, session);
                 _dbLoginEventsManager.ResetCache(tenantId, userId);
             }
         }
@@ -257,15 +257,15 @@ public class CookiesManager
         {
             if (isSuccess)
             {
-                SetCookies(CookiesType.AuthKey, cookies, session);
-                _dbLoginEventsManager.ResetCache();
+                await SetCookiesAsync(CookiesType.AuthKey, cookies, session);
+                await _dbLoginEventsManager.ResetCacheAsync();
             }
         }
     }
 
     public async Task<int> GetLoginEventIdAsync(MessageAction action)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var userId = _securityContext.CurrentAccount.ID;
         var data = new MessageUserData(tenantId, userId);
 

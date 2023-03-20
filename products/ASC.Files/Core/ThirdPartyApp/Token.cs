@@ -100,7 +100,7 @@ public class TokenHelper
             App = token.App,
             Token = EncryptToken(token),
             UserId = _authContext.CurrentAccount.ID,
-            TenantId = _tenantManager.GetCurrentTenant().Id,
+            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
             ModifiedOn = DateTime.UtcNow
         };
 
@@ -116,9 +116,10 @@ public class TokenHelper
 
     public async Task<Token> GetTokenAsync(string app, Guid userId)
     {
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         var oAuth20Token = await filesDbContext.ThirdpartyApp
-            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.TenantId == tenant.Id)
             .Where(r => r.UserId == userId)
             .Where(r => r.App == app)
             .Select(r => r.Token)
@@ -134,9 +135,10 @@ public class TokenHelper
 
     public async Task DeleteTokenAsync(string app, Guid? userId = null)
     {
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
         await filesDbContext.ThirdpartyApp
-            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.TenantId == tenant.Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
             .Where(r => r.App == app)
             .ExecuteDeleteAsync();

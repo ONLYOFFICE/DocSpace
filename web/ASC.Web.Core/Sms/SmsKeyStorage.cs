@@ -51,7 +51,7 @@ public class SmsKeyStorage
     private readonly int _keyLength;
     public readonly TimeSpan StoreInterval;
     private readonly int _attemptCount;
-    private static readonly object _keyLocker = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
     private readonly ICache _keyCache;
     private readonly ICache _checkCache;
@@ -82,51 +82,70 @@ public class SmsKeyStorage
         }
     }
 
-    private string BuildCacheKey(string phone)
+    private async Task<string> BuildCacheKeyAsync(string phone)
     {
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
         var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
         return "smskey" + phone + tenantCache;
     }
 
-    public bool GenerateKey(string phone, out string key)
+    public async Task<(bool, string)> GenerateKeyAsync(string phone)
     {
+        string key = null;
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(phone);
 
-        lock (_keyLocker)
+        try
         {
-            var cacheKey = BuildCacheKey(phone);
+            await _semaphore.WaitAsync();
+            var cacheKey = await BuildCacheKeyAsync(phone);
             var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey) ?? new Dictionary<string, DateTime>();
             if (phoneKeys.Count > _attemptCount)
             {
                 key = null;
-                return false;
+                return (false, key);
             }
 
             key = RandomNumberGenerator.GetInt32((int)Math.Pow(10, _keyLength - 1), (int)Math.Pow(10, _keyLength)).ToString(CultureInfo.InvariantCulture);
             phoneKeys[key] = DateTime.UtcNow;
 
             _keyCache.Insert(cacheKey, phoneKeys, DateTime.UtcNow.Add(StoreInterval));
-            return true;
+            return (true, key);
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
         }
     }
 
-    public bool ExistsKey(string phone)
+    public async Task<bool> ExistsKeyAsync(string phone)
     {
         if (string.IsNullOrEmpty(phone))
         {
             return false;
         }
 
-        lock (_keyLocker)
+        try
         {
-            var cacheKey = BuildCacheKey(phone);
+            await _semaphore.WaitAsync();
+            var cacheKey = await BuildCacheKeyAsync(phone);
             var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey);
             return phoneKeys != null;
         }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
-    public Result ValidateKey(string phone, string key)
+    public async Task<Result> ValidateKeyAsync(string phone, string key)
     {
         key = (key ?? string.Empty).Trim();
         if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(key))
@@ -134,7 +153,7 @@ public class SmsKeyStorage
             return Result.Empty;
         }
 
-        var cacheCheck = BuildCacheKey("check" + phone);
+        var cacheCheck = await BuildCacheKeyAsync("check" + phone);
         int.TryParse(_checkCache.Get<string>(cacheCheck), out var counter);
         if (++counter > _attemptCount)
         {
@@ -143,9 +162,10 @@ public class SmsKeyStorage
 
         _checkCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
 
-        lock (_keyLocker)
+        try 
         {
-            var cacheKey = BuildCacheKey(phone);
+            await _semaphore.WaitAsync();
+            var cacheKey = await BuildCacheKeyAsync(phone);
             var phoneKeys = _keyCache.Get<Dictionary<string, DateTime>>(cacheKey);
             if (phoneKeys == null)
             {
@@ -166,6 +186,14 @@ public class SmsKeyStorage
 
             _checkCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
             return Result.Ok;
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
         }
     }
 

@@ -184,7 +184,7 @@ public class TariffService : ITariffService
 
                 try
                 {
-                    var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId));
+                    var currentPayments = _billingClient.GetCurrentPayments(await _coreSettings.GetKeyAsync(tenantId));
                     if (currentPayments.Length == 0)
                     {
                         throw new BillingNotFoundException("Empty PaymentLast");
@@ -198,7 +198,7 @@ public class TariffService : ITariffService
                         var quota = (await _quotaService.GetTenantQuotasAsync()).SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
                         if (quota == null)
                         {
-                            throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
+                            throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {await _coreSettings.GetKeyAsync(tenantId)}.");
                         }
 
                         asynctariff.Id = currentPayment.PaymentId;
@@ -314,7 +314,7 @@ public class TariffService : ITariffService
 
         try
         {
-            var changed = _billingClient.ChangePayment(GetPortalId(tenantId), productIds.ToArray(), quantity.Values.ToArray());
+            var changed = _billingClient.ChangePayment(await _coreSettings.GetKeyAsync(tenantId), productIds.ToArray(), quantity.Values.ToArray());
 
             if (!changed)
             {
@@ -348,7 +348,7 @@ public class TariffService : ITariffService
         if (quotas.Any(q => q.Trial))
         {
             // reset trial date
-            var tenant = _tenantService.GetTenant(tenantId);
+            var tenant = await _tenantService.GetTenantAsync(tenantId);
             if (tenant != null)
             {
                 tenant.VersionChanged = DateTime.UtcNow;
@@ -408,7 +408,7 @@ public class TariffService : ITariffService
                 try
                 {
                     var quotas = await _quotaService.GetTenantQuotasAsync();
-                    foreach (var pi in _billingClient.GetPayments(GetPortalId(tenantId)))
+                    foreach (var pi in _billingClient.GetPayments(await _coreSettings.GetKeyAsync(tenantId)))
                     {
                         var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef.ToString());
                         if (quota != null)
@@ -489,7 +489,7 @@ public class TariffService : ITariffService
         }
 
         var result = new Uri(url.ToString()
-                               .Replace("__Tenant__", HttpUtility.UrlEncode(GetPortalId(tenant)))
+                               .Replace("__Tenant__", HttpUtility.UrlEncode(await _coreSettings.GetKeyAsync(tenant)))
                                .Replace("__Currency__", HttpUtility.UrlEncode(currency ?? ""))
                                .Replace("__Language__", HttpUtility.UrlEncode((language ?? "").ToLower()))
                                .Replace("__CustomerEmail__", HttpUtility.UrlEncode(customerEmail ?? ""))
@@ -524,10 +524,10 @@ public class TariffService : ITariffService
 
                     urls =
                         _billingClient.GetPaymentUrls(
-                            tenant.HasValue ? GetPortalId(tenant.Value) : null,
+                            tenant.HasValue ? await _coreSettings.GetKeyAsync(tenant.Value) : null,
                             products,
-                            tenant.HasValue ? GetAffiliateId(tenant.Value) : affiliateId,
-                            tenant.HasValue ? GetCampaign(tenant.Value) : null,
+                            tenant.HasValue ? await _coreSettings.GetAffiliateIdAsync(tenant.Value) : affiliateId,
+                            tenant.HasValue ? await _coreSettings.GetCampaignAsync(tenant.Value) : null,
                             !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
                             !string.IsNullOrEmpty(language) ? "__Language__" : null,
                             !string.IsNullOrEmpty(customerId) ? "__CustomerID__" : null,
@@ -633,7 +633,7 @@ public class TariffService : ITariffService
         }
     }
 
-    public Uri GetAccountLink(int tenant, string backUrl)
+    public async Task<Uri> GetAccountLinkAsync(int tenant, string backUrl)
     {
         var key = "accountlink_" + tenant;
         var url = _cache.Get<string>(key);
@@ -643,7 +643,7 @@ public class TariffService : ITariffService
             {
                 try
                 {
-                    url = _billingClient.GetAccountLink(GetPortalId(tenant), backUrl);
+                    url = _billingClient.GetAccountLink(await _coreSettings.GetKeyAsync(tenant), backUrl);
                 }
                 catch (Exception error)
                 {
@@ -765,7 +765,7 @@ public class TariffService : ITariffService
 
         if (inserted)
         {
-            var t = _tenantService.GetTenant(tenant);
+            var t =  await _tenantService.GetTenantAsync(tenant);
             if (t != null)
             {
                 // update tenant.LastModified to flush cache in documents
@@ -818,7 +818,7 @@ public class TariffService : ITariffService
                 tariff.State = TariffState.Trial;
                 if (tariff.DueDate == DateTime.MinValue || tariff.DueDate == DateTime.MaxValue)
                 {
-                    var tenant = _tenantService.GetTenant(tenantId);
+                    var tenant = await _tenantService.GetTenantAsync(tenantId);
                     if (tenant != null)
                     {
                         var fromDate = tenant.CreationDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreationDateTime;
@@ -863,21 +863,6 @@ public class TariffService : ITariffService
         var settings = _tenantService.GetTenantSettings(Tenant.DefaultTenant, key);
 
         return settings != null ? Convert.ToInt32(Encoding.UTF8.GetString(settings)) : defaultValue;
-    }
-
-    private string GetPortalId(int tenant)
-    {
-        return _coreSettings.GetKey(tenant);
-    }
-
-    private string GetAffiliateId(int tenant)
-    {
-        return _coreSettings.GetAffiliateId(tenant);
-    }
-
-    private string GetCampaign(int tenant)
-    {
-        return _coreSettings.GetCampaign(tenant);
     }
 
     private async Task<Tariff> CreateDefaultAsync(bool empty = false)

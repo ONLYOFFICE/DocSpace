@@ -503,24 +503,26 @@ public class BaseIndexer<T> where T : class, ISearchItem
         return false;
     }
 
-    internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
+    internal async Task<IReadOnlyCollection<T>> SelectAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+        var descriptor = func(selector).Where(r => r.TenantId, tenant.Id);
 
         return _client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
     }
 
-    internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId, out long total)
+    internal async Task<(IReadOnlyCollection<T>, long)> SelectWithTotalAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId)
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+        var descriptor = func(selector).Where(r => r.TenantId, tenant.Id);
         var result = _client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
-        total = result.Total;
+        var total = result.Total;
 
-        return result.Documents;
+        return (result.Documents, total);
     }
 
     protected virtual Task<bool> BeforeIndex(T data)

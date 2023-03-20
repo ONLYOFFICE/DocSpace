@@ -92,7 +92,7 @@ public class DbLoginEventsManager
            .Where(r => r.Id == loginEventId)
            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
 
-        ResetCache();
+        await ResetCacheAsync();
     }
 
     public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
@@ -126,9 +126,9 @@ public class DbLoginEventsManager
         ResetCache(tenantId, userId);
     }
 
-    public void ResetCache()
+    public async Task ResetCacheAsync()
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var userId = _authContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }

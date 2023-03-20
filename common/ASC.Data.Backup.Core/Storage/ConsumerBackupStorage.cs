@@ -54,10 +54,10 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
         _storageFactory = storageFactory;
     }
 
-    public void Init(IReadOnlyDictionary<string, string> storageParams)
+    public async Task InitAsync(IReadOnlyDictionary<string, string> storageParams)
     {
         var settings = new StorageSettings { Module = storageParams["module"], Props = storageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value) };
-        _store = _storageSettingsHelper.DataStore(settings);
+        _store = await _storageSettingsHelper.DataStoreAsync(settings);
         _sessionHolder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _store, Domain, _setupInfo.ChunkUploadSize);
     }
 

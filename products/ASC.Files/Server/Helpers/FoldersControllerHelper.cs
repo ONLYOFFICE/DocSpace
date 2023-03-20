@@ -102,7 +102,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
         if (!IsUser)
         {
-            yield return _globalFolderHelper.FolderMy;
+            yield return await _globalFolderHelper.FolderMyAsync;
         }
 
         if (_coreBaseSettings.DisableDocSpace)

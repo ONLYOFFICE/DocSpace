@@ -156,8 +156,8 @@ public class AuthenticationController : ControllerBase
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
-        var user = (await GetUser(inDto)).UserInfo;
+        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var user = (await GetUserAsync(inDto)).UserInfo;
         var sms = false;
 
         try
@@ -219,7 +219,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
     {
-        var wrapper = await GetUser(inDto);
+        var wrapper = await GetUserAsync(inDto);
         var viaEmail = wrapper.ViaEmail;
         var user = wrapper.UserInfo;
 
@@ -235,7 +235,7 @@ public class AuthenticationController : ControllerBase
                 return new AuthenticationTokenDto
                 {
                     Sms = true,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation)
+                    ConfirmUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PhoneActivation)
                 };
             }
 
@@ -246,7 +246,7 @@ public class AuthenticationController : ControllerBase
                 Sms = true,
                 PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval)),
-                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneAuth)
+                ConfirmUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PhoneAuth)
             };
         }
 
@@ -258,14 +258,14 @@ public class AuthenticationController : ControllerBase
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation)
+                    ConfirmUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation)
                 };
             }
 
             return new AuthenticationTokenDto
             {
                 Tfa = true,
-                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaAuth)
+                ConfirmUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaAuth)
             };
         }
 
@@ -274,7 +274,7 @@ public class AuthenticationController : ControllerBase
             var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
             var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
 
-            var tenant = _tenantManager.GetCurrentTenant().Id;
+            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             return new AuthenticationTokenDto
@@ -343,7 +343,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
     {
-        var user = (await GetUser(inDto)).UserInfo;
+        var user = (await GetUserAsync(inDto)).UserInfo;
         await _smsManager.PutAuthCodeAsync(user, true);
 
         return new AuthenticationTokenDto
@@ -354,7 +354,7 @@ public class AuthenticationController : ControllerBase
         };
     }
 
-    private async Task<UserInfoWrapper> GetUser(AuthRequestsDto inDto)
+    private async Task<UserInfoWrapper> GetUserAsync(AuthRequestsDto inDto)
     {
         var wrapper = new UserInfoWrapper
         {
@@ -370,7 +370,7 @@ public class AuthenticationController : ControllerBase
             {
                 var email = inDto.ConfirmData.Email;
 
-                var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.Auth + inDto.ConfirmData.First + inDto.ConfirmData.Module + inDto.ConfirmData.Sms, inDto.ConfirmData.Key, _setupInfo.ValidAuthKeyInterval);
+                var checkKeyResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.Auth + inDto.ConfirmData.First + inDto.ConfirmData.Module + inDto.ConfirmData.Sms, inDto.ConfirmData.Key, _setupInfo.ValidAuthKeyInterval);
 
                 if (checkKeyResult == ValidationResult.Ok)
                 {
@@ -412,11 +412,11 @@ public class AuthenticationController : ControllerBase
 
                 var requestIp = MessageSettings.GetIP(Request);
 
-                user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
+                (_, user) = await _bruteForceLoginManager.AttemptAsync(inDto.UserName, inDto.PasswordHash, requestIp);
             }
             else
             {
-                if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).Oauth))
+                if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).Oauth))
                 {
                     throw new Exception(Resource.ErrorNotAllowedOption);
                 }
@@ -482,7 +482,7 @@ public class AuthenticationController : ControllerBase
                     try
                     {
                         await _securityContext.AuthenticateMeWithoutCookieAsync(ASC.Core.Configuration.Constants.CoreSystem);
-                        await _userManager.DeleteUser(userInfo.Id);
+                        await _userManager.DeleteUserAsync(userInfo.Id);
                         userInfo = Constants.LostUser;
                     }
                     finally
@@ -523,7 +523,7 @@ public class AuthenticationController : ControllerBase
                 //    }
                 //}
 
-                _studioNotifyService.UserHasJoin();
+                await _studioNotifyService.UserHasJoinAsync();
                 _userHelpTourHelper.IsNewUser = true;
                 _personalSettingsHelper.IsNewUser = true;
             }

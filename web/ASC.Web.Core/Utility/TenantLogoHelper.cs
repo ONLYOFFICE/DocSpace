@@ -66,7 +66,7 @@ public class TenantLogoHelper
                 {
                     /*** simple scheme ***/
                     var _tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
-                    imgUrl = _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_tenantInfoSettings);
+                    imgUrl = await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(_tenantInfoSettings);
                     /***/
                 }
                 else

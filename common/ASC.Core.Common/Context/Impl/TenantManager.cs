@@ -93,18 +93,57 @@ public class TenantManager
     }
 
 
-    public List<Tenant> GetTenants(bool active = true)
+    public async Task<List<Tenant>> GetTenantsAsync(bool active = true)
     {
-        return TenantService.GetTenants(default, active).ToList();
+        return (await TenantService.GetTenantsAsync(default, active)).ToList();
     }
-    public List<Tenant> GetTenants(List<int> ids)
+    public async Task<List<Tenant>> GetTenantsAsync(List<int> ids)
     {
-        return TenantService.GetTenants(ids).ToList();
+        return (await TenantService.GetTenantsAsync(ids)).ToList();
+    }
+
+    public async Task<Tenant> GetTenantAsync(int tenantId)
+    {
+        return await TenantService.GetTenantAsync(tenantId);
     }
 
     public Tenant GetTenant(int tenantId)
     {
         return TenantService.GetTenant(tenantId);
+    }
+
+    public async Task<Tenant> GetTenantAsync(string domain)
+    {
+        if (string.IsNullOrEmpty(domain))
+        {
+            return null;
+        }
+
+        Tenant t = null;
+        if (_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
+        {
+            t = await TenantService.GetTenantAsync("localhost");
+        }
+        var isAlias = false;
+        if (t == null)
+        {
+            var baseUrl = CoreSettings.BaseDomain;
+            if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+            {
+                isAlias = true;
+                t = await TenantService.GetTenantAsync(domain.Substring(0, domain.Length - baseUrl.Length - 1));
+            }
+        }
+        if (t == null)
+        {
+            t = await TenantService.GetTenantAsync(domain);
+        }
+        if (t == null && CoreBaseSettings.Standalone && !isAlias)
+        {
+            t = TenantService.GetTenantForStandaloneWithoutAlias(domain);
+        }
+
+        return t;
     }
 
     public Tenant GetTenant(string domain)
@@ -119,6 +158,7 @@ public class TenantManager
         {
             t = TenantService.GetTenant("localhost");
         }
+
         var isAlias = false;
         if (t == null)
         {
@@ -174,9 +214,56 @@ public class TenantManager
         TenantService.RemoveTenant(tenantId, auto);
     }
 
+    public async Task<Tenant> GetCurrentTenantAsync(HttpContext context)
+    {
+        return await GetCurrentTenantAsync(true, context);
+    }
+
     public Tenant GetCurrentTenant(HttpContext context)
     {
         return GetCurrentTenant(true, context);
+    }
+
+    public async Task<Tenant> GetCurrentTenantAsync(bool throwIfNotFound, HttpContext context)
+    {
+        if (_currentTenant != null)
+        {
+            return _currentTenant;
+        }
+
+        Tenant tenant = null;
+
+        if (context != null)
+        {
+            tenant = context.Items[CurrentTenant] as Tenant;
+            if (tenant == null && context.Request != null)
+            {
+                tenant = await GetTenantAsync(context.Request.GetUrlRewriter().Host);
+                context.Items[CurrentTenant] = tenant;
+            }
+
+            if (tenant == null && context.Request != null)
+            {
+                var origin = context.Request.Headers[HeaderNames.Origin].FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    var originUri = new Uri(origin);
+
+                    tenant = await GetTenantAsync(originUri.Host);
+                    context.Items[CurrentTenant] = tenant;
+                }
+            }
+        }
+
+        if (tenant == null && throwIfNotFound)
+        {
+            throw new Exception("Could not resolve current tenant :-(.");
+        }
+
+        _currentTenant = tenant;
+
+        return tenant;
     }
 
     public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
@@ -221,9 +308,19 @@ public class TenantManager
         return tenant;
     }
 
+    public async Task<Tenant> GetCurrentTenantAsync()
+    {
+        return await GetCurrentTenantAsync(true);
+    }
+
     public Tenant GetCurrentTenant()
     {
         return GetCurrentTenant(true);
+    }
+
+    public async Task<Tenant> GetCurrentTenantAsync(bool throwIfNotFound)
+    {
+        return await GetCurrentTenantAsync(throwIfNotFound, HttpContextAccessor?.HttpContext);
     }
 
     public Tenant GetCurrentTenant(bool throwIfNotFound)
@@ -246,17 +343,17 @@ public class TenantManager
         }
     }
 
-    public Tenant SetCurrentTenant(int tenantId)
+    public async Task<Tenant> SetCurrentTenantAsync(int tenantId)
     {
-        var result = GetTenant(tenantId);
+        var result = await GetTenantAsync(tenantId);
         SetCurrentTenant(result);
 
         return result;
     }
 
-    public Tenant SetCurrentTenant(string domain)
+    public async Task<Tenant> SetCurrentTenantAsync(string domain)
     {
-        var result = GetTenant(domain);
+        var result = await GetTenantAsync(domain);
         SetCurrentTenant(result);
 
         return result;
@@ -283,9 +380,9 @@ public class TenantManager
         return (await QuotaService.GetTenantQuotasAsync()).Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
-    public Task<TenantQuota> GetCurrentTenantQuotaAsync()
+    public async Task<TenantQuota> GetCurrentTenantQuotaAsync()
     {
-        return GetTenantQuotaAsync(GetCurrentTenant().Id);
+        return await GetTenantQuotaAsync((await GetCurrentTenantAsync()).Id);
     }
 
     public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)

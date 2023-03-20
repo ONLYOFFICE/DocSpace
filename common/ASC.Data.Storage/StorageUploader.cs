@@ -152,7 +152,7 @@ public class MigrateOperation : DistributedTaskProgress
             var tempPath = scope.ServiceProvider.GetService<TempPath>();
             var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
             var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
-            var tenant = tenantManager.GetTenant(_tenantId);
+            var tenant = await tenantManager.GetTenantAsync(_tenantId);
             tenantManager.SetCurrentTenant(tenant);
 
             await securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);

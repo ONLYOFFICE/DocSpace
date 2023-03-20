@@ -66,10 +66,10 @@ public class AWSSender : SmtpSender, IDisposable
                 _logger.DebugSendTo(m.TenantId, m.Reciever);
                 await using var scope = _serviceProvider.CreateAsyncScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(m.TenantId);
+                await tenantManager.SetCurrentTenantAsync(m.TenantId);
 
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
-                if (!configuration.SmtpSettings.IsDefaultSettings)
+                if (!(await configuration.GetSmtpSettingsAsync()).IsDefaultSettings)
                 {
                     result = await base.SendAsync(m);
                 }

@@ -213,7 +213,7 @@ public class ThirdpartyController : ApiControllerBase
 
         await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
 
-        _studioNotifyService.UserHasJoin();
+        await _studioNotifyService.UserHasJoinAsync();
 
         if (mustChangePassword)
         {

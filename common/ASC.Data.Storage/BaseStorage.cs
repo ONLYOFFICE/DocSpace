@@ -84,13 +84,13 @@ public abstract class BaseStorage : IDataStore
         return GetPreSignedUriAsync(domain, path, TimeSpan.MaxValue, null);
     }
 
-    public Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+    public async Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
     {
         ArgumentNullException.ThrowIfNull(path);
 
         if (string.IsNullOrEmpty(Tenant) && IsSupportInternalUri)
         {
-            return GetInternalUriAsync(domain, path, expire, headers);
+            return await GetInternalUriAsync(domain, path, expire, headers);
         }
 
         var headerAttr = string.Empty;
@@ -110,7 +110,7 @@ public abstract class BaseStorage : IDataStore
             var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
             int currentTenantId;
-            var currentTenant = _tenantManager.GetCurrentTenant(false);
+            var currentTenant = await _tenantManager.GetCurrentTenantAsync(false);
             if (currentTenant != null)
             {
                 currentTenantId = currentTenant.Id;
@@ -139,12 +139,12 @@ public abstract class BaseStorage : IDataStore
                       new MonoUri(virtualPath, virtualPath.LocalPath.TrimEnd('/') + EnsureLeadingSlash(path.Replace('\\', '/')) + query) :
                       new MonoUri(virtualPath.ToString().TrimEnd('/') + EnsureLeadingSlash(path.Replace('\\', '/')) + query, UriKind.Relative);
 
-        return Task.FromResult<Uri>(uri);
+        return uri;
     }
 
     public virtual Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
     {
-        return null;
+        return Task.FromResult<Uri>(null);
     }
 
     public abstract Task<Stream> GetReadStreamAsync(string domain, string path);

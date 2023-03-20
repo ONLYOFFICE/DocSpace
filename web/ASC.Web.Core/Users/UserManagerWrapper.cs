@@ -80,17 +80,17 @@ public sealed class UserManagerWrapper
         _webItemSecurityCache = webItemSecurityCache;
     }
 
-    private bool TestUniqueUserName(string uniqueName)
+    private async Task<bool> TestUniqueUserNameAsync(string uniqueName)
     {
         if (string.IsNullOrEmpty(uniqueName))
         {
             return false;
         }
 
-        return Equals(_userManager.GetUserByUserName(uniqueName), Constants.LostUser);
+        return Equals(await _userManager.GetUserByUserNameAsync(uniqueName), Constants.LostUser);
     }
 
-    private string MakeUniqueName(UserInfo userInfo)
+    private async Task<string> MakeUniqueNameAsync(UserInfo userInfo)
     {
         if (string.IsNullOrEmpty(userInfo.Email))
         {
@@ -100,7 +100,7 @@ public sealed class UserManagerWrapper
         var uniqueName = new MailAddress(userInfo.Email).User;
         var startUniqueName = uniqueName;
         var i = 0;
-        while (!TestUniqueUserName(uniqueName))
+        while (!await TestUniqueUserNameAsync(uniqueName))
         {
             uniqueName = $"{startUniqueName}{(++i).ToString(CultureInfo.InvariantCulture)}";
         }
@@ -132,7 +132,7 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
-        user.UserName = MakeUniqueName(user);
+        user.UserName = await MakeUniqueNameAsync(user);
 
         var newUser = await _userManager.SaveUserInfo(user, type);
 
@@ -146,7 +146,7 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
+            await _userManager.AddUserIntoGroupAsync(newUser.Id, groupId, true);
         }
 
         return newUser;
@@ -169,7 +169,7 @@ public sealed class UserManagerWrapper
 
         if (makeUniqueName)
         {
-            userInfo.UserName = MakeUniqueName(userInfo);
+            userInfo.UserName = await MakeUniqueNameAsync(userInfo);
         }
         if (!userInfo.WorkFromDate.HasValue)
         {
@@ -182,7 +182,7 @@ public sealed class UserManagerWrapper
         }
 
         var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav, !updateExising);
-        _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
+        await _securityContext.SetUserPasswordHashAsync(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
         {
@@ -232,13 +232,13 @@ public sealed class UserManagerWrapper
         switch (type)
         {
             case EmployeeType.User:
-                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, true);
+                await _userManager.AddUserIntoGroupAsync(newUserInfo.Id, Constants.GroupUser.ID, true);
                 break;
             case EmployeeType.DocSpaceAdmin:
-                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID, true);
+                await _userManager.AddUserIntoGroupAsync(newUserInfo.Id, Constants.GroupAdmin.ID, true);
                 break;
             case EmployeeType.Collaborator:
-                await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
+                await _userManager.AddUserIntoGroupAsync(newUserInfo.Id, Constants.GroupCollaborator.ID, true);
                 break;
         }
 
@@ -263,22 +263,22 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.RoomAdmin)
             {
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
+                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
@@ -287,20 +287,20 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupCollaborator.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
@@ -308,8 +308,8 @@ public sealed class UserManagerWrapper
         else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
         {
             await _countPaidUserChecker.CheckAppend();
-            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
+            await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupCollaborator.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
             changed = true;
         }
@@ -373,7 +373,7 @@ public sealed class UserManagerWrapper
 
         var settings = _settingsManager.Load<IPRestrictionsSettings>();
 
-        if (settings.Enable && !_iPSecurity.Verify())
+        if (settings.Enable && !await _iPSecurity.VerifyAsync())
         {
             throw new Exception(Resource.ErrorAccessRestricted);
         }

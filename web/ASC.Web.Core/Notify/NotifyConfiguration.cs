@@ -109,7 +109,7 @@ public class NotifyConfiguration
              (r, p, scope) =>
              {
                  var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
-                 return scopeClass.Intercept(r, p);
+                 return scopeClass.InterceptAsync(r, p).Result;
              });
         client.AddInterceptor(securityAndCulture);
 
@@ -172,7 +172,7 @@ public class ProductSecurityInterceptor
         _log = logger;
     }
 
-    public bool Intercept(NotifyRequest r, InterceptorPlace p)
+    public async Task<bool> InterceptAsync(NotifyRequest r, InterceptorPlace p)
     {
         try
         {
@@ -205,7 +205,7 @@ public class ProductSecurityInterceptor
 
                 if (Constants.LostUser.Equals(u))
                 {
-                    u = _userManager.GetUserByUserName(r.Recipient.ID);
+                    u = await _userManager.GetUserByUserNameAsync(r.Recipient.ID);
                 }
 
                 if (!Constants.LostUser.Equals(u))
@@ -228,7 +228,7 @@ public class ProductSecurityInterceptor
                     }
                     if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                     {
-                        return !_webItemSecurity.IsAvailableForUser(productId, u.Id);
+                        return !await _webItemSecurity.IsAvailableForUserAsync(productId, u.Id);
                     }
                 }
             }
@@ -312,11 +312,11 @@ public class NotifyTransferRequest : INotifyEngineAction
         _log = logger;
     }
 
-    public void BeforeTransferRequest(NotifyRequest request)
+    public async Task BeforeTransferRequestAsync(NotifyRequest request)
     {
         var aid = Guid.Empty;
         var aname = string.Empty;
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (_authContext.IsAuthenticated)
         {
@@ -359,19 +359,20 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
-        AddLetterLogo(request);
+        await AddLetterLogoAsync(request);
     }
-    public void AfterTransferRequest(NotifyRequest request)
+    public Task AfterTransferRequestAsync(NotifyRequest request)
     {
+        return Task.CompletedTask;
     }
 
-    private void AddLetterLogo(NotifyRequest request)
+    private async Task AddLetterLogoAsync(NotifyRequest request)
     {
         if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
         {
             try
             {
-                var logoData = _tenantLogoManager.GetMailLogoDataFromCache();
+                var logoData = await _tenantLogoManager.GetMailLogoDataFromCacheAsync();
 
                 if (logoData == null)
                 {
@@ -380,7 +381,7 @@ public class NotifyTransferRequest : INotifyEngineAction
 
                     if (logoData != null)
                     {
-                        _tenantLogoManager.InsertMailLogoDataToCache(logoData);
+                        await _tenantLogoManager.InsertMailLogoDataToCacheAsync(logoData);
                     }
                 }
 

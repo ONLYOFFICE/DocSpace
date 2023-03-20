@@ -87,13 +87,13 @@ public class DocSpaceLinkHelper
 
     public async Task<ValidationResult> ValidateEmailLinkAsync(string email, string key, EmployeeType employeeType)
     {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(MakeKey(email, employeeType), key, ExpirationInterval);
+        var result = await _emailValidationKeyProvider.ValidateEmailKeyAsync(MakeKey(email, employeeType), key, ExpirationInterval);
 
         if (result == ValidationResult.Ok)
         {
             var user = _userManager.GetUserByEmail(email);
 
-            if (user == ASC.Core.Users.Constants.LostUser || _authManager.GetUserPasswordStamp(user.Id) != DateTime.MinValue)
+            if (user == ASC.Core.Users.Constants.LostUser || await _authManager.GetUserPasswordStampAsync(user.Id) != DateTime.MinValue)
             {
                 return ValidationResult.Invalid;
             }
@@ -114,9 +114,9 @@ public class DocSpaceLinkHelper
         return payload == default ? ValidationResult.Invalid : ValidationResult.Ok;
     }
 
-    public ValidationResult ValidateExtarnalLink(string key, EmployeeType employeeType)
+    public async Task<ValidationResult> ValidateExtarnalLinkAsync(string key, EmployeeType employeeType)
     {
-        return _emailValidationKeyProvider.ValidateEmailKey(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType, key);
+        return await _emailValidationKeyProvider.ValidateEmailKeyAsync(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType, key);
     }
 
     private async Task<bool> CanUsedAsync(string email, string key, TimeSpan interval)

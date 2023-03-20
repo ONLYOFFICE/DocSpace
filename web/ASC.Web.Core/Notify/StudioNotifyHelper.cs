@@ -149,7 +149,7 @@ public class StudioNotifyHelper
             && _countMailsToNotActivated > 0
             && _tenantExtra.Saas && !_coreBaseSettings.Personal)
         {
-            var tenant = _tenantManager.GetCurrentTenant();
+            var tenant = await _tenantManager.GetCurrentTenantAsync();
             var tariff = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
             if (tariff.Free || tariff.Trial)
             {

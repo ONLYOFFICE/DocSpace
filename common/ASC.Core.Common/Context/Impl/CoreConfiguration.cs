@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Google.Protobuf.WellKnownTypes;
+
 namespace ASC.Core;
 
 [Singletone]
@@ -146,7 +148,7 @@ public class CoreSettings
         return result;
     }
 
-    public string GetKey(int tenant)
+    public async Task<string> GetKeyAsync(int tenant)
     {
         if (CoreBaseSettings.Standalone)
         {
@@ -169,7 +171,7 @@ public class CoreSettings
         }
         else
         {
-            var t = TenantService.GetTenant(tenant);
+            var t = await TenantService.GetTenantAsync(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
             {
                 return t.PaymentId;
@@ -179,9 +181,9 @@ public class CoreSettings
         }
     }
 
-    public string GetAffiliateId(int tenant)
+    public async Task<string> GetAffiliateIdAsync(int tenant)
     {
-        var t = TenantService.GetTenant(tenant);
+        var t = await TenantService.GetTenantAsync(tenant);
         if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
         {
             return t.AffiliateId;
@@ -190,9 +192,9 @@ public class CoreSettings
         return null;
     }
 
-    public string GetCampaign(int tenant)
+    public async Task<string> GetCampaignAsync(int tenant)
     {
-        var t = TenantService.GetTenant(tenant);
+        var t = await TenantService.GetTenantAsync(tenant);
         if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
         {
             return t.Campaign;
@@ -238,38 +240,39 @@ public class CoreConfiguration
         return _personalMaxSpace.Value;
     }
 
-    public SmtpSettings SmtpSettings
+    public async Task<SmtpSettings> GetSmtpSettingsAsync()
     {
-        get
+        var isDefaultSettings = false;
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
+
+        if (tenant != null)
         {
-            var isDefaultSettings = false;
-            var tenant = _tenantManager.GetCurrentTenant(false);
 
-            if (tenant != null)
+            var settingsValue = GetSetting("SmtpSettings", tenant.Id);
+            if (string.IsNullOrEmpty(settingsValue))
             {
-
-                var settingsValue = GetSetting("SmtpSettings", tenant.Id);
-                if (string.IsNullOrEmpty(settingsValue))
-                {
-                    isDefaultSettings = true;
-                    settingsValue = GetSetting("SmtpSettings");
-                }
-                var settings = SmtpSettings.Deserialize(settingsValue);
-                settings.IsDefaultSettings = isDefaultSettings;
-
-                return settings;
+                isDefaultSettings = true;
+                settingsValue = GetSetting("SmtpSettings");
             }
-            else
-            {
-                var settingsValue = GetSetting("SmtpSettings");
+            var settings = SmtpSettings.Deserialize(settingsValue);
+            settings.IsDefaultSettings = isDefaultSettings;
 
-                var settings = SmtpSettings.Deserialize(settingsValue);
-                settings.IsDefaultSettings = true;
-
-                return settings;
-            }
+            return settings;
         }
-        set { SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().Id); }
+        else
+        {
+            var settingsValue = GetSetting("SmtpSettings");
+
+            var settings = SmtpSettings.Deserialize(settingsValue);
+            settings.IsDefaultSettings = true;
+
+            return settings;
+        }
+    }
+
+    public async Task SetSmtpSettingsAsync(SmtpSettings value)
+    {
+        SaveSetting("SmtpSettings", value?.Serialize(), (await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     private readonly CoreSettings _coreSettings;
@@ -292,9 +295,9 @@ public class CoreConfiguration
 
     #region Methods Get/Set Section
 
-    public T GetSection<T>() where T : class
+    public async Task<T> GetSectionAsync<T>() where T : class
     {
-        return GetSection<T>(typeof(T).Name);
+        return await GetSectionAsync<T>(typeof(T).Name);
     }
 
     public T GetSection<T>(int tenantId) where T : class
@@ -302,9 +305,9 @@ public class CoreConfiguration
         return GetSection<T>(tenantId, typeof(T).Name);
     }
 
-    public T GetSection<T>(string sectionName) where T : class
+    public async Task<T> GetSectionAsync<T>(string sectionName) where T : class
     {
-        return GetSection<T>(_tenantManager.GetCurrentTenant().Id, sectionName);
+        return GetSection<T>((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName);
     }
 
     public T GetSection<T>(int tenantId, string sectionName) where T : class
@@ -318,14 +321,14 @@ public class CoreConfiguration
         return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
     }
 
-    public void SaveSection<T>(string sectionName, T section) where T : class
+    public async Task SaveSectionAsync<T>(string sectionName, T section) where T : class
     {
-        SaveSection(_tenantManager.GetCurrentTenant().Id, sectionName, section);
+        SaveSection((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName, section);
     }
 
-    public void SaveSection<T>(T section) where T : class
+    public async Task SaveSectionAsync<T>(T section) where T : class
     {
-        SaveSection(typeof(T).Name, section);
+        await SaveSectionAsync(typeof(T).Name, section);
     }
 
     public void SaveSection<T>(int tenantId, T section) where T : class

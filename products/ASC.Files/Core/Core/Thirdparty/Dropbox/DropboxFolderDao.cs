@@ -510,11 +510,12 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             string folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+        IDataWriteOperator writeOperator = new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+        return Task.FromResult(writeOperator);
     }
 }

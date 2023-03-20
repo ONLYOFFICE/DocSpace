@@ -71,7 +71,7 @@ public class RadicaleController : BaseSettingsController
     public async Task<DavResponse> GetCardDavUrl()
     {
 
-        if (WebItemManager[WebItemManager.PeopleProductID].IsDisabled(_webItemSecurity, _authContext))
+        if (await WebItemManager[WebItemManager.PeopleProductID].IsDisabledAsync(_webItemSecurity, _authContext))
         {
             await DeleteCardDavAddressBook().ConfigureAwait(false);
             throw new MethodAccessException("Method not available");
@@ -103,7 +103,7 @@ public class RadicaleController : BaseSettingsController
             {
                 try
                 {
-                    _dbRadicale.SaveCardDavUser(_tenantManager.GetCurrentTenant().Id, currUser.Id);
+                    _dbRadicale.SaveCardDavUser((await _tenantManager.GetCurrentTenantAsync()).Id, currUser.Id);
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +137,7 @@ public class RadicaleController : BaseSettingsController
         var authorization = _cardDavAddressbook.GetSystemAuthorization();
         var myUri = HttpContext.Request.GetUrlRewriter();
         var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), currentUserEmail, true, true);
-        var tenant = _tenantManager.GetCurrentTenant().Id;
+        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var davRequest = new DavRequest()
         {
             Url = requestUrlBook,

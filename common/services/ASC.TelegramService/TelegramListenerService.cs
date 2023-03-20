@@ -56,11 +56,11 @@ public class TelegramListenerService : BackgroundService
         _logger = logger;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _stoppingToken = stoppingToken;
 
-        CreateClients();
+        await CreateClientsAsync();
 
         _cacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
         _cacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
@@ -74,8 +74,6 @@ public class TelegramListenerService : BackgroundService
             _cacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
             _cacheDisableClient.Unsubscribe(CacheNotifyAction.Insert);
         });
-
-        return Task.CompletedTask;
     }
 
     private void DisableClient(DisableClientProto n)
@@ -93,9 +91,9 @@ public class TelegramListenerService : BackgroundService
         _telegramHandler.CreateOrUpdateClientForTenant(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy, false, _stoppingToken);
     }
 
-    private void CreateClients()
+    private async Task CreateClientsAsync()
     {
-        var tenants = _tenantManager.GetTenants();
+        var tenants = await _tenantManager.GetTenantsAsync();
 
         foreach (var tenant in tenants)
         {

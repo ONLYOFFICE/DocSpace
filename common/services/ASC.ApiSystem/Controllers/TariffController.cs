@@ -65,7 +65,8 @@ public class TariffController : ControllerBase
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public async Task<IActionResult> SetTariffAsync(TariffModel model)
     {
-        if (!CommonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await CommonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             Log.LogError("Model without tenant");
 
@@ -129,7 +130,8 @@ public class TariffController : ControllerBase
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public async Task<IActionResult> GetTariffAsync([FromQuery] TariffModel model)
     {
-        if (!CommonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await CommonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             Log.LogError("Model without tenant");
 

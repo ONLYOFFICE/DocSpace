@@ -58,12 +58,12 @@ public class BackupService : IBackupService
         }
     }
 
-    public async Task DeleteBackup(Guid id)
+    public async Task DeleteBackupAsync(Guid id)
     {
         var backupRecord = await _backupRepository.GetBackupRecordAsync(id);
         await _backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
 
-        var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
+        var storage = await _backupStorageFactory.GetBackupStorageAsync(backupRecord);
         if (storage == null)
         {
             return;
@@ -79,7 +79,7 @@ public class BackupService : IBackupService
             try
             {
                 await _backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
-                var storage = _backupStorageFactory.GetBackupStorage(backupRecord);
+                var storage = await _backupStorageFactory.GetBackupStorageAsync(backupRecord);
                 if (storage == null)
                 {
                     continue;
@@ -94,12 +94,12 @@ public class BackupService : IBackupService
         }
     }
 
-    public async Task<List<BackupHistoryRecord>> GetBackupHistory(int tenantId)
+    public async Task<List<BackupHistoryRecord>> GetBackupHistoryAsync(int tenantId)
     {
         var backupHistory = new List<BackupHistoryRecord>();
         foreach (var record in await _backupRepository.GetBackupRecordsByTenantIdAsync(tenantId))
         {
-            var storage = _backupStorageFactory.GetBackupStorage(record);
+            var storage = await _backupStorageFactory.GetBackupStorageAsync(record);
             if (storage == null)
             {
                 continue;

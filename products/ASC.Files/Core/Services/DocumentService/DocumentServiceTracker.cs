@@ -195,22 +195,33 @@ public class DocumentServiceTrackerHelper
         _thirdPartySelector = thirdPartySelector;
     }
 
+    public async Task<string> GetCallbackUrlAsync<T>(T fileId)
+    {
+        var callbackUrl = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath
+                                                                + "?" + FilesLinkUtility.Action + "=track"
+                                                                + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
+                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKeyAsync(fileId.ToString()));
+        callbackUrl = await _documentServiceConnector.ReplaceCommunityAdressAsync(callbackUrl);
+
+        return callbackUrl;
+    }
+
     public string GetCallbackUrl<T>(T fileId)
     {
         var callbackUrl = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath
                                                                 + "?" + FilesLinkUtility.Action + "=track"
                                                                 + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
-                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(fileId.ToString()));
+                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKeyAsync(fileId.ToString()));
         callbackUrl = _documentServiceConnector.ReplaceCommunityAdress(callbackUrl);
 
         return callbackUrl;
     }
 
-    public Task<bool> StartTrackAsync<T>(T fileId, string docKeyForTrack)
+    public async Task<bool> StartTrackAsync<T>(T fileId, string docKeyForTrack)
     {
-        var callbackUrl = GetCallbackUrl(fileId);
+        var callbackUrl = await GetCallbackUrlAsync(fileId);
 
-        return _documentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
     }
 
     public async Task<TrackResponse> ProcessDataAsync<T>(T fileId, TrackerData fileData)
@@ -220,7 +231,7 @@ public class DocumentServiceTrackerHelper
             case TrackerStatus.NotFound:
             case TrackerStatus.Closed:
                 _fileTracker.Remove(fileId);
-                await _socketManager.StopEdit(fileId);
+                await _socketManager.StopEditAsync(fileId);
 
                 break;
 
@@ -313,7 +324,7 @@ public class DocumentServiceTrackerHelper
             _fileTracker.Remove(fileId, userId: removeUserId);
         }
 
-        await _socketManager.StartEdit(fileId);
+        await _socketManager.StartEditAsync(fileId);
     }
 
     private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
@@ -355,7 +366,7 @@ public class DocumentServiceTrackerHelper
             await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
             user = _userManager.GetUsers(userId);
-            var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+            var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
         }
@@ -437,7 +448,7 @@ public class DocumentServiceTrackerHelper
         if (!forcesave)
         {
             _fileTracker.Remove(fileId);
-            await _socketManager.StopEdit(fileId);
+            await _socketManager.StopEditAsync(fileId);
         }
 
         if (file != null)
@@ -475,7 +486,7 @@ public class DocumentServiceTrackerHelper
             await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
             var user = _userManager.GetUsers(userId);
-            var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+            var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
@@ -584,7 +595,7 @@ public class DocumentServiceTrackerHelper
                 errorCount++;
             }
 
-            _notifyClient.SendMailMergeEnd(userId, fileData.MailMerge.RecordCount, errorCount);
+            await _notifyClient.SendMailMergeEndAsync(userId, fileData.MailMerge.RecordCount, errorCount);
         }
 
         return new TrackResponse { Message = saveMessage };
@@ -608,7 +619,7 @@ public class DocumentServiceTrackerHelper
 
             var path = $@"save_crash\{DateTime.UtcNow:yyyy_MM_dd}\{userId}_{fileName}";
 
-            var store = _globalStore.GetStore();
+            var store = await _globalStore.GetStoreAsync();
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(downloadUri)

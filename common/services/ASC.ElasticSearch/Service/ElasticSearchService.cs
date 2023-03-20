@@ -40,9 +40,9 @@ public class ElasticSearchService
 
     public void Subscribe()
     {
-        _cacheNotify.Subscribe((a) =>
+        _cacheNotify.Subscribe(async (a) =>
         {
-            ReIndex(a.Names.ToList(), a.Tenant);
+            await ReIndexAsync(a.Names.ToList(), a.Tenant);
         }, CacheNotifyAction.Any);
     }
 
@@ -51,11 +51,10 @@ public class ElasticSearchService
         return _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
     }
 
-    public void ReIndex(List<string> toReIndex, int tenant)
+    public async Task ReIndexAsync(List<string> toReIndex, int tenant)
     {
         var allItems = _serviceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
-        var tasks = new List<Task>(toReIndex.Count);
-
+        var needClear = false;
         foreach (var item in toReIndex)
         {
             var index = allItems.FirstOrDefault(r => r.IndexName == item);
@@ -66,22 +65,18 @@ public class ElasticSearchService
 
             var generic = typeof(BaseIndexer<>);
             var instance = (IIndexer)Activator.CreateInstance(generic.MakeGenericType(index.GetType()), index);
-            tasks.Add(instance.ReIndex());
+            await instance.ReIndexAsync();
+            needClear = true;
         }
 
-        if (tasks.Count == 0)
-        {
-            return;
-        }
-
-        Task.WhenAll(tasks).ContinueWith(r =>
+        if (needClear)
         {
             using var scope = _serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
-            tenantManager.SetCurrentTenant(tenant);
+            await tenantManager.SetCurrentTenantAsync(tenant);
             settingsManager.ClearCache<SearchSettings>();
-        });
+        }
     }
     //public State GetState()
     //{

@@ -29,11 +29,6 @@ namespace ASC.Web.Core.WhiteLabel;
 [Scope]
 public class TenantLogoManager
 {
-    private string CacheKey
-    {
-        get { return "letterlogodata" + _tenantManager.GetCurrentTenant().Id; }
-    }
-
     public bool WhiteLabelEnabled { get; private set; }
 
     private readonly ICache _cache;
@@ -102,7 +97,7 @@ public class TenantLogoManager
         }
 
         /*** simple scheme ***/
-        return _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(_settingsManager.Load<TenantInfoSettings>());
         /***/
     }
 
@@ -158,7 +153,7 @@ public class TenantLogoManager
 
     public async Task<bool> GetWhiteLabelPaidAsync()
     {
-        return (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).WhiteLabel;
+        return (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).WhiteLabel;
     }
 
     private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
@@ -185,18 +180,23 @@ public class TenantLogoManager
     }
 
 
-    public byte[] GetMailLogoDataFromCache()
+    public async Task<byte[]> GetMailLogoDataFromCacheAsync()
     {
-        return _cache.Get<byte[]>(CacheKey);
+        return _cache.Get<byte[]>(await GetCacheKeyAsync());
     }
 
-    public void InsertMailLogoDataToCache(byte[] data)
+    public async Task InsertMailLogoDataToCacheAsync(byte[] data)
     {
-        _cache.Insert(CacheKey, data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        _cache.Insert(await GetCacheKeyAsync(), data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
     }
 
-    public void RemoveMailLogoDataFromCache()
+    public async Task RemoveMailLogoDataFromCacheAsync()
     {
-        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = await GetCacheKeyAsync() }, CacheNotifyAction.Remove);
+    }
+
+    private async Task<string> GetCacheKeyAsync()
+    {
+        return "letterlogodata" + (await _tenantManager.GetCurrentTenantAsync()).Id;
     }
 }

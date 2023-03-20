@@ -226,7 +226,7 @@ public class FileHandlerService
         }
 
         var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
-        var store = _globalStore.GetStore();
+        var store = await _globalStore.GetStoreAsync();
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
         {
@@ -407,7 +407,7 @@ public class FileHandlerService
                         {
                             const string mp4Name = "content.mp4";
                             var mp4Path = fileDao.GetUniqFilePath(file, mp4Name);
-                            var store = _globalStore.GetStore();
+                            var store = await _globalStore.GetStoreAsync();
                             if (!await store.IsFileAsync(mp4Path))
                             {
                                 fileStream = await fileDao.GetFileStreamAsync(file);
@@ -606,15 +606,15 @@ public class FileHandlerService
 
         if (int.TryParse(q, out var id))
         {
-            await StreamFile(context, id);
+            await StreamFileAsync(context, id);
         }
         else
         {
-            await StreamFile(context, q.FirstOrDefault() ?? "");
+            await StreamFileAsync(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private async Task StreamFile<T>(HttpContext context, T id)
+    private async Task StreamFileAsync<T>(HttpContext context, T id)
     {
         try
         {
@@ -631,7 +631,7 @@ public class FileHandlerService
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey];
-                var validateResult = _emailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth.FirstOrDefault() ?? "", _global.StreamUrlExpire);
+                var validateResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(id.ToString() + version, auth.FirstOrDefault() ?? "", _global.StreamUrlExpire);
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -868,7 +868,7 @@ public class FileHandlerService
         var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
         var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
 
-        var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileName, auth ?? "", _global.StreamUrlExpire);
+        var validateResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(fileName, auth ?? "", _global.StreamUrlExpire);
         if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
         {
             var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -884,7 +884,7 @@ public class FileHandlerService
         context.Response.ContentType = MimeMapping.GetMimeMapping(fileName);
         context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(fileName));
 
-        var store = _globalStore.GetStore();
+        var store = await _globalStore.GetStoreAsync();
 
         var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
@@ -921,15 +921,15 @@ public class FileHandlerService
 
         if (int.TryParse(q, out var id))
         {
-            await DifferenceFile(context, id);
+            await DifferenceFileAsync(context, id);
         }
         else
         {
-            await DifferenceFile(context, q.FirstOrDefault() ?? "");
+            await DifferenceFileAsync(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private async Task DifferenceFile<T>(HttpContext context, T id)
+    private async Task DifferenceFileAsync<T>(HttpContext context, T id)
     {
         try
         {
@@ -941,7 +941,7 @@ public class FileHandlerService
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-                var validateResult = _emailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth ?? "", _global.StreamUrlExpire);
+                var validateResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(id.ToString() + version, auth ?? "", _global.StreamUrlExpire);
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1080,7 +1080,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
             context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
 
-            using (var stream = await _globalStore.GetStore().GetReadStreamAsync(fileDao.GetUniqThumbnailPath(file, width, height)))
+            using (var stream = await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(fileDao.GetUniqThumbnailPath(file, width, height)))
             {
                 context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                 await stream.CopyToAsync(context.Response.Body);
@@ -1196,7 +1196,7 @@ public class FileHandlerService
         var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
         if (string.IsNullOrEmpty(folderId))
         {
-            await CreateFile(context, _globalFolderHelper.FolderMy);
+            await CreateFile(context, await _globalFolderHelper.FolderMyAsync);
         }
         else
         {
@@ -1438,31 +1438,31 @@ public class FileHandlerService
 
         if (int.TryParse(q, out var id))
         {
-            await TrackFile(context, id);
+            await TrackFileAsync(context, id);
         }
         else
         {
-            await TrackFile(context, q.FirstOrDefault() ?? "");
+            await TrackFileAsync(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private Task TrackFile<T>(HttpContext context, T fileId)
+    private async Task TrackFileAsync<T>(HttpContext context, T fileId)
     {
         var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
         _logger.DebugDocServiceTrackFileid(fileId.ToString());
 
         var callbackSpan = TimeSpan.FromDays(128);
-        var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId.ToString(), auth ?? "", callbackSpan);
+        var validateResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(fileId.ToString(), auth ?? "", callbackSpan);
         if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
         {
             _logger.ErrorDocServiceTrackAuth(validateResult, FilesLinkUtility.AuthKey, auth);
             throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        return InternalTrackFile(context, fileId);
+        await InternalTrackFileAsync(context, fileId);
     }
 
-    private async Task InternalTrackFile<T>(HttpContext context, T fileId)
+    private async Task InternalTrackFileAsync<T>(HttpContext context, T fileId)
     {
         TrackerData fileData;
         try

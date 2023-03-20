@@ -198,9 +198,9 @@ public class UserManager
             .ToArray();
     }
 
-    public UserInfo GetUserByUserName(string username)
+    public async Task<UserInfo> GetUserByUserNameAsync(string username)
     {
-        var u = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, username);
+        var u = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, username);
 
         return u ?? Constants.LostUser;
     }
@@ -322,35 +322,37 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo UpdateUserInfo(UserInfo u)
+    public async Task<UserInfo> UpdateUserInfoAsync(UserInfo u)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
 
-        if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+
+        if (u.Status == EmployeeStatus.Terminated && u.Id == tenant.OwnerId)
         {
             throw new InvalidOperationException("Can not disable tenant owner.");
         }
 
-        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+        var oldUserData = _userService.GetUserByUserName(tenant.Id, u.UserName);
 
         if (oldUserData == null || Equals(oldUserData, Constants.LostUser))
         {
             throw new InvalidOperationException("User not found.");
         }
 
-        return _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+        return _userService.SaveUser(tenant.Id, u);
     }
 
     public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
     {
-        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+        var oldUserData = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
 
-        var newUser = UpdateUserInfo(u);
+        var newUser = await UpdateUserInfoAsync(u);
         
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -367,7 +369,7 @@ public class UserManager
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id, type), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(u.Id, type), Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -377,7 +379,7 @@ public class UserManager
             }
         }
 
-        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+        var oldUserData = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
 
         if (oldUserData != null && !Equals(oldUserData, Constants.LostUser))
         {
@@ -393,7 +395,7 @@ public class UserManager
             await _countPaidUserChecker.CheckAppend();
         }
 
-        var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+        var newUser = _userService.SaveUser((await _tenantManager.GetCurrentTenantAsync()).Id, u);
         if (syncCardDav)
         {
             await SyncCardDavAsync(u, oldUserData, newUser);
@@ -404,13 +406,13 @@ public class UserManager
 
     private async Task SyncCardDavAsync(UserInfo u, UserInfo oldUserData, UserInfo newUser)
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                     (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                     new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
 
         var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
-        var allUserEmails = GetDavUserEmails().ToList();
+        var allUserEmails = (await GetDavUserEmailsAsync()).ToList();
 
         if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
         {
@@ -447,7 +449,7 @@ public class UserManager
                 var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
                 try
                 {
-                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, (await _tenantManager.GetCurrentTenantAsync()).Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
                 }
                 catch (Exception ex)
                 {
@@ -461,9 +463,9 @@ public class UserManager
         }
     }
 
-    public IEnumerable<string> GetDavUserEmails()
+    public async Task<IEnumerable<string>> GetDavUserEmailsAsync()
     {
-        return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
+        return _userService.GetDavUserEmails((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
@@ -471,14 +473,14 @@ public class UserManager
         return _userService.GetTenantsWithFeeds(from);
     }
 
-    public async Task DeleteUser(Guid id)
+    public async Task DeleteUserAsync(Guid id)
     {
         if (IsSystemUser(id))
         {
             return;
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
         if (id == Tenant.OwnerId)
         {
             throw new InvalidOperationException("Can not remove tenant owner.");
@@ -486,7 +488,7 @@ public class UserManager
 
         var delUser = GetUsers(id);
         _userService.RemoveUser(Tenant.Id, id);
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         try
         {
@@ -497,7 +499,7 @@ public class UserManager
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                 (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            var davUsersEmails = GetDavUserEmails();
+            var davUsersEmails = await GetDavUserEmailsAsync();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
             var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
 
@@ -538,14 +540,14 @@ public class UserManager
         }
     }
 
-    public void SaveUserPhoto(Guid id, byte[] photo)
+    public async Task SaveUserPhotoAsync(Guid id, byte[] photo)
     {
         if (IsSystemUser(id))
         {
             return;
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(id), Constants.Action_EditUser);
 
         _userService.SetUserPhoto(Tenant.Id, id, photo);
     }
@@ -644,7 +646,7 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
+    public async Task AddUserIntoGroupAsync(Guid userId, Guid groupId, bool dontClearAddressBook = false)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -653,7 +655,7 @@ public class UserManager
 
         var user = GetUsers(userId);
 
-        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
 
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
@@ -661,7 +663,7 @@ public class UserManager
         ResetGroupCache(userId);
         if (groupId == Constants.GroupUser.ID)
         {
-            var tenant = _tenantManager.GetCurrentTenant();
+            var tenant = await _tenantManager.GetCurrentTenantAsync();
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
@@ -673,7 +675,7 @@ public class UserManager
         }
     }
 
-    public void RemoveUserFromGroup(Guid userId, Guid groupId)
+    public async Task RemoveUserFromGroupAsync(Guid userId, Guid groupId)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -682,7 +684,7 @@ public class UserManager
 
         var user = GetUsers(userId);
 
-        _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
+        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
 
         _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
@@ -793,7 +795,7 @@ public class UserManager
             .SingleOrDefault(g => g.Sid == sid) ?? Constants.LostGroupInfo;
     }
 
-    public GroupInfo SaveGroupInfo(GroupInfo g)
+    public async Task<GroupInfo> SaveGroupInfoAsync(GroupInfo g)
     {
         if (Constants.LostGroupInfo.Equals(g))
         {
@@ -805,14 +807,14 @@ public class UserManager
             return Constants.BuildinGroups.Single(b => b.ID == g.ID);
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditGroups);
 
         var newGroup = _userService.SaveGroup(Tenant.Id, ToGroup(g));
 
         return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
     }
 
-    public void DeleteGroup(Guid id)
+    public async Task DeleteGroupAsync(Guid id)
     {
         if (Constants.LostGroupInfo.Equals(id))
         {
@@ -824,7 +826,7 @@ public class UserManager
             return;
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditGroups);
 
         _userService.RemoveGroup(Tenant.Id, id);
     }

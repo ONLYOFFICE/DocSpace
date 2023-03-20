@@ -116,7 +116,7 @@ public class NCMigratingFiles : MigratingFiles
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (!ShouldImport)
         {
@@ -145,7 +145,7 @@ public class NCMigratingFiles : MigratingFiles
                         continue;
                     }
 
-                    var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
+                    var parentId = i == 0 ? await _globalFolderHelper.FolderMyAsync : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                     try
                     {
                         var newFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
@@ -178,7 +178,7 @@ public class NCMigratingFiles : MigratingFiles
                     var fileDao = _daoFactory.GetFileDao<int>();
                     var folderDao = _daoFactory.GetFolderDao<int>();
                     {
-                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(_globalFolderHelper.FolderMy) : foldersDict[parentPath];
+                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(await _globalFolderHelper.FolderMyAsync) : foldersDict[parentPath];
 
                         var newFile = new File<int>
                         {

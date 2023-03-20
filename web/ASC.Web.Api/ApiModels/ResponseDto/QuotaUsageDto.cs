@@ -60,7 +60,7 @@ public class QuotaUsageManager
 
     public async Task<QuotaUsageDto> Get()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var quota = await _tenantManager.GetCurrentTenantQuotaAsync();
         var quotaRows = (await _tenantManager.FindTenantQuotaRowsAsync(tenant.Id))
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)

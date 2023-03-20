@@ -121,9 +121,9 @@ public class TenantExtra
         return Enterprise && (await GetCurrentTariffAsync(withRequestToPaymentSystem)).State < TariffState.NotPaid;
     }
 
-    public Task<Tariff> GetCurrentTariffAsync(bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetCurrentTariffAsync(bool withRequestToPaymentSystem = true)
     {
-        return _tariffService.GetTariffAsync(_tenantManager.GetCurrentTenant().Id, withRequestToPaymentSystem);
+        return await _tariffService.GetTariffAsync((await _tenantManager.GetCurrentTenantAsync()).Id, withRequestToPaymentSystem);
     }
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()

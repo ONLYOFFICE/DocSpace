@@ -155,7 +155,7 @@ public class DocumentServiceConnector
                 stream.Position = 0;
                 scriptUrl = await _pathProvider.GetTempUrlAsync(stream, ".docbuilder");
             }
-            scriptUrl = ReplaceCommunityAdress(scriptUrl);
+            scriptUrl = await ReplaceCommunityAdressAsync(scriptUrl);
             requestKey = null;
         }
 
@@ -242,7 +242,7 @@ public class DocumentServiceConnector
                 var toExtension = _fileUtility.GetInternalExtension(fileExtension);
                 var url = _pathProvider.GetEmptyFileUrl(fileExtension);
 
-                var fileUri = ReplaceCommunityAdress(url);
+                var fileUri = await ReplaceCommunityAdressAsync(url);
 
                 var key = GenerateRevisionId(Guid.NewGuid().ToString());
                 var uriTuple = await ASC.Files.Core.Helpers.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
@@ -300,7 +300,7 @@ public class DocumentServiceConnector
                 var storeTemplate = _globalStore.GetStoreTemplate();
                 var scriptUri = await storeTemplate.GetUriAsync("", "test.docbuilder");
                 var scriptUrl = _baseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
-                scriptUrl = ReplaceCommunityAdress(scriptUrl);
+                scriptUrl = await ReplaceCommunityAdressAsync(scriptUrl);
 
                 await ASC.Files.Core.Helpers.DocumentService.DocbuilderRequestAsync(_fileUtility, _filesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, _fileUtility.SignatureSecret, _clientFactory);
             }
@@ -325,6 +325,47 @@ public class DocumentServiceConnector
         if (string.IsNullOrEmpty(docServicePortalUrl))
         {
             var tenant = _tenantManager.GetCurrentTenant();
+            if (!_tenantExtra.Saas
+                || string.IsNullOrEmpty(tenant.MappedDomain)
+                || !url.StartsWith("https://" + tenant.MappedDomain))
+            {
+                return url;
+            }
+
+            docServicePortalUrl = "https://" + tenant.GetTenantDomain(_coreSettings, false);
+        }
+
+        var uri = new UriBuilder(url);
+        if (new UriBuilder(_baseCommonLinkUtility.ServerRootPath).Host != uri.Host)
+        {
+            return url;
+        }
+
+        var urlRewriterQuery = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        query[HttpRequestExtensions.UrlRewriterHeader] = urlRewriterQuery;
+        uri.Query = query.ToString();
+
+        var communityUrl = new UriBuilder(docServicePortalUrl);
+        uri.Scheme = communityUrl.Scheme;
+        uri.Host = communityUrl.Host;
+        uri.Port = communityUrl.Port;
+
+        return uri.ToString();
+    }
+
+    public async Task<string> ReplaceCommunityAdressAsync(string url)
+    {
+        var docServicePortalUrl = _filesLinkUtility.DocServicePortalUrl;
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return url;
+        }
+
+        if (string.IsNullOrEmpty(docServicePortalUrl))
+        {
+            var tenant = await _tenantManager.GetCurrentTenantAsync();
             if (!_tenantExtra.Saas
                 || string.IsNullOrEmpty(tenant.MappedDomain)
                 || !url.StartsWith("https://" + tenant.MappedDomain))

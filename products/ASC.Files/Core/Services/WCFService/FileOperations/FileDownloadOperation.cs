@@ -55,7 +55,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
     {
         await base.RunJob(distributedTask, cancellationToken);
 
-        await using var scope = ThirdPartyOperation.CreateScopeAsync();
+        using var scope = ThirdPartyOperation.CreateScopeAsync();
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
         var instanceCrypto = scope.ServiceProvider.GetRequiredService<InstanceCrypto>();
         var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
@@ -95,10 +95,10 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
             else
             {
-                fileName = string.Format(@"{0}-{1}-{2}{3}", tenantManager.GetCurrentTenant().Alias.ToLower(), FileConstant.DownloadTitle, DateTime.UtcNow.ToString("yyyy-MM-dd"), archiveExtension);
+                fileName = string.Format(@"{0}-{1}-{2}{3}", (await tenantManager.GetCurrentTenantAsync()).Alias.ToLower(), FileConstant.DownloadTitle, DateTime.UtcNow.ToString("yyyy-MM-dd"), archiveExtension);
             }
 
-            var store = globalStore.GetStore();
+            var store = await globalStore.GetStoreAsync();
             var path = string.Format(@"{0}\{1}", ((IAccount)_principal.Identity).ID, fileName);
 
             if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))

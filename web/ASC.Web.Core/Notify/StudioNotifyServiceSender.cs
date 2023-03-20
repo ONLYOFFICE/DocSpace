@@ -74,7 +74,7 @@ public class StudioNotifyServiceSender
             }
             else if (_tenantExtraConfig.Opensource)
             {
-                _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+                _workContext.RegisterSendMethod(SendOpensourceTariffLettersAsync, cron);
             }
             else if (_tenantExtraConfig.Saas)
             {
@@ -107,13 +107,13 @@ public class StudioNotifyServiceSender
     public void SendEnterpriseTariffLetters(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate).Wait();
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLettersAsync(EMailSenderName, scheduleDate).Wait();
     }
 
-    public void SendOpensourceTariffLetters(DateTime scheduleDate)
+    public async void SendOpensourceTariffLettersAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
+        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLettersAsync(EMailSenderName, scheduleDate);
     }
 
     public void SendLettersPersonal(DateTime scheduleDate)
@@ -161,13 +161,13 @@ public class StudioNotifyWorker
     public async Task OnMessageAsync(NotifyItem item)
     {
         _commonLinkUtilitySettings.ServerUri = item.BaseUrl;
-        _tenantManager.SetCurrentTenant(item.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
         CultureInfo culture = null;
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
 
         if (tenant != null)
         {
@@ -193,7 +193,7 @@ public class StudioNotifyWorker
             Thread.CurrentThread.CurrentUICulture = culture;
         }
 
-        client.SendNoticeToAsync(
+        await client.SendNoticeToAsync(
             (NotifyAction)item.Action,
             item.ObjectId,
             item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),

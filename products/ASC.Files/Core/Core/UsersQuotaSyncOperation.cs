@@ -133,7 +133,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var _securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
             var _webItemManagerSecurity = scope.ServiceProvider.GetRequiredService<WebItemManagerSecurity>();
 
-            _tenantManager.SetCurrentTenant(TenantId);
+            await _tenantManager.SetCurrentTenantAsync(TenantId);
 
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);

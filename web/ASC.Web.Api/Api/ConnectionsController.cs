@@ -143,7 +143,7 @@ public class ConnectionsController : ControllerBase
             auditEventDate = auditEventDate.AddTicks(-(auditEventDate.Ticks % TimeSpan.TicksPerSecond));
 
             var hash = auditEventDate.ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
+            var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
             await _messageService.SendAsync(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
 
@@ -217,7 +217,7 @@ public class ConnectionsController : ControllerBase
         var auditEventDate = DateTime.UtcNow;
 
         await _messageService.SendAsync(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
-        await _cookiesManager.ResetUserCookie(user.Id);
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
     }
 
     private int GetLoginEventIdFromCookie()

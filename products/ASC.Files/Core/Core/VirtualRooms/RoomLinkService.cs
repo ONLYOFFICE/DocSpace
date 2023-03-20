@@ -47,19 +47,19 @@ public class RoomLinkService
         return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy) + "&toRoom=true";
     }
 
-    public string GetInvitationLink(string email, FileShare share, Guid createdBy)
+    public async Task<string> GetInvitationLinkAsync(string email, FileShare share, Guid createdBy)
     {
         var type = FileSecurity.GetTypeByShare(share);
         
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
+        var link = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.LinkInvite, type, createdBy)
                    + $"&emplType={type:d}&toRoom=true";
 
         return link;
     }
 
-    public string GetInvitationLink(string email, EmployeeType employeeType, Guid createdBy)
+    public async Task<string> GetInvitationLinkAsync(string email, EmployeeType employeeType, Guid createdBy)
     {
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, employeeType, createdBy)
+        var link = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.LinkInvite, employeeType, createdBy)
             + $"&emplType={employeeType:d}";
 
         return link;
@@ -96,7 +96,7 @@ public class RoomLinkService
             options.LinkType = LinkType.InvitationByEmail;
             options.EmployeeType = employeeType;
         }
-        else if (_docSpaceLinksHelper.ValidateExtarnalLink(key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
+        else if (await _docSpaceLinksHelper.ValidateExtarnalLinkAsync(key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
             options.LinkType = LinkType.DefaultInvitation;
             options.IsCorrect = true;

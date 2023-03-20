@@ -192,7 +192,7 @@ public class WebPath
         {
             try
             {
-                var uri = await _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>()).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                var uri = await (await _storageSettingsHelper.DataStoreAsync(_settingsManager.Load<CdnStorageSettings>())).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
                 var result = uri.AbsoluteUri.ToLower();
                 if (!string.IsNullOrEmpty(result))
                 {

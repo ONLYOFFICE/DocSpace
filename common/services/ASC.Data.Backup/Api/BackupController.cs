@@ -103,7 +103,7 @@ public class BackupController : ControllerBase
     /// <returns>Backup Progress</returns>
     [AllowNotPayment]
     [HttpPost("startbackup")]
-    public BackupProgress StartBackup(BackupDto backup)
+    public async Task<BackupProgress> StartBackupAsync(BackupDto backup)
     {
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
@@ -115,7 +115,7 @@ public class BackupController : ControllerBase
              createBy: _currentUserId
         ));
 
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
@@ -125,9 +125,9 @@ public class BackupController : ControllerBase
     /// <returns>Backup Progress</returns>
     [AllowNotPayment]
     [HttpGet("getbackupprogress")]
-    public BackupProgress GetBackupProgress()
+    public async Task<BackupProgress> GetBackupProgressAsync()
     {
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackup/{id}")]
     public async Task<bool> DeleteBackup(Guid id)
     {
-        await _backupHandler.DeleteBackup(id);
+        await _backupHandler.DeleteBackupAsync(id);
         return true;
     }
 
@@ -160,7 +160,7 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackuphistory")]
     public async Task<bool> DeleteBackupHistory()
     {
-        await _backupHandler.DeleteAllBackups();
+        await _backupHandler.DeleteAllBackupsAsync();
         return true;
     }
 
@@ -174,7 +174,7 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
     [HttpPost("startrestore")]
-    public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
+    public async Task<BackupProgress> StartBackupRestoreAsync(BackupRestoreDto backupRestore)
     {
         var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
@@ -188,7 +188,7 @@ public class BackupController : ControllerBase
                         ));
 
 
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
@@ -199,9 +199,9 @@ public class BackupController : ControllerBase
     [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
     [AllowAnonymous]
     [AllowNotPayment]
-    public BackupProgress GetRestoreProgress()
+    public async Task<BackupProgress> GetRestoreProgressAsync()
     {
-        return _backupHandler.GetRestoreProgress();
+        return await _backupHandler.GetRestoreProgressAsync();
     }
 
     ///<visible>false</visible>

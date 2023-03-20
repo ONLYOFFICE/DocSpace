@@ -420,9 +420,9 @@ public class FileConverter
             throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(_setupInfo.AvailableFileSize)));
         }
 
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
         var docKey = _documentServiceHelper.GetDocKey(file);
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
@@ -454,12 +454,12 @@ public class FileConverter
             }
         }
 
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
         var fileExtension = file.ConvertedExtension;
         var toExtension = _fileUtility.GetInternalExtension(file.Title);
         var docKey = _documentServiceHelper.GetDocKey(file);
 
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
@@ -473,7 +473,7 @@ public class FileConverter
             Result = string.Empty,
             Processed = "",
             Id = string.Empty,
-            TenantId = _tenantManager.GetCurrentTenant().Id,
+            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
             Account = _authContext.CurrentAccount.ID,
             Delete = false,
             StartDateTime = DateTime.UtcNow,
@@ -518,7 +518,7 @@ public class FileConverter
         }
 
         await _fileMarker.RemoveMarkAsNewAsync(file);
-        GetFileConverter<T>().Add(file, password, _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, _baseCommonLinkUtility.ServerRootPath);
+        GetFileConverter<T>().Add(file, password, (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, _baseCommonLinkUtility.ServerRootPath);
     }
 
     public bool IsConverting<T>(File<T> file)
@@ -562,7 +562,7 @@ public class FileConverter
         }
         else
         {
-            var folderId = _globalFolderHelper.GetFolderMy<T>();
+            var folderId = await _globalFolderHelper.GetFolderMyAsync<T>();
 
             var parent = await folderDao.GetFolderAsync(file.ParentId);
             if (parent != null

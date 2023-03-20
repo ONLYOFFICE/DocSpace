@@ -74,12 +74,12 @@ public class NotifyClient
         _studioNotifyHelper = studioNotifyHelper;
     }
 
-    public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
+    public async Task SendDocuSignCompleteAsync<T>(File<T> file, string sourceTitle)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignComplete,
             file.UniqID,
             recipient,
@@ -90,13 +90,13 @@ public class NotifyClient
             );
     }
 
-    public void SendDocuSignStatus(string subject, string status)
+    public async Task SendDocuSignStatusAsync(string subject, string status)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignStatus,
             null,
             recipient,
@@ -106,13 +106,13 @@ public class NotifyClient
             );
     }
 
-    public void SendMailMergeEnd(Guid userId, int countMails, int countError)
+    public async Task SendMailMergeEndAsync(Guid userId, int countMails, int countError)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
         var recipient = _notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventMailMergeEnd,
             null,
             recipient,
@@ -169,13 +169,13 @@ public class NotifyClient
         {
             var u = _userManager.GetUsers(recipientPair.Key);
             var culture = string.IsNullOrEmpty(u.CultureName)
-                              ? _tenantManager.GetCurrentTenant().GetCulture()
+                              ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture()
                               : CultureInfo.GetCultureInfo(u.CultureName);
 
             var aceString = GetAccessString(recipientPair.Value, culture);
             var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
-            client.SendNoticeAsync(
+            await client.SendNoticeAsync(
                 action,
                 fileEntry.UniqID,
                 recipient,
@@ -194,7 +194,7 @@ public class NotifyClient
         }
     }
 
-    public void SendEditorMentions<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
+    public async Task SendEditorMentionsAsync<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
     {
         if (file == null || recipientIds.Count == 0)
         {
@@ -211,7 +211,7 @@ public class NotifyClient
 
             var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
-            client.SendNoticeAsync(
+            await client.SendNoticeAsync(
                 NotifyConstants.EventEditorMentions,
                 file.UniqID,
                 recipient,

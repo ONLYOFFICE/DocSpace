@@ -61,7 +61,7 @@ public class EncryptionOperation : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);
-        _tenants = tenantManager.GetTenants(false);
+        _tenants = await tenantManager.GetTenantsAsync(false);
         _modules = storageFactoryConfig.GetModuleList(exceptDisabledMigration: true);
         _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 

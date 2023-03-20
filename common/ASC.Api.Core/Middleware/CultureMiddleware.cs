@@ -51,7 +51,7 @@ public class CultureMiddleware
 
         if (culture == null)
         {
-            culture = tenantManager.GetCurrentTenant(false)?.GetCulture();
+            culture = (await tenantManager.GetCurrentTenantAsync(false))?.GetCulture();
         }
 
         if (culture != null)

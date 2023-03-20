@@ -30,11 +30,13 @@ namespace ASC.Core;
 public interface ITenantService
 {
     byte[] GetTenantSettings(int tenant, string key);
-    IEnumerable<Tenant> GetTenants(DateTime from, bool active = true);
-    IEnumerable<Tenant> GetTenants(List<int> ids);
-    IEnumerable<Tenant> GetTenants(string login, string passwordHash);
+    Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true);
+    Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids);
+    Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash);
     IEnumerable<TenantVersion> GetTenantVersions();
+    Task<Tenant> GetTenantAsync(int id);
     Tenant GetTenant(int id);
+    Task<Tenant> GetTenantAsync(string domain);
     Tenant GetTenant(string domain);
     Tenant GetTenantForStandaloneWithoutAlias(string ip);
     Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant);

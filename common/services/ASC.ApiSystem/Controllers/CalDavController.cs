@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Reflection;
+
+using static ASC.ApiSystem.Controllers.CalDavController;
+
 namespace ASC.ApiSystem.Controllers;
 
 [Scope]
@@ -73,9 +77,10 @@ public class CalDavController : ControllerBase
     #region API methods
 
     [HttpGet("change_to_storage")]
-    public IActionResult СhangeOfCalendarStorage(string change)
+    public async Task<IActionResult> СhangeOfCalendarStorageAsync(string change)
     {
-        if (!GetTenant(change, out var tenant, out var error))
+        (var succ, var tenant, var error) = await GetTenantAsync(change);
+        if (!succ)
         {
             return BadRequest(error);
         }
@@ -102,9 +107,10 @@ public class CalDavController : ControllerBase
 
     [HttpGet("caldav_delete_event")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult CaldavDeleteEvent(string eventInfo)
+    public async Task<IActionResult> CaldavDeleteEventAsync(string eventInfo)
     {
-        if (!GetTenant(eventInfo, out var tenant, out var error))
+        (var succ, var tenant, var error) = await GetTenantAsync(eventInfo);
+        if (!succ)
         {
             return BadRequest(error);
         }
@@ -131,7 +137,7 @@ public class CalDavController : ControllerBase
 
     [HttpPost("is_caldav_authenticated")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult IsCaldavAuthenticated(UserPassword userPassword)
+    public async Task<IActionResult> IsCaldavAuthenticatedAsync(UserPassword userPassword)
     {
         if (userPassword == null || string.IsNullOrEmpty(userPassword.User) || string.IsNullOrEmpty(userPassword.Password))
         {
@@ -145,7 +151,8 @@ public class CalDavController : ControllerBase
             });
         }
 
-        if (!GetUserData(userPassword.User, out var email, out var tenant, out var error))
+        (var succ, var email, var tenant, var error) = await GetUserDataAsync(userPassword.User);
+        if (!succ)
         {
             return BadRequest(error);
         }
@@ -189,9 +196,10 @@ public class CalDavController : ControllerBase
 
     #region private methods
 
-    private bool GetTenant(string calendarParam, out Tenant tenant, out object error)
+    private async Task<(bool, Tenant, object)> GetTenantAsync(string calendarParam)
     {
-        tenant = null;
+        Tenant tenant = null;
+        object error;
 
         if (string.IsNullOrEmpty(calendarParam))
         {
@@ -204,20 +212,22 @@ public class CalDavController : ControllerBase
                 message = "Argument is required"
             };
 
-            return false;
+            return (false, tenant, error);
         }
 
         _log.LogInformation($"CalDav calendarParam: {calendarParam}");
 
         var userParam = calendarParam.Split('/')[0];
-        return GetUserData(userParam, out _, out tenant, out error);
+        (var succ, var _, tenant, error) = await GetUserDataAsync(userParam);
+
+        return (succ, tenant, error);
     }
 
-    private bool GetUserData(string userParam, out string email, out Tenant tenant, out object error)
+    private async Task<(bool, string, Tenant, object)> GetUserDataAsync(string userParam)
     {
-        email = null;
-        tenant = null;
-        error = null;
+        string email = null;
+        Tenant tenant = null;
+        object error = null;
 
         if (string.IsNullOrEmpty(userParam))
         {
@@ -230,7 +240,7 @@ public class CalDavController : ControllerBase
                 message = "Argument is required"
             };
 
-            return false;
+            return (false, email, tenant, error);
         }
 
         var userData = userParam.Split('@');
@@ -246,7 +256,7 @@ public class CalDavController : ControllerBase
                 message = "PortalName is required"
             };
 
-            return false;
+            return (false, email, tenant, error);
         }
 
         email = string.Join("@", userData[0], userData[1]);
@@ -264,7 +274,8 @@ public class CalDavController : ControllerBase
 
         var tenantModel = new TenantModel { PortalName = tenantName };
 
-        if (!_commonMethods.GetTenant(tenantModel, out tenant))
+        (var succ, tenant) = await _commonMethods.TryGetTenantAsync(tenantModel);
+        if (!succ)
         {
             _log.LogError("Model without tenant");
 
@@ -275,7 +286,7 @@ public class CalDavController : ControllerBase
                 message = "PortalName is required"
             };
 
-            return false;
+            return (false, email, tenant, error);
         }
 
         if (tenant == null)
@@ -289,10 +300,10 @@ public class CalDavController : ControllerBase
                 message = "Portal not found"
             };
 
-            return false;
+            return (false, email, tenant, error);
         }
 
-        return true;
+        return (true, email, tenant, error);
     }
 
     private void SendToApi(string requestUriScheme,

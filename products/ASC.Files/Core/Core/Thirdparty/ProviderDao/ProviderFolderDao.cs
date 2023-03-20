@@ -473,14 +473,14 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return storageMaxUploadSize;
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public async Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             string folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder)
     {
         var selector = GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);
-        return folderDao.CreateDataWriteOperator(folderId, chunkedUploadSession, sessionHolder);
+        return await folderDao.CreateDataWriteOperatorAsync(folderId, chunkedUploadSession, sessionHolder);
     }
 
     private IAsyncEnumerable<Folder<string>> FilterByProvider(IAsyncEnumerable<Folder<string>> folders, ProviderFilter provider)

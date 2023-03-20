@@ -187,7 +187,7 @@ public class SsoController : BaseSettingsController
 
         if (!settings.EnableSso)
         {
-            ConverSsoUsersToOrdinary();
+            await ConverSsoUsersToOrdinaryAsync();
         }
 
         var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
@@ -217,14 +217,14 @@ public class SsoController : BaseSettingsController
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
-        ConverSsoUsersToOrdinary();
+        await ConverSsoUsersToOrdinaryAsync();
 
         await _messageService.SendAsync(MessageAction.SSODisabled);
 
         return defaultSettings;
     }
 
-    private void ConverSsoUsersToOrdinary()
+    private async Task ConverSsoUsersToOrdinaryAsync()
     {
         var ssoUsers = _userManager.GetUsers().Where(u => u.IsSSO()).ToList();
 
@@ -240,7 +240,7 @@ public class SsoController : BaseSettingsController
 
             existingSsoUser.ConvertExternalContactsToOrdinary();
 
-            _userManager.UpdateUserInfo(existingSsoUser);
+            await _userManager.UpdateUserInfoAsync(existingSsoUser);
         }
     }
 
@@ -251,7 +251,7 @@ public class SsoController : BaseSettingsController
 
     private async Task CheckSsoPermissionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())

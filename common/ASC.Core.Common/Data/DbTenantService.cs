@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Core.Data;
 
 [Scope]
@@ -57,9 +59,9 @@ public class DbTenantService : ITenantService
         ValidateDomain(domain, Tenant.DefaultTenant, true);
     }
 
-    public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
         var q = tenantDbContext.Tenants.AsQueryable();
 
         if (active)
@@ -72,25 +74,25 @@ public class DbTenantService : ITenantService
             q = q.Where(r => r.LastModified >= from);
         }
 
-        return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+        return await q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToListAsync();
     }
 
-    public IEnumerable<Tenant> GetTenants(List<int> ids)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        return tenantDbContext.Tenants
+        return await tenantDbContext.Tenants
             .Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
     }
 
-    public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var userDbContext = await _userDbContextFactory.CreateDbContextAsync();//TODO: remove
         IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
                 .Where(r => r.Status == TenantStatus.Active)
                 .Join(userDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
@@ -114,7 +116,7 @@ public class DbTenantService : ITenantService
             var q = query()
                 .Where(r => login.Contains('@') ? r.User.Email == login : r.User.Id.ToString() == login);
 
-            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+            return await q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         if (Guid.TryParse(login, out var userId))
@@ -122,27 +124,35 @@ public class DbTenantService : ITenantService
             var pwdHash = GetPasswordHash(userId, passwordHash);
             var q = query()
                 .Where(r => r.User.Id == userId)
-                .Where(r => r.UserSecurity.PwdHash == pwdHash)
-                ;
+                .Where(r => r.UserSecurity.PwdHash == pwdHash);
 
-            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+            return await q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToListAsync();
         }
         else
         {
-            var usersQuery = userDbContext.Users
+            var usersQuery = await userDbContext.Users
                 .Where(r => r.Email == login)
                 .Where(r => r.Status == EmployeeStatus.Active)
                 .Where(r => !r.Removed)
                 .Select(r => r.Id)
-                .ToList();
+                .ToListAsync();
 
             var passwordHashs = usersQuery.Select(r => GetPasswordHash(r, passwordHash)).ToList();
 
             var q = query()
                 .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
-            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
+            return await q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToListAsync();
         }
+    }
+
+    public async Task<Tenant> GetTenantAsync(int id)
+    {
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await tenantDbContext.Tenants
+            .Where(r => r.Id == id)
+            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public Tenant GetTenant(int id)
@@ -152,6 +162,22 @@ public class DbTenantService : ITenantService
             .Where(r => r.Id == id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
             .SingleOrDefault();
+    }
+
+    public async Task<Tenant> GetTenantAsync(string domain)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domain);
+
+        domain = domain.ToLowerInvariant();
+
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        return await tenantDbContext.Tenants
+            .Where(r => r.Alias == domain || r.MappedDomain == domain)
+            .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
+            .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
+            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
     }
 
     public Tenant GetTenant(string domain)

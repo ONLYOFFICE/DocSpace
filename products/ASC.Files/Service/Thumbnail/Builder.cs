@@ -88,7 +88,7 @@ public class Builder<T>
     {
         try
         {
-            _tenantManager.SetCurrentTenant(fileData.TenantId);
+           await _tenantManager.SetCurrentTenantAsync(fileData.TenantId);
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
@@ -192,7 +192,7 @@ public class Builder<T>
 
         using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
         {
-            await Crop(fileDao, file, streamThumb);
+            await CropAsync(fileDao, file, streamThumb);
         }
 
         File.Delete(thumbPath);
@@ -267,8 +267,8 @@ public class Builder<T>
 
     private async Task<(int, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
     {
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var fileExtension = file.ConvertedExtension;
         var docKey = _documentServiceHelper.GetDocKey(file);
@@ -346,17 +346,17 @@ public class Builder<T>
 
         using (var stream = await fileDao.GetFileStreamAsync(file))
         {
-            await Crop(fileDao, file, stream);
+            await CropAsync(fileDao, file, stream);
         }
 
         _logger.DebugCropImageSuccessfullySaved(file.Id.ToString());
     }
 
-    private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
+    private async Task CropAsync(IFileDao<T> fileDao, File<T> file, Stream stream)
     {
         using var sourceImg = await Image.LoadAsync(stream);
 
-        if (_globalStore.GetStore() is DiscDataStore)
+        if (await _globalStore.GetStoreAsync() is DiscDataStore)
         {
             foreach(var w in _config.Sizes)
             {
@@ -407,7 +407,7 @@ public class Builder<T>
                 break;
         }
  
-        await _globalStore.GetStore().SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
+        await (await _globalStore.GetStoreAsync()).SaveAsync(fileDao.GetUniqThumbnailPath(file, width, height), targetStream);
     }
 
     private Image GetImageThumbnail(Image sourceBitmap, int thumbnaillWidth, int thumbnaillHeight)

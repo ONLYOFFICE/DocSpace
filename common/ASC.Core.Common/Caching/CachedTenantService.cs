@@ -190,18 +190,34 @@ class CachedTenantService : ITenantService
         _service.ValidateDomain(domain);
     }
 
-    public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
+    public Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash)
     {
-        return _service.GetTenants(login, passwordHash);
+        return _service.GetTenantsAsync(login, passwordHash);
     }
 
-    public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
+    public Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
     {
-        return _service.GetTenants(from, active);
+        return _service.GetTenantsAsync(from, active);
     }
-    public IEnumerable<Tenant> GetTenants(List<int> ids)
+    public Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
-        return _service.GetTenants(ids);
+        return _service.GetTenantsAsync(ids);
+    }
+
+    public async Task<Tenant> GetTenantAsync(int id)
+    {
+        var tenants = _tenantServiceCache.GetTenantStore();
+        var t = tenants.Get(id);
+        if (t == null)
+        {
+            t = await _service.GetTenantAsync(id);
+            if (t != null)
+            {
+                tenants.Insert(t);
+            }
+        }
+
+        return t;
     }
 
     public Tenant GetTenant(int id)
@@ -211,6 +227,22 @@ class CachedTenantService : ITenantService
         if (t == null)
         {
             t = _service.GetTenant(id);
+            if (t != null)
+            {
+                tenants.Insert(t);
+            }
+        }
+
+        return t;
+    }
+
+    public async Task<Tenant> GetTenantAsync(string domain)
+    {
+        var tenants = _tenantServiceCache.GetTenantStore();
+        var t = tenants.Get(domain);
+        if (t == null)
+        {
+            t = await _service.GetTenantAsync(domain);
             if (t != null)
             {
                 tenants.Insert(t);

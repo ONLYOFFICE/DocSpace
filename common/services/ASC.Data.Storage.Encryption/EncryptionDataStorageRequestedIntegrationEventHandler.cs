@@ -39,7 +39,7 @@ public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegratio
         _logger = logger;
     }
 
-    public async Task HandleAsync(EncryptionDataStorageRequestedIntegrationEvent @event)
+    public async Task Handle(EncryptionDataStorageRequestedIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {

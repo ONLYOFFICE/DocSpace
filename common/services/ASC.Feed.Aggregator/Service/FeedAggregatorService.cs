@@ -47,7 +47,7 @@ public class FeedAggregatorService : FeedBaseService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await AggregateFeeds(cfg.AggregateInterval);
+            await AggregateFeedsAsync(cfg.AggregateInterval);
 
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
@@ -87,7 +87,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private async Task AggregateFeeds(object interval)
+    private async Task AggregateFeedsAsync(object interval)
     {
         try
         {
@@ -134,12 +134,12 @@ public class FeedAggregatorService : FeedBaseService
 
                     try
                     {
-                        if (tenantManager.GetTenant(tenant) == null)
+                        if (await tenantManager.GetTenantAsync(tenant) == null)
                         {
                             continue;
                         }
 
-                        tenantManager.SetCurrentTenant(tenant);
+                        await tenantManager.SetCurrentTenantAsync(tenant);
                         var users = userManager.GetUsers();
 
                         var feeds = await Attempt(10, async () => (await module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant })).Where(r => r.Item1 != null).ToList());
@@ -162,7 +162,7 @@ public class FeedAggregatorService : FeedBaseService
                                 continue;
                             }
 
-                            await module.VisibleFor(feedsRow, u.Id);
+                            await module.VisibleForAsync(feedsRow, u.Id);
                         }
 
                         result.AddRange(feedsRow.Select(r => r.Item1));

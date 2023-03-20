@@ -144,7 +144,7 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpGet("tfaapp/confirm")]
-    public object TfaConfirmUrl()
+    public async Task<object> TfaConfirmUrlAsync()
     {
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
@@ -155,7 +155,7 @@ public class TfaappController : BaseSettingsController
                                 ? ConfirmType.PhoneActivation
                                 : ConfirmType.PhoneAuth;
 
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, confirmType);
         }
 
         if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
@@ -164,7 +164,7 @@ public class TfaappController : BaseSettingsController
                 ? ConfirmType.TfaAuth
                 : ConfirmType.TfaActivation;
 
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, confirmType);
         }
 
         return string.Empty;
@@ -173,7 +173,7 @@ public class TfaappController : BaseSettingsController
     [HttpPut("tfaapp")]
     public async Task<bool> TfaSettingsAsync(TfaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var result = false;
 
@@ -247,7 +247,7 @@ public class TfaappController : BaseSettingsController
 
         if (result)
         {
-            await _cookiesManager.ResetTenantCookie();
+            await _cookiesManager.ResetTenantCookieAsync();
         }
 
         await _messageService.SendAsync(action);
@@ -267,7 +267,7 @@ public class TfaappController : BaseSettingsController
     {
         if (await TfaSettingsAsync(inDto))
         {
-            return TfaConfirmUrl();
+            return await TfaConfirmUrlAsync();
         }
 
         return string.Empty;
@@ -341,7 +341,7 @@ public class TfaappController : BaseSettingsController
 
         var user = _userManager.GetUsers(id);
 
-        if (!isMe && !_permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
+        if (!isMe && !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
         {
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
@@ -361,8 +361,8 @@ public class TfaappController : BaseSettingsController
 
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookie();
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
+            await _cookiesManager.ResetTenantCookieAsync();
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation);
         }
 
         await _studioNotifyService.SendMsgTfaResetAsync(user);

@@ -120,7 +120,7 @@ internal sealed class BackupCleanerService : BackgroundService
 
             try
             {
-                var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
+                var backupStorage = await backupStorageFactory.GetBackupStorageAsync(backupRecord);
                 if (backupStorage == null)
                 {
                     continue;

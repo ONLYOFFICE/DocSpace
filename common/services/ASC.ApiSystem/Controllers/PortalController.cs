@@ -325,9 +325,10 @@ public class PortalController : ControllerBase
     [HttpDelete("remove")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult Remove([FromQuery] TenantModel model)
+    public async Task<IActionResult> RemoveAsync([FromQuery] TenantModel model)
     {
-        if (!_commonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             _log.LogError("Model without tenant");
 
@@ -360,9 +361,10 @@ public class PortalController : ControllerBase
     [HttpPut("status")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult ChangeStatus(TenantModel model)
+    public async Task<IActionResult> ChangeStatusAsync(TenantModel model)
     {
-        if (!_commonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             _log.LogError("Model without tenant");
 
@@ -435,7 +437,7 @@ public class PortalController : ControllerBase
     [HttpGet("get")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult GetPortals([FromQuery] TenantModel model)
+    public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model)
     {
         try
         {
@@ -445,13 +447,13 @@ public class PortalController : ControllerBase
             if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
             {
                 empty = false;
-                tenants.AddRange(_hostedSolution.FindTenants((model.Email ?? "").Trim()));
+                tenants.AddRange(await _hostedSolution.FindTenantsAsync((model.Email ?? "").Trim()));
             }
 
             if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 empty = false;
-                var tenant = _hostedSolution.GetTenant((model.PortalName ?? "").Trim());
+                var tenant = (await _hostedSolution.GetTenantAsync((model.PortalName ?? "").Trim()));
 
                 if (tenant != null)
                 {
@@ -462,7 +464,7 @@ public class PortalController : ControllerBase
             if (model.TenantId.HasValue)
             {
                 empty = false;
-                var tenant = _hostedSolution.GetTenant(model.TenantId.Value);
+                var tenant = await _hostedSolution.GetTenantAsync(model.TenantId.Value);
 
                 if (tenant != null)
                 {
@@ -472,7 +474,7 @@ public class PortalController : ControllerBase
 
             if (empty)
             {
-                tenants.AddRange(_hostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.Id).ToList());
+                tenants.AddRange((await _hostedSolution.GetTenantsAsync(DateTime.MinValue)).OrderBy(t => t.Id).ToList());
             }
 
             var tenantsWrapper = tenants

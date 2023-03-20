@@ -290,9 +290,9 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
         return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
     }
 
-    public bool ValidateKeys()
+    public async Task<bool> ValidateKeysAsync()
     {
-        return double.TryParse(GetBalanceAsync(TenantManager.GetCurrentTenant(false), true).Result, NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+        return double.TryParse(GetBalanceAsync(await TenantManager.GetCurrentTenantAsync(false), true).Result, NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
     }
 }
 
@@ -429,11 +429,11 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
     }
 
 
-    public bool ValidateKeys()
+    public async Task<bool> ValidateKeysAsync()
     {
         try
         {
-            IncomingPhoneNumberResource.Read(client: new TwilioRestClient(AccountSid, AuthToken));
+            await IncomingPhoneNumberResource.ReadAsync(client: new TwilioRestClient(AccountSid, AuthToken));
             return true;
         }
         catch (Exception)

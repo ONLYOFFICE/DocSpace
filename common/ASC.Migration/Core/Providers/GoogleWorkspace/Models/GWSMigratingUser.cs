@@ -109,7 +109,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -142,7 +142,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
                         {
                             imageStream.CopyTo(ms);
                         }
-                        _userManager.SaveUserPhoto(saved.Id, ms.ToArray());
+                        await _userManager.SaveUserPhotoAsync(saved.Id, ms.ToArray());
                     }
                 }
             }

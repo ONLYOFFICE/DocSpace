@@ -91,7 +91,7 @@ public class SecurityController : BaseSettingsController
 
         foreach (var r in ids)
         {
-            var i = _webItemSecurity.GetSecurityInfo(r);
+            var i = await _webItemSecurity.GetSecurityInfoAsync(r);
 
             var s = new SecurityDto
             {
@@ -114,11 +114,11 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpGet("security/{id}")]
-    public bool GetWebItemSecurityInfo(Guid id)
+    public async Task<bool> GetWebItemSecurityInfoAsync(Guid id)
     {
         var module = WebItemManager[id];
 
-        return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
+        return module != null && !await module.IsDisabledAsync(_webItemSecurity, _authContext);
     }
 
     [HttpGet("security/modules")]
@@ -146,7 +146,7 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security/password")]
     public async Task<PasswordSettings> UpdatePasswordSettingsAsync(PasswordSettingsRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
 
@@ -166,9 +166,9 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security")]
     public async Task<IEnumerable<SecurityDto>> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
+        await _webItemSecurity.SetSecurityAsync(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
         var securityInfo = await GetWebItemSecurityInfo(new List<string> { inDto.Id }).ToListAsync();
 
         if (inDto.Subjects == null)
@@ -203,7 +203,7 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security/access")]
     public async Task<IEnumerable<SecurityDto>> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var itemList = new ItemDictionary<string, bool>();
 
@@ -226,7 +226,7 @@ public class SecurityController : BaseSettingsController
             {
                 if (WebItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
                 {
-                    var productInfo = _webItemSecurity.GetSecurityInfo(item.Key);
+                    var productInfo = await _webItemSecurity.GetSecurityInfoAsync(item.Key);
                     var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
                     var selectedUsers = productInfo.Users.Select(user => user.Id).ToList();
                     selectedUsers.AddRange(selectedGroups);
@@ -241,7 +241,7 @@ public class SecurityController : BaseSettingsController
                 _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
-            _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);
+            await _webItemSecurity.SetSecurityAsync(item.Key, item.Value, subjects);
         }
 
         await _messageService.SendAsync(MessageAction.ProductsListUpdated);
@@ -270,7 +270,7 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security/administrator")]
     public async Task<object> SetProductAdministrator(SecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && (await _tenantManager.GetCurrentTenantQuotaAsync()).Free;
         if (isStartup)
@@ -297,9 +297,9 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security/loginSettings")]
-    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
+    public async Task<LoginSettingsDto> UpdateLoginSettingsAsync(LoginSettingsRequestDto loginSettingsRequestDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var attemptsCount = loginSettingsRequestDto.AttemptCount;
         var checkPeriod = loginSettingsRequestDto.CheckPeriod;
@@ -331,9 +331,9 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpGet("security/loginSettings")]
-    public LoginSettingsDto GetLoginSettings()
+    public async Task<LoginSettingsDto> GetLoginSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = _settingsManager.Load<LoginSettings>();
 

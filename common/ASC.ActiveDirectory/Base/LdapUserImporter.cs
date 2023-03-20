@@ -398,15 +398,15 @@ public class LdapUserImporter : IDisposable
             if (Equals(groupInfo, Constants.LostGroupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipCreatingPortalGroup(ldapUserGroup.DistinguishedName, ldapUserGroup.Sid);
-                groupInfo = UserManager.SaveGroupInfo(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
+                 groupInfo = await UserManager.SaveGroupInfoAsync(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
 
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroupAsync(userInfo.Id, groupInfo.ID);
             }
             else if (!portalUserLdapGroups.Contains(groupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroupAsync(userInfo.Id, groupInfo.ID);
             }
 
             actualPortalLdapGroups.Add(groupInfo);
@@ -417,7 +417,7 @@ public class LdapUserImporter : IDisposable
             if (!actualPortalLdapGroups.Contains(portalUserLdapGroup))
             {
                 _logger.DebugTrySyncUserGroupMembershipRemovingUserFromGroup(userInfo.UserName, ldapUser.Sid, portalUserLdapGroup.Name, portalUserLdapGroup.Sid);
-                UserManager.RemoveUserFromGroup(userInfo.Id, portalUserLdapGroup.ID);
+                await UserManager.RemoveUserFromGroupAsync(userInfo.Id, portalUserLdapGroup.ID);
             }
         }
 

@@ -443,11 +443,11 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return Task.FromResult(2L * 1024L * 1024L * 1024L);
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             string folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return null;
+        return Task.FromResult<IDataWriteOperator>(null);
     }
 }

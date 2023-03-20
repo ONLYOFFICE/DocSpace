@@ -79,7 +79,7 @@ public class FirstTimeTenantSettings
         {
             var (email, passwordHash, lng, timeZone, amiid, subscribeFromSite) = inDto;
 
-            var tenant = _tenantManager.GetCurrentTenant();
+            var tenant = await _tenantManager.GetCurrentTenantAsync();
             var settings = _settingsManager.Load<WizardSettings>();
             if (settings.Completed)
             {
@@ -93,15 +93,15 @@ public class FirstTimeTenantSettings
 
             if (tenant.OwnerId == Guid.Empty)
             {
-                Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
-                tenant = _tenantManager.GetTenant(tenant.Id);
+                await Task.Delay(TimeSpan.FromSeconds(6));// wait cache interval
+                tenant = await _tenantManager.GetTenantAsync(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
                     _log.ErrorOwnerEmpty(tenant.Id);
                 }
             }
 
-            var currentUser = _userManager.GetUsers(_tenantManager.GetCurrentTenant().OwnerId);
+            var currentUser = _userManager.GetUsers((await _tenantManager.GetCurrentTenantAsync()).OwnerId);
 
             if (!UserManagerWrapper.ValidateEmail(email))
             {
@@ -113,7 +113,7 @@ public class FirstTimeTenantSettings
                 throw new Exception(Resource.ErrorPasswordEmpty);
             }
 
-            _securityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
+            await _securityContext.SetUserPasswordHashAsync(currentUser.Id, passwordHash);
 
             email = email.Trim();
             if (currentUser.Email != email)
@@ -122,7 +122,7 @@ public class FirstTimeTenantSettings
                 currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
 
-            _userManager.UpdateUserInfo(currentUser);
+            await _userManager.UpdateUserInfoAsync(currentUser);
 
             if (RequestLicense)
             {
@@ -142,7 +142,7 @@ public class FirstTimeTenantSettings
             _tenantManager.SaveTenant(tenant);
 
             await _studioNotifyService.SendCongratulationsAsync(currentUser);
-            _studioNotifyService.SendRegData(currentUser);
+            await _studioNotifyService.SendRegDataAsync(currentUser);
 
             if (subscribeFromSite && _tenantExtra.Opensource && !_coreBaseSettings.CustomMode)
             {

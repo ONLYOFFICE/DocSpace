@@ -56,7 +56,7 @@ public class OCMigratingGroups : MigratingGroup
         Module = new MigrationModules(ModuleName, MigrationResource.OnlyofficeModuleNamePeople);
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         var existingGroups = _userManager.GetGroups().ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
@@ -66,7 +66,7 @@ public class OCMigratingGroups : MigratingGroup
         }
         else
         {
-            _groupinfo = _userManager.SaveGroupInfo(_groupinfo);
+            _groupinfo = await _userManager.SaveGroupInfoAsync(_groupinfo);
         }
         foreach (var userGuid in UsersGuidList)
         {
@@ -80,7 +80,7 @@ public class OCMigratingGroups : MigratingGroup
                 }
                 if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
                 {
-                    await _userManager.AddUserIntoGroup(user.Id, _groupinfo.ID);
+                    await _userManager.AddUserIntoGroupAsync(user.Id, _groupinfo.ID);
                 }
             }
             catch (Exception ex)

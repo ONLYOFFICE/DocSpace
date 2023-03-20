@@ -79,11 +79,11 @@ public class CustomSchemasController : BaseSettingsController
     [HttpPost("customschemas")]
     public async Task<SchemaRequestsDto> SaveNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         _customNamingPeople.SetPeopleNames(inDto.Id);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        _tenantManager.SaveTenant(await _tenantManager.GetCurrentTenantAsync());
 
         await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
@@ -93,7 +93,7 @@ public class CustomSchemasController : BaseSettingsController
     [HttpPut("customschemas")]
     public async Task<SchemaRequestsDto> SaveCustomNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var usrCaption = (inDto.UserCaption ?? "").Trim();
         var usrsCaption = (inDto.UsersCaption ?? "").Trim();
@@ -134,7 +134,7 @@ public class CustomSchemasController : BaseSettingsController
 
         _customNamingPeople.SetPeopleNames(names);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        _tenantManager.SaveTenant(await _tenantManager.GetCurrentTenantAsync());
 
         await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 

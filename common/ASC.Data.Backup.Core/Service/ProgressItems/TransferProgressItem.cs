@@ -97,7 +97,7 @@ public class TransferProgressItem : BaseBackupProgressItem
     protected override async Task DoJob()
     {
         var tempFile = PathHelper.GetTempFileName(TempFolder);
-        var tenant = _tenantManager.GetTenant(TenantId);
+        var tenant = await _tenantManager.GetTenantAsync(TenantId);
         var alias = tenant.Alias;
 
         try
@@ -107,7 +107,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             _transferPortalTask = scope.ServiceProvider.GetService<TransferPortalTask>();
 
 
-            _notifyHelper.SendAboutTransferStart(tenant, TargetRegion, Notify);
+            await _notifyHelper.SendAboutTransferStartAsync(tenant, TargetRegion, Notify);
             var transferProgressItem = _transferPortalTask;
             transferProgressItem.Init(TenantId, TargetRegion, Limit, TempFolder);
             transferProgressItem.ProgressChanged += (sender, args) =>
@@ -119,7 +119,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             await transferProgressItem.RunJob();
 
             Link = GetLink(alias, false);
-            _notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify, transferProgressItem.ToTenantId);
+            await _notifyHelper.SendAboutTransferCompleteAsync(tenant, TargetRegion, Link, !Notify, transferProgressItem.ToTenantId);
 
             PublishChanges();
         }
@@ -129,7 +129,7 @@ public class TransferProgressItem : BaseBackupProgressItem
             Exception = error;
 
             Link = GetLink(alias, true);
-            _notifyHelper.SendAboutTransferError(tenant, TargetRegion, Link, !Notify);
+            await _notifyHelper.SendAboutTransferErrorAsync(tenant, TargetRegion, Link, !Notify);
         }
         finally
         {

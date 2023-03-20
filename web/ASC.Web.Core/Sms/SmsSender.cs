@@ -46,7 +46,7 @@ public class SmsSender
         _log = logger;
     }
 
-    public Task<bool> SendSMSAsync(string number, string message)
+    public async Task<bool> SendSMSAsync(string number, string message)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(number);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(message);
@@ -58,15 +58,15 @@ public class SmsSender
 
         if ("log".Equals(_configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
         {
-            var tenant = _tenantManager.GetCurrentTenant(false);
+            var tenant = await _tenantManager.GetCurrentTenantAsync(false);
             var tenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             _log.InformationSendSmsToPhoneNumber(tenantId, number, message);
-            return Task.FromResult(false);
+            return false;
         }
 
         number = new Regex("[^\\d+]").Replace(number, string.Empty);
-        return _smsProviderManager.SendMessageAsync(number, message);
+        return await _smsProviderManager.SendMessageAsync(number, message);
     }
 
     public static string GetPhoneValueDigits(string mobilePhone)

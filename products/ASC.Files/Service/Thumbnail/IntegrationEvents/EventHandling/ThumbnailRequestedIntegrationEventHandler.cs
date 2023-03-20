@@ -82,7 +82,7 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
     }
 
 
-    public async Task HandleAsync(ThumbnailRequestedIntegrationEvent @event)
+    public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {

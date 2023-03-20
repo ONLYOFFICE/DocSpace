@@ -212,7 +212,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-            if (_factoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds.ToArray()), out var searchIds))
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s => func(s).In(r => r.Id, fileIds.ToArray()));
+            if (succ)
             {
                 query = query.Where(r => searchIds.Contains(r.Id));
             }
@@ -306,7 +307,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
 
-            if (_factoryIndexer.TrySelectIds(expression, out var searchIds))
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(expression);
+            if (succ)
             {
                 q = q.Where(r => searchIds.Contains(r.Id));
             }
@@ -364,28 +366,28 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
+    public async Task<Stream> GetFileStreamAsync(File<int> file, long offset)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), offset);
+        return await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(string.Empty, GetUniqFilePath(file), offset);
     }
 
-    public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
+    public async Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
-        return _globalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
+        return await (await _globalStore.GetStoreAsync()).GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                  new List<string>
                                                      {
                                                              string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
                                                      });
     }
 
-    public Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
+    public async Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
     {
-        return Task.FromResult(_globalStore.GetStore().IsSupportedPreSignedUri);
+        return (await _globalStore.GetStoreAsync()).IsSupportedPreSignedUri;
     }
 
-    public Task<Stream> GetFileStreamAsync(File<int> file)
+    public async Task<Stream> GetFileStreamAsync(File<int> file)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+        return await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
     }
 
     public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream)
@@ -542,7 +544,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 {
                     if (isNew)
                     {
-                        var stored = await _globalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.Id));
+                        var stored = await (await _globalStore.GetStoreAsync()).IsDirectoryAsync(GetUniqFileDirectory(file.Id));
                         await DeleteFileAsync(file.Id, stored);
                     }
                     else if (!await IsExistOnStorageAsync(file))
@@ -717,12 +719,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task DeleteVersionStreamAsync(File<int> file)
     {
-        await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.Id, file.Version));
+        await (await _globalStore.GetStoreAsync()).DeleteDirectoryAsync(GetUniqFileVersionPath(file.Id, file.Version));
     }
 
     private async Task SaveFileStreamAsync(File<int> file, Stream stream)
     {
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
+        await (await _globalStore.GetStoreAsync()).SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
     }
 
     public Task DeleteFileAsync(int fileId)
@@ -970,7 +972,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
-                    await _globalStore.GetStore().CopyAsync(String.Empty,
+                    await (await _globalStore.GetStoreAsync()).CopyAsync(String.Empty,
                                          GetUniqThumbnailPath(file, size.Width, size.Height),
                                          String.Empty,
                                          GetUniqThumbnailPath(copy, size.Width, size.Height));
@@ -1232,7 +1234,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-            if (_factoryIndexer.TrySelectIds(s => func(s), out var searchIds))
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s => func(s));
+            if (succ)
             {
                 q = q.Where(r => searchIds.Contains(r.Id));
             }
@@ -1285,7 +1288,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        if (_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
+        (var succ, var ids) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(searchText));
+        if (succ)
         {
             var query = GetFileQuery(filesDbContext, r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
 
@@ -1321,12 +1325,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task DeleteFolderAsync(int fileId)
     {
-        await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
+        await (await _globalStore.GetStoreAsync()).DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
     }
 
-    public Task<bool> IsExistOnStorageAsync(File<int> file)
+    public async Task<bool> IsExistOnStorageAsync(File<int> file)
     {
-        return _globalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+        return await (await _globalStore.GetStoreAsync()).IsFileAsync(string.Empty, GetUniqFilePath(file));
     }
 
     private const string DiffTitle = "diff.zip";
@@ -1350,7 +1354,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.Version == file.Version)
             .ExecuteUpdateAsync(f => f.SetProperty(p => p.Changes, changes.Trim()));
 
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+        await (await _globalStore.GetStoreAsync()).SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
     }
 
     public async IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1383,9 +1387,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public Task<Stream> GetDifferenceStreamAsync(File<int> file)
+    public async Task<Stream> GetDifferenceStreamAsync(File<int> file)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
+        return await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
     }
 
     public async Task<bool> ContainChangesAsync(int fileId, int fileVersion)
@@ -1491,7 +1495,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         var thumnailName = GetThumnailName(width, height);
         var path = GetUniqFilePath(file, thumnailName);
-        var storage = _globalStore.GetStore();
+        var storage = await _globalStore.GetStoreAsync();
         var isFile = await storage.IsFileAsync(string.Empty, path);
 
         if (!isFile)
@@ -1662,19 +1666,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
             });
     }
 
-    protected internal Task<DbFile> InitDocumentAsync(DbFile dbFile)
+    protected internal async Task<DbFile> InitDocumentAsync(DbFile dbFile)
     {
-        if (!_factoryIndexer.CanIndexByContent(dbFile))
+        if (!await _factoryIndexer.CanIndexByContentAsync(dbFile))
         {
             dbFile.Document = new Document
             {
                 Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
             };
 
-            return Task.FromResult(dbFile);
+            return dbFile;
         }
 
-        return InernalInitDocumentAsync(dbFile);
+        return await InernalInitDocumentAsync(dbFile);
     }
 
     private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)

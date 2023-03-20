@@ -80,7 +80,7 @@ public class StaticUploader
             return null;
         }
 
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var key = GetCacheKey(tenantId.ToString(), relativePath);
 
         lock (_locker)
@@ -103,7 +103,7 @@ public class StaticUploader
         return _uploadOperation.Result;
     }
 
-    public void UploadDir(string relativePath, string mappedPath)
+    public async Task UploadDirAsync(string relativePath, string mappedPath)
     {
         if (!CanUpload())
         {
@@ -115,7 +115,7 @@ public class StaticUploader
             return;
         }
 
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var key = typeof(UploadOperationProgress).FullName + tenant.Id;
 
         lock (_locker)
@@ -194,11 +194,11 @@ public class UploadOperation
         try
         {
             path = path.TrimStart('/');
-            var tenant = _tenantManager.GetTenant(tenantId);
+            var tenant = await _tenantManager.GetTenantAsync(tenantId);
             _tenantManager.SetCurrentTenant(tenant);
             await _securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);
 
-            var dataStore = _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>());
+            var dataStore = await _storageSettingsHelper.DataStoreAsync(_settingsManager.Load<CdnStorageSettings>());
 
             if (File.Exists(mappedPath))
             {
@@ -258,7 +258,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         await using var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
-        var tenant = tenantManager.GetTenant(TenantId);
+        var tenant = await tenantManager.GetTenantAsync(TenantId);
         tenantManager.SetCurrentTenant(tenant);
 
         tenant.SetStatus(TenantStatus.Migrating);

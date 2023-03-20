@@ -120,7 +120,7 @@ public class SsoHandlerService
                 throw new SSOException("Single sign-on settings are disabled", MessageKey.SsoSettingsDisabled);
             }
 
-            if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).Sso))
+            if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).Sso))
             {
                 throw new SSOException("Single sign-on settings are not paid", MessageKey.ErrorNotAllowedOption);
             }
@@ -178,7 +178,7 @@ public class SsoHandlerService
                     {
                         var loginName = authenticatedUserInfo.DisplayUserName(false, _displayUserSettingsHelper);
                         await _messageService.SendAsync(loginName, MessageAction.Logout);
-                        await _cookiesManager.ResetUserCookie();
+                        await _cookiesManager.ResetUserCookieAsync();
                         _securityContext.Logout();
                     }
                     else
@@ -221,7 +221,7 @@ public class SsoHandlerService
                 var loginName = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
                 await _messageService.SendAsync(loginName, MessageAction.Logout);
 
-                await _cookiesManager.ResetUserCookie();
+                await _cookiesManager.ResetUserCookieAsync();
                 _securityContext.Logout();
             }
         }

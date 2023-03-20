@@ -87,7 +87,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     public async Task<string> GetPresignedUri(T fileId)
     {
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
-        return _pathProvider.GetFileStreamUrl(file);
+        return await _pathProvider.GetFileStreamUrlAsync(file);
     }
 
     public async IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(CheckConversionRequestDto<T> cheqConversionRequestDto)

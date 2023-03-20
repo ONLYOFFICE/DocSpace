@@ -113,7 +113,7 @@ public class StudioWhatsNewNotify
     {
         try
         {
-            var tenant = _tenantManager.GetTenant(tenantid);
+            var tenant = await _tenantManager.GetTenantAsync(tenantid);
             if (tenant == null ||
                 tenant.Status != TenantStatus.Active ||
                 !TimeToSendWhatsNew(_tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
@@ -227,7 +227,7 @@ public class StudioWhatsNewNotify
                 if (activities.Count > 0)
                 {
                     _log.InformationSendWhatsNewTo(user.Email);
-                    client.SendNoticeAsync(
+                    await client.SendNoticeAsync(
                         Actions.SendWhatsNew, null, user,
                         new TagValue(Tags.Activities, activities),
                         new TagValue(Tags.Date, DateToString(scheduleDate.AddDays(-1), culture)),

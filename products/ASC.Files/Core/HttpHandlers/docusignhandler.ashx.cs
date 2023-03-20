@@ -180,7 +180,7 @@ public class DocuSignHandlerService
 
                             var file = await _docuSignHelper.SaveDocumentAsync(envelopeId, documentId, documentName, folderId);
 
-                            _notifyClient.SendDocuSignComplete(file, sourceTitle ?? documentName);
+                            await _notifyClient.SendDocuSignCompleteAsync(file, sourceTitle ?? documentName);
                         }
                         catch (Exception ex)
                         {
@@ -193,7 +193,7 @@ public class DocuSignHandlerService
                     var statusFromResource = status == DocuSignStatus.Declined
                                                  ? FilesCommonResource.DocuSignStatusDeclined
                                                  : FilesCommonResource.DocuSignStatusVoided;
-                    _notifyClient.SendDocuSignStatus(subject, statusFromResource);
+                    await _notifyClient.SendDocuSignStatusAsync(subject, statusFromResource);
                     break;
             }
         }

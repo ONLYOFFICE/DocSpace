@@ -56,9 +56,9 @@ public class FoldersModule : FeedModule
         _folderDao = daoFactory.GetFolderDao<int>();
     }
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override async Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
             return false;
         }

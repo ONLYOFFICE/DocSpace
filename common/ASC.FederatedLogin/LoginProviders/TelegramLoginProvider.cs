@@ -56,17 +56,17 @@ public class TelegramLoginProvider : Consumer, IValidateKeysProvider, ITelegramL
         return !string.IsNullOrEmpty(TelegramBotToken) && !string.IsNullOrEmpty(TelegramBotName);
     }
 
-    public bool ValidateKeys()
+    public async Task<bool> ValidateKeysAsync()
     {
         if (TelegramBotToken.Length == 0)
         {
-            _telegramHelper.DisableClient(TenantManager.GetCurrentTenant().Id);
+            _telegramHelper.DisableClient((await TenantManager.GetCurrentTenantAsync()).Id);
 
             return true;
         }
         else
         {
-            return _telegramHelper.CreateClient(TenantManager.GetCurrentTenant().Id, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
+            return _telegramHelper.CreateClient((await TenantManager.GetCurrentTenantAsync()).Id, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
         }
     }
 }

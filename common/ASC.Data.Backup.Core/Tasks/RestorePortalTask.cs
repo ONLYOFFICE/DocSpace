@@ -187,13 +187,13 @@ public class RestorePortalTask : PortalTaskBase
         if (ProcessStorage)
         {
             var storageModules = StorageFactoryConfig.GetModuleList(_region).Where(IsStorageModuleAllowed);
-            var tenants = _tenantManager.GetTenants(false);
+            var tenants = await _tenantManager.GetTenantsAsync(false);
 
             stepscount += storageModules.Count() * tenants.Count;
 
             SetStepsCount(stepscount + 1);
 
-            await DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorageAsync(storageModules, tenants);
         }
         else
         {
@@ -405,7 +405,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorageAsync(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 

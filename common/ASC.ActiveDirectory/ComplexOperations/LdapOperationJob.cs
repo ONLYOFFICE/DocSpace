@@ -299,7 +299,7 @@ public class LdapOperationJob : DistributedTaskProgress
             {
                 _logger.DebugTurnOffLDAP();
 
-                TurnOffLDAP();
+                await TurnOffLDAPAsync();
                 var ldapCurrentUserPhotos = _settingsManager.Load<LdapCurrentUserPhotos>().GetDefault();
                 _settingsManager.Save(ldapCurrentUserPhotos);
 
@@ -349,7 +349,7 @@ public class LdapOperationJob : DistributedTaskProgress
             : "", "");
     }
 
-    private void TurnOffLDAP()
+    private async Task TurnOffLDAPAsync()
     {
         const double percents = 48;
 
@@ -380,7 +380,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(existingLDAPUser.GetUserInfoString());
 
-                    _userManager.UpdateUserInfo(existingLDAPUser);
+                    await _userManager.UpdateUserInfoAsync(existingLDAPUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:
@@ -408,7 +408,7 @@ public class LdapOperationJob : DistributedTaskProgress
         {
             _logger.DebugSyncLDAPUsers();
 
-            await SyncLDAPUsers();
+            await SyncLDAPUsersAsync();
         }
         else
         {
@@ -438,7 +438,7 @@ public class LdapOperationJob : DistributedTaskProgress
             foreach (var guid in ph.CurrentPhotos.Keys)
             {
                 _logger.InfoSyncLdapAvatarsRemovingPhoto(guid);
-                await _userPhotoManager.RemovePhoto(guid);
+                await _userPhotoManager.RemovePhotoAsync(guid);
                 _userPhotoManager.ResetThumbnailSettings(guid);
             }
 
@@ -487,7 +487,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 SetProgress((int)(currentPercent += step),
                     string.Format("{0}: {1}", Resource.LdapSettingsStatusSavingUserPhoto, _userFormatter.GetUserName(user, DisplayUserNameFormat.Default)));
 
-                _userPhotoManager.SyncPhoto(user.Id, (byte[])image);
+                await _userPhotoManager.SyncPhotoAsync(user.Id, (byte[])image);
 
                 if (photoSettings.CurrentPhotos.ContainsKey(user.Id))
                 {
@@ -651,7 +651,7 @@ public class LdapOperationJob : DistributedTaskProgress
         _settingsManager.Save(current);
     }
 
-    private async Task SyncLDAPUsers()
+    private async Task SyncLDAPUsersAsync()
     {
         SetProgress(15, Resource.LdapSettingsStatusGettingUsersFromLdap);
 
@@ -667,7 +667,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(20, Resource.LdapSettingsStatusRemovingOldUsers, "");
 
-        ldapUsers = RemoveOldDbUsers(ldapUsers);
+        ldapUsers = await RemoveOldDbUsersAsync(ldapUsers);
 
         SetProgress(30,
             OperationType == LdapOperationType.Save || OperationType == LdapOperationType.SaveTest
@@ -679,7 +679,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(70, Resource.LdapSettingsStatusRemovingOldGroups, "");
 
-        RemoveOldDbGroups(new List<GroupInfo>()); // Remove all db groups with sid
+        await RemoveOldDbGroupsAsync(new List<GroupInfo>()); // Remove all db groups with sid
     }
 
     private async Task SyncLDAPUsersInGroups()
@@ -725,11 +725,11 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(80, Resource.LdapSettingsStatusRemovingOldGroups, "");
 
-        RemoveOldDbGroups(ldapGroups);
+        await RemoveOldDbGroupsAsync(ldapGroups);
 
         SetProgress(90, Resource.LdapSettingsStatusRemovingOldUsers, "");
 
-        RemoveOldDbUsers(newUniqueLdapGroupUsers);
+        await RemoveOldDbUsersAsync(newUniqueLdapGroupUsers);
     }
 
     private async Task SyncDbGroups(Dictionary<GroupInfo, List<UserInfo>> ldapGroupsWithUsers)
@@ -765,18 +765,18 @@ public class LdapOperationJob : DistributedTaskProgress
 
             if (Equals(dbLdapGroup, Constants.LostGroupInfo))
             {
-                await AddNewGroup(ldapGroup, ldapGroupUsers, gIndex, gCount);
+                await AddNewGroupAsync(ldapGroup, ldapGroupUsers, gIndex, gCount);
             }
             else
             {
-                await UpdateDbGroup(dbLdapGroup, ldapGroup, ldapGroupUsers, gIndex, gCount);
+                await UpdateDbGroupAsync(dbLdapGroup, ldapGroup, ldapGroupUsers, gIndex, gCount);
             }
 
             percentage += step;
         }
     }
 
-    private async Task AddNewGroup(GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex, int gCount)
+    private async Task AddNewGroupAsync(GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex, int gCount)
     {
         if (!ldapGroupUsers.Any()) // Skip empty groups
         {
@@ -800,7 +800,7 @@ public class LdapOperationJob : DistributedTaskProgress
             {
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
-                    ldapGroup = _userManager.SaveGroupInfo(ldapGroup);
+                    ldapGroup = await _userManager.SaveGroupInfoAsync(ldapGroup);
 
                     var index = 0;
                     var count = groupMembersToAdd.Count;
@@ -815,7 +815,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                     ++index, count,
                                     _userFormatter.GetUserName(userBySid, DisplayUserNameFormat.Default)));
 
-                        await _userManager.AddUserIntoGroup(userBySid.Id, ldapGroup.ID);
+                        await _userManager.AddUserIntoGroupAsync(userBySid.Id, ldapGroup.ID);
                     }
                     break;
                 case LdapOperationType.SaveTest:
@@ -846,7 +846,7 @@ public class LdapOperationJob : DistributedTaskProgress
         return needUpdate;
     }
 
-    private async Task UpdateDbGroup(GroupInfo dbLdapGroup, GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex,
+    private async Task UpdateDbGroupAsync(GroupInfo dbLdapGroup, GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex,
         int gCount)
     {
         SetProgress(currentSource:
@@ -879,7 +879,7 @@ public class LdapOperationJob : DistributedTaskProgress
                     dbLdapGroup.Name = ldapGroup.Name;
                     dbLdapGroup.Sid = ldapGroup.Sid;
 
-                    dbLdapGroup = _userManager.SaveGroupInfo(dbLdapGroup);
+                    dbLdapGroup = await _userManager.SaveGroupInfoAsync(dbLdapGroup);
                 }
 
                 var index = 0;
@@ -895,7 +895,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(dbUser, DisplayUserNameFormat.Default)));
 
-                    _userManager.RemoveUserFromGroup(dbUser.Id, dbLdapGroup.ID);
+                    await _userManager.RemoveUserFromGroupAsync(dbUser.Id, dbLdapGroup.ID);
                 }
 
                 index = 0;
@@ -911,7 +911,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(userInfo, DisplayUserNameFormat.Default)));
 
-                    await _userManager.AddUserIntoGroup(userInfo.Id, dbLdapGroup.ID);
+                    await _userManager.AddUserIntoGroupAsync(userInfo.Id, dbLdapGroup.ID);
                 }
 
                 if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.Id.Equals(dbUser.Id)))
@@ -920,7 +920,7 @@ public class LdapOperationJob : DistributedTaskProgress
                     SetProgress(currentSource:
                         string.Format("({0}/{1}): {2}", gIndex, gCount, dbLdapGroup.Name));
 
-                    _userManager.DeleteGroup(dbLdapGroup.ID);
+                    await _userManager.DeleteGroupAsync(dbLdapGroup.ID);
                 }
 
                 break;
@@ -1012,7 +1012,7 @@ public class LdapOperationJob : DistributedTaskProgress
     /// </summary>
     /// <param name="ldapUsers">list of actual LDAP users</param>
     /// <returns>New list of actual LDAP users</returns>
-    private List<UserInfo> RemoveOldDbUsers(List<UserInfo> ldapUsers)
+    private async Task<List<UserInfo>> RemoveOldDbUsersAsync(List<UserInfo> ldapUsers)
     {
         var dbLdapUsers = _userManager.GetUsers(EmployeeStatus.All).Where(u => u.Sid != null).ToList();
 
@@ -1050,7 +1050,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
                     removedUser.Sid = null;
-                    if (!removedUser.IsOwner(_tenantManager.GetCurrentTenant()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && _userManager.IsDocSpaceAdmin(removedUser)))
+                    if (!removedUser.IsOwner(await _tenantManager.GetCurrentTenantAsync()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && _userManager.IsDocSpaceAdmin(removedUser)))
                     {
                         removedUser.Status = EmployeeStatus.Terminated; // Disable user on portal
                     }
@@ -1064,7 +1064,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(removedUser.GetUserInfoString());
 
-                    _userManager.UpdateUserInfo(removedUser);
+                    await _userManager.UpdateUserInfoAsync(removedUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:
@@ -1084,7 +1084,7 @@ public class LdapOperationJob : DistributedTaskProgress
         return newLdapUsers;
     }
 
-    private void RemoveOldDbGroups(List<GroupInfo> ldapGroups)
+    private async Task RemoveOldDbGroupsAsync(List<GroupInfo> ldapGroups)
     {
         var percentage = GetProgress();
 
@@ -1114,7 +1114,7 @@ public class LdapOperationJob : DistributedTaskProgress
             {
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
-                    _userManager.DeleteGroup(groupInfo.ID);
+                    await _userManager.DeleteGroupAsync(groupInfo.ID);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:

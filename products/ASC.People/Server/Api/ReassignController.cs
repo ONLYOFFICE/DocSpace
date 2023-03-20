@@ -54,17 +54,17 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpGet("reassign/progress")]
-    public ReassignProgressItem GetReassignProgress(Guid userId)
+    public async Task<ReassignProgressItem> GetReassignProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     [HttpPost("reassign/start")]
-    public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
+    public async Task<ReassignProgressItem> StartReassignAsync(StartReassignRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         var fromUser = _userManager.GetUsers(inDto.FromUserId);
 
@@ -94,9 +94,9 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpPut("reassign/terminate")]
-    public void TerminateReassign(TerminateRequestDto inDto)
+    public async Task TerminateReassignAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
     }

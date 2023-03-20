@@ -144,9 +144,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPost("active")]
-    public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMemberAsActivatedAsync(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -183,19 +183,19 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + (await _tenantManager.GetCurrentTenantAsync()).Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
         user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -215,11 +215,11 @@ public class UserController : PeopleControllerBase
 
         if (options != null)
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType), Constants.Action_AddRemoveUser);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, options.EmployeeType), Constants.Action_AddRemoveUser);
         }
         else
         {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
         }
 
         inDto.Type = options?.EmployeeType ?? inDto.Type;
@@ -271,18 +271,18 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
+        await UpdateContactsAsync(inDto.Contacts, user, !inDto.FromInviteLink);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + (await _tenantManager.GetCurrentTenantAsync()).Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
 
         user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && options is { IsCorrect: true }, true, true, byEmail);
 
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
 
         if (options is { LinkType: LinkType.InvitationToRoom })
@@ -312,13 +312,13 @@ public class UserController : PeopleControllerBase
     {
         foreach (var invite in inDto.Invitations)
         {
-            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
             {
                 continue;
             }
 
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
-            var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+            var link = await _roomLinkService.GetInvitationLinkAsync(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
             await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             _logger.Debug(link);
@@ -341,7 +341,7 @@ public class UserController : PeopleControllerBase
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
         await _apiContext.AuthByClaimAsync();
-        _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(userid), Constants.Action_EditUser);
 
         var user = _userManager.GetUsers(userid);
 
@@ -380,22 +380,22 @@ public class UserController : PeopleControllerBase
 
         if (!string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
+            await _securityContext.SetUserPasswordHashAsync(userid, inDto.PasswordHash);
             await _messageService.SendAsync(MessageAction.UserUpdatedPassword);
 
-            await _cookiesManager.ResetUserCookie(userid);
+            await _cookiesManager.ResetUserCookieAsync(userid);
             await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
-        return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
+        return await _employeeFullDtoHelper.GetFull(await GetUserInfoAsync(userid.ToString()));
     }
 
     [HttpDelete("{userid}")]
-    public async Task<EmployeeFullDto> DeleteMember(string userid)
+    public async Task<EmployeeFullDto> DeleteMemberAsync(string userid)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
 
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id) || user.IsLDAP())
         {
@@ -410,8 +410,8 @@ public class UserController : PeopleControllerBase
         CheckReassignProccess(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        await _userPhotoManager.RemovePhoto(user.Id);
-        await _userManager.DeleteUser(user.Id);
+        await _userPhotoManager.RemovePhotoAsync(user.Id);
+        await _userManager.DeleteUserAsync(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
         await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
@@ -430,7 +430,7 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        var user = GetUserInfo(_securityContext.CurrentAccount.ID.ToString());
+        var user = await GetUserInfoAsync(_securityContext.CurrentAccount.ID.ToString());
 
         if (!_userManager.UserExists(user))
         {
@@ -445,17 +445,17 @@ public class UserController : PeopleControllerBase
         await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfoAsync(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _messageService.SendAsync(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
-        await _cookiesManager.ResetUserCookie(user.Id);
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
         await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
 
         if (_coreBaseSettings.Personal)
         {
-            await _userPhotoManager.RemovePhoto(user.Id);
-            await _userManager.DeleteUser(user.Id);
+            await _userPhotoManager.RemovePhotoAsync(user.Id);
+            await _userManager.DeleteUserAsync(user.Id);
             await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
         else
@@ -533,7 +533,7 @@ public class UserController : PeopleControllerBase
 
         await _apiContext.AuthByClaimAsync();
 
-        var user = _userManager.GetUserByUserName(username);
+        var user = await _userManager.GetUserByUserNameAsync(username);
         if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
@@ -651,7 +651,7 @@ public class UserController : PeopleControllerBase
     [HttpPut("delete", Order = -1)]
     public async IAsyncEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
 
         CheckReassignProccess(inDto.UserIds);
 
@@ -668,8 +668,8 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            await _userPhotoManager.RemovePhoto(user.Id);
-            await _userManager.DeleteUser(user.Id);
+            await _userPhotoManager.RemovePhotoAsync(user.Id);
+            await _userManager.DeleteUserAsync(user.Id);
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
 
@@ -684,7 +684,7 @@ public class UserController : PeopleControllerBase
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvitesAsync(UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
 
         IEnumerable<UserInfo> users = null;
 
@@ -731,12 +731,12 @@ public class UserController : PeopleControllerBase
             {
                 var type = _userManager.GetUserType(user.Id);
 
-                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
                 {
                     continue;
                 }
 
-                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                var link = await _roomLinkService.GetInvitationLinkAsync(user.Email, type, _authContext.CurrentAccount.ID);
                 await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             }
             else
@@ -872,7 +872,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(id), Constants.Action_EditUser);
             var u = _userManager.GetUsers(id);
             if (u.Id == Constants.LostUser.Id || u.IsLDAP())
             {
@@ -880,7 +880,7 @@ public class UserController : PeopleControllerBase
             }
 
             u.ActivationStatus = activationstatus;
-            _userManager.UpdateUserInfo(u);
+            await _userManager.UpdateUserInfoAsync(u);
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -888,14 +888,14 @@ public class UserController : PeopleControllerBase
     [HttpPut("{userid}/culture")]
     public async Task<EmployeeFullDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         var curLng = user.CultureName;
 
@@ -907,7 +907,7 @@ public class UserController : PeopleControllerBase
 
                 try
                 {
-                    _userManager.UpdateUserInfo(user);
+                    await _userManager.UpdateUserInfoAsync(user);
                 }
                 catch
                 {
@@ -926,14 +926,14 @@ public class UserController : PeopleControllerBase
     [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeFullDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
         var self = _securityContext.CurrentAccount.ID.Equals(user.Id);
         var resetDate = new DateTime(1900, 01, 01);
 
@@ -982,12 +982,12 @@ public class UserController : PeopleControllerBase
         }
 
         //Update contacts
-        UpdateContacts(inDto.Contacts, user);
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
         if (inDto.Disable.HasValue)
         {
@@ -1005,14 +1005,14 @@ public class UserController : PeopleControllerBase
         if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
         {
             await _countUserChecker.CheckAppend();
-            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
             await _countPaidUserChecker.CheckAppend();
-            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
@@ -1021,7 +1021,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
-            await _cookiesManager.ResetUserCookie(user.Id);
+            await _cookiesManager.ResetUserCookieAsync(user.Id);
             await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
@@ -1031,7 +1031,7 @@ public class UserController : PeopleControllerBase
     [HttpPut("status/{status}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
             .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
@@ -1068,7 +1068,7 @@ public class UserController : PeopleControllerBase
 
                     await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-                    await _cookiesManager.ResetUserCookie(user.Id);
+                    await _cookiesManager.ResetUserCookieAsync(user.Id);
                     await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
                     break;
             }
@@ -1085,7 +1085,7 @@ public class UserController : PeopleControllerBase
     [HttpPut("type/{type}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserTypeAsync(EmployeeType type, UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
 
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
@@ -1112,17 +1112,17 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("recalculatequota")]
-    public void RecalculateQuota()
+    public async Task RecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        _usersQuotaSyncOperation.RecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpGet("checkrecalculatequota")]
-    public TaskProgressDto CheckRecalculateQuota()
+    public async Task<TaskProgressDto> CheckRecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _usersQuotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return _usersQuotaSyncOperation.CheckRecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpPut("quota")]
@@ -1139,7 +1139,7 @@ public class UserController : PeopleControllerBase
             {
                 var usedSpace = Math.Max(0,
                     (await _quotaService.FindUserQuotaRowsAsync(
-                            _tenantManager.GetCurrentTenant().Id,
+                            (await _tenantManager.GetCurrentTenantAsync()).Id,
                             user.Id
                         ))
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
@@ -1161,9 +1161,9 @@ public class UserController : PeopleControllerBase
     }
 
 
-    private async Task UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
+    private async Task UpdateDepartmentsAsync(IEnumerable<Guid> department, UserInfo user)
     {
-        if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))
+        if (!await _permissionContext.CheckPermissionsAsync(Constants.Action_EditGroups))
         {
             return;
         }
@@ -1177,7 +1177,7 @@ public class UserController : PeopleControllerBase
         var managerGroups = new List<Guid>();
         foreach (var groupInfo in groups)
         {
-            _userManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
+            await _userManager.RemoveUserFromGroupAsync(user.Id, groupInfo.ID);
             var managerId = _userManager.GetDepartmentManager(groupInfo.ID);
             if (managerId == user.Id)
             {
@@ -1190,7 +1190,7 @@ public class UserController : PeopleControllerBase
             var userDepartment = _userManager.GetGroupInfo(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
-                await _userManager.AddUserIntoGroup(user.Id, guid);
+                await _userManager.AddUserIntoGroupAsync(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
                     _userManager.SetDepartmentManager(guid, user.Id);
@@ -1263,7 +1263,7 @@ public class UserController : PeopleControllerBase
                 try
                 {
                     await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
-                    await _userManager.DeleteUser(newUserInfo.Id);
+                    await _userManager.DeleteUserAsync(newUserInfo.Id);
                 }
                 finally
                 {

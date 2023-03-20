@@ -28,7 +28,7 @@ namespace ASC.Notify.Sinks;
 
 public abstract class SinkMessageCreator
 {
-    public abstract NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName);
+    public abstract Task<NotifyMessage> CreateNotifyMessageAsync(INoticeMessage message, string senderName);
 }
 
 public abstract class Sink : ISink

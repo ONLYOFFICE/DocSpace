@@ -51,7 +51,7 @@ class PushSenderSink : Sink
             var result = SendResult.OK;
             await using var scope = _serviceProvider.CreateAsyncScope();
 
-            var m = scope.ServiceProvider.GetRequiredService<PushSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
+            var m = await scope.ServiceProvider.GetRequiredService<PushSenderSinkMessageCreator>().CreateNotifyMessageAsync(message, _senderName);
             if (string.IsNullOrEmpty(m.Reciever))
             {
                 result = SendResult.IncorrectRecipient;
@@ -93,13 +93,13 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
         _userManager = userManager;
     }
 
-    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
+    public override async Task<NotifyMessage> CreateNotifyMessageAsync(INoticeMessage message, string senderName)
     {
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
         if (tenant == null)
         {
-            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
-            tenant = _tenantManager.GetCurrentTenant(false);
+            await _tenantManager.SetCurrentTenantAsync(Tenant.DefaultTenant);
+            tenant = await _tenantManager.GetCurrentTenantAsync(false);
         }      
 
         var user = _userManager.GetUsers(new Guid(message.Recipient.ID));
@@ -117,7 +117,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
         var notifyData = new NotifyData()
         {
             Email = user.Email,
-            Portal = _tenantManager.GetCurrentTenant().TrustedDomains.FirstOrDefault(),
+            Portal = (await _tenantManager.GetCurrentTenantAsync()).TrustedDomains.FirstOrDefault(),
             OriginalUrl = originalUrl != null && originalUrl.Value != null ? originalUrl.Value.ToString() : "",
             Folder = new NotifyFolderData
             {

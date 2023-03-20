@@ -87,14 +87,14 @@ public class UsersModule : FeedModule
         return feed;
     }
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
         var user = data as UserInfo;
 
-        return user.Id != userId && !_userManager.IsUser(userId);
+        return Task.FromResult(user.Id != userId && !_userManager.IsUser(userId));
     }
 
-    public override Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public override Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
         if (_userManager.IsUser(userId))
         {

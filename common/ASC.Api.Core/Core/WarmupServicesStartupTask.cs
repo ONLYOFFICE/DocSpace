@@ -39,7 +39,7 @@ public class WarmupServicesStartupTask : IStartupTask
         _provider = provider;
     }
 
-    public Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {      
         var processedFailed = 0;
         var processedSuccessed = 0;
@@ -52,7 +52,7 @@ public class WarmupServicesStartupTask : IStartupTask
 
             logger.TraceWarmupStarted();
 
-            tenantManager.SetCurrentTenant("localhost");
+            await tenantManager.SetCurrentTenantAsync("localhost");
             
             foreach (var service in GetServices(_services))
             {
@@ -78,7 +78,6 @@ public class WarmupServicesStartupTask : IStartupTask
                                        (DateTime.UtcNow - startTime).TotalMilliseconds);
         }
 
-        return Task.CompletedTask;
     }
 
     static IEnumerable<Type> GetServices(IServiceCollection services)

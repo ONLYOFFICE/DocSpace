@@ -28,8 +28,8 @@ namespace ASC.Notify.Engine;
 
 public interface INotifyEngineAction
 {
-    void BeforeTransferRequest(NotifyRequest request);
-    void AfterTransferRequest(NotifyRequest request);
+    Task BeforeTransferRequestAsync(NotifyRequest request);
+    Task AfterTransferRequestAsync(NotifyRequest request);
 }
 
 [Singletone]
@@ -197,7 +197,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     foreach (var action in Actions)
                     {
-                        ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
+                        await ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequestAsync(request);
                     }
 
                     try
@@ -683,11 +683,11 @@ public class NotifyEngineQueue
         _serviceProvider = serviceProvider;
     }
 
-    public void QueueRequest(NotifyRequest request)
+    public async Task QueueRequestAsync(NotifyRequest request)
     {
         foreach (var action in _notifyEngine.Actions)
         {
-            ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequest(request);
+            await ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequestAsync(request);
         }
 
         _notifyEngine.QueueRequest(request);

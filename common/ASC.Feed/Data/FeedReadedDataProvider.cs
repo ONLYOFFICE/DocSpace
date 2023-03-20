@@ -40,14 +40,14 @@ public class FeedReadedDataProvider
         _dbContextFactory = dbContextFactory;
     }
 
-    public Task<DateTime> GetTimeReadedAsync()
+    public async Task<DateTime> GetTimeReadedAsync()
     {
-        return GetTimeReadedAsync(GetUser(), "all", GetTenant());
+        return await GetTimeReadedAsync(GetUser(), "all", await GetTenantAsync());
     }
 
-    public Task<DateTime> GetTimeReadedAsync(string module)
+    public async Task<DateTime> GetTimeReadedAsync(string module)
     {
-        return GetTimeReadedAsync(GetUser(), module, GetTenant());
+        return await GetTimeReadedAsync(GetUser(), module, await GetTenantAsync());
     }
 
     public async Task<DateTime> GetTimeReadedAsync(Guid user, string module, int tenant)
@@ -60,19 +60,19 @@ public class FeedReadedDataProvider
             .MaxAsync(r => r.TimeStamp);
     }
 
-    public Task SetTimeReadedAsync()
+    public async Task SetTimeReadedAsync()
     {
-       return SetTimeReadedAsync(GetUser(), DateTime.UtcNow, "all", GetTenant());
+        await SetTimeReadedAsync(GetUser(), DateTime.UtcNow, "all", await GetTenantAsync());
     }
 
-    public Task SetTimeReadedAsync(string module)
+    public async Task SetTimeReadedAsync(string module)
     {
-        return SetTimeReadedAsync(GetUser(), DateTime.UtcNow, module, GetTenant());
+        await SetTimeReadedAsync(GetUser(), DateTime.UtcNow, module, await GetTenantAsync());
     }
 
-    public Task SetTimeReadedAsync(Guid user)
+    public async Task SetTimeReadedAsync(Guid user)
     {
-       return SetTimeReadedAsync(user, DateTime.UtcNow, "all", GetTenant());
+        await SetTimeReadedAsync(user, DateTime.UtcNow, "all", await GetTenantAsync());
     }
 
     public async Task SetTimeReadedAsync(Guid user, DateTime time, string module, int tenant)
@@ -95,9 +95,9 @@ public class FeedReadedDataProvider
         await feedDbContext.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<string>> GetReadedModulesAsync(DateTime fromTime)
+    public async Task<IEnumerable<string>> GetReadedModulesAsync(DateTime fromTime)
     {
-        return GetReadedModulesAsync(GetUser(), GetTenant(), fromTime);
+        return await GetReadedModulesAsync(GetUser(), await GetTenantAsync(), fromTime);
     }
 
     public async Task<IEnumerable<string>> GetReadedModulesAsync(Guid user, int tenant, DateTime fromTime)
@@ -111,9 +111,9 @@ public class FeedReadedDataProvider
             .ToListAsync();
     }
 
-    private int GetTenant()
+    private async Task<int> GetTenantAsync()
     {
-        return _tenantManager.GetCurrentTenant().Id;
+        return (await _tenantManager.GetCurrentTenantAsync()).Id;
     }
 
     private Guid GetUser()

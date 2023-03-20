@@ -382,9 +382,9 @@ public class DocuSignHelper
             || folder.RootFolderType == FolderType.TRASH
             || !await _fileSecurity.CanCreateAsync(folder))
         {
-            if (_globalFolderHelper.FolderMy != 0)
+            if (await _globalFolderHelper.FolderMyAsync != 0)
             {
-                folderId = _globalFolderHelper.GetFolderMy<T>();
+                folderId = await _globalFolderHelper.GetFolderMyAsync<T>();
             }
             else
             {

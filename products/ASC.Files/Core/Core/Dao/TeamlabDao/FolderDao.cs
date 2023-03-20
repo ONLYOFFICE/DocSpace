@@ -192,8 +192,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (!string.IsNullOrEmpty(searchText))
         {
-            q = _factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var searchIds)
-                ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(searchText));
+            q = succ ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
         }
 
         await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
@@ -222,8 +222,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (!string.IsNullOrEmpty(searchText))
         {
-            q = _factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var searchIds)
-                ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(searchText));
+
+            q = succ ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
         }
 
         await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
@@ -254,7 +255,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (!string.IsNullOrEmpty(searchText))
         {
-            if (_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var searchIds))
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(searchText));
+            if (succ)
             {
                 q = q.Where(r => searchIds.Contains(r.Id));
             }
@@ -312,11 +314,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (!string.IsNullOrEmpty(searchText))
         {
-            if (_factoryIndexer.TrySelectIds(s =>
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(s =>
                                                 searchSubfolders
                                                     ? s.MatchAll(searchText)
-                                                    : s.MatchAll(searchText).In(r => r.Id, folderIds.ToArray()),
-                                                out var searchIds))
+                                                    : s.MatchAll(searchText).In(r => r.Id, folderIds.ToArray()));
+            if (succ)
             {
                 q = q.Where(r => searchIds.Contains(r.Id));
             }
@@ -1023,7 +1025,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        if (_factoryIndexer.TrySelectIds(s => s.MatchAll(text), out var ids))
+        (var succ, var ids) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(text));
+        if (succ)
         {
             var q1 = GetFolderQuery(filesDbContext, r => ids.Contains(r.Id));
 
@@ -1661,12 +1664,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         };
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public async Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
            int folderId,
            CommonChunkedUploadSession chunkedUploadSession,
            CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return _globalStore.GetStore().CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
+        return (await _globalStore.GetStoreAsync()).CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
 
     private static readonly Func<FilesDbContext, IEnumerable<int>, int, IAsyncEnumerable<OriginData>> _getOriginsDataQuery =

@@ -63,9 +63,9 @@ public class VersionController : BaseSettingsController
     }
 
     [HttpPut("version")]
-    public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
+    public async Task<TenantVersionDto> SetVersionAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         _tenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == inDto.VersionId).NotFoundIfNull();
         _tenantManager.SetTenantVersion(Tenant, inDto.VersionId);

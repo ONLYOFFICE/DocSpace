@@ -57,7 +57,7 @@ public class TelegramDao
         return await dbContext.Users.FindAsync(tenantId, userId);
     }
 
-    public async List<TelegramUser> GetUsersAsync(long telegramId)
+    public async Task<List<TelegramUser>> GetUsersAsync(long telegramId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 

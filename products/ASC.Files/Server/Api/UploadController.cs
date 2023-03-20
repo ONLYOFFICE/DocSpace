@@ -191,9 +191,9 @@ public class UploadControllerCommon : ApiControllerBase
     /// <category>Uploads</category>
     /// <returns></returns>
     [HttpPost("@my/insert")]
-    public Task<FileDto<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
+    public async Task<FileDto<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileRequestDto inDto)
     {
-        return _filesControllerHelper.InsertFileAsync(_globalFolderHelper.FolderMy, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
+        return await _filesControllerHelper.InsertFileAsync(await _globalFolderHelper.FolderMyAsync, inDto.Stream, inDto.Title, inDto.CreateNewIfExist, inDto.KeepConvertStatus);
     }
 
     /// <summary>
@@ -241,10 +241,10 @@ public class UploadControllerCommon : ApiControllerBase
     /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
     /// <returns>Uploaded file</returns>
     [HttpPost("@my/upload")]
-    public Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
+    public async Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadRequestDto inDto)
     {
         inDto.CreateNewIfExist = false;
 
-        return _filesControllerHelper.UploadFileAsync(_globalFolderHelper.FolderMy, inDto);
+        return await _filesControllerHelper.UploadFileAsync(await _globalFolderHelper.FolderMyAsync, inDto);
     }
 }

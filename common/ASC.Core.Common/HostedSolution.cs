@@ -70,29 +70,29 @@ public class HostedSolution
         Region = region;
     }
 
-    public List<Tenant> GetTenants(DateTime from)
+    public async Task<List<Tenant>> GetTenantsAsync(DateTime from)
     {
-        return TenantService.GetTenants(from).Select(AddRegion).ToList();
+        return (await TenantService.GetTenantsAsync(from)).Select(AddRegion).ToList();
     }
 
-    public List<Tenant> FindTenants(string login)
-    {
-        return FindTenants(login, null);
-    }
-
-    public List<Tenant> FindTenants(string login, string passwordHash)
+    public async Task<List<Tenant>> FindTenantsAsync(string login, string passwordHash = null)
     {
         if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null)
         {
             throw new SecurityException("Invalid login or password.");
         }
 
-        return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
+        return (await TenantService.GetTenantsAsync(login, passwordHash)).Select(AddRegion).ToList();
     }
 
-    public Tenant GetTenant(string domain)
+    public async Task<Tenant> GetTenantAsync(string domain)
     {
-        return AddRegion(TenantService.GetTenant(domain));
+        return AddRegion(await TenantService.GetTenantAsync(domain));
+    }
+
+    public async Task<Tenant> GetTenantAsync(int id)
+    {
+        return AddRegion(await TenantService.GetTenantAsync(id));
     }
 
     public Tenant GetTenant(int id)

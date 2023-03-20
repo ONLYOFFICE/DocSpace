@@ -199,8 +199,9 @@ public class FeedAggregateDataProvider
     private async Task<List<FeedResultItem>> GetFeedsInternalAsync(FeedApiFilter filter)
     {
         using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var q = feedDbContext.FeedAggregates.AsNoTracking()
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
+            .Where(r => r.Tenant == tenant.Id);
 
         var exp = GetIdSearchExpression(filter.Id, filter.Module, filter.WithRelated);
 
@@ -264,8 +265,9 @@ public class FeedAggregateDataProvider
     public async Task<int> GetNewFeedsCountAsync(DateTime lastReadedTime)
     {
         using var feedDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var query = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.Tenant == tenant.Id)
             .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
             .Where(r => r.user.UserId == _authContext.CurrentAccount.ID);

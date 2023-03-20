@@ -41,21 +41,20 @@ public class AzManager
         _permissionProvider = permissionProvider ?? throw new ArgumentNullException(nameof(permissionProvider));
     }
 
-    public bool CheckPermission(ISubject subject, IAction action, ISecurityObjectId objectId,
-                                ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
-                                out IAction denyAction)
+    public async Task<(bool, ISubject, IAction)> CheckPermissionAsync(ISubject subject, IAction action, ISecurityObjectId objectId,
+                                ISecurityObjectProvider securityObjProvider)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(subject);
 
-        var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
-        denySubject = acl.DenySubject;
-        denyAction = acl.DenyAction;
+        var acl = await GetAzManagerAclAsync(subject, action, objectId, securityObjProvider);
+        var denySubject = acl.DenySubject;
+        var denyAction = acl.DenyAction;
 
-        return acl.IsAllow;
+        return (acl.IsAllow, denySubject, denyAction);
     }
 
-    internal AzManagerAcl GetAzManagerAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
+    internal async Task<AzManagerAcl> GetAzManagerAclAsync(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
     {
         if (action.AdministratorAlwaysAllow && (Constants.DocSpaceAdmin.ID == subject.ID || _roleProvider.IsSubjectInRole(subject, Constants.DocSpaceAdmin) 
             || (objectId is SecurityObject obj && obj.IsMatchDefaultRules(subject, action, _roleProvider))))
@@ -68,7 +67,7 @@ public class AzManager
 
         foreach (var s in GetSubjects(subject, objectId, securityObjProvider))
         {
-            var aceList = _permissionProvider.GetAcl(s, action, objectId, securityObjProvider);
+            var aceList = await _permissionProvider.GetAclAsync(s, action, objectId, securityObjProvider);
             foreach (var ace in aceList)
             {
                 if (ace.Reaction == AceType.Deny)

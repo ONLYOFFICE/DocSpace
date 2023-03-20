@@ -95,7 +95,7 @@ public class SmtpOperation
 
             SetProgress(5, "Setup tenant");
 
-            _tenantManager.SetCurrentTenant(CurrentTenant);
+            await _tenantManager.SetCurrentTenantAsync(CurrentTenant);
 
             SetProgress(10, "Setup user");
 

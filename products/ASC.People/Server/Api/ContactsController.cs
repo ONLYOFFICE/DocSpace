@@ -46,14 +46,14 @@ public class ContactsController : PeopleControllerBase
     [HttpDelete("{userid}/contacts")]
     public async Task<EmployeeFullDto> DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        DeleteContacts(inDto.Contacts, user);
+        await DeleteContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -62,7 +62,7 @@ public class ContactsController : PeopleControllerBase
     [HttpPost("{userid}/contacts")]
     public async Task<EmployeeFullDto> SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
@@ -70,7 +70,7 @@ public class ContactsController : PeopleControllerBase
         }
 
         user.ContactsList.Clear();
-        UpdateContacts(inDto.Contacts, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -79,22 +79,22 @@ public class ContactsController : PeopleControllerBase
     [HttpPut("{userid}/contacts")]
     public async Task<EmployeeFullDto> UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        UpdateContacts(inDto.Contacts, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
-    private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
+    private async Task DeleteContactsAsync(IEnumerable<Contact> contacts, UserInfo user)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (contacts == null)
         {

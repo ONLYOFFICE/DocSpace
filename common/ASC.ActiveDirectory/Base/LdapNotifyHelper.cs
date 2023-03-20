@@ -45,14 +45,14 @@ public class LdapNotifyService : BackgroundService
         _ldapSaveSyncOperation = ldapSaveSyncOperation;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
         var dbHelper = scope.ServiceProvider.GetRequiredService<DbHelper>();
 
-        var tenants = tenantManager.GetTenants(dbHelper.GetTenants());
+        var tenants = await tenantManager.GetTenantsAsync(dbHelper.GetTenants());
         foreach (var t in tenants)
         {
             var tId = t.Id;
@@ -71,8 +71,6 @@ public class LdapNotifyService : BackgroundService
 
             RegisterAutoSync(t, cronSettings.Cron);
         }
-
-        return Task.CompletedTask;
     }
 
     public void RegisterAutoSync(Tenant tenant, string cron)

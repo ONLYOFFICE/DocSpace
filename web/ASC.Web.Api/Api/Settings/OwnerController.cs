@@ -69,9 +69,9 @@ public class OwnerController : BaseSettingsController
     [HttpPost("owner")]
     public async Task<object> SendOwnerChangeInstructionsAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var curTenant = _tenantManager.GetCurrentTenant();
+        var curTenant = await _tenantManager.GetCurrentTenantAsync();
         var owner = _userManager.GetUsers(curTenant.OwnerId);
         var newOwner = _userManager.GetUsers(inDto.OwnerId);
 
@@ -85,8 +85,8 @@ public class OwnerController : BaseSettingsController
             return new { Status = 0, Message = Resource.ErrorAccessDenied };
         }
 
-        var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
-        _studioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
+        var confirmLink = await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
+        await _studioNotifyService.SendMsgConfirmChangeOwnerAsync(owner, newOwner, confirmLink);
 
         await _messageService.SendAsync(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
 
@@ -116,7 +116,7 @@ public class OwnerController : BaseSettingsController
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        var curTenant = _tenantManager.GetCurrentTenant();
+        var curTenant = await _tenantManager.GetCurrentTenantAsync();
         curTenant.OwnerId = newOwner.Id;
         _tenantManager.SaveTenant(curTenant);
 

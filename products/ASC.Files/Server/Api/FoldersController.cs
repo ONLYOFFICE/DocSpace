@@ -104,7 +104,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     [HttpDelete("folder/{folderId}")]
     public async IAsyncEnumerable<FileOperationDto> DeleteFolder(T folderId, DeleteFolderDto model)
     {
-        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, model.DeleteAfter, model.Immediately))
+        foreach (var e in await _fileStorageService.DeleteFolderAsync("delete", folderId, false, model.DeleteAfter, model.Immediately))
         {
             yield return await _fileOperationDtoHelper.GetAsync(e);
         }
@@ -249,9 +249,9 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <category>Folders</category>
     /// <returns>My folder contents</returns>
     [HttpGet("@my")]
-    public Task<FolderContentDto<int>> GetMyFolderAsync(Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders)
+    public async Task<FolderContentDto<int>> GetMyFolderAsync(Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders)
     {
-        return _foldersControllerHelperInt.GetFolderAsync(_globalFolderHelper.FolderMy, userIdOrGroupId, filterType, default, searchInContent, withsubfolders, false);
+        return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderMyAsync, userIdOrGroupId, filterType, default, searchInContent, withsubfolders, false);
     }
 
     [HttpGet("@privacy")]

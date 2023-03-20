@@ -292,7 +292,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         await FileDao.SetThumbnailStatusAsync(file, Thumbnail.NotRequired);
                     }
 
-                    await socketManager.DeleteFile(file);
+                    await socketManager.DeleteFileAsync(file);
                 }
                 else
                 {
@@ -312,7 +312,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                             await filesMessageService.SendAsync(file, MessageInitiator.AutoCleanUp, MessageAction.FileDeleted, file.Title);
                         }
 
-                        await socketManager.DeleteFile(file);
+                        await socketManager.DeleteFileAsync(file);
                     }
                     catch (Exception ex)
                     {

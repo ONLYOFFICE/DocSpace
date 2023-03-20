@@ -66,28 +66,28 @@ public class NotifyHelper
         _tenantLogoManager = tenantLogoManager;
     }
 
-    public void SendAboutTransferStart(Tenant tenant, string targetRegion, bool notifyUsers)
+    public async Task SendAboutTransferStartAsync(Tenant tenant, string targetRegion, bool notifyUsers)
     {
-        MigrationNotify(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
+        await MigrationNotifyAsync(tenant, Actions.MigrationPortalStart, targetRegion, string.Empty, notifyUsers);
     }
 
-    public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
+    public async Task SendAboutTransferCompleteAsync(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
     {
-        MigrationNotify(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
+        await MigrationNotifyAsync(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
     }
 
-    public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
+    public async Task SendAboutTransferErrorAsync(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
     {
-        MigrationNotify(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
+        await MigrationNotifyAsync(tenant, !string.IsNullOrEmpty(targetRegion) ? Actions.MigrationPortalError : Actions.MigrationPortalServerFailure, targetRegion, resultAddress, !notifyOnlyOwner);
     }
 
-    public void SendAboutBackupCompleted(int tenantId, Guid userId)
+    public async Task SendAboutBackupCompletedAsync(int tenantId, Guid userId)
     {
-        _tenantManager.SetCurrentTenant(tenantId);
+        await _tenantManager.SetCurrentTenantAsync(tenantId);
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
-        client.SendNoticeToAsync(
+        await client.SendNoticeToAsync(
             Actions.BackupCreated,
             new[] { _studioNotifyHelper.ToRecipient(userId) },
             new[] { StudioNotifyService.EMailSenderName },
@@ -96,7 +96,7 @@ public class NotifyHelper
 
     public async Task SendAboutRestoreStartedAsync(Tenant tenant, bool notifyAllUsers)
     {
-        _tenantManager.SetCurrentTenant(tenant.Id);
+        await _tenantManager.SetCurrentTenantAsync(tenant.Id);
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
@@ -106,29 +106,29 @@ public class NotifyHelper
                 ? await _studioNotifyHelper.RecipientFromEmailAsync(_userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
                 : owner.ActivationStatus == EmployeeActivationStatus.Activated ? await _studioNotifyHelper.RecipientFromEmailAsync(owner.Email, false) : new IDirectRecipient[0];
 
-        client.SendNoticeToAsync(
+        await client.SendNoticeToAsync(
             Actions.RestoreStarted,
             users,
             new[] { StudioNotifyService.EMailSenderName });
     }
 
-    public void SendAboutRestoreCompleted(Tenant tenant, bool notifyAllUsers)
+    public async Task SendAboutRestoreCompletedAsync(Tenant tenant, bool notifyAllUsers)
     {
         _tenantManager.SetCurrentTenant(tenant);
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
         var users = notifyAllUsers
             ? _userManager.GetUsers(EmployeeStatus.Active)
-            : new[] { _userManager.GetUsers(_tenantManager.GetCurrentTenant().OwnerId) };
+            : new[] { _userManager.GetUsers((await _tenantManager.GetCurrentTenantAsync()).OwnerId) };
 
         foreach (var user in users)
         {
-            var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
+            var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
+            var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
             Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
 
-            client.SendNoticeToAsync(
+            await client.SendNoticeToAsync(
                 Actions.RestoreCompletedV115,
                 new IRecipient[] { user },
                 new[] { StudioNotifyService.EMailSenderName },
@@ -136,7 +136,7 @@ public class NotifyHelper
         }
     }
 
-    private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
+    private async Task MigrationNotifyAsync(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)
     {
         _tenantManager.SetCurrentTenant(tenant);
 
@@ -156,13 +156,13 @@ public class NotifyHelper
                     var currentArgs = new List<ITagValue>(args);
 
                     var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.Id;
-                    var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
+                    var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
                     var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
                     Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
 
-                    client.SendNoticeToAsync(
+                    await client.SendNoticeToAsync(
                         action,
                         null,
                         new IRecipient[] { user },
@@ -172,7 +172,7 @@ public class NotifyHelper
             }
             else
             {
-                client.SendNoticeToAsync(
+                await client.SendNoticeToAsync(
                     action,
                     null,
                     users.Select(u => _studioNotifyHelper.ToRecipient(u.Id)).ToArray(),

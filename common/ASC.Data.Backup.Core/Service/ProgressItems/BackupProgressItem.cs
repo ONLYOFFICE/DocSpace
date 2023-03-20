@@ -102,7 +102,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _tempStream = scope.ServiceProvider.GetService<TempStream>();
 
         var dateTime = _coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", _tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
+        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", (await _tenantManager.GetTenantAsync(TenantId)).Alias, dateTime, ArchiveFormat);
 
         var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
         var storagePath = tempFile;
@@ -110,7 +110,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
         try
         {
-            var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
+            var backupStorage = await _backupStorageFactory.GetBackupStorageAsync(_storageType, TenantId, StorageParams);
             var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
 
             _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
@@ -158,7 +158,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             if (_userId != Guid.Empty && !_isScheduled)
             {
-                _notifyHelper.SendAboutBackupCompleted(TenantId, _userId);
+                await _notifyHelper.SendAboutBackupCompletedAsync(TenantId, _userId);
             }
 
 

@@ -66,7 +66,7 @@ public class GreetingSettingsController : BaseSettingsController
     [HttpPost("greetingsettings")]
     public async Task<ContentResult> SaveGreetingSettingsAsync(GreetingSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         Tenant.Name = inDto.Title;
         _tenantManager.SaveTenant(Tenant);
@@ -77,11 +77,11 @@ public class GreetingSettingsController : BaseSettingsController
     }
 
     [HttpPost("greetingsettings/restore")]
-    public ContentResult RestoreGreetingSettings()
+    public async Task<ContentResult> RestoreGreetingSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _tenantInfoSettingsHelper.RestoreDefaultTenantName();
+        await _tenantInfoSettingsHelper.RestoreDefaultTenantNameAsync();
 
         return new ContentResult
         {

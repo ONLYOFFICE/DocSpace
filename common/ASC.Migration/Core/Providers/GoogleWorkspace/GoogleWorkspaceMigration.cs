@@ -153,7 +153,7 @@ namespace ASC.Migration.GoogleWorkspace
                 try
                 {
                     user.DataСhange(migrationApiInfo.Users.Find(element => element.Key == user.Key));
-                    await user.Migrate();
+                    await user.MigrateAsync();
                     _importedUsers.Add(user.Guid);
                 }
                 catch (Exception ex)
@@ -177,7 +177,7 @@ namespace ASC.Migration.GoogleWorkspace
                     ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.GroupMigration, group.GroupName, i++, groupsCount));
                     try
                     {
-                        await group.Migrate();
+                        await group.MigrateAsync();
                     }
                     catch (Exception ex)
                     {
@@ -201,7 +201,7 @@ namespace ASC.Migration.GoogleWorkspace
 
                 try
                 {
-                    await user.MigratingContacts.Migrate();
+                    await user.MigratingContacts.MigrateAsync();
                 }
                 catch (Exception ex)
                 {
@@ -231,7 +231,7 @@ namespace ASC.Migration.GoogleWorkspace
                     await _securityContext.AuthenticateMeAsync(user.Guid);
                     user.MigratingFiles.SetUsersDict(usersForImport.Except(failedUsers));
                     user.MigratingFiles.SetGroupsDict(groupsForImport);
-                    await user.MigratingFiles.Migrate();
+                    await user.MigratingFiles.MigrateAsync();
                     await _securityContext.AuthenticateMeAsync(currentUser.ID);
                 }
                 catch (Exception ex)

@@ -124,14 +124,14 @@ public static class WebItemExtension
     }
 
 
-    public static bool IsDisabled(this IWebItem item, WebItemSecurity webItemSecurity, AuthContext authContext)
+    public static async Task<bool> IsDisabledAsync(this IWebItem item, WebItemSecurity webItemSecurity, AuthContext authContext)
     {
-        return item.IsDisabled(authContext.CurrentAccount.ID, webItemSecurity);
+        return await item.IsDisabledAsync(authContext.CurrentAccount.ID, webItemSecurity);
     }
 
-    public static bool IsDisabled(this IWebItem item, Guid userID, WebItemSecurity webItemSecurity)
+    public static async Task<bool> IsDisabledAsync(this IWebItem item, Guid userID, WebItemSecurity webItemSecurity)
     {
-        return item != null && (!webItemSecurity.IsAvailableForUser(item.ID, userID) || !item.Visible);
+        return item != null && (!await webItemSecurity.IsAvailableForUserAsync(item.ID, userID) || !item.Visible);
     }
 
     public static bool IsSubItem(this IWebItem item)

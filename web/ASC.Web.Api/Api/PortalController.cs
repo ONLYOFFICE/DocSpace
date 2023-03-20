@@ -141,14 +141,14 @@ public class PortalController : ControllerBase
     }
 
     [HttpGet("users/invite/{employeeType}")]
-    public object GeInviteLink(EmployeeType employeeType)
+    public async Task<object> GeInviteLinkAsync(EmployeeType employeeType)
     {
-        if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
+        if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
             return string.Empty;
         }
 
-        return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
+        return await _commonLinkUtility.GetConfirmationEmailUrlAsync(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
                 + $"&emplType={employeeType:d}";
     }
 
@@ -320,7 +320,7 @@ public class PortalController : ControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var alias = model.Alias;
         if (string.IsNullOrEmpty(alias))
@@ -328,7 +328,7 @@ public class PortalController : ControllerBase
             throw new ArgumentException(nameof(alias));
         }
 
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
         var localhost = _coreSettings.BaseDomain == "localhost" || tenant.Alias == "localhost";
@@ -366,7 +366,7 @@ public class PortalController : ControllerBase
 
             if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                await _studioNotifyService.PortalRenameNotifyAsync(tenant, oldVirtualRootPath);
             }
         }
         else
@@ -374,13 +374,13 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Auth);
+        return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.Auth);
     }
 
     [HttpDelete("deleteportalimmediately")]
     public async Task DeletePortalImmediately()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (_securityContext.CurrentAccount.ID != tenant.OwnerId)
         {
@@ -413,7 +413,7 @@ public class PortalController : ControllerBase
     [HttpPost("suspend")]
     public async Task SendSuspendInstructionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
         {
@@ -421,10 +421,10 @@ public class PortalController : ControllerBase
         }
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
-        var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
-        var continueUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalContinue);
+        var suspendUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalSuspend);
+        var continueUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalContinue);
 
-        _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
+        await _studioNotifyService.SendMsgPortalDeactivationAsync(Tenant, suspendUrl, continueUrl);
 
         await _messageService.SendAsync(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
@@ -433,7 +433,7 @@ public class PortalController : ControllerBase
     [HttpPost("delete")]
     public async Task SendDeleteInstructionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
         {
@@ -446,7 +446,7 @@ public class PortalController : ControllerBase
                         (await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() &&
                         !(await _tenantManager.GetCurrentTenantQuotaAsync()).Trial;
 
-        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+        await _studioNotifyService.SendMsgPortalDeletionAsync(Tenant, await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 
         await _messageService.SendAsync(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
@@ -515,7 +515,7 @@ public class PortalController : ControllerBase
             }
         }
 
-        _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+        await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, redirectLink);
 
         return redirectLink;
     }
@@ -525,7 +525,7 @@ public class PortalController : ControllerBase
     public async Task SendCongratulationsAsync([FromQuery] SendCongratulationsDto inDto)
     {
         var authInterval = TimeSpan.FromHours(1);
-        var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(inDto.Userid.ToString() + ConfirmType.Auth, inDto.Key, authInterval);
+        var checkKeyResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(inDto.Userid.ToString() + ConfirmType.Auth, inDto.Key, authInterval);
 
         switch (checkKeyResult)
         {
@@ -533,7 +533,7 @@ public class PortalController : ControllerBase
                 var currentUser = _userManager.GetUsers(inDto.Userid);
 
                 await _studioNotifyService.SendCongratulationsAsync(currentUser);
-                _studioNotifyService.SendRegData(currentUser);
+                await _studioNotifyService.SendRegDataAsync(currentUser);
 
                 if (!SetupInfo.IsSecretEmail(currentUser.Email))
                 {

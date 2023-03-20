@@ -119,7 +119,7 @@ public class GwsMigratingFiles : MigratingFiles
         _user = user;
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (!ShouldImport)
         {
@@ -147,7 +147,7 @@ public class GwsMigratingFiles : MigratingFiles
                             continue; // skip folder if it was already created as a part of another path
                         }
 
-                        var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
+                        var parentId = i == 0 ? await _globalFolderHelper.FolderMyAsync : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                         try
                         {
                             var createdFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
@@ -164,7 +164,7 @@ public class GwsMigratingFiles : MigratingFiles
             //create default folder
             if ((_folders == null || _folders.Count == 0) && (_files != null && _files.Count != 0))
             {
-                var parentId = _globalFolderHelper.FolderMy;
+                var parentId = await _globalFolderHelper.FolderMyAsync;
                 var createdFolder = await _fileStorageService.CreateNewFolderAsync(parentId, _newParentFolder);
                 foldersDict.Add(_newParentFolder, createdFolder);
             }

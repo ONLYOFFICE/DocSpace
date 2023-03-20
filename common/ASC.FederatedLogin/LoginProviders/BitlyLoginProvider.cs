@@ -50,15 +50,15 @@ public class BitlyLoginProvider : Consumer, IValidateKeysProvider
         _requestHelper = requestHelper;
     }
 
-    public bool ValidateKeys()
+    public Task<bool> ValidateKeysAsync()
     {
         try
         {
-            return !string.IsNullOrEmpty(GetShortenLink("https://www.onlyoffice.com"));
+            return Task.FromResult(!string.IsNullOrEmpty(GetShortenLink("https://www.onlyoffice.com")));
         }
         catch (Exception)
         {
-            return false;
+            return Task.FromResult(false);
         }
     }
 

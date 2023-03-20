@@ -58,9 +58,9 @@ public class FilesModule : FeedModule
         _fileSecurity = fileSecurity;
     }
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override async Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
             return false;
         }
@@ -94,9 +94,9 @@ public class FilesModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(file, userId).Result;
     }
 
-    public override async Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public override async Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
             return;
         }

@@ -70,7 +70,7 @@ public class CustomNavigationController : BaseSettingsController
     [HttpPost("customnavigation/create")]
     public async Task<CustomNavigationItem> CreateCustomNavigationItem(CustomNavigationItem item)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = _settingsManager.Load<CustomNavigationSettings>();
 
@@ -90,13 +90,13 @@ public class CustomNavigationController : BaseSettingsController
 
             if (existItem.SmallImg != item.SmallImg)
             {
-                await _storageHelper.DeleteLogo(existItem.SmallImg);
+                await _storageHelper.DeleteLogoAsync(existItem.SmallImg);
                 existItem.SmallImg = await _storageHelper.SaveTmpLogo(item.SmallImg);
             }
 
             if (existItem.BigImg != item.BigImg)
             {
-                await _storageHelper.DeleteLogo(existItem.BigImg);
+                await _storageHelper.DeleteLogoAsync(existItem.BigImg);
                 existItem.BigImg = await _storageHelper.SaveTmpLogo(item.BigImg);
             }
 
@@ -123,7 +123,7 @@ public class CustomNavigationController : BaseSettingsController
     [HttpDelete("customnavigation/delete/{id}")]
     public async Task DeleteCustomNavigationItem(Guid id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = _settingsManager.Load<CustomNavigationSettings>();
 
@@ -134,8 +134,8 @@ public class CustomNavigationController : BaseSettingsController
             return;
         }
 
-        await _storageHelper.DeleteLogo(terget.SmallImg);
-        await _storageHelper.DeleteLogo(terget.BigImg);
+        await _storageHelper.DeleteLogoAsync(terget.SmallImg);
+        await _storageHelper.DeleteLogoAsync(terget.BigImg);
 
         settings.Items.Remove(terget);
         _settingsManager.Save(settings);

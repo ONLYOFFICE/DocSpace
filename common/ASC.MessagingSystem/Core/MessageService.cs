@@ -201,7 +201,7 @@ public class MessageService
             return;
         }
 
-        var message = _messageFactory.Create(_request, loginName, dateTime, action, target, description);
+        var message = await _messageFactory.CreateAsync(_request, loginName, dateTime, action, target, description);
         if (!_messagePolicy.Check(message))
         {
             return;
@@ -265,7 +265,7 @@ public class MessageService
             return;
         }
 
-        var message = _messageFactory.Create(userData, httpHeaders, action, target, description);
+        var message = await _messageFactory.CreateAsync(userData, httpHeaders, action, target, description);
         if (!_messagePolicy.Check(message))
         {
             return;
@@ -299,7 +299,7 @@ public class MessageService
             return;
         }
 
-        var message = _messageFactory.Create(_request, initiator, null, action, target, description);
+        var message = await _messageFactory.CreateAsync(_request, initiator, null, action, target, description);
         if (!_messagePolicy.Check(message))
         {
             return;
@@ -314,7 +314,7 @@ public class MessageService
             return 0;
         }
 
-        var message = _messageFactory.Create(_request, userData, action);
+        var message = await _messageFactory.CreateAsync(_request, userData, action);
         if (!_messagePolicy.Check(message))
         {
             return 0;

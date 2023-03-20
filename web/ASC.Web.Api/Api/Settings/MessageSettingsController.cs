@@ -80,7 +80,7 @@ public class MessageSettingsController : BaseSettingsController
     [HttpPost("messagesettings")]
     public async Task<object> EnableAdminMessageSettingsAsync(AdminMessageSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         _settingsManager.Save(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
 
@@ -90,22 +90,22 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [HttpGet("cookiesettings")]
-    public int GetCookieSettings()
+    public async Task<int> GetCookieSettingsAsync()
     {
-        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+        return _cookiesManager.GetLifeTime((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     [HttpPut("cookiesettings")]
     public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("CookieSettings"))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTimeAsync(model.LifeTime);
 
         await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
 
@@ -172,7 +172,7 @@ public class MessageSettingsController : BaseSettingsController
 
             var settings = _settingsManager.Load<IPRestrictionsSettings>();
 
-            if (settings.Enable && !_ipSecurity.Verify())
+            if (settings.Enable && !await _ipSecurity.VerifyAsync())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }

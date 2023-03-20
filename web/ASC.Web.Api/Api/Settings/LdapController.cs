@@ -158,7 +158,7 @@ public class LdapController : BaseSettingsController
         settings.Cron = cron;
         _settingsManager.Save(settings);
 
-        var t = _tenantManager.GetCurrentTenant();
+        var t = await _tenantManager.GetCurrentTenantAsync();
         if (!string.IsNullOrEmpty(cron))
         {
             _ldapNotifyHelper.UnregisterAutoSync(t);
@@ -301,7 +301,7 @@ public class LdapController : BaseSettingsController
 
     private async Task CheckLdapPermissionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())

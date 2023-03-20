@@ -105,7 +105,7 @@ public class FileMarker
 
     internal async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj, SocketManager socketManager)
     {
-        _tenantManager.SetCurrentTenant(obj.TenantID);
+        await _tenantManager.SetCurrentTenantAsync(obj.TenantID);
 
         var folderDao = _daoFactory.GetFolderDao<T>();
         T parentFolderId;
@@ -696,7 +696,7 @@ public class FileMarker
             yield break;
         }
 
-        if (Equals(folder.Id, _globalFolder.GetFolderMy(this, _daoFactory)) ||
+        if (Equals(folder.Id, await _globalFolder.GetFolderMyAsync(this, _daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory)))
@@ -886,7 +886,7 @@ public class FileMarker
                     {
                         cacheFolderId = rootFolderId = await _globalFolder.GetFolderProjectsAsync<T>(_daoFactory);
                     }
-                    else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
+                    else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, await _globalFolder.GetFolderMyAsync(this, _daoFactory)))
                     {
                         cacheFolderId = rootFolderId = shareFolder;
                     }
@@ -991,11 +991,11 @@ public class FileMarker
         {
             if (t.EntryType == FileEntryType.File)
             {
-                yield return socketManager.ExecMarkAsNewFile(t.EntryId, t.Count, t.Owner);
+                yield return socketManager.ExecMarkAsNewFileAsync(t.EntryId, t.Count, t.Owner);
             }
             else if (t.EntryType == FileEntryType.Folder)
             {
-                yield return socketManager.ExecMarkAsNewFolder(t.EntryId, t.Count, t.Owner);
+                yield return socketManager.ExecMarkAsNewFolderAsync(t.EntryId, t.Count, t.Owner);
             }
         }
     }

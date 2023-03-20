@@ -32,12 +32,12 @@ public interface IBackupService
     BackupProgress GetBackupProgress(int tenantId);
     BackupProgress GetRestoreProgress(int tenantId);
     BackupProgress GetTransferProgress(int tenantId);
-    Task<List<BackupHistoryRecord>> GetBackupHistory(int tenantId);
+    Task<List<BackupHistoryRecord>> GetBackupHistoryAsync(int tenantId);
     Task<ScheduleResponse> GetScheduleAsync(int tenantId);
     string GetTmpFolder();
     Task CreateScheduleAsync(CreateScheduleRequest request);
     Task DeleteAllBackupsAsync(int tenantId);
-    Task DeleteBackup(Guid backupId);
+    Task DeleteBackupAsync(Guid backupId);
     Task DeleteScheduleAsync(int tenantId);
     void StartBackup(StartBackupRequest request);
     Task StartRestoreAsync(StartRestoreRequest request);

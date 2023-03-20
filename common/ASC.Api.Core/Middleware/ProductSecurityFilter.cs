@@ -76,7 +76,7 @@ public class ProductSecurityFilter : IResourceFilter
 
     public void OnResourceExecuted(ResourceExecutedContext context) { }
 
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public async void OnResourceExecuting(ResourceExecutingContext context)
     {
         if (!_authContext.IsAuthenticated)
         {
@@ -93,7 +93,7 @@ public class ProductSecurityFilter : IResourceFilter
                     CallContext.SetData("asc.web.product_id", pid);
                 }
 
-                if (!_webItemSecurity.IsAvailableForMe(pid))
+                if (! await _webItemSecurity.IsAvailableForMeAsync(pid))
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                     _logger.WarningPaymentRequired(controllerActionDescriptor.ControllerName, _authContext.CurrentAccount.ID);

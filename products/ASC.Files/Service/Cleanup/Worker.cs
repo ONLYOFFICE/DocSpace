@@ -79,7 +79,7 @@ public class Worker
             await using (var scope = _serviceScopeFactory.CreateAsyncScope())
             {
                 var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenantUser.TenantId);
+                await tenantManager.SetCurrentTenantAsync(tenantUser.TenantId);
 
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();
                 var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
@@ -115,7 +115,7 @@ public class Worker
 
                 _logger.InfoCleanUp(tenantUser.TenantId, trashId);
 
-                fileStorageService.DeleteItems("delete", filesList, foldersList, true, false, true);
+                await fileStorageService.DeleteItemsAsync("delete", filesList, foldersList, true, false, true);
 
                 _logger.InfoCleanUpWait(tenantUser.TenantId, trashId);
 

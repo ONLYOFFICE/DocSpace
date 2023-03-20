@@ -328,7 +328,7 @@ public class TenantWhiteLabelSettingsHelper
             _log.ErrorRestoreDefault(e);
         }
 
-        Save(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
+        await SaveAsync(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
     }
 
     public async Task RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type)
@@ -338,7 +338,7 @@ public class TenantWhiteLabelSettingsHelper
             try
             {
                 tenantWhiteLabelSettings.SetIsDefault(type, true);
-                var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
+                var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
                 await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type, false);
                 await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type, true);
             }
@@ -353,9 +353,9 @@ public class TenantWhiteLabelSettingsHelper
 
     #region Set logo
 
-    public async Task SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, bool dark, IDataStore storage = null)
+    public async Task SetLogoAsync(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, bool dark, IDataStore storage = null)
     {
-        var store = storage ?? _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
+        var store = storage ?? _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
 
         #region delete from storage if already exists
 
@@ -411,12 +411,12 @@ public class TenantWhiteLabelSettingsHelper
 
             if (lightData != null)
             {
-                await SetLogo(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
+                await SetLogoAsync(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
             }
 
             if (darkData != null && CanBeDark(currentLogoType))
             {
-                await SetLogo(tenantWhiteLabelSettings, currentLogoType, extDark, darkData, true, storage);
+                await SetLogoAsync(tenantWhiteLabelSettings, currentLogoType, extDark, darkData, true, storage);
             }
 
             tenantWhiteLabelSettings.SetExt(currentLogoType, extLight);
@@ -504,11 +504,11 @@ public class TenantWhiteLabelSettingsHelper
 
         if (lightData != null)
         {
-            await SetLogo(tenantWhiteLabelSettings, type, fileExt, lightData, false, storage);
+            await SetLogoAsync(tenantWhiteLabelSettings, type, fileExt, lightData, false, storage);
         }
         if (darkData != null && CanBeDark(type))
         {
-            await SetLogo(tenantWhiteLabelSettings, type, fileExt, darkData, true, storage);
+            await SetLogoAsync(tenantWhiteLabelSettings, type, fileExt, darkData, true, storage);
         }
 
         tenantWhiteLabelSettings.SetExt(type, fileExt);
@@ -544,7 +544,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private async Task<string> GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
+        var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), dark);
 
         if (await store.IsFileAsync(fileName))
@@ -611,7 +611,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private async Task<Stream> GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
+        var storage = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
 
         if (storage == null)
         {
@@ -729,7 +729,7 @@ public class TenantWhiteLabelSettingsHelper
         }
     }
 
-    public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
+    public async Task SaveAsync(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
     {
         _settingsManager.Save(tenantWhiteLabelSettings, tenantId);
 
@@ -740,7 +740,7 @@ public class TenantWhiteLabelSettingsHelper
         else
         {
             SetNewLogoText(tenantWhiteLabelSettings, tenantId, restore);
-            tenantLogoManager.RemoveMailLogoDataFromCache();
+            await tenantLogoManager.RemoveMailLogoDataFromCacheAsync();
         }
     }
 

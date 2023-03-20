@@ -86,7 +86,7 @@ public class GWSMigratingGroups : MigratingGroup
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         var existingGroups = _userManager.GetGroups().ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
@@ -96,7 +96,7 @@ public class GWSMigratingGroups : MigratingGroup
         }
         else
         {
-            _groupinfo = _userManager.SaveGroupInfo(_groupinfo);
+            _groupinfo = await _userManager.SaveGroupInfoAsync(_groupinfo);
         }
         foreach (var userEmail in _userUidList)
         {
@@ -110,7 +110,7 @@ public class GWSMigratingGroups : MigratingGroup
                 }
                 if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
                 {
-                    await _userManager.AddUserIntoGroup(user.Id, _groupinfo.ID);
+                    await _userManager.AddUserIntoGroupAsync(user.Id, _groupinfo.ID);
                 }
             }
             catch (Exception ex)

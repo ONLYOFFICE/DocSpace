@@ -183,17 +183,18 @@ public class NotifyTransferRequest : INotifyEngineAction
         _tenantManager = tenantManager;
     }
 
-    public void AfterTransferRequest(NotifyRequest request)
+    public Task AfterTransferRequestAsync(NotifyRequest request)
     {
         if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
         {
             _tenantManager.SetCurrentTenant(tenant);
         }
+        return Task.CompletedTask;
     }
 
-    public void BeforeTransferRequest(NotifyRequest request)
+    public async Task BeforeTransferRequestAsync(NotifyRequest request)
     {
-        request.Properties.Add("Tenant", _tenantManager.GetCurrentTenant(false));
+        request.Properties.Add("Tenant", await _tenantManager.GetCurrentTenantAsync(false));
     }
 }
 

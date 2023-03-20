@@ -53,7 +53,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
         }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
-        _tenantManager.SetCurrentTenant(data.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(data.TenantId);
         await fileDao.InitDocumentAsync(data);
 
         return true;
@@ -67,7 +67,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
         }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
-        _tenantManager.SetCurrentTenant(data.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(data.TenantId);
         await fileDao.InitDocumentAsync(data);
 
         return true;

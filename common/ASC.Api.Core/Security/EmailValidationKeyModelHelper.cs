@@ -106,7 +106,7 @@ public class EmailValidationKeyModelHelper
         switch (type)
         {
             case ConfirmType.EmpInvite:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + (int)emplType, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.LinkInvite:
@@ -115,21 +115,21 @@ public class EmailValidationKeyModelHelper
 
                 if (checkKeyResult == ValidationResult.Invalid)
                 {
-                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)(emplType ?? default), key, _provider.ValidEmailKeyInterval);
+                    checkKeyResult = await _provider.ValidateEmailKeyAsync(type.ToString() + (int)(emplType ?? default), key, _provider.ValidEmailKeyInterval);
                 }
                 break;
 
             case ConfirmType.PortalOwnerChange:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD.GetValueOrDefault(), key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + uiD.GetValueOrDefault(), key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.EmailChange:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + _authContext.CurrentAccount.ID, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + _authContext.CurrentAccount.ID, key, _provider.ValidEmailKeyInterval);
                 break;
             case ConfirmType.PasswordChange:
                 var userInfo = _userManager.GetUserByEmail(email);
                 var auditEvent = (await _auditEventsRepository.GetByFilterAsync(action: MessageAction.UserSentPasswordChangeInstructions, entry: EntryType.User, target: _messageTarget.Create(userInfo.Id).ToString(), limit: 1)).FirstOrDefault();
-                var passwordStamp = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id);
+                var passwordStamp = await _authentication.GetUserPasswordStampAsync(_userManager.GetUserByEmail(email).Id);
 
                 string hash;
 
@@ -144,11 +144,11 @@ public class EmailValidationKeyModelHelper
                     hash = passwordStamp.ToString("s");
                 }
 
-                checkKeyResult = _provider.ValidateEmailKey(email + type + hash, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + hash, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.Activation:
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + uiD, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.ProfileRemove:
@@ -159,11 +159,11 @@ public class EmailValidationKeyModelHelper
                     return ValidationResult.Invalid;
                 }
 
-                checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + uiD, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.Wizard:
-                checkKeyResult = _provider.ValidateEmailKey("" + type, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync("" + type, key, _provider.ValidEmailKeyInterval);
                 break;
 
             case ConfirmType.PhoneActivation:
@@ -171,15 +171,15 @@ public class EmailValidationKeyModelHelper
             case ConfirmType.TfaActivation:
             case ConfirmType.TfaAuth:
             case ConfirmType.Auth:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key, _provider.ValidAuthKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type, key, _provider.ValidAuthKeyInterval);
                 break;
 
             case ConfirmType.PortalContinue:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type, key);
                 break;
 
             default:
-                checkKeyResult = _provider.ValidateEmailKey(email + type, key, _provider.ValidEmailKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type, key, _provider.ValidEmailKeyInterval);
                 break;
         }
 

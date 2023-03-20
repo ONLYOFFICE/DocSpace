@@ -142,7 +142,7 @@ public class BreadCrumbsManager
                         {
                             case FolderType.USER:
                                 rootId = _authContext.CurrentAccount.ID == firstVisible.RootCreateBy
-                                    ? _globalFolderHelper.FolderMy
+                                    ? await _globalFolderHelper.FolderMyAsync
                                     : await _globalFolderHelper.FolderShareAsync;
                                 break;
                             case FolderType.COMMON:
@@ -619,7 +619,7 @@ public class EntryManager
 
     public async IAsyncEnumerable<Folder<string>> GetThirpartyFoldersAsync<T>(Folder<T> parent, string searchText = null)
     {
-        if ((parent.Id.Equals(_globalFolderHelper.FolderMy) || parent.Id.Equals(await _globalFolderHelper.FolderCommonAsync))
+        if ((parent.Id.Equals(await _globalFolderHelper.FolderMyAsync) || parent.Id.Equals(await _globalFolderHelper.FolderCommonAsync))
             && _thirdpartyConfiguration.SupportInclusion(_daoFactory)
             && (_filesSettingsHelper.EnableThirdParty
                 || _coreBaseSettings.Personal))
@@ -1445,7 +1445,7 @@ public class EntryManager
                 if (stream != null)
                 {
                     downloadUri = await _pathProvider.GetTempUrlAsync(stream, newExtension);
-                    downloadUri = _documentServiceConnector.ReplaceCommunityAdress(downloadUri);
+                    downloadUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(downloadUri);
                 }
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
@@ -1674,7 +1674,7 @@ public class EntryManager
 
                         foreach (var size in _thumbnailSettings.Sizes)
                         {
-                            await _globalStoreLocal.GetStore().CopyAsync(String.Empty,
+                            await (await _globalStoreLocal.GetStoreAsync()).CopyAsync(String.Empty,
                                                                     _fileDao.GetUniqThumbnailPath(fromFile, size.Width, size.Height),
                                                                     String.Empty,
                                                                     _fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
@@ -1917,7 +1917,7 @@ public class EntryManager
         {
             _logger.InformationDeletefile(file.Id.ToString(), parentId.ToString());
             await fileDao.DeleteFileAsync(file.Id);
-            await _socketManager.DeleteFile(file);
+            await _socketManager.DeleteFileAsync(file);
 
             await linkDao.DeleteAllLinkAsync(file.Id.ToString());
         }

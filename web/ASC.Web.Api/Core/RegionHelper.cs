@@ -92,7 +92,7 @@ public class RegionHelper
     {
         RegionInfo regionInfo = null;
 
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         var geoinfo = await _geolocationHelper.GetIPGeolocationFromHttpContextAsync();
 
         if (geoinfo != null)

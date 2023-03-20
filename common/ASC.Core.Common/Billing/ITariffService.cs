@@ -38,6 +38,6 @@ public interface ITariffService
     void ClearCache(int tenantId);
     Task DeleteDefaultBillingInfoAsync();
     Task SetTariffAsync(int tenantId, Tariff tariff);
-    Uri GetAccountLink(int tenant, string backUrl);
+    Task<Uri> GetAccountLinkAsync(int tenant, string backUrl);
     Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
 }

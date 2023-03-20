@@ -99,7 +99,7 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
             };
         }
 
-        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl(_tenantManager.GetCurrentTenant().Id, file.ParentId, file.Id, file.Title, file.ContentLength, encrypted, _securityContext);
+        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl((await _tenantManager.GetCurrentTenantAsync()).Id, file.ParentId, file.Id, file.Title, file.ContentLength, encrypted, _securityContext);
 
         var httpClient = _httpClientFactory.CreateClient();
 

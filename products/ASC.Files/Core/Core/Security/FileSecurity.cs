@@ -408,7 +408,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultCommonShare,
                         Subject = Constants.GroupEveryone.ID,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
                         Owner = _authContext.CurrentAccount.ID
                     }
                 };
@@ -439,7 +439,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultMyShare,
                         Subject = entry.RootCreateBy,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -463,7 +463,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultPrivacyShare,
                         Subject = entry.RootCreateBy,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -516,7 +516,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = FileShare.Read,
                         Subject = Constants.GroupEveryone.ID,
-                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -593,7 +593,7 @@ public class FileSecurity : IFileSecurity
         var user = _userManager.GetUsers(userId);
         var isOutsider = _userManager.IsOutsider(user);
         var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
+        var isAuthenticated = _authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
         var isCollaborator = _userManager.IsCollaborator(user);
 
@@ -634,7 +634,7 @@ public class FileSecurity : IFileSecurity
         }
 
         var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
+        var isAuthenticated = _authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
         var isCollaborator = _userManager.IsCollaborator(user);
 
@@ -1077,12 +1077,12 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    public Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions fileShareOptions = null)
+    public async Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions fileShareOptions = null)
     {
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
         {
-            TenantId = _tenantManager.GetCurrentTenant().Id,
+            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
             EntryId = entryId,
             EntryType = entryType,
             Subject = @for,
@@ -1092,7 +1092,7 @@ public class FileSecurity : IFileSecurity
             FileShareOptions = fileShareOptions,
         };
 
-        return securityDao.SetShareAsync(r);
+        securityDao.SetShareAsync(r);
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)

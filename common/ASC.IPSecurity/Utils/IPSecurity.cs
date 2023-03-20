@@ -64,9 +64,9 @@ public class IPSecurity
         IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
     }
 
-    public bool Verify()
+    public async Task<bool> VerifyAsync()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (!IpSecurityEnabled)
         {

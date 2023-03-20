@@ -147,7 +147,7 @@ public class SettingsController : BaseSettingsController
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Standalone = _coreBaseSettings.Standalone,
             Version = _configuration["version:number"] ?? "",
-            TenantStatus = _tenantManager.GetCurrentTenant().Status,
+            TenantStatus = (await _tenantManager.GetCurrentTenantAsync()).Status,
             TenantAlias = Tenant.Alias,
             EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync()
         };
@@ -228,7 +228,7 @@ public class SettingsController : BaseSettingsController
     [HttpPost("maildomainsettings")]
     public async Task<object> SaveMailDomainSettingsAsync(MailDomainSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (inDto.Type == TenantTrustedDomainsType.Custom)
         {
@@ -268,9 +268,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPost("userquotasettings")]
-    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    public async Task<object> SaveUserQuotaSettingsAsync(UserQuotaSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
 
@@ -327,23 +327,23 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("recalculatequota")]
-    public void RecalculateQuota()
+    public async Task RecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        _quotaSyncOperation.RecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpGet("checkrecalculatequota")]
-    public bool CheckRecalculateQuota()
+    public async Task<bool> CheckRecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpGet("logo")]
-    public object GetLogo()
+    public async Task<object> GetLogo()
     {
-        return _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(_settingsManager.Load<TenantInfoSettings>());
     }
 
     [AllowNotPayment]
@@ -353,7 +353,7 @@ public class SettingsController : BaseSettingsController
     {
         await ApiContext.AuthByClaimAsync();
 
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         return await _firstTimeTenantSettings.SaveDataAsync(inDto);
     }
@@ -385,7 +385,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("colortheme")]
     public async Task<CustomColorThemesSettingsDto> SaveColorThemeAsync(CustomColorThemesSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
         var settings = _settingsManager.Load<CustomColorThemesSettings>();
 
         if (inDto.Theme != null)
@@ -451,7 +451,7 @@ public class SettingsController : BaseSettingsController
     [HttpDelete("colortheme")]
     public async Task<CustomColorThemesSettingsDto> DeleteColorThemeAsync(int id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = _settingsManager.Load<CustomColorThemesSettings>();
 
@@ -490,7 +490,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("timeandlanguage")]
     public async Task<object> TimaAndLanguageAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var culture = CultureInfo.GetCultureInfo(inDto.Lng);
 
@@ -533,7 +533,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("defaultpage")]
     public async Task<object> SaveDefaultPageSettingAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
 
@@ -550,9 +550,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("statistics/spaceusage/{id}")]
-    public Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
+    public async Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var webitem = _webItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                    .FirstOrDefault(item =>
@@ -563,10 +563,10 @@ public class SettingsController : BaseSettingsController
 
         if (webitem == null)
         {
-            return Task.FromResult(new List<UsageSpaceStatItemDto>());
+            return new List<UsageSpaceStatItemDto>();
         }
 
-        return InternalGetSpaceUsageStatistics(webitem);
+        return await InternalGetSpaceUsageStatistics(webitem);
     }
 
     private async Task<List<UsageSpaceStatItemDto>> InternalGetSpaceUsageStatistics(IWebItem webitem)
@@ -584,9 +584,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("statistics/visit")]
-    public List<ChartPointDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
+    public async Task<List<ChartPointDto>> GetVisitStatisticsAsync(ApiDateTime fromDate, ApiDateTime toDate)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var from = _tenantUtil.DateTimeFromUtc(fromDate);
         var to = _tenantUtil.DateTimeFromUtc(toDate);
@@ -672,9 +672,9 @@ public class SettingsController : BaseSettingsController
     [HttpPost("authservice")]
     public async Task<bool> SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenant().Id)).ThirdParty;
+        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenantAsync().Id)).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
         {
@@ -720,7 +720,7 @@ public class SettingsController : BaseSettingsController
             ? consumer.ManagedKeys.All(key => string.IsNullOrEmpty(consumer[key]))
             : consumer.All(r => string.IsNullOrEmpty(r.Value));
 
-        if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !allPropsIsEmpty)
+        if (validateKeyProvider != null && !await validateKeyProvider.ValidateKeysAsync() && !allPropsIsEmpty)
         {
             consumer.Clear();
             throw new ArgumentException(Resource.ErrorBadKeys);

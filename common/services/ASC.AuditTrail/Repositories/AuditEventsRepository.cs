@@ -90,7 +90,7 @@ public class AuditEventsRepository
         int startIndex = 0,
         int limit = 0)
     {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
+        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
         using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
         var query =
            from q in auditTrailContext.AuditEvents

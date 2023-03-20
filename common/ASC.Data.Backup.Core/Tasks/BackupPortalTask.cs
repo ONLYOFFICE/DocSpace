@@ -74,7 +74,7 @@ public class BackupPortalTask : PortalTaskBase
     public override async Task RunJob()
     {
         _logger.DebugBeginBackup(TenantId);
-        _tenantManager.SetCurrentTenant(TenantId);
+        await _tenantManager.SetCurrentTenantAsync(TenantId);
 
         await using (WriteOperator)
         {
@@ -170,7 +170,7 @@ public class BackupPortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+            var tenants = (await _tenantManager.GetTenantsAsync(false)).Select(r => r.Id);
             foreach (var t in tenants)
             {
                 files.AddRange(await GetFiles(t));

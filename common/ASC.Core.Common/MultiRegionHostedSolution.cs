@@ -57,19 +57,19 @@ public class MultiRegionHostedSolution
         Initialize();
     }
 
-    public List<Tenant> GetTenants(DateTime from)
+    public async Task<List<Tenant>> GetTenantsAsync(DateTime from)
     {
-        return GetRegionServices()
-            .SelectMany(r => r.GetTenants(from))
-            .ToList();
+        var result = new List<Tenant>();
+
+        foreach (var solution in GetRegionServices())
+        {
+            result.AddRange(await solution.GetTenantsAsync(from));
+        }
+
+        return result;
     }
 
-    public List<Tenant> FindTenants(string login)
-    {
-        return FindTenants(login, null);
-    }
-
-    public List<Tenant> FindTenants(string login, string password, string passwordHash = null)
+    public async Task<List<Tenant>> FindTenantsAsync(string login, string password = null, string passwordHash = null)
     {
         var result = new List<Tenant>();
         Exception error = null;
@@ -83,7 +83,7 @@ public class MultiRegionHostedSolution
                     passwordHash = _passwordHasher.GetClientPassword(password);
                 }
 
-                result.AddRange(service.FindTenants(login, passwordHash));
+                result.AddRange(await service.FindTenantsAsync(login, passwordHash));
             }
             catch (SecurityException exception)
             {
@@ -104,11 +104,11 @@ public class MultiRegionHostedSolution
         GetRegionService(region).RegisterTenant(ri, out tenant);
     }
 
-    public Tenant GetTenant(string domain)
+    public async Task<Tenant> GetTenantAsync(string domain)
     {
         foreach (var service in GetRegionServices())
         {
-            var tenant = service.GetTenant(domain);
+            var tenant = await service.GetTenantAsync(domain);
             if (tenant != null)
             {
                 return tenant;
@@ -118,9 +118,9 @@ public class MultiRegionHostedSolution
         return null;
     }
 
-    public Tenant GetTenant(string region, int tenantId)
+    public async Task<Tenant> GetTenantAsync(string region, int tenantId)
     {
-        return GetRegionService(region).GetTenant(tenantId);
+        return await GetRegionService(region).GetTenantAsync(tenantId);
     }
 
     public Tenant SaveTenant(string region, Tenant tenant)

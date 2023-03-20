@@ -215,6 +215,6 @@ public class SubscriptionManager
 
     private int GetTenant()
     {
-        return _tenantManager.GetCurrentTenant().Id;
+        return _tenantManager.GetCurrentTenantAsync().Id;
     }
 }

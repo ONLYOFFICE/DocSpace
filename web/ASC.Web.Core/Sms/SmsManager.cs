@@ -122,12 +122,12 @@ public class SmsManager
 
         var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
-        if (_smsKeyStorage.ExistsKey(mobilePhone) && !again)
+        if (await _smsKeyStorage.ExistsKeyAsync(mobilePhone) && !again)
         {
             return;
         }
-
-        if (!_smsKeyStorage.GenerateKey(mobilePhone, out var key))
+        (var succ, var key) = await _smsKeyStorage.GenerateKeyAsync(mobilePhone);
+        if (!succ)
         {
             throw new Exception(Resource.SmsTooMuchError);
         }
@@ -139,7 +139,7 @@ public class SmsManager
     {
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
+            await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { Tenant = (await _tenantManager.GetCurrentTenantAsync()).Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
         }
     }
 
@@ -156,7 +156,7 @@ public class SmsManager
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        var valid = _smsKeyStorage.ValidateKey(user.MobilePhone, code);
+        var valid = await _smsKeyStorage.ValidateKeyAsync(user.MobilePhone, code);
         switch (valid)
         {
             case SmsKeyStorage.Result.Empty:
@@ -182,7 +182,7 @@ public class SmsManager
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
         {
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-            _userManager.UpdateUserInfo(user);
+            await _userManager.UpdateUserInfoAsync(user);
         }
     }
 }

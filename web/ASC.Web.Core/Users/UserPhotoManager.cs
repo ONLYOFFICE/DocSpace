@@ -120,14 +120,14 @@ public class UserPhotoManagerCache
                               .AddOrUpdate(data.Size, data.FileName, (key, oldValue) => data.FileName);
             }, CacheNotifyAction.InsertOrUpdate);
 
-            _cacheNotify.Subscribe((data) =>
+            _cacheNotify.Subscribe(async (data) =>
             {
                 ConcurrentDictionary<CacheSize, string> removedValue;
 
                 if (_photofiles.TryRemove(new Guid(data.UserId), out removedValue))
                 {
                     using var scope = _serviceScopeFactory.CreateScope();
-                    scope.ServiceProvider.GetRequiredService<TenantManager>().SetCurrentTenant(data.TenantId);
+                    await scope.ServiceProvider.GetRequiredService<TenantManager>().SetCurrentTenantAsync(data.TenantId);
                     var storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
 
                     var storage = storageFactory.GetStorage(data.TenantId, "userPhotos");
@@ -361,7 +361,7 @@ public class UserPhotoManager
             }
             else
             {
-                (photoUrl, fileName) = await SaveOrUpdatePhoto(userID, data, -1, new Size(-1, -1), false);
+                (photoUrl, fileName) = await SaveOrUpdatePhotoAsync(userID, data, -1, new Size(-1, -1), false);
             }
 
             _userPhotoManagerCache.AddToCache(userID, Size.Empty, fileName, _tenant.Id);
@@ -509,12 +509,12 @@ public class UserPhotoManager
 
     public async Task<(string, string)> SaveOrUpdatePhoto(Guid userID, byte[] data)
     {
-        return await SaveOrUpdatePhoto(userID, data, -1, OriginalFotoSize, true);
+        return await SaveOrUpdatePhotoAsync(userID, data, -1, OriginalFotoSize, true);
     }
 
-    public async Task RemovePhoto(Guid idUser)
+    public async Task RemovePhotoAsync(Guid idUser)
     {
-        _userManager.SaveUserPhoto(idUser, null);
+        await _userManager.SaveUserPhotoAsync(idUser, null);
         try
         {
             var storage = GetDataStore();
@@ -532,20 +532,20 @@ public class UserPhotoManager
             }
         }
 
-        _userManager.SaveUserPhoto(idUser, null);
+        await _userManager.SaveUserPhotoAsync(idUser, null);
         _userPhotoManagerCache.ClearCache(idUser, _tenant.Id);
     }
 
-    public void SyncPhoto(Guid userID, byte[] data)
+    public async Task SyncPhotoAsync(Guid userID, byte[] data)
     {
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
-        _userManager.SaveUserPhoto(userID, data);
+        await _userManager.SaveUserPhotoAsync(userID, data);
         SetUserPhotoThumbnailSettings(userID, width, height);
         _userPhotoManagerCache.ClearCache(userID, _tenant.Id);
     }
 
 
-    private async Task<(string, string)> SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext)
+    private async Task<(string, string)> SaveOrUpdatePhotoAsync(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext)
     {
         data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
 
@@ -554,7 +554,7 @@ public class UserPhotoManager
 
         if (saveInCoreContext)
         {
-            _userManager.SaveUserPhoto(userID, data);
+            await _userManager.SaveUserPhotoAsync(userID, data);
             SetUserPhotoThumbnailSettings(userID, width, height);
             _userPhotoManagerCache.ClearCache(userID, _tenant.Id);
 
@@ -697,7 +697,7 @@ public class UserPhotoManager
             throw new ImageWeightLimitException();
         }
 
-        var resizeTask = new ResizeWorkerItem(_tenantManager.GetCurrentTenant().Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.Load<UserPhotoThumbnailSettings>(userID));
+        var resizeTask = new ResizeWorkerItem((await _tenantManager.GetCurrentTenantAsync()).Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.Load<UserPhotoThumbnailSettings>(userID));
         var key = $"{userID}{size}";
         resizeTask["key"] = key;
 
@@ -723,7 +723,7 @@ public class UserPhotoManager
     {
         try
         {
-            _tenantManager.SetCurrentTenant(item.TenantId);
+            await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
             var data = item.Data;
             using var stream = new MemoryStream(data);

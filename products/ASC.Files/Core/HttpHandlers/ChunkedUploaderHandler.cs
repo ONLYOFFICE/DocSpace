@@ -113,7 +113,7 @@ public class ChunkedUploaderHandlerService
                 return;
             }
 
-            if (_tenantManager.GetCurrentTenant().Status != TenantStatus.Active)
+            if ((await _tenantManager.GetCurrentTenantAsync()).Status != TenantStatus.Active)
             {
                 await WriteError(context, "Can't perform upload for deleted or transfering portals");
 
@@ -172,8 +172,8 @@ public class ChunkedUploaderHandlerService
     {
         if (request.Type(_instanceCrypto) == ChunkedRequestType.Initiate)
         {
-            _tenantManager.SetCurrentTenant(request.TenantId);
-            await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, request.AuthKey(_instanceCrypto)));
+            await _tenantManager.SetCurrentTenantAsync(request.TenantId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, request.AuthKey(_instanceCrypto)));
             var cultureInfo = request.CultureInfo(_setupInfo);
             if (cultureInfo != null)
             {
@@ -188,8 +188,8 @@ public class ChunkedUploaderHandlerService
             var uploadSession = await _chunkedUploadSessionHolder.GetSessionAsync<T>(request.UploadId);
             if (uploadSession != null)
             {
-                _tenantManager.SetCurrentTenant(uploadSession.TenantId);
-                await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, uploadSession.UserId));
+                await _tenantManager.SetCurrentTenantAsync(uploadSession.TenantId);
+                await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, uploadSession.UserId));
                 var culture = _setupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                 if (culture != null)
                 {

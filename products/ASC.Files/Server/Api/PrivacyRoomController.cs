@@ -111,16 +111,16 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpGet("keys")]
-    public Task<EncryptionKeyPairDto> GetKeysAsync()
+    public async Task<EncryptionKeyPairDto> GetKeysAsync()
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
             throw new SecurityException();
         }
 
-        return _encryptionKeyPairHelper.GetKeyPairAsync();
+        return await _encryptionKeyPairHelper.GetKeyPairAsync();
     }
 
 
@@ -130,9 +130,9 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [HttpGet("")]
-    public bool PrivacyRoom()
+    public async Task<bool> PrivacyRoomAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         return PrivacyRoomSettings.GetEnabled(_settingsManager);
     }
@@ -144,7 +144,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     [HttpPut("keys")]
     public async Task<object> SetKeysAsync(PrivacyRoomRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
@@ -179,7 +179,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     [HttpPut("")]
     public async Task<bool> SetPrivacyRoomAsync(PrivacyRoomRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (inDto.Enable)
         {

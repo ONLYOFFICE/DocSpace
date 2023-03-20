@@ -51,9 +51,9 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
         Check(quota, used);
     }
 
-    public Task CheckAddAsync(T1 newValue)
+    public async Task CheckAddAsync(T1 newValue)
     {
-        return CheckAddAsync(_tenantManager.GetCurrentTenant().Id, newValue);
+        await CheckAddAsync((await _tenantManager.GetCurrentTenantAsync()).Id, newValue);
     }
 
     public virtual async Task CheckAddAsync(int tenantId, T1 newValue)

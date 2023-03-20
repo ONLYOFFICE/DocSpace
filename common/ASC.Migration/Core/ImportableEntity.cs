@@ -32,7 +32,7 @@ public abstract class ImportableEntity
 
     public abstract void Parse();
 
-    public abstract Task Migrate();
+    public abstract Task MigrateAsync();
 
     protected Action<string, Exception> Log { get; set; }
 

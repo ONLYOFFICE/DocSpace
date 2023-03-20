@@ -226,7 +226,7 @@ public class FileSharingAceHelper<T>
 
             if (emailInvite)
             {
-                var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
+                var link = await _roomLinkService.GetInvitationLinkAsync(w.Email, share, _authContext.CurrentAccount.ID);
                 await _studioNotifyService.SendEmailRoomInviteAsync(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
@@ -325,7 +325,7 @@ public class FileSharingAceHelper<T>
     public async Task RemoveAceAsync(FileEntry<T> entry)
     {
         if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
-                || Equals(entry.RootId, _globalFolderHelper.FolderMy)
+                || Equals(entry.RootId, await _globalFolderHelper.FolderMyAsync)
                 || Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync))
         {
             return;
@@ -398,14 +398,14 @@ public class FileSharingHelper
 
         if (_coreBaseSettings.DisableDocSpace)
         {
-            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShareAsync(entry))
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, await _globalFolderHelper.FolderMyAsync) || await _fileSecurity.CanShareAsync(entry))
             {
                 return true;
             }
         }
         else
         {
-            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy))
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, await _globalFolderHelper.FolderMyAsync))
             {
                 return false;
             }

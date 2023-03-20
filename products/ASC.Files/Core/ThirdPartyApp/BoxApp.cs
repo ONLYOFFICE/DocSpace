@@ -227,7 +227,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         query += FilesLinkUtility.Action + "=stream&";
         query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId) + "&";
         query += CommonLinkUtility.ParamName_UserUserID + "=" + HttpUtility.UrlEncode(_authContext.CurrentAccount.ID.ToString()) + "&";
-        query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(fileId + _authContext.CurrentAccount.ID) + "&";
+        query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKeyAsync(fileId + _authContext.CurrentAccount.ID) + "&";
         query += ThirdPartySelector.AppAttr + "=" + AppAttr;
 
         return uriBuilder.Uri + "?" + query;
@@ -258,7 +258,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 if (stream != null)
                 {
                     downloadUrl = await _pathProvider.GetTempUrlAsync(stream, fileType);
-                    downloadUrl = _documentServiceConnector.ReplaceCommunityAdress(downloadUrl);
+                    downloadUrl = await _documentServiceConnector.ReplaceCommunityAdressAsync(downloadUrl);
                 }
 
                 _logger.DebugBoxAppGetConvertedUri(fileType, currentType, downloadUrl);
@@ -408,7 +408,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             _logger.DebugBoxAppGetFileStream(fileId);
 
-            var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId + userId, auth, _global.StreamUrlExpire);
+            var validateResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(fileId + userId, auth, _global.StreamUrlExpire);
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
             {
                 var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);

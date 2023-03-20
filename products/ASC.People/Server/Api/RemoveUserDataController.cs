@@ -60,9 +60,9 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpGet("remove/progress")]
-    public RemoveProgressItem GetRemoveProgress(Guid userId)
+    public async Task<RemoveProgressItem> GetRemoveProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
@@ -84,9 +84,9 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpPost("remove/start")]
-    public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
+    public async Task<RemoveProgressItem> StartRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         var user = _userManager.GetUsers(inDto.UserId);
 
@@ -104,9 +104,9 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpPut("remove/terminate")]
-    public void TerminateRemove(TerminateRequestDto inDto)
+    public async Task TerminateRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }

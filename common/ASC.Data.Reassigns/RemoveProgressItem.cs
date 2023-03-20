@@ -71,7 +71,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
-        tenantManager.SetCurrentTenant(_tenantId);
+        await tenantManager.SetCurrentTenantAsync(_tenantId);
         var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
         try
@@ -133,7 +133,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             logger.ErrorRemoveProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
-            SendErrorNotify(studioNotifyService, ex.Message, userName);
+            await SendErrorNotifyAsync(studioNotifyService, ex.Message, userName);
         }
         finally
         {
@@ -220,7 +220,7 @@ public class RemoveProgressItem : DistributedTaskProgress
     {
         if (_notify)
         {
-            studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
+            await studioNotifyService.SendMsgRemoveUserDataCompletedAsync(_currentUserId, User, userName,
                                                                         docsSpace, crmSpace, mailSpace, talkSpace);
         }
 
@@ -234,14 +234,14 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
     }
 
-    private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
+    private async Task SendErrorNotifyAsync(StudioNotifyService studioNotifyService, string errorMessage, string userName)
     {
         if (!_notify)
         {
             return;
         }
 
-        studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+        await studioNotifyService.SendMsgRemoveUserDataFailedAsync(_currentUserId, User, userName, errorMessage);
     }
 }
 

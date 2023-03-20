@@ -245,7 +245,7 @@ public class FileTrackerHelper
                 if (await tracker.StartTrackAsync(fileId.ToString(), docKey))
                 {
                     _cache.Insert(Tracker + fileId, fileTracker, CacheTimeout, EvictionCallback(fileId, fileTracker));
-                    await socketManager.StartEdit(fileId);
+                    await socketManager.StartEditAsync(fileId);
                 }
             }
             catch (Exception e)

@@ -35,13 +35,13 @@ class PermissionProvider : IPermissionProvider
         _authorizationManager = authorizationManager;
     }
 
-    public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
+    public async Task<IEnumerable<Ace>> GetAclAsync(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
     {
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(action);
 
-        return _authorizationManager
-            .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
+        return (await _authorizationManager
+            .GetAcesWithInheritsAsync(subject.ID, action.ID, objectId, secObjProvider))
             .Select(r => new Ace(r.Action, r.AceType));
     }
 }

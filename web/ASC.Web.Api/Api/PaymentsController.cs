@@ -119,7 +119,7 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        return _tariffService.GetAccountLink(Tenant.Id, backUrl);
+        return await _tariffService.GetAccountLinkAsync(Tenant.Id, backUrl);
     }
 
     [HttpGet("payment/prices")]

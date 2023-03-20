@@ -634,7 +634,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     needToMark.Add(newFile);
                                 }
 
-                                await socketManager.DeleteFile(file);
+                                await socketManager.DeleteFileAsync(file);
 
                                 await socketManager.CreateFileAsync(newFile);
 
@@ -684,7 +684,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 {
                                     foreach (var size in _thumbnailSettings.Sizes)
                                     {                                       
-                                        await globalStorage.GetStore().CopyAsync(String.Empty,
+                                        await(await globalStorage.GetStoreAsync()).CopyAsync(String.Empty,
                                                                                 FileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
                                                                                 String.Empty,
                                                                                 fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));                                      
@@ -732,7 +732,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             await filesMessageService.SendAsync(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
 
-                                            await socketManager.DeleteFile(file);
+                                            await socketManager.DeleteFileAsync(file);
 
                                             if (ProcessedFile(fileId))
                                             {

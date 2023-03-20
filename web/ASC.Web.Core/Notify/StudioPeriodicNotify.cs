@@ -85,19 +85,18 @@ public class StudioPeriodicNotify
         _log = log.CreateLogger("ASC.Notify");
     }
 
-    public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
+    public async Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
     {
         _log.InformationStartSendSaasTariffLetters();
 
-        var activeTenants = _tenantManager.GetTenants().ToList();
+        var activeTenants = await _tenantManager.GetTenantsAsync();
 
         if (activeTenants.Count <= 0)
         {
             _log.InformationEndSendSaasTariffLetters();
-            return Task.CompletedTask;
         }
 
-        return InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
+        await InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
     }
 
     private async Task InternalSendSaasLettersAsync(string senderName, DateTime scheduleDate, List<Tenant> activeTenants)
@@ -108,7 +107,7 @@ public class StudioPeriodicNotify
         {
             try
             {
-                _tenantManager.SetCurrentTenant(tenant.Id);
+                await _tenantManager.SetCurrentTenantAsync(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                 var tariff = await _tariffService.GetTariffAsync(tenant.Id);
@@ -265,7 +264,7 @@ public class StudioPeriodicNotify
                     Thread.CurrentThread.CurrentUICulture = culture;
                     var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
-                    client.SendNoticeToAsync(
+                    await client.SendNoticeToAsync(
                         action,
                             new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                         new[] { senderName },
@@ -288,13 +287,13 @@ public class StudioPeriodicNotify
         _log.InformationEndSendSaasTariffLetters();
     }
 
-    public async Task SendEnterpriseLetters(string senderName, DateTime scheduleDate)
+    public async Task SendEnterpriseLettersAsync(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
 
         _log.InformationStartSendTariffEnterpriseLetters();
 
-        var activeTenants = _tenantManager.GetTenants().ToList();
+        var activeTenants = await _tenantManager.GetTenantsAsync();
 
         if (activeTenants.Count <= 0)
         {
@@ -307,7 +306,7 @@ public class StudioPeriodicNotify
             try
             {
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-                _tenantManager.SetCurrentTenant(tenant.Id);
+                await _tenantManager.SetCurrentTenantAsync(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                 var tariff = await _tariffService.GetTariffAsync(tenant.Id);
@@ -380,7 +379,7 @@ public class StudioPeriodicNotify
 
                     var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
-                    client.SendNoticeToAsync(
+                    await client.SendNoticeToAsync(
                         action,
                             new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                         new[] { senderName },
@@ -402,13 +401,13 @@ public class StudioPeriodicNotify
         _log.InformationEndSendTariffEnterpriseLetters();
     }
 
-    public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
+    public async Task SendOpensourceLettersAsync(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
 
         _log.InformationStartSendOpensourceTariffLetters();
 
-        var activeTenants = _tenantManager.GetTenants().ToList();
+        var activeTenants = await _tenantManager.GetTenantsAsync();
 
         if (activeTenants.Count <= 0)
         {
@@ -420,7 +419,7 @@ public class StudioPeriodicNotify
         {
             try
             {
-                _tenantManager.SetCurrentTenant(tenant.Id);
+                await _tenantManager.SetCurrentTenantAsync(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                 var createdDate = tenant.CreationDateTime.Date;
@@ -442,7 +441,7 @@ public class StudioPeriodicNotify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        client.SendNoticeToAsync(
+                        await client.SendNoticeToAsync(
                                 _userManager.IsDocSpaceAdmin(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
@@ -468,7 +467,7 @@ public class StudioPeriodicNotify
     {
         _log.InformationStartSendLettersPersonal();
 
-        var activeTenants = _tenantManager.GetTenants().ToList();
+        var activeTenants = await _tenantManager.GetTenantsAsync();
 
         foreach (var tenant in activeTenants)
         {
@@ -479,7 +478,7 @@ public class StudioPeriodicNotify
 
                 var sendCount = 0;
 
-                _tenantManager.SetCurrentTenant(tenant.Id);
+                await _tenantManager.SetCurrentTenantAsync(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
                 _log.InformationCurrentTenant(tenant.Id);
@@ -529,7 +528,7 @@ public class StudioPeriodicNotify
 
                     sendCount++;
 
-                    client.SendNoticeToAsync(
+                    await client.SendNoticeToAsync(
                       action,
                       null,
                          await _studioNotifyHelper.RecipientFromEmailAsync(user.Email, true),

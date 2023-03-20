@@ -48,14 +48,14 @@ public class AuthManager
         return _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
     }
 
-    public void SetUserPasswordHash(Guid userID, string passwordHash)
+    public async Task SetUserPasswordHashAsync(Guid userID, string passwordHash)
     {
-        _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().Id, userID, passwordHash);
+        _userService.SetUserPasswordHash((await _tenantManager.GetCurrentTenantAsync()).Id, userID, passwordHash);
     }
 
-    public DateTime GetUserPasswordStamp(Guid userID)
+    public async Task<DateTime> GetUserPasswordStampAsync(Guid userID)
     {
-        return _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
+        return _userService.GetUserPasswordStamp((await _tenantManager.GetCurrentTenantAsync()).Id, userID);
     }
 
     public IAccount GetAccountByID(int tenantId, Guid id)
