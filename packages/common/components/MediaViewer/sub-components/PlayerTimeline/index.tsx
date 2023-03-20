@@ -60,7 +60,7 @@ function PlayerTimeline({
     onChange(event);
   };
 
-  const hadleMouseMove = (
+  const handleMouseMove = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     if (
@@ -93,7 +93,7 @@ function PlayerTimeline({
   return (
     <PlayerTimelineWrapper
       ref={timelineRef}
-      onMouseMove={hadleMouseMove}
+      onMouseMove={handleMouseMove}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
