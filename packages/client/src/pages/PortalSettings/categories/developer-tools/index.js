@@ -68,7 +68,7 @@ export default inject(({ setup, auth }) => {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    setDocumentTitle
+    setDocumentTitle,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(

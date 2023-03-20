@@ -188,12 +188,12 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getSettings = async (withPassword) => {
+  getSettings = async () => {
     let newSettings = null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(withPassword);
+    else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(
@@ -242,9 +242,9 @@ class SettingsStore {
     const origSettings = await this.getSettings().catch((err) => {
       if (err?.response?.status === 404) {
         // portal not found
-        return window.location.replace(
-          `${wrongPortalNameUrl}?url=${window.location.hostname}`
-        );
+        const url = new URL(wrongPortalNameUrl);
+        url.searchParams.append("url", window.location.hostname);
+        return window.location.replace(url);
       }
     });
 

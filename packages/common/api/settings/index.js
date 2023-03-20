@@ -551,6 +551,28 @@ export function getTipsSubscription() {
   return request(options);
 }
 
+export function getNotificationSubscription(notificationType) {
+  const options = {
+    method: "get",
+    url: `/settings/notification/${notificationType}`,
+  };
+  return request(options);
+}
+
+export function changeNotificationSubscription(notificationType, isEnabled) {
+  const data = {
+    Type: notificationType,
+    isEnabled,
+  };
+  const options = {
+    method: "post",
+    url: "/settings/notification",
+    data,
+  };
+
+  return request(options);
+}
+
 export function toggleTipsSubscription() {
   const options = {
     method: "put",
@@ -742,4 +764,14 @@ export function retryWebhooks(webhooksIds) {
     url: `/settings/webhook/retry`,
     data: { Ids: webhooksIds },
   });
+}
+
+export function muteRoomNotification(id, isMute) {
+  const options = {
+    method: "post",
+    url: `/settings/notification/rooms`,
+    data: { RoomsId: id, Mute: isMute },
+  };
+
+  return request(options);
 }

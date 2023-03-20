@@ -8,9 +8,6 @@
   "ProviderSuccessfullyConnected": "Operadora ligada com êxito",
   "ProviderSuccessfullyDisconnected": "Operadora desligada com êxito",
   "ShowBackupCodes": "Mostrar códigos de cópia de segurança",
-  "SubscriptionEmailTipsToggleLbl": "Notificação de email com dicas e truques",
-  "SubscriptionTurnOffToast": "Acabou de cancelar a sua subscrição à lista de emails. <1>Subscrever de novo</1>",
-  "Subscriptions": "Subscrições",
   "SystemTheme": "Utilizar o tema do sistema",
   "TfaLoginSettings": "Definições de acesso",
   "TwoFactorDescription": "A autenticação de dois fatores através de uma aplicação geradora de códigos foi ativada para todos os utilizadores pelo administrador."

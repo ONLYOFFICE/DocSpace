@@ -156,6 +156,7 @@ const createEditRoomStore = new CreateEditRoomStore(
   thirdPartyStore,
   authStore.settingsStore,
   authStore.infoPanelStore,
+  authStore.currentQuotaStore
 );
 
 const webhooksStore = new WebhooksStore();

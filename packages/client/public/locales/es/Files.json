@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
   "TrashEmptyDescription": "La sección 'Papelera de reciclaje' es a donde se mueven todos los archivos borrados. Usted puede restaurarlos en el caso si ellos fueron eliminados por error o eliminarlos de forma permanente. Tenga en cuenta, que cuando usted elimina los archivos de la 'Papelera de reciclaje' ellos no pueden ser recuperados.",
   "UnblockVersion": "Desbloquear/Proteger",
-  "UploadToFolder": "Cargar a la carpeta",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Historial de las Versiones",
   "ViewList": "Lista",

@@ -1513,7 +1513,7 @@ class UploadDataStore {
       let newFilter;
 
       if (!withPaging) {
-        removeFiles(fileIds, folderIds);
+        !isCopy && removeFiles(fileIds, folderIds);
         this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         this.dialogsStore.setIsFolderActions(false);

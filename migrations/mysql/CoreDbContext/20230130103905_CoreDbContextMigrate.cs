@@ -125,7 +125,7 @@ public partial class CoreDbContextMigrate : Migration
         migrationBuilder.InsertData(
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "price", "product_id", "visible" },
-            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
+            values: new object[] { -2, null, "audit,ldap,sso,whitelabel,thirdparty,restore,contentsearch,total_size:107374182400,file_size:1024,manager:1", "admin", 30m, "1002", true });
 
         migrationBuilder.InsertData(
             table: "tenants_quota",

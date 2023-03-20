@@ -27,6 +27,7 @@ class DatePicker extends Component {
     super(props);
 
     moment.locale(props.locale);
+    this.calendarRef = React.createRef();
     this.ref = React.createRef();
 
     const { isOpen, selectedDate, hasError, minDate, maxDate } = this.props;
@@ -58,6 +59,7 @@ class DatePicker extends Component {
   handleClick = (e) => {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
+      !this.calendarRef.current.contains(e.target) &&
       this.onClick(false);
   };
 
@@ -289,23 +291,20 @@ class DatePicker extends Component {
   }
 
   renderBody = () => {
-    const { isDisabled, minDate, maxDate, locale, themeColor } = this.props;
-    const { selectedDate, displayType } = this.state;
-
-    let calendarSize;
-    displayType === "aside" ? (calendarSize = "big") : (calendarSize = "base");
+    const { minDate, maxDate, locale, initialDate } = this.props;
+    const { selectedDate } = this.state;
+    const calendarRef = this.calendarRef;
 
     return (
       <Calendar
         locale={locale}
-        themeColor={themeColor}
         minDate={minDate}
         maxDate={maxDate}
-        isDisabled={isDisabled}
-        openToDate={selectedDate}
+        initialDate={initialDate}
         selectedDate={selectedDate}
         onChange={this.onChange}
-        size={calendarSize}
+        setSelectedDate={(date) => this.setState({ selectedDate: date })}
+        ref={calendarRef}
       />
     );
   };
@@ -340,7 +339,7 @@ class DatePicker extends Component {
           iconName={CalendarReactSvgUrl}
           // iconColor="#A3A9AE"
           // hoverColor="#A3A9AE"
-          onIconClick={this.onClick}
+          onIconClick={isDisabled ? () => {} : this.onClick}
           value={value}
           onChange={this.handleChange}
           mask={mask}
@@ -360,6 +359,7 @@ class DatePicker extends Component {
                 fixedDirection={fixedDirection}
                 withBlur={window.innerWidth <= 428}
                 zIndex={220}
+                style={{ padding: 0 }}
               >
                 {this.renderBody()}
               </DropDown>
@@ -398,12 +398,10 @@ class DatePicker extends Component {
 DatePicker.propTypes = {
   /** Function called when the user select a day */
   onChange: PropTypes.func,
-  /** Color of the selected day */
-  themeColor: PropTypes.string,
   /** Selected date value */
   selectedDate: PropTypes.instanceOf(Date),
   /** Opened date value */
-  openToDate: PropTypes.instanceOf(Date),
+  initialDate: PropTypes.instanceOf(Date),
   /** Minimum date that the user can select */
   minDate: PropTypes.instanceOf(Date),
   /** Maximum date that the user can select */
@@ -419,8 +417,6 @@ DatePicker.propTypes = {
   //hasWarning: PropTypes.bool,
   /** Opens calendar */
   isOpen: PropTypes.bool,
-  /** Calendar size */
-  calendarSize: PropTypes.oneOf(["base", "big"]),
   /** Calendar display type */
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   /** Calendar css z-index */

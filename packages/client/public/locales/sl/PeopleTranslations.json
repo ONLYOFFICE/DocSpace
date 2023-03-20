@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Dodaj člane",
   "DeleteSelfProfile": "Izbriši profil",
   "DisableUserButton": "Onemogoči",
   "DisabledEmployeeStatus": "Onemogočeno",
   "EmailChangeButton": "Spremeni email",
   "EnableUserButton": "Omogoči",
+  "InviteLinkTitle": "Povezava do povabila",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Spremeni geslo",
   "PendingTitle": "V teku",

@@ -34,7 +34,7 @@ const Article = ({
 
   hideProfileBlock,
   isFreeTariff,
-  isAvailableArticlePaymentAlert,
+  isPaymentPageAvailable,
   currentColorScheme,
   setArticleOpen,
   ...rest
@@ -136,7 +136,7 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isAvailableArticlePaymentAlert &&
+          {isPaymentPageAvailable &&
             (isFreeTariff || isGracePeriod) &&
             showText && (
               <ArticlePaymentAlert
@@ -205,13 +205,12 @@ export default inject(({ auth }) => {
     currentQuotaStore,
     currentTariffStatusStore,
     userStore,
+    isPaymentPageAvailable,
   } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
 
   const { user } = userStore;
-
-  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
 
   const {
     showText,
@@ -233,7 +232,7 @@ export default inject(({ auth }) => {
     toggleArticleOpen,
     isFreeTariff,
     isGracePeriod,
-    isAvailableArticlePaymentAlert,
+    isPaymentPageAvailable,
     currentColorScheme,
     setArticleOpen,
   };

@@ -61,7 +61,7 @@ public class SetupInfo
     }
 
     public string TeamlabSiteRedirect { get; private set; }
-    public long ChunkUploadSize { get; private set; }
+    public long ChunkUploadSize { get; set; }
     public long ProviderMaxUploadSize { get; private set; }
     public bool ThirdPartyAuthEnabled { get; private set; }
     public string NoTenantRedirectURL { get; private set; }

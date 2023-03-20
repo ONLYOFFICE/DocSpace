@@ -11,8 +11,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       firstLoad,
       profileLoaded,
       setIsBurgerLoading,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
     } = props;
     const [inLoad, setInLoad] = useState(true);
+    const isProfileViewLoader = Loader.props.isProfileView;
+    const isProfileFooterLoader = Loader.props.isProfileFooter;
 
     const cleanTimer = () => {
       loadTimeout && clearTimeout(loadTimeout);
@@ -45,7 +49,30 @@ const withLoader = (WrappedComponent) => (Loader) => {
       }
     }, [isLoaded]);
 
-    return firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded ? (
+    useEffect(() => {
+      if (!isProfileViewLoader) return;
+
+      if (!(firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded)) {
+        setIsLoadedProfileSectionBody(true);
+      } else {
+        setIsLoadedProfileSectionBody(false);
+      }
+    }, [
+      firstLoad,
+      isLoaded,
+      inLoad,
+      tReady,
+      profileLoaded,
+      setIsLoadedProfileSectionBody,
+      isProfileViewLoader,
+    ]);
+
+    return firstLoad ||
+      !isLoaded ||
+      inLoad ||
+      !tReady ||
+      !profileLoaded ||
+      (isProfileFooterLoader && !isLoadedProfileSectionBody) ? (
       Loader
     ) : (
       <WrappedComponent {...props} />
@@ -54,7 +81,11 @@ const withLoader = (WrappedComponent) => (Loader) => {
 
   return inject(({ auth, peopleStore }) => {
     const { isLoaded, settingsStore } = auth;
-    const { loadingStore } = peopleStore;
+    const {
+      loadingStore,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
+    } = peopleStore;
     const { isLoading, firstLoad, profileLoaded } = loadingStore;
     const { setIsBurgerLoading } = settingsStore;
     return {
@@ -63,6 +94,8 @@ const withLoader = (WrappedComponent) => (Loader) => {
       firstLoad,
       profileLoaded,
       setIsBurgerLoading,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
     };
   })(observer(withLoader));
 };

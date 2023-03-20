@@ -43,6 +43,7 @@ const PureHome = ({
   setSelectedNode,
   withPaging,
   onClickBack,
+  setPortalTariff,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -63,11 +64,15 @@ const PureHome = ({
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
       //console.log("PEOPLE URL changed", pathname, newFilter);
-      getUsersList(newFilter, true).finally(() => {
-        setFirstLoad(false);
-        setIsLoading(false);
-        setIsRefresh(false);
-      });
+      getUsersList(newFilter, true)
+        .catch((err) => {
+          if (err?.response?.status === 402) setPortalTariff();
+        })
+        .finally(() => {
+          setFirstLoad(false);
+          setIsLoading(false);
+          setIsRefresh(false);
+        });
     }
   }, [pathname, location, setSelectedNode]);
 
@@ -132,7 +137,8 @@ const Home = withTranslation("People")(PureHome);
 
 export default inject(
   ({ auth, peopleStore, treeFoldersStore, filesActionsStore }) => {
-    const { settingsStore } = auth;
+    const { settingsStore, currentTariffStatusStore } = auth;
+    const { setPortalTariff } = currentTariffStatusStore;
     const { showCatalog, withPaging } = settingsStore;
     const {
       usersStore,
@@ -153,6 +159,7 @@ export default inject(
     } = loadingStore;
 
     return {
+      setPortalTariff,
       isAdmin: auth.isAdmin,
       isLoading,
       getUsersList,

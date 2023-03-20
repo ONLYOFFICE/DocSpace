@@ -79,9 +79,9 @@ const ArticleBodyContent = (props) => {
       const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
       if (filesSection) {
-        loadTimeout = setTimeout(() => {
-          setIsLoading(true);
-        }, 200);
+        // loadTimeout = setTimeout(() => {
+        setIsLoading(true);
+        // }, 200);
       } else {
         showLoader();
       }
@@ -108,6 +108,7 @@ const ArticleBodyContent = (props) => {
           .catch((err) => toastr.error(err))
           .finally(() => {
             if (filesSection) {
+              cleanTimer();
               setIsLoading(false);
             } else {
               hideLoader();
