@@ -40,7 +40,6 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
     private readonly IServiceProvider _serviceProvider;
     private FilesChunkedUploadSessionHolder _sessionHolder;
     private readonly TempPath _tempPath;
-    private readonly ILogger<DocumentsBackupStorage> _logger;
 
     public DocumentsBackupStorage(
         SetupInfo setupInfo,
@@ -49,8 +48,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         IDaoFactory daoFactory,
         StorageFactory storageFactory,
         IServiceProvider serviceProvider,
-        TempPath tempPath,
-        ILogger<DocumentsBackupStorage> logger)
+        TempPath tempPath)
     {
         _setupInfo = setupInfo;
         _tenantManager = tenantManager;
@@ -59,14 +57,13 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         _storageFactory = storageFactory;
         _serviceProvider = serviceProvider;
         _tempPath = tempPath;
-        _logger = logger;
     }
 
     public void Init(int tenantId)
     {
         _tenantId = tenantId;
         var store = _storageFactory.GetStorage(_tenantId, "files");
-        _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory, _tempPath, _logger, store, "", _setupInfo.ChunkUploadSize);
+        _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory, _tempPath, store, "", _setupInfo.ChunkUploadSize);
     }
 
     public async Task<string> Upload(string folderId, string localPath, Guid userId)

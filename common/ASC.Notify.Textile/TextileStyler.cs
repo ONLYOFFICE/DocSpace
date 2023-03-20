@@ -272,7 +272,9 @@ public class TextileStyler : IPatternStyler
             return string.Empty;
         }
 
-        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, unsubscribeLink);
+        var rootPath = message.GetArgument("__VirtualRootPath").Value;
+
+        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, rootPath, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
@@ -285,7 +287,7 @@ public class TextileStyler : IPatternStyler
 
             if (!string.IsNullOrEmpty(unsubscribeLink))
             {
-                return unsubscribeLink + "?unsubscribe=tips";
+                return unsubscribeLink + "/notification";
             }
         }
 

@@ -1,10 +1,10 @@
 {
-  "AddMembers": "メンバーの追加",
   "DeleteSelfProfile": "プロファイルの削除",
   "DisableUserButton": "無効にする",
   "DisabledEmployeeStatus": "無効化",
   "EmailChangeButton": "メールの変更",
   "EnableUserButton": "有効にする",
+  "InviteLinkTitle": "招待状リンク",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "パスワードの変更",
   "PendingTitle": "保留中",

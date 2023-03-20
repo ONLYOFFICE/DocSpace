@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
@@ -25,6 +25,23 @@ const Submenu = (props) => {
   const [currentItem, setCurrentItem] = useState(
     data[startSelect] || startSelect || null
   );
+
+  useEffect(() => {
+    window.addEventListener("popstate", onCheckCurrentItem);
+    onCheckCurrentItem();
+
+    return () => {
+      window.removeEventListener("popstate", onCheckCurrentItem);
+    };
+  }, []);
+
+  const onCheckCurrentItem = useCallback(() => {
+    const isSelect = data.find((item) =>
+      window.location.pathname.endsWith(item.id)
+    );
+
+    if (isSelect) setCurrentItem(isSelect);
+  }, [data, setCurrentItem]);
 
   const submenuItemsRef = useRef();
 

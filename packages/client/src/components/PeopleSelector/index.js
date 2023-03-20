@@ -85,7 +85,18 @@ const PeopleSelector = ({
   }, [isLoading]);
 
   const toListItem = (item) => {
-    const { id, email, avatar, icon, displayName, hasAvatar } = item;
+    const {
+      id,
+      email,
+      avatar,
+      icon,
+      displayName,
+      hasAvatar,
+      isOwner,
+      isAdmin,
+      isVisitor,
+      isCollaborator,
+    } = item;
 
     const role = getUserRole(item);
 
@@ -98,6 +109,10 @@ const PeopleSelector = ({
       icon,
       label: displayName || email,
       role,
+      isOwner,
+      isAdmin,
+      isVisitor,
+      isCollaborator,
     };
   };
 

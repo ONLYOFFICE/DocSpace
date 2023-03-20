@@ -6,6 +6,8 @@ export { default as CatalogItemTheme } from "./catalogItem";
 
 export { default as BadgeTheme } from "./badge";
 
+export { default as CalendarTheme } from './calendar'
+
 export { default as SubmenuTextTheme } from "./submenuText";
 
 export { default as SubmenuItemLabelTheme } from "./submenuItemLabel";
@@ -23,8 +25,6 @@ export { default as IndicatorFilterButtonTheme } from "./indicatorFilterButton";
 export { default as FilterBlockItemTagTheme } from "./filterBlockItemTag";
 
 export { default as IconWrapperTheme } from "./iconWrapper";
-
-export { default as CalendarTheme } from "./calendar";
 
 export { default as VersionBadgeTheme } from "./versionBadge";
 

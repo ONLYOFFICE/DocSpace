@@ -87,6 +87,11 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 
+global using System.Threading.Channels;
+global using ASC.Common.Threading;
+global using ASC.Core.Billing;
+
 global using SixLabors.ImageSharp;
+global using SixLabors.ImageSharp.Processing;
 
 global using static ASC.Files.Core.Helpers.DocumentService;

@@ -82,7 +82,6 @@ const dialogsStore = new DialogsStore(
 
 const peopleStore = new PeopleStore(
   authStore,
-  authStore.infoPanelStore,
   setupStore,
   accessRightsStore,
   dialogsStore
@@ -157,7 +156,8 @@ const createEditRoomStore = new CreateEditRoomStore(
   tagsStore,
   thirdPartyStore,
   authStore.settingsStore,
-  authStore.infoPanelStore
+  authStore.infoPanelStore,
+  authStore.currentQuotaStore
 );
 
 const store = {

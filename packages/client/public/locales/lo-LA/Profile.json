@@ -8,9 +8,6 @@
   "ProviderSuccessfullyConnected": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",
   "ProviderSuccessfullyDisconnected": "ຕັດການເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",
   "ShowBackupCodes": "ສະແດງລະຫັດສຳຮອງ",
-  "SubscriptionEmailTipsToggleLbl": "ແຈ້ງ​ການ​ທາງ​ອີ​ເມລ​໌​ທີ່​ມີ​ຄໍາ​ແນະ​ນໍາ​ແລະ",
-  "SubscriptionTurnOffToast": "ທ່ານໄດ້ຖືກ ຍົກເລີກການສະ ໝັກຮັບ ອີເມວສຳເລັດແລ້ວ. <1>ສະໝັກໃໝ່ອີກຄັ້ງ</1>",
-  "Subscriptions": "ການສະໝັກຮັບຂໍ້ມູນ",
   "SystemTheme": "ໃຊ້ ລະບົບ ຫົວຂໍ້",
   "TfaLoginSettings": "ຕັ້ງຄ່າການເຂົ້າລະບົບ",
   "TwoFactorDescription": "ການຢືນຢັນຕົວຕົນສອງຂັ້ນຕອນຜ່ານແອັບພລິເຄຊັນທີ່ສ້າງລະຫັດໄດ້ຖືກເປີດໂດຍ Admin."

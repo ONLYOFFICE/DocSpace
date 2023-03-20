@@ -26,7 +26,9 @@
 
 using System.Threading.Channels;
 
-using ASC.Files.ThumbnailBuilder;
+using ASC.Core.Billing;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
@@ -34,8 +36,9 @@ namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandler<ThumbnailRequestedIntegrationEvent>
 {
     private readonly ILogger _logger;
-    private readonly ChannelWriter<IEnumerable<FileData<int>>> _channelWriter;
-    private readonly FileDataProvider _fileDataProvider;
+    private readonly ChannelWriter<FileData<int>> _channelWriter;
+    private readonly ITariffService _tariffService;
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
 
     private ThumbnailRequestedIntegrationEventHandler() : base()
     {
@@ -44,12 +47,38 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
     public ThumbnailRequestedIntegrationEventHandler(
         ILogger<ThumbnailRequestedIntegrationEventHandler> logger,
-        FileDataProvider fileDataProvider,
-        ChannelWriter<IEnumerable<FileData<int>>> channelWriter)
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        ITariffService tariffService,
+        ChannelWriter<FileData<int>> channelWriter)
     {
         _logger = logger;
         _channelWriter = channelWriter;
-        _fileDataProvider = fileDataProvider;
+        _tariffService = tariffService;
+        _dbContextFactory = dbContextFactory;
+    }
+
+    private async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var result = filesDbContext.Files
+                    .AsQueryable()
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating && EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5);
+
+        var updatedRows = await result.ExecuteUpdateAsync(s => s.SetProperty(b => b.ThumbnailStatus, b => ASC.Files.Core.Thumbnail.Waiting));
+
+        if (updatedRows == 0)
+        {
+            return new List<FileData<int>>();
+        }
+
+        return result.ToList().Select(r =>
+        {
+            var tariff = _tariffService.GetTariff(r.TenantId);
+            var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
+
+            return fileData;
+        });
     }
 
 
@@ -59,14 +88,18 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            var freezingThumbnails = await _fileDataProvider.GetFreezingThumbnailsAsync();
+            var tariff = _tariffService.GetTariff(@event.TenantId);
+            var freezingThumbnails = await GetFreezingThumbnailsAsync();
+            var data = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl, tariff.State))
+                          .Union(freezingThumbnails);
 
-            var rawData = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl))
-                          .Union(freezingThumbnails);                                          
 
             if (await _channelWriter.WaitToWriteAsync())
             {
-                await _channelWriter.WriteAsync(rawData);
+                foreach(var item in data)
+                {
+                    await _channelWriter.WriteAsync(item);
+                }
             }
         }
     }

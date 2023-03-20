@@ -51,6 +51,8 @@ export const CategoryType = Object.freeze({
   Favorite: 5,
   Recent: 6,
   Trash: 7,
+  Settings: 8,
+  Accounts: 9,
 });
 
 /**

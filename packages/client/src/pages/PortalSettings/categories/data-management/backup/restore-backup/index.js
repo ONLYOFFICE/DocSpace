@@ -211,7 +211,7 @@ const RestoreBackup = (props) => {
     : {};
 
   if (isInitialLoading) return <RestoreBackupLoader />;
-  console.log("index render");
+
   return (
     <StyledRestoreBackup isEnableRestore={isEnableRestore}>
       <div className="restore-description">

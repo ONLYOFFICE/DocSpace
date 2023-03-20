@@ -89,6 +89,8 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
                 }
 
                 filesDbContext.RemoveRange(toDelete);
+
+                await filesDbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();
@@ -140,33 +142,26 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
                          folders.Add(entryId);
                      }
 
-                     var toDelete = await filesDbContext.Security
+                     await filesDbContext.Security
                          .Where(a => a.TenantId == r.TenantId &&
                                      folders.Contains(a.EntryId) &&
                                      a.EntryType == FileEntryType.Folder &&
                                      a.Subject == r.Subject)
-                         .ToListAsync();
-
-                     filesDbContext.Security.RemoveRange(toDelete);
-                     await filesDbContext.SaveChangesAsync();
-
+                         .ExecuteDeleteAsync();
                  }
                  else
                  {
                      files.Add(entryId);
                  }
 
-                 if (0 < files.Count)
+                 if (files.Count > 0)
                  {
-                     var toDelete = await filesDbContext.Security
+                     await filesDbContext.Security
                          .Where(a => a.TenantId == r.TenantId &&
                                      files.Contains(a.EntryId) &&
                                      a.EntryType == FileEntryType.File &&
                                      a.Subject == r.Subject)
-                         .ToListAsync();
-
-                     filesDbContext.Security.RemoveRange(toDelete);
-                     await filesDbContext.SaveChangesAsync();
+                         .ExecuteDeleteAsync();
                  }
 
                  await tx.CommitAsync();
@@ -181,6 +176,19 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.Security, toInsert);
             await filesDbContext.SaveChangesAsync();
+        }
+    }
+
+    public async IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        var q = GetQuery(filesDbContext,
+            r => (r.Subject == subject || r.Owner == subject)
+            && roomIds.Contains(r.EntryId));
+
+        await foreach (var e in q.AsAsyncEnumerable())
+        {
+            yield return await ToFileShareRecordAsync(e);
         }
     }
 
@@ -270,14 +278,8 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
-            var toDelete1 = await filesDbContext.Security.Where(r => r.Subject == subject).ToListAsync();
-            var toDelete2 = await filesDbContext.Security.Where(r => r.Owner == subject).ToListAsync();
-
-            filesDbContext.RemoveRange(toDelete1);
-            await filesDbContext.SaveChangesAsync();
-
-            filesDbContext.RemoveRange(toDelete2);
-            await filesDbContext.SaveChangesAsync();
+            await filesDbContext.Security.Where(r => r.Subject == subject).ExecuteDeleteAsync();
+            await filesDbContext.Security.Where(r => r.Owner == subject).ExecuteDeleteAsync();
 
             await tr.CommitAsync();
         });
@@ -348,18 +350,18 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 [Scope]
 internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
 {
-    public SecurityDao(UserManager userManager, 
-        IDbContextFactory<FilesDbContext> dbContextFactory, 
+    public SecurityDao(UserManager userManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         TenantManager tenantManager,
-        TenantUtil tenantUtil, 
+        TenantUtil tenantUtil,
         SetupInfo setupInfo,
         MaxTotalSizeStatistic maxTotalSizeStatistic,
         CoreBaseSettings coreBaseSettings,
-        CoreConfiguration coreConfiguration, 
-        SettingsManager settingsManager, 
+        CoreConfiguration coreConfiguration,
+        SettingsManager settingsManager,
         AuthContext authContext,
         IServiceProvider serviceProvider,
-        ICache cache, 
+        ICache cache,
         IMapper mapper) : base(userManager, dbContextFactory, tenantManager, tenantUtil, setupInfo, maxTotalSizeStatistic, coreBaseSettings, coreConfiguration, settingsManager, authContext, serviceProvider, cache, mapper)
     {
     }

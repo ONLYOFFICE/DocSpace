@@ -2,7 +2,7 @@
 import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -32,6 +32,8 @@ import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url
 import EmptyScreenTrashSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_trash_dark.svg?url";
 import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
 import EmptyScreenArchiveDarkUrl from "PUBLIC_DIR/images/empty_screen_archive_dark.svg?url";
+
+import { showLoader, hideLoader } from "./EmptyFolderContainerUtils";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -65,8 +67,10 @@ const RootFolderContainer = (props) => {
     isEmptyPage,
     setIsEmptyPage,
     isVisitor,
+    isCollaborator,
     sectionWidth,
     setIsLoadedEmptyPage,
+    security,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -77,12 +81,14 @@ const RootFolderContainer = (props) => {
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
 
-  const roomsDescription = isVisitor
-    ? t("RoomEmptyContainerDescriptionUser")
-    : t("RoomEmptyContainerDescription");
-  const archiveRoomsDescription = isVisitor
-    ? t("ArchiveEmptyScreenUser")
-    : t("ArchiveEmptyScreen");
+  const roomsDescription =
+    isVisitor || isCollaborator
+      ? t("RoomEmptyContainerDescriptionUser")
+      : t("RoomEmptyContainerDescription");
+  const archiveRoomsDescription =
+    isVisitor || isCollaborator
+      ? t("ArchiveEmptyScreenUser")
+      : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src={PrivacySvgUrl} />;
@@ -95,9 +101,7 @@ const RootFolderContainer = (props) => {
 
   const roomHeader = "Welcome to DocSpace";
 
-  const [showLoader, setShowLoader] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (rootFolderType !== FolderType.COMMON) {
       setIsEmptyPage(true);
     } else {
@@ -110,7 +114,7 @@ const RootFolderContainer = (props) => {
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsLoadedEmptyPage(!isLoading);
   }, [isLoading]);
 
@@ -201,7 +205,7 @@ const RootFolderContainer = (props) => {
           imageSrc: theme.isBase
             ? EmptyScreenCorporateSvgUrl
             : EmptyScreenCorporateDarkSvgUrl,
-          buttons: isVisitor ? null : roomsButtons,
+          buttons: !security?.Create ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
@@ -349,8 +353,16 @@ const RootFolderContainer = (props) => {
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
 
+  useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
+
   if (isLoading) {
-    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
+    return (
+      <Loaders.EmptyContainerLoader
+        style={{ display: "none", marginTop: 32 }}
+        id="empty-container-loader"
+        viewAs={viewAs}
+      />
+    );
   }
 
   return (
@@ -358,6 +370,7 @@ const RootFolderContainer = (props) => {
       headerText={headerText}
       isEmptyPage={isEmptyPage}
       sectionWidth={sectionWidth}
+      style={{ marginTop: 32 }}
       {...emptyFolderProps}
     />
   );
@@ -386,7 +399,7 @@ export default inject(
       setIsEmptyPage,
       setIsLoadedEmptyPage,
     } = filesStore;
-    const { title, rootFolderType } = selectedFolderStore;
+    const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
@@ -394,6 +407,7 @@ export default inject(
       isPrivacyFolder,
       isDesktop: isDesktopClient,
       isVisitor: auth.userStore.user.isVisitor,
+      isCollaborator: auth.userStore.user.isCollaborator,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,
@@ -411,6 +425,7 @@ export default inject(
       isEmptyPage,
       setIsEmptyPage,
       setIsLoadedEmptyPage,
+      security,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

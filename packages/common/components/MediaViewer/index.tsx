@@ -1,5 +1,11 @@
 import { isMobile } from "react-device-detect";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 
 import ViewerWrapper from "./sub-components/ViewerWrapper";
 
@@ -18,7 +24,7 @@ import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
-import MoveReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 
 function MediaViewer({
   playlistPos,
@@ -26,13 +32,15 @@ function MediaViewer({
   prevMedia,
   ...props
 }: MediaViewerProps): JSX.Element {
+  const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
+
   const [title, setTitle] = useState<string>("");
-  const [fileUrl, setFileUrl] = useState<string>(() => {
+  const [fileUrl, setFileUrl] = useState<string | undefined>(() => {
     const { playlist, currentFileId } = props;
     const item = playlist.find(
       (file) => file.fileId.toString() === currentFileId.toString()
     );
-    return item?.src ?? "";
+    return item?.src;
   });
 
   const [targetFile, setTargetFile] = useState(() => {
@@ -89,10 +97,12 @@ function MediaViewer({
     if (!src) return onEmptyPlaylistError();
 
     if (ext !== ".tif" && ext !== ".tiff" && src !== fileUrl) {
+      TiffXMLHttpRequestRef.current?.abort();
       setFileUrl(src);
     }
 
     if (ext === ".tiff" || ext === ".tif") {
+      setFileUrl(undefined);
       fetchAndSetTiffDataURL(src);
     }
 
@@ -108,18 +118,14 @@ function MediaViewer({
       (playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
         FileStatus.IsFavorite
     );
-  }, [
-    props.playlist.length,
-    props.files.length,
-    props.currentFileId,
-    playlistPos,
-  ]);
+  }, [props.playlist, props.files.length, props.currentFileId, playlistPos]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeydown);
 
     return () => {
       document.removeEventListener("keydown", onKeydown);
+      TiffXMLHttpRequestRef.current?.abort();
     };
   }, [
     props.playlist.length,
@@ -298,38 +304,30 @@ function MediaViewer({
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
+    if (props.deleteDialogVisible) return;
 
     if (code in KeyboardEventKeys) {
-      event.preventDefault();
+      const includesKeyboardCode = [
+        KeyboardEventKeys.KeyS,
+        KeyboardEventKeys.Numpad1,
+        KeyboardEventKeys.Digit1,
+        KeyboardEventKeys.Space,
+      ].includes(code as KeyboardEventKeys);
+
+      if (!includesKeyboardCode || ctrlKey) event.preventDefault();
     }
-    if (props.deleteDialogVisible) return;
 
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateLeftElement = document.getElementsByClassName(
-            "iconContainer rotateLeft"
-          )?.[0] as HTMLElement | undefined;
-          rotateLeftElement?.click();
-        } else {
-          prevMedia();
-        }
-
+        if (!ctrlKey) prevMedia();
         break;
 
       case KeyboardEventKeys.ArrowRight:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateRightElement = document.getElementsByClassName(
-            "iconContainer rotateRight"
-          )?.[0] as HTMLElement | undefined;
-          rotateRightElement?.click();
-        } else {
-          nextMedia();
-        }
+        if (!ctrlKey) nextMedia();
 
         break;
 
@@ -350,16 +348,6 @@ function MediaViewer({
         if (ctrlKey) onDownload();
         break;
 
-      case KeyboardEventKeys.Digit1:
-      case KeyboardEventKeys.Numpad1:
-        if (ctrlKey) {
-          const resetElement = document.getElementsByClassName(
-            "iconContainer reset"
-          )?.[0] as HTMLElement | undefined;
-          resetElement?.click();
-        }
-        break;
-
       case KeyboardEventKeys.Delete:
         onDelete();
         break;
@@ -376,7 +364,10 @@ function MediaViewer({
   const fetchAndSetTiffDataURL = useCallback((src: string) => {
     if (!window.Tiff) return;
 
+    TiffXMLHttpRequestRef.current?.abort();
+
     const xhr = new XMLHttpRequest();
+    TiffXMLHttpRequestRef.current = xhr;
     xhr.responseType = "arraybuffer";
 
     xhr.open("GET", src);
@@ -399,7 +390,6 @@ function MediaViewer({
   }, [targetFile]);
 
   const ext = getFileExtension(title);
-  const images = useMemo(() => [{ src: fileUrl, alt: "" }], [fileUrl]);
   const audioIcon = useMemo(() => props.getIcon(96, ext), [ext]);
   const headerIcon = useMemo(() => props.getIcon(24, ext), [ext]);
 
@@ -437,7 +427,7 @@ function MediaViewer({
           visible={props.visible}
           title={title}
           onClose={onClose}
-          images={images}
+          fileUrl={fileUrl}
           inactive={props.playlist.length <= 1}
           playlist={props.playlist}
           playlistPos={playlistPos}
@@ -453,7 +443,7 @@ function MediaViewer({
           isPreviewFile={props.isPreviewFile}
           onDownloadClick={onDownload}
           archiveRoom={archiveRoom}
-          errorTitle={props.t("Files:MediaError")}
+          errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
         />

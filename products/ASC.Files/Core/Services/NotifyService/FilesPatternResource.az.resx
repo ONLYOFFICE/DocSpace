@@ -68,13 +68,6 @@ Bu e-poçt bildirişi bütün imzalayanların "$DocumentTitle":"$DocumentURL"sə
 
 DocuSign hesabınıza daxil olmaqla ətraflı məlumat əldə edə bilərsiniz.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" sənəd şərhində sizi qeyd etdi
-
-Bu, "$DocumentTitle":"$DocumentURL" sənədinin şərhində "$__AuthorName":"$__AuthorUrl" tərəfindən qeyd olunduğunuzu bildirən poçt mesajıdır:
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. E-poçt göndərişi tamamlandı
 
@@ -101,9 +94,6 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Sənədlər. İmza statusu dəyişdi</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Sənədlər. Sənəddə qeyd edildi</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Sənədlər. E-poçt göndərilməsi tamamlandı.</value>

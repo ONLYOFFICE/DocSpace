@@ -24,10 +24,6 @@ const SingleSignOn = (props) => {
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
 
-  useEffect(() => {
-    load();
-  }, []);
-
   return (
     <StyledSsoPage
       hideSettings={serviceProviderSettings}

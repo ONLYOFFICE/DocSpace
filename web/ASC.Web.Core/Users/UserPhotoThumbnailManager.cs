@@ -40,11 +40,6 @@ public static class UserPhotoThumbnailManager
 
     public static async Task<List<ThumbnailItem>> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
     {
-        if (thumbnailSettings.Size.IsEmpty)
-        {
-            return null;
-        }
-
         var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
 
         var resultBitmaps = new List<ThumbnailItem>();
@@ -54,6 +49,11 @@ public static class UserPhotoThumbnailManager
         if (img == null)
         {
             return null;
+        }
+
+        if (thumbnailSettings.Size.IsEmpty)
+        {
+            thumbnailSettings.Size = new Size(img.Width, img.Height);
         }
 
         foreach (var thumbnail in await thumbnailsData.ThumbnailList())
@@ -95,8 +95,8 @@ public static class UserPhotoThumbnailManager
         IImageFormat imgFormat;
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
         }
         catch (OutOfMemoryException)
         {
@@ -129,8 +129,8 @@ public static class UserPhotoThumbnailManager
 
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
             width = img.Width;
             height = img.Height;
             var maxWidth = maxsize.Width;

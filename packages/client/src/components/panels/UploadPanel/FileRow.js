@@ -12,9 +12,6 @@ import ActionsUploadedFile from "./SubComponents/ActionsUploadedFile";
 import { isMobile } from "react-device-detect";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import Button from "@docspace/components/button";
-import globalColors from "@docspace/components/utils/globalColors";
-
-const buttonColor = globalColors.blueDisabled;
 
 const StyledFileRow = styled(Row)`
   width: calc(100% - 16px);
@@ -145,11 +142,11 @@ class FileRow extends Component {
   onCancelCurrentUpload = (e) => {
     //console.log("cancel upload ", e);
     const { id, action, fileId } = e.currentTarget.dataset;
-    const { cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
+    const { t, cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
 
     return action === "convert"
       ? cancelCurrentFileConversion(fileId)
-      : cancelCurrentUpload(id);
+      : cancelCurrentUpload(id, t);
   };
 
   onMediaClick = (id) => {
@@ -228,8 +225,6 @@ class FileRow extends Component {
       t,
       item,
       uploaded,
-      //onMediaClick,
-      currentFileUploadProgress,
       fileIcon,
       isMedia,
       ext,
@@ -314,7 +309,7 @@ class FileRow extends Component {
                 data-id={item.uniqueId}
                 onClick={this.onCancelCurrentUpload}
               >
-                <LoadingButton percent={currentFileUploadProgress} />
+                <LoadingButton item={item} />
               </div>
             )}
             {showPasswordInput && (
@@ -365,7 +360,6 @@ export default inject(
     const { canViewedDocs, getIconSrc, isArchive } = settingsStore;
     const {
       uploaded,
-      primaryProgressDataStore,
       cancelCurrentUpload,
       cancelCurrentFileConversion,
       setUploadPanelVisible,
@@ -373,14 +367,12 @@ export default inject(
       convertFile,
       files: uploadedFiles,
       clearUploadedFilesHistory,
-      isParallel,
     } = uploadDataStore;
     const {
       playlist,
       setMediaViewerData,
       setCurrentItem,
     } = mediaViewerDataStore;
-    const { loadingFile: file } = primaryProgressDataStore;
 
     const isMedia =
       item.fileInfo?.viewAccessability?.ImageView ||
@@ -391,29 +383,16 @@ export default inject(
 
     const fileIcon = getIconSrc(ext, 24);
 
-    const loadingFile = !file || !file.uniqueId ? null : file;
-
-    const currentFileUploadProgress =
-      file && loadingFile.uniqueId === item.uniqueId
-        ? loadingFile.percent
-        : null;
-
     const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
 
     return {
       isPersonal: personal,
       theme,
-      currentFileUploadProgress: isParallel
-        ? item?.percent
-          ? item.percent
-          : null
-        : currentFileUploadProgress,
       uploaded,
-      isMedia,
+      isMedia: !!isMedia,
       fileIcon,
       ext,
       name,
-      loadingFile,
       isMediaActive,
       downloadInCurrentTab,
       removeFileFromList,

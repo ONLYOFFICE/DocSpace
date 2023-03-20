@@ -29,13 +29,13 @@ export function getInvitationLink(type) {
     type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK
   );
 
-  return link && type !== 3
+  return link && type !== 3 && type !== 4
     ? Promise.resolve(link)
     : request({
         method: "get",
         url: `/portal/users/invite/${type}.json`,
       }).then((link) => {
-        if (type !== 3) {
+        if (type !== 3 && type !== 4) {
           localStorage.setItem(
             type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK,
             link
@@ -50,16 +50,19 @@ export function getInvitationLinks() {
     getInvitationLink(1),
     getInvitationLink(2),
     getInvitationLink(3),
+    getInvitationLink(4),
   ]).then(
     ([
       userInvitationLinkResp,
       guestInvitationLinkResp,
       adminInvitationLinkResp,
+      collaboratorInvitationLinkResp,
     ]) => {
       return Promise.resolve({
         userLink: userInvitationLinkResp,
         guestLink: guestInvitationLinkResp,
         adminLink: adminInvitationLinkResp,
+        collaboratorLink: collaboratorInvitationLinkResp,
       });
     }
   );
@@ -239,7 +242,7 @@ export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
 
-export function getPaymentLink(adminCount, cancelToken, backUrl) {
+export function getPaymentLink(adminCount, backUrl, cancelToken) {
   return request({
     method: "put",
     url: `/portal/payment/url`,

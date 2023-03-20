@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
   "TrashEmptyDescription": "A secção 'Lixo' é para onde todos os arquivos eliminados são movidos. Pode recuperá-los no caso de terem sido eliminados por engano ou excluí-los permanentemente. Por favor, note que quando eliminar os ficheiros do 'Lixo' não podem ser recuperados no futuro.",
   "UnblockVersion": "Desbloquear/Check-in",
-  "UploadToFolder": "Carregar para a pasta",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "Histórico de Versões",
   "ViewList": "Lista",

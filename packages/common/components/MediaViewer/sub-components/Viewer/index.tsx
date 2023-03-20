@@ -1,23 +1,19 @@
 import ReactDOM from "react-dom";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { isMobileOnly } from "react-device-detect";
 
-import Text from "@docspace/components/text";
-import IconButton from "@docspace/components/icon-button";
 import ContextMenu from "@docspace/components/context-menu";
 
-import { StyledViewer } from "@docspace/components/viewer/styled-viewer";
-import ViewerPlayer from "@docspace/components/viewer/sub-components/viewer-player";
+import { StyledViewerContainer } from "../../StyledComponents";
 
-import { ControlBtn, StyledViewerContainer } from "../../StyledComponents";
-
-import MobileDetails from "../MobileDetails";
-import PrevButton from "../PrevButton";
 import NextButton from "../NextButton";
+import PrevButton from "../PrevButton";
+import ImageViewer from "../ImageViewer";
+import MobileDetails from "../MobileDetails";
+import DesktopDetails from "../DesktopDetails";
+import ViewerPlayer from "../ViewerPlayer/viewer-player";
 
 import type ViewerProps from "./Viewer.props";
-
-import ViewerMediaCloseSvgUrl from "PUBLIC_DIR/images/viewer.media.close.svg?url";
 
 function Viewer(props: ViewerProps) {
   const timerIDRef = useRef<NodeJS.Timeout>();
@@ -30,6 +26,8 @@ function Viewer(props: ViewerProps) {
   const [isPlay, setIsPlay] = useState<boolean | null>(null);
 
   const [imageTimer, setImageTimer] = useState<NodeJS.Timeout>();
+
+  const panelVisibleRef = useRef<boolean>(false);
 
   const contextMenuRef = useRef<ContextMenu>(null);
   const videoElementRef = useRef<HTMLVideoElement>(null);
@@ -49,20 +47,33 @@ function Viewer(props: ViewerProps) {
       return clearTimeout(timerIDRef.current);
   }, [isPlay, isOpenContextMenu, props.isImage]);
 
-  useEffect(() => {
-    if (isMobileOnly) return;
-
-    const resetTimer = () => {
-      setPanelVisible(true);
+  const resetToolbarVisibleTimer = () => {
+    if (panelVisibleRef.current) {
       clearTimeout(timerIDRef.current);
-      timerIDRef.current = setTimeout(() => setPanelVisible(false), 2500);
-      setImageTimer(timerIDRef.current);
-    };
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
+    } else {
+      setPanelVisible(true);
+      panelVisibleRef.current = true;
 
-    document.addEventListener("mousemove", resetTimer, { passive: true });
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
+    }
+  };
+
+  useEffect(() => {
+    if (isMobile) return;
+    resetToolbarVisibleTimer();
+    document.addEventListener("mousemove", resetToolbarVisibleTimer, {
+      passive: true,
+    });
 
     return () => {
-      document.removeEventListener("mousemove", resetTimer);
+      document.removeEventListener("mousemove", resetToolbarVisibleTimer);
       clearTimeout(timerIDRef.current);
       setPanelVisible(true);
     };
@@ -108,15 +119,15 @@ function Viewer(props: ViewerProps) {
 
   const mobileDetails = (
     <MobileDetails
+      onHide={onHide}
       isError={isError}
       title={props.title}
-      icon={props.headerIcon}
-      contextModel={props.contextModel}
-      isPreviewFile={props.isPreviewFile}
-      onHide={onHide}
-      onContextMenu={onMobileContextMenu}
-      onMaskClick={props.onMaskClick}
       ref={contextMenuRef}
+      icon={props.headerIcon}
+      onMaskClick={props.onMaskClick}
+      contextModel={props.contextModel}
+      onContextMenu={onMobileContextMenu}
+      isPreviewFile={props.isPreviewFile}
     />
   );
 
@@ -127,38 +138,11 @@ function Viewer(props: ViewerProps) {
 
   return (
     <StyledViewerContainer visible={props.visible}>
-      {!isFullscreen && !isMobileOnly && displayUI && (
-        <div>
-          <div className="details">
-            <Text
-              isBold
-              fontSize="14px"
-              className="title"
-              title={undefined}
-              tag={undefined}
-              as={undefined}
-              fontWeight={undefined}
-              color={undefined}
-              textAlign={undefined}
-            >
-              {props.title}
-            </Text>
-            <ControlBtn
-              onClick={props.onMaskClick}
-              className="mediaPlayerClose"
-            >
-              <IconButton
-                color={"#fff"}
-                iconName={ViewerMediaCloseSvgUrl}
-                size={28}
-                isClickable
-              />
-            </ControlBtn>
-          </div>
-        </div>
+      {!isFullscreen && !isMobile && panelVisible && (
+        <DesktopDetails title={props.title} onMaskClick={props.onMaskClick} />
       )}
 
-      {props.playlist.length > 1 && !isFullscreen && displayUI && (
+      {props.playlist.length > 1 && !isFullscreen && !isMobile && (
         <>
           {isNotFirstElement && <PrevButton prevClick={prevClick} />}
           {isNotLastElement && <NextButton nextClick={nextClick} />}
@@ -167,16 +151,19 @@ function Viewer(props: ViewerProps) {
 
       {props.isImage
         ? ReactDOM.createPortal(
-            <StyledViewer
-              {...props}
-              displayUI={displayUI}
+            <ImageViewer
+              panelVisible={panelVisible}
+              toolbar={props.toolbar}
+              src={props.fileUrl}
               mobileDetails={mobileDetails}
-              setIsOpenContextMenu={setIsOpenContextMenu}
-              container={containerRef.current}
-              imageTimer={imageTimer}
-              onMaskClick={props.onMaskClick}
-              setPanelVisible={setPanelVisible}
+              onMask={props.onMaskClick}
+              onPrev={props.onPrevClick}
+              onNext={props.onNextClick}
+              isLastImage={!isNotLastElement}
+              isFistImage={!isNotFirstElement}
               generateContextMenu={props.generateContextMenu}
+              setIsOpenContextMenu={setIsOpenContextMenu}
+              resetToolbarVisibleTimer={resetToolbarVisibleTimer}
             />,
             containerRef.current
           )

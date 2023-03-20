@@ -100,10 +100,10 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction();
+            using var tx = await feedDbContext.Database.BeginTransactionAsync();
 
             foreach (var f in feeds)
             {
@@ -117,14 +117,14 @@ public class FeedAggregateDataProvider
 
                 if (f.ClearRightsBeforeInsert)
                 {
-                    var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
+                    var fu = await feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefaultAsync();
                     if (fu != null)
                     {
                         feedDbContext.FeedUsers.Remove(fu);
                     }
                 }
 
-                feedDbContext.AddOrUpdate(feedDbContext.FeedAggregates, feedAggregate);
+               await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -134,14 +134,15 @@ public class FeedAggregateDataProvider
                         UserId = u
                     };
 
-                    feedDbContext.AddOrUpdate(feedDbContext.FeedUsers, feedUser);
+                    await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedUsers, feedUser);
                 }
             }
 
-            feedDbContext.SaveChanges();
+            await feedDbContext.SaveChangesAsync();
 
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void RemoveFeedAggregate(DateTime fromTime)
@@ -149,19 +150,17 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            var aggregates = feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
-            feedDbContext.FeedAggregates.RemoveRange(aggregates);
+            await feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDeleteAsync();
 
-            var users = feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
-            feedDbContext.FeedUsers.RemoveRange(users);
-
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public List<FeedResultItem> GetFeeds(FeedApiFilter filter)
@@ -305,21 +304,17 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            var aggregates = feedDbContext.FeedAggregates.Where(r => r.Id == id);
-            feedDbContext.FeedAggregates.RemoveRange(aggregates);
+            await feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDeleteAsync();
 
-            var users = feedDbContext.FeedUsers.Where(r => r.FeedId == id);
-            feedDbContext.FeedUsers.RemoveRange(users);
-
-            feedDbContext.SaveChanges();
-
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private Expression<Func<FeedAggregate, bool>> GetIdSearchExpression(string id, string module, bool withRelated)

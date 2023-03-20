@@ -49,10 +49,10 @@ public class RoomLinkService
 
     public string GetInvitationLink(string email, FileShare share, Guid createdBy)
     {
-        var type = DocSpaceHelper.PaidRights.Contains(share) ? EmployeeType.RoomAdmin : EmployeeType.User;
-
+        var type = FileSecurity.GetTypeByShare(share);
+        
         var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
-            + $"&emplType={type:d}&toRoom=true";
+                   + $"&emplType={type:d}&toRoom=true";
 
         return link;
     }
@@ -78,27 +78,30 @@ public class RoomLinkService
 
         if (payload != default)
         {
+            options.LinkType = LinkType.InvitationToRoom;
+            
             var record = await GetRecordAsync(payload);
 
-            if (record != null)
+            if (record == null)
             {
-                options.IsCorrect = true;
-                options.LinkType = LinkType.InvintationToRoom;
-                options.RoomId = record.EntryId.ToString();
-                options.Share = record.Share;
-                options.Id = record.Subject;
-                options.EmployeeType = DocSpaceHelper.PaidRights.Contains(record.Share) ? EmployeeType.RoomAdmin : EmployeeType.User;
+                return options;
             }
+
+            options.IsCorrect = true;
+            options.RoomId = record.EntryId.ToString();
+            options.Share = record.Share;
+            options.Id = record.Subject;
+            options.EmployeeType = FileSecurity.GetTypeByShare(record.Share);
         }
         else if (_docSpaceLinksHelper.ValidateEmailLink(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
             options.IsCorrect = true;
-            options.LinkType = LinkType.InvintationByEmail;
+            options.LinkType = LinkType.InvitationByEmail;
             options.EmployeeType = employeeType;
         }
         else if (_docSpaceLinksHelper.ValidateExtarnalLink(key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
-            options.LinkType = LinkType.DefaultInvintation;
+            options.LinkType = LinkType.DefaultInvitation;
             options.IsCorrect = true;
             options.EmployeeType = employeeType;
         }
@@ -110,7 +113,7 @@ public class RoomLinkService
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var share = await securityDao.GetSharesAsync(new[] { key })
-            .Where(s => s.SubjectType == SubjectType.InvintationLink)
+            .Where(s => s.SubjectType == SubjectType.InvitationLink)
             .FirstOrDefaultAsync();
 
         return share;
@@ -130,7 +133,7 @@ public class LinkOptions
 [EnumExtensions]
 public enum LinkType
 {
-    DefaultInvintation,
-    InvintationByEmail,
-    InvintationToRoom,
+    DefaultInvitation,
+    InvitationByEmail,
+    InvitationToRoom,
 }

@@ -8,6 +8,7 @@ import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 import isEqual from "lodash/isEqual";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
@@ -51,54 +52,60 @@ const AdditionalResources = (props) => {
     isLoadedAdditionalResources,
   } = props;
 
-  const [feedbackAndSupportEnabled, setShowFeedback] = useState(
-    additionalResourcesData?.feedbackAndSupportEnabled
-  );
-
-  const [videoGuidesEnabled, setShowVideoGuides] = useState(
-    additionalResourcesData?.videoGuidesEnabled
-  );
-
-  const [helpCenterEnabled, setShowHelpCenter] = useState(
-    additionalResourcesData?.helpCenterEnabled
-  );
-
+  const [additionalSettings, setAdditionalSettings] = useState({});
   const [hasChange, setHasChange] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
-    setShowVideoGuides(additionalResourcesData?.videoGuidesEnabled);
-    setShowHelpCenter(additionalResourcesData?.helpCenterEnabled);
-  }, [additionalResourcesData]);
+  const {
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+  } = additionalSettings;
 
-  useEffect(() => {
-    const settings = {
-      feedbackAndSupportEnabled,
-      videoGuidesEnabled,
-      helpCenterEnabled,
-    };
+  const getSettings = () => {
+    const additionalSettings = getFromSessionStorage("additionalSettings");
 
-    const dataAdditionalResources = {
+    const defaultData = {
       feedbackAndSupportEnabled:
         additionalResourcesData.feedbackAndSupportEnabled,
       videoGuidesEnabled: additionalResourcesData.videoGuidesEnabled,
       helpCenterEnabled: additionalResourcesData.helpCenterEnabled,
     };
 
-    const hasСhange = !isEqual(settings, dataAdditionalResources);
+    saveToSessionStorage("defaultAdditionalSettings", defaultData);
 
-    if (hasСhange) {
-      setHasChange(true);
+    if (additionalSettings) {
+      setAdditionalSettings({
+        feedbackAndSupportEnabled: additionalSettings.feedbackAndSupportEnabled,
+        videoGuidesEnabled: additionalSettings.videoGuidesEnabled,
+        helpCenterEnabled: additionalSettings.helpCenterEnabled,
+      });
     } else {
-      setHasChange(false);
+      setAdditionalSettings(defaultData);
     }
-  }, [
-    feedbackAndSupportEnabled,
-    videoGuidesEnabled,
-    helpCenterEnabled,
-    additionalResourcesData,
-  ]);
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, [isLoading]);
+
+  useEffect(() => {
+    const defaultAdditionalSettings = getFromSessionStorage(
+      "defaultAdditionalSettings"
+    );
+    const newSettings = {
+      feedbackAndSupportEnabled: additionalSettings.feedbackAndSupportEnabled,
+      videoGuidesEnabled: additionalSettings.videoGuidesEnabled,
+      helpCenterEnabled: additionalSettings.helpCenterEnabled,
+    };
+    saveToSessionStorage("additionalSettings", newSettings);
+
+    if (isEqual(defaultAdditionalSettings, newSettings)) {
+      setHasChange(false);
+    } else {
+      setHasChange(true);
+    }
+  }, [additionalSettings, additionalResourcesData]);
 
   useEffect(() => {
     if (!(additionalResourcesData && tReady)) return;
@@ -123,21 +130,29 @@ const AdditionalResources = (props) => {
 
     await getAdditionalResources();
 
+    const data = {
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+      helpCenterEnabled,
+    };
+
+    saveToSessionStorage("additionalSettings", data);
+    saveToSessionStorage("defaultAdditionalSettings", data);
     setIsLoading(false);
   }, [
     setIsLoading,
     setAdditionalResources,
     getAdditionalResources,
-    feedbackAndSupportEnabled,
-    videoGuidesEnabled,
-    helpCenterEnabled,
+    additionalSettings,
   ]);
 
   const onRestore = useCallback(async () => {
     setIsLoading(true);
 
     await restoreAdditionalResources()
-      .then(() => {
+      .then((res) => {
+        setAdditionalSettings(res);
+        saveToSessionStorage("additionalSettings", res);
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       })
       .catch((error) => {
@@ -147,14 +162,40 @@ const AdditionalResources = (props) => {
     await getAdditionalResources();
 
     setIsLoading(false);
-  }, [
-    setIsLoading,
-    restoreAdditionalResources,
-    getAdditionalResources,
-    feedbackAndSupportEnabled,
-    videoGuidesEnabled,
-    helpCenterEnabled,
-  ]);
+  }, [setIsLoading, restoreAdditionalResources, getAdditionalResources]);
+
+  const onChangeFeedback = () => {
+    setAdditionalSettings({
+      ...additionalSettings,
+      feedbackAndSupportEnabled: !feedbackAndSupportEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      feedbackAndSupportEnabled: !feedbackAndSupportEnabled,
+    });
+  };
+
+  const onChangeVideoGuides = () => {
+    setAdditionalSettings({
+      ...additionalSettings,
+      videoGuidesEnabled: !videoGuidesEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      videoGuidesEnabled: !videoGuidesEnabled,
+    });
+  };
+
+  const onChangeHelpCenter = () => {
+    setAdditionalSettings({
+      ...additionalSettings,
+      helpCenterEnabled: !helpCenterEnabled,
+    });
+    saveToSessionStorage("additionalSettings", {
+      ...additionalSettings,
+      helpCenterEnabled: !helpCenterEnabled,
+    });
+  };
 
   if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
 
@@ -176,7 +217,7 @@ const AdditionalResources = (props) => {
             isDisabled={!isSettingPaid}
             label={t("ShowFeedbackAndSupport")}
             isChecked={feedbackAndSupportEnabled}
-            onChange={() => setShowFeedback(!feedbackAndSupportEnabled)}
+            onChange={onChangeFeedback}
           />
 
           <Checkbox
@@ -185,7 +226,7 @@ const AdditionalResources = (props) => {
             isDisabled={!isSettingPaid}
             label={t("ShowVideoGuides")}
             isChecked={videoGuidesEnabled}
-            onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
+            onChange={onChangeVideoGuides}
           />
           <Checkbox
             tabIndex={14}
@@ -193,21 +234,20 @@ const AdditionalResources = (props) => {
             isDisabled={!isSettingPaid}
             label={t("ShowHelpCenter")}
             isChecked={helpCenterEnabled}
-            onChange={() => setShowHelpCenter(!helpCenterEnabled)}
+            onChange={onChangeHelpCenter}
           />
         </div>
-        {isSettingPaid && (
-          <SaveCancelButtons
-            tabIndex={15}
-            onSaveClick={onSave}
-            onCancelClick={onRestore}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-            displaySettings={true}
-            showReminder={(isSettingPaid && hasChange) || isLoading}
-            disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
-          />
-        )}
+        <SaveCancelButtons
+          tabIndex={15}
+          onSaveClick={onSave}
+          onCancelClick={onRestore}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          displaySettings={true}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          showReminder={(isSettingPaid && hasChange) || isLoading}
+          disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
+        />
       </StyledComponent>
     </>
   );

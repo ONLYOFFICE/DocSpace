@@ -31,6 +31,10 @@ public partial class SubscriptionRecord : IMapFrom<Subscription>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<Subscription, SubscriptionRecord>()
-            .ForMember(dest => dest.Subscribed, opt => opt.MapFrom(src => !src.Unsubscribed));
+            .ForMember(dest => dest.RecipientId, opt => opt.MapFrom(src => src.Recipient))
+            .ForMember(dest => dest.Subscribed, opt => opt.MapFrom(src => !src.Unsubscribed))
+            .ForMember(dest => dest.ActionId, opt => opt.MapFrom(src => src.Action))
+            .ForMember(dest => dest.ObjectId, opt => opt.MapFrom(src => src.Object))
+            .ForMember(dest => dest.SourceId, opt => opt.MapFrom(src => src.Source));
     }
 }

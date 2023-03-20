@@ -29,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     tenantStatus,
     isNotPaidPeriod,
     withManager,
+    withCollaborator,
     isLogout,
   } = rest;
 
@@ -136,13 +137,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
- 
     if (
       isNotPaidPeriod &&
       isLoaded &&
       !user.isOwner &&
       !user.isAdmin &&
-      isPortalUnavailableUrl
+      !isPortalUnavailableUrl
     ) {
       return (
         <Redirect
@@ -180,7 +180,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       !restricted ||
       isAdmin ||
-      (withManager && !user.isVisitor) ||
+      (withManager && !user.isVisitor && !user.isCollaborator) ||
+      (withCollaborator && !user.isVisitor) ||
       (allowForMe && userId && isMe(user, userId))
     ) {
       // console.log(

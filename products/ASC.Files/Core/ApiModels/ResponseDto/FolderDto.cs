@@ -34,6 +34,7 @@ public class FolderDto<T> : FileEntryDto<T>
     public bool? IsShareable { get; set; }
     public bool? IsFavorite { get; set; }
     public int New { get; set; }
+    public bool Mute { get; set; }
     public IEnumerable<string> Tags { get; set; }
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
@@ -73,6 +74,8 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly RoomLogoManager _roomLogoManager;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -82,13 +85,17 @@ public class FolderDtoHelper : FileEntryDtoHelper
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper,
-        RoomLogoManager roomLogoManager)
+        RoomLogoManager roomLogoManager,
+        BadgesSettingsHelper badgesSettingsHelper,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
         _roomLogoManager = roomLogoManager;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -124,6 +131,9 @@ public class FolderDtoHelper : FileEntryDtoHelper
             if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
             {
                 result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
+
+            var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
+            result.Mute = isMuted;
             }
         }
 
@@ -159,12 +169,24 @@ public class FolderDtoHelper : FileEntryDtoHelper
 
     private async Task<FolderDto<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
     {
+        var newBadges = folder.NewForMe;
+
+        if (folder.RootFolderType == FolderType.VirtualRooms)
+        {
+            var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+
+            if (!isEnabledBadges)
+            {
+                newBadges = 0;
+            }
+        }
+
         var result = await GetAsync<FolderDto<T>, T>(folder);
         result.FilesCount = folder.FilesCount;
         result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
-        result.New = folder.NewForMe;
+        result.New = newBadges;
         result.Pinned = folder.Pinned;
         result.Private = folder.Private;
 
