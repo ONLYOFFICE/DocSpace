@@ -515,7 +515,11 @@ function ViewerPlayer({
     <>
       {isMobile && panelVisible && mobileDetails}
       <ContainerPlayer ref={containerRef} $isFullScreen={isFullScreen}>
-        <VideoWrapper $visible={isLoading} style={style} ref={playerWrapperRef}>
+        <VideoWrapper
+          $visible={!isLoading}
+          style={style}
+          ref={playerWrapperRef}
+        >
           <animated.video
             style={lodash.omit(style, ["x", "y"])}
             src={src}

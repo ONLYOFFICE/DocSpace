@@ -13,7 +13,8 @@ export const ContainerPlayer = styled.div<{ $isFullScreen: boolean }>`
 
 export const VideoWrapper = styled(animated.div)<{ $visible: boolean }>`
   inset: 0;
-  visibility: ${(props) => (props.$visible ? "hidden" : "visible")};
+  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
   height: 100%;
   width: 100%;
   touch-action: none;
