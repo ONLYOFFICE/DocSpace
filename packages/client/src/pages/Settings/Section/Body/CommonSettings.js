@@ -99,6 +99,7 @@ const PersonalSettings = ({
           label={"Thumbnails 1280x720"}
           onChange={onChangeThumbnailsSize}
           isChecked={thumbnails1280x720}
+          style={{ display: "none" }}
         />
         {!isVisitor && (
           <ToggleButton
