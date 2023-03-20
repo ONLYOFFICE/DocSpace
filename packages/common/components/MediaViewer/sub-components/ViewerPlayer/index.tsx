@@ -522,7 +522,7 @@ function ViewerPlayer({
         >
           <animated.video
             style={lodash.omit(style, ["x", "y"])}
-            src={src}
+            src={`${src}#t=0.001`}
             playsInline
             ref={videoRef}
             hidden={isAudio}
