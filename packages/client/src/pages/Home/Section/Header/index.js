@@ -83,6 +83,11 @@ const StyledContainer = styled.div`
   .header-container {
     min-height: 33px;
 
+    ${(props) =>
+      props.hideContextMenuInsideArchiveRoom &&
+      `.option-button {
+      display: none;}`}
+
     @media ${tablet} {
       height: 60px;
     }
@@ -675,6 +680,7 @@ class SectionHeaderContent extends React.Component {
       isGroupMenuBlocked,
       security,
       onClickBack,
+      hideContextMenuInsideArchiveRoom,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -688,7 +694,10 @@ class SectionHeaderContent extends React.Component {
     return [
       <Consumer key="header">
         {(context) => (
-          <StyledContainer isRecycleBinFolder={isRecycleBinFolder}>
+          <StyledContainer
+            isRecycleBinFolder={isRecycleBinFolder}
+            hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
+          >
             {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
@@ -818,6 +827,7 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       isPersonalRoom,
+      isArchiveFolderRoot,
     } = treeFoldersStore;
 
     const {
@@ -861,6 +871,10 @@ export default inject(
     const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
 
     const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
+    const hideContextMenuInsideArchiveRoom = isArchiveFolderRoot
+      ? !isArchiveFolder
+      : false;
 
     return {
       isGracePeriod,
@@ -911,6 +925,7 @@ export default inject(
       isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
+      hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
       fetchFiles,
