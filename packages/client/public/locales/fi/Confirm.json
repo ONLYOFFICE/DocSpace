@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Salasanan vaihtaminen onnistui",
-  "ConfirmOwnerPortalSuccessMessage": "DocSpace omistajan vaihto onnistui. 10 sekunnin kuluttua sinut uudelleen ohjataan",
+  "ConfirmOwnerPortalSuccessMessage": "DocSpace omistajan vaihto onnistui. 10 sekunnin kuluttua sinut uudelleen ohjataan.",
   "ConfirmOwnerPortalTitle": "Vahvista, että haluat vaihtaa DocSpace omistajaksi henkilön {{newOwner}}",
   "CurrentNumber": "Nykyinen matkapuhelinnumerosi",
   "DeleteProfileBtn": "Poista tilini",

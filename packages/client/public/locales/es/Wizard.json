@@ -4,7 +4,7 @@
   "ErrorEmail": "Dirección de correo electrónico no válida",
   "ErrorInitWizard": "El servicio no está disponible actualmente, por favor inténtelo más tarde.",
   "ErrorInitWizardButton": "Inténtelo de nuevo",
-  "ErrorLicenseBody": "La licencia no es válida. Asegúrese de que selecciona el archivo correcto",
+  "ErrorLicenseBody": "La licencia no es válida. Asegúrese de que selecciona el archivo correcto.",
   "ErrorPassword": "La contraseña no corresponde a los requisitos",
   "ErrorUploadLicenseFile": "Seleccione un archivo de licencia",
   "GeneratePassword": "Generar contraseña",

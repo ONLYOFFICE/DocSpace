@@ -1,6 +1,6 @@
 {
   "ChangeUserStatusDialog": "Lietotāji ar '{{ userStatus }}' statusu tiks {{ status }}.",
   "ChangeUserStatusDialogHeader": "Mainiet lietotāja statusu",
-  "ChangeUserStatusDialogMessage": "Jūs nevarat mainīt statusu DocSpace īpašniekam un sev",
+  "ChangeUserStatusDialogMessage": "Jūs nevarat mainīt statusu DocSpace īpašnieka un sev.",
   "ChangeUsersStatusButton": "Mainīt lietotāja statusu"
 }
