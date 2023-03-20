@@ -61,6 +61,7 @@ function ViewerPlayer({
   onDownloadClick,
   generateContextMenu,
   removeToolbarVisibleTimer,
+  removePanelVisibleTimeout,
   restartToolbarVisibleTimer,
 }: ViewerPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -269,6 +270,7 @@ function ViewerPlayer({
     setDuration(0);
     setCurrentTime(0);
     setIsPlaying(false);
+    removePanelVisibleTimeout();
   };
 
   const getVideoWidthHeight = (video: HTMLVideoElement): [number, number] => {
@@ -357,7 +359,7 @@ function ViewerPlayer({
       videoRef.current.play();
       setIsPlaying(true);
     }
-  }, [isPlaying]);
+  }, [isPlaying, isVideo]);
 
   const handleBigPlayButtonClick = () => {
     togglePlay();
@@ -516,11 +518,11 @@ function ViewerPlayer({
         <VideoWrapper $visible={isLoading} style={style} ref={playerWrapperRef}>
           <animated.video
             style={lodash.omit(style, ["x", "y"])}
+            src={src}
             playsInline
             ref={videoRef}
             hidden={isAudio}
             preload="metadata"
-            src={`${src}#t=0.001`}
             onClick={handleClickVideo}
             onEnded={handleVideoEnded}
             onTimeUpdate={handleTimeUpdate}

@@ -88,6 +88,13 @@ function Viewer(props: ViewerProps) {
     panelToolbarRef.current = true;
   };
 
+  const removePanelVisibleTimeout = () => {
+    clearTimeout(timerIDRef.current);
+    panelVisibleRef.current = true;
+    panelToolbarRef.current = true;
+    setPanelVisible(true);
+  };
+
   const restartToolbarVisibleTimer = () => {
     panelToolbarRef.current = false;
     resetToolbarVisibleTimer();
@@ -190,6 +197,7 @@ function Viewer(props: ViewerProps) {
               onDownloadClick={props.onDownloadClick}
               generateContextMenu={props.generateContextMenu}
               removeToolbarVisibleTimer={removeToolbarVisibleTimer}
+              removePanelVisibleTimeout={removePanelVisibleTimeout}
               restartToolbarVisibleTimer={restartToolbarVisibleTimer}
             />,
             containerRef.current

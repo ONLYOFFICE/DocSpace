@@ -21,6 +21,7 @@ interface ViewerPlayerProps {
   onDownloadClick: VoidFunction;
   contextModel: () => ContextMenuModel[];
   removeToolbarVisibleTimer: VoidFunction;
+  removePanelVisibleTimeout: VoidFunction;
   restartToolbarVisibleTimer: VoidFunction;
   setIsError: React.Dispatch<React.SetStateAction<boolean>>;
   setPanelVisible: React.Dispatch<React.SetStateAction<boolean>>;
