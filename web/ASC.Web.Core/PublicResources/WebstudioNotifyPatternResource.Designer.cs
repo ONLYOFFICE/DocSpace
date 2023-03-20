@@ -601,6 +601,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visit Payments Section.
+        /// </summary>
+        public static string ButtonVisitPaymentsSection {
+            get {
+                return ResourceManager.GetString("ButtonVisitPaymentsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn More &gt;&gt;.
         /// </summary>
         public static string LinkLearnMore {
@@ -2036,6 +2045,82 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay‎ days for your ONLYOFFICE DocSpace is activated.
+        ///
+        ///Make sure to pay your Business subscription before the grace period is due. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that your ONLYOFFICE DocSpace subscription expires in three days. After that, the grace period of $PaymentDelay days will be activated.
+        ///
+        ///We recommend paying your Business subscription now and continue to use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace is over.
+        ///
+        ///Make sure to pay your Business subscription as soon as possible. Thus, you will be able to use all the benefits of your ONLYOFFICE DocSpace as before.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace will expire tomorrow.
+        ///
+        ///Make sure to pay your Business subscription today. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
         ///You are invited to join $Message room at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
@@ -2870,6 +2955,42 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace activated.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ONLYOFFICE DocSpace subscription is about to expire.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expired.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expires tomorrow.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
             }
         }
         
