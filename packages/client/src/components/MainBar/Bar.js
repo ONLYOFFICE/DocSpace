@@ -41,6 +41,9 @@ const Bar = (props) => {
     showStorageQuotaBar,
 
     currentColorScheme,
+
+    setMainBarVisible,
+    mainBarVisible,
   } = props;
 
   const [barVisible, setBarVisible] = useState({
@@ -177,6 +180,28 @@ const Bar = (props) => {
       : getConvertedSize(t, usedTotalStorageSizeCount),
   };
 
+  React.useEffect(() => {
+    const newValue =
+      ((isRoomQuota || isStorageQuota) && tReady) ||
+      (withActivationBar && barVisible.confirmEmail && tReady) ||
+      (htmlLink && !firstLoad && tReady);
+
+    setMainBarVisible(newValue);
+
+    return () => {
+      setMainBarVisible(false);
+    };
+  }, [
+    isRoomQuota,
+    isStorageQuota,
+    tReady,
+    withActivationBar,
+    barVisible.confirmEmail,
+    !!htmlLink,
+    firstLoad,
+    mainBarVisible,
+  ]);
+
   return (isRoomQuota || isStorageQuota) && tReady ? (
     <QuotasBar
       currentColorScheme={currentColorScheme}
@@ -219,7 +244,11 @@ export default inject(({ auth, profileActionsStore }) => {
     showStorageQuotaBar,
   } = auth.currentQuotaStore;
 
-  const { currentColorScheme } = auth.settingsStore;
+  const {
+    currentColorScheme,
+    setMainBarVisible,
+    mainBarVisible,
+  } = auth.settingsStore;
 
   return {
     isAdmin: user?.isAdmin,
@@ -238,5 +267,7 @@ export default inject(({ auth, profileActionsStore }) => {
     showStorageQuotaBar,
 
     currentColorScheme,
+    setMainBarVisible,
+    mainBarVisible,
   };
 })(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));
