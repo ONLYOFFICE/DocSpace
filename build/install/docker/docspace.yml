@@ -51,7 +51,6 @@ services:
     expose:
       - "9200"
       - "9300"
-      
   onlyoffice-backup-background-tasks:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
