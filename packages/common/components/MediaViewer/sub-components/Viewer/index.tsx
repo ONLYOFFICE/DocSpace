@@ -83,19 +83,22 @@ function Viewer(props: ViewerProps) {
   };
 
   const removeToolbarVisibleTimer = () => {
+    console.log("removeToolbarVisibleTimer");
     clearTimeout(timerIDRef.current);
     panelVisibleRef.current = false;
     panelToolbarRef.current = true;
   };
 
   const removePanelVisibleTimeout = () => {
+    console.log("removePanelVisibleTimeout");
     clearTimeout(timerIDRef.current);
     panelVisibleRef.current = true;
-    panelToolbarRef.current = true;
+    panelToolbarRef.current = false;
     setPanelVisible(true);
   };
 
   const restartToolbarVisibleTimer = () => {
+    console.log("restartToolbarVisibleTimer");
     panelToolbarRef.current = false;
     resetToolbarVisibleTimer();
   };
