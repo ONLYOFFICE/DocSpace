@@ -136,7 +136,7 @@ const Article = ({
   }, [mainBarVisible, isBannerVisible]);
 
   React.useEffect(() => {
-    if (isMobile) {
+    if (isTablet) {
       onResize();
       window.addEventListener("resize", onResize);
     }
