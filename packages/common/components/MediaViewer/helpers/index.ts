@@ -88,6 +88,8 @@ export const convertToTwoDigitString = (time: number): string => {
 };
 
 export const formatTime = (time: number): string => {
+  if (isNullOrUndefined(time) || isNaN(time) || time <= 0) return "00:00";
+
   let seconds: number = Math.floor(time % 60);
   let minutes: number = Math.floor(time / 60) % 60;
   let hours: number = Math.floor(time / 3600);
