@@ -225,7 +225,7 @@ public class StudioPeriodicNotify
                         toowner = true;
                         topayer = true;
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/payments");
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
                     }
 
                     #endregion
@@ -238,7 +238,7 @@ public class StudioPeriodicNotify
                         toowner = true;
                         topayer = true;
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/payments");
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
                     }
 
                     #endregion
@@ -251,7 +251,7 @@ public class StudioPeriodicNotify
                         toowner = true;
                         topayer = true;
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/payments");
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
                     }
 
                     #endregion
@@ -264,7 +264,7 @@ public class StudioPeriodicNotify
                         toowner = true;
                         topayer = true;
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/payments");
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
                     }
 
                     #endregion
