@@ -11,7 +11,7 @@
   "InternalLink": "Вътрешна връзка",
   "Notify users": "Извести потребители",
   "ReadOnly": "Само за четене",
-  "ShareEmailBody": "Даден Ви е достъп до документ {{itemName}}. Кликнете върху връзката долу, за да отворите документа сега: {{shareLink}}",
+  "ShareEmailBody": "Даден Ви е достъп до документ {{itemName}}. Кликнете върху връзката долу, за да отворите документа сега: {{shareLink}}.",
   "ShareEmailSubject": "Даден Ви е достъп до документ {{itemName}}",
   "ShareVia": "Сподели чрез",
   "SharingSettingsTitle": "Настройки за споделяне"

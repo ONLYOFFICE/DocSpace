@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Geslo je bilo uspešno spremenjeno",
-  "ConfirmOwnerPortalSuccessMessage": "Lastnik DocSpace je bil uspešno spremenjen. Čez 10 sekund boste preusmerjeni",
+  "ConfirmOwnerPortalSuccessMessage": "Lastnik DocSpace je bil uspešno spremenjen. Čez 10 sekund boste preusmerjeni.",
   "ConfirmOwnerPortalTitle": "Potrdite, da želite spremeniti lastnika DocSpace v {{newOwner}}",
   "CurrentNumber": "Vaša trenutna številka mobilnega telefona",
   "DeleteProfileBtn": "Izbriši moj račun",

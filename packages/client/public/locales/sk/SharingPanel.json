@@ -11,7 +11,7 @@
   "InternalLink": "Interný odkaz",
   "Notify users": "Upozorniť používateľov",
   "ReadOnly": "Iba na čítanie",
-  "ShareEmailBody": "Bol vám udelený prístup k dokumentu {{itemName}}. Kliknutím na odkaz nižšie otvoríte dokument hneď teraz: {{shareLink}}",
+  "ShareEmailBody": "Bol vám udelený prístup k dokumentu {{itemName}}. Kliknutím na odkaz nižšie otvoríte dokument hneď teraz: {{shareLink}}.",
   "ShareEmailSubject": "Bol vám udelený prístup k dokumentu {{itemName}}.",
   "ShareVia": "Zdieľať prostredníctvom",
   "SharingSettingsTitle": "Nastavenia zdieľania"

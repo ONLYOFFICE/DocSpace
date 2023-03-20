@@ -189,5 +189,7 @@ public class FFmpegService
         using var process = Process.Start(startInfo);
 
         await ProcessLog(process.StandardError.BaseStream);
+
+        process.WaitForExit();
     }
 }

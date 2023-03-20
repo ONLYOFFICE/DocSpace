@@ -4,7 +4,7 @@
   "ErrorEmail": "Adresse mail invalide",
   "ErrorInitWizard": "Le service est actuellement indisponible, merci de réessayer ultérieurement.",
   "ErrorInitWizardButton": "Réessayer",
-  "ErrorLicenseBody": "La licence n'est pas valide. Vérifiez que vous avez sélectionné le bon fichier",
+  "ErrorLicenseBody": "La licence n'est pas valide. Vérifiez que vous avez sélectionné le bon fichier.",
   "ErrorPassword": "le mot de passe ne répond pas aux pré-requis de sécurité",
   "ErrorUploadLicenseFile": "Sélectionnez un fichier de licence",
   "GeneratePassword": "Générer un mot de passe",

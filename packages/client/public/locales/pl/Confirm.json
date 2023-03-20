@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Hasło zostało pomyślnie zmienione",
-  "ConfirmOwnerPortalSuccessMessage": "Właściciel DocSpace został pomyślnie zmieniony. Przekierowanie nastąpi za 10 sekund",
+  "ConfirmOwnerPortalSuccessMessage": "Właściciel DocSpace został pomyślnie zmieniony. Przekierowanie nastąpi za 10 sekund.",
   "ConfirmOwnerPortalTitle": "Potwierdź zmianę właściciela DocSpace na {{newOwner}}",
   "CurrentNumber": "Twój aktualny numer telefonu komórkowego",
   "DeleteProfileBtn": "Usuń moje konto",

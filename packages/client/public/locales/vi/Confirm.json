@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Mật khẩu đã được thay đổi thành công",
-  "ConfirmOwnerPortalSuccessMessage": "Chủ sở hữu cổng đã được thay đổi thành công. Trong 10 giây nữa, bạn sẽ được chuyển hướng ",
+  "ConfirmOwnerPortalSuccessMessage": "Chủ sở hữu cổng đã được thay đổi thành công. Trong 10 giây nữa, bạn sẽ được chuyển hướng.",
   "ConfirmOwnerPortalTitle": "Vui lòng xác nhận rằng bạn muốn thay đổi chủ sở hữu cổng thông tin thành {{newOwner}}",
   "CurrentNumber": "Số điện thoại di động hiện tại của bạn",
   "DeleteProfileBtn": "Xóa tài khoản của tôi",

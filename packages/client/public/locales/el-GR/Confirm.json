@@ -1,6 +1,6 @@
 {
   "ChangePasswordSuccess": "Ο κωδικός πρόσβασης άλλαξε με επιτυχία",
-  "ConfirmOwnerPortalSuccessMessage": "Ο κάτοχος της DocSpace άλλαξε επιτυχώς. Σε 10 δευτερόλεπτα θα ανακατευθυνθείτε",
+  "ConfirmOwnerPortalSuccessMessage": "Ο κάτοχος της DocSpace άλλαξε επιτυχώς. Σε 10 δευτερόλεπτα θα ανακατευθυνθείτε.",
   "ConfirmOwnerPortalTitle": "Επιβεβαιώστε ότι θέλετε να αλλάξετε τον κάτοχο της DocSpace σε {{newOwner}}",
   "CurrentNumber": "Ο τωρινός αριθμός κινητού τηλεφώνου σας",
   "DeleteProfileBtn": "Διαγραφή του λογαριασμού μου",

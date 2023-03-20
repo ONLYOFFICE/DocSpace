@@ -31,7 +31,7 @@ class SettingsStore {
   recentSection = null;
   hideConfirmConvertSave = null;
   keepNewFileName = null;
-  thumbnails1280x720 = false;
+  thumbnails1280x720 = window.DocSpaceConfig?.thumbnails1280x720 || false;
   chunkUploadSize = 1024 * 1023; // 1024 * 1023; //~0.999mb
 
   settingsIsLoaded = false;

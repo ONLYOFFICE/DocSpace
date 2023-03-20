@@ -89,6 +89,7 @@ reassign_values (){
 		SERVICE_PORT="5005"
 		WORK_DIR="${BASE_DIR}/services/ASC.Notify/"
 		EXEC_FILE="ASC.Notify.dll"
+		CORE_EVENT_BUS=" --core:eventBus:subscriptionClientName=asc_event_bus_notify_queue"
 	;;
 	people-server )
 		SERVICE_PORT="5004"
@@ -104,6 +105,7 @@ reassign_values (){
 		SERVICE_PORT="5009"
 		WORK_DIR="${BASE_DIR}/products/ASC.Files/service/"
 		EXEC_FILE="ASC.Files.Service.dll"
+		CORE_EVENT_BUS=" --core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"
 	;;
 	studio )
 		SERVICE_PORT="5003"
@@ -129,6 +131,7 @@ reassign_values (){
 		SERVICE_PORT="5032"
 		WORK_DIR="${BASE_DIR}/services/ASC.Data.Backup.BackgroundTasks/"
 		EXEC_FILE="ASC.Data.Backup.BackgroundTasks.dll"
+		CORE_EVENT_BUS=" --core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"
 	;;
 	doceditor )
 		SERVICE_PORT="5013"
@@ -163,11 +166,8 @@ reassign_values (){
 	SERVICE_TYPE="notify"	
 	RESTART="always"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
-	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
-
-	[[ "${SERVICE_NAME}" = "backup-background" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"
-	[[ "${SERVICE_NAME}" = "files-services" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"
-	[[ "${SERVICE_NAME}" = "notify" ]] && EXEC_START="${EXEC_START} core:eventBus:subscriptionClientName=asc_event_bus_notify_queue"
+	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${CORE_EVENT_BUS}${ENVIRONMENT}"
+	unset CORE_EVENT_BUS
   fi
 }
 
