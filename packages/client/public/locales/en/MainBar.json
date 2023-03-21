@@ -6,5 +6,7 @@
   "RoomQuotaDescription": "You can archive the unnecessary rooms or <1>{{clickHere}}</1> to find a more suitable pricing plan for your DocSpace.",
   "RoomQuotaHeader": "Rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
   "StorageQuotaDescription": "You can remove the unnecessary files or <1>{{clickHere}}</1> to find a more suitable  pricing plan for your DocSpace.",
-  "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} / {{maxValue}}"
+  "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} / {{maxValue}}",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> to find a better pricing plan for your portal.",
+  "UserQuotaHeader": "The number of admins/power users is about to be exceed: {{currentValue}} / {{maxValue}}"
 }

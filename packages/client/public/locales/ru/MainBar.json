@@ -6,5 +6,7 @@
   "RoomQuotaDescription": "Вы можете заархивировать ненужные комнаты или <1>{{clickHere}}</1> , чтобы найти лучший тарифный план для DocSpace.",
   "RoomQuotaHeader": "Количество комнат скоро будет превышено: {{currentValue}} / {{maxValue}}",
   "StorageQuotaDescription": "Вы можете удалить ненужные файлы или <1>{{clickHere}}</1> , чтобы найти лучший тарифный план для DocSpace.",
-  "StorageQuotaHeader": "Объем дискового пространства скоро будет превышен: {{currentValue}} / {{maxValue}}"
+  "StorageQuotaHeader": "Объем дискового пространства скоро будет превышен: {{currentValue}} / {{maxValue}}",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> чтобы найти лучший тарифный план для DocSpace.",
+  "UserQuotaHeader": "Количество администраторов/опытных пользователей скоро будет превышено: {{currentValue}} / {{maxValue}}"
 }
