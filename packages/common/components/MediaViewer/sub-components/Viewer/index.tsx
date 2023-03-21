@@ -123,6 +123,22 @@ function Viewer(props: ViewerProps) {
     setIsOpenContextMenu(false);
   }, [setIsOpenContextMenu]);
 
+  const handleMaskClick = () => {
+    if (isFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document["webkitExitFullscreen"]) {
+        document["webkitExitFullscreen"]();
+      } else if (document["mozCancelFullScreen"]) {
+        document["mozCancelFullScreen"]();
+      } else if (document["msExitFullscreen"]) {
+        document["msExitFullscreen"]();
+      }
+    }
+
+    props.onMaskClick();
+  };
+
   const mobileDetails = (
     <MobileDetails
       onHide={onHide}
@@ -130,7 +146,7 @@ function Viewer(props: ViewerProps) {
       title={props.title}
       ref={contextMenuRef}
       icon={props.headerIcon}
-      onMaskClick={props.onMaskClick}
+      onMaskClick={handleMaskClick}
       contextModel={props.contextModel}
       onContextMenu={onMobileContextMenu}
       isPreviewFile={props.isPreviewFile}
@@ -143,7 +159,7 @@ function Viewer(props: ViewerProps) {
   return (
     <StyledViewerContainer visible={props.visible}>
       {!isFullscreen && !isMobile && panelVisible && (
-        <DesktopDetails title={props.title} onMaskClick={props.onMaskClick} />
+        <DesktopDetails title={props.title} onMaskClick={handleMaskClick} />
       )}
 
       {props.playlist.length > 1 && !isFullscreen && !isMobile && (
@@ -188,7 +204,7 @@ function Viewer(props: ViewerProps) {
               isPreviewFile={props.isPreviewFile}
               isOpenContextMenu={isOpenContextMenu}
               setIsError={setIsError}
-              onMask={props.onMaskClick}
+              onMask={handleMaskClick}
               onPrev={props.onPrevClick}
               onNext={props.onNextClick}
               setPanelVisible={setPanelVisible}
