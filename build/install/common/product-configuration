@@ -454,6 +454,7 @@ setup_nginx(){
 					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
 					PORTS+=('5033') #ASC.Web.HealthChecks
 					PORTS+=('5100') #ASC.ApiCache
+					PORTS+=('8081') #Storybook
 					PORTS+=('9834') #ASC.SsoAuth
 					PORTS+=('9899') #ASC.Socket.IO
 					setsebool -P httpd_can_network_connect on
@@ -496,7 +497,7 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"/ds-vpath/\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	echo "OK"
 }
